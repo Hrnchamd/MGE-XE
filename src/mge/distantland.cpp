@@ -468,7 +468,9 @@ void DistantLand::adjustFog()
         const float sunaltitude2 = saturate(exp(-2 * sunPos.z)) * saturate(sunaltitude);
 
         // Calculate scatter colour at Morrowind draw distance boundary
-        float fogdist = (7168.0 - fogStart) / (fogEnd - fogStart);
+        float fogS = fogStart / Configuration.DL.ExpFogDistMult;
+        float fogE = fogEnd / Configuration.DL.ExpFogDistMult;
+        float fogdist = (7168.0 - fogS) / (fogE - fogS);
         float fog = saturate(exp(-fogdist));
         fogdist = saturate(0.19 * fogdist);
 

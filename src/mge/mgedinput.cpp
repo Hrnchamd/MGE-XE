@@ -37,68 +37,71 @@ bool CloseConsole;    //true to shut the console after performing a command
 BYTE MouseIn[10];      //Used to transfer keypresses to the mouse
 BYTE MouseOut[10];     //Used to transfer keypresses back from the mouse
 
+enum AttackState { State_NONE = 0, State_SLASH, State_PIERCE, State_HACK, State_NONE2  };
+
+static struct {
+    bool directionPressed;         // True when the player makes an attack (Because the keyboard must be used before the mouse)
+    bool directionPressedLast;
+    int attackType;                    // Used to store the state of the mouse between frames
+    int lastAttack;                     // You cant use the same attack twice in a row
+} AltCombat = {
+    false, false, 0, 0
+};
+
+const int altSensitivity = 18;   // How many pixels the mouse must move to register an attack
+const int maxGap = 15;          // If the difference between x and y movement is greater than this then dont use a hacking attack
+
 static bool SkipIntro;
 static bool GlobalHammer;
 static bool UseAltCombatWrapper;
-
-enum AttackState { State_NONE = 0, State_SLASH, State_PIERCE, State_HACK, State_NONE2  };
-
-bool MadeAttack=false;         // True when the player makes an attack (Because the keyboard must be used before the mouse)
-bool MadeAttackLast=false;   // Used in power attacks
-int AttackType=0;                    // Used to store the state of the mouse between frames
-int LastAttack=0;                     // You cant use the same attack twice in a row
-const int altSensitivity = 18;   // How many pixels the mouse must move to register an attack
-const int maxGap = 15;          // If the difference between x and y movement is greater than this then dont use a hacking attack
 
 
 
 static void stub() {}
 
-void* CreateInputWrapper(void* real)
+void * CreateInputWrapper(void *real)
 {
-    IDirectInput8A* Real = (IDirectInput8A*)real;
-
     LOG::logline(">> CreateInputWrapper");
 
-    //Now load all of the fake keys
+    // Load macros and triggers
     DWORD unused;
-    HANDLE keyfile=CreateFileA("MGE3\\DInput.data",GENERIC_READ,0,0,OPEN_EXISTING,0,0);
+    HANDLE keyfile = CreateFileA("MGE3\\DInput.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
 
-    if (keyfile!=INVALID_HANDLE_VALUE)
+    if(keyfile != INVALID_HANDLE_VALUE)
     {
         BYTE version;
-        ReadFile(keyfile,&version,1,&unused,NULL);
+        ReadFile(keyfile, &version, 1, &unused, NULL);
 
         if(version == MGE_SAVE_VERSION)
         {
-            bool DisableConsole;
+            bool DisableConsole;    // no longer supported, remains for compatibility
 
-            ReadFile(keyfile,&SkipIntro,1,&unused,NULL);
-            ReadFile(keyfile,&DisableConsole,1,&unused,NULL);
-            ReadFile(keyfile,&UseAltCombatWrapper,1,&unused,NULL);
-            ReadFile(keyfile,&FakeKeys,sizeof(FakeKeys),&unused,NULL);
-            ReadFile(keyfile,&Triggers,sizeof(Triggers),&unused,NULL);
+            ReadFile(keyfile, &SkipIntro, 1, &unused, NULL);
+            ReadFile(keyfile, &DisableConsole, 1, &unused, NULL);
+            ReadFile(keyfile, &UseAltCombatWrapper, 1, &unused, NULL);
+            ReadFile(keyfile, &FakeKeys, sizeof(FakeKeys), &unused, NULL);
+            ReadFile(keyfile, &Triggers, sizeof(Triggers), &unused, NULL);
         }
         else
         {
             LOG::logline("MGE\\dinput.data appears to be out of date.\n"
-                     "You need to run MGEgui.exe at least once to update the save files.");
+                     "You need to run MGEXEgui at least once to update the save files.");
         }
         CloseHandle(keyfile);
     }
     else
     {
         LOG::logline("Could not open MGE\\dinput.data for reading.\n"
-                 "You need to run MGEgui.exe at least once to create the save files.");
+                 "You need to run MGEXEgui at least once to create the save files.");
     }
 
     // Initial state
-    GlobalHammer=true;       //Used to hammer keys
+    GlobalHammer = true;       // Used to hammer keys (alternates between up/down)
 
-    FakeBufferStart=0;
-    FakeBufferEnd=0;
-    FinishedFake=false;      //true to shut down the console
-    CloseConsole=false;      //true to shut the console after performing a command
+    FakeBufferStart = 0;
+    FakeBufferEnd = 0;
+    FinishedFake = false;      // true to shut down the console
+    CloseConsole = false;      // true to shut the console after performing a command
 
     ZeroStruct(RemappedKeys);
     ZeroStruct(LastBytes);
@@ -106,13 +109,13 @@ void* CreateInputWrapper(void* real)
     ZeroStruct(FakeBuffer);
     ZeroStruct(TapStates);
 
-    for(WORD w=0;w<MAXMACROS;w++)
+    for(WORD w = 0; w < MAXMACROS; w++)
         DisallowStates[w]=0x80;
 
-    for(int i=0;i<MAXTRIGGERS;i++)
-        TriggerFireTimes[i]=::GetTickCount()+Triggers[i].TimeInterval;
+    for(int i = 0; i < MAXTRIGGERS; i++)
+        TriggerFireTimes[i] = GetTickCount() + Triggers[i].TimeInterval;
 
-    // Initialize the array of function pointers
+    // Initialize the array of macro function pointers
     for(int i = 0; i != GRAPHICSFUNCS; ++i)
         FakeFuncs[i] = stub;
 
@@ -158,22 +161,25 @@ void* CreateInputWrapper(void* real)
     FakeKeys[0xb7].Graphics.function = GF_Screenshot;
 
     LOG::logline("<< CreateInputWrapper");
-    return new MGEProxyDirectInput(Real);
+    return new MGEProxyDirectInput((IDirectInput8A*)real);
 }
 
 
-void FakeKeyPress(BYTE key,BYTE data) {
+void FakeKeyPress(BYTE key, BYTE data)
+{
     FakeBuffer[FakeBufferEnd].dwOfs=key;
-    FakeBuffer[FakeBufferEnd++].dwData=data;
+    FakeBuffer[FakeBufferEnd].dwData=data;
+    ++FakeBufferEnd;
 }
 
-void FakeString(BYTE chars[],BYTE data[],BYTE length) {
-    for(int i=0;i<length;i++) {
-        FakeKeyPress(chars[i],data[i]);
-    }
+void FakeString(BYTE chars[], BYTE data[], BYTE length)
+{
+    for(int i = 0; i < length; i++)
+        FakeKeyPress(chars[i], data[i]);
 }
 
 
+// RemapWrapper: Keyboard remapper
 class RemapWrapper : public ProxyInputDevice
 {
 public:
@@ -187,7 +193,7 @@ public:
 
         BYTE *b2 = (BYTE*)b;
         ZeroMemory(b, 256);
-        for (int i = 0; i < 256; i++)
+        for(int i = 0; i < 256; i++)
         {
             if(RemappedKeys[i])
                 b2[RemappedKeys[i]] |= bytes[i];
@@ -199,10 +205,12 @@ public:
 
     HRESULT _stdcall GetDeviceData(DWORD a, DIDEVICEOBJECTDATA *b ,DWORD *c, DWORD d)
     {
-        if (*c != 1 || b == NULL) return realDevice->GetDeviceData(a, b, c, d);
+        if(*c != 1 || b == NULL)
+            return realDevice->GetDeviceData(a, b, c, d);
 
         HRESULT hr = realDevice->GetDeviceData(a, b, c, d);
-        if (*c != 1 || hr != DI_OK) return hr;
+        if(*c != 1 || hr != DI_OK)
+            return hr;
 
         if(RemappedKeys[b->dwOfs])
             b->dwOfs = RemappedKeys[b->dwOfs];
@@ -211,6 +219,8 @@ public:
     }
 };
 
+
+// MGEProxyKeyboard: Handles keyboard macros and triggers
 class MGEProxyKeyboard : public ProxyInputDevice
 {
 public:
@@ -218,86 +228,86 @@ public:
 
     HRESULT _stdcall GetDeviceState(DWORD a,LPVOID b)
     {
-        //This is a keyboard, so get a list of bytes (Dont forget the mouse too)
+        // This is a keyboard, so get a list of bytes (Dont forget the mouse too)
         BYTE bytes[MAXMACROS];
-        HRESULT hr=realDevice->GetDeviceState(256,bytes);
-        if (hr!=DI_OK) return hr;
-        CopyMemory(&bytes[256],&MouseOut,10);
+        HRESULT hr = realDevice->GetDeviceState(256, bytes);
+        if(hr != DI_OK) return hr;
+        CopyMemory(&bytes[256], &MouseOut, 10);
 
-        //Get any extra key presses
-        if (GlobalHammer=!GlobalHammer)
+        // Get any extra key presses
+        if(GlobalHammer = !GlobalHammer)
         {
-            for (DWORD byte=0;byte<256;byte++)
+            for(DWORD byte = 0; byte < 256; byte++)
             {
-                bytes[byte]|=FakeStates[byte];
-                bytes[byte]|=HammerStates[byte];
-                bytes[byte]&=DisallowStates[byte];
-                if (TapStates[byte])
+                bytes[byte] |= FakeStates[byte];
+                bytes[byte] |= HammerStates[byte];
+                bytes[byte] &= DisallowStates[byte];
+                if(TapStates[byte])
                 {
-                    bytes[byte]=0x80;
-                    TapStates[byte]=0;
+                    bytes[byte] = 0x80;
+                    TapStates[byte] = 0;
                 }
             }
-            for (DWORD byte=256;byte<MAXMACROS-2;byte++)
+            for(DWORD byte = 256; byte < MAXMACROS - 2; byte++)
             {
-                bytes[byte]|=FakeStates[byte];
-                bytes[byte]|=HammerStates[byte];
+                bytes[byte] |= FakeStates[byte];
+                bytes[byte] |= HammerStates[byte];
             }
         }
         else
         {
-            for (DWORD byte=0;byte<256;byte++)
+            for(DWORD byte = 0; byte < 256; byte++)
             {
-                bytes[byte]|=FakeStates[byte];
-                bytes[byte]|=AHammerStates[byte];
-                bytes[byte]&=DisallowStates[byte];
-                if (TapStates[byte])
+                bytes[byte] |= FakeStates[byte];
+                bytes[byte] |= AHammerStates[byte];
+                bytes[byte] &= DisallowStates[byte];
+                if(TapStates[byte])
                 {
-                    bytes[byte]=0x80;
-                    TapStates[byte]=0;
+                    bytes[byte] = 0x80;
+                    TapStates[byte] = 0;
                 }
             }
-            for (DWORD byte=256;byte<MAXMACROS-2;byte++)
+            for(DWORD byte = 256; byte < MAXMACROS - 2; byte++)
             {
-                bytes[byte]|=FakeStates[byte];
-                bytes[byte]|=AHammerStates[byte];
+                bytes[byte] |= FakeStates[byte];
+                bytes[byte] |= AHammerStates[byte];
             }
         }
-        if (SkipIntro)
+        if(SkipIntro)
         {
-        //push escape to skip the intro
-            if (GlobalHammer) bytes[0x01]=0x80;
+            // Push escape to skip the intro
+            if(GlobalHammer)
+                bytes[0x01] = 0x80;
         }
-        else if (FinishedFake)
+        else if(FinishedFake)
         {
-        //Close the console after faking a command (If using console 1 style)
-            FinishedFake=false;
-            bytes[0x29]=0x80;
+            // Close the console after faking a command (If using console 1 style)
+            FinishedFake = false;
+            bytes[0x29] = 0x80;
         }
         else
         {
-        //Process triggers
-            DWORD time=::GetTickCount();
-            for (DWORD trigger=0;trigger<MAXTRIGGERS;trigger++)
+            // Process triggers
+            DWORD time = GetTickCount();
+            for(DWORD trigger = 0; trigger < MAXTRIGGERS; trigger++)
             {
-                if (Triggers[trigger].Active&&Triggers[trigger].TimeInterval>0&&TriggerFireTimes[trigger]<time)
+                if(Triggers[trigger].Active && Triggers[trigger].TimeInterval > 0 && TriggerFireTimes[trigger] < time)
                 {
-                    for (int i=0;i<MAXMACROS;i++)
-                    {
-                        bytes[i]|=Triggers[trigger].Data.KeyStates[i];
-                    }
-                    TriggerFireTimes[trigger]=time+Triggers[trigger].TimeInterval;
+                    for(int i = 0; i < MAXMACROS; i++)
+                        bytes[i] |= Triggers[trigger].Data.KeyStates[i];
+
+                    TriggerFireTimes[trigger] = time + Triggers[trigger].TimeInterval;
                 }
             }
-            //Process each key for keypresses
-            for (DWORD key=0;key<MAXMACROS;key++)
+            // Process each key for keypresses
+            for(DWORD key = 0; key < MAXMACROS; key++)
             {
-                if (FakeKeys[key].type!=FKT_Unused&&KEYDOWN(bytes,key))
+                if(FakeKeys[key].type != FKT_Unused && KEYDOWN(bytes,key))
                 {
-                    switch (FakeKeys[key].type)
+                    switch(FakeKeys[key].type)
                     {
                     case FKT_Console1:
-                        if (!KEYDOWN(LastBytes,key))
+                        if(!KEYDOWN(LastBytes,key))
                         {
                             bytes[0x29]=0x80;
                             FakeString(FakeKeys[key].Console.KeyCodes,FakeKeys[key].Console.KeyStates,FakeKeys[key].Console.Length);
@@ -305,87 +315,86 @@ public:
                         }
                         break;
                     case FKT_Console2:
-                        if (!KEYDOWN(LastBytes,key))
+                        if(!KEYDOWN(LastBytes,key))
                         {
                             FakeString(FakeKeys[key].Console.KeyCodes,FakeKeys[key].Console.KeyStates,FakeKeys[key].Console.Length);
                             CloseConsole=false;
                         }
                         break;
                     case FKT_Hammer1:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte]&&GlobalHammer)
-                                bytes[byte]=0x80;
+                            if(FakeKeys[key].Press.KeyStates[byte] && GlobalHammer)
+                                bytes[byte] = 0x80;
                         }
                         break;
                     case FKT_Hammer2:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                HammerStates[byte]=0x80;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                HammerStates[byte] = 0x80;
                         }
                         break;
                     case FKT_Unhammer:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                HammerStates[byte]=0x00;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                HammerStates[byte] = 0x00;
                         }
                         break;
                     case FKT_AHammer1:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte]&&!GlobalHammer)
-                                bytes[byte]=0x80;
+                            if(FakeKeys[key].Press.KeyStates[byte] && !GlobalHammer)
+                                bytes[byte] = 0x80;
                         }
                         break;
                     case FKT_AHammer2:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                AHammerStates[byte]=0x80;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                AHammerStates[byte] = 0x80;
                         }
                         break;
                     case FKT_AUnhammer:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                AHammerStates[byte]=0x00;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                AHammerStates[byte] = 0x00;
                         }
                         break;
                     case FKT_Press1:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                bytes[byte]=0x80;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                bytes[byte] = 0x80;
                         }
                         break;
                     case FKT_Press2:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                FakeStates[byte]=0x80;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                FakeStates[byte] = 0x80;
                         }
                         break;
                     case FKT_Unpress:
-                        for (DWORD byte=0;byte<MAXMACROS;byte++)
+                        for(DWORD byte = 0; byte < MAXMACROS; byte++)
                         {
-                            if (FakeKeys[key].Press.KeyStates[byte])
-                                FakeStates[byte]=0x00;
+                            if(FakeKeys[key].Press.KeyStates[byte])
+                                FakeStates[byte] = 0x00;
                         }
                         break;
                     case FKT_BeginTimer:
-                        if (!KEYDOWN(LastBytes,key))
-                            Triggers[FakeKeys[key].Timer.TimerID].Active=true;
+                        if(!KEYDOWN(LastBytes,key))
+                            Triggers[FakeKeys[key].Timer.TimerID].Active = true;
                         break;
                     case FKT_EndTimer:
-                        if (!KEYDOWN(LastBytes,key))
-                            Triggers[FakeKeys[key].Timer.TimerID].Active=false;
-
-                        break;
+                        if(!KEYDOWN(LastBytes,key))
+                            Triggers[FakeKeys[key].Timer.TimerID].Active = false;
+                       break;
                     case FKT_Graphics:
-                        //Want increase/decrease zoom to work at all times
-                        if ((!KEYDOWN(LastBytes,key))||(FakeKeys[key].Graphics.function==GF_IncreaseZoom||
+                        // Activate on keydown only, except for certain functions which should repeat
+                        if((!KEYDOWN(LastBytes,key))||(FakeKeys[key].Graphics.function==GF_IncreaseZoom||
                                                         FakeKeys[key].Graphics.function==GF_DecreaseZoom||
                                                         FakeKeys[key].Graphics.function==GF_IncreaseView||
                                                         FakeKeys[key].Graphics.function==GF_DecreaseView||
@@ -401,74 +410,78 @@ public:
                 }
             }
         }
-        ::CopyMemory(b,bytes,a);
-        ::CopyMemory(LastBytes,bytes,MAXMACROS);
-        ::CopyMemory(MouseIn,&bytes[256],10);
+        CopyMemory(b, bytes, a);
+        CopyMemory(LastBytes, bytes, MAXMACROS);
+        CopyMemory(MouseIn, &bytes[256], 10);
         return DI_OK;
     }
 
-    HRESULT _stdcall GetDeviceData(DWORD a,DIDEVICEOBJECTDATA* b,DWORD* c,DWORD d)
+    HRESULT _stdcall GetDeviceData(DWORD a, DIDEVICEOBJECTDATA *b, DWORD *c, DWORD d)
     {
-        //This only gets called for keyboards
-        if (*c==1&&SkipIntro)
+        // This only gets called for keyboards
+        if(*c == 1 && SkipIntro)
         {
-        //Skip the second intro (Beats me why it wants buffered data)
-            SkipIntro=false;
-            FakeBuffer[0].dwOfs=0x01;
-            FakeBuffer[0].dwData=0x80;
-            *b=FakeBuffer[0];
+            // Skip the second intro (Beats me why it wants buffered data)
+            SkipIntro = false;
+            FakeBuffer[0].dwOfs = 0x01;
+            FakeBuffer[0].dwData = 0x80;
+            *b = FakeBuffer[0];
             return DI_OK;
         }
-        else if (*c==1&&FakeBufferEnd>FakeBufferStart)
+        else if(*c == 1 && FakeBufferEnd > FakeBufferStart)
         {
-            //Inject a fake keypress
-            *b=FakeBuffer[FakeBufferStart++];
-            if (FakeBufferStart==FakeBufferEnd)
+            // Inject a fake keypress
+            *b = FakeBuffer[FakeBufferStart++];
+            if(FakeBufferStart == FakeBufferEnd)
             {
-                if (CloseConsole)
+                if(CloseConsole)
                 {
-                    FinishedFake=true;
-                    CloseConsole=false;
+                    FinishedFake = true;
+                    CloseConsole = false;
                 }
-                FakeBufferStart=0;
-                FakeBufferEnd=0;
+                FakeBufferStart = 0;
+                FakeBufferEnd = 0;
             }
             return DI_OK;
         }
         else
         {
             //Read a real keypress
-            if (*c>1&&!CloseConsole)
+            if(*c > 1 && !CloseConsole)
             {
-                FakeBufferStart=0;
-                FakeBufferEnd=0;
+                FakeBufferStart = 0;
+                FakeBufferEnd = 0;
             }
-            return realDevice->GetDeviceData(a,b,c,d);
+            return realDevice->GetDeviceData(a, b, c, d);
         }
     }
 };
 
+
+// MGEProxyMouse: Maps mouse buttons to macro trigger inputs
 class MGEProxyMouse : public ProxyInputDevice
 {
 public:
     DWORD deviceType;
 
-    MGEProxyMouse(IDirectInputDevice8* device) : ProxyInputDevice(device) {}
+    MGEProxyMouse(IDirectInputDevice8 *device) : ProxyInputDevice(device) {}
 
-    HRESULT _stdcall GetDeviceState(DWORD a,LPVOID b)
+    HRESULT _stdcall GetDeviceState(DWORD a, LPVOID b)
     {
-        DIMOUSESTATE2* MouseState=(DIMOUSESTATE2*)b;
-        HRESULT hr=realDevice->GetDeviceState(sizeof(DIMOUSESTATE2),MouseState);
-        if (hr!=DI_OK) return hr;
+        DIMOUSESTATE2 *MouseState = (DIMOUSESTATE2*)b;
+        HRESULT hr = realDevice->GetDeviceState(sizeof(DIMOUSESTATE2), MouseState);
+        if(hr != DI_OK) return hr;
 
+        // Notify application of clicks
         MGEProxyDirectInput::mouseClick = MouseOut[0] & ~MouseState->rgbButtons[0];
 
-        if (MouseState->lZ>0)
+        // Map mousewheel to macro triggers 8/9
+        if(MouseState->lZ>0)
         {
             MouseOut[8]=0x80;
             MouseOut[9]=0;
         }
-        else if (MouseState->lZ<0)
+        else if(MouseState->lZ<0)
         {
             MouseOut[8]=0;
             MouseOut[9]=0x80;
@@ -479,15 +492,15 @@ public:
             MouseOut[9]=0;
         }
 
-        for (DWORD i=0;i<8;i++)
+        for(DWORD i = 0; i < 8; i++)
         {
-            MouseOut[i]=MouseState->rgbButtons[i];
-            MouseState->rgbButtons[i]|=MouseIn[i];
-            MouseState->rgbButtons[i]&=DisallowStates[i+256];
-            if (TapStates[i+256])
+            MouseOut[i] = MouseState->rgbButtons[i];
+            MouseState->rgbButtons[i] |= MouseIn[i];
+            MouseState->rgbButtons[i] &= DisallowStates[i+256];
+            if(TapStates[i+256])
             {
-                MouseState->rgbButtons[i]=0x80;
-                TapStates[i+256]=0x00;
+                MouseState->rgbButtons[i] = 0x80;
+                TapStates[i+256] = 0x00;
             }
         }
 
@@ -495,41 +508,53 @@ public:
     }
 };
 
+
+// MGEProxyKeyboardAltCombat: Keyboard component of Daggerfall-like combat input
 class MGEProxyKeyboardAltCombat : public MGEProxyKeyboard
 {
 public:
-    MGEProxyKeyboardAltCombat(IDirectInputDevice8* device) : MGEProxyKeyboard(device) {}
+    MGEProxyKeyboardAltCombat(IDirectInputDevice8 *device) : MGEProxyKeyboard(device) {}
 
-    HRESULT _stdcall GetDeviceState(DWORD a, void* b)
+    HRESULT _stdcall GetDeviceState(DWORD a, void *b)
     {
         HRESULT hr = MGEProxyKeyboard::GetDeviceState(a, b);
         if(hr != DI_OK) return hr;
 
+        // Don't run combat input mode when a menu is up
         DECLARE_MWBRIDGE
         if(mwBridge->IsLoaded() && mwBridge->IsMenu())
             return DI_OK;
 
         // We only want to modify keyboard input when the player has the mouse held down
-        if(AttackType && AttackType != State_NONE2)
+        if(AltCombat.attackType && AltCombat.attackType != State_NONE2)
         {
             BYTE *bytes = (BYTE*)b;
-            bytes[0x1e]=bytes[0x1f]=bytes[0x20]=bytes[0x11]=0;  // Set all movement keys to 0
+
+            // Set all WASD movement keys to up state
+            bytes[0x1e] = bytes[0x1f] = bytes[0x20] = bytes[0x11] = 0;
 
             // Then set appropriate keys to 0x80 depending on what type of attack is being made
-            if(GlobalHammer) {
-                if(AttackType==State_SLASH) bytes[0x1e]=0x80;
-                if(AttackType==State_PIERCE) bytes[0x11]=0x80;
-            } else {
-                if(AttackType==State_SLASH) bytes[0x20]=0x80;
-                if(AttackType==State_PIERCE) bytes[0x1f]=0x80;
+            if(GlobalHammer)
+            {
+                // State_HACK -> no key required
+                if(AltCombat.attackType == State_SLASH) bytes[0x1e] = 0x80;
+                if(AltCombat.attackType == State_PIERCE) bytes[0x11] = 0x80;
+            }
+            else
+            {
+                // State_HACK -> no key required
+                if(AltCombat.attackType == State_SLASH) bytes[0x20] = 0x80;
+                if(AltCombat.attackType == State_PIERCE) bytes[0x1f] = 0x80;
             }
 
-            MadeAttack=true;    //Tell the mouse that an attack has been made, so to press the mouse button
+            AltCombat.directionPressed = true;    // Tell the mouse that an attack has been made, so to press the mouse button
         }
         return DI_OK;
     }
 };
 
+
+// MGEProxyMouseAltCombat: Mouse component of Daggerfall-like combat input
 class MGEProxyMouseAltCombat : public MGEProxyMouse
 {
 public:
@@ -540,64 +565,76 @@ public:
         HRESULT hr = MGEProxyMouse::GetDeviceState(a, b);
         if(hr != DI_OK) return hr;
 
+        // Don't run combat input mode when a menu is up
         DECLARE_MWBRIDGE
         if(mwBridge->IsLoaded() && mwBridge->IsMenu())
             return DI_OK;
 
-        DIMOUSESTATE2 *MouseState=(DIMOUSESTATE2*)b;
+        DIMOUSESTATE2 *MouseState = (DIMOUSESTATE2*)b;
 
         if(MouseState->rgbButtons[0])
         {
+            // If the difference between x and y movement is greater than maxGap, don't use a hacking attack
             if(abs(MouseState->lX) > abs(MouseState->lY)+maxGap) MouseState->lY=0;
-            if(abs(MouseState->lY) > abs(MouseState->lX)+maxGap) MouseState->lX=0;
+            //if(abs(MouseState->lY) > abs(MouseState->lX)+maxGap) MouseState->lX=0;
+
             bool slash = abs(MouseState->lX) > altSensitivity;
             bool pierce = abs(MouseState->lY) > altSensitivity;
 
-            DWORD Attack=0x0000;   //Which direction has the mouse moved
-            if(MouseState->lX > altSensitivity)  Attack|=0x0001;
-            if(MouseState->lX < -altSensitivity) Attack|=0x0010;
-            if(MouseState->lY > altSensitivity)  Attack|=0x0100;
-            if(MouseState->lY < -altSensitivity) Attack|=0x1000;
+            DWORD attack = 0;   // Which direction has the mouse moved
+            if(MouseState->lX > altSensitivity)  attack |= 0x0001;
+            if(MouseState->lX < -altSensitivity) attack |= 0x0010;
+            if(MouseState->lY > altSensitivity)  attack |= 0x0100;
+            if(MouseState->lY < -altSensitivity) attack |= 0x1000;
 
-            if(MadeAttackLast&&(Attack==LastAttack&&Attack!=0)) {
-                MadeAttack=true;
+            if(AltCombat.directionPressedLast && attack == AltCombat.lastAttack && attack != 0)
+                AltCombat.directionPressed=true;
+
+            if(attack == AltCombat.lastAttack || attack == 0)
+            {
+                AltCombat.attackType = State_NONE2; // Can't attack by moving the mouse in the same direction twice
             }
-            if(Attack==LastAttack||Attack==0) {
-                AttackType=State_NONE2; //Cant attack by moving the mouse in the same direction twice
-            } else {
-                //Set attacktype appropriately depending on mouse movement
-                if(slash&&pierce) {
-                    AttackType=State_HACK;
+            else
+            {
+                // Set attack type appropriately depending on mouse movement
+                if(slash && pierce) {
+                    AltCombat.attackType = State_HACK;
                 } else if(slash) {
-                    AttackType=State_SLASH;
+                    AltCombat.attackType = State_SLASH;
                 } else if(pierce) {
-                    AttackType=State_PIERCE;
+                    AltCombat.attackType = State_PIERCE;
                 } else {
                     //This differentiates between not having the mouse button down, and having the mouse down but not moving it
-                    AttackType=State_NONE2;
+                    AltCombat.attackType = State_NONE2;
                 }
-                LastAttack=Attack;
+                AltCombat.lastAttack = attack;
             }
 
-            MouseState->lX=0;   //Set mouse movement and left button to 0
-            MouseState->lY=0;
-            MouseState->rgbButtons[0]=0;
+            // Don't pass mouse movement and left button state to Morrowind
+            MouseState->lX = 0;
+            MouseState->lY = 0;
+            MouseState->rgbButtons[0] = 0;
 
-            if(MadeAttack) {
-                MouseState->rgbButtons[0]=0x80; //If an attack has been made then press the left mouse button
-                MadeAttack=false;
-            }
-            MadeAttackLast=MadeAttack;
-        } else {
-            // Mouse button isn't down
-            AttackType=State_NONE;
-            LastAttack=0;
+            if(AltCombat.directionPressed)
+                MouseState->rgbButtons[0] = 0x80; // If the correct key is down then press the left mouse button
+
+            AltCombat.directionPressedLast = AltCombat.directionPressed;
+        }
+        else
+        {
+            // Reset state on mouse up
+            AltCombat.directionPressed = false;
+            AltCombat.directionPressedLast = false;
+            AltCombat.attackType = State_NONE;
+            AltCombat.lastAttack = 0;
         }
         return DI_OK;
     }
 };
 
-IDirectInputDevice8* MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8* device, REFGUID g)
+
+
+IDirectInputDevice8 * MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8 *device, REFGUID g)
 {
     if(g == GUID_SysKeyboard)
     {
@@ -607,15 +644,15 @@ IDirectInputDevice8* MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8*
             device = new MGEProxyKeyboard(device);
         LOG::logline("-- Proxy Keyboard OK");
 
-        HANDLE RemapperFile=CreateFileA("MGE3\\Remap.data",GENERIC_READ,0,0,OPEN_EXISTING,0,0);
-        if (RemapperFile != INVALID_HANDLE_VALUE)
+        HANDLE RemapperFile = CreateFileA("MGE3\\Remap.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+        if(RemapperFile != INVALID_HANDLE_VALUE)
         {
             DWORD read;
             ReadFile(RemapperFile, &RemappedKeys, 256, &read, NULL);
             CloseHandle(RemapperFile);
 
             device = new RemapWrapper(device);
-            LOG::logline("-- Re-proxy remapped keyboard");
+            LOG::logline("-- Remapped keyboard");
         }
     }
     else if(g == GUID_SysMouse)
