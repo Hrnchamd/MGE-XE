@@ -1,0 +1,11 @@
+LIBRARY MGEfuncs
+EXPORTS
+
+BeginStaticCreation=BeginStaticCreation
+EndStaticCreation=EndStaticCreation
+ProcessNif=ProcessNif
+TessellateLandscape=TessellateLandscape
+
+GetVertSize=GetVertSize
+GetCompressedVertSize=GetCompressedVertSize
+GetLandVertSize=GetLandVertSize

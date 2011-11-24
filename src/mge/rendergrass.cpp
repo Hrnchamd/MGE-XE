@@ -1,0 +1,125 @@
+
+#include "mged3d8device.h"
+#include "configuration.h"
+#include "distantland.h"
+#include "distantshader.h"
+#include "support/log.h"
+#include <map>
+
+
+
+void DistantLand::cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj)
+{
+	D3DXMATRIX ds_proj = *proj, ds_viewproj;
+	float zn = 4.0f, zf = 7168.0f;
+
+    // Don't draw beyond fully fogged distance; early out if frustum is empty
+    if(~Configuration.MGEFlags & EXP_FOG)
+        zf = min(fogEnd, zf);
+    if(zf <= zn)
+        return;
+
+	// Create a clipping frustum for visibility determination
+	editProjectionZ(&ds_proj, zn, zf);
+	ds_viewproj = (*view) * ds_proj;
+
+    // Cull and sort
+	ViewFrustum range_frustum(&ds_viewproj);
+    visGrass.RemoveAll();
+    currentWorldSpace->GrassStatics->GetVisibleMeshes(range_frustum, visGrass);
+	visGrass.SortByState();
+
+    buildGrassInstanceVB();
+}
+
+
+void DistantLand::buildGrassInstanceVB()
+{
+    batchedGrass.clear();
+
+    if(visGrass.visible_set.size() > MaxGrassElements)
+    {
+        LOG::logline("Too many grass instances. (%d)", visGrass.visible_set.size());
+        visGrass.visible_set.resize(MaxGrassElements);
+    }
+
+    const QuadTreeMesh *mesh = *visGrass.visible_set.begin();
+    deque<const QuadTreeMesh*>::const_iterator m;
+    float *vbwrite = 0;
+    int nz = 0;
+
+    HRESULT hr = vbGrassInstances->Lock(0, GrassInstStride * visGrass.visible_set.size(), (void**)&vbwrite, D3DLOCK_DISCARD);
+    if(hr != D3D_OK || vbwrite == 0)
+        return;
+
+    // Write all grass transforms into one buffer
+    // Record how many instances belong to each different mesh
+    for(m = visGrass.visible_set.begin(); m != visGrass.visible_set.end(); ++m)
+    {
+        if(mesh->vBuffer != (*m)->vBuffer)
+        {
+            batchedGrass.push_back(make_pair(mesh, nz));
+            mesh = *m;
+            nz = 0;
+        }
+
+        // Pack into 4x3 transposed matrix
+        const D3DMATRIX *world = &(*m)->transform;
+        vbwrite[0] = world->_11; vbwrite[1] = world->_21; vbwrite[2] = world->_31; vbwrite[3] = world->_41;
+        vbwrite[4] = world->_12; vbwrite[5] = world->_22; vbwrite[6] = world->_32; vbwrite[7] = world->_42;
+        vbwrite[8] = world->_13; vbwrite[9] = world->_23; vbwrite[10] = world->_33; vbwrite[11] = world->_43;
+        vbwrite += 12;
+        nz++;
+    }
+    batchedGrass.push_back(make_pair(mesh, nz));
+    vbGrassInstances->Unlock();
+}
+
+
+// renderGrassInst - instanced grass with shadows
+void DistantLand::renderGrassInst()
+{
+    if(visGrass.visible_set.empty())
+        return;
+
+    effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
+    effect->SetTexture(ehTex3, texSoftShadow);
+    device->SetVertexDeclaration(GrassDecl);
+
+    renderGrassCommon(effect);
+}
+
+// renderGrassInstZ - Z only pass
+void DistantLand::renderGrassInstZ()
+{
+    if(visGrass.visible_set.empty())
+        return;
+
+    effect->SetFloat(ehAlphaRef, 128.0f / 255.0f);
+    device->SetVertexDeclaration(GrassDecl);
+
+    renderGrassCommon(effectDepth);
+}
+
+void DistantLand::renderGrassCommon(ID3DXEffect *e)
+{
+    int nz = 0;
+    for(vector<pair<const QuadTreeMesh*, int> >::iterator iz = batchedGrass.begin(); iz != batchedGrass.end(); ++iz)
+    {
+        effect->SetTexture(ehTex0, iz->first->tex);
+        e->CommitChanges();
+
+        device->SetIndices(iz->first->iBuffer);
+        device->SetStreamSourceFreq(0, D3DSTREAMSOURCE_INDEXEDDATA | iz->second);
+        device->SetStreamSource(0, iz->first->vBuffer, 0, SIZEOFSTATICVERT);
+        device->SetStreamSourceFreq(1, D3DSTREAMSOURCE_INSTANCEDATA | 1);
+        device->SetStreamSource(1, vbGrassInstances, GrassInstStride * nz, GrassInstStride);
+        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, iz->first->verts, 0, iz->first->faces);
+
+        nz += iz->second;
+    }
+
+    device->SetStreamSourceFreq(0, 1);
+    device->SetStreamSourceFreq(1, 1);
+    device->SetStreamSource(1, NULL, 0, 0);
+}

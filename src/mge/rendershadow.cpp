@@ -1,0 +1,190 @@
+
+#include "proxydx/d3d8header.h"
+#include "support/log.h"
+
+#include "configuration.h"
+#include "distantland.h"
+#include "distantshader.h"
+#include "mwbridge.h"
+
+static const float shadowNearRadius = 1000.0;
+static const float shadowFarRadius = 4000.0;
+
+
+
+// renderShadowMap
+// Renders multiple shadow map layers to channels in one texture
+// Applies filtering to soften shadow edges
+void DistantLand::renderShadowMap()
+{
+    IDirect3DSurface9 *target, *targetSoft, *backbuffer, *depthstencil;
+
+    // Switch to render target
+    texShadow->GetSurfaceLevel(0, &target);
+    texSoftShadow->GetSurfaceLevel(0, &targetSoft);
+    device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
+    device->GetDepthStencilSurface(&depthstencil);
+    device->SetRenderTarget(0, targetSoft);
+    device->SetDepthStencilSurface(surfShadowZ);
+
+    // Clear floating point buffer to far depth
+    effectShadow->BeginPass(PASS_CLEARSHADOWMAP);
+    effect->SetInt(ehHasAlpha, 0);
+    effectShadow->CommitChanges();
+    device->SetVertexDeclaration(WaterDecl);
+    device->SetStreamSource(0, vbFullFrame, 0, 12);
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    effectShadow->EndPass();
+
+    // Render near layer (note: just ENABLE_GREEN fails at writing green with some drivers (i.e. mine))
+    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
+    device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
+    device->SetRenderState(D3DRS_COLORWRITEENABLE, ~D3DCOLORWRITEENABLE_RED);
+    renderShadowLayer(0, shadowNearRadius);
+    effectShadow->EndPass();
+
+    // Render far layer
+    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
+    device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
+    device->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED);
+    renderShadowLayer(1, shadowFarRadius);
+    effectShadow->EndPass();
+
+    // Soften shadow map
+    device->SetRenderState(D3DRS_COLORWRITEENABLE, 0x0f);
+    device->SetRenderTarget(0, target);
+    effectShadow->BeginPass(PASS_SOFTENSHADOWMAP);
+    effect->SetTexture(ehTex3, texSoftShadow);
+    effect->SetInt(ehHasAlpha, 0);
+    effectShadow->CommitChanges();
+
+    device->SetVertexDeclaration(WaterDecl);
+    device->SetStreamSource(0, vbFullFrame, 0, 12);
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+
+    device->SetRenderTarget(0, targetSoft);
+    effect->SetTexture(ehTex3, texShadow);
+    effect->SetInt(ehHasAlpha, 1);
+    effectShadow->CommitChanges();
+
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    effectShadow->EndPass();
+
+    // Return render target to backbuffer
+    device->SetRenderTarget(0, backbuffer);
+    device->SetDepthStencilSurface(depthstencil);
+
+    target->Release();
+    targetSoft->Release();
+    backbuffer->Release();
+    depthstencil->Release();
+}
+
+// renderShadowLayer - Calculates projection for, and renders, one shadow layer
+void DistantLand::renderShadowLayer(int layer, float radius)
+{
+    DECLARE_MWBRIDGE
+    D3DXVECTOR3 lookAt, nearPos;
+    D3DXVECTOR3 up(0, 0, 1);
+    D3DXMATRIX *view = &smView[layer], *proj = &smProj[layer], *viewproj = &smViewproj[layer];
+
+    // Select light vector, sunPos during daytime, sunVec during night
+    D3DXVECTOR4 lightVec = (sunPos.z > 0) ? -sunPos : sunVec;
+
+    // Centre of projection is ahead of the player
+    // Not as far in z direction as player is likely looking at the ground plane rather than below
+    lookAt.x = eyePos.x + radius * eyeVec.x;
+    lookAt.y = eyePos.y + radius * eyeVec.y;
+    lookAt.z = eyePos.z + 0.5 * radius * eyeVec.z;
+
+    // Quantize projection centre to reduce texture swimming
+    lookAt.x = 16.0 * floor(lookAt.x / 16.0);
+    lookAt.y = 16.0 * floor(lookAt.y / 16.0);
+    lookAt.z = 16.0 * floor(lookAt.z / 16.0);
+
+    // Create shadow frustum centred on lookAt, looking along lightVec
+    const float zrange = 8192.0;
+    nearPos.x = lookAt.x - zrange * lightVec.x;
+    nearPos.y = lookAt.y - zrange * lightVec.y;
+    nearPos.z = lookAt.z - zrange * lightVec.z;
+
+	D3DXMatrixLookAtRH(view, &nearPos, &lookAt, &up);
+	D3DXMatrixOrthoRH(proj, 2 * radius, (1 + fabs(lightVec.z)) * radius, 0, 2.0 * zrange);
+	*viewproj = (*view) * (*proj);
+
+    // Texel quantization produces hideous temporal aliasing
+    //viewproj->_41 = floor(viewproj->_41 * 512.0) / 512.0;
+    //viewproj->_42 = floor(viewproj->_42 * 512.0) / 512.0;
+
+	effect->SetMatrixArray(ehShadowViewproj, viewproj, 1);
+	effectShadow->CommitChanges();
+
+    // Cull
+	ViewFrustum range_frustum(viewproj);
+    VisibleSet visible_set;
+
+    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, visible_set);
+    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, visible_set);
+    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, visible_set);
+
+    // Render land and statics
+    if(mwBridge->IsExterior())
+        renderDistantLand(effectShadow, view, proj);
+
+    device->SetVertexDeclaration(StaticDecl);
+    visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehWorld, SIZEOFSTATICVERT);
+}
+
+// renderShadow - Renders shadows on Morrowind shadow receivers
+void DistantLand::renderShadow()
+{
+	effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
+    effect->SetTexture(ehTex3, texSoftShadow);
+    effect->CommitChanges();
+
+    for(vector<RenderedState>::iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    {
+        if(i->blendEnable && i->destBlend == D3DBLEND_ONE)
+            continue;
+
+        if((i->alphaTest || i->blendEnable) && i->texture)
+        {
+            effect->SetTexture(ehTex0, i->texture);
+            effect->SetFloat(ehAlphaRef, i->alphaTest ? (i->alphaRef / 255.0f) : 0.01f);
+        }
+        else
+        {
+            effect->SetFloat(ehAlphaRef, -1.0f);
+        }
+
+        effect->SetInt(ehVertexBlendState, i->vertexBlendState);
+        effect->SetMatrixArray(ehVertexBlendPalette, i->worldTransforms, 4);
+        effect->CommitChanges();
+
+        // Ignore cull mode, shadow casters are drawn with CW culling only, which causes
+        // false shadows when cast on the reverse side (wrt normals) of a double sided object
+        //device->SetRenderState(D3DRS_CULLMODE, i->cullMode);
+        device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
+        device->SetIndices(i->ib);
+        device->SetFVF(i->fvf);
+        device->DrawIndexedPrimitive(i->primType, i->baseIndex, i->minIndex, i->vertCount, i->startIndex, i->primCount);
+    }
+}
+
+// renderShadowDebug - display shadow layers
+void DistantLand::renderShadowDebug()
+{
+    UINT passes;
+
+    // Display shadow layers in top right corner
+    effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
+    effect->BeginPass(PASS_DEBUGSHADOW);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
+    effect->SetTexture(ehTex3, texSoftShadow);
+    effect->CommitChanges();
+    device->SetVertexDeclaration(WaterDecl);
+    device->SetStreamSource(0, vbFullFrame, 0, 12);
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+    effect->EndPass();
+    effect->End();
+}

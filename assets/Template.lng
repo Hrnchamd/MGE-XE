@@ -1,0 +1,419 @@
+﻿;;
+;; Language file template for MGEgui user interface translation.
+;; File needs to be saved with UTF-8 encoding, either with or without BOM.
+;;
+
+[## Language ##]
+;Name = English (Template)
+;Translator = Translator's Name
+
+;; Use the following naming scheme for default translations (you may uncomment one,
+;; to try if it's displayed on the list of translations in MGEgui):
+;Name = Český (Czech)
+;Name = Danske (Danish)
+;Name = Deutsch (German)
+;Name = Ελληνικά (Greek)
+;Name = Español (Spanish)
+;Name = Français (French)
+;Name = Italiano (Italian)
+;Name = Nederlands (Dutch)
+;Name = Polski (Polish)
+;Name = Русский (Russian)
+;Name = Svenska (Swedish)
+;Name = Türk (Turkish)
+;
+;; If this doesn't want to work with language autodetection, name it in reverse order
+;; - i.e. "Greek (Ελληνικά)", "Russian (Русский)", "Spanish (Español)", etc.
+;;
+;; Language autodetection looks first for language named: "NativeName (EnglishName)",
+;; then, if it doesn't find, for languages named: "EnglishName (NativeName)",
+;; and next for first of language names starting with "NativeName",
+;; and then for first of language names starting with "EnglishName".
+;; If it fails for all, the built-in "English (default)" language is used.
+;;
+;; Localized entry needs to be single-lined, but you can use escape characters,
+;; to make it appear as multi-lined, after reading it by INI file interpreter:
+;; "\n"		- line feed
+;; "\r\n"	- carriage return and line feed
+;; "\r"		- carriage return
+;;
+;; Other characters that are currently replaced by a special character when escaped are:
+;; "\b"		- backspace
+;; "\t"		- tab
+;;
+;; Backslash character inside a localized string (\) needs to be escaped too - i.e. "\\",
+;; otherwise it won't be displayed, because it is used to escape following it character.
+;; If you need to use a quotation mark (") or semicolon (;) inside a localized string,
+;; it's the best to escape them as well - i.e. "\"" or "\;" - because future interpreters
+;; might be more or less strict for finding the start and end of quoted strings or comments,
+;; than only by first and last occurance of quotation mark, and whether (;) is outside of it.
+;;
+;; Currently only 3 types of sections are supported:
+;; [<FormName>.Text]			- for replacing text displayed on controls
+;; [<FormName>.ToolTips]		- for replacing tooltips of either controls or tab pages
+;; [<FormName>.Strings]			- for replacing other strings that can be displayed
+;;
+;; For now only "MainForm", and global strings are translatable (but no ComboBoxes yet).
+;; Following entries are sorted in alphabetical order by string/control/tooltip name.
+;; Tooltips of tab pages are handled differently, so they use the name of a control.
+
+
+
+[.Strings]
+Close = "&Close"
+DSound = "You appear to have a part of an old version of MGE installed.\nYou need to remove dsound.dll from your Morrowind directory for this version of MGE to function."
+Error = "Error"
+Message = "Message"
+MGEguiRunning = "MGEgui.exe is already running."
+MGEMissing = "One or more of MGE's files appear to be missing. Please reinstall."
+MWCorrupt = "Morrowind.exe appears to be corrupt.\nMGE is unable to determine Morrowind's version."
+MWIncompat = "Your version of Morrowind is not compatible with MGE.\nMGE requires a fully patched copy of Bloodmoon (i.e. Morrowind version 1.6.1820)."
+MWRegistry = "Unable to find Morrowind registry keys. Please run the game before installing MGE"
+MWRunning = "Morrowind appears to be currently running.\nPlease quit the game before executing MGEgui.exe"
+NotMWDir = "MGE must be installed to the Morrowind directory."
+
+;; Replace English with your language
+Translation = "English translation"
+
+Warning = "Warning"
+
+
+
+[MainForm.Strings]
+About = "About"
+
+;; {0} will be replaced by 'ResetSaved' when 'cbClearINI' is selected
+AskReset = "Are you sure you want to reset all main {0}settings to default values?"
+
+;; used on the About window
+CreatedBy = "Created by"
+
+DLDelDifferent = "Distant land files already exist, but are from a different version of MGE and must be deleted to continue.\nDo you wish to continue?"
+DLDelOldCorrupt = "Distant land files already exist, but are either incomplete, corrupt, or from an older version of MGE and must be deleted to continue.\nDo you wish to continue?"
+DLDiffer = "Distant land files have not been created or are from a different version of MGE.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
+DLLackSM2 = "Your graphics card lacks the Shader Model 2.0 support required to use Distant Land."
+DLVertexFog = "Distant land is not compatible with vertex fog when using some graphics cards.\nIf the distant land does not appear in game, or appears untextured, try switching back to pixel fog."
+DSMissing = "The distant statics files are missing.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
+
+;; {0} can be either 'SetTooNew' or 'SetTooOld'
+ErrImpSet = "Error importing old graphics save file.\n\n{0}"
+
+;; {0} can be either 'InpTooNew' or 'InpTooOld'
+ErrLdInp = "Error loading input save file.\n\n{0}"
+
+;; used on the About window
+FurtherDevel = "Further development"
+
+GraphCaps = "Graphics capabilities"
+ImpOldSet = "Old graphics save file was found.\n\nDo you want to import settings?"
+ImportSet = "Import settings"
+InpTooNew = "The input save file is newer than this version of MGE."
+InpTooOld = "The input save file is too old to import."
+MacrTrigErr = "An error occurred while loading macros or triggers. Some data may have been lost."
+MWIniNotInMGE = "Settings file does not contain ini data."
+NoDLOrOld = "Distant Land files have not been created or are from an older version of MGE.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
+OldInpImp = "Old input save file was imported successfully."
+OldSetImp = "Old graphics save file was imported successfully.\n\n'settings' file was renamed to 'old-settings'."
+RegNotWrit = "Could not write Morrowind registry key.\nMGEgui needs to be launched as Administrator."
+RegScrRes = "Unable to read screen resolution from registry."
+RegWinMode = "Unable to read window mode from registry."
+ResetAsk = "Reset Settings?"
+ResetSaved = "and other saved "
+SetTooNew = "The graphics save file is newer than this version of MGE."
+SetTooOld = "The graphics save file is too old to be imported."
+TooHighAA = "Your selected antialiasing level is not supported by your graphics card."
+TooHighAF = "Your selected anisotropic filtering level is not supported by your graphics card."
+
+;; {0}, {1} & {2} will be integer numbers of maximum reported levels
+ViewCaps = "Max fullscreen antialiasing level: {0}x\nMax windowed antialiasing level: {1}x\nMax anisotropic filtering level: {2}x\n\nGraphics drivers often report their capabilities incorrectly.\nIf you think your graphics card only supports lower levels of AA,\nthen you will need to reduce it by hand if you use best quality mode."
+
+
+
+[MainForm.Text]
+
+;;;;   buttons   ;;;;
+bAbout = "About"
+bCalcRefresh = "Find valid refresh rates"
+bCalcResolution = "Change screen resolution"
+bDistantLandWizard = "Distant land file creation wizard"
+bDLDynRipples = "Settings..."
+bDLOptions = "&Options..."
+bDLWthr = "Weat&her Settings..."
+bExport = "Export settings"
+bHelp = "Help"
+bHookGen = "Texture hook generator"
+bImport = "Import settings"
+bMacroEd = "Launch macro editor"
+bQuality = "Best quality"
+bRemapper = "Launch remapper"
+bResetSettings = "Reset settings"
+bShaderEd = "Shader editor"
+bSShotDirBrowse = "Browse"
+bSShotDirClear = "Clear"
+
+;;;;   check boxes   ;;;;
+bViewCaps = "View max AA and AF"
+cbAAFix = "AA colour fix"
+cbAltCombat = "Allow alternate combat controls"
+cbAspectZoom = "Correct aspect ratio when zooming"
+cbAudio = "Disable audio"
+cbBindAI = "Bind AI distance to view distance"
+cbCam3rdPrsn = "Customize 3rd person camera"
+cbClearINI = "Clear saved settings"
+cbConsole = "Disable console"
+cbDisableMGE = "Disable MGE in game"
+cbDisableMWSE = "Disable internal MWSE version"
+cbDisplayMessages = "Display messages"
+cbDLAutoDist = "&Auto set other distances"
+cbDLDistantLand = "Use Distant &Land"
+cbDLDistantStatics = "Use Distant &Statics"
+cbDLDynRipples = "D&ynamic Ripples"
+cbDLFogExp = "Use e&xponential fog"
+cbDLReflBlur = "&Blur reflections"
+cbDLReflFStatics = "D&istant Statics"
+cbDLReflLand = "Landsca&pe"
+cbDLReflNStatics = "&Nearby Statics"
+cbDLSkyRefl = "S&ky"
+cbFog = "Enable fog"
+cbFPSConst = "Keep FPS constant"
+cbFPSCounter = "FPS counter"
+cbHDR = "Supply HDR info to shaders"
+cbHitFader = "Hit Fader"
+cbHook = "Hook texture loads"
+cbHQShadows = "High detail shadows"
+cbHWShader = "Hardware shader"
+cbIdle = "CPU idle"
+cbImportIni = "Import Morrowind.ini"
+cbLagFix = "Input lag fix"
+cbMultipleCS = "Allow multiple CS instances"
+cbScreenshots = "Allow screenshots"
+cbSetEffectVars = "Update shader variables"
+cbShaderDepth = "Supply shaders with depth info"
+cbShowFPS = "Show FPS"
+cbSkipMovie = "Skip opening movie"
+cbSubtitles = "Subtitles"
+cbThreadLoad = "Thread loading"
+cbUILangAuto = "Autodetect"
+cbWindowed = "Windowed mode"
+cbYesToAll = "Allow yes to all"
+cbZoomEffectsHUD = "Camera effects affect the HUD"
+
+;;;;   group boxes   ;;;;
+gbDisplay = "Display"
+gbDLDrawDist = "&Draw Distance"
+gbDLFog = "&Fog"
+gbDLSM = "Shader &Model"
+gbDLWater = "&Water"
+gbDLWtrCaust = "&Caustic intensity"
+gbDLWtrRefl = "Reflections"
+gbDLWtrWave = "Height of wa&ves"
+gbFog = "Fog"
+gbInputOpts = "Options"
+gbInputTools = "Tools"
+gbMainInfo = "Information"
+gbMainQuality = "Quality"
+gbMainSettings = "Settings"
+gbMainUI = "User Interface"
+gbMsgs = "MGE status messages"
+gbMWGeneral = "General settings"
+gbRendOpts = "Options"
+gbScene = "Scene"
+gbScreen = "Screen"
+gbShaders = "Shaders"
+gbSShot = "Screenshots"
+gbTexFilt = "Texture filters"
+
+;;;;   labels   ;;;;
+lAnisoLevel = "Anisotropic filtering level"
+lAntiAlias = "Antialiasing level"
+lAspect = "Aspect ratio"
+lCam3rdX = "X offset"
+lCam3rdY = "Y offset"
+lCam3rdZ = "Z offset"
+lDLDrawDist = "cells"
+lDLEndDist = "End Dist"
+lDLFar = "Far"
+lDLFogA = "Above Water Fog"
+lDLFogB = "Below Water Fog"
+lDLFogEnd = "End"
+lDLFogExpMul = "Exponential Distance Multiplier"
+lDLFogI = "Distant Interiors Fog"
+lDLFogStart = "Start"
+lDLMinSize = "Min Size"
+lDLNear = "Near"
+lDLVeryFar = "Very Far"
+lDLWtrCaust = "%"
+lFogMode = "Fog mode"
+lFOV = "Horz. FOV"
+lFPSDes = "Desired FPS"
+lFPSTol = "Tolerence"
+lHDR = "HDR reaction time (secs)"
+lIdle = "Idle time (ms)"
+lLOD = "Mipmap LOD bias"
+lMaxView = "Max view distance"
+lMinView = "Min view distance"
+lMipFilter = "Mipmap filter"
+lMsgsLanguage = "Language"
+lMsgsTime = "Timeout"
+lMsgsTimeUnit = "ms"
+lRefreshRate = "Refresh rate"
+lResolution = "Resolution"
+lRotation = "Rotation"
+lScaleFilter = "Scaling filter"
+lSShotDir = "Output directory"
+lSShotFormat = "Format"
+lSShotName = "File name prefix"
+lSShotNum = "Num. chars min"
+lTipReadSpd = "Tooltip reading speed"
+lTipRSpdUnit = "chars/sec."
+lUILanguage = "Language"
+lVWait = "VWait setting"
+lZBuffer = "Z-buffer format"
+lZoom = "Initial zoom"
+
+;;;;   radio buttons   ;;;;
+rbDLAutoByAFogEnd = "By Above Water Fo&g End"
+rbDLAutoByDrawDist = "By D&raw Distance"
+rbDLSM20 = "&2.0"
+rbDLSM30 = "&3.0"
+
+;;;;   text boxes   ;;;;
+tbSShotDir = "- Morrowind folder -"
+
+;;;;   tab pages   ;;;;
+tpDL = "Distant Land"
+tpGlobal = "Global graphics"
+tpINI = "Morrowind.ini"
+tpInput = "Input"
+tpMain = "Main"
+tpMisc = "Misc"
+tpRender = "Render state"
+tpTools = "Tools"
+
+
+
+[MainForm.ToolTips]
+
+;;;;   tab pages   ;;;;
+tpTools = "Contains Shader editor, Texture hook generator,\nand Distant Land File Creation Wizard."
+tpINI = "Allows you to comfortably change several settings\nin the Morrowind.ini file from within MGE."
+tpMisc = "Contains settings that did not fit well on any other tab,\nincluding the setting that disables MWSE."
+tpInput = "Contains options affecting input, and also\nmacro editor and key remapper."
+tpRender = "Contains lots of settings to influence the way\nhow Morrowind renders its graphics."
+tpGlobal = "Contains general graphics settings like screen size,\nrefresh rate, anti-aliasing, buffer type."
+tpMain = "Contains general settings, and shortcuts\r\nto change many settings with a single click."
+tpDL = "This tab controls whether and how distant land,\ndistant statics, animated grass, reflective water\nare rendered, and also contains weather settings\nfor distant land wind speed and fog range."
+
+;;;;   generic   ;;;;
+AAFix = "Fixes the monochrome backgrounds you get when loading or saving when using antialiasing."
+About = "Shows information about program."
+AltCombat = "Allows you to use Daggerfall style combat controls.\nYou must bind the 'toggle alt combat' function to a key in the macro editor to use this."
+AnisoLevel = "Sets the anisotropic filtering level.\nThis will only have an effect if you use anisotropic filtering for either scale or mip filters.\nIf you set this to above what your card supports, it will automatically drop down to the highest supported level."
+AntiAlias = "Sets the antialiasing level.\nIf you set this above what your graphics card supports, you will get a render creation error when starting up Morrowind.\nIf you set this to anything other than none, you will not be able to create a lockable backbuffer."
+Aspect = "This is selected screen resolution calculated aspect ratio."
+AspectZoom = "Checking this will enable corrections of aspect ratio while zooming."
+Audio = "The 'Disable Audio' line.\nCheck this to disable most of Morrowind's audio. Music is unaffected by this setting."
+BindAI = "Checking this box will bind the AI distance to your view distance.\nIncreasing view distance with MGE will automatically increase AI distance."
+CalcRefresh = "Finds the valid refresh rates for Morrowind's currently selected resolution.\nValid refresh rates depend on resolution, adapter, and whether 16 bit colour mode is enabled.\nChanges committed by MGEgui make an auto-search of valid refresh rates."
+CalcResolution = "Click this to change Morrowind's resolution.\nIn windowed mode you can use any resolution you like.\nNon 4:3 aspect ratios may not work correctly. These are marked with an '*'."
+Cam3rdPrsn = "Check this to customize parameters of 3rd person player camera.\nParameters set by this option will override the game defaults on start of Morrowind.\nThis option doesn't need to be set, to change the position of camera, by either a macro\nfunction, or by a script. Scripts can switch off overriding of camera parameters."
+Cam3rdX = "This sets the horizontal offset of 3rd person camera from player character's eyes.\nNegative values move the camera to the left, and positive to the right."
+Cam3rdY = "This sets the offset of 3rd person camera from player character's eyes along the direction of sight.\nMore negative values move the camera farther back, and less negative values move it forth, closer to player character.\nOnly negative values are used, because this setting, as also corresponding macro functions, allow only placing the 3rd\nperson camera behind the character. To set the camera ahead of character's eyes, you need to create a script doing it."
+Cam3rdZ = "This sets the vertical offset of 3rd person camera from player character's eyes.\nNegative values move the camera down, and positive values move the camera up."
+ClearINI = "Checking this will cause reinitialization of main settings file after resetting settings.\nNote that all comments and deprecated settings added to that file will be lost."
+Console = "Disables the console."
+DisableMGE = "Disables hooking of DirectX input and 3D interface by Morrowind Graphics Extender.\nNote that this doesn't disable MGE's internal version of MWSE, so you don't need to run its external version."
+DisableMWSE = "Checking this option disables MGE's internal version of MWSE functions.\nThis allows you to run MGE with an external version of MWSE.\nNote that some MGE mods may require MGE's internal version of MWSE,\nand will not work with external versions."
+DisplayMessages = "Allows MGE to draw text to the screen.\nAs well as the FPS counter, MGE will also alert you when various graphics options get changed."
+DistantLandWizard = "This will launch the process that creates the files that distant land needs to work.\nYou cannot enable distant land without running it."
+DLAutoByAFogEnd = "This will automatically set other cutoff distances based on your Above Water Fog End setting."
+DLAutoByDrawDist = "This will automatically set other cutoff distances based on your Draw Distance setting."
+DLAutoDist = "This will automatically set other than selected cutoff distances, depending on the selected base.\nThis way you don't have to think about things like fog, distant land draw distance or static distances, unless you really want to."
+DLDistantLand = "Check this box to enable the distant land feature.\nThis renders landscape and objects beyond Morrowind's normal drawing distance.\nNote that Morrowind's pixel/vertex shader water will be disabled if you enable this,\nand instead of it Distant Land's water shader will be used.\nMorrowind's pixel shader will be re-enabled by MGEgui if you disable MGE or Distant Land."
+DLDistantStatics = "This enables the drawing of far off objects such as trees and buildings."
+DLDistFar = "This is the distance in cells where you will stop seeing 'medium size' statics."
+DLDistNear = "This is the distance in cells where you will stop seeing 'small size' statics."
+DLDistVeryFar = "This is the distance in cells where you will stop seeing 'large size' statics."
+DLDrawDist = "This is the maximum distance in cells that distant land will draw anything.\nAnything beyond this distance will be cut off."
+DLDynRipples = "When checking this, rain drops and the player will create ripples on the water surface."
+DLFogAEnd = "This sets the distance in cells where objects will be completely hidden by fog above water in clear weather."
+DLFogAStart = "This sets the distance in cells where fog will begin to affect objects above water in clear weather."
+DLFogBEnd = "This sets the distance in cells where objects will be completely hidden by fog below water."
+DLFogBStart = "This sets the distance in cells where fog will begin to affect objects below water."
+DLFogExp = "This enables an alternative exponential fog formula for Distant Land.\nWhen using exponential fog, minimum value of Distant Land draw distance will be\nExponential Distance Multiplier times more than above water fog end distance.\nNote that setting this option might cause an FPS hit in game."
+DLFogExpMul = "This adjusts the exponential fog distance multiplier, which is used for multiplying draw distance,\nto make distant land don't pop in and out too early, when exponential fog is used.\nNote that high values will cause high FPS hit, and low values may cause distant land cutoff before fog end.\nThe most safe and the default setting, that will ensure exponential fog end and distant land drawing end\nin about the same place, is 4.0."
+DLFogIEnd = "This sets the distance in cells where objects will be completely hidden by fog in interiors with generated Distant Statics."
+DLFogIStart = "This sets the distance in cells where fog will begin to affect objects in interiors with generated Distant Statics."
+DLNearSize = "This reminds you what minimum size you selected while generating distant statics.\nTo change it you will need to generate statics again."
+DLOptions = "Allows additional Distant Land options to be customized."
+DLReflBlur = "This determines whether reflections in the water should be blurred.\nNote that setting this option might cause an FPS hit in game."
+DLReflFStatics = "Enabling this will make objects that are a bit further away reflect in the water.\nNote that this is expensive and may lower your frame rate."
+DLReflLand = "This determines whether the landscape drawn by distant land will be reflected in the water."
+DLReflNStatics = "Enabling this will make nearby objects reflect in the water.\nNote that this is expensive and may lower your frame rate."
+DLSizeFar = "This is the minimum size in Morrowind units of an object that will be considered 'medium sized'."
+DLSizeVeryFar = "This is the minimum size in Morrowind units of an object that will be considered 'large sized'."
+DLSkyRefl = "This determines whether the sky will be reflected in the water."
+DLSM20 = "This sets Shader Model 2.0 as a default shader for Distant Land.\nNote that this setting doesn't force the use of selected Shader Model for Distant Land.\nIt only suggests the maximum shader model, which should be used for Distant Land, Distant Statics, or Water.\nSupport for Shader Model 2.0 may be removed, if any part of Distant Land requires use of higher shaders in the future."
+DLSM30 = "This sets Shader Model 3.0 as a default shader for Distant Land.\nNote that this setting doesn't force the use of selected Shader Model for Distant Land.\nIt only suggests the maximum shader model, which should be used for Distant Land, Distant Statics or Water."
+DLWthr = "Distant Land settings for all Morrowind weather types.\nYou can set there fog and wind ratios for each weather."
+DLWtrCaust = "This sets the percentage of water caustic lighting intensity.\nSetting it to 0 will disable caustics. The default value is 50.\nNote that this feature isn't available when using Shader Model 2.0 Distant Land."
+DLWtrWave = "This sets the height of water waves.\nGraphics card with vertex texture fetch support is required for this feature.\nSetting it to 0 will disable waves. Suggested value for wave height is 30-50.\nNote that this feature isn't available when using Shader Model 2.0 Distant Land."
+Export = "Export your MGE settings and Morrowind.ini."
+Fog = "Uncheck this to disable fogging in Morrowind."
+FogMode = "Sets the type of fog that Morrowind uses.\nUsing vertex fog on some ATI cards may cause everything except the sky to become completely fogged."
+FOV = "Adjusts the in-game horizontal field of view (FOV)."
+FPSConst = "Check this to allow MGE to modify view distance in order to keep a constant FPS.\nMGE will only modify view distance. No other graphics options will be changed."
+FPSCounter = "Enables MGE's FPS counter.\nThis is unrelated to Morrowind's FPS counter, and can be used instead of or as well as it.\nDisplay messages must be checked for this to work."
+FPSDes = "The FPS MGE should try to obtain."
+FPSTol = "The amount that your FPS needs to be above or below your desired amount before MGE modifies framerate."
+HDR = "Check this box to supply HDR information to shaders.\nNote that checking this box by itself will not enable HDR.\nYou also need to add a HDR shader to the active shader chain.\nChecking this box may cause an FPS hit."
+HDRTime = "This box controls how fast the HDR reacts to brightness changes.\nThe lower time is set, the reaction is faster."
+Help = "Opens the help file."
+HitFader = "The 'ShowHitFader' line.\nUncheck this to disable the red hit fader that appears when you take damage."
+Hook = "Enables MGE texture hooking. Required for mods which attach effects to existing Morrowind objects.\nChecking this option may increase loading times."
+HookGen = "Generates fake texture files which will be intercepted by MGE when Morrowind attempts to load them."
+HQShadows = "The 'High Detail Shadows' line.\nCheck this to enable much better quality shadows.\nThis will cause a huge FPS hit."
+HWShader = "Enables fullscreen pixel shaders.\nSome shaders will make it difficult to view menus, so it may be better to use\nthe macro editor's 'toggle HW shader' function."
+Idle = "Check this to force Morrowind to give up control of the cpu once a frame."
+IdleTime = "Controls how long Morrowind gives up the cpu. Valid range is 0 to 1000.\nValue of 0 causes Morrowind to resume immediately if no other tasks are waiting."
+Import = "Import an MGE settings file.\nTo import Morrowind.ini as well, ensure that 'Import Morrowind.ini' is checked."
+ImportIni = "If this is checked, Morrowind.ini will be imported along with MGE settings."
+LagFix = "Attempts to fix input lag.\nThis will cause a small graphical artifact in the top left corner of the screen, and may permanently mark your minimap.\nTurning on MGE's FPS counter is usually sufficient to remove input lag caused by AA or shadows."
+LOD = "Sets the mipmap level of detail bias. Valid range is between -12 and 12.\nNegative values increase detail, positive values reduce it.\nVery low values will cause aliasing of textures in the background."
+MacroEd = "Opens up the macro editor, allowing you to bind functions and macros to keyboard keys and mouse buttons."
+MaxView = "Changes the maximum view distance that MGE will set.\nThis setting only affects the 'keep FPS constant' setting.\nMorrowind default is 7168."
+MinView = "Changes the minimum view distance that MGE will set.\nThis setting only affects the 'keep FPS constant' setting.\nMorrowind default is 2500."
+MipFilter = "Sets the mip texture filter.\nIf you set a filter not supported by your card, Morrowind will automatically use the next best available filter."
+MsgsTime = "Changes the maximum length of time for which MGE status messages will be displayed on screen in the game.\nUnits used for this setting are miliseconds, so to make MGE messages displayed for 5 seconds, you need to set it to 5000."
+MultipleCS = "The 'AllowMultipleEditors' line.\nCheck this to allow multiple copies of the construction set to run simultaneously."
+Quality = "Sets graphics options for the best visual quality."
+RefreshRate = "Sets the monitor refresh rate for fullscreen mode.\nThis has no effect in windowed mode."
+Remapper = "Opens up the keyboard remapper, with which you can remap any key on your keyboard."
+ResetSettings = "Resets MGE settings back to defaults."
+Resolution = "This is Morrowind's current screen resolution."
+Rotation = "Sets the initial screen rotation clockwise from normal in degrees.\nRotation can be changed in 90 degree steps by using up/down buttons on the control."
+ScaleFilter = "Sets the min and mag texture filters.\nIf you set a filter not supported by your card, Morrowind will automatically use the next best available filter.\nDo not set this to 'point' if you are using Morrowind's pixel-shaded water."
+Screenshots = "The 'Screen Shot Enable' line.\nCheck this to enable Morrowind's inbuilt screenshot function."
+SetEffectVars = "If this box is unchecked, the sinvar, linvar, tickcount, eyevec, sunvec and suncol variables will be unavailable to shaders.\nUnchecking this will give a performance boost, especially if you run many simultaneous shaders."
+ShaderDepth = "Checking this will supply hardware shaders with screen depth information.\nChecking this box may cause an FPS hit."
+ShaderEd = "A shader editor for working on fullscreen shaders."
+ShowFPS = "The 'Show FPS' line.\nCheck this to enable Morrowind's inbuilt FPS counter."
+SkipMovie = "Skips the two opening movies."
+SShotDir = "This is output directory where taken screenshots will be saved."
+SShotDirBrowse = "Use it for selecting output directory where you want the screenshots to be saved."
+SShotDirClear = "Changes selected output directory for screenshots to default.\nScreenshots will be saved to Morrowind installation directory."
+SShotFormat = "Sets the format in which MGE will save screenshots.\nThis does not change the format in which Morrowind saves screenshots."
+SShotName = "Every saved MGE screenshot will start its file name with this prefix."
+SShotNum = "Minimum number of characters for screenshot number.\nSetting it to more than 1 will result in leading zeros if screenshot number use less characters than set here,\ne.g.: if it's set to 3 and first screenshot is saved to output directory, the resulting screenshot number is '001'."
+Subtitles = "The 'Subtitles' line.\nCheck this to display subtitles where normally there would just be a voice over."
+ThreadLoad = "The 'DontThreadLoad' line.\nCheck this to allow Morrowind to load new cells in a separate thread."
+TipReadSpd = "This changes the fadeout time of MGEgui tooltips for selected reading speed (in characters per second).\nFor example, if you select 10 chars/sec. and some tooltip's text is 50 characters long (including spaces and new line characters),\nthat tooltip will be displayed for 5 seconds. Note that any tooltip can't be displayed for longer than about 33 seconds.\nTimeout of tooltips for tab panel selection doesn't depend on its text length and isn't affected by this setting."
+UILangAuto = "Checking this, enables autodetection of operating system's selected language,\nfor choosing automatically appropriate translation for user interface of MGEgui."
+UILanguage = "Sets translation language for user interface of MGEgui."
+ViewCaps = "Displays your graphics card's maximum supported antialiasing and anisotropic filtering levels."
+VWait = "Sets the vertical refresh setting.\nSetting this to 1, 2, 3, or 4 will cause an FPS hit, but will remove tearing artifacts.\nIn DirectX 9, which is only currently supported by MGE, 'Default (1)' is equivalent to '1'.\nSetting it to more than 1 in windowed mode will result in using 'Default (1)' setting."
+Windowed = "Check this to run Morrowind in a window instead of fullscreen."
+YesToAll = "The 'AllowYesToAll' line.\nCheck this to add an additional 'yes to all' option when clicking through multiple warning messages."
+ZBuffer = "Sets the z-buffer format.\nIf you set this to something that your graphics card doesn't support, you will get a render creation error when starting up Morrowind.\nUsing D16 or D16L will cause graphical artifacts while playing Morrowind."
+Zoom = "Sets the initial level of zoom.\nChanging this will not enable zoom. You must bind the 'toggle zoom' function to a key in the macro editor."
+ZoomEffectsHUD = "Check this if you want zoom and screen rotation to affect the HUD."

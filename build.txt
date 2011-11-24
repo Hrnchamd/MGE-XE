@@ -1,0 +1,27 @@
+
+Builds with CMake 2.8 or later.
+
+This project is primarily written for GCC; MSVC support may have latent issues that may initially go undetected.
+
+
+Build outputs:
+
+d3d8.dll, intercepts standard Morrowind D3D functions and adds features.
+dinput8.dll, a shim dll that redirects input to d3d8.dll, as all input processing functions are in d3d8.dll.
+MGEXEgui, a .net GUI that configures MGE and generates the distant world files that allows long view ranges.
+MGEfuncs.dll, a helper dll for MGEXEgui that processes Morrowind format models with niflib/tootlelib.
+
+
+Dependencies required:
+
+DirectX SDK June 2010 or later: http://msdn.microsoft.com/en-us/directx/
+SlimDX: http://slimdx.org/
+Tootle: http://developer.amd.com/archive/gpu/tootle/Pages/default.aspx
+niflib: http://sourceforge.net/projects/niftools/files/niflib/
+
+You will typically only require the DirectX SDK and SlimDX, the latter two are used solely by MGEfuncs.dll.
+
+
+Noted issues:
+
+MGEfuncs.dll is not build automated yet; it is only written for MSVC and it's not ported yet.

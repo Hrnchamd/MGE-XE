@@ -1,0 +1,2227 @@
+#
+# This file contains custom function definitions, such as those used in MWSE and MW-Enhanced,
+# for use with MWEdit. Functions can be changed, added or removed and MWEdit restarted for
+# those changes to take effect.
+#
+# If you find mistakes or omissions in this file please send an update to uesp@sympatico.ca.
+#
+# General Notes
+#	- Anything after the '#' character on a line is ignored
+#	- Parameters are not case sensitive
+#	- A function definition begins with a 'function' and ends with an 'end'.
+#
+# Function Parameters:
+#
+# Name = [Function Name]
+#		The name of the function.
+#
+# Options = [Option1] | [Option2] | ...
+#		Basic function options. Multiple options can be used seperated by the '|' character.
+#		Valid options are:
+#				None
+#				ShortVar		Short variable output when compiled
+#				AllowGlobal		Function allows global variables as input
+#				ExtraShort		Function has extra short value output (Journal)
+#				NoOptOut		No terminating 00 when compiled (Activate)
+#				Bloodmoon		Is function added with the Bloodmoon expansion
+#				Tribunal		Is function added with the Tribunal expansion
+#				Dialogue		Function is only valid in a dialogue result
+#				Bad				Function is known to be broken
+#				AllowVar		Allows variables as input to the function
+#				MWSE			A MWSE specific function
+#				MWE				A MWE specific function
+#
+# Return = [Option1] | [Option2] | ...
+#		Specifies the return options for the function. Valid values are:
+#				None			No return
+#				Byte			Byte value is returned
+#				Short			Short value is returned
+#				Long			Long value is returned
+#				Float			Float value is returned
+#				Ref				Reference value is returned (same as long)
+#				String			String value is returned
+#				Many			Multiple values might be returned
+#
+# Param1 = [Option1] | [Option2] | ....
+#		Options for the first input parameter to the function. Valid values are:
+#				None			No input
+#				Byte			Byte value is accepted
+#				Short			Short value is accepted
+#				Long			Long value is accepted
+#				Float			Float value is accepted
+#				Ref				Reference value is accepted (same as long)
+#				String			String value is accepted
+#				XYZ				Special values of 'X', 'Y' or 'Z', such as in SetPos
+#				Effect			Magic effect 
+#				Reset			Reset value (for AI packages)
+#				Animation		An animation value
+#				OptStart		Only used in AIWander
+#				Optional		Parameter is optional (no error if missing)
+#				NotRequired		Used in variable input functions (Choice, MessageBox)
+#				CellString		A string which might represent a cell name
+#				ShortString		Short variable output when compiled
+#				ID				Accepts an object ID (string)
+#				Many			Multiple values might be returned
+#				ScriptID		Must be a script (combined with ID)
+#				SoundID			Must be a sound (combined with ID)
+#				RaceID			Must be a race (combined with ID)
+#				JournalID		Must be a journal (combined with ID)
+#				FactionID		Must be a faction (combined with ID)
+#				ItemID			Must be a carryable item (combined with ID)
+#				RegionID		Must be a region (combined with ID)
+#				TopicID			Must be a dialogue topic (combined with ID)
+#				CellID			Must be a cell (combined with ID)
+#				EffectID		Must be a effect (combined with ID)
+#				LevelCreatureID	Must be a leveled creature (combined with ID)
+#				LevelItemID		Must be a leveled item (combined with ID)
+#				SoulgemID		Must be a soulgem (combined with ID)
+#				CreatureID		Must be a creature (combined with ID)
+#				SpellID			Must be a spell (combined with ID)
+#				NPCID			Must be a NPC (combined with ID)
+#
+# Param2 to Param12
+#		Same options as Param1 for the other 11 variables. These can be omitted if a function
+#		doesn't accept them.
+#
+# OpCode = [Value]
+#		The opcode value for the function. Accepts hexadecimal numbers in the form 0x....
+#
+function
+	Name = XAddItem
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c28
+end
+function
+	Name = XAITravel
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3c04
+end
+function
+	Name = XArcCos
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3835
+end
+function
+	Name = XArcSin
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3834
+end
+function
+	Name = XArcTan
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3833
+end
+function
+	Name = XContentList
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long
+	Opcode = 0x3f03
+end
+function
+	Name = XCos
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3832
+end
+function
+	Name = XDegrad
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3836
+end
+function
+	Name = XDistance
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Long | String
+	Opcode = 0x3c22
+end
+function 
+	Name = XDrop
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3f0d
+end
+function 
+	Name = XEquip
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0e
+end
+function
+	Name = XFileReadFloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c13
+end
+function
+	Name = XFileReadLong
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c12
+end
+function
+	Name = XFileReadShort
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c11
+end
+function
+	Name = XFileReadString
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long | String
+	Param1 = Long | String
+	Opcode = 0x3c14
+end
+function
+	Name = XFileReadText
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3f08
+end
+function
+	Name = XFileRewind
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3c10
+end
+function
+	Name = XFileSeek
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c15
+end
+function
+	Name = XFileWriteFloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Opcode = 0x3c33
+end
+function
+	Name = XFileWriteLong
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c32
+end
+function
+	Name = XFileWriteShort
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Short
+	Opcode = 0x3c31
+end
+function
+	Name = XFileWriteString
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3c34
+end
+function
+	Name = XFileWriteText
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Short | Long | Float | String | Many | Optional
+	Opcode = 0x3f09
+end
+function
+	Name = XFirstItem
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3c1e
+end
+function
+	Name = XFirstNPC
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3c1a
+end
+function
+	Name = XFirstStatic
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3c1f
+end
+function
+	Name = XGetBaseAgi
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f34
+end
+function
+	Name = XGetBaseEnd
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f36
+end
+function
+	Name = XGetBaseGold
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f23
+end
+function
+	Name = XGetBaseID
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3f6f
+end
+function
+	Name = XGetBaseInt
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f32
+end
+function
+	Name = XGetBaseLuc
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f38
+end
+function
+	Name = XGetBasePer
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f37
+end
+function
+	Name = XGetBaseSpe
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f35
+end
+function
+	Name = XGetBaseStr
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f31
+end
+function
+	Name = XGetBaseWil
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f33
+end
+function
+	Name = XGetCharge
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f67
+end
+function
+	Name = XGetCombat
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3c20
+end
+function
+	Name = XGetCondition
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f65
+end
+function
+	Name = XGetEncumb
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f64
+end
+function
+	Name = XGetGold
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f24
+end
+function
+	Name = XGetMaxCharge
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f68
+end
+function
+	Name = XGetMaxCondition
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f66
+end
+function
+	Name = XGetName
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3f6e
+end
+function
+	Name = XGetOwner
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3f62
+end
+function
+	Name = XGetPCTarget
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3c07
+end
+function
+	Name = XGetQuality
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f69
+end
+function
+	Name = XGetRef
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Opcode = 0x3c1d
+end
+function
+	Name = XGetService
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3f04
+end
+function
+	Name = XGetValue
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f61
+end
+function
+	Name = XGetWeight
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3f63
+end
+function
+	Name = XHasItemEquipped
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Opcode = 0x3c30
+end
+function
+	Name = XHypot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x3839
+end
+function
+	Name = XInventory
+	Options = MWSE
+	Return = Short | Long | Float | String | Many
+	Opcode = 0x3c2a
+end
+function
+	Name = XIsFemale
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f21
+end
+function
+	Name = XIsProvider
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f7c
+end
+function
+	Name = XIsTrader
+	Options = MWSE
+	Return = Long
+	OpCode = 0x3f3a
+end
+function
+	Name = XIsTrainer
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3f5e
+end
+function
+	Name = XKeyPressed
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3f00
+end
+function
+	Name = XLogMessage
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Short | Long | Float | String | Many | Optional
+	Opcode = 0x3c09
+end
+function
+	Name = XMemLook
+	Options = MWSE
+	Return = None
+	Opcode = 0x3f3f
+end
+function
+	Name = XMessageFix
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Short | Long | Float | String | Many | Optional
+	Opcode = 0x3f7e
+end
+function
+	Name = XModService
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3f06
+end
+function
+	Name = XMyCellID
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3f22
+end
+function
+	Name = XNextRef
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3c1b
+end
+function
+	Name = XNextStack
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long
+	Opcode = 0x3c2b
+end
+function
+	Name = XPCCellID
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3c2d
+end
+function
+	Name = XPlace
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Opcode = 0x3c2e
+end
+function
+	Name = XPosition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x3c05
+end
+function
+	Name = XPositionCell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Param5 = Long | String
+	Opcode = 0x3c2c
+end
+function
+	Name = XRaddeg
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3837
+end
+function
+	Name = XRefID
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3c1c
+end
+function
+	Name = XRefType
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3c08
+end
+function
+	Name = XRemoveItem
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3c29
+end
+function
+	Name = XSetBaseGold
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Opcode = 0x3f25
+end
+function
+	Name = XSetGold
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Opcode = 0x3f26
+end
+function
+	Name = xSetName
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0f
+end
+function
+	Name = XSetRef
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Opcode = 0x3c18
+end
+function
+	Name = XSetService
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3f05
+end
+function
+	Name = XSin
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3831
+end
+function
+	Name = XSqrt
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3838
+end
+function
+	Name = XStartCombat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3c21
+end
+function
+	Name = XStringBuild
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Short | Long | Float | String | Many | Optional
+	Opcode = 0x3f0b
+end
+function
+	Name = XStringCompare
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3c2f
+end
+function
+	Name = XStringLength
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Opcode = 0x3f0a
+end
+function
+	Name = XStringParse
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3f0c
+end
+function
+	Name = XTan
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Opcode = 0x3830
+end
+function
+	Name = XTextInput
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3f01
+end
+function
+	Name = XTextInputAlt
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3f02
+end
+function
+	Name = MenuTest
+	Options = None
+	Return = None
+	Param1 = Short
+	Opcode = 0x126
+end
+function
+	Name = ShowSceneGraph
+	Options = MWE
+	Return = None
+	Opcode = 0x123
+end
+function 
+	Name = StopCellTest
+	Options = MWE
+	Return = None
+	Opcode = 0x11F
+end
+function
+	Name = TestCells
+	Options = MWE
+	Return = None
+	Opcode = 0x120
+end
+function
+	Name = TestInteriorCells
+	Options = MWE
+	Return = None
+	Opcode = 0x121
+end
+function
+	Name = TestModels
+	Options = MWE
+	Return = None
+	Opcode = 0x122
+end
+#function		# Added to regular functions in v0.6.0-RC2
+#	Name = ToggleAi
+#	Options = MWE
+#	Return = None
+#	Opcode = 0x113
+#end
+function
+	Name = ToggleBorders
+	Options = MWE
+	Return = None
+	Opcode = 0x114
+end
+#function 		# Added to regular functions in v0.6.0-RC2
+#	Name = ToggleCollision
+#	Options = MWE
+#	Return = None
+#	Opcode = 0x118
+#end
+function
+	Name = ToggleCollisionBoxes
+	Options = MWE
+	Return = None
+	Opcode = 0x119
+end
+function
+	Name = ToggleCollisionGrid
+	Options = MWE
+	Return = None
+	Opcode = 0x11A
+end
+function
+	Name = ToggleDebugText
+	Options = MWE
+	Return = None
+	Opcode = 0x11B
+end
+function
+	Name = ToggleGrid
+	Options = MWE
+	Return = None
+	Opcode = 0x11D
+end
+function
+	Name = ToggleKillStats
+	Options = MWE
+	Return = None
+	Opcode = 0x12D
+end
+function
+	Name = ToggleLoadFade
+	Options = MWE
+	Return = None
+	Opcode = 0x132
+end
+#function		# Added to regular functions in v0.6.0-RC2
+#	Name = ToggleMenus
+#	Options = MWE
+#	Return = None
+#	Opcode = 0x011E
+#end
+function
+	Name = ToggleScripts
+	Options = MWE
+	Return = None
+	Opcode = 0x130
+end
+#function 		# Added to regular functions in v0.6.0-RC2
+#	Name = ToggleSky
+#	Options = MWE
+#	Return = None
+#	Opcode = 0x115
+#end
+function
+	Name = ToggleTextureString
+	Options = MWE
+	Return = None
+	Opcode = 0x11C
+end 
+function
+	Name = ToggleWater
+	Options = MWE
+	Return = None
+	Opcode = 0x129
+end
+function
+	Name = ToggleWireFrame
+	Options = MWE
+	Return = None
+	Opcode = 0x117
+end
+#function		# Added to regular functions in v0.6.0-RC2
+#	Name = ToggleWorld
+#	Options = MWE
+#	Return = None
+#	Opcode = 0x116
+#end
+
+
+# MGE extensions
+function
+	Name = MGEWipeAll
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3700
+end
+function
+	Name = MGEOutputDebugString
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3701
+end
+function
+	Name = MGEOutputVersionString
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3702
+end
+function
+	Name = MGEGetVersion
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Opcode = 0x3703
+end
+function
+	Name = MGEGetWidth
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Opcode = 0x3704
+end
+function
+	Name = MGEGetHeight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Opcode = 0x3705
+end
+function
+	Name = MGEGetFPS
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Opcode = 0x3706
+end
+function
+	Name = MGEGetEyeVec
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | Many
+	Opcode = 0x3707
+end
+function
+	Name = MGEEnableDistantLand
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3708
+end
+function
+	Name = MGEDisableDistantLand
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3709
+end
+function
+	Name = MGEWipeHUDElements
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x370a
+end
+function
+	Name = MGEWithHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x370b
+end
+function
+	Name = MGECancelWithHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x370c
+end
+function
+	Name = MGELoadHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x370d
+end
+function
+	Name = MGEPositionHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x370e
+end
+function
+	Name = MGEScaleHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x370f
+end
+function
+	Name = MGEFullscreenHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3710
+end
+function
+	Name = MGEEnableHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3711
+end
+function
+	Name = MGEDisableHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3712
+end
+function
+	Name = MGEChangeHUDTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3713
+end
+function
+	Name = MGEChangeHUDEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3714
+end
+function
+	Name = MGEFreeHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3715
+end
+function
+	Name = MGENIDLoadHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3716
+end
+function
+	Name = MGENIDPositionHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x3717
+end
+function
+	Name = MGENIDScaleHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x3718
+end
+function
+	Name = MGENIDFullscreenHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3719
+end
+function
+	Name = MGENIDEnableHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x371a
+end
+function
+	Name = MGENIDDisableHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x371b
+end
+function
+	Name = MGENIDChangeHUDTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x371c
+end
+function
+	Name = MGENIDChangeHUDEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x371d
+end
+function
+	Name = MGENIDFreeHUD
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x371e
+end
+function
+	Name = MGEManualLighting
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x371f
+end
+function
+	Name = MGEEndManualLighting
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3720
+end
+function
+	Name = MGESetSunColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3721
+end
+function
+	Name = MGEDefaultSunColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3722
+end
+function
+	Name = MGESetSunDirection
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3723
+end
+function
+	Name = MGEDefaultSunDirection
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3724
+end
+function
+	Name = MGESetSunTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3725
+end
+function
+	Name = MGEDefaultSunTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3726
+end
+function
+	Name = MGEGetSunColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | Many
+	Opcode = 0x3727
+end
+function
+	Name = MGEGetSunDir
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | Many
+	Opcode = 0x3728
+end
+function
+	Name = MGESetAmbientColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3729
+end
+function
+	Name = MGEDefaultAmbientColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x372a
+end
+function
+	Name = MGEGetAmbientColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | Many
+	Opcode = 0x372b
+end
+function
+	Name = MGESetClsColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x372c
+end
+function
+	Name = MGEDefaultClsColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x372d
+end
+function
+	Name = MGEGetClsColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | Many
+	Opcode = 0x372e
+end
+function
+	Name = MGESetSkyColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x372f
+end
+function
+	Name = MGEDefaultSkyColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3730
+end
+function
+	Name = MGESetHUDColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3731
+end
+function
+	Name = MGEDefaultHUDColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3732
+end
+function
+	Name = MGETapKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3733
+end
+function
+	Name = MGEPushKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3734
+end
+function
+	Name = MGEReleaseKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3735
+end
+function
+	Name = MGEHammerKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3736
+end
+function
+	Name = MGEUnhammerKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3737
+end
+function
+	Name = MGEAHammerKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3738
+end
+function
+	Name = MGEAUnhammerKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3739
+end
+function
+	Name = MGEDisallowKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x373a
+end
+function
+	Name = MGEAllowKey
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x373b
+end
+function
+	Name = MGEMoveMouseRight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x373c
+end
+function
+	Name = MGEMoveMouseLeft
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x373d
+end
+function
+	Name = MGEMoveMouseUp
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x373e
+end
+function
+	Name = MGEMoveMouseDown
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x373f
+end
+function
+	Name = MGESetMouseSpeedRight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3740
+end
+function
+	Name = MGESetMouseSpeedLeft
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3741
+end
+function
+	Name = MGESetMouseSpeedUp
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3742
+end
+function
+	Name = MGESetMouseSpeedDown
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3743
+end
+function
+	Name = MGEDisableMouse
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3744
+end
+function
+	Name = MGEEnableMouse
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3745
+end
+function
+	Name = MGEBufferedKeyDown
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3746
+end
+function
+	Name = MGEBufferedKeyUp
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Opcode = 0x3747
+end
+function
+	Name = MGEEnableFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3748
+end
+function
+	Name = MGEDisableFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3749
+end
+function
+	Name = MGEToggleFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x374a
+end
+function
+	Name = MGEIncreaseFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x374b
+end
+function
+	Name = MGEDecreaseFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x374c
+end
+function
+	Name = MGEIncreaseFogBy
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x374d
+end
+function
+	Name = MGEDecreaseFogBy
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x374e
+end
+function
+	Name = MGESetFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x374f
+end
+function
+	Name = MGEFogZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3750
+end
+function
+	Name = MGEStopFogZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3751
+end
+function
+	Name = MGEGetFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Opcode = 0x3752
+end
+function
+	Name = MGESetFogColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3753
+end
+function
+	Name = MGEDefaultFogColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3754
+end
+function
+	Name = MGEGetFogColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | Many
+	Opcode = 0x3755
+end
+function
+	Name = MGEEnableCameraShake
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3756
+end
+function
+	Name = MGEDisableCameraShake
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3757
+end
+function
+	Name = MGESetCameraShakeMagnitude
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3758
+end
+function
+	Name = MGECameraShakeZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3759
+end
+function
+	Name = MGEStopCameraShakeZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x375a
+end
+function
+	Name = MGETakeScreenshot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x375b
+end
+function
+	Name = MGETakeBMPScreenShot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x375c
+end
+function
+	Name = MGETakeJPEGScreenShot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x375d
+end
+function
+	Name = MGETakeDDSScreenshot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x375e
+end
+function
+	Name = MGETakePNGScreenshot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x375f
+end
+function
+	Name = MGEEnableFPSCounter
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3760
+end
+function
+	Name = MGEDisableFPSCounter
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3761
+end
+function
+	Name = MGEToggleFPSCounter
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3762
+end
+function
+	Name = MGERotateScreen
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3763
+end
+function
+	Name = MGESetScreenRot0
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3764
+end
+function
+	Name = MGESetScreenRot90
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3765
+end
+function
+	Name = MGESetScreenRot180
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3766
+end
+function
+	Name = MGESetScreenRot270
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3767
+end
+function
+	Name = MGERotateScreenBy
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3768
+end
+function
+	Name = MGESetScreenRotation
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3769
+end
+function
+	Name = MGEScreenSpin
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x376a
+end
+function
+	Name = MGEStopSpinSpin
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x376b
+end
+function
+	Name = MGEGetScreenRotation
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Opcode = 0x376c
+end
+function
+	Name = MGEEnableZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x376d
+end
+function
+	Name = MGEDisableZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x376e
+end
+function
+	Name = MGEToggleZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x376f
+end
+function
+	Name = MGEZoomIn
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3770
+end
+function
+	Name = MGEZoomOut
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3771
+end
+function
+	Name = MGEZoomInBy
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3772
+end
+function
+	Name = MGEZoomOutBy
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3773
+end
+function
+	Name = MGESetZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3774
+end
+function
+	Name = MGEZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Opcode = 0x3775
+end
+function
+	Name = MGEStopZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3776
+end
+function
+	Name = MGEGetZoom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Opcode = 0x3777
+end
+function
+	Name = MGELoadTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3778
+end
+function
+	Name = MGEFreeTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3779
+end
+function
+	Name = MGEWipeTextures
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x377a
+end
+function
+	Name = MGEBeginTexDraw
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x377b
+end
+function
+	Name = MGEEndTexDraw
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x377c
+end
+function
+	Name = MGESetTexDrawOrigin
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x377d
+end
+function
+	Name = MGESetTexDrawScale
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x377e
+end
+function
+	Name = MGESetTexDrawColour
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Opcode = 0x377f
+end
+function
+	Name = MGEDrawTextToTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3780
+end
+function
+	Name = MGEDrawTextureToTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3781
+end
+function
+	Name = MGEAutoFreeHook
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3782
+end
+function
+	Name = MGEDontFreeHook
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3783
+end
+function
+	Name = MGEResumeVideo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3784
+end
+function
+	Name = MGEPauseVideo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3785
+end
+function
+	Name = MGEStopVideo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3786
+end
+function
+	Name = MGERewindVideo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3787
+end
+function
+	Name = MGESeekVideo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3788
+end
+function
+	Name = MGEEnableFullscreenShaders
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3789
+end
+function
+	Name = MGEDisableFullscreenShaders
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x378a
+end
+function
+	Name = MGEToggleFullscreenShaders
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x378b
+end
+function
+	Name = MGELoadEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x378c
+end
+function
+	Name = MGESetEffectTechnique
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x378d
+end
+function
+	Name = MGEUseEffectAsFullscreenShader
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x378e
+end
+function
+	Name = MGEDisableEffectAsFullscreenShader
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x378f
+end
+function
+	Name = MGEFreeEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3790
+end
+function
+	Name = MGESetEffectVarLong
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Long
+	Opcode = 0x3791
+end
+function
+	Name = MGESetEffectVarFloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Float
+	Opcode = 0x3792
+end
+function
+	Name = MGESetEffectVarVector
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Float
+	Param4 = Float
+	Param5 = Float
+	Param6 = Float
+	Opcode = 0x3793
+end
+function
+	Name = MGESetEffectVarTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Long | String
+	Opcode = 0x3794
+end
+function
+	Name = MGEWipeLoadedEffects
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3795
+end
+function
+	Name = MGEWithMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3796
+end
+function
+	Name = MGECancelWithMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3797
+end
+function
+	Name = MGEWipeLoadedMeshes
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x3798
+end
+function
+	Name = MGELoadMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3799
+end
+function
+	Name = MGESetMeshPosition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x379a
+end
+function
+	Name = MGESetMeshRotation
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x379b
+end
+function
+	Name = MGESetMeshScale
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x379c
+end
+function
+	Name = MGEMoveMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x379d
+end
+function
+	Name = MGERotateMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x379e
+end
+function
+	Name = MGEScaleMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x379f
+end
+function
+	Name = MGESetMeshVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x37a0
+end
+function
+	Name = MGESetMeshAngularVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x37a1
+end
+function
+	Name = MGESetMeshGrowth
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Opcode = 0x37a2
+end
+function
+	Name = MGEZeroMeshVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37a3
+end
+function
+	Name = MGEZeroMeshAngularVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37a4
+end
+function
+	Name = MGEZeroMeshGrowth
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37a5
+end
+function
+	Name = MGEEnableMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37a6
+end
+function
+	Name = MGEDisableMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37a7
+end
+function
+	Name = MGESetMeshTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Short
+	Opcode = 0x37a8
+end
+function
+	Name = MGESetMeshEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x37a9
+end
+function
+	Name = MGEManualMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37aa
+end
+function
+	Name = MGEFreeMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37ab
+end
+function
+	Name = MGEUpdateMeshLighting
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37ac
+end
+function
+	Name = MGENIDLoadMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37ad
+end
+function
+	Name = MGENIDSetMeshPosition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37ae
+end
+function
+	Name = MGENIDSetMeshRotation
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37af
+end
+function
+	Name = MGENIDSetMeshScale
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b0
+end
+function
+	Name = MGENIDMoveMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b1
+end
+function
+	Name = MGENIDRotateMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b2
+end
+function
+	Name = MGENIDScaleMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b3
+end
+function
+	Name = MGENIDSetMeshVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b4
+end
+function
+	Name = MGENIDSetMeshAngularVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b5
+end
+function
+	Name = MGENIDSetMeshGrowth
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x37b6
+end
+function
+	Name = MGENIDZeroMeshVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37b7
+end
+function
+	Name = MGENIDZeroMeshAngularVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37b8
+end
+function
+	Name = MGENIDZeroMeshGrowth
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37b9
+end
+function
+	Name = MGENIDEnableMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37ba
+end
+function
+	Name = MGENIDDisableMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37bb
+end
+function
+	Name = MGENIDSetMeshTexture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Short
+	Opcode = 0x37bc
+end
+function
+	Name = MGENIDSetMeshEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x37bd
+end
+function
+	Name = MGENIDManualMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37be
+end
+function
+	Name = MGENIDFreeMesh
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37bf
+end
+function
+	Name = MGENIDUpdateMeshLighting
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Opcode = 0x37c0
+end
+
+
+# MGE XE extensions
+function
+	Name = XGetGS
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float | Long
+	Param1 = Long
+	Opcode = 0x3a00
+end
+function
+	Name = XSetGSfloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Param2 = Float
+	Opcode = 0x3a01
+end
+function
+	Name = XSetGSint
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3a01
+end

@@ -1,0 +1,279 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{21918C99-1B10-4474-88E9-9A9ECD49A94C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MGEgui</RootNamespace>
+    <AssemblyName>MGEXEgui</AssemblyName>
+    <ApplicationIcon>AppIcon.ico</ApplicationIcon>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>2.0</OldToolsVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <NoStdLib>False</NoStdLib>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <StartWorkingDirectory>\Program Files\Bethesda Softworks\Morrowind\</StartWorkingDirectory>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\</OutputPath>
+    <NoWarn>1701;1702;0618</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugSymbols>false</DebugSymbols>
+    <OutputPath>..\bin\</OutputPath>
+    <Optimize>true</Optimize>
+    <NoWarn>1701%3b1702%3b0618</NoWarn>
+    <DebugType>None</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG</DefineConstants>
+    <StartAction>Program</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <CheckForOverflowUnderflow>False</CheckForOverflowUnderflow>
+    <StartAction>Project</StartAction>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'x86' ">
+    <RegisterForComInterop>False</RegisterForComInterop>
+    <GenerateSerializationAssemblies>Auto</GenerateSerializationAssemblies>
+    <BaseAddress>4194304</BaseAddress>
+    <FileAlignment>4096</FileAlignment>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="SlimDX" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DirectX\DistantLandTextures.cs" />
+    <Compile Include="DirectX\DXMain.cs" />
+    <Compile Include="Localization\LocalizationInterface.cs" />
+    <Compile Include="ShaderFlagsEd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DirectX\Shaders.cs" />
+    <Compile Include="DirectX\BSA.cs" />
+    <Compile Include="DistantLand\DirectoriesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DistantLand\DirectoriesForm.Designer.cs">
+      <DependentUpon>DirectoriesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DistantLand\DistantLandForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DistantLand\DistantLandForm.Designer.cs">
+      <DependentUpon>DistantLandForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DistantLand\RunSetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DistantLand\RunSetupForm.Designer.cs">
+      <DependentUpon>RunSetupForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DistantLand\WarningsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DistantLand\WarningsForm.Designer.cs">
+      <DependentUpon>WarningsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DistantLand\Misc.cs" />
+    <Compile Include="DistantLand\OverrideListForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DistantLand\OverrideListForm.Designer.cs">
+      <DependentUpon>OverrideListForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLOptionsForm.Designer.cs">
+      <DependentUpon>DLOptionsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DLWeatherForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DLWeatherForm.Designer.cs">
+      <DependentUpon>DLWeatherForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="INIFile\INIFile.cs" />
+    <Compile Include="KeyRemapper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Imports.cs" />
+    <Compile Include="MacroEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="DistantLand\DirectoriesForm.resx">
+      <DependentUpon>DirectoriesForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DistantLand\DistantLandForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>DistantLandForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DistantLand\RunSetupForm.resx">
+      <DependentUpon>RunSetupForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DistantLand\WarningsForm.resx">
+      <DependentUpon>WarningsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DistantLand\OverrideListForm.resx">
+      <DependentUpon>OverrideListForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLOptionsForm.resx">
+      <DependentUpon>DLOptionsForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="DLWeatherForm.resx">
+      <DependentUpon>DLWeatherForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KeyRemapper.resx">
+      <DependentUpon>KeyRemapper.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MacroEditor.resx">
+      <DependentUpon>MacroEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RemapDialog.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>RemapDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RenderWindow.resx">
+      <DependentUpon>RenderWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ResolutionForm.resx">
+      <SubType>Designer</SubType>
+      <DependentUpon>ResolutionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShaderActive.resx">
+      <DependentUpon>ShaderActive.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShaderEd.resx">
+      <DependentUpon>ShaderEd.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="app.config" />
+    <None Include="app.manifest" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="RemapDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="RenderWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ResolutionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShaderActive.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ShaderEd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Statics.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="MGEgui.ico" />
+    <Content Include="AppIcon.ico" />
+    <EmbeddedResource Include="ShaderFlagsEd.resx">
+      <DependentUpon>ShaderFlagsEd.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resources\saveas.png" />
+    <EmbeddedResource Include="Resources\save.png" />
+    <EmbeddedResource Include="Resources\open.png" />
+    <EmbeddedResource Include="Resources\new.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+  </PropertyGroup>
+</Project>
