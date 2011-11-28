@@ -7,7 +7,7 @@
 
 
 float4 HDR;
-static float exposure = (1 + 0.8 * pow(1 - HDR.x, 10)) * sqrt(HDR.y/HDR.x);
+static float exposure = (1 + 1.3 * (0.22 - HDR.x)) * sqrt(HDR.y/HDR.x);
 
 texture lastshader;
 sampler s0 = sampler_state { texture = <lastshader>; minfilter = none; magfilter = none; };
@@ -25,7 +25,7 @@ float4 tone(float2 tex : TEXCOORD) : COLOR0
     g = (((0.73546 * g + -2.14391) * g + 1.78635) * g + 0.66211) * g;
 
     // exposure meter 
-    if(tex.x < HDR.x && tex.y > 0.9) g = lerp(g, 1, 0.4);
+    //if(tex.x < HDR.x && tex.y > 0.9) g = lerp(g, 1, 0.4);
     return float4(saturate(g), 1);
 }
 

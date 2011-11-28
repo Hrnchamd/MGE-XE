@@ -151,12 +151,13 @@ Distant land setup
 
 In-game setup
 
-1. The macro editor lets you bind keys to MGE functions. It's recommended to bind "toggle shaders", so you can turn them off if the fps hit is too much.
-2. Turn off "responsive menu caching" if you have SLI or Crossfire, they are incompatible with this feature.
+1. The macro editor lets you bind keys to MGE functions. It's recommended to bind "toggle shaders",
+so you can turn them off if the fps hit is too much.
+2. Turn off "responsive menu caching" if you have SLI or Crossfire, they cause slowdown with this feature.
 3. Set up third person camera position if you wish to use it.
 
 
-Go and play the game already.</value>
+You should now be set up to play.</value>
   </data>
   <metadata name="SShotFolderDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>202, 17</value>

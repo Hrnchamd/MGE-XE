@@ -128,6 +128,7 @@ namespace MGEgui {
         	this.bDistantLandWizard = new System.Windows.Forms.Button();
         	this.cbDLDistantLand = new System.Windows.Forms.CheckBox();
         	this.gbDistantLand = new System.Windows.Forms.GroupBox();
+        	this.bMWSunSettings = new System.Windows.Forms.Button();
         	this.pDLStatics = new System.Windows.Forms.Panel();
         	this.cbDLDistantStatics = new System.Windows.Forms.CheckBox();
         	this.gbDLStatics = new System.Windows.Forms.GroupBox();
@@ -202,7 +203,6 @@ namespace MGEgui {
         	this.lInstructions = new System.Windows.Forms.Label();
         	this.SShotFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
         	this.bQuality = new System.Windows.Forms.Button();
-        	this.bMWSunSettings = new System.Windows.Forms.Button();
         	this.tpInput.SuspendLayout();
         	this.gbMWLighting.SuspendLayout();
         	((System.ComponentModel.ISupportInitialize)(this.udLightingConst)).BeginInit();
@@ -329,9 +329,9 @@ namespace MGEgui {
         	// 
         	// bMWLightingReset
         	// 
-        	this.bMWLightingReset.Location = new System.Drawing.Point(209, 0);
+        	this.bMWLightingReset.Location = new System.Drawing.Point(203, 0);
         	this.bMWLightingReset.Name = "bMWLightingReset";
-        	this.bMWLightingReset.Size = new System.Drawing.Size(50, 20);
+        	this.bMWLightingReset.Size = new System.Drawing.Size(56, 20);
         	this.bMWLightingReset.TabIndex = 6;
         	this.bMWLightingReset.Text = "Reset";
         	this.bMWLightingReset.UseVisualStyleBackColor = true;
@@ -475,9 +475,9 @@ namespace MGEgui {
         	this.cbHQShadows.AutoSize = true;
         	this.cbHQShadows.Location = new System.Drawing.Point(13, 44);
         	this.cbHQShadows.Name = "cbHQShadows";
-        	this.cbHQShadows.Size = new System.Drawing.Size(148, 17);
+        	this.cbHQShadows.Size = new System.Drawing.Size(186, 17);
         	this.cbHQShadows.TabIndex = 1;
-        	this.cbHQShadows.Text = "High detail actor shadows";
+        	this.cbHQShadows.Text = "High detail actor shadows [buggy]";
         	// 
         	// cbShowFPS
         	// 
@@ -505,9 +505,9 @@ namespace MGEgui {
         	this.cbYesToAll.AutoSize = true;
         	this.cbYesToAll.Location = new System.Drawing.Point(13, 21);
         	this.cbYesToAll.Name = "cbYesToAll";
-        	this.cbYesToAll.Size = new System.Drawing.Size(95, 17);
+        	this.cbYesToAll.Size = new System.Drawing.Size(147, 17);
         	this.cbYesToAll.TabIndex = 5;
-        	this.cbYesToAll.Text = "Allow yes to all";
+        	this.cbYesToAll.Text = "Allow yes to all load errors";
         	// 
         	// cbSubtitles
         	// 
@@ -789,6 +789,8 @@ namespace MGEgui {
         	// 
         	// gbInputOpts
         	// 
+        	this.gbInputOpts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
         	this.gbInputOpts.Controls.Add(this.cbMenuCaching);
         	this.gbInputOpts.Controls.Add(this.cbAutoCrosshair);
         	this.gbInputOpts.Controls.Add(this.cbDisableMGE);
@@ -826,7 +828,6 @@ namespace MGEgui {
         	// 
         	// cbDisableMGE
         	// 
-        	this.cbDisableMGE.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.cbDisableMGE.AutoSize = true;
         	this.cbDisableMGE.Location = new System.Drawing.Point(11, 19);
         	this.cbDisableMGE.Name = "cbDisableMGE";
@@ -1058,6 +1059,7 @@ namespace MGEgui {
         	// 
         	// bAutoFOV
         	// 
+        	this.bAutoFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.bAutoFOV.Location = new System.Drawing.Point(276, 23);
         	this.bAutoFOV.Name = "bAutoFOV";
         	this.bAutoFOV.Size = new System.Drawing.Size(65, 20);
@@ -1068,6 +1070,7 @@ namespace MGEgui {
         	// 
         	// lFPSLimit
         	// 
+        	this.lFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.lFPSLimit.AutoSize = true;
         	this.lFPSLimit.Location = new System.Drawing.Point(416, 78);
         	this.lFPSLimit.Name = "lFPSLimit";
@@ -1091,7 +1094,6 @@ namespace MGEgui {
         	// 
         	// udHDR
         	// 
-        	this.udHDR.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.udHDR.DecimalPlaces = 2;
         	this.udHDR.Increment = new decimal(new int[] {
         	        	        	1,
@@ -1117,7 +1119,6 @@ namespace MGEgui {
         	// 
         	// bShaderEd
         	// 
-        	this.bShaderEd.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.bShaderEd.Location = new System.Drawing.Point(115, 19);
         	this.bShaderEd.Name = "bShaderEd";
         	this.bShaderEd.Size = new System.Drawing.Size(112, 25);
@@ -1127,7 +1128,6 @@ namespace MGEgui {
         	// 
         	// lHDR
         	// 
-        	this.lHDR.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.lHDR.AutoSize = true;
         	this.lHDR.Location = new System.Drawing.Point(26, 57);
         	this.lHDR.Name = "lHDR";
@@ -1196,7 +1196,6 @@ namespace MGEgui {
         	// 
         	// cbHWShader
         	// 
-        	this.cbHWShader.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.cbHWShader.AutoSize = true;
         	this.cbHWShader.Location = new System.Drawing.Point(10, 24);
         	this.cbHWShader.Name = "cbHWShader";
@@ -1206,7 +1205,6 @@ namespace MGEgui {
         	// 
         	// cbFPSCounter
         	// 
-        	this.cbFPSCounter.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.cbFPSCounter.AutoSize = true;
         	this.cbFPSCounter.Location = new System.Drawing.Point(10, 100);
         	this.cbFPSCounter.Name = "cbFPSCounter";
@@ -1219,7 +1217,7 @@ namespace MGEgui {
         	this.udFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.udFOV.DecimalPlaces = 2;
         	this.udFOV.Increment = new decimal(new int[] {
-        	        	        	5,
+        	        	        	2,
         	        	        	0,
         	        	        	0,
         	        	        	0});
@@ -1300,9 +1298,9 @@ namespace MGEgui {
         	        	        	"3",
         	        	        	"4",
         	        	        	"Default (1)"});
-        	this.cmbVWait.Location = new System.Drawing.Point(387, 96);
+        	this.cmbVWait.Location = new System.Drawing.Point(380, 96);
         	this.cmbVWait.Name = "cmbVWait";
-        	this.cmbVWait.Size = new System.Drawing.Size(78, 21);
+        	this.cmbVWait.Size = new System.Drawing.Size(85, 21);
         	this.cmbVWait.TabIndex = 2;
         	this.cmbVWait.Text = "Immediate";
         	this.cmbVWait.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKey);
@@ -1489,6 +1487,7 @@ namespace MGEgui {
         	// 
         	// bDistantLandWizard
         	// 
+        	this.bDistantLandWizard.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.bDistantLandWizard.Location = new System.Drawing.Point(149, 26);
         	this.bDistantLandWizard.Name = "bDistantLandWizard";
         	this.bDistantLandWizard.Size = new System.Drawing.Size(129, 42);
@@ -1528,8 +1527,20 @@ namespace MGEgui {
         	this.gbDistantLand.TabIndex = 1;
         	this.gbDistantLand.TabStop = false;
         	// 
+        	// bMWSunSettings
+        	// 
+        	this.bMWSunSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
+        	this.bMWSunSettings.Enabled = false;
+        	this.bMWSunSettings.Location = new System.Drawing.Point(277, 378);
+        	this.bMWSunSettings.Name = "bMWSunSettings";
+        	this.bMWSunSettings.Size = new System.Drawing.Size(128, 25);
+        	this.bMWSunSettings.TabIndex = 10;
+        	this.bMWSunSettings.Text = "Sunlight Settings...";
+        	this.bMWSunSettings.UseVisualStyleBackColor = true;
+        	// 
         	// pDLStatics
         	// 
+        	this.pDLStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.pDLStatics.Controls.Add(this.cbDLDistantStatics);
         	this.pDLStatics.Controls.Add(this.gbDLStatics);
         	this.pDLStatics.Location = new System.Drawing.Point(6, 69);
@@ -1540,6 +1551,8 @@ namespace MGEgui {
         	// 
         	// cbDLDistantStatics
         	// 
+        	this.cbDLDistantStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
+        	this.cbDLDistantStatics.AutoSize = true;
         	this.cbDLDistantStatics.Location = new System.Drawing.Point(8, 0);
         	this.cbDLDistantStatics.Name = "cbDLDistantStatics";
         	this.cbDLDistantStatics.Size = new System.Drawing.Size(116, 17);
@@ -1550,6 +1563,7 @@ namespace MGEgui {
         	// 
         	// gbDLStatics
         	// 
+        	this.gbDLStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.gbDLStatics.Controls.Add(this.udDLDistVeryFar);
         	this.gbDLStatics.Controls.Add(this.udDLDistFar);
         	this.gbDLStatics.Controls.Add(this.udDLDistNear);
@@ -1736,7 +1750,8 @@ namespace MGEgui {
         	// 
         	// cbDLAutoDist
         	// 
-        	this.cbDLAutoDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.cbDLAutoDist.Anchor = System.Windows.Forms.AnchorStyles.Top;
+        	this.cbDLAutoDist.AutoSize = true;
         	this.cbDLAutoDist.Location = new System.Drawing.Point(286, 19);
         	this.cbDLAutoDist.Name = "cbDLAutoDist";
         	this.cbDLAutoDist.Size = new System.Drawing.Size(140, 17);
@@ -1746,7 +1761,7 @@ namespace MGEgui {
         	// 
         	// gbDLAutoDist
         	// 
-        	this.gbDLAutoDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.gbDLAutoDist.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.gbDLAutoDist.Controls.Add(this.rbDLAutoByAFogEnd);
         	this.gbDLAutoDist.Controls.Add(this.rbDLAutoByDrawDist);
         	this.gbDLAutoDist.Enabled = false;
@@ -1783,7 +1798,7 @@ namespace MGEgui {
         	// 
         	// gbDLWater
         	// 
-        	this.gbDLWater.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.gbDLWater.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.gbDLWater.Controls.Add(this.cbDLDynRipples);
         	this.gbDLWater.Controls.Add(this.gbDLWtrCaust);
         	this.gbDLWater.Controls.Add(this.gbDLWtrWave);
@@ -1797,7 +1812,6 @@ namespace MGEgui {
         	// 
         	// cbDLDynRipples
         	// 
-        	this.cbDLDynRipples.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
         	this.cbDLDynRipples.AutoSize = true;
         	this.cbDLDynRipples.Location = new System.Drawing.Point(13, 113);
         	this.cbDLDynRipples.Name = "cbDLDynRipples";
@@ -1946,6 +1960,7 @@ namespace MGEgui {
         	// 
         	// bDLWthr
         	// 
+        	this.bDLWthr.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.bDLWthr.Location = new System.Drawing.Point(141, 378);
         	this.bDLWthr.Name = "bDLWthr";
         	this.bDLWthr.Size = new System.Drawing.Size(128, 25);
@@ -1956,6 +1971,7 @@ namespace MGEgui {
         	// 
         	// gbDLDrawDist
         	// 
+        	this.gbDLDrawDist.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.gbDLDrawDist.Controls.Add(this.lDLDrawDist);
         	this.gbDLDrawDist.Controls.Add(this.udDLDrawDist);
         	this.gbDLDrawDist.Location = new System.Drawing.Point(6, 19);
@@ -2002,6 +2018,7 @@ namespace MGEgui {
         	// 
         	// bDLOptions
         	// 
+        	this.bDLOptions.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.bDLOptions.Location = new System.Drawing.Point(6, 378);
         	this.bDLOptions.Name = "bDLOptions";
         	this.bDLOptions.Size = new System.Drawing.Size(128, 25);
@@ -2012,6 +2029,7 @@ namespace MGEgui {
         	// 
         	// gbDLFog
         	// 
+        	this.gbDLFog.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.gbDLFog.Controls.Add(this.cbDLScattering);
         	this.gbDLFog.Controls.Add(this.lDLFogExpMul);
         	this.gbDLFog.Controls.Add(this.udDLFogExpMul);
@@ -2331,13 +2349,13 @@ namespace MGEgui {
         	// 
         	// gbMainUI
         	// 
-        	this.gbMainUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+        	this.gbMainUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
         	this.gbMainUI.Controls.Add(this.pLanguage);
         	this.gbMainUI.Controls.Add(this.cmbTipReadSpd);
         	this.gbMainUI.Controls.Add(this.lTipReadSpd);
         	this.gbMainUI.Controls.Add(this.lTipRSpdUnit);
-        	this.gbMainUI.Location = new System.Drawing.Point(8, 162);
+        	this.gbMainUI.Location = new System.Drawing.Point(8, 336);
         	this.gbMainUI.Name = "gbMainUI";
         	this.gbMainUI.Size = new System.Drawing.Size(522, 76);
         	this.gbMainUI.TabIndex = 2;
@@ -2464,7 +2482,7 @@ namespace MGEgui {
         	// 
         	// bHelp
         	// 
-        	this.bHelp.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+        	this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.bHelp.Enabled = false;
         	this.bHelp.Location = new System.Drawing.Point(356, 18);
         	this.bHelp.Name = "bHelp";
@@ -2475,7 +2493,7 @@ namespace MGEgui {
         	// 
         	// bAbout
         	// 
-        	this.bAbout.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+        	this.bAbout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
         	this.bAbout.Location = new System.Drawing.Point(181, 18);
         	this.bAbout.Name = "bAbout";
         	this.bAbout.Size = new System.Drawing.Size(160, 25);
@@ -2491,7 +2509,7 @@ namespace MGEgui {
         	this.gbMainSettings.Controls.Add(this.bImport);
         	this.gbMainSettings.Controls.Add(this.bExport);
         	this.gbMainSettings.Controls.Add(this.cbClearINI);
-        	this.gbMainSettings.Location = new System.Drawing.Point(8, 70);
+        	this.gbMainSettings.Location = new System.Drawing.Point(8, 64);
         	this.gbMainSettings.Name = "gbMainSettings";
         	this.gbMainSettings.Size = new System.Drawing.Size(522, 76);
         	this.gbMainSettings.TabIndex = 1;
@@ -2553,9 +2571,10 @@ namespace MGEgui {
         	// 
         	// lInstructions
         	// 
-        	this.lInstructions.Location = new System.Drawing.Point(20, 22);
+        	this.lInstructions.AutoSize = true;
+        	this.lInstructions.Location = new System.Drawing.Point(18, 20);
         	this.lInstructions.Name = "lInstructions";
-        	this.lInstructions.Size = new System.Drawing.Size(500, 373);
+        	this.lInstructions.Size = new System.Drawing.Size(507, 364);
         	this.lInstructions.TabIndex = 0;
         	this.lInstructions.Text = resources.GetString("lInstructions.Text");
         	// 
@@ -2572,16 +2591,6 @@ namespace MGEgui {
         	this.bQuality.Size = new System.Drawing.Size(160, 25);
         	this.bQuality.TabIndex = 0;
         	this.bQuality.Text = "Best quality";
-        	// 
-        	// bMWSunSettings
-        	// 
-        	this.bMWSunSettings.Enabled = false;
-        	this.bMWSunSettings.Location = new System.Drawing.Point(277, 378);
-        	this.bMWSunSettings.Name = "bMWSunSettings";
-        	this.bMWSunSettings.Size = new System.Drawing.Size(128, 25);
-        	this.bMWSunSettings.TabIndex = 10;
-        	this.bMWSunSettings.Text = "Sunlight Settings...";
-        	this.bMWSunSettings.UseVisualStyleBackColor = true;
         	// 
         	// MainForm
         	// 
@@ -2631,7 +2640,9 @@ namespace MGEgui {
         	this.tpDL.ResumeLayout(false);
         	this.tpDL.PerformLayout();
         	this.gbDistantLand.ResumeLayout(false);
+        	this.gbDistantLand.PerformLayout();
         	this.pDLStatics.ResumeLayout(false);
+        	this.pDLStatics.PerformLayout();
         	this.gbDLStatics.ResumeLayout(false);
         	this.gbDLStatics.PerformLayout();
         	((System.ComponentModel.ISupportInitialize)(this.udDLDistVeryFar)).EndInit();
@@ -2671,6 +2682,7 @@ namespace MGEgui {
         	this.gbMainSettings.ResumeLayout(false);
         	this.gbMainSettings.PerformLayout();
         	this.tpInstructions.ResumeLayout(false);
+        	this.tpInstructions.PerformLayout();
         	this.ResumeLayout(false);
         }
         private System.Windows.Forms.Button bMWSunSettings;

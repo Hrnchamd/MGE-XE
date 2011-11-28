@@ -412,7 +412,8 @@ void DistantLand::adjustFog()
         windScaling = ws;
     }
     else {
-        fogStart = lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, mwBridge->IntFogDens());
+        float density = std::max(0.01f, mwBridge->getInteriorFogDens());
+        fogStart = lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, density);
         fogEnd = Configuration.DL.InteriorFogEnd;
         windScaling = 0;
     }
@@ -424,20 +425,19 @@ void DistantLand::adjustFog()
     // Set hardware fog for Morrowind's use
     if(Configuration.MGEFlags & EXP_FOG)
     {
-
-        if(!mwBridge->IsUnderwater(eyePos.z))
+        if(mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather())
+        {
+            // Leave fog ranges as set, shaders use all linear fogging in this case
+            fogNearStart = fogStart;
+            fogNearEnd = fogEnd;
+        }
+        else
         {
             // Adjust near region linear Morrowind fogging to approximation of exp fog curve
             fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
             fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
             float expEnd = exp(-(7168.0 - fogNearStart) / (fogNearEnd - fogNearStart));
             fogNearEnd =  (7168.0 - expEnd * fogNearStart) / (1.0 - expEnd);
-        }
-        else
-        {
-            // Leave fog ranges as set, shaders use all linear fogging in this case
-            fogNearStart = fogStart;
-            fogNearEnd = fogEnd;
         }
 
         device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogNearStart);
@@ -496,7 +496,9 @@ void DistantLand::adjustFog()
         // Save colour for matching near fog in shaders
         nearfogCol = RGBVECTOR(c0);
 
-        device->SetRenderState(D3DRS_FOGCOLOR, (DWORD)c0);
+        // Alter Morrowind's fog colour through its scenegraph
+        // This way it automatically restores the correct colour if it has to switch fog modes mid-frame
+        mwBridge->setSceneFogCol((DWORD)nearfogCol);
     }
     else
     {

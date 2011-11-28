@@ -153,7 +153,8 @@ void DistantLand::clearReflection()
     IDirect3DSurface9 *target;
 
     texReflection->GetSurfaceLevel(0, &target);
-    DWORD baseColour = D3DCOLOR_XRGB(mwBridge->IntSunR() + 6, mwBridge->IntSunG() + 11, mwBridge->IntSunB() + 14);
+    const BYTE *sun = mwBridge->getInteriorSun();
+    DWORD baseColour = D3DCOLOR_XRGB(sun[0] + 4, sun[1] + 7, sun[2] + 10);
     device->ColorFill(target, 0, baseColour);
     target->Release();
 }

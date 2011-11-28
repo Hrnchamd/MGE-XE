@@ -127,9 +127,9 @@ void MWBridge::Load()
     eSunDir = read_dword(eWthrArray - 0x14) + 0x30;
     eSunVis = read_dword(read_dword(read_dword(eWthrArray + 0x74)+0x98)+0x24)+0x3;
 
-    m_loaded = true;
-
     GetShadowFovAddr();
+
+    m_loaded = true;
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +193,7 @@ void MWBridge::write_float(const DWORD dwAddress, float f)
 bool MWBridge::CanLoad()
 {
     // reads static address, so game doesn't need to be loaded
-    return (read_dword (eEnviro) != 0);
+    return read_dword(eEnviro) != 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -418,6 +418,15 @@ RGBVECTOR* MWBridge::CurFogColVector()
 {
     assert(m_loaded);
     return (RGBVECTOR*)eCurFogCol;
+}
+
+//-----------------------------------------------------------------------------
+
+void MWBridge::setSceneFogCol(DWORD c)
+{
+    DWORD addr = read_dword(eEnviro) + 0x9c;
+    addr = read_dword(addr) + 0x1c;
+    write_dword(addr, c);
 }
 
 //-----------------------------------------------------------------------------
@@ -799,97 +808,37 @@ void MWBridge::HaggleLess(DWORD num)
 
 //-----------------------------------------------------------------------------
 
-BYTE MWBridge::IntAmbR()
+const BYTE * MWBridge::getInteriorAmb()
 {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x1C);
+    if (addr != 0) return (BYTE*)(addr + 0x1C);
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-BYTE MWBridge::IntAmbG()
+const BYTE * MWBridge::getInteriorSun()
 {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x1D);
+    if (addr != 0) return (BYTE*)(addr + 0x20);
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-BYTE MWBridge::IntAmbB()
+const BYTE * MWBridge::getInteriorFog()
 {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x1E);
+    if (addr != 0) return (BYTE*)(addr + 0x24);
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-BYTE MWBridge::IntSunR()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x20);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-BYTE MWBridge::IntSunG()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x21);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-BYTE MWBridge::IntSunB()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x22);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-BYTE MWBridge::IntFogR()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x24);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-BYTE MWBridge::IntFogG()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x25);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-BYTE MWBridge::IntFogB()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_byte(addr + 0x26);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::IntFogDens()
+float MWBridge::getInteriorFogDens()
 {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();

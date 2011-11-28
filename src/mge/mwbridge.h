@@ -9,19 +9,16 @@
 
 class MWBridge {
 public:
-    /// Destructor
     ~MWBridge();
 
-    /// Singleton access
+    // Singleton access
     static MWBridge* Inst();
 
-    /// Connect to Morrowind memory
+    // Connect to Morrowind memory
     void Load();
 
-    /// Used to determine whether we have connected to Morrowind's dynamic memory yet.
+    // Used to determine whether we have connected to Morrowind's dynamic memory yet
     inline bool IsLoaded();
-
-    /// Used to determine whether dynamic memory is allocated.
     bool CanLoad();
 
     DWORD GetAlwaysRun();
@@ -49,6 +46,7 @@ public:
     float GetWeatherRatio();
     RGBVECTOR* CurSkyColVector();
     RGBVECTOR* CurFogColVector();
+    void setSceneFogCol(DWORD c);
     bool CellHasWeather();
     float* GetWindVector();
     DWORD WthrStruc(int wthr);
@@ -84,20 +82,11 @@ public:
     bool IntHasWater();
     float WaterLevel();
 
-    void HaggleMore(DWORD num);
-    void HaggleLess(DWORD num);
-
     const char * getInteriorName();
-    BYTE IntAmbR();
-    BYTE IntAmbG();
-    BYTE IntAmbB();
-    BYTE IntSunR();
-    BYTE IntSunG();
-    BYTE IntSunB();
-    BYTE IntFogR();
-    BYTE IntFogG();
-    BYTE IntFogB();
-    float IntFogDens();
+    const BYTE * getInteriorAmb();
+    const BYTE * getInteriorSun();
+    const BYTE * getInteriorFog();
+    float getInteriorFogDens();
 
     DWORD PlayerPositionPointer();
     float PlayerPositionX();
@@ -110,6 +99,9 @@ public:
     DWORD PlayerTarget();
     bool IsPlayerCasting();
     bool IsPlayerAimingWeapon();
+
+    void HaggleMore(DWORD num);
+    void HaggleLess(DWORD num);
 
     void toggleRipples(BOOL enabled);
     void markWaterNode(float k);
