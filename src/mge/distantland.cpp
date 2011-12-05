@@ -412,6 +412,7 @@ void DistantLand::adjustFog()
         windScaling = ws;
     }
     else {
+        // Avoid density == 0, as when fogstart and fogend are equal or too close it can cause problems
         float density = std::max(0.01f, mwBridge->getInteriorFogDens());
         fogStart = lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, density);
         fogEnd = Configuration.DL.InteriorFogEnd;
@@ -422,46 +423,62 @@ void DistantLand::adjustFog()
     fogStart *= 8192.0;
     fogEnd *= 8192.0;
 
-    // Set hardware fog for Morrowind's use
-    if(Configuration.MGEFlags & EXP_FOG)
+    if(Configuration.MGEFlags & USE_DISTANT_LAND)
     {
-        if(mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather())
+        // Set hardware fog for Morrowind's use
+        if(Configuration.MGEFlags & EXP_FOG)
         {
-            // Leave fog ranges as set, shaders use all linear fogging in this case
-            fogNearStart = fogStart;
-            fogNearEnd = fogEnd;
+            if(mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather())
+            {
+                // Leave fog ranges as set, shaders use all linear fogging in this case
+                fogNearStart = fogStart;
+                fogNearEnd = fogEnd;
+            }
+            else
+            {
+                // Adjust near region linear Morrowind fogging to approximation of exp fog curve
+                fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
+                fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
+                float expEnd = exp(-(7168.0 - fogNearStart) / (fogNearEnd - fogNearStart));
+                fogNearEnd =  (7168.0 - expEnd * fogNearStart) / (1.0 - expEnd);
+            }
+
+            device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogNearStart);
+            device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
         }
         else
         {
-            // Adjust near region linear Morrowind fogging to approximation of exp fog curve
-            fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
-            fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
-            float expEnd = exp(-(7168.0 - fogNearStart) / (fogNearEnd - fogNearStart));
-            fogNearEnd =  (7168.0 - expEnd * fogNearStart) / (1.0 - expEnd);
+            device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogStart);
+            device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogEnd);
         }
-
-        device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogNearStart);
-        device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
     }
     else
     {
-        device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogStart);
-        device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogEnd);
+        // Read Morrowind-set fog range
+        device->GetRenderState(D3DRS_FOGSTART, (DWORD *)&fogNearStart);
+        device->GetRenderState(D3DRS_FOGEND, (DWORD *)&fogNearEnd);
+
+        // Reset fog end on toggling distant land as Morrowind assumes it doesn't get changed
+        if(fogNearEnd > 7168.0)
+        {
+            fogNearEnd = 7168.0;
+            device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
+        }
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
     DWORD c;
     device->GetRenderState(D3DRS_FOGCOLOR, &c);
 
-    if((Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
+    if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
     {
         D3DXCOLOR c0(c), c1(c);
 
         // Simplified version of scattering from the shader
         const D3DXVECTOR3 scatter(0.07, 0.36, 0.76);
         const D3DXVECTOR3 scatter2(0.16, 0.37, 0.62);
-        const float *skyCol = (const float*)mwBridge->CurSkyColVector();
-        const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol[0], skyCol[1], skyCol[2]) + D3DXVECTOR3(0.23, 0.39, 0.68);
+        const RGBVECTOR *skyCol = mwBridge->CurSkyColVector();
+        const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
         const float sunaltitude = pow(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
         const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
@@ -681,7 +698,8 @@ void DistantLand::setProjection(D3DMATRIX *proj)
 {
     // Move near plane from 1.0 to 4.0 for more z accuracy
     // Move far plane back to edge of draw distance
-    editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * 8192.0);
+    if(Configuration.MGEFlags & USE_DISTANT_LAND)
+        editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * 8192.0);
 }
 
 void DistantLand::setHorizonColour(const D3DCOLOR c)

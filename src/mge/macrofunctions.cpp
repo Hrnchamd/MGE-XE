@@ -99,7 +99,7 @@ void MacroFunctions::ToggleDistantLand() {
     displayFlag(USE_DISTANT_LAND, "Distant land enabled", "Distant land disabled");
 }
 
-void MacroFunctions::ToggleDistantStatics() {
+void MacroFunctions::ToggleShadows() {
     Configuration.MGEFlags ^= USE_SHADOWS;
     displayFlag(USE_SHADOWS, "Shadows enabled", "Shadows disabled");
 }

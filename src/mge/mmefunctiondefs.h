@@ -12,7 +12,7 @@ public:
     static void ToggleBlending();
     static void ToggleShaders();
     static void ToggleDistantLand();
-    static void ToggleDistantStatics();
+    static void ToggleShadows();
     static void ToggleGrass();
     static void ToggleZoom();
     static void IncreaseZoom();

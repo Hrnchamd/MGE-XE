@@ -135,7 +135,7 @@ void DistantLand::renderShadowLayer(int layer, float radius)
     visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehWorld, SIZEOFSTATICVERT);
 }
 
-// renderShadow - Renders shadows on Morrowind shadow receivers
+// renderShadow - Renders shadows (using blending) over Morrowind shadow receivers
 void DistantLand::renderShadow()
 {
 	effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
@@ -154,6 +154,7 @@ void DistantLand::renderShadow()
         }
         else
         {
+            effect->SetTexture(ehTex0, 0);
             effect->SetFloat(ehAlphaRef, -1.0f);
         }
 
@@ -161,9 +162,10 @@ void DistantLand::renderShadow()
         effect->SetMatrixArray(ehVertexBlendPalette, i->worldTransforms, 4);
         effect->CommitChanges();
 
-        // Ignore cull mode, shadow casters are drawn with CW culling only, which causes
-        // false shadows when cast on the reverse side (wrt normals) of a double sided object
-        //device->SetRenderState(D3DRS_CULLMODE, i->cullMode);
+        // Ignore two-sided poly (cull none) mode, shadow casters are drawn with CW culling only,
+        // which causes false shadows when cast on the reverse side (wrt normals) of a double sided object
+        DWORD cull = (i->cullMode != D3DCULL_NONE) ? i->cullMode : D3DCULL_CW;
+        device->SetRenderState(D3DRS_CULLMODE, cull);
         device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
         device->SetIndices(i->ib);
         device->SetFVF(i->fvf);

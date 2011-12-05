@@ -298,9 +298,11 @@ HRESULT _stdcall MGEProxyDevice::SetRenderState(D3DRENDERSTATETYPE a, DWORD b)
 {
     captureRenderState(a, b);
 
-    if(a == D3DRS_FOGSTART || a == D3DRS_FOGEND || a == D3DRS_FOGVERTEXMODE || a == D3DRS_FOGTABLEMODE)
+    if(a == D3DRS_FOGVERTEXMODE || a == D3DRS_FOGTABLEMODE)
         return D3D_OK;
-    else if(a == D3DRS_STENCILENABLE)
+    if((Configuration.MGEFlags & USE_DISTANT_LAND) && (a == D3DRS_FOGSTART || a == D3DRS_FOGEND))
+        return D3D_OK;
+    if(a == D3DRS_STENCILENABLE)
         isStencilScene = b;
 
     // Ambient is the final setting in Morrowind light setup, directly after sky rendering

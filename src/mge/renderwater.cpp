@@ -151,10 +151,18 @@ void DistantLand::clearReflection()
 {
     DECLARE_MWBRIDGE
     IDirect3DSurface9 *target;
+    DWORD baseColour;
 
     texReflection->GetSurfaceLevel(0, &target);
-    const BYTE *sun = mwBridge->getInteriorSun();
-    DWORD baseColour = D3DCOLOR_XRGB(sun[0] + 4, sun[1] + 7, sun[2] + 10);
+    if(mwBridge->CellHasWeather())
+    {
+        baseColour = (DWORD)horizonCol;
+    }
+    else
+    {
+        const BYTE *sun = mwBridge->getInteriorSun();
+        DWORD baseColour = D3DCOLOR_XRGB(sun[0] + 4, sun[1] + 7, sun[2] + 10);
+    }
     device->ColorFill(target, 0, baseColour);
     target->Release();
 }

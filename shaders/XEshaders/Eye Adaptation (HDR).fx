@@ -1,13 +1,13 @@
 // "HDR" Eye Adaptation, tuned for Morrowind lighting
 // Simulates exposure adjustment
 // Hrnchamd
-// v2
+// v3
 
 // Compatibility: MGE XE 0, fully working
 
 
 float4 HDR;
-static float exposure = (1 + 1.3 * (0.22 - HDR.x)) * sqrt(HDR.y/HDR.x);
+static float exposure = (1 + 1.3 * (0.32 - HDR.x)) * sqrt(HDR.y/HDR.x);
 
 texture lastshader;
 sampler s0 = sampler_state { texture = <lastshader>; minfilter = none; magfilter = none; };

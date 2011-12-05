@@ -21,14 +21,14 @@ set_target_properties (d3d8 PROPERTIES PREFIX "")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     # Compile options; optimize, strip symbols and kill stdcall decoration
-    set (CMAKE_CXX_FLAGS "-O2")
+    set (CMAKE_CXX_FLAGS "-O2 -march=pentium4")
     set (CMAKE_EXE_LINKER_FLAGS "-s --kill-at")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 if (MSVC_VERSION)
     # Compile options; optimize
-    set (CMAKE_CXX_FLAGS "/O2")
+    set (CMAKE_CXX_FLAGS "/O2 /arch:SSE2")
 endif (MSVC_VERSION)
 
-# TODO: mgefuncs.dll build
-# TODO: MGEXEgui build
+# TODO: mgefuncs.dll build (install to Morrowind/mge3 directory)
+# TODO: MGEXEgui build (install to Morrowind directory)

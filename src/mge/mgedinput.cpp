@@ -17,7 +17,7 @@ bool MGEProxyDirectInput::mouseClick = false;
 typedef void (*FakeFunc)();
 
 FakeFunc FakeFuncs[GRAPHICSFUNCS];      //See GraphicsFuncs enum
-sFakeKey FakeKeys[MAXMACROS];     //Last 8 reserved for mouse
+sFakeKey FakeKeys[MAXMACROS];     //Last 10 reserved for mouse
 sFakeTrigger Triggers[MAXTRIGGERS];   //Up to 4 time lagged triggers
 BYTE RemappedKeys[256];
 
@@ -109,10 +109,10 @@ void * CreateInputWrapper(void *real)
     ZeroStruct(FakeBuffer);
     ZeroStruct(TapStates);
 
-    for(WORD w = 0; w < MAXMACROS; w++)
-        DisallowStates[w]=0x80;
+    for(WORD w = 0; w != MAXMACROS; ++w)
+        DisallowStates[w] = 0x80;
 
-    for(int i = 0; i < MAXTRIGGERS; i++)
+    for(int i = 0; i != MAXTRIGGERS; ++i)
         TriggerFireTimes[i] = GetTickCount() + Triggers[i].TimeInterval;
 
     // Initialize the array of macro function pointers
@@ -145,7 +145,7 @@ void * CreateInputWrapper(void *real)
 
     FakeFuncs[GF_HWShader] = MacroFunctions::ToggleShaders;
     FakeFuncs[GF_ToggleDL] = MacroFunctions::ToggleDistantLand;
-    FakeFuncs[GF_ToggleDS] = MacroFunctions::ToggleDistantStatics;
+    FakeFuncs[GF_ToggleDS] = MacroFunctions::ToggleShadows;
     FakeFuncs[GF_ToggleGrass] = MacroFunctions::ToggleGrass;
     FakeFuncs[GF_ToggleMwMgeBlending] = MacroFunctions::ToggleBlending;
 
@@ -167,14 +167,14 @@ void * CreateInputWrapper(void *real)
 
 void FakeKeyPress(BYTE key, BYTE data)
 {
-    FakeBuffer[FakeBufferEnd].dwOfs=key;
-    FakeBuffer[FakeBufferEnd].dwData=data;
+    FakeBuffer[FakeBufferEnd].dwOfs = key;
+    FakeBuffer[FakeBufferEnd].dwData = data;
     ++FakeBufferEnd;
 }
 
 void FakeString(BYTE chars[], BYTE data[], BYTE length)
 {
-    for(int i = 0; i < length; i++)
+    for(int i = 0; i != length; ++i)
         FakeKeyPress(chars[i], data[i]);
 }
 
@@ -228,10 +228,12 @@ public:
 
     HRESULT _stdcall GetDeviceState(DWORD a,LPVOID b)
     {
-        // This is a keyboard, so get a list of bytes (Dont forget the mouse too)
+        // This is a keyboard, so get a list of bytes
         BYTE bytes[MAXMACROS];
         HRESULT hr = realDevice->GetDeviceState(256, bytes);
         if(hr != DI_OK) return hr;
+
+        // Copy mouse state to act as an extra 10 keys
         CopyMemory(&bytes[256], &MouseOut, 10);
 
         // Get any extra key presses
@@ -273,6 +275,7 @@ public:
                 bytes[byte] |= AHammerStates[byte];
             }
         }
+
         if(SkipIntro)
         {
             // Push escape to skip the intro
@@ -446,7 +449,7 @@ public:
         }
         else
         {
-            //Read a real keypress
+            // Read a real keypress
             if(*c > 1 && !CloseConsole)
             {
                 FakeBufferStart = 0;
