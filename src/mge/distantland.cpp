@@ -67,14 +67,6 @@ void DistantLand::renderStage0()
 
             effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
 
-            // Sky scattering
-            if((Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather())
-            {
-                effect->BeginPass(PASS_RENDERSKY);
-                renderSky();
-                effect->EndPass();
-            }
-
             if(!mwBridge->IsUnderwater(eyePos.z))
             {
                 // Draw distant landscape
@@ -90,6 +82,14 @@ void DistantLand::renderStage0()
                 effect->BeginPass(p);
                 cullDistantStatics(&mwView, &distProj);
                 renderDistantStatics();
+                effect->EndPass();
+            }
+
+            // Sky scattering and sky objects (should be drawn late as possible)
+            if((Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather())
+            {
+                effect->BeginPass(PASS_RENDERSKY);
+                renderSky();
                 effect->EndPass();
             }
 
@@ -516,6 +516,9 @@ void DistantLand::adjustFog()
         // Alter Morrowind's fog colour through its scenegraph
         // This way it automatically restores the correct colour if it has to switch fog modes mid-frame
         mwBridge->setSceneFogCol((DWORD)nearfogCol);
+
+        // Set device fog colour to propagate change immediately
+        device->SetRenderState(D3DRS_FOGCOLOR, (DWORD)nearfogCol);
     }
     else
     {

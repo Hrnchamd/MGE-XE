@@ -65,19 +65,19 @@ RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
     float4 normal = float4(IN.normal.xyz, 0);
 
     // Skin mesh if required
-    if(vertexblendstate == 0)
-    {
-        worldpos = mul(IN.pos, vertexblendpalette[0]);
-        normal = mul(normal, vertexblendpalette[0]);
-    }
-    else
+    if(hasbones)
     {
         worldpos = skin(IN.pos, IN.blendweights);
         normal = skin(normal, IN.blendweights);
     }
+    else
+    {
+        worldpos = mul(IN.pos, vertexblendpalette[0]);
+        normal = mul(normal, vertexblendpalette[0]);
+    }
     normal = normalize(normal);
     
-    // Transform and depth bias to mitigate difference between FFP/VS
+    // Transform and depth bias to mitigate difference between FFP and VS
     OUT.pos = mul(worldpos, view);
     OUT.pos = mul(OUT.pos, proj);
     OUT.pos.z *= 1 - 2e-6;
@@ -87,10 +87,11 @@ RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
     OUT.light = shadowSunEstimate(saturate(dot(normal.xyz, -SunVec)));
 
     // Fog attenuation (shadow darkness and distance fade)
-    if(EyePos.z > -1)
-        OUT.light *= pow(fogMWScalar(OUT.pos.w), 2);
+    float fogatt = pow(fogMWScalar(OUT.pos.w), 2);
+    if(isAboveSeaLevel(EyePos))
+        OUT.light *= fogatt;
     else
-        OUT.light *= saturate(4 * pow(fogMWScalar(OUT.pos.w), 2));
+        OUT.light *= saturate(4 * fogatt);
     
     // Find position in light space, output light depth
     OUT.shadow0pos = mul(worldpos, shadowviewproj[0]);
@@ -110,7 +111,7 @@ float4 RenderShadowsPS (RenderShadowVertOut IN): COLOR0
     
     // Respect alpha test
     float alpha = 1.0;
-    if(alpharef >= 0)
+    if(hasalpha)
     {
         alpha = tex2D(sampBaseTex, IN.texcoords).a;
         clip(alpha - alpharef);

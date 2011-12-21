@@ -8,6 +8,7 @@ std::string currentHUDName;
 MGEhud::hud_id currentHUD;
 
 
+// Shared functions
 
 void resetMWSEHud()
 {
@@ -16,7 +17,7 @@ void resetMWSEHud()
 }
 
 
-mwseInstruction::vtable_t mwseWipeHUDElements::vtable = { &mwseWipeHUDElements::destructor, &mwseWipeHUDElements::getOperands, &mwseWipeHUDElements::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseWipeHUDElements)
 
 // WipeHUDElements
 bool mwseWipeHUDElements::execute(mwseInstruction *_this)
@@ -26,7 +27,7 @@ bool mwseWipeHUDElements::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseWithHUD::vtable = { &mwseWithHUD::destructor, &mwseWithHUD::getOperands, &mwseWithHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseWithHUD)
 
 // WithHUD <string hud>
 bool mwseWithHUD::execute(mwseInstruction *_this)
@@ -40,7 +41,7 @@ bool mwseWithHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseCancelWithHUD::vtable = { &mwseCancelWithHUD::destructor, &mwseCancelWithHUD::getOperands, &mwseCancelWithHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseCancelWithHUD)
 
 // CancelWithHUD
 bool mwseCancelWithHUD::execute(mwseInstruction *_this)
@@ -51,7 +52,7 @@ bool mwseCancelWithHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseLoadHUD::vtable = { &mwseLoadHUD::destructor, &mwseLoadHUD::getOperands, &mwseLoadHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseLoadHUD)
 
 // LoadHUD <string hud> <string texture>
 bool mwseLoadHUD::execute(mwseInstruction *_this)
@@ -68,7 +69,7 @@ bool mwseLoadHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwsePositionHUD::vtable = { &mwsePositionHUD::destructor, &mwsePositionHUD::getOperands, &mwsePositionHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwsePositionHUD)
 
 // PositionHUD <string hud> <float x> <float y>
 bool mwsePositionHUD::execute(mwseInstruction *_this)
@@ -89,7 +90,7 @@ bool mwsePositionHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseScaleHUD::vtable = { &mwseScaleHUD::destructor, &mwseScaleHUD::getOperands, &mwseScaleHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseScaleHUD)
 
 // ScaleHUD <string hud> <float xscale> <float yscale>
 bool mwseScaleHUD::execute(mwseInstruction *_this)
@@ -110,7 +111,7 @@ bool mwseScaleHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseFullscreenHUD::vtable = { &mwseFullscreenHUD::destructor, &mwseFullscreenHUD::getOperands, &mwseFullscreenHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseFullscreenHUD)
 
 // FullscreenHUD <string hud>
 bool mwseFullscreenHUD::execute(mwseInstruction *_this)
@@ -126,7 +127,7 @@ bool mwseFullscreenHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseEnableHUD::vtable = { &mwseEnableHUD::destructor, &mwseEnableHUD::getOperands, &mwseEnableHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseEnableHUD)
 
 // EnableHUD <string hud>
 bool mwseEnableHUD::execute(mwseInstruction *_this)
@@ -142,7 +143,7 @@ bool mwseEnableHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseDisableHUD::vtable = { &mwseDisableHUD::destructor, &mwseDisableHUD::getOperands, &mwseDisableHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseDisableHUD)
 
 // DisableHUD <string hud>
 bool mwseDisableHUD::execute(mwseInstruction *_this)
@@ -158,7 +159,7 @@ bool mwseDisableHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseChangeHUDTexture::vtable = { &mwseChangeHUDTexture::destructor, &mwseChangeHUDTexture::getOperands, &mwseChangeHUDTexture::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseChangeHUDTexture)
 
 // ChangeHUDTexture <string hud> <string texture>
 bool mwseChangeHUDTexture::execute(mwseInstruction *_this)
@@ -177,7 +178,7 @@ bool mwseChangeHUDTexture::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseChangeHUDEffect::vtable = { &mwseChangeHUDEffect::destructor, &mwseChangeHUDEffect::getOperands, &mwseChangeHUDEffect::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseChangeHUDEffect)
 
 // ChangeHUDEffect <string hud> <string effect>
 bool mwseChangeHUDEffect::execute(mwseInstruction *_this)
@@ -196,7 +197,7 @@ bool mwseChangeHUDEffect::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseFreeHUD::vtable = { &mwseFreeHUD::destructor, &mwseFreeHUD::getOperands, &mwseFreeHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseFreeHUD)
 
 // FreeHUD <string hud>
 bool mwseFreeHUD::execute(mwseInstruction *_this)
@@ -212,7 +213,7 @@ bool mwseFreeHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDLoadHUD::vtable = { &mwseNIDLoadHUD::destructor, &mwseNIDLoadHUD::getOperands, &mwseNIDLoadHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDLoadHUD)
 
 // NIDLoadHUD <string texture>
 bool mwseNIDLoadHUD::execute(mwseInstruction *_this)
@@ -225,7 +226,7 @@ bool mwseNIDLoadHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDPositionHUD::vtable = { &mwseNIDPositionHUD::destructor, &mwseNIDPositionHUD::getOperands, &mwseNIDPositionHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDPositionHUD)
 
 // NIDPositionHUD <float x> <float y>
 bool mwseNIDPositionHUD::execute(mwseInstruction *_this)
@@ -241,7 +242,7 @@ bool mwseNIDPositionHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDScaleHUD::vtable = { &mwseNIDScaleHUD::destructor, &mwseNIDScaleHUD::getOperands, &mwseNIDScaleHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDScaleHUD)
 
 // NIDScaleHUD <float xscale> <float yscale>
 bool mwseNIDScaleHUD::execute(mwseInstruction *_this)
@@ -257,7 +258,7 @@ bool mwseNIDScaleHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDFullscreenHUD::vtable = { &mwseNIDFullscreenHUD::destructor, &mwseNIDFullscreenHUD::getOperands, &mwseNIDFullscreenHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDFullscreenHUD)
 
 // NIDFullscreenHUD
 bool mwseNIDFullscreenHUD::execute(mwseInstruction *_this)
@@ -268,7 +269,7 @@ bool mwseNIDFullscreenHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDEnableHUD::vtable = { &mwseNIDEnableHUD::destructor, &mwseNIDEnableHUD::getOperands, &mwseNIDEnableHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDEnableHUD)
 
 // NIDEnableHUD
 bool mwseNIDEnableHUD::execute(mwseInstruction *_this)
@@ -279,7 +280,7 @@ bool mwseNIDEnableHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDDisableHUD::vtable = { &mwseNIDDisableHUD::destructor, &mwseNIDDisableHUD::getOperands, &mwseNIDDisableHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDDisableHUD)
 
 // NIDDisableHUD
 bool mwseNIDDisableHUD::execute(mwseInstruction *_this)
@@ -290,7 +291,7 @@ bool mwseNIDDisableHUD::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDChangeHUDTexture::vtable = { &mwseNIDChangeHUDTexture::destructor, &mwseNIDChangeHUDTexture::getOperands, &mwseNIDChangeHUDTexture::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDChangeHUDTexture)
 
 // NIDChangeHUDTexture <string texture>
 bool mwseNIDChangeHUDTexture::execute(mwseInstruction *_this)
@@ -304,7 +305,7 @@ bool mwseNIDChangeHUDTexture::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDChangeHUDEffect::vtable = { &mwseNIDChangeHUDEffect::destructor, &mwseNIDChangeHUDEffect::getOperands, &mwseNIDChangeHUDEffect::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDChangeHUDEffect)
 
 // NIDChangeHUDEffect <string effect>
 bool mwseNIDChangeHUDEffect::execute(mwseInstruction *_this)
@@ -318,7 +319,7 @@ bool mwseNIDChangeHUDEffect::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseNIDFreeHUD::vtable = { &mwseNIDFreeHUD::destructor, &mwseNIDFreeHUD::getOperands, &mwseNIDFreeHUD::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDFreeHUD)
 
 // NIDFreeHUD
 bool mwseNIDFreeHUD::execute(mwseInstruction *_this)

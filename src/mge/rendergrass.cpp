@@ -95,6 +95,7 @@ void DistantLand::renderGrassInstZ()
     if(visGrass.visible_set.empty())
         return;
 
+    effect->SetBool(ehHasAlpha, true);
     effect->SetFloat(ehAlphaRef, 128.0f / 255.0f);
     device->SetVertexDeclaration(GrassDecl);
 

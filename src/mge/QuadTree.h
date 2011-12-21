@@ -88,6 +88,7 @@ struct QuadTreeNode {
     ~QuadTreeNode();
 
     void GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside = false);
+    void GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set, bool inside = false);
     void AddMesh(QuadTreeMesh *new_mesh, int depth = QUADTREE_MAX_DEPTH);
 
     void PushDown(QuadTreeMesh *new_mesh, int depth);
@@ -117,6 +118,7 @@ public:
     bool Optimize();
     void Clear();
     void GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set);
+    void GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set);
     void SetBoxSize(float size);
     void SetBoxCenter(const D3DXVECTOR2& center);
     void CalcVolume();

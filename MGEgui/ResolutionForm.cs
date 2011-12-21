@@ -180,11 +180,11 @@ namespace MGEgui {
             //Show the dialog
             ResolutionForm rf=new ResolutionForm();
             if(rf.ShowDialog()==DialogResult.OK) {
-                //Write new dtat to the registry
+                //Write new data to the registry
                 try {
                     key = Registry.LocalMachine.OpenSubKey(@"Software\Bethesda Softworks\Morrowind", true);
                 } catch {
-                    MessageBox.Show("Could not write Morrowind registry key. MGE needs to be launched as Administrator.", "Error");
+                    MessageBox.Show(Statics.strings["UnableToWriteReg"].text, Statics.strings["Error"].text);
                 }
                 if (key != null) {
                     key.SetValue("Screen Width", sWidth);

@@ -103,7 +103,7 @@ public:
     static D3DXHANDLE ehShadowViewproj;
     static D3DXHANDLE ehVertexBlendState, ehVertexBlendPalette;
     static D3DXHANDLE ehAlphaRef;
-    static D3DXHANDLE ehHasAlpha;
+    static D3DXHANDLE ehHasAlpha, ehHasBones;
     static D3DXHANDLE ehTex0, ehTex1, ehTex2, ehTex3, ehTex4, ehTex5;
     static D3DXHANDLE ehEyePos;
     static D3DXHANDLE ehFootPos;

@@ -20,9 +20,15 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     device->SetDepthStencilSurface(surfShadowZ);
     device->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, horizonCol, 1.0, 0);
 
-    // Calculate reflected view matrix, mirror plane at waterlevel
+    // If using dynamic ripples, the water level can be lowered by up to 0.5 * waveheight
+    // so move clip plane downwards at the cost of some reflection errors
+    float waterlevel = mwBridge->WaterLevel();
+    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
+        waterlevel -= 0.5 * Configuration.DL.WaterWaveHeight;
+
+    // Calculate reflected view matrix, mirror plane at water mesh level
     D3DXMATRIX reflView;
-    D3DXPLANE plane(0, 0, 1.0, -(mwBridge->WaterLevel() - 1.0));
+    D3DXPLANE plane(0, 0, 1.0, -(waterlevel - 1.0));
     D3DXMatrixReflect(&reflView, &plane);
     D3DXMatrixMultiply(&reflView, &reflView, view);
     effect->SetMatrix(ehView, &reflView);
@@ -31,15 +37,6 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     D3DXMATRIX reflProj = *proj;
     editProjectionZ(&reflProj, 4.0, Configuration.DL.DrawDist * 8192.0);
     effect->SetMatrix(ehProj, &reflProj);
-
-    if((Configuration.MGEFlags & REFLECT_SKY) && !recordSky.empty() && !mwBridge->IsUnderwater(eyePos.z))
-    {
-        // Draw sky reflection, with opposite culling
-        effect->BeginPass(PASS_RENDERSKY);
-        device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
-        renderReflectedSky();
-        effect->EndPass();
-    }
 
     // Clipping setup
     D3DXMATRIX clipMat;
@@ -78,6 +75,15 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
         effect->EndPass();
     }
 
+    if((Configuration.MGEFlags & REFLECT_SKY) && !recordSky.empty() && !mwBridge->IsUnderwater(eyePos.z))
+    {
+        // Draw sky reflection, with opposite culling
+        effect->BeginPass(PASS_RENDERSKY);
+        device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+        renderReflectedSky();
+        effect->EndPass();
+    }
+
     // Restore view state
     device->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
     effect->SetMatrix(ehView, view);
@@ -98,7 +104,7 @@ void DistantLand::renderReflectedSky()
 
     for(vector<RenderedState>::iterator i = recordSky.begin(); i != recordSky.end(); ++i)
     {
-        // Adjust world transform as skydome position is eye relative
+        // Adjust world transform, as skydome is positioned in eye space instead of world space
         i->worldTransforms[0]._43 += adjustZ;
 
         // Re-adjust sky to approximate change in visible normal distribution with distance
@@ -107,7 +113,7 @@ void DistantLand::renderReflectedSky()
             i->worldTransforms[0]._43 += 600.0;
 
         effect->SetMatrix(ehWorld, &i->worldTransforms[0]);
-        effect->SetInt(ehHasAlpha, i->texture != 0);
+        effect->SetBool(ehHasAlpha, i->texture != 0);
         effect->SetTexture(ehTex0, i->texture);
         effect->CommitChanges();
         device->SetRenderState(D3DRS_ALPHABLENDENABLE, i->texture ? 1 : 0);
@@ -137,10 +143,11 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRI
     // Cull sort and draw
     VisibleSet visible_set;
     ViewFrustum range_frustum(&ds_viewproj);
+    D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, zf);
 
-    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, visible_set);
-    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, visible_set);
-    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, visible_set);
+    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visible_set);
+    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visible_set);
+    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visible_set);
     visible_set.SortByState();
 
     device->SetVertexDeclaration(StaticDecl);

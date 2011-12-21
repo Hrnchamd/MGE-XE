@@ -3,7 +3,7 @@
 #include "funcgmst.h"
 
 
-mwseInstruction::vtable_t mwseGetGS::vtable = { &mwseGetGS::destructor, &mwseGetGS::getOperands, &mwseGetGS::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetGS)
 
 // GetGS <long gmst_id> -> returns <long/float value>
 bool mwseGetGS::execute(mwseInstruction *_this)
@@ -20,7 +20,7 @@ bool mwseGetGS::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseSetGS::vtable = { &mwseSetGS::destructor, &mwseSetGS::getOperands, &mwseSetGS::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetGS)
 
 // SetGS <long gmst_id> <long/float value>
 bool mwseSetGS::execute(mwseInstruction *_this)

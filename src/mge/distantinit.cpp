@@ -82,6 +82,7 @@ D3DXHANDLE DistantLand::ehVertexBlendState;
 D3DXHANDLE DistantLand::ehVertexBlendPalette;
 D3DXHANDLE DistantLand::ehAlphaRef;
 D3DXHANDLE DistantLand::ehHasAlpha;
+D3DXHANDLE DistantLand::ehHasBones;
 D3DXHANDLE DistantLand::ehTex0;
 D3DXHANDLE DistantLand::ehTex1;
 D3DXHANDLE DistantLand::ehTex2;
@@ -265,6 +266,7 @@ bool DistantLand::initShader()
     ehVertexBlendPalette = effect->GetParameterByName(0, "vertexblendpalette");
     ehAlphaRef = effect->GetParameterByName(0, "alpharef");
     ehHasAlpha = effect->GetParameterByName(0, "hasalpha");
+    ehHasBones = effect->GetParameterByName(0, "hasbones");
     ehTex0 = effect->GetParameterByName(0, "tex0");
     ehTex1 = effect->GetParameterByName(0, "tex1");
     ehTex2 = effect->GetParameterByName(0, "tex2");
@@ -879,6 +881,12 @@ bool DistantLand::initLandscape()
         return false;
     }
 
+    if(GetFileAttributes("data files\\distantland\\world") == INVALID_FILE_ATTRIBUTES)
+    {
+        LOG::logline("!! Distant land has not been generated. It is required for MGE XE to run.");
+        return false;
+    }
+
     hr = D3DXCreateTextureFromFileEx(device, "Data files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
     if(hr != D3D_OK)
     {
@@ -1037,6 +1045,17 @@ void DistantLand::release()
     texWorldDetail->Release(); texWorldDetail = 0;
 
     BSAClearTextureCache();
+
+    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
+    {
+        surfRain->Release(); surfRain = 0;
+        texRain->Release(); texRain = 0;
+        surfRipples->Release(); surfRipples = 0;
+        texRipples->Release(); texRipples = 0;
+        surfRippleBuffer->Release(); surfRippleBuffer = 0;
+        texRippleBuffer->Release(); texRippleBuffer = 0;
+        vbWaveSim->Release(); vbWaveSim = 0;
+    }
 
     LandDecl->Release(); LandDecl = 0;
     StaticDecl->Release(); StaticDecl = 0;

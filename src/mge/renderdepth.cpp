@@ -121,13 +121,17 @@ void DistantLand::renderDepthRecorded()
         if((i->alphaTest || i->blendEnable) && i->texture)
         {
             effect->SetTexture(ehTex0, i->texture);
+            effect->SetBool(ehHasAlpha, true);
             effect->SetFloat(ehAlphaRef, i->alphaTest ? (i->alphaRef / 255.0f) : 0.5f);
         }
         else
         {
+            effect->SetTexture(ehTex0, 0);
+            effect->SetBool(ehHasAlpha, false);
             effect->SetFloat(ehAlphaRef, -1.0f);
         }
 
+        effect->SetBool(ehHasBones, i->vertexBlendState != 0);
         effect->SetInt(ehVertexBlendState, i->vertexBlendState);
         effect->SetMatrixArray(ehVertexBlendPalette, i->worldTransforms, 4);
         effectDepth->CommitChanges();

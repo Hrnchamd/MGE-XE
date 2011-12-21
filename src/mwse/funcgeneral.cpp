@@ -7,7 +7,7 @@
 #include "mge/userhud.h"
 
 
-mwseInstruction::vtable_t mwseWipeAll::vtable = { &mwseWipeAll::destructor, &mwseWipeAll::getOperands, &mwseWipeAll::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseWipeAll)
 
 // WipeAll
 bool mwseWipeAll::execute(mwseInstruction *_this)
@@ -17,7 +17,7 @@ bool mwseWipeAll::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseOutputDebugString::vtable = { &mwseOutputDebugString::destructor, &mwseOutputDebugString::getOperands, &mwseOutputDebugString::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseOutputDebugString)
 
 // OutputDebugString
 bool mwseOutputDebugString::execute(mwseInstruction *_this)
@@ -30,7 +30,7 @@ bool mwseOutputDebugString::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseOutputVersionString::vtable = { &mwseOutputVersionString::destructor, &mwseOutputVersionString::getOperands, &mwseOutputVersionString::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseOutputVersionString)
 
 // OutputVersionString
 bool mwseOutputVersionString::execute(mwseInstruction *_this)
@@ -40,7 +40,7 @@ bool mwseOutputVersionString::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseGetVersion::vtable = { &mwseGetVersion::destructor, &mwseGetVersion::getOperands, &mwseGetVersion::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetVersion)
 
 // GetVersion -> returns <long version>
 bool mwseGetVersion::execute(mwseInstruction *_this)
@@ -50,7 +50,7 @@ bool mwseGetVersion::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseGetScreenWidth::vtable = { &mwseGetScreenWidth::destructor, &mwseGetScreenWidth::getOperands, &mwseGetScreenWidth::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetScreenWidth)
 
 // GetScreenWidth -> returns <short width>
 bool mwseGetScreenWidth::execute(mwseInstruction *_this)
@@ -60,7 +60,7 @@ bool mwseGetScreenWidth::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseGetScreenHeight::vtable = { &mwseGetScreenHeight::destructor, &mwseGetScreenHeight::getOperands, &mwseGetScreenHeight::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetScreenHeight)
 
 // GetScreenHeight -> returns <short height>
 bool mwseGetScreenHeight::execute(mwseInstruction *_this)

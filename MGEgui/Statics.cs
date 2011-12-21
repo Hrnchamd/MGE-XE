@@ -296,7 +296,9 @@ namespace MGEgui {
                 "You appear to have part of an old version of MGE installed.\n" +
                 "You need to remove dsound.dll from your Morrowind directory for this version of MGE to function.")},
             {"MWRegistry", new Str (
-                "Unable to find Morrowind registry keys. Please run the game before installing MGE")},
+                "Unable to find Morrowind registry keys. Please run the game as administrator before installing MGE.")},
+            {"UnableToWriteReg", new Str (
+                "Could not write Morrowind registry key. MGE needs to be launched as Administrator.")},
             {"Translation", new Str (
                 "")}
         };

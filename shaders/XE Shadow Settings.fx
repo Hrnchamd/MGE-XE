@@ -8,7 +8,7 @@
 //------------------------------------------------------------
 // Shadow parameters
 
-// Amount of illumination in shadow, recommend values in [0.25, 0.5]
+// Luminance reduction parameter for shadowed areas, recommend values in [0.25, 0.5]
 static const float shade = 0.4;
 
 // Shade colouration, how much each channel is affected by shadow
@@ -24,5 +24,5 @@ static const float ESM_bias = 2e-3 * ESM_c;
 // Scale stored depth to use (most of) FP16 range
 static const float ESM_scale = 32768.0;
 
-// Shadow map pixel dimension
+// Shadow map pixel dimension (fixed)
 static const float shadowPixelSize = 1/1024.0;

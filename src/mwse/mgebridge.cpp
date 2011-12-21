@@ -69,18 +69,11 @@ void MWSE_MGEPlugin::init(DWORD vm_global, DWORD vm_addinstr)
     MWSEAddInstruction(0x3777, new mwseGetZoom(*vm));
 
     /* Unimplemented
-    MWSEAddInstruction(ENABLEFULLSCREENSHADER, new FUNCENABLEFULLSCREENSHADER(*this));
-    MWSEAddInstruction(DISABLEFULLSCREENSHADERS, new FUNCDISABLEFULLSCREENSHADERS(*this));
-    MWSEAddInstruction(TOGGLEFULLSCREENSHADERS, new FUNCTOGGLEFULLSCREENSHADERS(*this));
-    MWSEAddInstruction(LOADEFFECT, new FUNCLOADEFFECT(*this));
-    MWSEAddInstruction(SETEFFECTTECHNIQUE, new FUNCSETEFFECTTECHNIQUE(*this));
-    MWSEAddInstruction(USEEFFECTASFULLSCREENSHADER, new FUNCUSEEFFECTASFULLSCREENSHADER(*this));
-    MWSEAddInstruction(DISABLEEFFECTASFULLSCREENSHADER, new FUNCDISABLEEFFECTASFULLSCREENSHADER(*this));
-    MWSEAddInstruction(FREEEFFECT, new FUNCFREEEFFECT(*this));
-    MWSEAddInstruction(SETEFFECTVARLONG, new FUNCSETEFFECTVARLONG(*this));
-    MWSEAddInstruction(SETEFFECTVARFLOAT, new FUNCSETEFFECTVARFLOAT(*this));
-    MWSEAddInstruction(SETEFFECTVARVECTOR, new FUNCSETEFFECTVARVECTOR(*this));
-    MWSEAddInstruction(SETEFFECTVARTEXTURE, new FUNCSETEFFECTVARTEXTURE(*this));
-    MWSEAddInstruction(WIPELOADEDEFFECTS, new FUNCWIPELOADEDEFFECTS(*this));
+    MWSEAddInstruction(0x378e, new mwseLoadShaderEffect(*this));
+    MWSEAddInstruction(0x378f, new mwseUnloadShaderEffect(*this));
+    MWSEAddInstruction(0x3791, new mwseSetEffectVarLong(*this));
+    MWSEAddInstruction(0x3792, new mwseSetEffectVarFloat(*this));
+    MWSEAddInstruction(0x3793, new mwseSetEffectVarVector(*this));
+    MWSEAddInstruction(0x3794, new mwseSetEffectVarTexture(*this));
     */
 }

@@ -5,7 +5,7 @@
 
 
 
-mwseInstruction::vtable_t mwseEnableZoom::vtable = { &mwseEnableZoom::destructor, &mwseEnableZoom::getOperands, &mwseEnableZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseEnableZoom)
 
 // EnableZoom
 bool mwseEnableZoom::execute(mwseInstruction *_this)
@@ -15,7 +15,7 @@ bool mwseEnableZoom::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseDisableZoom::vtable = { &mwseDisableZoom::destructor, &mwseDisableZoom::getOperands, &mwseDisableZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseDisableZoom)
 
 // DisableZoom
 bool mwseDisableZoom::execute(mwseInstruction *_this)
@@ -25,7 +25,7 @@ bool mwseDisableZoom::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseToggleZoom::vtable = { &mwseToggleZoom::destructor, &mwseToggleZoom::getOperands, &mwseToggleZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseToggleZoom)
 
 // ToggleZoom
 bool mwseToggleZoom::execute(mwseInstruction *_this)
@@ -35,7 +35,7 @@ bool mwseToggleZoom::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseZoomIn::vtable = { &mwseZoomIn::destructor, &mwseZoomIn::getOperands, &mwseZoomIn::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomIn)
 
 // ZoomIn
 bool mwseZoomIn::execute(mwseInstruction *_this)
@@ -45,7 +45,7 @@ bool mwseZoomIn::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseZoomOut::vtable = { &mwseZoomOut::destructor, &mwseZoomOut::getOperands, &mwseZoomOut::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomOut)
 
 // ZoomOut
 bool mwseZoomOut::execute(mwseInstruction *_this)
@@ -55,7 +55,7 @@ bool mwseZoomOut::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseZoomInBy::vtable = { &mwseZoomInBy::destructor, &mwseZoomInBy::getOperands, &mwseZoomInBy::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomInBy)
 
 // ZoomInBy <float scale>
 bool mwseZoomInBy::execute(mwseInstruction *_this)
@@ -68,7 +68,7 @@ bool mwseZoomInBy::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseZoomOutBy::vtable = { &mwseZoomOutBy::destructor, &mwseZoomOutBy::getOperands, &mwseZoomOutBy::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomOutBy)
 
 // ZoomOutBy <float scale>
 bool mwseZoomOutBy::execute(mwseInstruction *_this)
@@ -81,7 +81,7 @@ bool mwseZoomOutBy::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseSetZoom::vtable = { &mwseSetZoom::destructor, &mwseSetZoom::getOperands, &mwseSetZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetZoom)
 
 // SetZoom <float scale>
 bool mwseSetZoom::execute(mwseInstruction *_this)
@@ -94,7 +94,7 @@ bool mwseSetZoom::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseZoom::vtable = { &mwseZoom::destructor, &mwseZoom::getOperands, &mwseZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoom)
 
 // Zoom <float rate>
 bool mwseZoom::execute(mwseInstruction *_this)
@@ -108,7 +108,7 @@ bool mwseZoom::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseStopZoom::vtable = { &mwseStopZoom::destructor, &mwseStopZoom::getOperands, &mwseStopZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseStopZoom)
 
 // StopZoom
 bool mwseStopZoom::execute(mwseInstruction *_this)
@@ -119,7 +119,7 @@ bool mwseStopZoom::execute(mwseInstruction *_this)
 }
 
 
-mwseInstruction::vtable_t mwseGetZoom::vtable = { &mwseGetZoom::destructor, &mwseGetZoom::getOperands, &mwseGetZoom::execute };
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetZoom)
 
 // GetZoom -> returns <float scale>
 bool mwseGetZoom::execute(mwseInstruction *_this)

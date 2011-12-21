@@ -1176,23 +1176,9 @@ namespace MGEgui {
                 byte [] bytes = File.ReadAllBytes (Statics.fn_dlver);
                 if (bytes.Length == 1 && bytes [0] == (byte)Statics.DistantLandVersion) {
                     BinaryReader br = new BinaryReader (File.OpenRead (Statics.fn_usagedata));
-                    /*br.BaseStream.Position = 4;
-                    long size = br.ReadInt32 () * 32 + 8;
-                    if (br.BaseStream.Length == size) {
-                        br.Close ();
-                        if (MessageBox.Show ("Statics usage file uses old format, that doesn't contain \"Minimum static size\" saved.\nDo you want to update this file and save \"Minimum static size\" to it?\n\nIt will be still compatible with older versions of MGE.", "Update Statics usage data", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                            BinaryWriter bw = new BinaryWriter (File.OpenWrite (Statics.fn_usagedata));
-                            bw.BaseStream.Position = size;
-                            bw.Write ((int)0);
-                            bw.Write (Convert.ToSingle (tbDLNearSize.Text));
-                            bw.Close ();
-                            MessageBox.Show ("Statics usage file was updated to new format,\nand is still compatible with older versions of MGE.", "Message", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-                    } else {/**/
                     br.BaseStream.Position = br.BaseStream.Length - 4;
                     tbDLNearSize.Text = br.ReadSingle ().ToString ();
                     br.Close ();
-                    //}
                 }
             }
             ValidateDistances (null, null);

@@ -80,7 +80,7 @@ float4 ShadowSoftenPS (ShadowPostOut IN) : COLOR0
     // Filter all channels at the same time
     // Looks better without exp-space filtering, with a side effect of expanding silhouttes by about 1 pixel
     float4 s = tex2D(sampDepth, IN.texcoords);
-    if(hasalpha == 0)
+    if(!hasalpha)
     {
         s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(-1.42*shadowPixelSize, 0));
         s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(-0.71*shadowPixelSize, 0));

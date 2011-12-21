@@ -16,7 +16,7 @@ StatVertOut StaticExteriorVS (StatVertIn IN)
 {
     StatVertOut OUT;
 
-    // Transforms and depth bias
+    // Transforms and implicit depth bias
     float4 worldpos = mul(IN.pos, world);
     OUT.pos = mul(worldpos, view);
     OUT.pos = mul(OUT.pos, proj);
@@ -43,7 +43,7 @@ StatVertOut StaticInteriorVS (StatVertIn IN)
 {
     StatVertOut OUT;
 
-    // Transforms and depth bias
+    // Transforms and implicit depth bias
     float4 worldpos = mul(IN.pos, world);
     OUT.pos = mul(worldpos, view);
     OUT.pos = mul(OUT.pos, proj);
@@ -108,7 +108,7 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
     float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
     normal = normalize(instancedMul(normal, IN.world0, IN.world1, IN.world2));
     
-    // Lighting (with backface culling off grass shading needs tweak factors)
+    // Lighting (with backface culling turned off, grass shading requires tweak factors)
     float3 light = 0.5 * SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb; // + emissive; (some grass has it for no reason producing overbrightness)
     OUT.colour.rgb = saturate(light);    // vertex colour is also unreliable
 
@@ -183,7 +183,7 @@ LandVertOut LandscapeReflVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
     // Fogging
     float3 eyevec = pos.xyz - EyePos.xyz;
     float dist = length(eyevec);
-    if(EyePos.z > -1)
+    if(isAboveSeaLevel(EyePos))
         OUT.fog = fogColour(eyevec / dist, dist);
     else
         OUT.fog = fogMWColour(dist);
@@ -257,22 +257,24 @@ SkyVertOut SkyVS (StatVertIn IN)
 {
     SkyVertOut OUT;
 
+    // Screw around with skydome, align default mesh with horizon
     float4 pos = IN.pos;
-    
-    // Screw around with skydome, align horizon
     if(!hasalpha)
         pos.z = 50 * (IN.pos.z + 200);
+        
     pos = mul(pos, world);
     OUT.skypos = pos - float4(world[3][0], world[3][1], world[3][2], world[3][3]);
 
     pos = mul(pos, view);
     OUT.pos = mul(pos, proj);
+    OUT.pos.z = 0.999999 * OUT.pos.w;   // Pin z to far plane so it renders to background
     OUT.color = IN.color;
     OUT.texcoords = IN.texcoords;
     
     return OUT;
 }
 
+// Ordered dithering matrix
 static const float ditherSky[4][4] = { 0.001176, 0.001961, -0.001176, -0.001699, -0.000654, -0.000915, 0.000392, 0.000131, -0.000131, -0.001961, 0.000654, 0.000915, 0.001699, 0.001438, -0.000392, -0.001438 };
 
 float4 SkyPS (SkyVertOut IN, float2 vpos : VPOS) : COLOR0
@@ -401,7 +403,7 @@ Technique T0 {
     //------------------------------------------------------------
     // Used for rendering sky scattering and sky reflection
     Pass P5 {
-        ZEnable = false;
+        ZEnable = true;
         ZWriteEnable = false;
         CullMode = CW;
         

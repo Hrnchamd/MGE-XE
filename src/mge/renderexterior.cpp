@@ -18,7 +18,7 @@ void DistantLand::renderSky()
         {
             // Textured object; draw as normal in shader
             effect->SetTexture(ehTex0, i->texture);
-            effect->SetInt(ehHasAlpha, 1);
+            effect->SetBool(ehHasAlpha, true);
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
             device->SetRenderState(D3DRS_SRCBLEND, i->srcBlend);
             device->SetRenderState(D3DRS_DESTBLEND, i->destBlend);
@@ -26,7 +26,7 @@ void DistantLand::renderSky()
         else
         {
             // Sky; perform atmosphere scattering in shader
-            effect->SetInt(ehHasAlpha, 0);
+            effect->SetBool(ehHasAlpha, false);
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
         }
 
@@ -43,6 +43,7 @@ void DistantLand::renderSky()
 void DistantLand::renderDistantLand(ID3DXEffect *e, const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
     D3DXMATRIX world, viewproj = (*view) * (*proj);
+    D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, Configuration.DL.DrawDist * 8192.0f);
 
     D3DXMatrixIdentity(&world);
     effect->SetMatrix(ehWorld, &world);
@@ -55,7 +56,7 @@ void DistantLand::renderDistantLand(ID3DXEffect *e, const D3DXMATRIX *view, cons
     // Cull and draw
     ViewFrustum frustum(&viewproj);
     visLand.RemoveAll();
-    LandQuadTree.GetVisibleMeshes(frustum, visLand);
+    LandQuadTree.GetVisibleMeshes(frustum, viewsphere, visLand);
 
     device->SetVertexDeclaration(LandDecl);
     visLand.Render(device, 0, 0, 0, 0, 0, SIZEOFLANDVERT);
@@ -77,7 +78,8 @@ void DistantLand::renderDistantLandZ()
 void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
     D3DXMATRIX ds_proj = *proj, ds_viewproj;
-    float zn = 6400.0f, zf = zn;
+    D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, 0);
+    float zn = 6400.0, zf = zn;
     float cullDist = fogEnd;
 
     visDistant.RemoveAll();
@@ -88,7 +90,8 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         editProjectionZ(&ds_proj, zn, zf);
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
-        currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, visDistant);
+        viewsphere.w = zf;
+        currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
     zf = min(Configuration.DL.FarStaticEnd * 8192.0f, cullDist);
@@ -97,7 +100,8 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         editProjectionZ(&ds_proj, zn, zf);
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
-        currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, visDistant);
+        viewsphere.w = zf;
+        currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
     zf = min(Configuration.DL.VeryFarStaticEnd * 8192.0f, cullDist);
@@ -106,7 +110,8 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         editProjectionZ(&ds_proj, zn, zf);
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
-        currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, visDistant);
+        viewsphere.w = zf;
+        currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
     visDistant.SortByState();

@@ -14,7 +14,7 @@ shared Matrix shadowviewproj[2];
 shared int vertexblendstate;
 shared Matrix vertexblendpalette[4];
 shared float alpharef;
-shared int hasalpha;
+shared bool hasalpha, hasbones;
 
 shared float3 EyePos, FootPos;
 shared float3 SunVec, SunCol, SunAmb;
@@ -139,7 +139,7 @@ float fogMWScalar(float dist)
             fogdist = (dist - FogStart) / (FogRange - FogStart);
             fog = saturate(exp(-fogdist));
             fFogCol2 *= 1 - fog;
-            fogdist = saturate(0.19 * fogdist);
+            fogdist = saturate(0.21 * fogdist);
         }
         
         if(niceWeather > 0.001 && EyePos.z > /*WaterLevel*/-1)
@@ -200,6 +200,14 @@ float3 fogApply(float3 c, float4 f)
 float landBias(float dist)
 {
     return -(16 + 60000 * saturate(1 - dist/6000));
+}
+
+//------------------------------------------------------------
+// Is point above water function, for exteriors only
+
+bool isAboveSeaLevel(float3 pos)
+{
+    return (pos.z > -1);
 }
 
 //------------------------------------------------------------

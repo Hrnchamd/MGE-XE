@@ -231,7 +231,7 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
     return ProxyDevice::EndScene();
 }
 
-// Clear - Main frame, skybox doesn't extend over whole background
+// Clear - Main frame, skybox mesh doesn't extend over whole background
 // Background colour is visible at horizon
 HRESULT _stdcall MGEProxyDevice::Clear(DWORD a, const D3DRECT *b, DWORD c, D3DCOLOR d, float e, DWORD f)
 {

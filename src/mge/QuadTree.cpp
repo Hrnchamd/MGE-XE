@@ -140,7 +140,7 @@ void VisibleSet::Render(
             if(hasalpha_handle)
             {
                 // Control if texture access is required
-                effectPool->SetInt(*hasalpha_handle, m->hasalpha);
+                effectPool->SetBool(*hasalpha_handle, m->hasalpha);
             }
             else
             {
@@ -248,6 +248,71 @@ void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visi
         }
 
         visible_set.AddMesh(mesh);
+    }
+}
+
+void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set, bool inside)
+{
+    // Check if this node is fully outside the frustum.
+    // If inside = true then that means it has already been determined that this entire branch is visible
+    if(inside == false)
+    {
+        ViewFrustum::Containment result = frustum.ContainsSphere(sphere);
+
+        if(result == ViewFrustum::OUTSIDE)
+            return;
+
+        if(result == ViewFrustum::INSIDE)
+            inside = true;
+    }
+
+    // If this node has children, check them
+    if(GetChildCount() > 0)
+    {
+        if(children[0])
+            children[0]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+
+        if(children[1])
+            children[1]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+
+        if(children[2])
+            children[2]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+
+        if(children[3])
+            children[3]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+
+        return;
+    }
+
+    // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
+    for(size_t i = 0, size = meshes.size(); i < size; ++i)
+    {
+        const QuadTreeMesh *mesh = meshes[i];
+
+        if(inside == false)
+        {
+            ViewFrustum::Containment res = frustum.ContainsSphere(mesh->sphere);
+            if(res == ViewFrustum::OUTSIDE)
+                continue;
+
+            if(res == ViewFrustum::INTERSECTS)
+            {
+                // The sphere intersects one of the edges of the screen, so try the box test
+                res = frustum.ContainsBox(mesh->box);
+                if(res == ViewFrustum::OUTSIDE)
+                    continue;
+            }
+        }
+
+        // Avoid camera rotation dependent clipping by using a spherical far clip plane
+        // Test mesh against view sphere (eyepos.xyz, radius)
+        D3DXVECTOR3 eyepos(viewsphere.x, viewsphere.y, viewsphere.z);
+        D3DXVECTOR3 d = mesh->sphere.center - eyepos;
+        float rangesquared = d.x*d.x + d.y*d.y + d.z*d.z;
+        float viewlimit = viewsphere.w + mesh->sphere.radius;
+
+        if(rangesquared <= viewlimit*viewlimit)
+            visible_set.AddMesh(mesh);
     }
 }
 
@@ -601,6 +666,13 @@ void QuadTree::Clear()
 void QuadTree::GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set)
 {
     m_root_node->GetVisibleMeshes(frustum, visible_set);
+}
+
+//-----------------------------------------------------------------------------
+
+void QuadTree::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& sphere, VisibleSet& visible_set)
+{
+    m_root_node->GetVisibleMeshes(frustum, sphere, visible_set);
 }
 
 //-----------------------------------------------------------------------------

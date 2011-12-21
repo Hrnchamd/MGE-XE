@@ -1051,7 +1051,7 @@ namespace MGEgui {
         	// lHDR2
         	// 
         	this.lHDR2.AutoSize = true;
-        	this.lHDR2.Location = new System.Drawing.Point(188, 57);
+        	this.lHDR2.Location = new System.Drawing.Point(197, 57);
         	this.lHDR2.Name = "lHDR2";
         	this.lHDR2.Size = new System.Drawing.Size(24, 13);
         	this.lHDR2.TabIndex = 21;
@@ -1100,7 +1100,7 @@ namespace MGEgui {
         	        	        	0,
         	        	        	0,
         	        	        	65536});
-        	this.udHDR.Location = new System.Drawing.Point(126, 55);
+        	this.udHDR.Location = new System.Drawing.Point(135, 55);
         	this.udHDR.Maximum = new decimal(new int[] {
         	        	        	30,
         	        	        	0,
@@ -1119,7 +1119,7 @@ namespace MGEgui {
         	// 
         	// bShaderEd
         	// 
-        	this.bShaderEd.Location = new System.Drawing.Point(115, 19);
+        	this.bShaderEd.Location = new System.Drawing.Point(125, 19);
         	this.bShaderEd.Name = "bShaderEd";
         	this.bShaderEd.Size = new System.Drawing.Size(112, 25);
         	this.bShaderEd.TabIndex = 17;
@@ -1815,9 +1815,9 @@ namespace MGEgui {
         	this.cbDLDynRipples.AutoSize = true;
         	this.cbDLDynRipples.Location = new System.Drawing.Point(13, 113);
         	this.cbDLDynRipples.Name = "cbDLDynRipples";
-        	this.cbDLDynRipples.Size = new System.Drawing.Size(105, 17);
+        	this.cbDLDynRipples.Size = new System.Drawing.Size(100, 17);
         	this.cbDLDynRipples.TabIndex = 1;
-        	this.cbDLDynRipples.Text = "D&ynamic Ripples";
+        	this.cbDLDynRipples.Text = "D&ynamic ripples";
         	this.cbDLDynRipples.UseVisualStyleBackColor = true;
         	this.cbDLDynRipples.CheckedChanged += new System.EventHandler(this.cbDLDynRipples_CheckedChanged);
         	// 
@@ -2073,7 +2073,7 @@ namespace MGEgui {
         	this.lDLFogExpMul.Name = "lDLFogExpMul";
         	this.lDLFogExpMul.Size = new System.Drawing.Size(173, 19);
         	this.lDLFogExpMul.TabIndex = 8;
-        	this.lDLFogExpMul.Text = "Exponential Distance Multiplier";
+        	this.lDLFogExpMul.Text = "Exponential distance multiplier";
         	this.lDLFogExpMul.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
         	// 
         	// udDLFogExpMul
@@ -2488,7 +2488,7 @@ namespace MGEgui {
         	this.bHelp.Name = "bHelp";
         	this.bHelp.Size = new System.Drawing.Size(160, 25);
         	this.bHelp.TabIndex = 1;
-        	this.bHelp.Text = "Website";
+        	this.bHelp.Text = "Help";
         	this.bHelp.Click += new System.EventHandler(this.bHelp_Click);
         	// 
         	// bAbout
@@ -2596,7 +2596,7 @@ namespace MGEgui {
         	// 
         	this.ClientSize = new System.Drawing.Size(546, 445);
         	this.Controls.Add(this.tabControl);
-        	this.Icon = global::MGEgui.Properties.Resources.AppIcon;
+        	this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
         	this.MaximizeBox = false;
         	this.MinimumSize = new System.Drawing.Size(554, 409);
         	this.Name = "MainForm";

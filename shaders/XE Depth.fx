@@ -36,10 +36,10 @@ DepthVertOut DepthMWVS (in MorrowindVertIn IN)
     float4 worldpos;
 
     // Skin mesh if required
-    if(vertexblendstate > 0)
+    if(hasbones)
         worldpos = skin(IN.pos, IN.blendweights);
     else
-       worldpos = mul(IN.pos, vertexblendpalette[0]);
+        worldpos = mul(IN.pos, vertexblendpalette[0]);
     
     // Transform to world space
     OUT.pos = mul(worldpos, view);
@@ -138,7 +138,7 @@ float4 DepthNearPS (DepthVertOut IN) : COLOR0
     clip(7168.0+64.0 - IN.depth);
 
     // Respect alpha test
-    if(alpharef >= 0)
+    if(hasalpha)
     {
         float alpha = tex2D(sampBaseTex, IN.texcoords).a;
         clip(alpha - alpharef);
