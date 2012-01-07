@@ -69,15 +69,15 @@ float3 getProjectedReflection(float4 tex)
 {
     float4 radius = 0.006 * saturate(0.11 + tex.w/6000) * tex.w * float4(1, rcpres.y/rcpres.x, 0, 0);
     
-    float3 Reflect = tex2Dproj(sampReflect, tex);
-    Reflect += tex2Dproj(sampReflect, tex + radius*float4(0.60, 0.10, 0, 0));
-    Reflect += tex2Dproj(sampReflect, tex + radius*float4(0.30, -0.21, 0, 0));
-    Reflect += tex2Dproj(sampReflect, tex + radius*float4(0.96, -0.03, 0, 0));
-    Reflect += tex2Dproj(sampReflect, tex + radius*float4(-0.40, 0.06, 0, 0));
-    Reflect += tex2Dproj(sampReflect, tex + radius*float4(-0.70, 0.18, 0, 0));
-    Reflect /= 6.0;
+    float3 reflected = tex2Dproj(sampReflect, tex);
+    reflected += tex2Dproj(sampReflect, tex + radius*float4(0.60, 0.10, 0, 0));
+    reflected += tex2Dproj(sampReflect, tex + radius*float4(0.30, -0.21, 0, 0));
+    reflected += tex2Dproj(sampReflect, tex + radius*float4(0.96, -0.03, 0, 0));
+    reflected += tex2Dproj(sampReflect, tex + radius*float4(-0.40, 0.06, 0, 0));
+    reflected += tex2Dproj(sampReflect, tex + radius*float4(-0.70, 0.18, 0, 0));
+    reflected /= 6.0;
     
-    return Reflect.rgb;
+    return reflected.rgb;
 }
 
 #endif
@@ -176,7 +176,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     // Calculate water normal
     float3 normal = getFinalWaterNormal(IN.texcoord1, IN.texcoord2, dist, IN.pos.xy);
 
-    // Reflection / refraction strength factor, wind strength increases distortion
+    // Reflection/refraction pixel distortion factor, wind strength increases distortion
     float2 reffactor = (_windfactor * dist + 0.1) * normal.xy;
 
     // Distort refraction dependent on depth
@@ -184,7 +184,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     float depth = max(0, tex2Dproj(sampDepth, newscrpos).r - IN.screenpos.w);
 
     // Refraction
-    float3 Refract = depthcolor;
+    float3 refracted = depthcolor;
     float shorefactor = 0;
 
     // Avoid sampling deep water
@@ -192,7 +192,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     {
         // Sample refraction texture
         newscrpos = IN.screenpos + saturate(depth / 100) * float4(reffactor.yx, 0, 0);
-        Refract = tex2Dproj(sampRefract, newscrpos).rgb;
+        refracted = tex2Dproj(sampRefract, newscrpos).rgb;
 
         // Get distorted depth
         depth = max(0, tex2Dproj(sampDepth, newscrpos).r - IN.screenpos.w);
@@ -205,7 +205,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
         shorefactor = pow(depthscale, 90);
 
         // Make transition between actual refraction image and depth color depending on water depth
-        Refract = lerp(depthcolor, Refract, 0.8 * depthscale + 0.2 * shorefactor);
+        refracted = lerp(depthcolor, refracted, 0.8 * depthscale + 0.2 * shorefactor);
     }
 
     // Sample reflection texture
@@ -214,25 +214,35 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
 #else
     float4 screenpos = IN.screenposclamp;
 #endif
-    float3 Reflect = getProjectedReflection(screenpos - float4(2.1 * reffactor.x, -abs(reffactor.y), 0, 0));
-    // Dull reflection to avoid being too bright relative to sky, except for a little fading at horizon
-    Reflect *= 1 - 0.13 * saturate(15 * fog.a);
+    float3 reflected = getProjectedReflection(screenpos - float4(2.1 * reffactor.x, -abs(reffactor.y), 0, 0));
 
+    // Dull reflection to avoid being too bright relative to sky,
+    // except for fading into an inscatter dominated horizon
+    reflected *= 1 - 0.16 * saturate(2 * fog.a);
+
+    // Smooth out high frequencies at a distance
     float3 adjustnormal = lerp(float3(0, 0, 0.1), normal, pow(saturate(1.05 * fog.a), 2));
     adjustnormal = lerp(adjustnormal, float3(0, 0, 1.0), (1 + EyeVec.z) * (1 - saturate(1 / (dist / 1000 + 1))));
 
+    // Fresnel equation determines reflection/refraction
     float fresnel = dot(-EyeVec, adjustnormal);
     fresnel = 0.02 + pow(saturate(0.9988 - 0.28 * fresnel), 16);
-    float3 Result = lerp(Refract, Reflect, fresnel);
+    float3 result = lerp(refracted, reflected, fresnel);
     
     // Specular lighting
-    float vdotr = saturate(1.0025 * dot(-EyeVec, reflect(-SunPos, normal)));
-    float3 spec = _SunCollf * (pow(vdotr, 150) + 0.07 * pow(vdotr, 4)) * fog.a;
+    // This should use Blinn-Phong, but it doesn't work so well for area lights like the sun
+    // Instead multiply and saturate to widen a Phong specular lobe which better simulates an area light
+    float vdotr = dot(-EyeVec, reflect(-SunPos, normal));
+    vdotr = saturate(1.0025 * vdotr);
+    float3 spec = _SunCollf * (pow(vdotr, 170) + 0.07 * pow(vdotr, 4));
+    result += spec * fog.a;
 
     // Smooth transition at shore line
-    Result = lerp(Result + spec, Refract, shorefactor * fog.a);
-
-    return float4(Result, 1);
+    result = lerp(result, refracted, shorefactor * fog.a);
+    
+    // Note that both refraction and reflection textures were rendered fogged already
+    
+    return float4(result, 1);
 }
 
 float4 UnderwaterPS(in WaterVertOut IN): COLOR0
@@ -248,26 +258,26 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
     // Calculate water normal
     float3 normal = -getFinalWaterNormal(IN.texcoord1, IN.texcoord2, dist, IN.pos.xy);
 
-    // Reflection / refraction strength factor, wind strength increases distortion
+    // Reflection / refraction pixel distortion factor, wind strength increases distortion
     float2 reffactor = 2 * (_windfactor * dist + 0.1) * normal.xy;
 
     // Distort refraction
     float4 newscrpos = IN.screenpos + float4(2 * -reffactor.xy, 0, 0);
-    float3 Refract = tex2Dproj(sampRefract, newscrpos).rgb;
-    Refract = lerp(FogCol2, Refract, exp(-dist / 500));
+    float3 refracted = tex2Dproj(sampRefract, newscrpos).rgb;
+    refracted = lerp(FogCol2, refracted, exp(-dist / 500));
 
     // Sample reflection texture
-    float3 Reflect = getProjectedReflection(IN.screenpos - float4(2.1 * reffactor.x, -abs(reffactor.y), 0, 0));
+    float3 reflected = getProjectedReflection(IN.screenpos - float4(2.1 * reffactor.x, -abs(reffactor.y), 0, 0));
 
-    // Fresnel, including total internal reflection
+    // Fresnel equation, including total internal reflection
     float fresnel = pow(saturate(1.12 - 0.65 * dot(-EyeVec, normal)), 8);
-    float3 Result = lerp(Refract, Reflect, fresnel);
+    float3 result = lerp(refracted, reflected, fresnel);
 
     // Sun refraction
     float refractsun = dot(-EyeVec, normalize(-SunPos + normal));
     float3 spec = _SunCollf * pow(refractsun, 6) * fog;
 
-    return float4(Result + spec, 1);
+    return float4(result + spec, 1);
 }
 
 //------------------------------------------------------------

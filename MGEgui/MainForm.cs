@@ -144,8 +144,8 @@ namespace MGEgui {
             {"DSMissing", new Str (
                 "The distant statics files are missing.\n" +
                 "Use the 'Distant land file creation wizard' on the Tools tab to create them.")},
-            {"DLLackSM2", new Str (
-                "Your graphics card lacks the Shader Model 2.0 support required to use Distant Land.")},
+            {"DLLackSM3", new Str (
+                "Your graphics card lacks the Shader Model 3.0 support required to use Distant Land.")},
             {"NoDLOrOld", new Str (
                 "Distant Land files have not been created or are from an older version of MGE.\n" +
                 "Use the 'Distant land file creation wizard' on the Tools tab to create them.")},
@@ -617,7 +617,7 @@ namespace MGEgui {
         public static INIFile.INIVariableDef iniAutoLang = new INIFile.INIVariableDef ("AutoLang", siniMain, "Language Autodetection", INIFile.INIBoolType.Text, "True");
         // Graphics
         private static INIFile.INIVariableDef iniAntiAlias = new INIFile.INIVariableDef ("AntiAlias", siniGlobGraph, "Antialiasing Level", INIFile.INIVariableType.Dictionary, "None", antiAliasDict);
-        private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "Default", vWaitDict);
+        private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "1", vWaitDict);
         private static INIFile.INIVariableDef iniRefresh = new INIFile.INIVariableDef ("Refresh", siniGlobGraph, "Refresh Rate", INIFile.INIVariableType.Byte, "Default", refreshDict, 0, 240);
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "Off", anisoLevelDict);
         private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -2, 2, 3);
@@ -716,8 +716,10 @@ namespace MGEgui {
 
         private void LoadGraphicsSettings (bool reset, bool save) {
             INIFile iniFile = new INIFile (reset ? Statics.fn_nul : Statics.iniFileName, iniSettings, true);
-            if (reset) iniFile.fileName = Statics.iniFileName;
-            else bCalcRefresh_Click (null, null);
+            if (reset)
+                iniFile.fileName = Statics.iniFileName;
+            else
+                bCalcRefresh_Click (null, null);
             if (save) {
                 iniFile.initialize ();
                 iniFile.save ();
@@ -1331,10 +1333,23 @@ namespace MGEgui {
 
         private void bCalcRefresh_Click (object sender, EventArgs e) {
             int width, height;
-            RegistryKey key = Registry.LocalMachine.OpenSubKey (Statics.reg_mw);
-            width = (int)key.GetValue ("Screen Width");
-            height = (int)key.GetValue ("Screen Height");
-            key.Close ();
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
+            try
+            {
+                width = (int)key.GetValue("Screen Width");
+                height = (int)key.GetValue("Screen Height");
+            }
+            catch(NullReferenceException)
+            {
+                // If Morrowind hasn't run yet, no keys exist
+                key.SetValue("Screen Width", 640);
+                key.SetValue("Screen Height", 480);
+                key.SetValue("Fullscreen", new byte[] { (byte)1 });
+                width = 640;
+                height = 480;
+            }
+            key.Close();
+            
             cmbRefreshRate.Items.Clear ();
             cmbRefreshRate.Items.Add ("Default");
             cmbRefreshRate.Text = "Default";
@@ -1492,9 +1507,9 @@ namespace MGEgui {
 
         private void cbDistantLand_CheckedChanged (object sender, EventArgs e) {
             if (cbDLDistantLand.Checked) {
-                if (!DXMain.mCaps.SupportsSM2) {
+                if (!DXMain.mCaps.SupportsSM3) {
                     cbDLDistantLand.Checked = false;
-                    MessageBox.Show (strings ["DLLackSM2"].text, Statics.strings ["Error"].text);
+                    MessageBox.Show (strings ["DLLackSM3"].text, Statics.strings ["Error"].text);
                     return;
                 }
                 if (!File.Exists (Statics.fn_dlver) || !File.Exists (Statics.fn_world) || !File.Exists (Statics.fn_worldds) || !File.Exists (Statics.fn_worldn)) {
@@ -1606,7 +1621,6 @@ namespace MGEgui {
             loading = true;
             if (autoDistances == AutoDistance.byAFogEnd) {
                 decimal distance = udDLFogAEnd.Value;
-                if (cbDLFogExp.Checked) distance *= udDLFogExpMul.Value;
                 if (distance < 1.0M) distance = 1.0M;
                 else if (distance > 300.0M) distance = 300.0M;
                 udDLDrawDist.Value = distance;
@@ -1653,8 +1667,8 @@ namespace MGEgui {
         }
 
         private void bDistantLandWizard_Click (object sender, EventArgs e) {
-            if (!DXMain.mCaps.SupportsSM2) {
-                MessageBox.Show (strings ["DLLackSM2"].text, Statics.strings ["Error"].text);
+            if (!DXMain.mCaps.SupportsSM3) {
+                MessageBox.Show (strings ["DLLackSM3"].text, Statics.strings ["Error"].text);
                 return;
             }
             bool exists = false;

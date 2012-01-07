@@ -909,15 +909,21 @@ bool MWBridge::IsPlayerWaiting()   //wait\sleep menu
 
 //-----------------------------------------------------------------------------
 
+DWORD MWBridge::getPlayerMACP()
+{
+    DWORD blah0 = read_dword(eMaster1 + 0x5c);
+    DWORD blah1 = read_dword(blah0 + 0x24);
+    return read_dword(blah1);
+}
+
+//-----------------------------------------------------------------------------
+
 D3DXVECTOR3 * MWBridge::PCam3Offset()
 {
     // Pointer resolve will fail during load screens
     if(IsLoadScreen()) return 0;
 
-    // Player structure
-    DWORD blah0 = read_dword(eMaster1 + 0x5c);
-    DWORD blah1 = read_dword(blah0 + 0x24);
-    DWORD macp = read_dword(blah1);
+    DWORD macp = getPlayerMACP();
     if(macp == 0) return 0;
 
     // Camera control structure
@@ -927,14 +933,12 @@ D3DXVECTOR3 * MWBridge::PCam3Offset()
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::Is3rdPerson()
+bool MWBridge::is3rdPerson()
 {
+    // Pointer resolve will fail during load screens
     if(IsLoadScreen()) return 0;
 
-    // Player structure
-    DWORD blah0 = read_dword(eMaster1 + 0x5c);
-    DWORD blah1 = read_dword(blah0 + 0x24);
-    DWORD macp = read_dword(blah1);
+    DWORD macp = getPlayerMACP();
     if(macp == 0) return 0;
 
     // Camera control structure
@@ -944,37 +948,46 @@ bool MWBridge::Is3rdPerson()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::PlayerTarget()
+DWORD MWBridge::getPlayerTarget()
 {
     return read_dword(eLookMenu);
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsPlayerCasting()
+int MWBridge::getPlayerWeapon()
 {
-    // Player structure
-    DWORD blah0 = read_dword(eMaster1 + 0x5c);
-    DWORD blah1 = read_dword(blah0 + 0x24);
-    DWORD macp = read_dword(blah1);
-    if(macp == 0) return false;
+    DWORD macp = getPlayerMACP();
+    if(macp == 0) return 0;
 
-    // Check animation state machine
+    // Check active weapon
+    DWORD weapon = read_dword(macp + 0x388);
+    if(weapon == 0) return -1;
+
+    weapon = read_dword(weapon);
+    return read_byte(weapon + 0x5c);
+}
+
+//-----------------------------------------------------------------------------
+
+bool MWBridge::isPlayerCasting()
+{
+    DWORD macp = getPlayerMACP();
+    if(macp == 0) return 0;
+
+    // Check animation state machine for casting
     BYTE anim = read_byte(macp + 0xdd);
     return anim == 0x0a;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsPlayerAimingWeapon()
+bool MWBridge::isPlayerAimingWeapon()
 {
-    // Player structure
-    DWORD blah0 = read_dword(eMaster1 + 0x5c);
-    DWORD blah1 = read_dword(blah0 + 0x24);
-    DWORD macp = read_dword(blah1);
-    if(macp == 0) return false;
+    DWORD macp = getPlayerMACP();
+    if(macp == 0) return 0;
 
-    // Check animation state machine
+    // Check animation state machine for weapon pullback
     BYTE anim = read_byte(macp + 0xdd);
     if(anim != 2) return false;
 
@@ -1051,11 +1064,20 @@ void MWBridge::disableSunglare()
 
 //-----------------------------------------------------------------------------
 
-void * MWBridge::getGMSTPointer(int id)
+void * MWBridge::getGMSTPointer(DWORD id)
 {
     DWORD addr = read_dword(eEnviro);
     addr = read_dword(addr);
     addr = read_dword(addr + 0x18);
     addr = read_dword(addr + 4 * id);
     return (void *)(addr + 0x10);
+}
+
+//-----------------------------------------------------------------------------
+
+DWORD MWBridge::getKeybindCode(DWORD action)
+{
+    // action -> the keybind order in the Morrowind controls menu
+    DWORD addr = read_dword(eMaster1 + 0x4c) + 0x1b3c;
+    return read_dword(addr + 16*action);
 }

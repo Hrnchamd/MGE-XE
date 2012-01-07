@@ -20,10 +20,10 @@ void MacroFunctions::TakeScreenshot()
     bool usedir = false;
     struct _stat unusedstat;
 
-    // Requires distant land loaded at the moment
+    // Requires distant land to be loaded
     if(!DistantLand::ready) return;
 
-    // Grab copy of surface (no need to release)
+    // Grab copy of surface
     IDirect3DSurface9 *surface = DistantLand::captureScreen();
     if(!surface) { StatusOverlay::setStatus("Screenshot failed - Surface error"); return; }
 
@@ -59,6 +59,8 @@ void MacroFunctions::TakeScreenshot()
             break;
         }
     }
+
+    surface->Release();
 }
 
 static void displayFlag(DWORD flag, const char *en, const char *ds)
@@ -161,48 +163,36 @@ void MacroFunctions::HaggleLess10000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(
 
 void MacroFunctions::MoveForward3PCam() {
     DECLARE_MWBRIDGE
-    if(mwBridge->IsMenu () || !mwBridge->Is3rdPerson())
-        return;
-
-    Configuration.Offset3rdPerson.y = std::min(-25.0, Configuration.Offset3rdPerson.y * 0.96);
+    if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+        Configuration.Offset3rdPerson.y = std::min(-25.0, Configuration.Offset3rdPerson.y * 0.96);
 }
 
 void MacroFunctions::MoveBack3PCam() {
     DECLARE_MWBRIDGE
-    if(mwBridge->IsMenu () || !mwBridge->Is3rdPerson())
-        return;
-
-    Configuration.Offset3rdPerson.y = std::max(-2500.0, Configuration.Offset3rdPerson.y * 1.04);
+    if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+        Configuration.Offset3rdPerson.y = std::max(-2500.0, Configuration.Offset3rdPerson.y * 1.04);
 }
 
 void MacroFunctions::MoveLeft3PCam() {
     DECLARE_MWBRIDGE
-    if(mwBridge->IsMenu () || !mwBridge->Is3rdPerson())
-        return;
-
-    Configuration.Offset3rdPerson.x = std::max(-125.0, Configuration.Offset3rdPerson.x - 1.0);
+    if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+        Configuration.Offset3rdPerson.x = std::max(-125.0, Configuration.Offset3rdPerson.x - 1.0);
 }
 
 void MacroFunctions::MoveRight3PCam() {
     DECLARE_MWBRIDGE
-    if(mwBridge->IsMenu () || !mwBridge->Is3rdPerson())
-        return;
-
-    Configuration.Offset3rdPerson.x = std::min(125.0, Configuration.Offset3rdPerson.x + 1.0);
+    if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+        Configuration.Offset3rdPerson.x = std::min(125.0, Configuration.Offset3rdPerson.x + 1.0);
 }
 
 void MacroFunctions::MoveDown3PCam() {
     DECLARE_MWBRIDGE
-    if(mwBridge->IsMenu () || !mwBridge->Is3rdPerson())
-        return;
-
-    Configuration.Offset3rdPerson.z = std::max(-125.0, Configuration.Offset3rdPerson.z - 1.0);
+    if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+        Configuration.Offset3rdPerson.z = std::max(-125.0, Configuration.Offset3rdPerson.z - 1.0);
 }
 
 void MacroFunctions::MoveUp3PCam() {
     DECLARE_MWBRIDGE
-    if(mwBridge->IsMenu () || !mwBridge->Is3rdPerson())
-        return;
-
-    Configuration.Offset3rdPerson.z = std::min(125.0, Configuration.Offset3rdPerson.z + 1.0);
+    if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+        Configuration.Offset3rdPerson.z = std::min(125.0, Configuration.Offset3rdPerson.z + 1.0);
 }

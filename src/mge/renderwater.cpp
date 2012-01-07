@@ -161,14 +161,19 @@ void DistantLand::clearReflection()
     DWORD baseColour;
 
     texReflection->GetSurfaceLevel(0, &target);
-    if(mwBridge->CellHasWeather())
+    if(mwBridge->CellHasWeather() || mwBridge->IsUnderwater(eyePos.z))
     {
+        // Use fog colour as reflection
         baseColour = (DWORD)horizonCol;
     }
     else
     {
+        // Interior fog colour is typically too bright
+        // Guess a reflection colour based on cell lighting parameters
         const BYTE *sun = mwBridge->getInteriorSun();
-        DWORD baseColour = D3DCOLOR_XRGB(sun[0] + 4, sun[1] + 7, sun[2] + 10);
+        RGBVECTOR c(sun[0] / 255.0, sun[1] / 255.0, sun[2] / 255.0);
+        c += ambCol;
+        baseColour = (DWORD)c;
     }
     device->ColorFill(target, 0, baseColour);
     target->Release();

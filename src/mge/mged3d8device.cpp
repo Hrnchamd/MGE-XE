@@ -75,11 +75,17 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
             static float crosshairTimeout;
             float t = mwBridge->simulationTime();
 
-            if(mwBridge->PlayerTarget())
+            // Turn on if Morrowind ray cast picks up a target
+            if(mwBridge->getPlayerTarget())
                 crosshairTimeout = t + 1.5;
 
-            if(mwBridge->IsPlayerCasting() || mwBridge->IsPlayerAimingWeapon())
+            // Turn on short duration if the player requires aim
+            if(mwBridge->isPlayerCasting() || mwBridge->isPlayerAimingWeapon())
                 crosshairTimeout = t + 0.5;
+
+            // Turn off in menu mode
+            if(mwBridge->IsMenu())
+                crosshairTimeout = t;
 
             // Allow manual toggle of crosshair to work again from 0.5 seconds after timeout
             if(t < crosshairTimeout + 0.5)
@@ -202,17 +208,20 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
 
             // Opaque features
             DistantLand::renderStage1();
+
+            // Blend close objects over distant land
+            DistantLand::renderStageBlend();
         }
         else if(!isFrameComplete)
         {
             // Everything else except UI
             DistantLand::renderStage2();
 
-            // Draw water in exceptional conditions
-            // Water is undetectable if too distant or stencil scene order is non-normative
+            // Draw water if the Morrowind water plane doesn't appear in view
+            // it may be too distant or stencil scene order is non-normative
             if(!waterDrawn && !isStencilScene)
             {
-                DistantLand::renderBlend();
+                DistantLand::renderStageWater();
                 waterDrawn = true;
             }
         }
@@ -361,7 +370,7 @@ HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b
         {
             if(!waterDrawn)
             {
-                DistantLand::renderBlend();
+                DistantLand::renderStageWater();
                 waterDrawn = true;
             }
             return D3D_OK;

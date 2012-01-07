@@ -1,4 +1,5 @@
 
+#include <algorithm>
 #include "mgedirect3d8.h"
 #include "mged3d8device.h"
 #include "configuration.h"
@@ -18,14 +19,17 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 
     e->MultiSampleType = (D3DMULTISAMPLE_TYPE)Configuration.AALevel;
     e->AutoDepthStencilFormat = (D3DFORMAT)Configuration.ZBufFormat;
-    e->FullScreen_RefreshRateInHz = (!e->Windowed) ? Configuration.RefreshRate :  0;
+    e->FullScreen_RefreshRateInHz = (!e->Windowed) ? Configuration.RefreshRate : 0;
     e->FullScreen_PresentationInterval = (Configuration.VWait == 3) ? D3DPRESENT_INTERVAL_IMMEDIATE : Configuration.VWait;
 
     if(e->Windowed)
     {
-        // Remove non-client window parts and move window flush to screen edge
+        // Remove non-client window parts and move window flush to screen edge / centre if smaller than display
+        int wx = std::max(0, (GetSystemMetrics(SM_CXSCREEN) - (int)e->BackBufferWidth) / 2);
+        int wy = std::max(0, (GetSystemMetrics(SM_CYSCREEN) - (int)e->BackBufferHeight) / 2);
+
         SetWindowLong(GetParent(c), GWL_STYLE, WS_VISIBLE);
-        SetWindowPos(GetParent(c), NULL, 0, 0, e->BackBufferWidth, e->BackBufferHeight, SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
+        SetWindowPos(GetParent(c), NULL, wx, wy, e->BackBufferWidth, e->BackBufferHeight, SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
     }
 
     // Device creation

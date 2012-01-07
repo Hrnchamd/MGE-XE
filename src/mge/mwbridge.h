@@ -95,10 +95,12 @@ public:
     float PlayerHeight();
     bool IsPlayerWaiting();
     D3DXVECTOR3 * PCam3Offset();
-    bool Is3rdPerson();
-    DWORD PlayerTarget();
-    bool IsPlayerCasting();
-    bool IsPlayerAimingWeapon();
+    DWORD getPlayerMACP();
+    bool is3rdPerson();
+    DWORD getPlayerTarget();
+    int getPlayerWeapon();
+    bool isPlayerCasting();
+    bool isPlayerAimingWeapon();
 
     void HaggleMore(DWORD num);
     void HaggleLess(DWORD num);
@@ -108,7 +110,8 @@ public:
     void disableScreenshotFunc();
     void disableSunglare();
 
-    void *getGMSTPointer(int id);
+    void *getGMSTPointer(DWORD id);
+    DWORD getKeybindCode(DWORD action);
 
     MWBridge();
 

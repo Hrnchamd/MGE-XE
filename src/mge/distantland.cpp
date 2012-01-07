@@ -36,11 +36,6 @@ void DistantLand::renderStage0()
     {
         ///LOG::logline("Sky prims: %d", recordSky.size());
 
-        static DWORD lastcell = 0;
-        DWORD celladdr = mwBridge->IntCurCellAddr();
-        bool cell_changed = celladdr != lastcell;
-        lastcell = celladdr;
-
         if(isDistantCell())
         {
             // Save state block manually since we can change FVF/decl
@@ -113,9 +108,9 @@ void DistantLand::renderStage0()
         }
         else
         {
-            // Clear water reflection on change to non-distant cell
-            if(cell_changed || (~Configuration.MGEFlags & USE_DISTANT_LAND))
-                clearReflection();
+            // Clear water reflection to avoid seeing previous cell environment reflected
+            // Must be done every frame to react to lighting changes
+            clearReflection();
 
             // Update water simulation
             if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
@@ -248,8 +243,8 @@ void DistantLand::renderStage2()
     recordMW.clear();
 }
 
-// renderBlend - Blend between MGE distant land and Morrowind, and render water plane
-void DistantLand::renderBlend()
+// renderStageBlend - Blend between MGE distant land and Morrowind, rendering caustics first so it blends out
+void DistantLand::renderStageBlend()
 {
     DECLARE_MWBRIDGE
     IDirect3DStateBlock9 *stateSaved;
@@ -293,10 +288,28 @@ void DistantLand::renderBlend()
         effect->EndPass();
     }
 
-    // Draw water afterwards
-    // As depth texture doesn't contain water plane, it cannot be blended
+    effect->End();
+    stateSaved->Apply();
+    stateSaved->Release();
+}
+
+// renderStageWater - Render distant water without blend, for exceptional cases
+void DistantLand::renderStageWater()
+{
+    DECLARE_MWBRIDGE
+    IDirect3DStateBlock9 *stateSaved;
+    UINT passes;
+
+    if(isRenderCached)
+        return;
+
     if(mwBridge->CellHasWater())
     {
+        // Save state block manually since we can change FVF/decl
+        device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
+        effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
+
+        // Draw water plane
         bool u = mwBridge->IsUnderwater(eyePos.z);
         bool i = !mwBridge->IsExterior();
 
@@ -313,11 +326,11 @@ void DistantLand::renderBlend()
         effect->BeginPass(u ? PASS_RENDERUNDERWATER : PASS_RENDERWATER);
         renderWaterPlane();
         effect->EndPass();
-    }
 
-    effect->End();
-    stateSaved->Apply();
-    stateSaved->Release();
+        effect->End();
+        stateSaved->Apply();
+        stateSaved->Release();
+    }
 }
 
 // setupCommonEffect - Set shared shader variables for this frame
@@ -412,10 +425,11 @@ void DistantLand::adjustFog()
         windScaling = ws;
     }
     else {
-        // Avoid density == 0, as when fogstart and fogend are equal or too close it can cause problems
+        // Avoid density == 0, as when fogstart and fogend are equal, the fog equation denominator goes to infinity
         float density = std::max(0.01f, mwBridge->getInteriorFogDens());
         fogStart = lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, density);
         fogEnd = Configuration.DL.InteriorFogEnd;
+        niceWeather = 0;
         windScaling = 0;
     }
 
@@ -775,8 +789,33 @@ IDirect3DSurface9 * DistantLand::captureScreen()
     IDirect3DTexture9 *t;
     IDirect3DSurface9 *s;
 
+    // Resolve multisampled back buffer
     t = PostShaders::borrowBuffer(0);
     t->GetSurfaceLevel(0, &s);
 
-    return s;
+    // Set alpha channel to opaque in case something with alpha write was rendered
+    D3DVIEWPORT9 vp;
+    IDirect3DSurface9 *surfSS;
+    D3DLOCKED_RECT rect;
+
+    device->GetViewport(&vp);
+    DWORD hr = device->CreateOffscreenPlainSurface(vp.Width, vp.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfSS, NULL);
+    if(hr != D3D_OK) { s->Release(); return 0; }
+
+    hr = device->GetRenderTargetData(s, surfSS);
+    s->Release();
+    if(hr != D3D_OK) { surfSS->Release(); return 0; }
+
+    surfSS->LockRect(&rect, 0, 0);
+    if(hr != D3D_OK) { surfSS->Release(); return 0; }
+
+    DWORD *c = (DWORD*)rect.pBits;
+    for(int y = 0; y != vp.Height; ++y)
+    {
+        for(int x = 0; x != rect.Pitch >> 2; ++x)
+            *c++ = D3DCOLOR_ARGB(1, 0, 0, 0);
+    }
+
+    surfSS->UnlockRect();
+    return surfSS;
 }

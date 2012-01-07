@@ -147,7 +147,8 @@ public:
     static void renderStage0();
     static void renderStage1();
     static void renderStage2();
-    static void renderBlend();
+    static void renderStageBlend();
+    static void renderStageWater();
 
     static void setupCommonEffect(const D3DXMATRIX *view,const  D3DXMATRIX *proj);
 

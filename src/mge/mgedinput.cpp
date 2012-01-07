@@ -26,8 +26,6 @@ BYTE LastBytes[MAXMACROS];     //Stores which keys were pressed last GetData cal
 BYTE FakeStates[MAXMACROS];    //Stores which keys are currently permenently down
 BYTE HammerStates[MAXMACROS];  //Stores which keys are currently being hammered
 BYTE AHammerStates[MAXMACROS]; //Stores the keys that are currently being ahammered
-BYTE TapStates[MAXMACROS];     //Stores the keys that need to be tapped next frame
-BYTE DisallowStates[MAXMACROS];//Stores which keys are disallowed
 DIDEVICEOBJECTDATA FakeBuffer[256]; //Stores the list of fake keypresses to send to console
 DWORD FakeBufferStart;      //The index of the next character to write from FakeBuffer[]
 DWORD FakeBufferEnd;        //The index of the last character contained in FakeBuffer[]
@@ -37,7 +35,7 @@ bool CloseConsole;    //true to shut the console after performing a command
 BYTE MouseIn[10];      //Used to transfer keypresses to the mouse
 BYTE MouseOut[10];     //Used to transfer keypresses back from the mouse
 
-enum AttackState { State_NONE = 0, State_SLASH, State_PIERCE, State_HACK, State_NONE2  };
+enum AttackState { State_NONE = 0, State_SLASH, State_PIERCE, State_CHOP, State_NOMOTION  };
 
 static struct {
     bool directionPressed;         // True when the player makes an attack (Because the keyboard must be used before the mouse)
@@ -74,7 +72,7 @@ void * CreateInputWrapper(void *real)
 
         if(version == MGE_SAVE_VERSION)
         {
-            bool DisableConsole;    // no longer supported, remains for compatibility
+            bool DisableConsole;    // no longer supported, used for file format compatibility
 
             ReadFile(keyfile, &SkipIntro, 1, &unused, NULL);
             ReadFile(keyfile, &DisableConsole, 1, &unused, NULL);
@@ -107,10 +105,6 @@ void * CreateInputWrapper(void *real)
     ZeroStruct(LastBytes);
     ZeroStruct(FakeStates);
     ZeroStruct(FakeBuffer);
-    ZeroStruct(TapStates);
-
-    for(WORD w = 0; w != MAXMACROS; ++w)
-        DisallowStates[w] = 0x80;
 
     for(int i = 0; i != MAXTRIGGERS; ++i)
         TriggerFireTimes[i] = GetTickCount() + Triggers[i].TimeInterval;
@@ -243,12 +237,6 @@ public:
             {
                 bytes[byte] |= FakeStates[byte];
                 bytes[byte] |= HammerStates[byte];
-                bytes[byte] &= DisallowStates[byte];
-                if(TapStates[byte])
-                {
-                    bytes[byte] = 0x80;
-                    TapStates[byte] = 0;
-                }
             }
             for(DWORD byte = 256; byte < MAXMACROS - 2; byte++)
             {
@@ -262,12 +250,6 @@ public:
             {
                 bytes[byte] |= FakeStates[byte];
                 bytes[byte] |= AHammerStates[byte];
-                bytes[byte] &= DisallowStates[byte];
-                if(TapStates[byte])
-                {
-                    bytes[byte] = 0x80;
-                    TapStates[byte] = 0;
-                }
             }
             for(DWORD byte = 256; byte < MAXMACROS - 2; byte++)
             {
@@ -471,20 +453,20 @@ public:
 
     HRESULT _stdcall GetDeviceState(DWORD a, LPVOID b)
     {
-        DIMOUSESTATE2 *MouseState = (DIMOUSESTATE2*)b;
-        HRESULT hr = realDevice->GetDeviceState(sizeof(DIMOUSESTATE2), MouseState);
+        DIMOUSESTATE2 *mouseState = (DIMOUSESTATE2*)b;
+        HRESULT hr = realDevice->GetDeviceState(sizeof(DIMOUSESTATE2), mouseState);
         if(hr != DI_OK) return hr;
 
         // Notify application of clicks
-        MGEProxyDirectInput::mouseClick = MouseOut[0] & ~MouseState->rgbButtons[0];
+        MGEProxyDirectInput::mouseClick = MouseOut[0] & ~mouseState->rgbButtons[0];
 
         // Map mousewheel to macro triggers 8/9
-        if(MouseState->lZ>0)
+        if(mouseState->lZ>0)
         {
             MouseOut[8]=0x80;
             MouseOut[9]=0;
         }
-        else if(MouseState->lZ<0)
+        else if(mouseState->lZ<0)
         {
             MouseOut[8]=0;
             MouseOut[9]=0x80;
@@ -497,14 +479,8 @@ public:
 
         for(DWORD i = 0; i < 8; i++)
         {
-            MouseOut[i] = MouseState->rgbButtons[i];
-            MouseState->rgbButtons[i] |= MouseIn[i];
-            MouseState->rgbButtons[i] &= DisallowStates[i+256];
-            if(TapStates[i+256])
-            {
-                MouseState->rgbButtons[i] = 0x80;
-                TapStates[i+256] = 0x00;
-            }
+            MouseOut[i] = mouseState->rgbButtons[i];
+            mouseState->rgbButtons[i] |= MouseIn[i];
         }
 
         return DI_OK;
@@ -525,32 +501,39 @@ public:
 
         // Don't run combat input mode when a menu is up
         DECLARE_MWBRIDGE
-        if(mwBridge->IsLoaded() && mwBridge->IsMenu())
+        if(!mwBridge->IsLoaded() || mwBridge->IsMenu())
             return DI_OK;
 
         // We only want to modify keyboard input when the player has the mouse held down
-        if(AltCombat.attackType && AltCombat.attackType != State_NONE2)
+        if(AltCombat.attackType && AltCombat.attackType != State_NOMOTION)
         {
-            BYTE *bytes = (BYTE*)b;
+            BYTE *keyState = (BYTE *)b;
 
-            // Set all WASD movement keys to up state
-            bytes[0x1e] = bytes[0x1f] = bytes[0x20] = bytes[0x11] = 0;
+            // Read scancodes for movement keybinds (which can change during play)
+            int forward = mwBridge->getKeybindCode(0);
+            int back = mwBridge->getKeybindCode(1);
+            int left = mwBridge->getKeybindCode(2);
+            int right = mwBridge->getKeybindCode(3);
 
-            // Then set appropriate keys to 0x80 depending on what type of attack is being made
+            // Set all movement keys to up state
+            keyState[forward] = keyState[back] = keyState[left] = keyState[right] = 0;
+
+            // Then set appropriate keys to pressed depending on what type of attack is being made
             if(GlobalHammer)
             {
-                // State_HACK -> no key required
-                if(AltCombat.attackType == State_SLASH) bytes[0x1e] = 0x80;
-                if(AltCombat.attackType == State_PIERCE) bytes[0x11] = 0x80;
+                // AltCombat.attackType == State_CHOP -> no key required
+                if(AltCombat.attackType == State_SLASH) keyState[left] = 0x80;
+                if(AltCombat.attackType == State_PIERCE) keyState[forward] = 0x80;
             }
             else
             {
-                // State_HACK -> no key required
-                if(AltCombat.attackType == State_SLASH) bytes[0x20] = 0x80;
-                if(AltCombat.attackType == State_PIERCE) bytes[0x1f] = 0x80;
+                // AltCombat.attackType == State_CHOP -> no key required
+                if(AltCombat.attackType == State_SLASH) keyState[right] = 0x80;
+                if(AltCombat.attackType == State_PIERCE) keyState[back] = 0x80;
             }
 
-            AltCombat.directionPressed = true;    // Tell the mouse that an attack has been made, so to press the mouse button
+            // Tell the mouse proxy that a swing is ready, so to intiate attack
+            AltCombat.directionPressed = true;
         }
         return DI_OK;
     }
@@ -561,7 +544,7 @@ public:
 class MGEProxyMouseAltCombat : public MGEProxyMouse
 {
 public:
-    MGEProxyMouseAltCombat(IDirectInputDevice8* device) : MGEProxyMouse(device) {}
+    MGEProxyMouseAltCombat(IDirectInputDevice8 *device) : MGEProxyMouse(device) {}
 
     HRESULT _stdcall GetDeviceState(DWORD a, void* b)
     {
@@ -570,62 +553,67 @@ public:
 
         // Don't run combat input mode when a menu is up
         DECLARE_MWBRIDGE
-        if(mwBridge->IsLoaded() && mwBridge->IsMenu())
+        if(!mwBridge->IsLoaded() || mwBridge->IsMenu())
             return DI_OK;
 
-        DIMOUSESTATE2 *MouseState = (DIMOUSESTATE2*)b;
+        // Capture mouse movement while mouse is pressed
+        // Skip/cancel if a ranged weapon is equipped
+        DIMOUSESTATE2 *mouseState = (DIMOUSESTATE2*)b;
+        bool ranged = mwBridge->getPlayerWeapon() >= 9;
 
-        if(MouseState->rgbButtons[0])
+        if(mouseState->rgbButtons[0] && !ranged)
         {
-            // If the difference between x and y movement is greater than maxGap, don't use a hacking attack
-            if(abs(MouseState->lX) > abs(MouseState->lY)+maxGap) MouseState->lY=0;
-            //if(abs(MouseState->lY) > abs(MouseState->lX)+maxGap) MouseState->lX=0;
+            // If the difference between x and y movement is greater than maxGap, prefer slash over chop
+            if(abs(mouseState->lX) > abs(mouseState->lY)+maxGap) mouseState->lY = 0;
 
-            bool slash = abs(MouseState->lX) > altSensitivity;
-            bool pierce = abs(MouseState->lY) > altSensitivity;
+            bool slash = abs(mouseState->lX) > altSensitivity;
+            bool pierce = abs(mouseState->lY) > altSensitivity;
 
             DWORD attack = 0;   // Which direction has the mouse moved
-            if(MouseState->lX > altSensitivity)  attack |= 0x0001;
-            if(MouseState->lX < -altSensitivity) attack |= 0x0010;
-            if(MouseState->lY > altSensitivity)  attack |= 0x0100;
-            if(MouseState->lY < -altSensitivity) attack |= 0x1000;
+            if(mouseState->lX > altSensitivity)  attack |= 0x0001;
+            if(mouseState->lX < -altSensitivity) attack |= 0x0010;
+            if(mouseState->lY > altSensitivity)  attack |= 0x0100;
+            if(mouseState->lY < -altSensitivity) attack |= 0x1000;
 
             if(AltCombat.directionPressedLast && attack == AltCombat.lastAttack && attack != 0)
-                AltCombat.directionPressed=true;
+                AltCombat.directionPressed = true;
 
             if(attack == AltCombat.lastAttack || attack == 0)
             {
-                AltCombat.attackType = State_NONE2; // Can't attack by moving the mouse in the same direction twice
+                AltCombat.attackType = State_NOMOTION;  // Can't attack by moving the mouse in the same direction twice
             }
             else
             {
                 // Set attack type appropriately depending on mouse movement
                 if(slash && pierce) {
-                    AltCombat.attackType = State_HACK;
+                    AltCombat.attackType = State_CHOP;
                 } else if(slash) {
                     AltCombat.attackType = State_SLASH;
                 } else if(pierce) {
                     AltCombat.attackType = State_PIERCE;
                 } else {
-                    //This differentiates between not having the mouse button down, and having the mouse down but not moving it
-                    AltCombat.attackType = State_NONE2;
+                    // This differentiates between not having the mouse button down, and having the mouse down but not moving it
+                    AltCombat.attackType = State_NOMOTION;
                 }
                 AltCombat.lastAttack = attack;
             }
 
             // Don't pass mouse movement and left button state to Morrowind
-            MouseState->lX = 0;
-            MouseState->lY = 0;
-            MouseState->rgbButtons[0] = 0;
+            mouseState->lX = 0;
+            mouseState->lY = 0;
+            mouseState->rgbButtons[0] = 0;
 
+            // If the correct movement key is down then press the left mouse button
             if(AltCombat.directionPressed)
-                MouseState->rgbButtons[0] = 0x80; // If the correct key is down then press the left mouse button
+                mouseState->rgbButtons[0] = 0x80;
 
             AltCombat.directionPressedLast = AltCombat.directionPressed;
         }
         else
         {
-            // Reset state on mouse up
+            // Mouseup state passes through to finish attacks
+
+            // Reset alt combat on mouse up / ranged
             AltCombat.directionPressed = false;
             AltCombat.directionPressedLast = false;
             AltCombat.attackType = State_NONE;
