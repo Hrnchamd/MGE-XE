@@ -813,7 +813,7 @@ IDirect3DSurface9 * DistantLand::captureScreen()
     for(int y = 0; y != vp.Height; ++y)
     {
         for(int x = 0; x != rect.Pitch >> 2; ++x)
-            *c++ = D3DCOLOR_ARGB(1, 0, 0, 0);
+            *c++ |= D3DCOLOR_ARGB(1, 0, 0, 0);
     }
 
     surfSS->UnlockRect();
