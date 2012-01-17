@@ -34,7 +34,7 @@ shared float time;
 
 shared texture tex0, tex1, tex2, tex3;
 
-sampler sampBaseTex = sampler_state { texture = <tex0>; minfilter = anisotropic; magfilter = anisotropic; mipfilter = linear; addressu = wrap; addressv = wrap; };
+sampler sampBaseTex = sampler_state { texture = <tex0>; minfilter = anisotropic; magfilter = linear; mipfilter = linear; addressu = wrap; addressv = wrap; };
 sampler sampNormals = sampler_state { texture = <tex1>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu = wrap; addressv = wrap; };
 sampler sampDetail = sampler_state { texture = <tex2>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu = wrap; addressv = wrap; };
 sampler sampWater3d = sampler_state { texture = <tex1>; minfilter = linear; magfilter = linear; mipfilter = none; addressu = wrap; addressv = wrap; addressw = wrap; };
@@ -70,7 +70,17 @@ struct StatVertOut
     float4 pos : POSITION;
     float4 color : COLOR0;
     float2 texcoords : TEXCOORD0;
-    float4 fog : TEXCOORD3;
+    float4 fog : TEXCOORD1;
+};
+
+//------------------------------------------------------------
+// Full-screen deferred pass, used for reconstructing position from depth
+
+struct DeferredOut
+{
+    float4 pos : POSITION;
+    float4 tex : TEXCOORD0;
+    float3 eye : TEXCOORD1;
 };
 
 //------------------------------------------------------------

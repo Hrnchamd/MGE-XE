@@ -20,7 +20,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     e->MultiSampleType = (D3DMULTISAMPLE_TYPE)Configuration.AALevel;
     e->AutoDepthStencilFormat = (D3DFORMAT)Configuration.ZBufFormat;
     e->FullScreen_RefreshRateInHz = (!e->Windowed) ? Configuration.RefreshRate : 0;
-    e->FullScreen_PresentationInterval = (Configuration.VWait == 3) ? D3DPRESENT_INTERVAL_IMMEDIATE : Configuration.VWait;
+    e->FullScreen_PresentationInterval = (Configuration.VWait == 255) ? D3DPRESENT_INTERVAL_IMMEDIATE : Configuration.VWait;
 
     if(e->Windowed)
     {

@@ -27,6 +27,10 @@ void DistantLand::renderShadowMap()
     device->SetRenderTarget(0, targetSoft);
     device->SetDepthStencilSurface(surfShadowZ);
 
+    // Unbind shadow samplers
+    effect->SetTexture(ehTex0, 0);
+    effect->SetTexture(ehTex2, 0);
+
     // Clear floating point buffer to far depth
     effectShadow->BeginPass(PASS_CLEARSHADOWMAP);
     effect->SetBool(ehHasAlpha, false);
@@ -108,19 +112,19 @@ void DistantLand::renderShadowLayer(int layer, float radius)
     nearPos.y = lookAt.y - zrange * lightVec.y;
     nearPos.z = lookAt.z - zrange * lightVec.z;
 
-	D3DXMatrixLookAtRH(view, &nearPos, &lookAt, &up);
-	D3DXMatrixOrthoRH(proj, 2 * radius, (1 + fabs(lightVec.z)) * radius, 0, 2.0 * zrange);
-	*viewproj = (*view) * (*proj);
+    D3DXMatrixLookAtRH(view, &nearPos, &lookAt, &up);
+    D3DXMatrixOrthoRH(proj, 2 * radius, (1 + fabs(lightVec.z)) * radius, 0, 2.0 * zrange);
+    *viewproj = (*view) * (*proj);
 
     // Texel quantization produces hideous temporal aliasing
     //viewproj->_41 = floor(viewproj->_41 * 512.0) / 512.0;
     //viewproj->_42 = floor(viewproj->_42 * 512.0) / 512.0;
 
-	effect->SetMatrixArray(ehShadowViewproj, viewproj, 1);
-	effectShadow->CommitChanges();
+    effect->SetMatrixArray(ehShadowViewproj, viewproj, 1);
+    effectShadow->CommitChanges();
 
     // Cull
-	ViewFrustum range_frustum(viewproj);
+    ViewFrustum range_frustum(viewproj);
     VisibleSet visible_set;
 
     currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, visible_set);
@@ -138,7 +142,7 @@ void DistantLand::renderShadowLayer(int layer, float radius)
 // renderShadow - Renders shadows (using blending) over Morrowind shadow receivers
 void DistantLand::renderShadow()
 {
-	effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
+    effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
     effect->SetTexture(ehTex3, texSoftShadow);
     effect->CommitChanges();
 

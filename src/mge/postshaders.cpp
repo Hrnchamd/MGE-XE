@@ -19,7 +19,8 @@ const char * effectVariableList[] = {
 const int effectVariableCount = sizeof(effectVariableList) / sizeof(const char *);
 const char *compatibleShader = "MGE XE 0";
 
-const DWORD fvfPost = D3DFVF_XYZRHW | D3DFVF_TEX2;
+const DWORD fvfPost = D3DFVF_XYZRHW | D3DFVF_TEX2;  // XYZRHW -> skips vertex shader
+const DWORD fvfBlend = D3DFVF_XYZW | D3DFVF_TEX2;
 
 IDirect3DDevice9 *PostShaders::device;
 std::vector<MGEShader> PostShaders::shaders;
@@ -221,23 +222,24 @@ bool PostShaders::initBuffers()
     doublebuffer.init(texDoubleBuffer, surfaceDoubleBuffer);
 
     // Skip vertex shader with post-transform vertex buffer
-    hr = device->CreateVertexBuffer(4 * 32, 0, fvfPost, D3DPOOL_MANAGED, &vbPost, 0);
+    hr = device->CreateVertexBuffer(4 * 32, 0, 0, D3DPOOL_MANAGED, &vbPost, 0);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Failed to create post-process verts");
         return false;
     }
 
+    // Format: Post-transform position, texture xy, normalized device xy
     D3DXVECTOR4* v;
     vbPost->Lock(0, 0, (void**)&v, 0);
     v[0] = D3DXVECTOR4(-0.5f, h - 0.5f, 0.0f, 1.0f);
-    v[1] = D3DXVECTOR4(0, 1, -1, 1);
+    v[1] = D3DXVECTOR4(0, 1, -1, -1);
     v[2] = D3DXVECTOR4(-0.5f, -0.5f, 0.0f, 1.0f);
-    v[3] = D3DXVECTOR4(0, 0, -1, -1);
+    v[3] = D3DXVECTOR4(0, 0, -1, 1);
     v[4] = D3DXVECTOR4(w - 0.5f, h - 0.5f, 0.0f, 1.0f);
-    v[5] = D3DXVECTOR4(1, 1, 1, 1);
+    v[5] = D3DXVECTOR4(1, 1, 1, -1);
     v[6] = D3DXVECTOR4(w - 0.5f, -0.5f, 0.0f, 1.0f);
-    v[7] = D3DXVECTOR4(1, 0, 1, -1);
+    v[7] = D3DXVECTOR4(1, 0, 1, 1);
     vbPost->Unlock();
 
     // HDR readback system
@@ -363,14 +365,13 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
 
         for(int p = 0; p != passes; ++p)
         {
-            effect->BeginPass(p);
             device->SetRenderTarget(0, doublebuffer.sinkSurface());
             effect->SetTexture(s->ehVars[EV_lastpass], doublebuffer.sourceTexture());
-            effect->CommitChanges();
 
+            effect->BeginPass(p);
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-
             effect->EndPass();
+
             doublebuffer.cycle();
         }
 
@@ -404,7 +405,8 @@ IDirect3DTexture9 * PostShaders::borrowBuffer(int n)
 
 void PostShaders::applyBlend()
 {
-    device->SetFVF(fvfPost);
+    // Render with vertex shader by using a different FVF for the same buffer
+    device->SetFVF(fvfBlend);
     device->SetStreamSource(0, vbPost, 0, 32);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);

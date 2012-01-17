@@ -207,12 +207,10 @@ namespace MGEgui {
                 "This has no effect in windowed mode.")},
             {"AntiAlias", new Tip (new string [] {"cmbAntiAlias", "lAntiAlias"},
                 "Sets the antialiasing level.\n" +
-                "If you set this above what your graphics card supports, you will get a render creation error when starting up Morrowind.\n" +
-                "If you set this to anything other than none, you will not be able to create a lockable backbuffer.")},
+                "If you set this above what your graphics card supports, you will get a render creation error when starting up Morrowind.")},
             {"VWait", new Tip (new string [] {"cmbVWait", "lVWait"},
-                "Sets the vertical refresh setting (1 is equivalent to VSync).\n" +
-                "Setting this to 1, 2, 3, or 4 will cause an FPS hit, but will remove tearing artifacts.\n" +
-                "Setting it to more than 1 in windowed mode will result in using 'Default (1)' setting.")},
+                "Sets the vertical refresh sync. Turn it on if you have screen tearing problems.\n" +
+                "Values above 1 sync rendering to 1/2, 1/3 or 1/4 of the monitor refresh rate.")},
             {"CalcRefresh", new Tip (new string [] {"bCalcRefresh"},
                 "Finds the valid refresh rates for Morrowind's currently selected resolution.\n" +
                 "Valid refresh rates depend on resolution, adapter, and whether 16 bit colour mode is enabled.\n" +
@@ -229,7 +227,7 @@ namespace MGEgui {
                 "This is selected screen resolution calculated aspect ratio.")},
             {"AnisoLevel", new Tip (new string [] {"cmbAnisoLevel", "lAnisoLevel"},
                 "Sets the anisotropic filtering level.\n" +
-                "This will only have an effect if you use anisotropic filtering for either scale or mip filters.\n" +
+                "This improves the sharpness of textures that are viewed at glancing angles.\n" +
                 "If you set this to above what your card supports, it will automatically drop down to the highest supported level.")},
             {"LOD", new Tip (new string [] {"udLOD", "lLOD"},
                 "Sets the mipmap level of detail bias. Valid range is between -2.0 and 2.0.\n" +
@@ -543,8 +541,7 @@ namespace MGEgui {
             {"1", 1},
             {"2", 2},
             {"3", 3},
-            {"4", 4},
-            {"Default", 5}
+            {"4", 4}
         };
 
         private static Dictionary<string, double> refreshDict = new Dictionary<string, double> {
@@ -617,7 +614,7 @@ namespace MGEgui {
         public static INIFile.INIVariableDef iniAutoLang = new INIFile.INIVariableDef ("AutoLang", siniMain, "Language Autodetection", INIFile.INIBoolType.Text, "True");
         // Graphics
         private static INIFile.INIVariableDef iniAntiAlias = new INIFile.INIVariableDef ("AntiAlias", siniGlobGraph, "Antialiasing Level", INIFile.INIVariableType.Dictionary, "None", antiAliasDict);
-        private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "1", vWaitDict);
+        private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "Immediate", vWaitDict);
         private static INIFile.INIVariableDef iniRefresh = new INIFile.INIVariableDef ("Refresh", siniGlobGraph, "Refresh Rate", INIFile.INIVariableType.Byte, "Default", refreshDict, 0, 240);
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "Off", anisoLevelDict);
         private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -2, 2, 3);

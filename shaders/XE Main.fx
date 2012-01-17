@@ -155,7 +155,7 @@ struct LandVertOut
     float4 fog : TEXCOORD1;
 };
 
-LandVertOut LandscapeVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
+LandVertOut LandscapeVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
 {
     LandVertOut OUT;
 
@@ -176,7 +176,7 @@ LandVertOut LandscapeVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
     return OUT;
 }
 
-LandVertOut LandscapeReflVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
+LandVertOut LandscapeReflVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
 {
     LandVertOut OUT;
 
@@ -200,7 +200,7 @@ LandVertOut LandscapeReflVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
     return OUT;
 }
 
-float4 LandscapePS (in LandVertOut IN): COLOR0
+float4 LandscapePS (in LandVertOut IN) : COLOR0
 {
     // Expand and normalize normal map
     float3 normal = normalize(2 * tex2D(sampNormals, IN.texcoord).rgb - 1);
@@ -224,22 +224,38 @@ float4 LandscapePS (in LandVertOut IN): COLOR0
 //------------------------------------------------------------
 // Morrowind/MGE blending
 
-float4 MGEBlendPS (float2 tex : TEXCOORD) : COLOR0
+DeferredOut MGEBlendVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1)
 {
-    float v, w = tex2D(sampDepth, tex).r;
+    DeferredOut OUT;
+
+    // Fix D3D9 half pixel offset    
+    OUT.pos = float4(ndc.x - rcpres.x, ndc.y + rcpres.y, 0, 1);
+    OUT.tex = float4(tex, 0, 0);
     
-    if(w > 6400.0)
+    // Eye space reconstruction vector
+    OUT.eye = float3(ndc.x / proj[0][0], ndc.y / proj[1][1], 1);
+    return OUT;
+}
+
+float4 MGEBlendPS (DeferredOut IN) : COLOR0
+{
+    const float zone = 512.0, bound = 7168.0 - zone;
+    float v, w = tex2Dlod(sampDepth, IN.tex).r;
+    
+    if(w > bound)
     {
-        w = min(w, tex2D(sampDepth, tex + float2(-rcpres.x, 0)).r);
-        w = min(w, tex2D(sampDepth, tex + float2(0, -rcpres.y)).r);
-        w = min(w, tex2D(sampDepth, tex + float2(rcpres.x, 0)).r);
-        w = min(w, tex2D(sampDepth, tex + float2(0, rcpres.y)).r);
+        // tex2Dlod allows texld to be moved into the branch, as grad calculation is not required
+        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(rcpres.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(0, rcpres.y, 0, 0)).r);
     }
     
-    v = (w - 6400.0) / 768.0;
+    //w = length(w * IN.eye);   // causes some errors with distant land
+    v = (w - bound) / zone;
     clip(v);
     
-    return float4(tex2D(sampBaseTex, tex).rgb, saturate(v));
+    return float4(tex2Dlod(sampBaseTex, IN.tex).rgb, saturate(v));
 }
 
 //------------------------------------------------------------
@@ -457,6 +473,7 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
         
+        VertexShader = compile vs_3_0 CausticsVS ();
         PixelShader = compile ps_3_0 CausticsPS ();
     }
      //------------------------------------------------------------
@@ -473,6 +490,7 @@ Technique T0 {
         DestBlend = InvSrcAlpha;
         AlphaTestEnable = false;
 
+        VertexShader = compile vs_3_0 MGEBlendVS ();
         PixelShader = compile ps_3_0 MGEBlendPS ();
     }
     //------------------------------------------------------------

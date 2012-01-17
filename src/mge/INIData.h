@@ -72,12 +72,11 @@ const tdictent dictentZBuf [] = {
 const tdictionary dictZBuf = {countof(dictentZBuf), dictentZBuf};
 
 const tdictent dictentVWait [] = {
-    {"Immediate", 3},
+    {"Immediate", 255},
     {"1", 1},
     {"2", 2},
     {"3", 4},
     {"4", 8},
-    {"Default", 0}
 };
 const tdictionary dictVWait = {countof(dictentVWait), dictentVWait};
 
@@ -143,7 +142,7 @@ const iniSetting iniSettings[] = {
     // Generic Variables
     {&Configuration.AALevel, t_uint8, 1, siniGlobGraph, "Antialiasing Level", "None", &dictAA, DICTONLY, 0, 0},
     {&Configuration.ZBufFormat, t_uint8, 1, siniGlobGraph, "Z-Buffer Format", "D24S8", &dictZBuf, DICTONLY, 0, 0},
-    {&Configuration.VWait, t_uint8, 1, siniGlobGraph, "VWait", "2", &dictVWait, DICTONLY, 0, 0},
+    {&Configuration.VWait, t_uint8, 1, siniGlobGraph, "VWait", "Immediate", &dictVWait, DICTONLY, 0, 0},
     {&Configuration.RefreshRate, t_uint8, 1, siniGlobGraph, "Refresh Rate", "Default", &dictRefrRate, MINMAX, 0, 240},
     {&Configuration.AnisoLevel, t_uint8, 1, siniRendState, "Anisotropic Filtering Level", "Off", &dictAnisoLvl, DICTONLY, 0, 0},
     {&Configuration.LODBias, t_float, 1, siniRendState, "Mipmap LOD Bias", "0", NULL, MINMAX, -2, 2},

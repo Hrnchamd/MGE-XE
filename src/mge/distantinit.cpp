@@ -17,15 +17,15 @@ bool DistantLand::ready = false;
 bool DistantLand::isRenderCached = false;
 int DistantLand::numWaterVerts, DistantLand::numWaterTris;
 
-IDirect3DDevice9* DistantLand::device;
-ID3DXEffect* DistantLand::effect;
-ID3DXEffect* DistantLand::effectShadow;
-ID3DXEffect* DistantLand::effectDepth;
-ID3DXEffectPool* DistantLand::effectPool;
-IDirect3DVertexDeclaration9* DistantLand::LandDecl;
-IDirect3DVertexDeclaration9* DistantLand::StaticDecl;
-IDirect3DVertexDeclaration9* DistantLand::WaterDecl;
-IDirect3DVertexDeclaration9* DistantLand::GrassDecl;
+IDirect3DDevice9 *DistantLand::device;
+ID3DXEffect *DistantLand::effect;
+ID3DXEffect *DistantLand::effectShadow;
+ID3DXEffect *DistantLand::effectDepth;
+ID3DXEffectPool *DistantLand::effectPool;
+IDirect3DVertexDeclaration9 *DistantLand::LandDecl;
+IDirect3DVertexDeclaration9 *DistantLand::StaticDecl;
+IDirect3DVertexDeclaration9 *DistantLand::WaterDecl;
+IDirect3DVertexDeclaration9 *DistantLand::GrassDecl;
 
 unordered_map<string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
 const DistantLand::WorldSpace *DistantLand::currentWorldSpace;
@@ -148,6 +148,7 @@ const D3DVERTEXELEMENT9 StaticElem[] = {
     D3DDECL_END()
 };
 
+// Instanced grass vertex declaration
 const D3DVERTEXELEMENT9 GrassElem[] =
 {
     {0, 0,  D3DDECLTYPE_FLOAT16_4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
@@ -250,7 +251,7 @@ bool DistantLand::initShader()
         return false;
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, 0, effectPool, &effect, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effect, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Main", errors);
@@ -296,7 +297,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, 0, effectPool, &effectShadow, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effectShadow, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Shadowmap", errors);
@@ -305,7 +306,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shadow map shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, 0, effectPool, &effectDepth, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effectDepth, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Depth", errors);

@@ -395,8 +395,6 @@ void DistantLand::adjustFog()
 {
     DECLARE_MWBRIDGE
 
-    if(!ready) return;
-
     // Get fog cell ranges based on environment and weather
     if(mwBridge->IsUnderwater(eyePos.z)) {
         fogStart = Configuration.DL.BelowWaterFogStart;
@@ -456,15 +454,15 @@ void DistantLand::adjustFog()
                 float expEnd = exp(-(7168.0 - fogNearStart) / (fogNearEnd - fogNearStart));
                 fogNearEnd =  (7168.0 - expEnd * fogNearStart) / (1.0 - expEnd);
             }
-
-            device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogNearStart);
-            device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
         }
         else
         {
-            device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogStart);
-            device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogEnd);
+            fogNearStart = fogStart;
+            fogNearEnd = fogEnd;
         }
+
+        device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogNearStart);
+        device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
     }
     else
     {
@@ -544,14 +542,13 @@ void DistantLand::adjustFog()
 // postProcess - Calls post process module, or captures and applies frame cache to avoid rendering
 void DistantLand::postProcess()
 {
-    IDirect3DStateBlock9 *stateSaved;
-
-    // Save state block
-    device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
-
     if(!isRenderCached)
     {
         DECLARE_MWBRIDGE
+
+        // Save state block
+        IDirect3DStateBlock9 *stateSaved;
+        device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
         if(Configuration.MGEFlags & USE_HW_SHADER)
         {
@@ -574,6 +571,13 @@ void DistantLand::postProcess()
             texDistantBlend = PostShaders::borrowBuffer(0);
             isRenderCached = true;
         }
+
+        // Shadow map inset
+        ///renderShadowDebug();
+
+        // Restore state
+        stateSaved->Apply();
+        stateSaved->Release();
     }
     else
     {
@@ -588,13 +592,6 @@ void DistantLand::postProcess()
         // Cache expires for frame after mouse click, so as not to affect click response time
         isRenderCached &= !MGEProxyDirectInput::mouseClick;
     }
-
-    // Shadow map inset
-    ///renderShadowDebug();
-
-    // Restore state
-    stateSaved->Apply();
-    stateSaved->Release();
 }
 
 // updatePostShader - callback for setting post shader variables based on environment
@@ -613,17 +610,17 @@ void DistantLand::updatePostShader(MGEShader *shader)
     float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.Zoom.zoom : 1.0;
     effect->SetMatrix(shader->ehVars[EV_mview], &mwView);
     effect->SetMatrix(shader->ehVars[EV_mproj], &mwProj);
-    effect->SetFloatArray(shader->ehVars[EV_eyevec], eyeVec,3);
-    effect->SetFloatArray(shader->ehVars[EV_eyepos], eyePos,3);
+    effect->SetFloatArray(shader->ehVars[EV_eyevec], eyeVec, 3);
+    effect->SetFloatArray(shader->ehVars[EV_eyepos], eyePos, 3);
     effect->SetFloat(shader->ehVars[EV_fov], Configuration.ScreenFOV / zoom);
 
     // Lighting
     RGBVECTOR totalAmb = sunAmb + ambCol;
-    effect->SetFloatArray(shader->ehVars[EV_sunvec], sunVec,3);
-    effect->SetFloatArray(shader->ehVars[EV_suncol], sunCol,3);
-    effect->SetFloatArray(shader->ehVars[EV_sunamb], totalAmb,3);
-    effect->SetFloatArray(shader->ehVars[EV_sunpos], sunPos,3);
-    effect->SetFloat(shader->ehVars[EV_sunvis], lerp(sunVis, 1.0f, 0.333 * niceWeather));
+    effect->SetFloatArray(shader->ehVars[EV_sunvec], sunVec, 3);
+    effect->SetFloatArray(shader->ehVars[EV_suncol], sunCol, 3);
+    effect->SetFloatArray(shader->ehVars[EV_sunamb], totalAmb, 3);
+    effect->SetFloatArray(shader->ehVars[EV_sunpos], sunPos, 3);
+    effect->SetFloat(shader->ehVars[EV_sunvis], lerp(sunVis, 1.0, 0.333 * niceWeather));
 
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
@@ -643,6 +640,7 @@ void DistantLand::updatePostShader(MGEShader *shader)
 
 //------------------------------------------------------------
 
+// selectDistantCell - Select the correct set of distant land meshes for the current cell
 bool DistantLand::selectDistantCell()
 {
     DECLARE_MWBRIDGE
@@ -668,11 +666,13 @@ bool DistantLand::selectDistantCell()
     return false;
 }
 
+// isDistantCell - Check if there is distant land selected for this cell
 bool DistantLand::isDistantCell()
 {
     return currentWorldSpace != 0;
 }
 
+// editProjectionZ - Alter the near and far clip planes of a projection matrix
 void DistantLand::editProjectionZ(D3DMATRIX *m, float zn, float zf)
 {
     // Override near and far clip planes
@@ -680,6 +680,7 @@ void DistantLand::editProjectionZ(D3DMATRIX *m, float zn, float zf)
     m->_43 = -zn * zf / (zf - zn);
 }
 
+// setView - Called when a D3D view matrix is set
 void DistantLand::setView(const D3DMATRIX *m)
 {
     DECLARE_MWBRIDGE
@@ -711,6 +712,7 @@ void DistantLand::setView(const D3DMATRIX *m)
     }
 }
 
+// setProjection - Called when a D3D projection matrix is set, and edits it
 void DistantLand::setProjection(D3DMATRIX *proj)
 {
     // Move near plane from 1.0 to 4.0 for more z accuracy
@@ -733,8 +735,6 @@ void DistantLand::setSunLight(const D3DLIGHT8 *s)
 {
     DECLARE_MWBRIDGE
 
-    if(!ready) return;
-
     if(mwBridge->CellHasWeather())
     {
         sunVec.x = s->Direction.x;
@@ -753,10 +753,10 @@ void DistantLand::setSunLight(const D3DLIGHT8 *s)
     sunAmb = s->Ambient;
 }
 
-bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* rs)
+// inspectIndexedPrimitive
+// Filters and records DIP calls for later use; returning false should cause the draw call to be skipped
+bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs)
 {
-    if(!ready) return true;
-
     DECLARE_MWBRIDGE
 
     // Capture all writes to z-buffer
@@ -766,7 +766,7 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* r
     {
         recordMW.push_back(*rs);
 
-        // Unify alpha test operator to GREATEREQUAL
+        // Unify alpha test operator/reference to be equivalent to GREATEREQUAL
         if(rs->alphaFunc == D3DCMP_GREATER)
             recordMW.back().alphaRef++;
     }

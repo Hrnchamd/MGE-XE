@@ -2,7 +2,6 @@
 #include "mged3d8device.h"
 #include "proxydx/d3d8texture.h"
 #include "proxydx/d3d8surface.h"
-#include "support/log.h"
 
 #include "mgeversion.h"
 #include "configuration.h"
@@ -20,6 +19,7 @@ static bool isFrameComplete = false;
 static bool stage0Complete = false;
 static bool isWaterMaterial = false;
 static bool waterDrawn = false;
+
 static RenderedState rs;
 
 static bool detectMenu(const D3DMATRIX* m);
@@ -240,8 +240,8 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
     return ProxyDevice::EndScene();
 }
 
-// Clear - Main frame, skybox mesh doesn't extend over whole background
-// Background colour is visible at horizon
+// Clear - Occurs at start of frame, and also a z-clear before rendering 1st person and sunglare
+// Skybox mesh doesn't extend over whole background; cleared background colour is visible at horizon
 HRESULT _stdcall MGEProxyDevice::Clear(DWORD a, const D3DRECT *b, DWORD c, D3DCOLOR d, float e, DWORD f)
 {
     DistantLand::setHorizonColour(d);
@@ -288,14 +288,16 @@ HRESULT _stdcall MGEProxyDevice::SetTransform(D3DTRANSFORMSTATETYPE a, const D3D
 HRESULT _stdcall MGEProxyDevice::SetMaterial(const D3DMATERIAL8 *a)
 {
     isWaterMaterial = (a->Power == 99999.0f);
+
     return ProxyDevice::SetMaterial(a);
 }
 
 // SetLight
-// Exterior sunlight appears to always be light 6
+// Capture what the sun is doing
 HRESULT _stdcall MGEProxyDevice::SetLight(DWORD a, const D3DLIGHT8 *b)
 {
-    if(a == 6)
+    // Exterior sunlight appears to always be light 6
+    if(a == 6 && DistantLand::ready)
         DistantLand::setSunLight(b);
 
     return ProxyDevice::SetLight(a, b);
@@ -338,7 +340,8 @@ HRESULT _stdcall MGEProxyDevice::SetRenderState(D3DRENDERSTATETYPE a, DWORD b)
 // Override some sampler options
 HRESULT _stdcall MGEProxyDevice::SetTextureStageState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c)
 {
-    // Overrides
+    // Sampler overrides
+    // Note that DX8 had sampling state bound to texture stages instead of samplers
     if(a == 0)
     {
         if(b == D3DTSS_MINFILTER && c == 2)
@@ -362,18 +365,22 @@ HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b
     if(DistantLand::ready && rendertargetNormal && isMainView && !isStencilScene)
     {
         rs.primType = a; rs.baseIndex = baseVertexIndex; rs.minIndex = b; rs.vertCount = c; rs.startIndex = d; rs.primCount = e;
-        if(!DistantLand::inspectIndexedPrimitive(sceneCount, &rs))
-            return D3D_OK;
 
-        // Call distant land instead of drawing water grid
         if(isWaterMaterial)
         {
+            // Call distant land instead of drawing water grid
             if(!waterDrawn)
             {
                 DistantLand::renderStageWater();
                 waterDrawn = true;
             }
             return D3D_OK;
+        }
+        else
+        {
+            // Let distant land record call and skip if signalled
+            if(!DistantLand::inspectIndexedPrimitive(sceneCount, &rs))
+                return D3D_OK;
         }
     }
 
@@ -399,7 +406,7 @@ ULONG _stdcall MGEProxyDevice::Release()
 
 // detectMenu
 // detects if view matrix is for UI / load bars
-// the projection matrix is never set to ortho, unusable for detection
+// the projection matrix is never set to ortho, making it unusable for detection
 bool detectMenu(const D3DMATRIX* m)
 {
     if(m->_41 != 0.0f || !(m->_42 == 0.0f || m->_42 == -600.0f) || m->_43 != 0.0f)
@@ -442,24 +449,33 @@ HRESULT _stdcall MGEProxyDevice::SetIndices(IDirect3DIndexBuffer8 *a, UINT b)
 
 void captureRenderState(D3DRENDERSTATETYPE a, DWORD b)
 {
-    if(a == D3DRS_VERTEXBLEND) rs.vertexBlendState = b;
-    else if(a == D3DRS_ZWRITEENABLE) rs.zWrite = b;
-    else if(a == D3DRS_CULLMODE) rs.cullMode = b;
-    else if(a == D3DRS_ALPHABLENDENABLE) rs.blendEnable = b;
-    else if(a == D3DRS_SRCBLEND) rs.srcBlend = b;
-    else if(a == D3DRS_DESTBLEND) rs.destBlend = b;
-    else if(a == D3DRS_ALPHATESTENABLE) rs.alphaTest = b;
-    else if(a == D3DRS_ALPHAFUNC) rs.alphaFunc = b;
-    else if(a == D3DRS_ALPHAREF) rs.alphaRef = b;
+    switch(a)
+    {
+        case D3DRS_VERTEXBLEND: rs.vertexBlendState = b; break;
+        case D3DRS_ZWRITEENABLE: rs.zWrite = b; break;
+        case D3DRS_CULLMODE: rs.cullMode = b; break;
+        case D3DRS_ALPHABLENDENABLE: rs.blendEnable = (BYTE)b; break;
+        case D3DRS_SRCBLEND: rs.srcBlend = (BYTE)b; break;
+        case D3DRS_DESTBLEND: rs.destBlend = (BYTE)b; break;
+        case D3DRS_ALPHATESTENABLE: rs.alphaTest = (BYTE)b; break;
+        case D3DRS_ALPHAFUNC: rs.alphaFunc = (BYTE)b; break;
+        case D3DRS_ALPHAREF: rs.alphaRef = (BYTE)b; break;
+    }
 }
 
 void captureTransform(D3DTRANSFORMSTATETYPE a, const D3DMATRIX *b)
 {
-    if(a == D3DTS_WORLDMATRIX(0)) rs.worldTransforms[0] = *b;
-    else if(a == D3DTS_WORLDMATRIX(1)) rs.worldTransforms[1] = *b;
-    else if(a == D3DTS_WORLDMATRIX(2)) rs.worldTransforms[2] = *b;
-    else if(a == D3DTS_WORLDMATRIX(3)) rs.worldTransforms[3] = *b;
+    switch(a)
+    {
+        case D3DTS_WORLDMATRIX(0): rs.worldTransforms[0] = *b; break;
+        case D3DTS_WORLDMATRIX(1): rs.worldTransforms[1] = *b; break;
+        case D3DTS_WORLDMATRIX(2): rs.worldTransforms[2] = *b; break;
+        case D3DTS_WORLDMATRIX(3): rs.worldTransforms[3] = *b; break;
+    }
 }
+
+// --------------------------------------------------------
+// Cheap, nasty fps meter
 
 float calcFPS()
 {

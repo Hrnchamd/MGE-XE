@@ -89,11 +89,10 @@ struct WaterVertOut
 {
     float4 position : POSITION;
     float4 pos : TEXCOORD0;
-    float2 texcoord1 : TEXCOORD1;
-    float2 texcoord2 : TEXCOORD2;
-    float4 screenpos : TEXCOORD3;
+    float4 texcoords : TEXCOORD1;
+    float4 screenpos : TEXCOORD2;
 #ifdef DYNAMIC_RIPPLES
-    float4 screenposclamp : TEXCOORD4;
+    float4 screenposclamp : TEXCOORD3;
 #endif
 };
 
@@ -108,8 +107,8 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     OUT.pos.z -= 0.1;
 
     // Calculate various texture coordinates
-    OUT.texcoord1 = OUT.pos.xy / 3900;
-    OUT.texcoord2 = OUT.pos.xy / 1104;
+    OUT.texcoords.xy = OUT.pos.xy / 3900;
+    OUT.texcoords.zw = OUT.pos.xy / 527;
 
     OUT.position = mul(OUT.pos, view);
     OUT.position = mul(OUT.position, proj);
@@ -132,13 +131,13 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     OUT.pos = mul(pos, world);
 
     // Calculate various texture coordinates
-    OUT.texcoord1 = OUT.pos.xy / 3900;
-    OUT.texcoord2 = OUT.pos.xy / 1104;
+    OUT.texcoords.xy = OUT.pos.xy / 3900;
+    OUT.texcoords.zw = OUT.pos.xy / 527;
 
     // Apply vertex displacement
     float t = 0.4 * time;
-    float height = tex3Dlod(sampWater3d, float4(OUT.texcoord2, t, 0)).a;
-	float height2 = tex3Dlod(sampWater3d, float4(OUT.texcoord1, t, 0)).a;
+    float height = tex3Dlod(sampWater3d, float4(OUT.texcoords.zw, t, 0)).a;
+    float height2 = tex3Dlod(sampWater3d, float4(OUT.texcoords.xy, t, 0)).a;
     float dist = length(EyePos.xyz - OUT.pos.xyz);
 
     float addheight = waveHeight * (lerp(height, height2, saturate(dist/8000)) - 0.5) * saturate(1 - dist/6400) * saturate(dist/200);
@@ -174,7 +173,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     float3 depthcolor = fogApply(_depthcolor, fog);
     
     // Calculate water normal
-    float3 normal = getFinalWaterNormal(IN.texcoord1, IN.texcoord2, dist, IN.pos.xy);
+    float3 normal = getFinalWaterNormal(IN.texcoords.xy, IN.texcoords.zw, dist, IN.pos.xy);
 
     // Reflection/refraction pixel distortion factor, wind strength increases distortion
     float2 reffactor = (_windfactor * dist + 0.1) * normal.xy;
@@ -207,7 +206,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
         // Make transition between actual refraction image and depth color depending on water depth
         refracted = lerp(depthcolor, refracted, 0.8 * depthscale + 0.2 * shorefactor);
     }
-
+    
     // Sample reflection texture
 #ifndef DYNAMIC_RIPPLES
     float4 screenpos = IN.screenpos;
@@ -256,7 +255,7 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
     float fog = saturate(exp(-dist / 4096));
     
     // Calculate water normal
-    float3 normal = -getFinalWaterNormal(IN.texcoord1, IN.texcoord2, dist, IN.pos.xy);
+    float3 normal = -getFinalWaterNormal(IN.texcoords.xy, IN.texcoords.zw, dist, IN.pos.xy);
 
     // Reflection / refraction pixel distortion factor, wind strength increases distortion
     float2 reffactor = 2 * (_windfactor * dist + 0.1) * normal.xy;
@@ -283,19 +282,30 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
 //------------------------------------------------------------
 // Caustics post-process
 
-float4 CausticsPS (float2 tex : TEXCOORD) : COLOR0
+DeferredOut CausticsVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1)
 {
-    float3 c = tex2D(sampBaseTex, tex).rgb;
-    float depth = tex2D(sampDepth, tex).r;
+    DeferredOut OUT;
+    
+    // Fix D3D9 half pixel offset    
+    OUT.pos = float4(ndc.x - rcpres.x, ndc.y + rcpres.y, 0, 1);
+    OUT.tex = float4(tex, 0, 0);
+    
+    // World space reconstruction vector
+    OUT.eye = float3(view[0][2], view[1][2], view[2][2]);
+    OUT.eye += (ndc.x / proj[0][0]) * float3(view[0][0], view[1][0], view[2][0]);
+    OUT.eye += (ndc.y / proj[1][1]) * float3(view[0][1], view[1][1], view[2][1]);
+    return OUT;
+}
+
+float4 CausticsPS (DeferredOut IN) : COLOR0
+{
+    float3 c = tex2Dlod(sampBaseTex, IN.tex).rgb;
+    float depth = tex2Dlod(sampDepth, IN.tex).r;
     float fog = fogMWScalar(depth);
 
     clip(7168.0 - depth);
 
-    float3 eyevec = float3(view[0][2], view[1][2], view[2][2]);
-    eyevec += (1/proj[0][0] * (2*tex.x-1)).xxx * float3(view[0][0], view[1][0], view[2][0]);
-    eyevec += (-1/proj[1][1] * (2*tex.y-1)).xxx * float3(view[0][1], view[1][1], view[2][1]);
-    
-    float3 uwpos = EyePos + eyevec * depth;
+    float3 uwpos = EyePos + IN.eye * depth;
     uwpos.z -= waterlevel;
     clip(-uwpos.z);
 
@@ -363,9 +373,7 @@ float4 WaveStepPS (float2 Tex : TEXCOORD0) : COLOR0
     return ret;
 }
 
-//------------------------------------------------------------
-
-float4 PlayerWavePS (in float2 Tex : TEXCOORD0): COLOR0
+float4 PlayerWavePS (float2 Tex : TEXCOORD0) : COLOR0
 {
     float4 ret = tex2D(sampRain, Tex);
     float wavesize = (1.0 + 0.055 * sin(16 * time) + 0.065 * sin(12.87645 * time)) * playerWaveSize;

@@ -20,15 +20,9 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     device->SetDepthStencilSurface(surfShadowZ);
     device->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, horizonCol, 1.0, 0);
 
-    // If using dynamic ripples, the water level can be lowered by up to 0.5 * waveheight
-    // so move clip plane downwards at the cost of some reflection errors
-    float waterlevel = mwBridge->WaterLevel();
-    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
-        waterlevel -= 0.5 * Configuration.DL.WaterWaveHeight;
-
     // Calculate reflected view matrix, mirror plane at water mesh level
     D3DXMATRIX reflView;
-    D3DXPLANE plane(0, 0, 1.0, -(waterlevel - 1.0));
+    D3DXPLANE plane(0, 0, 1.0, -(mwBridge->WaterLevel() - 1.0));
     D3DXMatrixReflect(&reflView, &plane);
     D3DXMatrixMultiply(&reflView, &reflView, view);
     effect->SetMatrix(ehView, &reflView);
@@ -43,6 +37,11 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 
     // Clip geometry on opposite side of water plane
     plane *= mwBridge->IsUnderwater(eyePos.z) ? -1.0 : 1.0;
+
+    // If using dynamic ripples, the water level can be lowered by up to 0.5 * waveheight
+    // so move clip plane downwards at the cost of some reflection errors
+    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
+        plane.d += 0.5 * Configuration.DL.WaterWaveHeight;
 
     // Doing inverses separately is a lot more numerically stable
     D3DXMatrixInverse(&clipMat, 0, &reflView);

@@ -8,5 +8,5 @@ public:
 
     HRESULT _stdcall CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d, D3DPRESENT_PARAMETERS8 *e, IDirect3DDevice8 **f);
 
-    IDirect3DDevice8* factoryProxyDevice(IDirect3DDevice9* d);
+    IDirect3DDevice8 * factoryProxyDevice(IDirect3DDevice9 *d);
 };

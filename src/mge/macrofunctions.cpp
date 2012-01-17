@@ -15,7 +15,7 @@
 void MacroFunctions::TakeScreenshot()
 {
     const char * strImageExtensions[] = { ".bmp", ".jpg", ".dds", ".png", ".tga" };
-    D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
+    const D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
     char filename[256], path[256];
     bool usedir = false;
     struct _stat unusedstat;
@@ -31,7 +31,9 @@ void MacroFunctions::TakeScreenshot()
 	if(strlen(Configuration.SSDir) > 0)
     {
         usedir = true;
-        if(_stat(Configuration.SSDir, &unusedstat) == -1 && !CreateDirectory(Configuration.SSDir, NULL)) usedir = false;
+
+        if(_stat(Configuration.SSDir, &unusedstat) == -1 && !CreateDirectory(Configuration.SSDir, NULL))
+            usedir = false;
     }
 
     if(usedir)
