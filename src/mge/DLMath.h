@@ -1,6 +1,8 @@
 #ifndef _DL_MATH_H_
 #define _DL_MATH_H_
 
+#define D3DXFX_LARGEADDRESS_HANDLE
+
 #include "d3dx9math.h"
 
 //-----------------------------------------------------------------------------
@@ -12,8 +14,8 @@ struct BoundingSphere {
     BoundingSphere();
     BoundingSphere(const BoundingSphere& sphere);
     BoundingSphere& operator=(const BoundingSphere& sphere);
+    bool empty() const { return radius == 0.0f; }
 
-    ~BoundingSphere();
     BoundingSphere& operator+=(const BoundingSphere& rh);
     BoundingSphere operator+(const BoundingSphere& rh);
 };
@@ -25,7 +27,7 @@ struct BoundingBox {
 
     BoundingBox();
     BoundingBox(const BoundingBox& rh);
-    ~BoundingBox();
+
     BoundingBox& operator=(const BoundingBox& rh);
     BoundingBox(const D3DXVECTOR3& min, const D3DXVECTOR3& max);
     void Set(const D3DXVECTOR3& min, const D3DXVECTOR3& max);

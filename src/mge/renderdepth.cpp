@@ -11,14 +11,9 @@
 void DistantLand::renderDepth()
 {
     DECLARE_MWBRIDGE
-    IDirect3DSurface9 *target, *backbuffer, *depthstencil;
 
     // Switch to render target
-    texDepthFrame->GetSurfaceLevel(0, &target);
-    device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-    device->GetDepthStencilSurface(&depthstencil);
-    device->SetRenderTarget(0, target);
-    device->SetDepthStencilSurface(surfDepthDepth);
+    RenderTargetSwitcher rtsw(texDepthFrame, surfDepthDepth);
     device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
 
     // Unbind depth sampler
@@ -68,26 +63,14 @@ void DistantLand::renderDepth()
         }
     }
 
-    // Return render target to backbuffer
+    // Reset projection matrix
     effect->SetMatrix(ehProj, &mwProj);
-    device->SetRenderTarget(0, backbuffer);
-    device->SetDepthStencilSurface(depthstencil);
-
-    target->Release();
-    backbuffer->Release();
-    depthstencil->Release();
 }
 
 void DistantLand::renderDepthAdditional()
 {
-    IDirect3DSurface9 *target, *backbuffer, *depthstencil;
-
     // Switch to render target
-    texDepthFrame->GetSurfaceLevel(0, &target);
-    device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-    device->GetDepthStencilSurface(&depthstencil);
-    device->SetRenderTarget(0, target);
-    device->SetDepthStencilSurface(surfDepthDepth);
+    RenderTargetSwitcher rtsw(texDepthFrame, surfDepthDepth);
 
     // Unbind depth sampler
     effect->SetTexture(ehTex3, NULL);
@@ -102,14 +85,8 @@ void DistantLand::renderDepthAdditional()
     renderDepthRecorded();
     effectDepth->EndPass();
 
-    // Return render target to backbuffer
+    // Reset projection matrix
     effect->SetMatrix(ehProj, &mwProj);
-    device->SetRenderTarget(0, backbuffer);
-    device->SetDepthStencilSurface(depthstencil);
-
-    target->Release();
-    backbuffer->Release();
-    depthstencil->Release();
 }
 
 void DistantLand::renderDepthRecorded()

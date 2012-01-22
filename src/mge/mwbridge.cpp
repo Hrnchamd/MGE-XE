@@ -127,8 +127,6 @@ void MWBridge::Load()
     eSunDir = read_dword(eWthrArray - 0x14) + 0x30;
     eSunVis = read_dword(read_dword(read_dword(eWthrArray + 0x74)+0x98)+0x24)+0x3;
 
-    GetShadowFovAddr();
-
     m_loaded = true;
 }
 

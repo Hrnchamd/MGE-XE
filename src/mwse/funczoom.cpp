@@ -103,7 +103,7 @@ bool mwseZoom::execute(mwseInstruction *_this)
 	if(!_this->vmPop(&x)) return false;
 
     Configuration.Zoom.rateTarget = x;
-    Configuration.Zoom.rate = 0;
+    Configuration.Zoom.rate = (x < 0) ? x : 0;
 	return true;
 }
 

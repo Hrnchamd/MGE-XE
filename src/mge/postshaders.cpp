@@ -114,10 +114,10 @@ bool PostShaders::checkShaderVersion(MGEShader *shader)
     const char *verstr;
 
     tech = effect->GetTechnique(0);
-    if(tech == NULL) return false;
+    if(tech == 0) return false;
 
     ver = effect->GetAnnotationByName(tech, "MGEinterface");
-    if(ver == NULL) return false;
+    if(ver == 0) return false;
 
     if(effect->GetString(ver, &verstr) == D3D_OK)
     {
@@ -149,33 +149,30 @@ void PostShaders::initShader(MGEShader *shader)
     if(glare) Configuration.MGEFlags |= NO_MW_SUNGLARE;
 
     // Constants
-    //effect->SetTexture(shader->ehVars[EV_depthframe], texDepthFrame);
     effect->SetFloatArray(shader->ehVars[EV_rcpres], rcpRes, 2);
 }
 
-void PostShaders::loadShaderDependencies(MGEShader* shader)
+void PostShaders::loadShaderDependencies(MGEShader *shader)
 {
     ID3DXEffect *effect = shader->effect;
-    IDirect3DTexture9 *tex;
-    char textureid[16], texturepath[MAX_PATH];
-    char* texturefile;
-    HRESULT hr;
-    int i;
+    char texturepath[MAX_PATH];
+    const char *texturesrc;
 
-    for(i = 0, hr = D3D_OK; hr == D3D_OK; ++i)
+    for(UINT i = 0; true; ++i)
     {
-        sprintf(textureid, "texname%d", i);
-        hr = effect->GetString(textureid, (LPCSTR*)&texturefile);
+        D3DXHANDLE ehTextureRef = effect->GetParameter(0, i);
+        if(ehTextureRef == 0) break;
 
-        if(hr == D3D_OK)
+        D3DXHANDLE ehTextureSrc = effect->GetAnnotationByName(ehTextureRef, "src");
+        if(ehTextureSrc == 0) continue;
+
+        if(effect->GetString(ehTextureSrc, &texturesrc) == D3D_OK)
         {
-            sprintf(texturepath, "Data Files\\textures\\%s", texturefile);
-            hr = D3DXCreateTextureFromFile(device, texturepath, &tex);
-            if(hr == D3D_OK)
-            {
-                sprintf(textureid, "tex%d", i);
-                effect->SetTexture(textureid, tex);
-            }
+            IDirect3DTexture9 *tex;
+            sprintf(texturepath, "Data Files\\textures\\%s", texturesrc);
+
+            if(D3DXCreateTextureFromFile(device, texturepath, &tex) == D3D_OK)
+                effect->SetTexture(ehTextureRef, tex);
         }
     }
 }
@@ -363,7 +360,7 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
         effect->SetTexture(s->ehVars[EV_lastshader], texLastShader);
         effect->Begin(&passes, 0);
 
-        for(int p = 0; p != passes; ++p)
+        for(UINT p = 0; p != passes; ++p)
         {
             device->SetRenderTarget(0, doublebuffer.sinkSurface());
             effect->SetTexture(s->ehVars[EV_lastpass], doublebuffer.sourceTexture());

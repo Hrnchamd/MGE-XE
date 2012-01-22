@@ -5,12 +5,8 @@
 // BoundingSphere class
 //-----------------------------------------------------------------------------
 
-BoundingSphere::BoundingSphere()
+BoundingSphere::BoundingSphere() : center(0.0f, 0.0f, 0.0f), radius(0.0f)
 {
-    center.x = 0.0f;
-    center.y = 0.0f;
-    center.z = 0.0f;
-    radius = 0.0f;
 }
 
 //-----------------------------------------------------------------------------
@@ -22,7 +18,7 @@ BoundingSphere::BoundingSphere(const BoundingSphere& sphere)
 
 //-----------------------------------------------------------------------------
 
-BoundingSphere & BoundingSphere::operator=(const BoundingSphere& sphere)
+BoundingSphere& BoundingSphere::operator=(const BoundingSphere& sphere)
 {
     center.x = sphere.center.x;
     center.y = sphere.center.y;
@@ -34,27 +30,23 @@ BoundingSphere & BoundingSphere::operator=(const BoundingSphere& sphere)
 
 //-----------------------------------------------------------------------------
 
-BoundingSphere::~BoundingSphere() {}
-
-//-----------------------------------------------------------------------------
-
 BoundingSphere& BoundingSphere::operator+=(const BoundingSphere& rh)
 {
-    //This code is based from the math described on this page:
-    //http://xengine.sourceforge.net/docs/classXEngine_1_1Math_1_1Sphere.html
-    //However, the formula for "coef" appears to have had the subtraction reversed.
+    // This code is based from the math described on this page:
+    // http://xengine.sourceforge.net/docs/classXEngine_1_1Math_1_1Sphere.html
+    // However, the formula for "coef" appears to have had the subtraction reversed.
 
-    //This will be defined as returning the minimum bounding sphere which contains the two spheres being added together.
+    // This will be defined as returning the minimum bounding sphere which contains the two spheres being added together
 
     BoundingSphere result;
     D3DXVECTOR3 vect = rh.center - center;
     float dist = D3DXVec3Length(&vect);
 
-    //Check if the sphere centers are almost the same
-    if(dist <= 0.001f)
+    // Check if the sphere centers are almost the same, or if either radius is zero
+    if(dist <= 0.001f || radius == 0.0f || rh.radius == 0.0f)
     {
-        //Return the larger of the two radii
-        if(rh.radius < radius)
+        // Return the larger of the two radii
+        if(rh.radius > radius)
         {
             radius = rh.radius;
             center = rh.center;
@@ -62,26 +54,26 @@ BoundingSphere& BoundingSphere::operator+=(const BoundingSphere& rh)
         return *this;
     }
 
-    //Interval for first sphere is [-r0, r0]; interval for second sphere is [d - r1, d + r1]
+    // Interval for first sphere is [-r0, r0]; interval for second sphere is [d - r1, d + r1]
     if(-radius < dist - rh.radius && radius > dist + rh.radius)
     {
-        //Right hand sphere is contained in this one
+        // Right hand sphere is contained in this one
         result.center = center;
         result.radius = radius;
     }
     else if(dist - rh.radius < -radius && dist + rh.radius > radius)
     {
-        //This sphere is contained in right hand one
+        // This sphere is contained in right hand one
         result.center = rh.center;
         result.radius = rh.radius;
     }
     else
     {
-        //One sphere is not contained in the other
+        // One sphere is not contained in the other
 
-        //radius is (dist + r0 + r1) / 2
-        //center is on the line c0 + coef * norm_vec
-        //where coef = (dist + r1 - r0) / 2
+        // radius is (dist + r0 + r1) / 2
+        // center is on the line c0 + coef * norm_vec
+        // where coef = (dist + r1 - r0) / 2
 
         D3DXVECTOR3 norm_vect;
         result.radius = 0.5f * (dist + radius + rh.radius);
@@ -120,10 +112,6 @@ BoundingBox::BoundingBox(const BoundingBox& rh)
 {
     *this = rh;
 }
-
-//-----------------------------------------------------------------------------
-
-BoundingBox::~BoundingBox() {}
 
 //-----------------------------------------------------------------------------
 
@@ -207,10 +195,10 @@ ViewFrustum::ViewFrustum(const D3DXMATRIX *viewProj)
     frustum[5].d = viewProj->_44 + viewProj->_42;
 
     // Normalize planes
-    for(int i = 0; i < 6; i++)
+    for(size_t f = 0; f < 6; ++f)
     {
-        D3DXPLANE temp(frustum[i]);
-        D3DXPlaneNormalize(&frustum[i], &temp);
+        D3DXPLANE temp(frustum[f]);
+        D3DXPlaneNormalize(&frustum[f], &temp);
     }
 }
 
@@ -219,31 +207,20 @@ ViewFrustum::ViewFrustum(const D3DXMATRIX *viewProj)
 ViewFrustum::Containment ViewFrustum::ContainsSphere(const BoundingSphere& sphere) const
 {
     float dist[6];
+    size_t f;
 
-    dist[0] = D3DXPlaneDotCoord(&frustum[0], &sphere.center);
-    if(dist[0] + sphere.radius < 0) { return OUTSIDE; }
+    for(f = 0; f < 6; ++f)
+    {
+        dist[f] = D3DXPlaneDotCoord(&frustum[f], &sphere.center);
+        if(dist[f] + sphere.radius < 0)
+            return OUTSIDE;
+    }
 
-    dist[1] = D3DXPlaneDotCoord(&frustum[1], &sphere.center);
-    if(dist[1] + sphere.radius < 0) { return OUTSIDE; }
-
-    dist[2] = D3DXPlaneDotCoord(&frustum[2], &sphere.center);
-    if(dist[2] + sphere.radius < 0) { return OUTSIDE; }
-
-    dist[3] = D3DXPlaneDotCoord(&frustum[3], &sphere.center);
-    if(dist[3] + sphere.radius < 0) { return OUTSIDE; }
-
-    dist[4] = D3DXPlaneDotCoord(&frustum[4], &sphere.center);
-    if(dist[4] + sphere.radius < 0) { return OUTSIDE; }
-
-    dist[5] = D3DXPlaneDotCoord(&frustum[5], &sphere.center);
-    if(dist[5] + sphere.radius < 0) { return OUTSIDE; }
-
-    if(fabs(dist[0]) < sphere.radius) { return INTERSECTS; }
-    if(fabs(dist[1]) < sphere.radius) { return INTERSECTS; }
-    if(fabs(dist[2]) < sphere.radius) { return INTERSECTS; }
-    if(fabs(dist[3]) < sphere.radius) { return INTERSECTS; }
-    if(fabs(dist[4]) < sphere.radius) { return INTERSECTS; }
-    if(fabs(dist[5]) < sphere.radius) { return INTERSECTS; }
+    for(f = 0; f < 6; ++f)
+    {
+        if(fabs(dist[f]) < sphere.radius)
+            return INTERSECTS;
+    }
 
     return INSIDE;
 }

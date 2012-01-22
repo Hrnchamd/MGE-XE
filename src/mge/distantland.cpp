@@ -784,6 +784,7 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
     return true;
 }
 
+// captureScreen - Capture a screenshot, fixing any alpha channel issue
 IDirect3DSurface9 * DistantLand::captureScreen()
 {
     IDirect3DTexture9 *t;
@@ -813,9 +814,45 @@ IDirect3DSurface9 * DistantLand::captureScreen()
     for(int y = 0; y != vp.Height; ++y)
     {
         for(int x = 0; x != rect.Pitch >> 2; ++x)
-            *c++ |= D3DCOLOR_ARGB(1, 0, 0, 0);
+            *c++ |= D3DCOLOR_ARGB(0xff, 0, 0, 0);
     }
 
     surfSS->UnlockRect();
     return surfSS;
+}
+
+
+
+// RenderTargetSwitcher - Switch to a render target, restoring state at end of scope
+RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil)
+{
+    init(target, targetDepthStencil);
+}
+
+// RenderTargetSwitcher - Switch to a render surface belonging to a texture, restoring state at end of scope
+RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DTexture9 *targetTex, IDirect3DSurface9 *targetDepthStencil)
+{
+    // Note the device still holds a reference to the target while it's active
+    IDirect3DSurface9 *target;
+    targetTex->GetSurfaceLevel(0, &target);
+    init(target, targetDepthStencil);
+    target->Release();
+}
+
+void RenderTargetSwitcher::init(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil)
+{
+    DistantLand::device->GetRenderTarget(0, &savedTarget);
+    DistantLand::device->GetDepthStencilSurface(&savedDepthStencil);
+
+    DistantLand::device->SetRenderTarget(0, target);
+    DistantLand::device->SetDepthStencilSurface(targetDepthStencil);
+}
+
+RenderTargetSwitcher::~RenderTargetSwitcher()
+{
+    DistantLand::device->SetRenderTarget(0, savedTarget);
+    DistantLand::device->SetDepthStencilSurface(savedDepthStencil);
+
+    if(savedTarget) savedTarget->Release();
+    if(savedDepthStencil) savedDepthStencil->Release();
 }

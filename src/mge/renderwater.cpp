@@ -10,14 +10,9 @@
 void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
     DECLARE_MWBRIDGE
-    IDirect3DSurface9 *target, *backbuffer, *depthstencil;
 
     // Switch to render target (borrow shadow z-buffer)
-    texReflection->GetSurfaceLevel(0, &target);
-    device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-    device->GetDepthStencilSurface(&depthstencil);
-    device->SetRenderTarget(0, target);
-    device->SetDepthStencilSurface(surfShadowZ);
+    RenderTargetSwitcher rtsw(texReflection, surfShadowZ);
     device->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, horizonCol, 1.0, 0);
 
     // Calculate reflected view matrix, mirror plane at water mesh level
@@ -87,14 +82,6 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     device->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
     effect->SetMatrix(ehView, view);
     effect->SetMatrix(ehProj, proj);
-
-    // Return render target to backbuffer
-    device->SetRenderTarget(0, backbuffer);
-    device->SetDepthStencilSurface(depthstencil);
-
-    target->Release();
-    backbuffer->Release();
-    depthstencil->Release();
 }
 
 void DistantLand::renderReflectedSky()
@@ -140,17 +127,17 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRI
     ds_viewproj = (*view) * ds_proj;
 
     // Cull sort and draw
-    VisibleSet visible_set;
+    VisibleSet visReflected;
     ViewFrustum range_frustum(&ds_viewproj);
     D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, zf);
 
-    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visible_set);
-    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visible_set);
-    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visible_set);
-    visible_set.SortByState();
+    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
+    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
+    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
+    visReflected.SortByState();
 
     device->SetVertexDeclaration(StaticDecl);
-    visible_set.Render(device, effect, effect, &ehTex0, 0, &ehWorld, SIZEOFSTATICVERT);
+    visReflected.Render(device, effect, effect, &ehTex0, 0, &ehWorld, SIZEOFSTATICVERT);
 }
 
 void DistantLand::clearReflection()
@@ -181,10 +168,6 @@ void DistantLand::clearReflection()
 void DistantLand::simulateDynamicWaves()
 {
     DECLARE_MWBRIDGE
-    IDirect3DSurface9 *backbuffer, *depthstencil;
-
-    device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-    device->GetDepthStencilSurface(&depthstencil);
 
     device->SetFVF(fvfWave);
     device->SetStreamSource(0, vbWaveSim, 0, 32);
@@ -259,11 +242,10 @@ void DistantLand::simulateDynamicWaves()
             }
         }
 
-        device->SetRenderTarget(0, surfRain);
-        device->SetDepthStencilSurface(NULL);
+        // Apply wave equation numWaveSteps times
+        RenderTargetSwitcher rtsw(surfRain, NULL);
         effect->SetTexture(ehTex4, texRain);
 
-        // Apply wave equation numWaveSteps times
         effect->BeginPass(PASS_WAVESTEP);
         for(int i = 0; i != numWaveSteps; ++i)
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
@@ -277,8 +259,7 @@ void DistantLand::simulateDynamicWaves()
     }
 
     // Player local ripples
-    device->SetRenderTarget(0, surfRipples);
-    device->SetDepthStencilSurface(NULL);
+    RenderTargetSwitcher rtsw(surfRipples, NULL);
     effect->SetTexture(ehTex4, texRipples);
 
     // Move ripple texture with player; lock to texel alignment to prevent visible jitter
@@ -351,11 +332,6 @@ void DistantLand::simulateDynamicWaves()
 
     // Set weather-dependent wave height
     effect->SetFloat(ehWaveHeight, (float)Configuration.DL.WaterWaveHeight);
-
-    device->SetRenderTarget(0, backbuffer);
-    device->SetDepthStencilSurface(depthstencil);
-    backbuffer->Release();
-    depthstencil->Release();
 }
 
 void DistantLand::renderWaterPlane()

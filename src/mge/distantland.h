@@ -1,8 +1,5 @@
-#ifndef _DISTANT_LAND_H_
-#define _DISTANT_LAND_H_
 
 #include "quadtree.h"
-#include "DLMath.h"
 #include <string>
 #include <tr1/unordered_map>
 
@@ -105,8 +102,7 @@ public:
     static D3DXHANDLE ehAlphaRef;
     static D3DXHANDLE ehHasAlpha, ehHasBones;
     static D3DXHANDLE ehTex0, ehTex1, ehTex2, ehTex3, ehTex4, ehTex5;
-    static D3DXHANDLE ehEyePos;
-    static D3DXHANDLE ehFootPos;
+    static D3DXHANDLE ehEyePos, ehFootPos;
     static D3DXHANDLE ehSunCol, ehSunAmb, ehSunVec;
     static D3DXHANDLE ehSkyCol, ehFogCol1, ehFogCol2;
     static D3DXHANDLE ehSunPos, ehSunVis;
@@ -184,4 +180,13 @@ public:
     static IDirect3DSurface9 * captureScreen();
 };
 
-#endif
+class RenderTargetSwitcher
+{
+    IDirect3DSurface9 *savedTarget, *savedDepthStencil;
+    void init(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil);
+
+public:
+    RenderTargetSwitcher(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil);
+    RenderTargetSwitcher(IDirect3DTexture9 *targetTex, IDirect3DSurface9 *targetDepthStencil);
+    ~RenderTargetSwitcher();
+};

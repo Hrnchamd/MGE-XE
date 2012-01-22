@@ -29,7 +29,7 @@ struct mwseInstruction
 
 	static __fastcall void destructor(mwseInstruction *_this) {}
 	static __stdcall int getOperands(OPCODE opcode, VPVOID operanddata) { return 0; }
-	static __fastcall bool execute(mwseInstruction *_this) {}
+	static __fastcall bool execute(mwseInstruction *_this) { return false; }
 
     inline bool vmPush(VMREGTYPE val);
     inline bool vmPush(VMFLOAT val);

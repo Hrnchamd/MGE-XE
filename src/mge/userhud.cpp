@@ -77,7 +77,7 @@ void MGEhud::draw()
             float x0 = e->x, x1 = e->x + e->xscale * e->w;
             float y0 = e->y, y1 = e->y + e->yscale * e->h;
 
-            // Correct for D3D9 texel offset
+            // Correct for D3D9 pixel offset
             x0 -= 0.5; y0 -= 0.5; x1 -= 0.5; y1 -= 0.5;
 
             D3DXVECTOR4 *v = vbase + 8 * i->second;
@@ -105,9 +105,10 @@ void MGEhud::draw()
         if(e->enabled)
         {
             ID3DXEffect *effect = e->effect ? e->effect : effectStandard;
+            D3DXHANDLE ehTex = effect->GetParameterByName(0, "tex");
             UINT passes;
 
-            effect->SetTexture("tex", e->texture);
+            effect->SetTexture(ehTex, e->texture);
             effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
             effect->BeginPass(0);
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * i->second, 2);
@@ -309,24 +310,34 @@ void MGEhud::setEffect(hud_id hud, const char *effect)
     char path[MAX_PATH];
     ID3DXBuffer *errors;
 
-    sprintf_s(path, MAX_PATH, "Data Files\\shaders\\%s.fx", effect);
-    HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, 0, 0, &e->effect, &errors);
+    // Clear current effect
+    if(e->effect)
+        e->effect->Release();
 
-    if(hr == D3D_OK)
+    e->effect = 0;
+    e->effectFilename.clear();
+
+    // Load new effect if string is not empty
+    if(*effect)
     {
-        LOG::logline("-- HUD shader %s loaded", path);
-        e->effectFilename = effect;
-    }
-    else
-    {
-        LOG::logline("!! HUD shader %s failed to load/compile", path);
-        if(errors)
+        sprintf_s(path, MAX_PATH, "Data Files\\shaders\\%s.fx", effect);
+        HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, 0, 0, &e->effect, &errors);
+
+        if(hr == D3D_OK)
         {
-            LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
-            errors->Release();
+            LOG::logline("-- HUD shader %s loaded", path);
+            e->effectFilename = effect;
         }
+        else
+        {
+            e->effect = 0;
 
-        e->effect = 0;
-        e->effectFilename.clear();
+            LOG::logline("!! HUD shader %s failed to load/compile", path);
+            if(errors)
+            {
+                LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
+                errors->Release();
+            }
+        }
     }
 }

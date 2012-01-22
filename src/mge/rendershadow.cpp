@@ -17,15 +17,12 @@ static const float shadowFarRadius = 4000.0;
 // Applies filtering to soften shadow edges
 void DistantLand::renderShadowMap()
 {
-    IDirect3DSurface9 *target, *targetSoft, *backbuffer, *depthstencil;
-
-    // Switch to render target
+    IDirect3DSurface9 *target, *targetSoft;
     texShadow->GetSurfaceLevel(0, &target);
     texSoftShadow->GetSurfaceLevel(0, &targetSoft);
-    device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-    device->GetDepthStencilSurface(&depthstencil);
-    device->SetRenderTarget(0, targetSoft);
-    device->SetDepthStencilSurface(surfShadowZ);
+
+    // Switch to render target
+    RenderTargetSwitcher rtsw(targetSoft, surfShadowZ);
 
     // Unbind shadow samplers
     effect->SetTexture(ehTex0, 0);
@@ -74,14 +71,9 @@ void DistantLand::renderShadowMap()
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
     effectShadow->EndPass();
 
-    // Return render target to backbuffer
-    device->SetRenderTarget(0, backbuffer);
-    device->SetDepthStencilSurface(depthstencil);
-
+    // Clean up surface pointers
     target->Release();
     targetSoft->Release();
-    backbuffer->Release();
-    depthstencil->Release();
 }
 
 // renderShadowLayer - Calculates projection for, and renders, one shadow layer
@@ -170,8 +162,8 @@ void DistantLand::renderShadow()
         effect->CommitChanges();
 
         // Ignore two-sided poly (cull none) mode, shadow casters are drawn with CW culling only,
-        // which causes false shadows when cast on the reverse side (wrt normals) of a double sided object
-        DWORD cull = (i->cullMode != D3DCULL_NONE) ? i->cullMode : D3DCULL_CW;
+        // which causes false shadows when cast on the reverse side (wrt normals) of a two-sided poly
+        DWORD cull = (i->cullMode != D3DCULL_NONE) ? i->cullMode : (DWORD)D3DCULL_CW;
         device->SetRenderState(D3DRS_CULLMODE, cull);
         device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
         device->SetIndices(i->ib);

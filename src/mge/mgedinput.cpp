@@ -569,7 +569,7 @@ public:
             bool slash = abs(mouseState->lX) > altSensitivity;
             bool pierce = abs(mouseState->lY) > altSensitivity;
 
-            DWORD attack = 0;   // Which direction has the mouse moved
+            int attack = 0;   // Which direction has the mouse moved
             if(mouseState->lX > altSensitivity)  attack |= 0x0001;
             if(mouseState->lX < -altSensitivity) attack |= 0x0010;
             if(mouseState->lY > altSensitivity)  attack |= 0x0100;
