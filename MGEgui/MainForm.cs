@@ -34,8 +34,6 @@ namespace MGEgui {
             cmbTipReadSpd.ContextMenu = DudMenu;
             cmbMsgsLocale.ContextMenu = DudMenu;
             cmbUILanguage.ContextMenu = DudMenu;
-            // Save default tabpage tooltips
-            foreach (TabPage page in tabControl.TabPages) tabpage_tooltips.Add (page, page.ToolTipText);
             // Set initial directories
             this.OpenFileDialog.InitialDirectory = this.SaveFileDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             // Title
@@ -45,7 +43,6 @@ namespace MGEgui {
             // set a handler for each control which sets tooltip popup timeout dependent on tooltip text length
             Control [] controls = Statics.GetChildControls (this);
             foreach (Control control in controls) {
-                if (!(control is ComboBox || control is TextBox || control is NumericUpDown) || control.Name == "tbSShotDir") default_text.Add (control, control.Text);
                 control.MouseHover += new EventHandler (TooltipTimeoutHandler);
             }
             //Save control text
@@ -54,401 +51,113 @@ namespace MGEgui {
             cmbUILanguage.Items.AddRange (Statics.Localizations.Languages);
             if (AutoLang) cbUILangAuto.Checked = true;
             else if (Language != null) cmbUILanguage.SelectedIndex = cmbUILanguage.FindStringExact (Language.Language);
-            SetTooltips ();
             //Store default locations
             gbMainSettingsLocation = gbMainSettings.Location;
             gbMainUILocation = gbMainUI.Location;
             gbMainUILocation.Y -= this.Size.Height;
             //Load settings
             LoadSettings ();
-            try {
-                RegistryKey key = Registry.LocalMachine.OpenSubKey (Statics.reg_mw);
-                uint width, height;
-                try {
-                    width = (uint)(int)key.GetValue ("Screen Width");
-                    height = (uint)(int)key.GetValue ("Screen Height");
-                } catch {
-                    MessageBox.Show (strings ["RegScrRes"].text, Statics.strings ["Error"].text);
-                    width = 640;
-                    height = 480;
-                }
-                tbResolution.Text = width.ToString () + " x " + height.ToString ();
-                CalcAspectRatio ((int)width, (int)height);
-                try {
-                    cbWindowed.Checked = !Convert.ToBoolean (((byte [])key.GetValue ("Fullscreen")) [0]);
-                } catch {
-                    MessageBox.Show (strings ["RegWinMode"].text, Statics.strings ["Error"].text);
-                    cbWindowed.Checked = false;
-                }
-                key.Close ();
-            } catch { }
         }
 
-        public Dictionary<Control, string> default_text = new Dictionary<Control, string> ();
-
-        #region strings
-        public static Dictionary<string, Str> strings = new Dictionary<string, Str> {
-            {"About", new Str (
-                "About")},
-            {"ImportSet", new Str (
-                "Import settings")},
-            {"RegScrRes", new Str (
-                "Unable to read screen resolution from registry.")},
-            {"RegWinMode", new Str (
-                "Unable to read window mode from registry.")},
-            {"ImpOldSet", new Str (
-                "Old graphics save file was found.\n\nDo you want to import settings?")},
-            {"ErrImpSet", new Str (
-                "Error importing old graphics save file.\n\n{0}")},
-            {"SetTooOld", new Str (
-                "The graphics save file is too old to be imported.")},
-            {"SetTooNew", new Str (
-                "The graphics save file is newer than this version of MGE.")},
-            {"OldSetImp", new Str (
-                "Old graphics save file was imported successfully.\n\n'settings' file was renamed to 'old-settings'.")},
-            {"ErrLdInp", new Str (
-                "Error loading input save file.\n\n{0}")},
-            {"InpTooOld", new Str (
-                "The input save file is too old to import.")},
-            {"InpTooNew", new Str (
-                "The input save file is newer than this version of MGE.")},
-            {"OldInpImp", new Str (
-                "Old input save file was imported successfully.")},
-            {"MacrTrigErr", new Str (
-                "An error occurred while loading input macros or triggers.\nIt may be due to using a new version of MGE.\nRecovery will occur, but some macros may no longer be available.")},
-            {"RegNotWrit", new Str (
-                "Could not write Morrowind registry key.\n" +
-                "MGEgui needs to be launched as Administrator.")},
-            {"MWIniNotInMGE", new Str (
-                "Settings file does not contain ini data.")},
-            {"GraphCaps", new Str (
-                "Graphics capabilities")},
-            {"ViewCaps", new Str (
-                "Max fullscreen antialiasing level: {0}x\n" +
-                "Max windowed antialiasing level: {1}x\n" +
-                "Max anisotropic filtering level: {2}x\n\n" +
-                "Graphics drivers often report their capabilities incorrectly.\n" +
-                "If you think your graphics card only supports lower levels of AA,\n" +
-                "then you will need to reduce it by hand if you use best quality mode.")},
-            {"CreatedBy", new Str (
-                "Created by")},
-            {"FurtherDevel", new Str (
-                "Further development")},
-            {"DLVertexFog", new Str (
-                "Distant land is not compatible with vertex fog when using some graphics cards.\n" +
-                "If the distant land does not appear in game, or appears untextured, try switching back to pixel fog.")},
-            {"TooHighAA", new Str (
-                "Your selected antialiasing level is not supported by your graphics card.")},
-            {"TooHighAF", new Str (
-                "Your selected anisotropic filtering level is not supported by your graphics card.")},
-            {"DSMissing", new Str (
-                "The distant statics files are missing.\n" +
-                "Use the 'Distant land file creation wizard' on the Tools tab to create them.")},
-            {"DLLackSM3", new Str (
-                "Your graphics card lacks the Shader Model 3.0 support required to use Distant Land.")},
-            {"NoDLOrOld", new Str (
-                "Distant Land files have not been created or are from an older version of MGE.\n" +
-                "Use the 'Distant land file creation wizard' on the Tools tab to create them.")},
-            {"DLDiffer", new Str (
-                "Distant land files have not been created or are from a different version of MGE.\n" +
-                "Use the 'Distant land file creation wizard' on the Tools tab to create them.")},
-            {"ResetAsk", new Str (
-                "Reset Settings?")},
-            {"AskReset", new Str (
-                "Are you sure you want to reset all main {0}settings to default values?")},
-            {"ResetSaved", new Str (
-                "and other saved ")},
-            {"DLDelOldCorrupt", new Str (
-                "Distant land files already exist, but are either incomplete, corrupt, or from an older version of MGE and must be deleted to continue.\n" +
-                "Do you wish to continue?")},
-            {"DLDelDifferent", new Str (
-                "Distant land files already exist, but are from a different version of MGE and must be deleted to continue.\n" +
-                "Do you wish to continue?")},
-        };
-        #endregion
+        public static Dictionary<string, string> strings = new Dictionary<string, string>();
 
         #region tooltip_messages
-        public Dictionary<TabPage, string> tabpage_tooltips = new Dictionary<TabPage, string> ();
-        public Dictionary<string, Tip> tooltip_messages = new Dictionary<string, Tip> {
+        public Dictionary<string, string[]> tooltip_messages = new Dictionary<string, string[]> {
         /* Settings */
-            {"DisableMGE", new Tip (new string [] {"cbDisableMGE"},
-                "Disables hooking of DirectX input and 3D interface by Morrowind Graphics Extender.\n" +
-                "Note that this doesn't disable MGE's internal version of MWSE, so you don't need to run its external version.")},
-            {"ClearINI", new Tip (new string [] {"cbClearINI"},
-                "Checking this will cause reinitialization of main settings file after resetting settings.\n" +
-                "Note that all comments and deprecated settings added to that file will be lost.")},
-            {"ResetSettings", new Tip (new string [] {"bResetSettings"},
-                "Resets MGE settings back to defaults.")},
-            {"Quality", new Tip (new string [] {"bQuality"},
-                "Sets graphics options for the best visual quality.")},
-            {"Help", new Tip (new string [] {"bHelp"},
-                "Opens the help file.")},
-            {"Import", new Tip (new string [] {"bImport"},
-                "Import an MGE settings file.")},
-            {"Export", new Tip (new string [] {"bExport"},
-                "Export your MGE settings.")},
-            {"ViewCaps", new Tip (new string [] {"bViewCaps"},
-                "Displays your graphics card's maximum supported antialiasing and anisotropic filtering levels.")},
-            {"About", new Tip (new string [] {"bAbout"},
-                "Shows information about MGEgui.")},
-            {"UILanguage", new Tip (new string [] {"lUILanguage", "cmbUILanguage"},
-                "Sets translation language for user interface of MGEgui.")},
-            {"UILangAuto", new Tip (new string [] {"cbUILangAuto"},
-                "Checking this, enables autodetection of operating system's selected language,\n" +
-                "for choosing automatically appropriate translation for user interface of MGEgui.")},
-            {"TipReadSpd", new Tip (new string [] {"lTipReadSpd", "cmbTipReadSpd", "lTipRSpdUnit"},
-                "This changes the fadeout time of MGEgui tooltips for selected reading speed (in characters per second).\n" +
-                "For example, if you select 10 chars/sec. and some tooltip's text is 50 characters long (including spaces and new line characters),\n" +
-                "that tooltip will be displayed for 5 seconds. Note that any tooltip can't be displayed for longer than about 33 seconds.\n" +
-                "Timeout of tooltips for tab panel selection doesn't depend on its text length and isn't affected by this setting.")},
+            { "ClearINI", new string [] { "cbClearINI" } },
+            { "ResetSettings", new string [] { "bResetSettings" } },
+            { "Help", new string [] { "bHelp" } },
+            { "Import", new string [] { "bImport" } },
+            { "Export", new string [] { "bExport" } },
+            { "ViewCaps", new string [] { "bViewCaps" } },
+            { "About", new string [] { "bAbout" } },
+            { "UILanguage", new string [] { "lUILanguage", "cmbUILanguage" } },
+            { "UILangAuto", new string [] { "cbUILangAuto" } },
+            { "TipReadSpd", new string [] { "lTipReadSpd", "cmbTipReadSpd", "lTipRSpdUnit" } },
         /* Graphics */
-            {"RefreshRate", new Tip (new string [] {"cmbRefreshRate", "lRefreshRate"},
-                "Sets the monitor refresh rate for fullscreen mode.\n" +
-                "This has no effect in windowed mode.")},
-            {"AntiAlias", new Tip (new string [] {"cmbAntiAlias", "lAntiAlias"},
-                "Sets the antialiasing level.\n" +
-                "If you set this above what your graphics card supports, you will get a render creation error when starting up Morrowind.")},
-            {"VWait", new Tip (new string [] {"cmbVWait", "lVWait"},
-                "Sets the vertical refresh sync. Turn it on if you have screen tearing problems.\n" +
-                "Values above 1 sync rendering to 1/2, 1/3 or 1/4 of the monitor refresh rate.")},
-            {"CalcRefresh", new Tip (new string [] {"bCalcRefresh"},
-                "Finds the valid refresh rates for Morrowind's currently selected resolution.\n" +
-                "Valid refresh rates depend on resolution, adapter, and whether 16 bit colour mode is enabled.\n" +
-                "Changes committed by MGEgui make an auto-search of valid refresh rates.")},
-            {"Windowed", new Tip (new string [] {"cbWindowed"},
-                "Check this to run Morrowind in a window instead of fullscreen.")},
-            {"Resolution", new Tip (new string [] {"tbResolution", "lResolution"},
-                "This is Morrowind's current screen resolution.")},
-            {"CalcResolution", new Tip (new string [] {"bCalcResolution"},
-                "Click this to change Morrowind's resolution.\n" +
-                "In windowed mode you can use any resolution you like.\n" +
-                "Non 4:3 aspect ratios may not work perfectly. These are marked with an '*'.")},
-            {"Aspect", new Tip (new string [] {"tbAspect", "lAspect"},
-                "This is selected screen resolution calculated aspect ratio.")},
-            {"AnisoLevel", new Tip (new string [] {"cmbAnisoLevel", "lAnisoLevel"},
-                "Sets the anisotropic filtering level.\n" +
-                "This improves the sharpness of textures that are viewed at glancing angles.\n" +
-                "If you set this to above what your card supports, it will automatically drop down to the highest supported level.")},
-            {"LOD", new Tip (new string [] {"udLOD", "lLOD"},
-                "Sets the mipmap level of detail bias. Valid range is between -2.0 and 2.0.\n" +
-                "Negative values increase detail, positive values reduce it.\n" +
-                "Very low values will cause aliasing of textures in the background.")},
-            {"FogMode", new Tip (new string [] {"cmbFogMode", "lFogMode"},
-                "Sets the type of fog that Morrowind uses. Vertex range is the most accurate, pixel depth is the most compatible.\n" +
-                "Using vertex fog on some ATI cards may cause everything except the sky to become completely fogged.")},
-            {"FPSCounter", new Tip (new string [] {"cbFPSCounter"},
-                "Enables MGE's FPS counter.\n" +
-                "This is unrelated to Morrowind's FPS counter, and can be used instead of or as well as it.\n" +
-                "Display messages (see In-Game tab) must be checked for this to work.")},
-            {"DisplayMessages", new Tip (new string [] {"cbDisplayMessages"},
-                "Allows MGE to draw notification text to the screen.\n" +
-                "As well as the FPS counter, MGE will also alert you when various graphics options get changed.")},
-            {"HWShader", new Tip (new string [] {"cbHWShader"},
-                "Enables post-processing shaders.\n" +
-                "They can be toggled in-game with the macro editor's 'toggle HW shader' function.")},
-            {"SShotFormat", new Tip (new string [] {"cmbSShotFormat", "lSShotFormat"},
-                "Sets the format in which MGE will save screenshots.\n" +
-                "This does not change the format in which Morrowind saves screenshots.")},
-            {"SShotName", new Tip (new string [] {"lSShotName", "tbSShotName"},
-                "Every saved MGE screenshot will start its file name with this prefix.")},
-            {"SShotDir", new Tip (new string [] {"lSShotDir", "tbSShotDir"},
-                "This is output directory where taken screenshots will be saved.")},
-            {"SShotNum", new Tip (new string [] {"lSShotNum", "udSShotNum"},
-                "Minimum number of characters for screenshot number.\n" +
-                "Setting it to more than 1 will result in leading zeros if screenshot number use less characters than set here,\n" +
-                "e.g.: if it's set to 3 and first screenshot is saved to output directory, the resulting screenshot number is '001'.")},
-            {"SShotDirBrowse", new Tip (new string [] {"bSShotDirBrowse"},
-                "Use it for selecting output directory where you want the screenshots to be saved.")},
-            {"SShotDirClear", new Tip (new string [] {"bSShotDirClear"},
-                "Changes selected output directory for screenshots to default.\n" +
-                "Screenshots will be saved to Morrowind installation directory.")},
-            {"FOV", new Tip (new string [] {"udFOV", "lFOV"},
-                "Adjusts the in-game horizontal field of view (FOV).\n" +
-                "Morrowind's default FOV is 75.")},
-            {"AutoFOV", new Tip (new string [] {"bAutoFOV"},
-                "Automatically calculates a FOV that matches the aspect ratio of your current resolution.")},
-            {"FPSLimit", new Tip (new string [] {"udFPSLimit", "lFPSLimit"},
-                "Sets a limit on the maximum frames per second, if you require FPS consistency.\n" +
-                "Uses Morrowind's internal limiter, set through morrowind.ini.")},
-        /* In-game */
-            /*{"MsgsLanguage", new Tip (new string [] {"lMsgsLanguage", "cmbMsgsLanguage"},
-                "NEEDS A DESCRIPTION.")},/**/
-            {"MsgsTime", new Tip (new string [] {"lMsgsTime", "udMsgsTime", "lMsgsTimeUnit"},
-                "Changes the maximum length of time for which MGE status messages will be displayed on screen in the game.\n" +
-                "Units used for this setting are miliseconds, so to make MGE messages displayed for 5 seconds, you need to set it to 5000.")},
-            {"SkipMovie", new Tip (new string [] {"cbSkipMovie"},
-                "Skips the two opening movies.")},
-            {"AltCombat", new Tip (new string [] {"cbAltCombat"},
-                "Changes player attacks to use Daggerfall style combat controls.\n" +
-                "Hold the mouse button and drag in various directions to attack with different moves.")},
-            {"MacroEd", new Tip (new string [] {"bMacroEd"},
-                "Opens up the macro editor, allowing you to bind functions and macros to keyboard keys and mouse buttons.")},
-            {"Remapper", new Tip (new string [] {"bRemapper"},
-                "Opens up the keyboard remapper, with which you can remap any key on your keyboard.")},
-            {"HDRTime", new Tip (new string [] {"udHDR", "lHDR"},
-                "This box controls how fast the HDR reacts to brightness changes.\n" +
-                "The lower time is set, the reaction is faster.")},
-            {"DisableMWSE", new Tip (new string [] {"cbDisableMWSE"},
-                "Checking this option disables MGE's internal version of MWSE functions.\n" +
-                "This allows you to run MGE with an external version of MWSE.\n" +
-                "Note that some MGE mods may require MGE's internal version of MWSE,\n" +
-                "and will not work with external versions.")},
-            {"Cam3rdPrsn", new Tip (new string [] {"cbCam3rdPrsn"},
-                "Check this to customize parameters of 3rd person player camera.\n" +
-                "Parameters set by this option will override the game defaults on start of Morrowind.\n" +
-                "This option doesn't need to be set, to change the position of camera, by either a macro\n" +
-                "function, or by a script. Scripts can switch off overriding of camera parameters.")},
-            {"Cam3rdX", new Tip (new string [] {"lCam3rdX", "udCam3rdX"},
-                "This sets the horizontal offset of 3rd person camera from player character's eyes.\n" +
-                "Negative values move the camera to the left, and positive to the right.")},
-            {"Cam3rdY", new Tip (new string [] {"lCam3rdY", "udCam3rdY"},
-                "This sets the offset of 3rd person camera from player character's eyes along the direction of sight.\n" +
-                "More negative values move the camera farther back, and less negative values move it forth, closer to player character.\n" +
-                "Only negative values are used, because this setting, as also corresponding macro functions, allow only placing the 3rd\n" +
-                "person camera behind the character. To set the camera ahead of character's eyes, you need to create a script doing it.")},
-            {"Cam3rdZ", new Tip (new string [] {"lCam3rdZ", "udCam3rdZ"},
-                "This sets the vertical offset of 3rd person camera from player character's eyes.\n" +
-                "Negative values move the camera down, and positive values move the camera up.")},
-            {"AutoCrosshair", new Tip (new string [] {"cbAutoCrosshair"},
-                "Hides the crosshair unless you are pointing at an object, casting a spell or aiming a projectile weapon.\n" +
-                "The crosshair remains visible for around 1.5 seconds afterwards.")},
-            {"MenuCaching", new Tip (new string [] {"cbMenuCaching"},
-                "Caches the background in menu mode to improve mouse responsiveness.\n" +
-                "Caching may cause problems with SLI/Crossfire, turn this off if you use either.")},
-        /* Morrowind.ini */
-            {"Screenshots", new Tip (new string [] {"cbScreenshots"},
-                "The 'Screen Shot Enable' line.\n" +
-                "Check this to enable Morrowind's inbuilt screenshot function.\n" +
-                "MGE captures and saves screenshots when you press the PrintScreen key if MGE is enabled.")},
-            {"YesToAll", new Tip (new string [] {"cbYesToAll"},
-                "The 'AllowYesToAll' line.\n" +
-                "Check this to add an additional 'yes to all' option when clicking through multiple warning messages.")},
-            {"HQShadows", new Tip (new string [] {"cbHQShadows"},
-                "The 'High Detail Shadows' line.\n" +
-                "Check this to enable much better quality actor shadows.\n" +
-                "This will cause a huge FPS hit, particularly with certain incompatible meshes.")},
-            {"ThreadLoad", new Tip (new string [] {"cbThreadLoad"},
-                "The 'DontThreadLoad' line.\n" +
-                "Check this to allow Morrowind to load new cells in a separate thread.")},
-            {"ShowFPS", new Tip (new string [] {"cbShowFPS"},
-                "The 'Show FPS' line.\n" +
-                "Check this to enable Morrowind's inbuilt FPS counter.")},
-            {"Audio", new Tip (new string [] {"cbAudio"},
-                "The 'Disable Audio' line.\n" +
-                "Check this to disable most of Morrowind's audio. Music is unaffected by this setting.")},
-            {"Subtitles", new Tip (new string [] {"cbSubtitles"},
-                "The 'Subtitles' line.\n" +
-                "Check this to display subtitles where normally there would just be a voice over.")},
-            {"HitFader", new Tip (new string [] {"cbHitFader"},
-                "The 'ShowHitFader' line.\n" +
-                "Uncheck this to disable the red hit fader that appears when you take damage.")},
-       		{"MWLighting", new Tip (new string [] {"gbMWLighting", "udLightingQuad", "udLightingLinear", "udLightingConst"},
-                "Controls the brightness and falloff of Morrowind's dynamic lighting.\n" +
-                "These are coefficients to the lighting falloff equation:\n" +
-                "light = 1 / (quadratic * dist^2 + linear * dist + constant)\n" +
-                "Morrowind defaults are quadratic = 0.0, linear = 3.0, constant = 0.0")},
-            {"ShaderEd", new Tip (new string [] {"bShaderEd"},
-                "A shader editor for working on fullscreen shaders.")},
-            {"DistantLandWizard", new Tip (new string [] {"bDistantLandWizard"},
-                "This will launch the process that creates the files that distant land needs to work.\n" +
-                "You cannot enable distant land without running it.")},
+            { "Resolution", new string [] { "tbResolution", "lResolution" } },
+            { "CalcResolution", new string [] { "bCalcResolution" } },
+            { "Windowed", new string [] { "cbWindowed" } },
+            { "Aspect", new string [] { "tbAspect", "lAspect" } },
+            { "RefreshRate", new string [] { "cmbRefreshRate", "lRefreshRate" } },
+            { "CalcRefresh", new string [] { "bCalcRefresh" } },
+            { "AntiAlias", new string [] { "cmbAntiAlias", "lAntiAlias" } },
+            { "AnisoLevel", new string [] { "cmbAnisoLevel", "lAnisoLevel" } },
+            { "VWait", new string [] { "cmbVWait", "lVWait" } },
+            { "FOV", new string [] { "udFOV", "lFOV" } },
+            { "AutoFOV", new string [] { "bAutoFOV" } },
+            { "FPSLimit", new string [] { "udFPSLimit", "lFPSLimit" } },
+            { "LOD", new string [] { "udLOD", "lLOD" } },
+            { "FogMode", new string [] { "cmbFogMode", "lFogMode" } },
+            { "FPSCounter", new string [] { "cbFPSCounter" } },
+            { "HWShader", new string [] { "cbHWShader" } },
+            { "ShaderEd", new string [] { "bShaderEd" } },
+            { "HDRTime", new string [] { "udHDR", "lHDR" } },
+            { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
+            { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
+            { "SShotDir", new string [] { "lSShotDir", "tbSShotDir" } },
+            { "SShotNum", new string [] { "lSShotNum", "udSShotNum" } },
+            { "SShotDirBrowse", new string [] { "bSShotDirBrowse" } },
+            { "SShotDirClear", new string [] { "bSShotDirClear" } },
         /* Distant Land */
-            {"DLDistantLand", new Tip (new string [] {"cbDLDistantLand"},
-                "Check this box to enable the distant land feature.\n" +
-                "This renders landscape and objects beyond Morrowind's normal drawing distance.\n" +
-                "Note that Morrowind's pixel/vertex shader water will be disabled if you enable this,\n" +
-                "and instead of it Distant Land's water shader will be used.\n" +
-                "Morrowind's pixel shader will be re-enabled by MGEgui if you disable MGE or Distant Land.")},
-            {"DLDrawDist", new Tip (new string [] {"udDLDrawDist", "lDLDrawDist"},
-                "This is the maximum distance in cells that distant land will draw anything.\n" +
-                "Anything beyond this distance will be cut off.")},
-            {"DLAutoDist", new Tip (new string [] {"cbDLAutoDist"},
-                "This will automatically set other than selected cutoff distances, depending on the selected base.\n" +
-                "This way you don't have to think about things like fog, distant land draw distance or static distances, unless you really want to.")},
-            {"DLAutoByDrawDist", new Tip (new string [] {"rbDLAutoByDrawDist"},
-                "This will automatically set other cutoff distances based on your Draw Distance setting.")},
-            {"DLAutoByAFogEnd", new Tip (new string [] {"rbDLAutoByAFogEnd"},
-                "This will automatically set other cutoff distances based on your Above Water Fog End setting.")},
-            {"DLDistantStatics", new Tip (new string [] {"cbDLDistantStatics"},
-                "This enables the drawing of far off objects such as trees and buildings.")},
-            {"DLNearSize", new Tip (new string [] {"tbDLNearSize"},
-                "This reminds you what minimum size you selected while generating distant statics.\n" +
-                "To change it you will need to generate statics again.")},
-            {"DLDistNear", new Tip (new string [] {"udDLDistNear"},
-                "This is the distance in cells where you will stop seeing 'small size' statics.")},
-            {"DLSizeFar", new Tip (new string [] {"udDLSizeFar"},
-                "This is the minimum size in Morrowind units of an object that will be considered 'medium sized'.")},
-            {"DLDistFar", new Tip (new string [] {"udDLDistFar"},
-                "This is the distance in cells where you will stop seeing 'medium size' statics.")},
-            {"DLSizeVeryFar", new Tip (new string [] {"udDLSizeVeryFar"},
-                "This is the minimum size in Morrowind units of an object that will be considered 'large sized'.")},
-            {"DLDistVeryFar", new Tip (new string [] {"udDLDistVeryFar"},
-                "This is the distance in cells where you will stop seeing 'large size' statics.")},
-            {"DLFogAStart", new Tip (new string [] {"udDLFogAStart"},
-                "This sets the distance in cells where fog will begin to affect objects above water in clear weather.")},
-            {"DLFogAEnd", new Tip (new string [] {"udDLFogAEnd"},
-                "This sets the distance in cells where objects will be completely hidden by fog above water in clear weather.")},
-            {"DLFogBStart", new Tip (new string [] {"udDLFogBStart"},
-                "This sets the distance in cells where fog will begin to affect objects below water.")},
-            {"DLFogBEnd", new Tip (new string [] {"udDLFogBEnd"},
-                "This sets the distance in cells where objects will be completely hidden by fog below water.")},
-            {"DLFogIStart", new Tip (new string [] {"udDLFogIStart"},
-                "This sets the distance in cells where fog will begin to affect objects in interiors with generated Distant Statics.")},
-            {"DLFogIEnd", new Tip (new string [] {"udDLFogIEnd"},
-                "This sets the distance in cells where objects will be completely hidden by fog in interiors with generated Distant Statics.")},
-            {"DLReflLand", new Tip (new string [] {"cbDLReflLand"},
-                "This determines whether the landscape drawn by distant land will be reflected in the water.")},
-            {"DLReflNStatics", new Tip (new string [] {"cbDLReflNStatics"},
-                "Enabling this will make nearby objects reflect in the water.\n" +
-                "Note that this is expensive and may lower your frame rate.")},
-            {"DLReflFStatics", new Tip (new string [] {"cbDLReflFStatics"},
-                "Enabling this will make objects that are a bit further away reflect in the water.\n" +
-                "Note that this is expensive and may lower your frame rate.")},
-            {"DLWthr", new Tip (new string [] {"bDLWthr"},
-                "Distant Land settings for all Morrowind weather types.\n" +
-                "You can set there fog and wind ratios for each weather.")},
-            {"DLOptions", new Tip (new string [] {"bDLOptions"},
-                "Allows additional Distant Land options to be customized.")},
-            {"DLSkyRefl", new Tip (new string [] {"cbDLSkyRefl"},
-                "This determines whether the sky will be reflected in the water.")},
-            {"DLDynRipples", new Tip (new string [] {"cbDLDynRipples"},
-                "When checking this, rain drops and the player will create ripples on the water surface.")},
-            {"DLReflBlur", new Tip (new string [] {"cbDLReflBlur"},
-                "This determines whether reflections in the water should be blurred.\n" +
-                "Note that setting this option might cause an FPS hit in game.")},
-            {"DLFogExp", new Tip (new string [] {"cbDLFogExp"},
-                "This enables an alternative exponential fog formula for Distant Land.\n" +
-                "When using exponential fog, minimum value of Distant Land draw distance will be\n" +
-                "Exponential Distance Multiplier times more than above water fog end distance.\n" +
-                "Note that setting this option causes a significant FPS hit due to the longer draw distance.")},
-            {"DLFogExpMul", new Tip (new string [] {"lDLFogExpMul", "udDLFogExpMul"},
-                "This adjusts the exponential fog distance multiplier, which is used for multiplying draw distance,\n" +
-                "to make distant land don't pop in and out too early, when exponential fog is used.\n" +
-                "Note that high values will cause high FPS hit, and low values may cause distant land cutoff before fog end.\n" +
-                "The most safe and the default setting, that will ensure exponential fog end and distant land drawing end\n" +
-                "in about the same place, is 4.0.")},
-            {"DLScatter", new Tip (new string [] {"cbDLScattering"},
-                "This enables atmosphere scattering, with a much improved sky and\n" +
-                "blue-white graduated shading of distant terrain.\n" +
-                "Requires exponential fog to be enabled. Can reduce FPS.")},
-            {"DLWtrCaust", new Tip (new string [] {"udDLWtrCaust", "lDLWtrCaust"},
-                "This sets the percentage of water caustic lighting intensity.\n" +
-                "Setting it to 0 will disable caustics. The default value is 50.")},
-            {"DLWtrWave", new Tip (new string [] {"udDLWtrWave", "lDLWtrWave"},
-                "This sets the height of water waves.\n" +
-                "A graphics card with vertex texture fetch support is required for this feature.\n" +
-                "Setting it to 0 will disable waves. Suggested value for wave height is 30-50.")},
+            { "DistantLandWizard", new string [] { "bDistantLandWizard" } },
+            { "DLDistantLand", new string [] { "cbDLDistantLand" } },
+            { "DLDrawDist", new string [] { "udDLDrawDist", "lDLDrawDist" } },
+            { "DLAutoDist", new string [] { "cbDLAutoDist" } },
+            { "DLAutoByDrawDist", new string [] { "rbDLAutoByDrawDist" } },
+            { "DLAutoByAFogEnd", new string [] { "rbDLAutoByAFogEnd" } },
+            { "DLDistantStatics", new string [] { "cbDLDistantStatics" } },
+            { "DLDynRipples", new string [] { "cbDLDynRipples" } },
+            { "DLNearSize", new string [] { "tbDLNearSize" } },
+            { "DLDistNear", new string [] { "udDLDistNear" } },
+            { "DLSizeFar", new string [] { "udDLSizeFar" } },
+            { "DLDistFar", new string [] { "udDLDistFar" } },
+            { "DLSizeVeryFar", new string [] { "udDLSizeVeryFar" } },
+            { "DLDistVeryFar", new string [] { "udDLDistVeryFar" } },
+            { "DLFogAStart", new string [] { "udDLFogAStart" } },
+            { "DLFogAEnd", new string [] { "udDLFogAEnd" } },
+            { "DLFogBStart", new string [] { "udDLFogBStart" } },
+            { "DLFogBEnd", new string [] { "udDLFogBEnd" } },
+            { "DLFogExp", new string [] { "cbDLFogExp" } },
+            { "DLFogExpMul", new string [] { "lDLFogExpMul", "udDLFogExpMul" } },
+            { "DLFogIStart", new string [] { "udDLFogIStart" } },
+            { "DLFogIEnd", new string [] { "udDLFogIEnd" } },
+            { "DLReflBlur", new string [] { "cbDLReflBlur" } },
+            { "DLReflLand", new string [] { "cbDLReflLand" } },
+            { "DLReflNStatics", new string [] { "cbDLReflNStatics" } },
+            { "DLReflFStatics", new string [] { "cbDLReflFStatics" } },
+            { "DLScatter", new string [] { "cbDLScattering" } },
+            { "DLSkyRefl", new string [] { "cbDLSkyRefl" } },
+            { "DLWthr", new string [] { "bDLWthr" } },
+            { "DLWtrCaust", new string [] { "udDLWtrCaust", "lDLWtrCaust" } },
+            { "DLWtrWave", new string [] { "udDLWtrWave", "lDLWtrWave" } },
+        /* In-game */
+            { "DisableMGE", new string [] { "cbDisableMGE" } },
+            { "DisableMWSE", new string [] { "cbDisableMWSE" } },
+            { "SkipMovie", new string [] { "cbSkipMovie" } },
+            { "AltCombat", new string [] { "cbAltCombat" } },
+            { "AutoCrosshair", new string [] { "cbAutoCrosshair" } },
+            { "MenuCaching", new string [] { "cbMenuCaching" } },
+            { "MacroEd", new string [] { "bMacroEd" } },
+            { "Remapper", new string [] { "bRemapper" } },
+            { "Cam3rdPrsn", new string [] { "cbCam3rdPrsn" } },
+            { "Cam3rdX", new string [] { "lCam3rdX", "udCam3rdX" } },
+            { "Cam3rdY", new string [] { "lCam3rdY", "udCam3rdY" } },
+            { "Cam3rdZ", new string [] { "lCam3rdZ", "udCam3rdZ" } },
+            { "DisplayMessages", new string [] { "cbDisplayMessages" } },
+            { "MsgsTime", new string [] { "lMsgsTime", "udMsgsTime", "lMsgsTimeUnit" } },
+        /* Morrowind.ini */
+            { "Screenshots", new string [] { "cbScreenshots" } },
+            { "YesToAll", new string [] { "cbYesToAll" } },
+            { "HQShadows", new string [] { "cbHQShadows" } },
+            { "ThreadLoad", new string [] { "cbThreadLoad" } },
+            { "ShowFPS", new string [] { "cbShowFPS" } },
+            { "Audio", new string [] { "cbAudio" } },
+            { "Subtitles", new string [] { "cbSubtitles" } },
+            { "HitFader", new string [] { "cbHitFader" } },
+       		{ "MWLighting", new string [] { "gbMWLighting", "udLightingQuad", "udLightingLinear", "udLightingConst" } },
         };
         #endregion
-
-        private void SetTooltips () {
-            foreach (KeyValuePair<string,Tip> tip in tooltip_messages) {
-                foreach (string controlName in tip.Value.controls) {
-                    Control [] controls = this.Controls.Find (controlName, true);
-                    foreach (Control control in controls) toolTip.SetToolTip (control, tip.Value.tip);
-                }
-            }
-        }
 
         private const string smwiniGeneral = "General";
         private const string smwiniLighting = "LightAttenuation";
@@ -621,13 +330,13 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef ("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Depth pixel", fogModeDict);
         private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef ("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniMessages = new INIFile.INIVariableDef ("Messages", siniRendState, "MGE Messages", INIFile.INIBoolType.OnOff, "On");
-        private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "5000", 500, 50000);
+        private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
         private static INIFile.INIVariableDef iniHWShader = new INIFile.INIVariableDef ("HWShader", siniRendState, "Hardware Shader", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
         private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "MGE Screenshot ");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef ("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
-        private static INIFile.INIVariableDef iniSSNum = new INIFile.INIVariableDef ("SSNum", siniRendState, "Screenshot Number Min Lenght", INIFile.INIVariableType.Byte, "3", 1, 5);
+        private static INIFile.INIVariableDef iniSSNum = new INIFile.INIVariableDef ("SSNum", siniRendState, "Screenshot Number Min Length", INIFile.INIVariableType.Byte, "3", 1, 5);
         // In-game
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniMisc, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
@@ -643,7 +352,6 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniDrawDist = new INIFile.INIVariableDef ("DrawDist", siniDL, "Draw Distance", INIFile.INIVariableType.Single, "5", 1, 300, 1);
         private static INIFile.INIVariableDef iniAutoDist = new INIFile.INIVariableDef ("AutoDist", siniDL, "Auto Distances", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniAutoDistBy = new INIFile.INIVariableDef ("AutoDistBy", siniDL, "Auto Distances Choice", INIFile.INIVariableType.Dictionary, "By Draw Distance", autoDistDict);
-        private static INIFile.INIVariableDef iniDLNotInt = new INIFile.INIVariableDef ("DLNotInt", siniDL, "Disable In Interiors", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniDistStat = new INIFile.INIVariableDef ("DistStat", siniDL, "Distant Statics", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniSizeFar = new INIFile.INIVariableDef ("SizeFar", siniDL, "Far Static Min Size", INIFile.INIVariableType.UInt16, "600", 0, 9999);
         private static INIFile.INIVariableDef iniSizeVFar = new INIFile.INIVariableDef ("SizeVFar", siniDL, "Very Far Static Min Size", INIFile.INIVariableType.UInt16, "800", 0, 9999);
@@ -658,9 +366,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniInterEnd = new INIFile.INIVariableDef ("InterEnd", siniDL, "Interior Fog End", INIFile.INIVariableType.Single, "2.0", 0.1, 10, 2);
         private static INIFile.INIVariableDef iniReflLand = new INIFile.INIVariableDef ("ReflLand", siniDL, "Water Reflects Land", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniReflNear = new INIFile.INIVariableDef ("ReflNear", siniDL, "Water Reflects Near Statics", INIFile.INIBoolType.Text, "True");
-        private static INIFile.INIVariableDef iniReflFar = new INIFile.INIVariableDef ("ReflFar", siniDL, "Water Reflects Far Statics", INIFile.INIBoolType.Text, "False");
-        private static INIFile.INIVariableDef iniDLInitOff = new INIFile.INIVariableDef ("DLInitOff", siniDL, "Distant Land Initially Disabled", INIFile.INIBoolType.Text, "False");
-        private static INIFile.INIVariableDef iniDLMWBlendOff = new INIFile.INIVariableDef ("DLMWBlendOff", siniDL, "MW Blending Initially Disabled", INIFile.INIBoolType.Text, "False");
+        private static INIFile.INIVariableDef iniReflIntr = new INIFile.INIVariableDef ("ReflIntr", siniDL, "Water Reflects Interiors", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniSkyRefl = new INIFile.INIVariableDef ("SkyRefl", siniDL, "Enable Sky Reflections", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniDynRipples = new INIFile.INIVariableDef ("DynRipples", siniDL, "Dynamic Ripples", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniDLShader = new INIFile.INIVariableDef ("DLShader", siniDL, "Shader Model", INIFile.INIVariableType.Dictionary, "3.0", shaderModelDict);
@@ -687,20 +393,14 @@ namespace MGEgui {
             iniAutoCrosshair, iniMenuCaching,
             iniMessages, iniMsgTime,
             // Distant Land
-            iniDistLand, iniDLInitOff, iniDLNotInt, iniDrawDist,
-            iniDistStat, iniDLMWBlendOff, iniAutoDist, iniAutoDistBy,
+            iniDistLand, iniDrawDist,
+            iniDistStat, iniAutoDist, iniAutoDistBy,
             iniEndNear, iniEndFar, iniEndVFar, iniSizeFar,
-            iniSizeVFar, iniReflLand, iniReflNear, iniReflFar,
+            iniSizeVFar, iniReflLand, iniReflNear, iniReflIntr,
             iniAboveBeg, iniAboveEnd, iniBelowBeg, iniBelowEnd,
             iniInterBeg, iniInterEnd, iniSkyRefl, iniDynRipples,
             iniDLShader, iniReflBlur, iniExpFog, iniDLExpMul,
             iniScattering, iniWaveHght, iniCaustics
-        };
-
-        private Dictionary<string, bool> DLOptions = new Dictionary<string, bool> {
-            {"DLNotInt", false},
-            {"DLInitOff", false},
-            {"DLMWBlendOff", false}
         };
 
         private void LoadGraphicsSettings () {
@@ -754,8 +454,6 @@ namespace MGEgui {
             cbMenuCaching.Checked = (iniFile.getKeyValue ("MenuCaching") == 1);
             // Distant Land
             cbDLDistantLand.Checked = (iniFile.getKeyValue ("DistLand") == 1);
-            List<string> list = new List<string> (DLOptions.Keys);
-            foreach (string key in list) DLOptions [key] = (iniFile.getKeyValue (key) == 1);
             cbDLDistantStatics.Checked = (iniFile.getKeyValue ("DistStat") == 1);
             udDLDrawDist.Value = (decimal)iniFile.getKeyValue ("DrawDist");
             udDLDistNear.Value = (decimal)iniFile.getKeyValue ("EndNear");
@@ -765,7 +463,7 @@ namespace MGEgui {
             udDLSizeVeryFar.Value = (decimal)iniFile.getKeyValue ("SizeVFar");
             cbDLReflLand.Checked = (iniFile.getKeyValue ("ReflLand") == 1);
             cbDLReflNStatics.Checked = (iniFile.getKeyValue ("ReflNear") == 1);
-            cbDLReflFStatics.Checked = (iniFile.getKeyValue ("ReflFar") == 1);
+            cbDLReflInterior.Checked = (iniFile.getKeyValue ("ReflIntr") == 1);
             udDLFogAStart.Value = (decimal)iniFile.getKeyValue ("AboveBeg");
             udDLFogAEnd.Value = (decimal)iniFile.getKeyValue ("AboveEnd");
             udDLFogBStart.Value = (decimal)iniFile.getKeyValue ("BelowBeg");
@@ -824,13 +522,9 @@ namespace MGEgui {
             // Distant Land
             iniFile.setKey ("DistLand", cbDLDistantLand.Checked);
             iniFile.setKey ("DistStat", cbDLDistantStatics.Checked);
-            foreach (KeyValuePair<string, bool> v in DLOptions) iniFile.setKey (v.Key, v.Value);
             iniFile.setKey ("DrawDist", (double)udDLDrawDist.Value);
             iniFile.setKey ("AutoDist", cbDLAutoDist.Checked);
-            int autoDistBy;
-            if (rbDLAutoByAFogEnd.Checked) autoDistBy = 2;
-            else autoDistBy = 1;
-            iniFile.setKey ("AutoDistBy", autoDistBy);
+            iniFile.setKey ("AutoDistBy", rbDLAutoByAFogEnd.Checked ? 2 : 1);
             iniFile.setKey ("EndNear", (double)udDLDistNear.Value);
             iniFile.setKey ("EndFar", (double)udDLDistFar.Value);
             iniFile.setKey ("EndVFar", (double)udDLDistVeryFar.Value);
@@ -838,7 +532,7 @@ namespace MGEgui {
             iniFile.setKey ("SizeVFar", (double)udDLSizeVeryFar.Value);
             iniFile.setKey ("ReflLand", cbDLReflLand.Checked);
             iniFile.setKey ("ReflNear", cbDLReflNStatics.Checked);
-            iniFile.setKey ("ReflFar", cbDLReflFStatics.Checked);
+            iniFile.setKey ("ReflIntr", cbDLReflInterior.Checked);
             iniFile.setKey ("SkyRefl", cbDLSkyRefl.Checked);
             iniFile.setKey ("ReflBlur", cbDLReflBlur.Checked);
             iniFile.setKey ("DynRipples", cbDLDynRipples.Checked);
@@ -871,8 +565,8 @@ namespace MGEgui {
             BinaryReader br;
             br = new BinaryReader (File.OpenRead (Statics.fn_settings));
             byte version = br.ReadByte ();
-            if (version < 41) throw new Exception (strings ["SetTooOld"].text);
-            if (version > Statics.SaveVersion) throw new Exception (strings ["SetTooNew"].text);
+            if (version < 41) throw new Exception (strings ["SetTooOld"]);
+            if (version > Statics.SaveVersion) throw new Exception (strings ["SetTooNew"]);
             int i;
             loading = true;
             switch (i = br.ReadByte ()) {
@@ -916,7 +610,7 @@ namespace MGEgui {
             if (version >= 42) {
                 cbDLReflLand.Checked = br.ReadBoolean ();
                 cbDLReflNStatics.Checked = br.ReadBoolean ();
-                cbDLReflFStatics.Checked = br.ReadBoolean ();
+                bool cbDLReflFStatics = br.ReadBoolean ();
             }
             br.ReadBoolean (); // Used to be SM3 water
             udDLDistNear.Value = udValue (udDLDistNear, br.ReadByte ());
@@ -944,7 +638,7 @@ namespace MGEgui {
             SaveGraphicsSettings ();
             if (File.Exists (Statics.fn_oldsettings)) File.Delete (Statics.fn_oldsettings);
             File.Move (Statics.fn_settings, Statics.fn_oldsettings);
-            MessageBox.Show (strings ["OldSetImp"].text, Statics.strings ["Message"].text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show (strings ["OldSetImp"], Statics.strings ["Message"], MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void LoadInputSaveFile () {
@@ -952,13 +646,13 @@ namespace MGEgui {
             if (!File.Exists (Statics.fn_didata)) return;
             BinaryReader br = new BinaryReader (File.OpenRead (Statics.fn_didata));
             version = br.ReadByte ();
-            if (version < 39) throw new Exception (strings ["InpTooOld"].text);
-            if (version > Statics.SaveVersion) throw new Exception (strings ["InpTooNew"].text);
+            if (version < 39) throw new Exception (strings ["InpTooOld"]);
+            if (version > Statics.SaveVersion) throw new Exception (strings ["InpTooNew"]);
             cbSkipMovie.Checked = br.ReadBoolean ();
             br.ReadBoolean(); // was disable console
             cbAltCombat.Checked = br.ReadBoolean ();
             try { UnserializeMacroSaves (); } catch {
-                MessageBox.Show (strings ["MacrTrigErr"].text, Statics.strings ["Error"].text);
+                MessageBox.Show (strings ["MacrTrigErr"], Statics.strings ["Error"]);
                 for (int i = 0; i < 266; i++) {
                     Statics.Macros [i].Type = (MacroType)br.ReadByte ();
                     switch (Statics.Macros [i].Type) {
@@ -1019,7 +713,7 @@ namespace MGEgui {
             }
             br.Close ();
             if (version < Statics.SaveVersion) {
-                MessageBox.Show (strings ["OldInpImp"].text, Statics.strings ["Message"].text);
+                MessageBox.Show (strings ["OldInpImp"], Statics.strings ["Message"]);
             }
         }
 
@@ -1149,22 +843,45 @@ namespace MGEgui {
         }
 
         private void LoadSettings () {
-            LoadGraphicsSettings (false);
-            LoadMWINI ();
+            RegistryKey key = Registry.LocalMachine.CreateSubKey (Statics.reg_mw);
+            int width, height;
+            try {
+                width = (int)key.GetValue("Screen Width");
+                height = (int)key.GetValue("Screen Height");
+            } catch {
+                // If Morrowind hasn't run yet, no keys exist
+                key.SetValue("Screen Width", 640);
+                key.SetValue("Screen Height", 480);
+                key.SetValue("Fullscreen", new byte[] { (byte)1 });
+                width = 640;
+                height = 480;
+            }
+            tbResolution.Text = width.ToString() + " x " + height.ToString();
+            CalcAspectRatio(width, height);
+            try {
+                cbWindowed.Checked = !Convert.ToBoolean(((byte [])key.GetValue("Fullscreen"))[0]);
+            } catch {
+                MessageBox.Show(strings["RegWinMode"], Statics.strings["Error"]);
+                cbWindowed.Checked = false;
+            }
+            key.Close();
 
-            if (File.Exists (Statics.fn_settings) && MessageBox.Show (strings ["ImpOldSet"].text, strings ["ImportSet"].text, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+            LoadGraphicsSettings(false);
+            LoadMWINI();
+
+            if (File.Exists (Statics.fn_settings) && MessageBox.Show (strings ["ImpOldSet"], strings ["ImportSet"], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                 try {
                     ImportGraphicsSaveFile ();
                 } catch (Exception ex) {
                     loading = false;
-                    MessageBox.Show (String.Format (strings ["ErrImpSet"].text, ex.Message), Statics.strings ["Error"].text);
+                    MessageBox.Show (String.Format (strings ["ErrImpSet"], ex.Message), Statics.strings ["Error"]);
                 }
             }
             if (File.Exists (Statics.fn_didata)) try {
                     LoadInputSaveFile ();
                 } catch (Exception ex) {
                     loading = false;
-                    MessageBox.Show (String.Format (strings ["ErrLdInp"].text, ex.Message), Statics.strings ["Error"].text);
+                    MessageBox.Show (String.Format (strings ["ErrLdInp"], ex.Message), Statics.strings ["Error"]);
                 }
             if (File.Exists (Statics.fn_remap)) {
                 FileStream fs = File.OpenRead (Statics.fn_remap);
@@ -1242,7 +959,7 @@ namespace MGEgui {
                     key.Close ();
                 }
             } catch {
-                MessageBox.Show (strings ["RegNotWrit"].text, Statics.strings ["Error"].text);
+                MessageBox.Show (strings ["RegNotWrit"], Statics.strings ["Error"]);
             }
         }
 
@@ -1317,8 +1034,8 @@ namespace MGEgui {
         }
 
         private void bViewCaps_Click (object sender, EventArgs e) {
-            MessageBox.Show (String.Format (strings ["ViewCaps"].text, DXMain.mCaps.MaxFullscreenAA.ToString (),
-                DXMain.mCaps.MaxWindowedAA.ToString (), DXMain.mCaps.MaxAF.ToString ()), strings ["GraphCaps"].text);
+            MessageBox.Show (String.Format (strings ["ViewCaps"], DXMain.mCaps.MaxFullscreenAA.ToString (),
+                DXMain.mCaps.MaxWindowedAA.ToString (), DXMain.mCaps.MaxAF.ToString ()), strings ["GraphCaps"]);
         }
 
         private void cbDisplayMessages_CheckedChanged (object sender, EventArgs e) {
@@ -1329,30 +1046,22 @@ namespace MGEgui {
         }
 
         private void bCalcRefresh_Click (object sender, EventArgs e) {
-            int width, height;
-            RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
+            cmbRefreshRate.Items.Clear();
+            cmbRefreshRate.Items.Add("Default");
+            cmbRefreshRate.Text = "Default";
+
             try
             {
+                int width, height;
+                RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
                 width = (int)key.GetValue("Screen Width");
                 height = (int)key.GetValue("Screen Height");
+                key.Close();
+                
+                foreach (int i in DirectX.DXMain.GetRefreshRates(width, height))
+                    cmbRefreshRate.Items.Add(i.ToString());
             }
-            catch(NullReferenceException)
-            {
-                // If Morrowind hasn't run yet, no keys exist
-                key.SetValue("Screen Width", 640);
-                key.SetValue("Screen Height", 480);
-                key.SetValue("Fullscreen", new byte[] { (byte)1 });
-                width = 640;
-                height = 480;
-            }
-            key.Close();
-            
-            cmbRefreshRate.Items.Clear ();
-            cmbRefreshRate.Items.Add ("Default");
-            cmbRefreshRate.Text = "Default";
-            foreach (int i in DirectX.DXMain.GetRefreshRates (width, height)) {
-                cmbRefreshRate.Items.Add (i.ToString ());
-            }
+            catch {}
         }
 
         private void bCalcResolution_Click (object sender, EventArgs e) {
@@ -1443,13 +1152,13 @@ namespace MGEgui {
         }
 
         private void bAbout_Click (object sender, EventArgs e) {
-            string s = String.Format ("Morrowind Graphics Extender\n{0}\n\n{1} Timeslip, LizTail, Krzymar, Phal, Hrnchamd", Statics.versionString, strings ["CreatedBy"].text, strings ["FurtherDevel"].text);
+            string s = String.Format ("Morrowind Graphics Extender\n{0}\n\n{1} Timeslip, LizTail, Krzymar, Phal, Hrnchamd", Statics.versionString, strings ["CreatedBy"], strings ["FurtherDevel"]);
             if (cmbUILanguage.SelectedIndex > 0) {
-                string ttn = Statics.strings ["Translation"].text;
+                string ttn = Statics.strings ["Translation"];
                 string ttr = Statics.Localizations [cmbUILanguage.Text].Translator;
                 if (ttn != "" && ttr != "") s += String.Format ("\n\n{0}: {1}", ttn, ttr);
             }
-            (new AboutForm (s, strings ["About"].text, Statics.strings ["Close"].text)).ShowDialog (this);
+            (new AboutForm (s, strings ["About"], Statics.strings ["Close"])).ShowDialog (this);
         }
 
         private void bRemapper_Click (object sender, EventArgs e) {
@@ -1458,14 +1167,14 @@ namespace MGEgui {
 
         private void cmbFogMode_SelectedIndexChanged (object sender, EventArgs e) {
             if (cmbFogMode.SelectedIndex != 0 && cbDLDistantLand.Checked) {
-                MessageBox.Show (strings ["DLVertexFog"].text, Statics.strings ["Warning"].text);
+                MessageBox.Show (strings ["DLVertexFog"], Statics.strings ["Warning"]);
             }
         }
 
         private void cmbAlias_SelectedIndexChanged (object sender, EventArgs e) {
             if (cmbAntiAlias.SelectedIndex == 0) return;
             if (!DXMain.CheckAALevel (cmbAntiAlias.SelectedIndex + 1, cbWindowed.Checked)) {
-                MessageBox.Show (strings ["TooHighAA"].text, Statics.strings ["Error"].text);
+                MessageBox.Show (strings ["TooHighAA"], Statics.strings ["Error"]);
                 cmbAntiAlias.SelectedIndex = 0;
             }
         }
@@ -1473,51 +1182,45 @@ namespace MGEgui {
         private void cmbAnsiLevel_SelectedIndexChanged (object sender, EventArgs e) {
         	if (cmbAnisoLevel.SelectedIndex > 0) {
 	            if (1 << cmbAnisoLevel.SelectedIndex > DXMain.mCaps.MaxAF) {
-	                MessageBox.Show (strings ["TooHighAF"].text, Statics.strings ["Error"].text);
+	                MessageBox.Show (strings ["TooHighAF"], Statics.strings ["Error"]);
 	                cmbAnisoLevel.SelectedIndex = 0;
 	            }
         	}
         }
 
-        private void cbDLReflectNStatics_CheckedChanged (object sender, EventArgs e) {
-            //cbDLReflFStatics.Enabled = cbDLDistantLand.Checked && cbDLReflLand.Checked && cbDLDistantStatics.Checked && cbDLReflNStatics.Checked;
-        }
-
         private void cbDLReflectiveWater_CheckedChanged (object sender, EventArgs e) {
-            //cbDLSkyRefl.Enabled = cbDLReflLand.Checked;
             cbDLReflNStatics.Enabled = cbDLDistantLand.Checked && cbDLReflLand.Checked && cbDLDistantStatics.Checked;
-            //cbDLReflFStatics.Enabled = cbDLDistantLand.Checked && cbDLReflLand.Checked && cbDLDistantStatics.Checked && cbDLReflNStatics.Checked;
         }
 
         private void cbDistantStatics_CheckedChanged (object sender, EventArgs e) {
             bool status = cbDLDistantStatics.Checked;
             if (status && !File.Exists (Statics.fn_usagedata)) {
                 cbDLDistantStatics.Checked = false;
-                MessageBox.Show (strings ["DSMissing"].text, Statics.strings ["Error"].text);
+                MessageBox.Show (strings ["DSMissing"], Statics.strings ["Error"]);
                 return;
             }
             gbDLStatics.Enabled = status;
-            lDLFogI.Enabled = udDLFogIStart.Enabled = udDLFogIEnd.Enabled = status && !cbDLAutoDist.Checked && !DLOptions ["DLNotInt"];
+            lDLFogI.Enabled = udDLFogIStart.Enabled = udDLFogIEnd.Enabled = status && !cbDLAutoDist.Checked;
             cbDLReflNStatics.Enabled = status && cbDLReflLand.Checked && cbDLDistantStatics.Checked;
-            //cbDLReflFStatics.Enabled = status && cbDLReflLand.Checked && cbDLDistantStatics.Checked && cbDLReflNStatics.Checked;
+            cbDLReflInterior.Enabled = status && cbDLDistantStatics.Checked;
         }
 
         private void cbDistantLand_CheckedChanged (object sender, EventArgs e) {
             if (cbDLDistantLand.Checked) {
                 if (!DXMain.mCaps.SupportsSM3) {
                     cbDLDistantLand.Checked = false;
-                    MessageBox.Show (strings ["DLLackSM3"].text, Statics.strings ["Error"].text);
+                    MessageBox.Show (strings ["DLLackSM3"], Statics.strings ["Error"]);
                     return;
                 }
                 if (!File.Exists (Statics.fn_dlver) || !File.Exists (Statics.fn_world) || !File.Exists (Statics.fn_worldds) || !File.Exists (Statics.fn_worldn)) {
                     cbDLDistantLand.Checked = false;
-                    MessageBox.Show (strings ["NoDLOrOld"].text, Statics.strings ["Error"].text);
+                    MessageBox.Show (strings ["NoDLOrOld"], Statics.strings ["Error"]);
                     return;
                 }
                 byte [] bytes = File.ReadAllBytes (Statics.fn_dlver);
                 if (bytes.Length != 1 || bytes [0] != Statics.DistantLandVersion) {
                     cbDLDistantLand.Checked = false;
-                    MessageBox.Show (strings ["DLDiffer"].text, Statics.strings ["Error"].text);
+                    MessageBox.Show (strings ["DLDiffer"], Statics.strings ["Error"]);
                     return;
                 }
                 gbDistantLand.Enabled = true;
@@ -1525,7 +1228,7 @@ namespace MGEgui {
                 gbDistantLand.Enabled = false;
             }
             cbDLReflNStatics.Enabled = cbDLDistantLand.Checked && cbDLReflLand.Checked && cbDLDistantStatics.Checked;
-            //cbDLReflFStatics.Enabled = cbDLReflNStatics.Enabled && cbDLReflNStatics.Checked;
+            cbDLReflInterior.Enabled = cbDLDistantLand.Checked && cbDLDistantStatics.Checked;
         }
 
         enum AutoDistance { none, byDrawDist, byAFogEnd };
@@ -1643,7 +1346,7 @@ namespace MGEgui {
 
         private void bResetSettings_Click (object sender, EventArgs e) {
             bool delete = cbClearINI.Checked;
-            DialogResult res = MessageBox.Show (String.Format (strings ["AskReset"].text, (delete ? strings ["ResetSaved"].text : "")), strings ["ResetAsk"].text, MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+            DialogResult res = MessageBox.Show (String.Format (strings ["AskReset"], (delete ? strings ["ResetSaved"] : "")), strings ["ResetAsk"], MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
             if (res == DialogResult.Yes) {
                 LoadGraphicsSettings (true, delete);
                 INIFile iniFile = new INIFile (Statics.iniFileName, DLWeatherForm.iniWeatherSettings, true);
@@ -1659,24 +1362,20 @@ namespace MGEgui {
             (new DLWeatherForm ()).ShowDialog ();
         }
 
-        private void bDLOptions_Click (object sender, EventArgs e) {
-            (new DLOptionsForm (DLOptions)).ShowDialog ();
-        }
-
         private void bDistantLandWizard_Click (object sender, EventArgs e) {
             if (!DXMain.mCaps.SupportsSM3) {
-                MessageBox.Show (strings ["DLLackSM3"].text, Statics.strings ["Error"].text);
+                MessageBox.Show (strings ["DLLackSM3"], Statics.strings ["Error"]);
                 return;
             }
             bool exists = false;
             if (Directory.Exists (Statics.fn_dl)) {
                 if (!File.Exists (Statics.fn_dlver) || !File.Exists (Statics.fn_world) || !File.Exists (Statics.fn_worldds) || !File.Exists (Statics.fn_worldn)) {
-                    if (MessageBox.Show (strings ["DLDelOldCorrupt"].text, Statics.strings ["Warning"].text, MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                    if (MessageBox.Show (strings ["DLDelOldCorrupt"], Statics.strings ["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                     Directory.Delete (Statics.fn_dl, true);
                 } else {
                     byte [] b = File.ReadAllBytes (Statics.fn_dlver);
                     if (b.Length != 1 || b [0] != Statics.DistantLandVersion) {
-                        if (MessageBox.Show (strings ["DLDelDifferent"].text, Statics.strings ["Warning"].text, MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                        if (MessageBox.Show (strings ["DLDelDifferent"], Statics.strings ["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                         Directory.Delete (Statics.fn_dl, true);
                     } else exists = true;
                 }
@@ -1766,7 +1465,7 @@ namespace MGEgui {
             udDLFogAEnd.Enabled = !status || !rbDLAutoByDrawDist.Checked;
             udDLFogBStart.Enabled = !status;
             udDLFogBEnd.Enabled = !status;
-            lDLFogI.Enabled = udDLFogIStart.Enabled = udDLFogIEnd.Enabled = !status && cbDLDistantStatics.Checked && !DLOptions ["DLNotInt"];
+            lDLFogI.Enabled = udDLFogIStart.Enabled = udDLFogIEnd.Enabled = !status && cbDLDistantStatics.Checked;
             udDLDistNear.Enabled = !status;
             udDLDistFar.Enabled = !status;
             udDLDistVeryFar.Enabled = !status;
@@ -1848,17 +1547,12 @@ namespace MGEgui {
         }
 
         private void cmbUILanguage_SelectedIndexChanged (object sender, EventArgs e) {
-            foreach (KeyValuePair<Control, string> text in default_text) text.Key.Text = text.Value;
-            foreach (KeyValuePair<TabPage, string> text in tabpage_tooltips) text.Key.ToolTipText = text.Value;
-            foreach (KeyValuePair<string, Tip> text in tooltip_messages) text.Value.reset ();
-            foreach (KeyValuePair<string, Str> text in Statics.strings) text.Value.reset ();
-            foreach (KeyValuePair<string, Str> text in strings) text.Value.reset ();
+            Statics.Localizations.Current = cmbUILanguage.Text;
             string s = tbSShotDir.Text;
-            Statics.Localizations.ApplyStrings ("", Statics.strings, cmbUILanguage.Text);
-            Statics.Localizations.Apply (this, cmbUILanguage.Text);
+            Statics.Localizations.ApplyStrings ("", Statics.strings);
+            Statics.Localizations.Apply (this);
             clearedSSDir = tbSShotDir.Text;
             if (tbSShotDir.TextAlign != HorizontalAlignment.Center) tbSShotDir.Text = s;
-            SetTooltips ();
         }
 
         private void cbUILangAuto_CheckedChanged (object sender, EventArgs e) {

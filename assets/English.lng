@@ -1,60 +1,5 @@
-﻿;;
-;; Language file template for MGEXEgui user interface translation.
-;; File needs to be saved with UTF-8 encoding, either with or without BOM.
-;;
-
-[## Language ##]
-;Name = English (Template)
-;Translator = Translator's Name
-
-;; Use the following naming scheme for default translations (you may uncomment one,
-;; to try if it's displayed on the list of translations in MGEgui):
-;Name = Český (Czech)
-;Name = Danske (Danish)
-;Name = Deutsch (German)
-;Name = Ελληνικά (Greek)
-;Name = Español (Spanish)
-;Name = Français (French)
-;Name = Italiano (Italian)
-;Name = Nederlands (Dutch)
-;Name = Polski (Polish)
-;Name = Русский (Russian)
-;Name = Svenska (Swedish)
-;Name = Türk (Turkish)
-;
-;; If this doesn't want to work with language autodetection, name it in reverse order
-;; - i.e. "Greek (Ελληνικά)", "Russian (Русский)", "Spanish (Español)", etc.
-;;
-;; Language autodetection looks first for language named: "NativeName (EnglishName)",
-;; then, if it doesn't find, for languages named: "EnglishName (NativeName)",
-;; and next for first of language names starting with "NativeName",
-;; and then for first of language names starting with "EnglishName".
-;; If it fails for all, the built-in "English (default)" language is used.
-;;
-;; Localized entry needs to be single-lined, but you can use escape characters,
-;; to make it appear as multi-lined, after reading it by INI file interpreter:
-;; "\n"		- line feed
-;; "\r\n"	- carriage return and line feed
-;; "\r"		- carriage return
-;;
-;; Other characters that are currently replaced by a special character when escaped are:
-;; "\b"		- backspace
-;; "\t"		- tab
-;;
-;; Backslash character inside a localized string (\) needs to be escaped too - i.e. "\\",
-;; otherwise it won't be displayed, because it is used to escape following it character.
-;; If you need to use a quotation mark (") or semicolon (;) inside a localized string,
-;; it's the best to escape them as well - i.e. "\"" or "\;" - because future interpreters
-;; might be more or less strict for finding the start and end of quoted strings or comments,
-;; than only by first and last occurance of quotation mark, and whether (;) is outside of it.
-;;
-;; Currently only 3 types of sections are supported:
-;; [<FormName>.Text]			- for replacing text displayed on controls
-;; [<FormName>.ToolTips]		- for replacing tooltips of either controls or tab pages
-;; [<FormName>.Strings]			- for replacing other strings that can be displayed
-;;
-;; For now only "MainForm", and global strings are translatable (but no ComboBoxes yet).
-;; Tooltips of tab pages are handled differently, so they use the name of a control.
+﻿[## Language ##]
+Name = English (default)
 
 
 
@@ -72,37 +17,23 @@ MWRegistry = "Unable to find Morrowind registry keys. Please run the game as adm
 UnableToWriteReg = "Could not write Morrowind registry key. MGE needs to be launched as Administrator."
 MWRunning = "Morrowind appears to be currently running.\nPlease quit the game before executing MGEgui.exe"
 NotMWDir = "MGE must be installed to the Morrowind directory."
-
-;; Replace English with your language
-Translation = "English translation"
+Translation = "English, default"
 
 
 
 [MainForm.Strings]
 About = "About"
-
-;; {0} will be replaced by 'ResetSaved' when 'cbClearINI' is selected
 AskReset = "Are you sure you want to reset all main {0}settings to default values?"
-
-;; used on the About window
 CreatedBy = "Created by"
-
 DLDelDifferent = "Distant land files already exist, but are from a different version of MGE and must be deleted to continue.\nDo you wish to continue?"
 DLDelOldCorrupt = "Distant land files already exist, but are either incomplete, corrupt, or from an older version of MGE and must be deleted to continue.\nDo you wish to continue?"
 DLDiffer = "Distant land files have not been created or are from a different version of MGE.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
 DLLackSM3 = "Your graphics card lacks the Shader Model 3.0 support required to use Distant Land."
 DLVertexFog = "Distant land is not compatible with vertex fog when using some graphics cards.\nIf the distant land does not appear in game, or appears untextured, try switching back to pixel fog."
 DSMissing = "The distant statics files are missing.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
-
-;; {0} can be either 'SetTooNew' or 'SetTooOld'
 ErrImpSet = "Error importing old graphics save file.\n\n{0}"
-
-;; {0} can be either 'InpTooNew' or 'InpTooOld'
 ErrLdInp = "Error loading input save file.\n\n{0}"
-
-;; used on the About window
 FurtherDevel = "Further development"
-
 GraphCaps = "Graphics capabilities"
 ImpOldSet = "Old graphics save file was found.\n\nDo you want to import settings?"
 ImportSet = "Import settings"
@@ -122,8 +53,6 @@ SetTooNew = "The graphics save file is newer than this version of MGE."
 SetTooOld = "The graphics save file is too old to be imported."
 TooHighAA = "Your selected antialiasing level is not supported by your graphics card."
 TooHighAF = "Your selected anisotropic filtering level is not supported by your graphics card."
-
-;; {0}, {1} & {2} will be integer numbers of maximum reported levels
 ViewCaps = "Max fullscreen antialiasing level: {0}x\nMax windowed antialiasing level: {1}x\nMax anisotropic filtering level: {2}x\n\nGraphics drivers often report their capabilities incorrectly.\nIf you think your graphics card only supports lower levels of AA,\nthen you will need to reduce it by hand if you use best quality mode."
 
 

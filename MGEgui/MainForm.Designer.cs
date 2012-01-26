@@ -130,7 +130,7 @@ namespace MGEgui {
         	this.bDistantLandWizard = new System.Windows.Forms.Button();
         	this.cbDLDistantLand = new System.Windows.Forms.CheckBox();
         	this.gbDistantLand = new System.Windows.Forms.GroupBox();
-        	this.bMWSunSettings = new System.Windows.Forms.Button();
+        	this.bMWLightSettings = new System.Windows.Forms.Button();
         	this.pDLStatics = new System.Windows.Forms.Panel();
         	this.cbDLDistantStatics = new System.Windows.Forms.CheckBox();
         	this.gbDLStatics = new System.Windows.Forms.GroupBox();
@@ -161,12 +161,11 @@ namespace MGEgui {
         	this.cbDLReflLand = new System.Windows.Forms.CheckBox();
         	this.cbDLReflBlur = new System.Windows.Forms.CheckBox();
         	this.cbDLReflNStatics = new System.Windows.Forms.CheckBox();
-        	this.cbDLReflFStatics = new System.Windows.Forms.CheckBox();
+        	this.cbDLReflInterior = new System.Windows.Forms.CheckBox();
         	this.bDLWthr = new System.Windows.Forms.Button();
         	this.gbDLDrawDist = new System.Windows.Forms.GroupBox();
         	this.lDLDrawDist = new System.Windows.Forms.Label();
         	this.udDLDrawDist = new System.Windows.Forms.NumericUpDown();
-        	this.bDLOptions = new System.Windows.Forms.Button();
         	this.gbDLFog = new System.Windows.Forms.GroupBox();
         	this.cbDLScattering = new System.Windows.Forms.CheckBox();
         	this.lDLFogExpMul = new System.Windows.Forms.Label();
@@ -204,7 +203,6 @@ namespace MGEgui {
         	this.tpInstructions = new System.Windows.Forms.TabPage();
         	this.lInstructions = new System.Windows.Forms.Label();
         	this.SShotFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-        	this.bQuality = new System.Windows.Forms.Button();
         	this.tpInput.SuspendLayout();
         	this.gbMWLighting.SuspendLayout();
         	((System.ComponentModel.ISupportInitialize)(this.udLightingConst)).BeginInit();
@@ -1570,14 +1568,13 @@ namespace MGEgui {
         	this.gbDistantLand.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
         	        	        	| System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.gbDistantLand.Controls.Add(this.bMWSunSettings);
+        	this.gbDistantLand.Controls.Add(this.bMWLightSettings);
         	this.gbDistantLand.Controls.Add(this.pDLStatics);
         	this.gbDistantLand.Controls.Add(this.cbDLAutoDist);
         	this.gbDistantLand.Controls.Add(this.gbDLAutoDist);
         	this.gbDistantLand.Controls.Add(this.gbDLWater);
         	this.gbDistantLand.Controls.Add(this.bDLWthr);
         	this.gbDistantLand.Controls.Add(this.gbDLDrawDist);
-        	this.gbDistantLand.Controls.Add(this.bDLOptions);
         	this.gbDistantLand.Controls.Add(this.gbDLFog);
         	this.gbDistantLand.Enabled = false;
         	this.gbDistantLand.Location = new System.Drawing.Point(8, 3);
@@ -1586,16 +1583,16 @@ namespace MGEgui {
         	this.gbDistantLand.TabIndex = 1;
         	this.gbDistantLand.TabStop = false;
         	// 
-        	// bMWSunSettings
+        	// bMWLightSettings
         	// 
-        	this.bMWSunSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
-        	this.bMWSunSettings.Enabled = false;
-        	this.bMWSunSettings.Location = new System.Drawing.Point(288, 378);
-        	this.bMWSunSettings.Name = "bMWSunSettings";
-        	this.bMWSunSettings.Size = new System.Drawing.Size(128, 25);
-        	this.bMWSunSettings.TabIndex = 10;
-        	this.bMWSunSettings.Text = "Sunlight Settings...";
-        	this.bMWSunSettings.UseVisualStyleBackColor = true;
+        	this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
+        	this.bMWLightSettings.Enabled = false;
+        	this.bMWLightSettings.Location = new System.Drawing.Point(15, 378);
+        	this.bMWLightSettings.Name = "bMWLightSettings";
+        	this.bMWLightSettings.Size = new System.Drawing.Size(128, 25);
+        	this.bMWLightSettings.TabIndex = 10;
+        	this.bMWLightSettings.Text = "Light Settings...";
+        	this.bMWLightSettings.UseVisualStyleBackColor = true;
         	// 
         	// pDLStatics
         	// 
@@ -1968,7 +1965,7 @@ namespace MGEgui {
         	this.gbDLWtrRefl.Controls.Add(this.cbDLReflLand);
         	this.gbDLWtrRefl.Controls.Add(this.cbDLReflBlur);
         	this.gbDLWtrRefl.Controls.Add(this.cbDLReflNStatics);
-        	this.gbDLWtrRefl.Controls.Add(this.cbDLReflFStatics);
+        	this.gbDLWtrRefl.Controls.Add(this.cbDLReflInterior);
         	this.gbDLWtrRefl.Location = new System.Drawing.Point(6, 19);
         	this.gbDLWtrRefl.Name = "gbDLWtrRefl";
         	this.gbDLWtrRefl.Size = new System.Drawing.Size(250, 89);
@@ -2007,19 +2004,18 @@ namespace MGEgui {
         	this.cbDLReflNStatics.TabIndex = 1;
         	this.cbDLReflNStatics.Text = "&Nearby Statics";
         	this.cbDLReflNStatics.UseVisualStyleBackColor = true;
-        	this.cbDLReflNStatics.CheckedChanged += new System.EventHandler(this.cbDLReflectNStatics_CheckedChanged);
         	// 
-        	// cbDLReflFStatics
+        	// cbDLReflInterior
         	// 
-        	this.cbDLReflFStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
-        	this.cbDLReflFStatics.AutoSize = true;
-        	this.cbDLReflFStatics.Enabled = false;
-        	this.cbDLReflFStatics.Location = new System.Drawing.Point(128, 42);
-        	this.cbDLReflFStatics.Name = "cbDLReflFStatics";
-        	this.cbDLReflFStatics.Size = new System.Drawing.Size(94, 17);
-        	this.cbDLReflFStatics.TabIndex = 3;
-        	this.cbDLReflFStatics.Text = "D&istant Statics";
-        	this.cbDLReflFStatics.UseVisualStyleBackColor = true;
+        	this.cbDLReflInterior.Anchor = System.Windows.Forms.AnchorStyles.Top;
+        	this.cbDLReflInterior.AutoSize = true;
+        	this.cbDLReflInterior.Enabled = false;
+        	this.cbDLReflInterior.Location = new System.Drawing.Point(128, 42);
+        	this.cbDLReflInterior.Name = "cbDLReflInterior";
+        	this.cbDLReflInterior.Size = new System.Drawing.Size(63, 17);
+        	this.cbDLReflInterior.TabIndex = 3;
+        	this.cbDLReflInterior.Text = "&Interiors";
+        	this.cbDLReflInterior.UseVisualStyleBackColor = true;
         	// 
         	// bDLWthr
         	// 
@@ -2078,17 +2074,6 @@ namespace MGEgui {
         	        	        	0,
         	        	        	0});
         	this.udDLDrawDist.ValueChanged += new System.EventHandler(this.udDLDrawDist_ValueChanged);
-        	// 
-        	// bDLOptions
-        	// 
-        	this.bDLOptions.Anchor = System.Windows.Forms.AnchorStyles.Top;
-        	this.bDLOptions.Location = new System.Drawing.Point(15, 378);
-        	this.bDLOptions.Name = "bDLOptions";
-        	this.bDLOptions.Size = new System.Drawing.Size(128, 25);
-        	this.bDLOptions.TabIndex = 7;
-        	this.bDLOptions.Text = "&Options...";
-        	this.bDLOptions.UseVisualStyleBackColor = true;
-        	this.bDLOptions.Click += new System.EventHandler(this.bDLOptions_Click);
         	// 
         	// gbDLFog
         	// 
@@ -2438,13 +2423,10 @@ namespace MGEgui {
         	// cmbUILanguage
         	// 
         	this.cmbUILanguage.FormattingEnabled = true;
-        	this.cmbUILanguage.Items.AddRange(new object[] {
-        	        	        	"English (default)"});
         	this.cmbUILanguage.Location = new System.Drawing.Point(0, 16);
         	this.cmbUILanguage.Name = "cmbUILanguage";
         	this.cmbUILanguage.Size = new System.Drawing.Size(156, 21);
         	this.cmbUILanguage.TabIndex = 1;
-        	this.cmbUILanguage.Text = "English (default)";
         	this.cmbUILanguage.SelectedIndexChanged += new System.EventHandler(this.cmbUILanguage_SelectedIndexChanged);
         	this.cmbUILanguage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKey);
         	// 
@@ -2646,16 +2628,6 @@ namespace MGEgui {
         	// 
         	this.SShotFolderDialog.Description = "Select output folder for screenshots taken in game:";
         	// 
-        	// bQuality
-        	// 
-        	this.bQuality.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-        	this.bQuality.Enabled = false;
-        	this.bQuality.Location = new System.Drawing.Point(9, 20);
-        	this.bQuality.Name = "bQuality";
-        	this.bQuality.Size = new System.Drawing.Size(160, 25);
-        	this.bQuality.TabIndex = 0;
-        	this.bQuality.Text = "Best quality";
-        	// 
         	// MainForm
         	// 
         	this.ClientSize = new System.Drawing.Size(586, 445);
@@ -2753,9 +2725,10 @@ namespace MGEgui {
         	this.tpInstructions.PerformLayout();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Button bMWLightSettings;
+        public System.Windows.Forms.CheckBox cbDLReflInterior;
         private System.Windows.Forms.TableLayoutPanel tableLayoutDisplay;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
-        private System.Windows.Forms.Button bMWSunSettings;
         private System.Windows.Forms.Label lHDR2;
         private System.Windows.Forms.Button bMWLightingReset;
         private System.Windows.Forms.Label lInstructions;
@@ -2831,7 +2804,6 @@ namespace MGEgui {
         public Label lVWait;
         public CheckBox cbDisableMWSE;
         public TabPage tpDL;
-        public CheckBox cbDLReflFStatics;
         public CheckBox cbDLReflNStatics;
         public CheckBox cbDLReflLand;
         public GroupBox gbDistantLand;
@@ -2858,14 +2830,12 @@ namespace MGEgui {
         public Button bDLWthr;
         public NumericUpDown udFOV;
         public Label lFOV;
-        public Button bDLOptions;
         public Button bResetSettings;
         public Button bAbout;
         public Button bViewCaps;
         public Button bExport;
         public Button bImport;
         public Button bHelp;
-        public Button bQuality;
         public GroupBox gbMainInfo;
         public GroupBox gbMainSettings;
         public Button bDistantLandWizard;

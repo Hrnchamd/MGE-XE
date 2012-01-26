@@ -43,7 +43,6 @@ namespace MGEgui {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ShaderActive));
         	this.bMoveUp = new System.Windows.Forms.Button();
         	this.lbSelected = new System.Windows.Forms.ListBox();
         	this.lbAvailable = new System.Windows.Forms.ListBox();
@@ -174,7 +173,7 @@ namespace MGEgui {
         	this.lShaderUsage.Padding = new System.Windows.Forms.Padding(0, 8, 0, 8);
         	this.lShaderUsage.Size = new System.Drawing.Size(284, 107);
         	this.lShaderUsage.TabIndex = 10;
-        	this.lShaderUsage.Text = resources.GetString("lShaderUsage.Text");
+        	this.lShaderUsage.Text = "Shader usage guide\r\n\r\n\r\n\r\n\r\n\r\nApproximate end of text";
         	// 
         	// tableLayoutPanel1
         	// 
@@ -254,6 +253,7 @@ namespace MGEgui {
         
         public ShaderActive() {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
 
             foreach (String s in Directory.GetFiles(Statics.runDir + "\\" + Statics.pathShaders)) {
                 if(s.EndsWith(".fx")) lbAvailable.Items.Add(Path.GetFileNameWithoutExtension(s));

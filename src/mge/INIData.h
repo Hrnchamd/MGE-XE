@@ -114,7 +114,6 @@ const tdictionary dictSSFormat = {countof(dictentSSFormat), dictentSSFormat};
 
 const iniSetting iniSettings[] = {
     // Generic Flags
-    {&Configuration.MGEFlags, t_bit, FOG_ENABLED_BIT, siniRendState, "Enable Fog", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, FPS_COUNTER_BIT, siniRendState, "MGE FPS Counter", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, DISPLAY_MESSAGES_BIT, siniRendState, "MGE Messages", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
@@ -123,21 +122,18 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, USE_MENU_CACHING_BIT, siniMisc, "Use Menu Background Caching", True, &dictBool, DICTONLY, 0, 0},
 
     // Distant Land Flags
-    {&Configuration.MGEFlags, t_bit, USE_DISTANT_LAND_BIT, siniDL, "Distant Land", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, USE_DISTANT_STATICS_BIT, siniDL, "Distant Statics", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, NO_INTERIOR_DL_BIT, siniDL, "Disable In Interiors", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, REFLECTIVE_WATER_BIT, siniDL, "Water Reflects Land", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, REFLECT_NEAR_BIT, siniDL, "Water Reflects Near Statics", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, REFLECT_FAR_BIT, siniDL, "Water Reflects Far Statics", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, NOT_USING_DL_BIT, siniDL, "Distant Land Initially Disabled", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, NO_MW_MGE_BLEND_BIT, siniDL, "MW Blending Initially Disabled", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, REFLECT_SKY_BIT, siniDL, "Enable Sky Reflections", False, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_DISTANT_LAND_BIT, siniDL, "Distant Land", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_DISTANT_STATICS_BIT, siniDL, "Distant Statics", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, REFLECTIVE_WATER_BIT, siniDL, "Water Reflects Land", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, REFLECT_NEAR_BIT, siniDL, "Water Reflects Near Statics", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, REFLECT_INTERIOR_BIT, siniDL, "Water Reflects Interiors", False, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, REFLECT_SKY_BIT, siniDL, "Enable Sky Reflections", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, DYNAMIC_RIPPLES_BIT, siniDL, "Dynamic Ripples", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, BLUR_REFLECTIONS_BIT, siniDL, "Blur Water Reflections", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, EXP_FOG_BIT, siniDL, "Use Exponential Fog", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_ATM_SCATTER_BIT, siniDL, "Use Atmosphere Scattering", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, USE_GRASS_BIT, siniDL, "NOT AVAILABLE", True, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, USE_SHADOWS_BIT, siniDL, "NOT AVAILABLE", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_GRASS_BIT, siniDL, "Render Grass", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_SHADOWS_BIT, siniDL, "Dynamic Shadows", True, &dictBool, DICTONLY, 0, 0},
 
     // Generic Variables
     {&Configuration.AALevel, t_uint8, 1, siniGlobGraph, "Antialiasing Level", "None", &dictAA, DICTONLY, 0, 0},
@@ -151,10 +147,9 @@ const iniSetting iniSettings[] = {
     {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},
     {&Configuration.SSDir, t_string, sizeof(Configuration.SSDir), siniRendState, "Screenshot Output Directory", "", NULL, 0, 0, 0},
     {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "MGE Screenshot ", NULL, 0, 0, 0},
-    /* Note: Intentional misspelling of "Lenght" for backwards compatibility with MGEgui */
-    {&Configuration.SSMinNumChars, t_uint8, 1, siniRendState, "Screenshot Number Min Lenght", "3", NULL, MINMAX, 1, 5},
+    {&Configuration.SSMinNumChars, t_uint8, 1, siniRendState, "Screenshot Number Min Length", "3", NULL, MINMAX, 1, 5},
     {&Configuration.ReactionSpeed, t_float, 1, siniMisc, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
-    {&Configuration.StatusTimeout, t_int32, 1, siniRendState, "MGE Messages Timeout", "5000", NULL, MINMAX, 1000, 10000},
+    {&Configuration.StatusTimeout, t_int32, 1, siniRendState, "MGE Messages Timeout", "2000", NULL, MINMAX, 1000, 10000},
     {&Configuration.Force3rdPerson, t_bool,  1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
     {&Configuration.Offset3rdPerson.x, t_float,  1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
     {&Configuration.Offset3rdPerson.y, t_float,  1, siniMisc, "Initial 3rd Person Camera Y", "-160", NULL, MINMAX, -2500.0, 2500.0},

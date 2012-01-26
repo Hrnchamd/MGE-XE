@@ -13,26 +13,20 @@ namespace MGEgui {
 
         private Dictionary<string, float> defaults;
 
-        private const string tipSave = "Saves all weather settings and closes Weather Settings window.";
-        private const string tipCancel = "Closes Weather Settings window without saving changed settings.";
-        private const string tipReset = "Resets all weather settings to their default value.";
-        private const string tipWind = "Here you can set wind factor for each Morrowind weather type.\n"
-            + "Allowed value range is from 0 to 1, where 0 is no wind at all, and 1 is full wind.";
-        private const string tipFogDay = "Here you can set fog factor for each Morrowind weather type.\n"
-            + "Allowed value range is from 0.001 to 2, where 0.001 is thousand times closer than set range of fog above water,\n"
-            + "and 2 is two times farther than set range of fog above water.";
-        private const string tipFogOffsDay = "Here you can set percent of fog depth that will be moved behind player for each weather type.\n"
-            + "Setting fog offset higher than 0% will move back that amount of fog, eventually causing nearest surroundings to be fogged.\n"
-            + "This effect may be used to emulate additional particles for some weathers. Allowed offset range is 0% - 90%.";
+        #region tooltip_messages
+        public Dictionary<string, string[]> tooltip_messages = new Dictionary<string, string[]> {
+            { "Save", new string [] { "bSave" } },
+            { "Cancel", new string [] { "bCancel" } },
+            { "Reset", new string [] { "bReset" } },
+            { "Wind", new string [] { "gbWind" } },
+            { "FogDay", new string [] { "gbFogDay" } },
+            { "FogOffs", new string [] { "gbFogOffsDay" } },
+        };
+        #endregion
 
         public DLWeatherForm() {
             InitializeComponent();
-            toolTip.SetToolTip(bSave, tipSave);
-            toolTip.SetToolTip(bCancel, tipCancel);
-            toolTip.SetToolTip(bReset, tipReset);
-            toolTip.SetToolTip(gbWind, tipWind);
-            toolTip.SetToolTip(gbFogDay, tipFogDay);
-            toolTip.SetToolTip(gbFogOffsDay, tipFogOffsDay);
+            Statics.Localizations.Apply(this);
             defaults = new Dictionary<string, float>();
             LoadSettings();
         }

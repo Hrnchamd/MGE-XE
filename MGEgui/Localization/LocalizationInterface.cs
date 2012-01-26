@@ -68,6 +68,8 @@ namespace MGEgui.Localization {
         }
 
         private Dictionary<string, Localization> localizations;
+        private const string baseLocalization = "English (default)";
+        private Localization currentLocalization;
 
         public LocalizationInterface () {
             localizations = new Dictionary<string, Localization> ();
@@ -103,55 +105,79 @@ namespace MGEgui.Localization {
             }
         }
 
+        public string Current {
+            get {
+                return currentLocalization.Language;
+            }
+            set {
+                if(localizations.ContainsKey(value))
+                    currentLocalization = localizations[value];
+                else
+                    currentLocalization = localizations[baseLocalization];
+            }
+        }
+        
         public int Count {
             get { return localizations.Count; }
         }
 
-        public void ApplyStrings (string name, Dictionary<string, Str> messages, string Language) {
-            if (localizations.ContainsKey (Language)) {
-                Localization localization = localizations [Language];
-                ApplyStrings (name, messages, localization);
-            }
+        public void ApplyStrings (string name, Dictionary<string, string> messages) {
+            ApplyStrings(name, messages, localizations[baseLocalization]);
+            ApplyStrings(name, messages, currentLocalization);
         }
 
-        public void ApplyStrings (string name, Dictionary<string, Str> messages, Localization localization) {
+        public void ApplyStrings (string name, Dictionary<string, string> messages, Localization localization) {
             Dictionary<string, string> dict;
             dict = localization.langFile.getSectionKeys (name + ".Strings");
             foreach (KeyValuePair<string, string> entry in dict) {
-                if (messages.ContainsKey (entry.Key)) messages [entry.Key].text = entry.Value;
+                messages [entry.Key] = entry.Value;
             }
         }
 
-        public void Apply (Form form, string Language) {
-            if (localizations.ContainsKey (Language)) {
-                Localization localization = localizations [Language];
-                Dictionary<string, string> dict;
-                dict = localization.langFile.getSectionKeys (form.Name + ".Text");
+        public void Apply (Form form) {
+            Apply(form, localizations[baseLocalization]);
+            Apply(form, currentLocalization);
+        }
+        
+        public void Apply (Form form, Localization localization) {
+            FieldInfo messages_field;
+            Dictionary<string, string> dict;
+            dict = localization.langFile.getSectionKeys(form.Name + ".Text");
+            foreach(KeyValuePair<string, string> entry in dict) {
+                Control[] controls = form.Controls.Find(entry.Key, true);
+                foreach(Control control in controls) {
+                    if(!(control is ComboBox))
+                        control.Text = entry.Value;
+                }
+            }
+
+            messages_field = form.GetType().GetField("strings");
+            Dictionary<string, string> messages = new Dictionary<string, string>();
+            if(messages_field != null && messages_field.FieldType == messages.GetType()) {
+                messages = messages_field.GetValue(form) as Dictionary<string, string>;
+                ApplyStrings(form.Name, messages, localization);
+            }
+
+            messages_field = form.GetType().GetField("tooltip_messages");
+            Dictionary<string, string[]> tips = new Dictionary<string, string[]>();
+            if(messages_field != null && messages_field.FieldType == tips.GetType()) {
+                tips = messages_field.GetValue(form) as Dictionary<string, string[]>;
+                messages_field = form.GetType().GetField("toolTip");
+                ToolTip toolTip = messages_field.GetValue(form) as ToolTip;
+                dict = localization.langFile.getSectionKeys(form.Name + ".ToolTips");
                 foreach (KeyValuePair<string, string> entry in dict) {
-                    Control [] controls = form.Controls.Find (entry.Key, true);
-                    foreach (Control control in controls) if (!(control is ComboBox)) control.Text = entry.Value;
-                }
-                FieldInfo messages_field;
-                messages_field = form.GetType ().GetField ("strings");
-                if (messages_field != null) {
-                    Dictionary<string, Str> messages = new Dictionary<string, Str> ();
-                    if (messages_field.FieldType == messages.GetType ()) {
-                        messages = messages_field.GetValue (form) as Dictionary<string, Str>;
-                        ApplyStrings (form.Name, messages, localization);
+                    if (tips.ContainsKey(entry.Key)) {
+                        foreach(string controlName in tips[entry.Key]) {
+                            Control[] controls = form.Controls.Find(controlName, true);
+                            foreach(Control control in controls)
+                                toolTip.SetToolTip(control, entry.Value);
+                        }
                     }
-                }
-                messages_field = form.GetType ().GetField ("tooltip_messages");
-                if (messages_field != null) {
-                    Dictionary<string, Tip> tips = new Dictionary<string, Tip> ();
-                    if (messages_field.FieldType == tips.GetType ()) {
-                        tips = messages_field.GetValue (form) as Dictionary<string, Tip>;
-                        dict = localization.langFile.getSectionKeys (form.Name + ".ToolTips");
-                        foreach (KeyValuePair<string, string> entry in dict) {
-                            if (tips.ContainsKey (entry.Key)) tips [entry.Key].tip = entry.Value;
-                            else {
-                                Control [] controls = form.Controls.Find (entry.Key, true);
-                                foreach (Control control in controls) if (control is TabPage) (control as TabPage).ToolTipText = entry.Value;
-                            }
+                    else {
+                        Control[] controls = form.Controls.Find(entry.Key, true);
+                        foreach(Control control in controls) {
+                            if(control is TabPage)
+                                (control as TabPage).ToolTipText = entry.Value;
                         }
                     }
                 }

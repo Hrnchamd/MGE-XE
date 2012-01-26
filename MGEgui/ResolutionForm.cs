@@ -5,6 +5,7 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 using System.IO;
 using ArrayList=System.Collections.ArrayList;
+using System.Collections.Generic;
 
 namespace MGEgui {
     public class ResolutionForm : Form {
@@ -87,16 +88,18 @@ namespace MGEgui {
         	// 
         	// lArbRes
         	// 
+        	this.lArbRes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
         	this.lArbRes.AutoSize = true;
-        	this.lArbRes.Location = new System.Drawing.Point(12, 88);
+        	this.lArbRes.Location = new System.Drawing.Point(12, 100);
         	this.lArbRes.Name = "lArbRes";
-        	this.lArbRes.Size = new System.Drawing.Size(264, 13);
+        	this.lArbRes.Size = new System.Drawing.Size(267, 13);
         	this.lArbRes.TabIndex = 0;
-        	this.lArbRes.Text = "Arbitrary resolutions can only be set in windowed mode";
+        	this.lArbRes.Text = "Arbitrary resolutions can only be set in windowed mode.";
         	// 
         	// bCancel
         	// 
-        	this.bCancel.Location = new System.Drawing.Point(12, 108);
+        	this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+        	this.bCancel.Location = new System.Drawing.Point(12, 124);
         	this.bCancel.Name = "bCancel";
         	this.bCancel.Size = new System.Drawing.Size(75, 23);
         	this.bCancel.TabIndex = 3;
@@ -105,7 +108,8 @@ namespace MGEgui {
         	// 
         	// bOK
         	// 
-        	this.bOK.Location = new System.Drawing.Point(201, 108);
+        	this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+        	this.bOK.Location = new System.Drawing.Point(201, 124);
         	this.bOK.Name = "bOK";
         	this.bOK.Size = new System.Drawing.Size(75, 23);
         	this.bOK.TabIndex = 4;
@@ -114,7 +118,7 @@ namespace MGEgui {
         	// 
         	// ResolutionForm
         	// 
-        	this.ClientSize = new System.Drawing.Size(294, 143);
+        	this.ClientSize = new System.Drawing.Size(294, 159);
         	this.Controls.Add(this.bOK);
         	this.Controls.Add(this.bCancel);
         	this.Controls.Add(this.lArbRes);
@@ -146,10 +150,12 @@ namespace MGEgui {
 
         public ResolutionForm() {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
+            
             cmbRes.ContextMenu = DudMenu;
             if(Fullscreen) {
-                tbWidth.ReadOnly=true;
-                tbHeight.ReadOnly=true;
+                tbWidth.Enabled=false;
+                tbHeight.Enabled=false;
             } else {
                 lArbRes.Visible=false;
             }
@@ -162,11 +168,14 @@ namespace MGEgui {
             }
         }
 
+        public static Dictionary<string, string> strings = new Dictionary<string, string>();
+
         static int sWidth;
         static int sHeight;
         static bool Fullscreen;
         static int Adaptor;
         static Point[] Resolutions;
+        
         public static bool ShowDialog(out Point p, bool Windowed) {
             //Fetch data from the registry
             RegistryKey key=Registry.LocalMachine.OpenSubKey(@"Software\Bethesda Softworks\Morrowind");
@@ -184,7 +193,7 @@ namespace MGEgui {
                 try {
                     key = Registry.LocalMachine.OpenSubKey(@"Software\Bethesda Softworks\Morrowind", true);
                 } catch {
-                    MessageBox.Show(Statics.strings["UnableToWriteReg"].text, Statics.strings["Error"].text);
+                    MessageBox.Show(Statics.strings["UnableToWriteReg"], Statics.strings["Error"]);
                 }
                 if (key != null) {
                     key.SetValue("Screen Width", sWidth);
@@ -204,17 +213,17 @@ namespace MGEgui {
             try {
                 width=Convert.ToInt32(tbWidth.Text);
             } catch {
-                MessageBox.Show("Invalid value entered for screen width");
+                MessageBox.Show(strings["InvalidWidth"]);
                 return;
             }
             try {
                 height=Convert.ToInt32(tbHeight.Text);
             } catch {
-                MessageBox.Show("Invalid value entered for screen height");
+                MessageBox.Show(strings["InvalidHeight"]);
                 return;
             }
             if(width<=0||height<=0) {
-                MessageBox.Show("Screen width and height must be greater than 0");
+                MessageBox.Show(strings["DimensionError"]);
                 return;
             }
             DialogResult=DialogResult.OK;

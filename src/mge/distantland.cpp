@@ -653,12 +653,15 @@ bool DistantLand::selectDistantCell()
             return true;
         }
 
-        string cellname = mwBridge->getInteriorName();
-        unordered_map<string, WorldSpace>::const_iterator iWS = mapWorldSpaces.find(cellname);
-        if(iWS != mapWorldSpaces.end())
+        if(mwBridge->CellHasWeather() || (Configuration.MGEFlags & REFLECT_INTERIOR))
         {
-            currentWorldSpace = &iWS->second;
-            return true;
+            string cellname = mwBridge->getInteriorName();
+            unordered_map<string, WorldSpace>::const_iterator iWS = mapWorldSpaces.find(cellname);
+            if(iWS != mapWorldSpaces.end())
+            {
+                currentWorldSpace = &iWS->second;
+                return true;
+            }
         }
     }
 

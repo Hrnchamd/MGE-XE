@@ -16,6 +16,8 @@ namespace MGEgui.DistantLand {
 
         public DirectoriesForm(string datafiles, List<string> dirs) {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
+
             this.folderAdd.SelectedPath = Statics.runDir + "\\Data files";
             this.datafiles = datafiles;
             this.dirs = dirs;

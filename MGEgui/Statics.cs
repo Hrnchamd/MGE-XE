@@ -148,36 +148,6 @@ namespace MGEgui {
         }
     }
 
-    public class Tip {
-        public string [] controls;
-        public string tip;
-        public string defaultTip;
-
-        public Tip (string [] controls, string tip) {
-            this.controls = controls;
-            this.tip = tip;
-            this.defaultTip = tip;
-        }
-
-        public void reset () {
-            tip = defaultTip;
-        }
-    }
-
-    public class Str {
-        public string text;
-        public string defaultText;
-
-        public Str (string text) {
-            this.text = text;
-            this.defaultText = text;
-        }
-
-        public void reset () {
-            text = defaultText;
-        }
-    }
-
     /// <summary>
     /// Contains some constant variables, misc static functions and the program entry point
     /// </summary>
@@ -225,6 +195,7 @@ namespace MGEgui {
         public static int tipReadSpeed;
 
         public static LocalizationInterface Localizations;
+        public static Dictionary<string, string> strings = new Dictionary<string, string>();
 
         public static MainForm mf;
 
@@ -267,43 +238,6 @@ namespace MGEgui {
             return (Control [])controls.ToArray (typeof (Control));
         }
 
-        #region strings
-        public static Dictionary<string, Str> strings = new Dictionary<string, Str> {
-            {"Error", new Str (
-                "Error")},
-            {"Warning", new Str (
-                "Warning")},
-            {"Message", new Str (
-                "Message")},
-            {"Close", new Str (
-                "&Close")},
-            {"MGEguiRunning", new Str (
-                "MGEgui.exe is already running.")},
-            {"MWRunning", new Str (
-                "Morrowind appears to be currently running.\n" +
-                "Please quit the game before executing MGEgui.exe")},
-            {"NotMWDir", new Str (
-                "MGE must be installed to the Morrowind directory.")},
-            {"MGEMissing", new Str (
-                "One or more of MGE's files appear to be missing. Please reinstall.")},
-            {"MWIncompat", new Str (
-                "Your version of Morrowind is not compatible with MGE.\n" +
-                "MGE requires a fully patched copy of Bloodmoon (i.e. Morrowind version 1.6.1820).")},
-            {"MWCorrupt", new Str (
-                "Morrowind.exe appears to be corrupt.\n" +
-                "MGE is unable to determine Morrowind's version.")},
-            {"DSound", new Str (
-                "You appear to have part of an old version of MGE installed.\n" +
-                "You need to remove dsound.dll from your Morrowind directory for this version of MGE to function.")},
-            {"MWRegistry", new Str (
-                "Unable to find Morrowind registry keys. Please run the game as administrator before installing MGE.")},
-            {"UnableToWriteReg", new Str (
-                "Could not write Morrowind registry key. MGE needs to be launched as Administrator.")},
-            {"Translation", new Str (
-                "")}
-        };
-        #endregion
-
         /// <summary>
         /// Entry point for this program
         /// </summary>
@@ -336,40 +270,40 @@ namespace MGEgui {
             } catch { }
 
             if (args.mutex && !MutexCheck.PerformCheck ()) {
-                MessageBox.Show (strings ["MGEguiRunning"].text, strings ["Error"].text);
+                MessageBox.Show (strings ["MGEguiRunning"], strings ["Error"]);
                 return;
             }
             Process [] morrowind = Process.GetProcessesByName ("Morrowind");
             foreach (Process p in morrowind) {
-                MessageBox.Show (strings ["MWRunning"].text, strings ["Error"].text);
+                MessageBox.Show (strings ["MWRunning"], strings ["Error"]);
                 return;
             }
 
             if (!File.Exists ("./morrowind.exe") || !File.Exists ("./morrowind.ini") || !Directory.Exists ("data files")) {
-                MessageBox.Show (strings ["NotMWDir"].text, strings ["Error"].text);
+                MessageBox.Show (strings ["NotMWDir"], strings ["Error"]);
                 return;
             }
             if (!Directory.Exists ("MGE3") || !File.Exists ("./MGE3/MGEfuncs.dll") || !File.Exists ("./d3d8.dll") ||
                !File.Exists ("./dinput8.dll")) {
-                MessageBox.Show (strings ["MGEMissing"].text, strings ["Error"].text);
+                MessageBox.Show (strings ["MGEMissing"], strings ["Error"]);
                 return;
             }
             //Morrowind version info
             try {
                 FileVersionInfo MorrowVersion = FileVersionInfo.GetVersionInfo ("Morrowind.exe");
                 if (MorrowVersion.FileMajorPart != 1 || MorrowVersion.FileMinorPart < 6) {
-                    MessageBox.Show (strings ["MWIncompat"].text, strings ["Error"].text);
+                    MessageBox.Show (strings ["MWIncompat"], strings ["Error"]);
                     return;
                 }
             } catch {
-                MessageBox.Show (strings ["MWCorrupt"].text, strings ["Error"].text);
+                MessageBox.Show (strings ["MWCorrupt"], strings ["Error"]);
                 return;
             }
 
             runDir = System.Windows.Forms.Application.StartupPath;
             //check if MW registry keys exist
             if (Registry.LocalMachine.OpenSubKey (reg_mw) == null) {
-                MessageBox.Show (strings ["MWRegistry"].text, strings ["Error"].text);
+                MessageBox.Show (strings ["MWRegistry"], strings ["Error"]);
                 return;
             }
 

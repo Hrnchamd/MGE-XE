@@ -1979,6 +1979,6 @@
         private System.Windows.Forms.Label lBlight4;
         private System.Windows.Forms.Label lSnow4;
         private System.Windows.Forms.Label lBlizzard4;
-        private System.Windows.Forms.ToolTip toolTip;
+        public System.Windows.Forms.ToolTip toolTip;
     }
 }

@@ -14,6 +14,8 @@ namespace MGEgui.DistantLand {
 
         public RunSetupForm(Dictionary<string, bool> flags) {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
+            
             this.HelpButtonClicked += new CancelEventHandler(RunSetupForm_HelpButtonClicked);
             this.flags = flags;
             cbTex.Enabled = flags["EnaLandTex"];

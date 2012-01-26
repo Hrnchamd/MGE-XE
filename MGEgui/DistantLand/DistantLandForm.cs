@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using MGEgui.DirectX;
-using System.Globalization;
 using MGEgui.INI;
 
 namespace MGEgui.DistantLand {
@@ -12,16 +11,19 @@ namespace MGEgui.DistantLand {
 
         public DistantLandForm(bool exists) {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
+
             this.saveStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             Exists = exists;
             if (Exists) StaticsExist = File.Exists(Statics.fn_usagedata);
             LoadSettings();
             Directory.CreateDirectory(Statics.fn_dl);
-            statusText.Text = "Initializing BSAs";
+
+            statusText.Text = strings["LoadBSAInit"];
             statusProgress.Style = ProgressBarStyle.Marquee;
             backgroundWorker.DoWork += workerInitBSAs;
             backgroundWorker.RunWorkerCompleted += workerFInitBSAs;
-            statusWarnings.Text = "No Warnings"; 
+            statusWarnings.Text = strings["NoWarnings"]; 
             statusWarnings.Enabled = false;
             allWarnings = new List<string>();
             lTexDesc.Text += DXMain.mCaps.MaxTexSize.ToString();
@@ -30,6 +32,8 @@ namespace MGEgui.DistantLand {
             backgroundWorker.RunWorkerAsync();
         }
 
+        public static Dictionary<string, string> strings = new Dictionary<string, string>();
+        
         /* Static methods */
 
         private static void DumpError(Exception ex) {
@@ -108,11 +112,9 @@ namespace MGEgui.DistantLand {
             if (!ChangingPage) {
                 if (backgroundWorker.IsBusy) {
                     e.Cancel = true;
-                    MessageBox.Show("Please wait for the current stage of distant land generation to complete before exiting", "Error");
+                    MessageBox.Show(strings["PleaseWait"], Statics.strings["Error"]);
                 } else {
-                    if (MessageBox.Show("Distant land generation is not complete.\n"
-                    + "Exiting now will cause you to lose any files created so far.\n"
-                    + "Are you sure you wish to exit?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) e.Cancel = true;
+                    if (MessageBox.Show(strings["ConfirmExit"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) e.Cancel = true;
                 }
             }
         }
@@ -188,7 +190,6 @@ namespace MGEgui.DistantLand {
         private static INIFile.INIVariableDef iniSkipMip = new INIFile.INIVariableDef("SkipMip", iniDLWizardSets, "Skip mipmap levels", INIFile.INIVariableType.Byte, "1", 0, 3);
         private static INIFile.INIVariableDef iniActivators = new INIFile.INIVariableDef("Activators", iniDLWizardSets, "Include activators", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniMiscObj = new INIFile.INIVariableDef("MiscObj", iniDLWizardSets, "Include misc objects", INIFile.INIBoolType.Text, "True");
-        private static INIFile.INIVariableDef iniOldSimply = new INIFile.INIVariableDef("OldSimply", iniDLWizardSets, "Use old simplification algorithm", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniUseStatOvr = new INIFile.INIVariableDef("UseStatOvr", iniDLWizardSets, "Use static overrides", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniStatIntExt = new INIFile.INIVariableDef("StatIntExt", iniDLWizardSets, "Statics for behave like exterior cells", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniStatIntWater = new INIFile.INIVariableDef("StatIntWater", iniDLWizardSets, "Statics for interiors with water", INIFile.INIBoolType.OnOff, "Off");
@@ -207,7 +208,6 @@ namespace MGEgui.DistantLand {
             iniSkipMip,
             iniActivators, 
             iniMiscObj, 
-            iniOldSimply, 
             iniUseStatOvr,
             iniStatIntExt,
             iniStatIntWater
@@ -242,7 +242,6 @@ namespace MGEgui.DistantLand {
             iniSkipMip,
             iniActivators,
             iniMiscObj,
-            iniOldSimply,
             iniUseStatOvr,
             iniStatIntExt,
             iniStatIntWater
@@ -302,7 +301,6 @@ namespace MGEgui.DistantLand {
             cmbStatSkipMipLevels.SelectedIndex = (int)iniFile.getKeyValue("SkipMip");
             cbStatActivators.Checked = (iniFile.getKeyValue("Activators") == 1);
             cbStatIncludeMisc.Checked = (iniFile.getKeyValue("MiscObj") == 1);
-            cbStatOldSimplification.Checked = (iniFile.getKeyValue("OldSimply") == 1);
             cbStatOverrideList.Checked = (iniFile.getKeyValue("UseStatOvr") == 1);
             cbStatIntExt.Checked = (iniFile.getKeyValue("StatIntExt") == 1);
             cbStatIntWater.Checked = (iniFile.getKeyValue("StatIntWater") == 1);
@@ -352,7 +350,6 @@ namespace MGEgui.DistantLand {
             iniFile.setKey("SkipMip", cmbStatSkipMipLevels.SelectedIndex);
             iniFile.setKey("Activators", cbStatActivators.Checked);
             iniFile.setKey("MiscObj", cbStatIncludeMisc.Checked);
-            iniFile.setKey("OldSimply", cbStatOldSimplification.Checked);
             iniFile.setKey("UseStatOvr", cbStatOverrideList.Checked);
             iniFile.setKey("StatIntExt", cbStatIntExt.Checked);
             iniFile.setKey("StatIntWater", cbStatIntWater.Checked);
@@ -372,7 +369,7 @@ namespace MGEgui.DistantLand {
         private void workerFInitBSAs(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show("A fatal error occurred loading the BSAs. Distant land setup cannot continue.\n" + e.Error.Message);
+                MessageBox.Show(strings["LoadBSAError"] + "\n" + e.Error.Message);
                 ChangingPage = true;
                 Close();
                 return;
@@ -382,11 +379,11 @@ namespace MGEgui.DistantLand {
                 allWarnings.AddRange(warnings);
                 saveWarnings("BSAs");
                 if (!SetupFlags["AutoRun"]) {
-                    statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                    statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                     statusWarnings.Enabled = true;
                 }
             }
-            statusText.Text = "BSAs loaded.";
+            statusText.Text = strings["LoadBSAStatus"];
             statusProgress.Style = ProgressBarStyle.Continuous;
             backgroundWorker.DoWork -= workerInitBSAs;
             backgroundWorker.RunWorkerCompleted -= workerFInitBSAs;
@@ -528,7 +525,7 @@ namespace MGEgui.DistantLand {
         private void workerFLoadPlugins(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show("A fatal error occurred loading land data from your plugins. Distant land setup cannot continue.\n" + e.Error.Message);
+                MessageBox.Show(strings["LoadLandError"] + "\n" + e.Error.Message);
                 ChangingPage = true;
                 Close();
                 return;
@@ -539,12 +536,12 @@ namespace MGEgui.DistantLand {
                 allWarnings.AddRange(warnings);
                 saveWarnings("Plugins");
                 if (!SetupFlags["AutoRun"]) {
-                    statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                    statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                     statusWarnings.Enabled = true;
                 }
             }
             if (DEBUG) allWarnings.Add("Plugin land data loaded");
-            statusText.Text = "Plugin land data loaded";
+            statusText.Text = strings["LoadLandStatus"];
             backgroundWorker.DoWork -= workerLoadPlugins;
             backgroundWorker.RunWorkerCompleted -= workerFLoadPlugins;
             SavePlugsSettings();
@@ -568,7 +565,7 @@ namespace MGEgui.DistantLand {
             CreateTextureArgs args = (CreateTextureArgs)e.Argument;
             DirectX.CellTexCreator ctc = new CellTexCreator(4);
             int count = 0;
-            backgroundWorker.ReportProgress(count, "Creating world texture");
+            backgroundWorker.ReportProgress(count, strings["LandTextureCreate"]);
             //Render world texture
             WorldTexCreator wtc = new WorldTexCreator(args.WorldRes, MapMinX, MapMaxX, MapMinY, MapMaxY);
             wtc.Begin();
@@ -611,7 +608,7 @@ namespace MGEgui.DistantLand {
         void workerFCreateTextures(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show("A fatal error occurred creating the landscape textures. Distant land setup cannot continue.\n" + e.Error.Message);
+                MessageBox.Show(strings["LandTextureError"] + "\n" + e.Error.Message);
                 ChangingPage = true;
                 Close();
                 return;
@@ -622,12 +619,12 @@ namespace MGEgui.DistantLand {
                 allWarnings.AddRange(warnings);
                 saveWarnings("Textures");
                 if (!SetupFlags["AutoRun"]) {
-                    statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                    statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                     statusWarnings.Enabled = true;
                 }
             }
             if (DEBUG) allWarnings.Add("Landscape textures created");
-            statusText.Text = "Landscape textures created";
+            statusText.Text = strings["LandTextureStatus"];
             backgroundWorker.DoWork -= workerCreateTextures;
             backgroundWorker.RunWorkerCompleted -= workerFCreateTextures;
             if (SetupFlags["AutoRun"]) {
@@ -648,7 +645,7 @@ namespace MGEgui.DistantLand {
         void workerCreateMeshes(object sender, System.ComponentModel.DoWorkEventArgs e) {
             CreateMeshArgs cma = (CreateMeshArgs)e.Argument;
             int count = 0;
-            backgroundWorker.ReportProgress(count, "Creating world mesh");
+            backgroundWorker.ReportProgress(count, strings["LandMeshCreate"]);
             GenerateWorldMesh(cma.MeshDetail, Statics.fn_world);
             // Dispose of map object, high memory use
             map = null;
@@ -659,8 +656,7 @@ namespace MGEgui.DistantLand {
                 LTEX.ReleaseCache();
                 if (e.Error != null) {
                     DumpError(e.Error);
-                    MessageBox.Show("A fatal error occurred creating the landscape meshes. Distant land setup cannot continue.\n" +
-                    e.Error.Message);
+                    MessageBox.Show(strings["LandMeshError"] + "\n" + e.Error.Message);
                     ChangingPage = true;
                     Close();
                     return;
@@ -671,12 +667,12 @@ namespace MGEgui.DistantLand {
                     allWarnings.AddRange(warnings);
                     saveWarnings("Meshes");
                     if (!SetupFlags["AutoRun"]) {
-                        statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                        statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                         statusWarnings.Enabled = true;
                     }
                 }
                 if (DEBUG) allWarnings.Add("Landscape meshes created");
-                statusText.Text = "Landscape meshes created";
+                statusText.Text = strings["LandMeshStatus"];
                 backgroundWorker.DoWork -= workerCreateMeshes;
                 backgroundWorker.RunWorkerCompleted -= workerFCreateMeshes;
                 if (SetupFlags["AutoRun"]) {
@@ -851,7 +847,7 @@ namespace MGEgui.DistantLand {
                 ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList);
                 br.Close();
             }
-            backgroundWorker.ReportProgress(1, "Parsing plugins for used statics");
+            backgroundWorker.ReportProgress(1, strings["StaticsGenerate1"]);
             UsedStaticsList.Add("", new Dictionary<string, StaticReference>());
             foreach (string file in files) {
                 if (DEBUG) allWarnings.Add("Parsing for used statics: " + file);
@@ -865,7 +861,7 @@ namespace MGEgui.DistantLand {
                 br.Close();
             }
             //Generate a list of the NIF files we need to load
-            backgroundWorker.ReportProgress(2, "Generating list of used statics");
+            backgroundWorker.ReportProgress(2, strings["StaticsGenerate2"]);
             List<string> UsedNifList = new List<string>();
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
                 foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
@@ -873,7 +869,7 @@ namespace MGEgui.DistantLand {
                     if (!UsedNifList.Contains(nif_name)) UsedNifList.Add(nif_name);
                 }
             }
-            backgroundWorker.ReportProgress(3, "Processing NIF files");
+            backgroundWorker.ReportProgress(3, strings["StaticsGenerate3"]);
             unsafe {
                 NativeMethods.BeginStaticCreation((IntPtr)DXMain.device.ComPointer, Statics.fn_statmesh);
             }
@@ -911,7 +907,7 @@ namespace MGEgui.DistantLand {
                     } else {
                         try {
                             if (DEBUG) {
-                                statusText.Text = "Processing: " + name;
+                                statusText.Text = strings["StaticsGenerate3Nif"] + name;
                                 allWarnings.Add ("Processing NIF: " + name);
                             }
                             float size = -1;
@@ -956,7 +952,7 @@ namespace MGEgui.DistantLand {
                 }
             }
             foreach (StaticToRemove key in UsedStaticsToRemove) UsedStaticsList[key.worldspace].Remove(key.reference);
-            backgroundWorker.ReportProgress(4, "Writing out placement info");
+            backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
             BinaryWriter bw = new BinaryWriter(File.Create(Statics.fn_usagedata), System.Text.Encoding.Default);
             bw.Write(UsedNifList.Count);
             bw.Write(UsedStaticsList[""].Count);
@@ -978,7 +974,7 @@ namespace MGEgui.DistantLand {
             
             if (!File.Exists(Statics.fn_statmesh)) return;
             setFinishDesc(4);
-            backgroundWorker.ReportProgress(5, "Generating distant textures set");
+            backgroundWorker.ReportProgress(5, strings["StaticsGenerate5"]);
             {
                 StaticTexCreator stc = new StaticTexCreator(args.MipSkip);
                 BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), System.Text.Encoding.Default);
@@ -1016,8 +1012,7 @@ namespace MGEgui.DistantLand {
             if (e != null) {
                 if (e.Error != null) {
                     DumpError(e.Error);
-                    MessageBox.Show("A fatal error occurred creating the distant statics files. Distant land setup cannot continue.\n" +
-                    e.Error.Message);
+                    MessageBox.Show(strings["StaticsError"] + "\n" + e.Error.Message);
                     ChangingPage = true;
                     Close();
                     return;
@@ -1028,12 +1023,12 @@ namespace MGEgui.DistantLand {
                     allWarnings.AddRange(warnings);
                     saveWarnings("Statics");
                     if (!SetupFlags["AutoRun"]) {
-                        statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                        statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                         statusWarnings.Enabled = true;
                     }
                 }
                 if (DEBUG) allWarnings.Add("Distant statics created");
-                statusText.Text = "Distant statics created";
+                statusText.Text = strings["StaticsStatus"];
                 backgroundWorker.DoWork -= workerCreateStatics;
                 backgroundWorker.RunWorkerCompleted -= workerFCreateStatics;
                 SaveStatSettings();
@@ -1043,12 +1038,12 @@ namespace MGEgui.DistantLand {
             if (!DEBUG && SetupFlags["AutoRun"] && allWarnings.Count > 0) {
                 warnings.Clear();
                 warnings.AddRange(allWarnings);
-                statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                 statusWarnings.Enabled = true;
             }
             if (DEBUG) {
                 warnings = new List<string>(allWarnings);
-                statusWarnings.Text = warnings.Count + " Message" + (warnings.Count == 1 ? "" : "s");
+                statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                 statusWarnings.Enabled = true;
                 File.AppendAllText(Statics.fn_dllog, "### DEBUG ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
                 //File.AppendAllText(Statics.fn_dllog, SlimDX.ObjectTable.ReportLeaks());
@@ -1070,9 +1065,9 @@ namespace MGEgui.DistantLand {
                 filecount += di.GetFiles().Length;
                 foreach (FileInfo fi in di.GetFiles()) fileSize += fi.Length;
             }
-            string summary = "Distant land file generation complete\r\n"
-                + "Total files created: " + filecount + "\r\n"
-                + "Total size: " + (fileSize / (1024 * 1024)) + " MB";/* + "\r\n"
+            string summary = strings["Complete"] + "\r\n"
+                + strings["TotalFiles"] + filecount + "\r\n"
+                + strings["TotalSize"] + (fileSize / (1024 * 1024)) + " MB";/* + "\r\n"
                 + "Total processed cells: " + cells + "\r\n"
                 + "Total unique statics: " + (statics - 2);*/
             if (SetupFlags["AutoRun"]) {
@@ -1187,17 +1182,17 @@ namespace MGEgui.DistantLand {
         void workerFExportStatics(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show("A fatal error occurred while exporting a list of statics. The exported list may not be complete.\n" + e.Error.Message);
+                MessageBox.Show(strings["ExportListError"] + "\n" + e.Error.Message);
             }
             statusProgress.Value = 0;
             statusProgress.Style = ProgressBarStyle.Continuous;
             if (e.Result != null) {
                 warnings = (List<string>)e.Result;
                 saveWarnings("Export Statics");
-                statusWarnings.Text = warnings.Count + " Warning" + (warnings.Count == 1 ? "" : "s");
+                statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                 statusWarnings.Enabled = true;
             }
-            statusText.Text = "Statics list exported";
+            statusText.Text = strings["ExportListStatus"];
             backgroundWorker.DoWork -= workerExportStatics;
             backgroundWorker.RunWorkerCompleted -= workerFExportStatics;
             bStatExportStatics.Enabled = true;
@@ -1387,7 +1382,7 @@ namespace MGEgui.DistantLand {
         private void bPlugsRun_Click(object sender, EventArgs e) {
             //Check that at least one mod is selected
             if (clbPlugsModList.CheckedItems.Count == 0) {
-                MessageBox.Show("You haven't selected any plugins", "Error");
+                MessageBox.Show(strings["NoPluginsSelected"], Statics.strings["Error"]);
                 return;
             }
             int i;
@@ -1485,12 +1480,12 @@ namespace MGEgui.DistantLand {
             }
             else tabControl.SelectedIndex = 1;
             if (DEBUG) allWarnings.Add("Loading plugin land data");
-            statusText.Text = "Loading plugin land data";
+            statusText.Text = strings["LoadLandData"];
             statusProgress.Maximum = clbPlugsModList.Items.Count;
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.DoWork += workerLoadPlugins;
             backgroundWorker.RunWorkerCompleted += workerFLoadPlugins;
-            statusWarnings.Text = "No Warnings"; 
+            statusWarnings.Text = strings["NoWarnings"]; 
             statusWarnings.Enabled = false;
             backgroundWorker.RunWorkerAsync();
         }
@@ -1499,7 +1494,7 @@ namespace MGEgui.DistantLand {
 
         private void bTexSkip_Click(object sender, EventArgs e) {
             if (!Exists) {
-                MessageBox.Show("Landscape texture and mesh generation can only be skipped if the files already exist.", "Error");
+                MessageBox.Show(strings["CantSkipLand"], Statics.strings["Error"]);
                 return;
             }
             int VertsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 + (MapSize * 2 + 1) * 128 + 1;
@@ -1517,8 +1512,8 @@ namespace MGEgui.DistantLand {
                 if (DEBUG) allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
             } else lMeshAutoInfo.Visible = false;
             LTEX.ReleaseCache();
-            statusText.Text = "Landscape texture generation skipped";
-            statusWarnings.Text = "No Warnings";
+            statusText.Text = strings["LandTextureSkip"];
+            statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(2);
@@ -1534,7 +1529,7 @@ namespace MGEgui.DistantLand {
 
         private void bTexRun_Click(object sender, EventArgs e) {
             if ((128 << cmbTexWorldResolution.SelectedIndex > DXMain.mCaps.MaxTexSize) || (128 << cmbTexWorldNormalRes.SelectedIndex > DXMain.mCaps.MaxTexSize)) {
-                MessageBox.Show("You have selected a texture resolution above that which your graphics card supports.", "Error");
+                MessageBox.Show(strings["TexResError"], Statics.strings["Error"]);
                 return;
             }
             //Set max mesh detail here
@@ -1557,13 +1552,13 @@ namespace MGEgui.DistantLand {
                 ChangingPage = true;
                 tabControl.SelectedIndex = 2;
             }
-            if (DEBUG) allWarnings.Add("Creating cell textures");
-            statusText.Text = "Creating cell textures";
+            if (DEBUG) allWarnings.Add("Creating world textures");
+            statusText.Text = strings["LandTextureCreate"];
             statusProgress.Maximum = (MapMaxY - MapMinY + 1) * 2;
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.DoWork += workerCreateTextures;
             backgroundWorker.RunWorkerCompleted += workerFCreateTextures;
-            statusWarnings.Text = "No Warnings";
+            statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
             CreateTextureArgs args = new CreateTextureArgs();
             args.WorldRes = 128 << cmbTexWorldResolution.SelectedIndex;
@@ -1589,13 +1584,13 @@ namespace MGEgui.DistantLand {
                 ChangingPage = true;
                 tabControl.SelectedIndex = 3;
             }
-            if (DEBUG) allWarnings.Add("Creating cell meshes");
-            statusText.Text = "Creating cell meshes";
+            if (DEBUG) allWarnings.Add("Creating world meshes");
+            statusText.Text = strings["LandMeshCreate"];
             statusProgress.Maximum = 100;
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.DoWork += workerCreateMeshes;
             backgroundWorker.RunWorkerCompleted += workerFCreateMeshes;
-            statusWarnings.Text = "No Warnings";
+            statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
             CreateMeshArgs cma = new CreateMeshArgs();
             cma.MeshDetail = cmbMeshWorldDetail.SelectedIndex;
@@ -1604,11 +1599,11 @@ namespace MGEgui.DistantLand {
 
         private void bMeshSkip_Click(object sender, EventArgs e) {
             if (!Exists) {
-                MessageBox.Show("Landscape mesh generation can only be skipped if the files already exist.", "Error");
+                MessageBox.Show(strings["CantSkipMesh"], Statics.strings["Error"]);
                 return;
             }
             LTEX.ReleaseCache();
-            statusText.Text = "Landscape mesh generation skipped";
+            statusText.Text = strings["LandMeshSkip"];
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(3);
                 if (SetupFlags["ChkStatics"]) bStatRun_Click(null, null);
@@ -1617,7 +1612,7 @@ namespace MGEgui.DistantLand {
                 if (lbStatOverrideList.Items.Count == 0) lStatOverrideList.Visible = true;
                 ChangingPage = true;
                 tabControl.SelectedIndex = 3;
-                statusWarnings.Text = "No Warnings";
+                statusWarnings.Text = strings["NoWarnings"];
                 statusWarnings.Enabled = false;
                 bStatExportStatics.Enabled = true;
                 bStatRun.Enabled = true;
@@ -1684,7 +1679,7 @@ namespace MGEgui.DistantLand {
             float right = ((float)(MapMaxX * 64 + 64)) * 128.0f;
             float bottom = ((float)MapMinY * 64) * 128.0f;
             float top = ((float)(MapMaxY * 64 + 64)) * 128.0f;
-            backgroundWorker.ReportProgress(10, "Tesselating World Mesh");
+            backgroundWorker.ReportProgress(10, strings["LandTessellating"]);
             float et = 125.0f;
             switch (detail) {
                 case 0:
@@ -1903,21 +1898,21 @@ namespace MGEgui.DistantLand {
 
         private void bStatSkip_Click(object sender, EventArgs e) {
             if (!SetupFlags["AutoRun"]) {
-                if (!StaticsExist && MessageBox.Show("If you skip this step, all distant static features will be unavailable.\n"
-                    + "Skip anyway?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                if (!StaticsExist && MessageBox.Show(strings["ConfirmSkipStatics"],
+                    Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                 ChangingPage = true;
                 tabControl.SelectedIndex = 4;
             }
-            statusText.Text = "Distant static generation skipped";
-            statusWarnings.Text = "No Warnings";
+            statusText.Text = strings["StaticsSkip"];
+            statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
             workerFCreateStatics(null, null);
         }
 
         private void bStatRun_Click(object sender, EventArgs e) {
             if (StaticsExist) {
-                if (!SetupFlags["AutoRun"] && MessageBox.Show("Distant statics files already exist. If you recreate them, the existing files will be deleted.\n"
-                    + "Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                if (!SetupFlags["AutoRun"] && MessageBox.Show(strings["ConfirmRecreate"],
+                    Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) return;
                 Directory.Delete(Statics.fn_statics, true);
             }
             ushort temp = (ushort)udStatMinSize.Value;
@@ -1945,7 +1940,7 @@ namespace MGEgui.DistantLand {
             csa.MipSkip = cmbStatSkipMipLevels.SelectedIndex;
             csa.activators = cbStatActivators.Checked;
             csa.misc = cbStatIncludeMisc.Checked;
-            csa.oldSimplify = cbStatOldSimplification.Checked;
+            csa.oldSimplify = false;
             csa.useOverrideList = cbStatOverrideList.Checked;
             csa.OverrideList = new List<string>();
             csa.OverrideList.Add(Statics.fn_dldefaultoverride);
@@ -1955,13 +1950,13 @@ namespace MGEgui.DistantLand {
                 tabControl.SelectedIndex = 4;
             }
             if (DEBUG) allWarnings.Add("Parsing plugins for possible statics");
-            statusText.Text = "Parsing plugins for possible statics";
+            statusText.Text = strings["StaticsGenerate1"];
             statusProgress.Style = ProgressBarStyle.Continuous;
             statusProgress.Maximum = 6;
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.DoWork += workerCreateStatics;
             backgroundWorker.RunWorkerCompleted += workerFCreateStatics;
-            statusWarnings.Text = "No Warnings";
+            statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
             backgroundWorker.RunWorkerAsync(csa);
         }
@@ -2330,7 +2325,7 @@ namespace MGEgui.DistantLand {
             int extent = 128 << cmbTexWorldResolution.SelectedIndex;
             extent = (extent * extent + 1048576) / 2097152;
             
-            lTexWorldMemUse.Text = "VRAM usage: " + extent.ToString() + "MB";
+            lTexWorldMemUse.Text = strings["VideoMemUse"] + extent.ToString() + "MB";
         }
         
         void cmbTexWorldNormalRes_SelectedIndexChanged(object sender, EventArgs e) {
@@ -2338,7 +2333,7 @@ namespace MGEgui.DistantLand {
             int extent = 128 << cmbTexWorldNormalRes.SelectedIndex;
             extent = (extent * extent + 131072) / 262144;
             
-            lTexNormalMemUse.Text = "VRAM usage: " + extent.ToString() + "MB";
+            lTexNormalMemUse.Text = strings["VideoMemUse"] + extent.ToString() + "MB";
         }
     }
 }

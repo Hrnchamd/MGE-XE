@@ -77,7 +77,6 @@ namespace MGEgui.DistantLand {
         	this.lStatSkipMipDesc = new System.Windows.Forms.Label();
         	this.cbStatActivators = new System.Windows.Forms.CheckBox();
         	this.cbStatIncludeMisc = new System.Windows.Forms.CheckBox();
-        	this.cbStatOldSimplification = new System.Windows.Forms.CheckBox();
         	this.cbStatIntWater = new System.Windows.Forms.CheckBox();
         	this.bStatOverrideList = new System.Windows.Forms.Button();
         	this.lStatOverrideList = new System.Windows.Forms.Label();
@@ -557,7 +556,6 @@ namespace MGEgui.DistantLand {
         	this.tabStat.Controls.Add(this.lStatSkipMipDesc);
         	this.tabStat.Controls.Add(this.cbStatActivators);
         	this.tabStat.Controls.Add(this.cbStatIncludeMisc);
-        	this.tabStat.Controls.Add(this.cbStatOldSimplification);
         	this.tabStat.Controls.Add(this.cbStatIntWater);
         	this.tabStat.Controls.Add(this.bStatOverrideList);
         	this.tabStat.Controls.Add(this.lStatOverrideList);
@@ -577,7 +575,7 @@ namespace MGEgui.DistantLand {
         	// lStatDesc
         	// 
         	this.lStatDesc.AutoSize = true;
-        	this.lStatDesc.Location = new System.Drawing.Point(5, 0);
+        	this.lStatDesc.Location = new System.Drawing.Point(5, 8);
         	this.lStatDesc.Name = "lStatDesc";
         	this.lStatDesc.Size = new System.Drawing.Size(386, 26);
         	this.lStatDesc.TabIndex = 0;
@@ -591,7 +589,7 @@ namespace MGEgui.DistantLand {
         	        	        	0,
         	        	        	0,
         	        	        	0});
-        	this.udStatMinSize.Location = new System.Drawing.Point(8, 36);
+        	this.udStatMinSize.Location = new System.Drawing.Point(8, 44);
         	this.udStatMinSize.Maximum = new decimal(new int[] {
         	        	        	9999,
         	        	        	0,
@@ -610,7 +608,7 @@ namespace MGEgui.DistantLand {
         	// lStatMinSize
         	// 
         	this.lStatMinSize.AutoSize = true;
-        	this.lStatMinSize.Location = new System.Drawing.Point(62, 38);
+        	this.lStatMinSize.Location = new System.Drawing.Point(62, 46);
         	this.lStatMinSize.Name = "lStatMinSize";
         	this.lStatMinSize.Size = new System.Drawing.Size(97, 13);
         	this.lStatMinSize.TabIndex = 0;
@@ -623,7 +621,7 @@ namespace MGEgui.DistantLand {
         	        	        	0,
         	        	        	0,
         	        	        	0});
-        	this.udStatGrassDensity.Location = new System.Drawing.Point(8, 64);
+        	this.udStatGrassDensity.Location = new System.Drawing.Point(8, 70);
         	this.udStatGrassDensity.Name = "udStatGrassDensity";
         	this.udStatGrassDensity.Size = new System.Drawing.Size(48, 20);
         	this.udStatGrassDensity.TabIndex = 1;
@@ -637,7 +635,7 @@ namespace MGEgui.DistantLand {
         	// lStatGrassDensity
         	// 
         	this.lStatGrassDensity.AutoSize = true;
-        	this.lStatGrassDensity.Location = new System.Drawing.Point(62, 66);
+        	this.lStatGrassDensity.Location = new System.Drawing.Point(61, 72);
         	this.lStatGrassDensity.Name = "lStatGrassDensity";
         	this.lStatGrassDensity.Size = new System.Drawing.Size(109, 13);
         	this.lStatGrassDensity.TabIndex = 0;
@@ -653,7 +651,7 @@ namespace MGEgui.DistantLand {
         	        	        	"75%",
         	        	        	"50%",
         	        	        	"25%"});
-        	this.cmbStatSimplifyMeshes.Location = new System.Drawing.Point(8, 92);
+        	this.cmbStatSimplifyMeshes.Location = new System.Drawing.Point(8, 96);
         	this.cmbStatSimplifyMeshes.Name = "cmbStatSimplifyMeshes";
         	this.cmbStatSimplifyMeshes.Size = new System.Drawing.Size(48, 21);
         	this.cmbStatSimplifyMeshes.TabIndex = 2;
@@ -663,7 +661,7 @@ namespace MGEgui.DistantLand {
         	// lStatSimplifyMeshes
         	// 
         	this.lStatSimplifyMeshes.AutoSize = true;
-        	this.lStatSimplifyMeshes.Location = new System.Drawing.Point(62, 95);
+        	this.lStatSimplifyMeshes.Location = new System.Drawing.Point(62, 99);
         	this.lStatSimplifyMeshes.Name = "lStatSimplifyMeshes";
         	this.lStatSimplifyMeshes.Size = new System.Drawing.Size(61, 13);
         	this.lStatSimplifyMeshes.TabIndex = 0;
@@ -678,7 +676,7 @@ namespace MGEgui.DistantLand {
         	        	        	"1",
         	        	        	"2",
         	        	        	"3"});
-        	this.cmbStatSkipMipLevels.Location = new System.Drawing.Point(8, 119);
+        	this.cmbStatSkipMipLevels.Location = new System.Drawing.Point(8, 123);
         	this.cmbStatSkipMipLevels.Name = "cmbStatSkipMipLevels";
         	this.cmbStatSkipMipLevels.Size = new System.Drawing.Size(48, 21);
         	this.cmbStatSkipMipLevels.TabIndex = 3;
@@ -688,7 +686,7 @@ namespace MGEgui.DistantLand {
         	// lStatSkipMipLevels
         	// 
         	this.lStatSkipMipLevels.AutoSize = true;
-        	this.lStatSkipMipLevels.Location = new System.Drawing.Point(62, 122);
+        	this.lStatSkipMipLevels.Location = new System.Drawing.Point(62, 126);
         	this.lStatSkipMipLevels.Name = "lStatSkipMipLevels";
         	this.lStatSkipMipLevels.Size = new System.Drawing.Size(108, 13);
         	this.lStatSkipMipLevels.TabIndex = 0;
@@ -697,18 +695,19 @@ namespace MGEgui.DistantLand {
         	// lStatSkipMipDesc
         	// 
         	this.lStatSkipMipDesc.AutoSize = true;
-        	this.lStatSkipMipDesc.Location = new System.Drawing.Point(5, 147);
+        	this.lStatSkipMipDesc.Location = new System.Drawing.Point(5, 151);
         	this.lStatSkipMipDesc.Name = "lStatSkipMipDesc";
-        	this.lStatSkipMipDesc.Size = new System.Drawing.Size(283, 13);
+        	this.lStatSkipMipDesc.Size = new System.Drawing.Size(158, 26);
         	this.lStatSkipMipDesc.TabIndex = 0;
-        	this.lStatSkipMipDesc.Text = "Skipping mipmap levels reduces the required vram in-game";
+        	this.lStatSkipMipDesc.Text = "Skipping mipmap levels reduces\r\nthe required vram in-game";
         	// 
         	// cbStatActivators
         	// 
         	this.cbStatActivators.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.cbStatActivators.Location = new System.Drawing.Point(236, 37);
+        	this.cbStatActivators.AutoSize = true;
+        	this.cbStatActivators.Location = new System.Drawing.Point(240, 45);
         	this.cbStatActivators.Name = "cbStatActivators";
-        	this.cbStatActivators.Size = new System.Drawing.Size(224, 17);
+        	this.cbStatActivators.Size = new System.Drawing.Size(110, 17);
         	this.cbStatActivators.TabIndex = 4;
         	this.cbStatActivators.Text = "Include activators";
         	this.cbStatActivators.UseVisualStyleBackColor = true;
@@ -716,31 +715,23 @@ namespace MGEgui.DistantLand {
         	// cbStatIncludeMisc
         	// 
         	this.cbStatIncludeMisc.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.cbStatIncludeMisc.Location = new System.Drawing.Point(236, 66);
+        	this.cbStatIncludeMisc.AutoSize = true;
+        	this.cbStatIncludeMisc.Location = new System.Drawing.Point(240, 74);
         	this.cbStatIncludeMisc.Name = "cbStatIncludeMisc";
-        	this.cbStatIncludeMisc.Size = new System.Drawing.Size(224, 17);
+        	this.cbStatIncludeMisc.Size = new System.Drawing.Size(122, 17);
         	this.cbStatIncludeMisc.TabIndex = 5;
         	this.cbStatIncludeMisc.Text = "Include misc objects";
         	this.cbStatIncludeMisc.UseVisualStyleBackColor = true;
         	// 
-        	// cbStatOldSimplification
-        	// 
-        	this.cbStatOldSimplification.AutoSize = true;
-        	this.cbStatOldSimplification.Location = new System.Drawing.Point(8, 169);
-        	this.cbStatOldSimplification.Name = "cbStatOldSimplification";
-        	this.cbStatOldSimplification.Size = new System.Drawing.Size(169, 17);
-        	this.cbStatOldSimplification.TabIndex = 8;
-        	this.cbStatOldSimplification.Text = "Use old simplification algorithm";
-        	this.cbStatOldSimplification.UseVisualStyleBackColor = true;
-        	// 
         	// cbStatIntWater
         	// 
         	this.cbStatIntWater.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.cbStatIntWater.Location = new System.Drawing.Point(236, 117);
+        	this.cbStatIntWater.AutoSize = true;
+        	this.cbStatIntWater.Location = new System.Drawing.Point(240, 125);
         	this.cbStatIntWater.Name = "cbStatIntWater";
-        	this.cbStatIntWater.Size = new System.Drawing.Size(224, 27);
+        	this.cbStatIntWater.Size = new System.Drawing.Size(186, 30);
         	this.cbStatIntWater.TabIndex = 7;
-        	this.cbStatIntWater.Text = "Include interiors with water (heavy)";
+        	this.cbStatIntWater.Text = "Include reflective water in interiors\r\n(increases load time)";
         	this.cbStatIntWater.UseVisualStyleBackColor = true;
         	// 
         	// bStatOverrideList
@@ -781,9 +772,10 @@ namespace MGEgui.DistantLand {
         	// cbStatIntExt
         	// 
         	this.cbStatIntExt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-        	this.cbStatIntExt.Location = new System.Drawing.Point(236, 94);
+        	this.cbStatIntExt.AutoSize = true;
+        	this.cbStatIntExt.Location = new System.Drawing.Point(240, 102);
         	this.cbStatIntExt.Name = "cbStatIntExt";
-        	this.cbStatIntExt.Size = new System.Drawing.Size(224, 17);
+        	this.cbStatIntExt.Size = new System.Drawing.Size(203, 17);
         	this.cbStatIntExt.TabIndex = 6;
         	this.cbStatIntExt.Text = "Include interiors behaving like exterior";
         	this.cbStatIntExt.UseVisualStyleBackColor = true;
@@ -960,7 +952,6 @@ namespace MGEgui.DistantLand {
         private System.Windows.Forms.Label lStatSkipMipDesc;
         private System.Windows.Forms.CheckBox cbStatActivators;
         private System.Windows.Forms.CheckBox cbStatIncludeMisc;
-        private System.Windows.Forms.CheckBox cbStatOldSimplification;
         private System.Windows.Forms.CheckBox cbStatIntWater;
         private System.Windows.Forms.CheckBox cbStatOverrideList;
         private System.Windows.Forms.Button bStatOverrideList;
