@@ -15,6 +15,7 @@ public:
     HRESULT _stdcall SetTransform(D3DTRANSFORMSTATETYPE a, const D3DMATRIX *b);
     HRESULT _stdcall SetMaterial(const D3DMATERIAL8 *a);
     HRESULT _stdcall SetLight(DWORD a, const D3DLIGHT8 *b);
+    HRESULT _stdcall LightEnable(DWORD a, BOOL b);
     HRESULT _stdcall SetRenderState(D3DRENDERSTATETYPE a, DWORD b);
     HRESULT _stdcall SetTextureStageState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c);
     HRESULT _stdcall SetTexture(DWORD a, IDirect3DBaseTexture8 *b);

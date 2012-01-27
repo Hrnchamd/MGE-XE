@@ -1,27 +1,11 @@
 
 #include "quadtree.h"
+#include "ffeshader.h"
 #include <string>
+#include <vector>
 #include <tr1/unordered_map>
 
 using namespace std::tr1;
-
-struct RenderedState
-{
-    IDirect3DTexture9 *texture;
-    IDirect3DVertexBuffer9 *vb;
-    UINT vbOffset, vbStride;
-    IDirect3DIndexBuffer9 *ib;
-    DWORD ibBase;
-    DWORD fvf;
-    DWORD zWrite, cullMode;
-    DWORD vertexBlendState;
-    D3DXMATRIX worldTransforms[4];
-    DWORD blendEnable, srcBlend, destBlend;
-    DWORD alphaTest, alphaFunc, alphaRef;
-
-    D3DPRIMITIVETYPE primType;
-    UINT baseIndex, minIndex, vertCount, startIndex, primCount;
-};
 
 struct MGEShader;
 
@@ -108,6 +92,7 @@ public:
     static D3DXHANDLE ehSunPos, ehSunVis;
     static D3DXHANDLE ehFogStart, ehFogRange;
     static D3DXHANDLE ehFogNearStart, ehFogNearRange;
+    static D3DXHANDLE ehDissolveRange;
     static D3DXHANDLE ehWindVec;
     static D3DXHANDLE ehNiceWeather;
     static D3DXHANDLE ehTime;
@@ -133,11 +118,11 @@ public:
 
     static void setView(const D3DMATRIX *m);
     static void setProjection(D3DMATRIX *proj);
-    static void setHorizonColour(const D3DCOLOR c);
-    static void setAmbientColour(const D3DCOLOR c);
+    static void setHorizonColour(const RGBVECTOR& c);
+    static void setAmbientColour(const RGBVECTOR& c);
     static void setSunLight(const D3DLIGHT8 *s);
     static void adjustFog();
-    static bool inspectIndexedPrimitive(int sceneCount, const RenderedState* rs);
+    static bool inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
 
     static void renderSky();
     static void renderStage0();

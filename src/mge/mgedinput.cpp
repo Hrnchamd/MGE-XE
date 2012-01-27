@@ -137,11 +137,12 @@ void * CreateInputWrapper(void *real)
     FakeFuncs[GF_HaggleLess1000] = MacroFunctions::HaggleLess1000;
     FakeFuncs[GF_HaggleLess10000] = MacroFunctions::HaggleLess10000;
 
-    FakeFuncs[GF_HWShader] = MacroFunctions::ToggleShaders;
+    FakeFuncs[GF_Shader] = MacroFunctions::ToggleShaders;
     FakeFuncs[GF_ToggleDL] = MacroFunctions::ToggleDistantLand;
-    FakeFuncs[GF_ToggleDS] = MacroFunctions::ToggleShadows;
+    FakeFuncs[GF_ToggleShadows] = MacroFunctions::ToggleShadows;
     FakeFuncs[GF_ToggleGrass] = MacroFunctions::ToggleGrass;
     FakeFuncs[GF_ToggleMwMgeBlending] = MacroFunctions::ToggleBlending;
+    FakeFuncs[GF_ToggleLightingMode] = MacroFunctions::ToggleLightingMode;
 
     FakeFuncs[GF_MoveForward3PC] = MacroFunctions::MoveForward3PCam;
     FakeFuncs[GF_MoveBack3PC] = MacroFunctions::MoveBack3PCam;
@@ -381,10 +382,6 @@ public:
                         // Activate on keydown only, except for certain functions which should repeat
                         if((!KEYDOWN(LastBytes,key))||(FakeKeys[key].Graphics.function==GF_IncreaseZoom||
                                                         FakeKeys[key].Graphics.function==GF_DecreaseZoom||
-                                                        FakeKeys[key].Graphics.function==GF_IncreaseView||
-                                                        FakeKeys[key].Graphics.function==GF_DecreaseView||
-                                                        FakeKeys[key].Graphics.function==GF_IncreaseAI||
-                                                        FakeKeys[key].Graphics.function==GF_DecreaseAI||
                                                         FakeKeys[key].Graphics.function==GF_IncreaseFOV||
                                                         FakeKeys[key].Graphics.function==GF_DecreaseFOV))
                         {

@@ -141,7 +141,6 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     float dist = length(EyePos.xyz - OUT.pos.xyz);
 
     float addheight = waveHeight * (lerp(height, height2, saturate(dist/8000)) - 0.5) * saturate(1 - dist/6400) * saturate(dist/200);
-    
     OUT.pos.z += addheight;
 
     // Match bias in distant land projection

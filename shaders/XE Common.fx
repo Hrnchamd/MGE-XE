@@ -9,24 +9,24 @@
 // Uniform variables
 
 shared float2 rcpres;
-shared Matrix view, proj, world;
-shared Matrix shadowviewproj[2];
-shared int vertexblendstate;
-shared Matrix vertexblendpalette[4];
-shared float alpharef;
+shared matrix view, proj, world;
+shared matrix vertexblendpalette[4];
+shared matrix shadowviewproj[2];
 shared bool hasalpha, hasbones;
+shared float alpharef;
+shared int vertexblendstate;
 
 shared float3 EyePos, FootPos;
 shared float3 SunVec, SunCol, SunAmb;
 shared float3 SkyCol, FogCol1, FogCol2;
 shared float FogStart, FogRange;
 shared float nearFogStart, nearFogRange;
+shared float dissolveRange;
 shared float3 SunPos;
 shared float SunVis;
 shared float2 WindVec;
 shared float niceWeather;
 shared float time;
-
 
 
 //------------------------------------------------------------
@@ -39,7 +39,6 @@ sampler sampNormals = sampler_state { texture = <tex1>; minfilter = linear; magf
 sampler sampDetail = sampler_state { texture = <tex2>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu = wrap; addressv = wrap; };
 sampler sampWater3d = sampler_state { texture = <tex1>; minfilter = linear; magfilter = linear; mipfilter = none; addressu = wrap; addressv = wrap; addressw = wrap; };
 sampler sampDepth = sampler_state { texture = <tex3>; minfilter = linear; magfilter = linear; mipfilter = none; addressu = clamp; addressv = clamp; };
-
 
 
 //------------------------------------------------------------
@@ -69,7 +68,7 @@ struct StatVertOut
 {
     float4 pos : POSITION;
     float4 color : COLOR0;
-    float2 texcoords : TEXCOORD0;
+    float3 texcoords_range : TEXCOORD0;
     float4 fog : TEXCOORD1;
 };
 
@@ -114,7 +113,7 @@ float fogMWScalar(float dist)
 
 float fogScalar(float dist)
 {
-    return saturate((FogRange - dist) / (FogRange - FogStart));
+    return saturate((nearFogRange - dist) / (nearFogRange - nearFogStart));
 }
 
 float fogMWScalar(float dist)

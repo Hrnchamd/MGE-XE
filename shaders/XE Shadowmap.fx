@@ -14,8 +14,8 @@
 struct ShadowVertOut
 {
     float4 pos : POSITION;
-    float depth : TEXCOORD0;
-    float2 texcoords : TEXCOORD1;
+    float2 texcoords : TEXCOORD0;
+    float depth : TEXCOORD1;
 };
 
 ShadowVertOut ShadowVS (StatVertIn IN)

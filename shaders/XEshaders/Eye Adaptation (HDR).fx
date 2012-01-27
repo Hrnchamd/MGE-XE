@@ -7,7 +7,7 @@
 
 
 float4 HDR;
-static float exposure = (1 + 1.3 * (0.32 - HDR.x)) * sqrt(HDR.y/HDR.x);
+static float exposure = (1 + 1.4 * (0.32 - HDR.x)) * sqrt(HDR.y/HDR.x);
 
 texture lastshader;
 sampler s0 = sampler_state { texture = <lastshader>; minfilter = none; magfilter = none; };
@@ -21,10 +21,10 @@ float4 tone(float2 tex : TEXCOORD) : COLOR0
     float3 g = exposure * c + (1-exposure) * pow(c, 8);
 
     // Film response toe/knee contrast
-    // 0.73546x^4 + -2.14391x^3 + 1.78635x^2 + 0.66211x
-    g = (((0.73546 * g + -2.14391) * g + 1.78635) * g + 0.66211) * g;
+    // 0.727408x^4 - 2.05477x^3 + 1.63747x^2 + 0.712032x
+    g = (((0.727408 * g + -2.05477) * g + 1.63747) * g + 0.712032) * g;
 
-    // exposure meter 
+    // Exposure meter 
     //if(tex.x < HDR.x && tex.y > 0.9) g = lerp(g, 1, 0.4);
     return float4(saturate(g), 1);
 }

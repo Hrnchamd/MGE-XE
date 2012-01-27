@@ -103,6 +103,7 @@ D3DXHANDLE DistantLand::ehFogStart;
 D3DXHANDLE DistantLand::ehFogRange;
 D3DXHANDLE DistantLand::ehFogNearStart;
 D3DXHANDLE DistantLand::ehFogNearRange;
+D3DXHANDLE DistantLand::ehDissolveRange;
 D3DXHANDLE DistantLand::ehWindVec;
 D3DXHANDLE DistantLand::ehNiceWeather;
 D3DXHANDLE DistantLand::ehTime;
@@ -178,8 +179,12 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
     if(!initShader())
         return false;
 
+    LOG::logline(">> Distant Land init fixed function emu");
+    if(!FixedFunctionShader::init(device, effectPool))
+        return false;
+
     LOG::logline(">> Distant Land init post shaders");
-    if(!PostShaders::init(realDevice))
+    if(!PostShaders::init(device))
         return false;
 
     LOG::logline(">> Distant Land init depth");
@@ -286,6 +291,7 @@ bool DistantLand::initShader()
     ehFogRange = effect->GetParameterByName(0, "FogRange");
     ehFogNearStart = effect->GetParameterByName(0, "nearFogStart");
     ehFogNearRange = effect->GetParameterByName(0, "nearFogRange");
+    ehDissolveRange = effect->GetParameterByName(0, "dissolveRange");
     ehWindVec = effect->GetParameterByName(0, "WindVec");
     ehNiceWeather = effect->GetParameterByName(0, "niceWeather");
     ehTime = effect->GetParameterByName(0, "time");
@@ -811,10 +817,10 @@ bool DistantLand::initDistantStaticsBVH()
         float box_size = std::max(max.x - min.x, max.y - min.y);
         D3DXVECTOR2 box_center = 0.5 * (max + min);
 
-        NQTR->SetBoxSize(box_size); NQTR->SetBoxCenter(box_center);
-        FQTR->SetBoxSize(box_size); FQTR->SetBoxCenter(box_center);
-        VFQTR->SetBoxSize(box_size); VFQTR->SetBoxCenter(box_center);
-        GQTR->SetBoxSize(box_size); GQTR->SetBoxCenter(box_center);
+        NQTR->SetBox(box_size, box_center);
+        FQTR->SetBox(box_size, box_center);
+        VFQTR->SetBox(box_size, box_center);
+        GQTR->SetBox(box_size, box_center);
 
         for(i = uds->begin(); i != uds->end(); ++i)
         {
@@ -845,6 +851,8 @@ bool DistantLand::initDistantStaticsBVH()
                     targetQTR = FQTR;
                 else if(stat->type == STATIC_VERY_FAR)
                     targetQTR = VFQTR;
+                else
+                    continue;
 
                 targetQTR->AddMesh(
                     i->GetBoundingSphere(stat->subsets[s]),
@@ -965,8 +973,7 @@ bool DistantLand::initLandscape()
             qtmax.y = std::max(qtmax.y, i->sphere.center.y + i->sphere.radius);
         }
 
-        LandQuadTree.SetBoxSize(std::max(qtmax.x - qtmin.x, qtmax.y - qtmin.y));
-        LandQuadTree.SetBoxCenter(0.5 * (qtmax + qtmin));
+        LandQuadTree.SetBox(std::max(qtmax.x - qtmin.x, qtmax.y - qtmin.y), 0.5 * (qtmax + qtmin));
 
         // Add meshes to the quadtree
         for(i = meshesLand.begin(); i != meshesLand.end(); ++i)
@@ -1011,6 +1018,7 @@ void DistantLand::release()
     LOG::logline(">> Distant Land release");
 
     PostShaders::release();
+    FixedFunctionShader::release();
 
     unordered_map<string, WorldSpace>::iterator iWS;
     for(iWS = mapWorldSpaces.begin(); iWS != mapWorldSpaces.end(); ++iWS)
@@ -1037,7 +1045,7 @@ void DistantLand::release()
     {
         iM->vb->Release();
         iM->ib->Release();
-        // A common texture is used and is released below
+        // A shared texture is used for land, and is released below
     }
     meshCollectionLand.clear();
 

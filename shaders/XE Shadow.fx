@@ -69,13 +69,13 @@ RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
     {
         worldpos = skin(IN.pos, IN.blendweights);
         normal = skin(normal, IN.blendweights);
+        normal = normalize(normal);
     }
     else
     {
         worldpos = mul(IN.pos, vertexblendpalette[0]);
         normal = mul(normal, vertexblendpalette[0]);
     }
-    normal = normalize(normal);
     
     // Transform and depth bias to mitigate difference between FFP and VS
     OUT.pos = mul(worldpos, view);

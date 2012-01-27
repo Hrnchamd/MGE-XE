@@ -3,15 +3,14 @@
 // High-quality version, full resolution, 16 sample taps
 
 // Compatibility: MGE XE 0, fully working
-
+int mgeflags = 8;
 
 // **
 // ** ADJUSTABLE VARIABLES
 
-#define SM ps_3_0 // Shader model: ps_3_0, ps_2_b, ps_2_a
-#define N 16 // Samples: 48, 32, 16, 10, 6. More means precision and performance hit. ps_2_x supports 16 without rotation / 10 with.
+#define N 16 // Samples: 48, 32, 16, 10, 6. More means precision and performance hit.
 #define BLUR // Enable AO blur.
-//#define ROTATE // Enable random rotation. Generally more precise, but might give noise or other artifacts.
+#define ROTATE // Enable random rotation. Generally more precise, but might give noise or other artifacts.
 //#define DEBUG // Enable debug mode: AO term only.
 
 static const float R = 15.0; // Max ray radius, world units
@@ -22,8 +21,6 @@ static const float blur_radius = 4.0; // In pixels
 
 // ** END OF
 // **
-
-int mgeflags = 8;
 
 float2 rcpres;
 float3 eyepos;
@@ -50,9 +47,8 @@ static const float eps = 1e-6;
 static const float sky = 1e6;
 
 #ifdef ROTATE
-string texname1="noise8q.tga";
-texture tex1;
-sampler s3 = sampler_state {texture=<tex1>; AddressU=Wrap; AddressV=Wrap;};
+texture tex1 < string src="noise8q.tga"; >;
+sampler s3 = sampler_state { texture=<tex1>; AddressU=Wrap; AddressV=Wrap; };
 #endif
 
 
@@ -265,17 +261,17 @@ float4 combine(float2 tex : TEXCOORD0) : COLOR
 
 technique T0 < string MGEinterface="MGE XE 0"; >
 {
-    pass { PixelShader = compile SM ssao(); }
+    pass { PixelShader = compile ps_3_0 ssao(); }
 #ifdef BLUR
-    pass { PixelShader = compile SM smartblur(); }
+    pass { PixelShader = compile ps_3_0 smartblur(); }
   #ifdef ROTATE //needs 2 passes
-    pass { PixelShader = compile SM smartblur(); }
+    pass { PixelShader = compile ps_3_0 smartblur(); }
   #endif
 #endif
 
 #ifdef DEBUG
-    pass { PixelShader = compile SM show(); }
+    pass { PixelShader = compile ps_3_0 show(); }
 #else
-    pass { PixelShader = compile SM combine(); }
+    pass { PixelShader = compile ps_3_0 combine(); }
 #endif
 }

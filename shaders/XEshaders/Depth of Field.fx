@@ -4,7 +4,13 @@
 
 // Compatibility: MGE XE 0, fully working
 
+float2 rcpres;
+float fov;
 
+static float t =  2.0 * tan(radians(0.5 * fov));
+static float k = 0.00001;
+static float unit2m = 0.0142;
+static float eps = 0.000001;
 
 // **
 // ** ADJUSTABLE VARIABLES
@@ -26,20 +32,10 @@ static const float blur_radius = 0.283; // base blur radius;
 // higher values mean more blur when out of DoF and shorter DoF
 static const float blur_falloff = 2.0; // More means more blur and less respect for edges
 static const float R = 6.0; // maximum blur radius in pixels
+static float Rfixed = R / (1280 * rcpres.x); // standardize blur across resolutions
 
 // ** END OF
 // **
-
-
-float2 rcpres;
-float fov;
-
-static float t =  2.0 * tan(radians(0.5 * fov));
-static float k = 0.00001;
-static float unit2m = 0.0142;
-static float eps = 0.000001;
-static float Rfixed = R / (1280 * rcpres.x); // standardize blur across resolutions
-
 
 
 texture lastshader;
@@ -51,13 +47,10 @@ sampler s1 = sampler_state { texture=<depthframe>; AddressU=Clamp; AddressV=Clam
 sampler s3 = sampler_state { texture=<lastpass>; AddressU=Mirror; AddressV=Mirror; MagFilter=Linear; MinFilter=Linear; };
 
 
-
 #ifdef ROTATE
-string texname1 = "noise64.tga";
-texture tex1;
+texture tex1 < string src="noise64.tga"; >;
 sampler s2 = sampler_state { texture=<tex1>; AddressU=Wrap; AddressV=Wrap; };
 #endif
-
 
 
 #define M 12
@@ -79,7 +72,7 @@ static float2 taps[M] =
 
 
 
-float4 dof(in float2 tex : TEXCOORD) : COLOR0
+float4 dof(float2 tex : TEXCOORD) : COLOR0
 {
     float s = tex2D(s1, float2(0.5, 0.5)).r * unit2m;
 
@@ -90,20 +83,19 @@ float4 dof(in float2 tex : TEXCOORD) : COLOR0
 
     float fpf = clamp(1 / s + fr, fp, fp + fpa);
     float c = pupil * (fr - fpf + 1 / z) / fr / k * blur_radius;
-    c = min(abs(c), R) / R * savemyhands;
+    c = min(abs(c / Rfixed), 1) * savemyhands;
 
     return float4(tex2D(s0, tex).rgb, c);
 }
 
-float4 smartblur(in float2 tex : TEXCOORD) : COLOR0
+float4 smartblur(float2 tex : TEXCOORD) : COLOR0
 {
-
-#ifdef ROTATE
-    float2 rnd = normalize(tex2D(s2, tex / rcpres / 64).xy * 2 + float2(1, 1));
-#endif
-
     float4 color = tex2D(s3, tex);
     float c = color.a * Rfixed;
+
+#ifdef ROTATE
+    float2 rnd = normalize(tex2D(s2, tex / rcpres / 64).xy * 2 + 1);
+#endif
 
     float amount = 1.0;
     for(int i = 0; i < M; i++)

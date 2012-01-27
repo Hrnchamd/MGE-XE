@@ -1,5 +1,3 @@
-#ifndef _QUAD_TREE_NODE_H_
-#define _QUAD_TREE_NODE_H_
 
 #include "DLMath.h"
 #include "MemoryPool.h"
@@ -48,7 +46,6 @@ struct QuadTreeMesh {
 
 class VisibleSet {
 public:
-    void AddMesh(const QuadTreeMesh *mesh);
     void RemoveAll();
     VisibleSet() {}
     ~VisibleSet() {}
@@ -74,9 +71,6 @@ public:
 class QuadTree;
 
 struct QuadTreeNode {
-    static const size_t QUADTREE_MAX_DEPTH = 6;
-    static const float QUADTREE_MIN_DIST;
-
     QuadTree *m_owner;
     QuadTreeNode *children[4];
     float box_size;
@@ -87,9 +81,9 @@ struct QuadTreeNode {
     QuadTreeNode(QuadTree *owner);
     ~QuadTreeNode();
 
-    void GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside = false);
     void GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set, bool inside = false);
-    void AddMesh(QuadTreeMesh *new_mesh, int depth = QUADTREE_MAX_DEPTH);
+    void GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside = false);
+    void AddMesh(QuadTreeMesh *new_mesh, int depth);
 
     void PushDown(QuadTreeMesh *new_mesh, int depth);
     bool Optimize();
@@ -117,15 +111,15 @@ public:
     );
     bool Optimize();
     void Clear();
-    void GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set);
     void GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set);
-    void SetBoxSize(float size);
-    void SetBoxCenter(const D3DXVECTOR2& center);
+    void GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set);
+    void SetBox(float size, const D3DXVECTOR2& center);
     void CalcVolume();
 
     QuadTreeNode *m_root_node;
     MemoryPool m_node_pool;
     MemoryPool m_mesh_pool;
+
 protected:
     friend struct QuadTreeNode;
     QuadTreeNode *CreateNode();
@@ -140,9 +134,7 @@ protected:
         IDirect3DIndexBuffer9 *iBuffer
     );
 private:
-    //Disallow copy and assignment
+    // Disallow copy and assignment
     QuadTree& operator=(QuadTree&);
     QuadTree(QuadTree&);
 };
-
-#endif

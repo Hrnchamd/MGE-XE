@@ -52,7 +52,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 
     if(mwBridge->IsExterior() && (Configuration.MGEFlags & REFLECTIVE_WATER))
     {
-        // Draw land reflection
+        // Draw land reflection, with opposite culling
         effect->BeginPass(PASS_RENDERLANDREFL);
         device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
         renderDistantLand(effect, &reflView, &reflProj);
@@ -61,8 +61,9 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 
     if(isDistantCell() && (Configuration.MGEFlags & REFLECT_NEAR))
     {
-        // Draw statics reflection
+        // Draw statics reflection, with opposite culling and no dissolve
         DWORD p = (mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z)) ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
+        effect->SetFloat(ehDissolveRange, 0);
         effect->BeginPass(p);
         device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
         renderReflectedStatics(&reflView, &reflProj);

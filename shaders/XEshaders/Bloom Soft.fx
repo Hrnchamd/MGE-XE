@@ -30,7 +30,7 @@
 
 static const float bloom_mult_global = 0.25f; // The overall multiplier for bloom. Effects all areas.
 static const float bloom_mult_uwater = 1.2f; // Underwater mutliplier for bloom. Only takes effect when the camera is underwater.
-static const float bloom_mult_inside = 1.3f; // Interior multiplier for bloom. Can combine with bloom_mult_uwater when both are true.
+static const float bloom_mult_inside = 1.1f; // Interior multiplier for bloom. Can combine with bloom_mult_uwater when both are true.
 static const float bloom_mult_outside = 0.8f; // Exterior multiplier for bloom. Can combine with bloom_mult_uwater when both are true.
 
 static const float bloom_cutoff = 0.72f; // Effects the strength and focus of highlights (higher produces softer, weaker highlights).

@@ -5,21 +5,21 @@ int mgeflags = 9;
 
 // tweakables
 #define N 20                     // Number of iterations
-#define raysunradius 0.25         // Radius around sun center that emits rays
-#define raystrength 1.7         // Brightness of sun rays
-#define rayfalloff 1.10         // Falloff of sun rays
-#define rayfalloffconst 0.125     // Increase to increase minimum 'length' of sun rays
-#define raysunfalloff 1.5         // Ray strength falloff exponent
-#define centervis 0.3             // Ray opacity at center of sun
-#define sunrayocclude 0.75         // How much sun rays will 'overwrite' original image
-#define brightnessadd 1.25         // Additional sun ray color brightness for very bright rays
-#define offscreenrange 0.5         // Maximum offscreen position of sun before rays vanish
-#define sundisc 1                 // Draws additional sun disc. 0 disables
-#define sundiscradius 0.025       // Radius of sun disc
+#define raysunradius 0.25        // Radius around sun center that emits rays
+#define raystrength 1.7          // Brightness of sun rays
+#define rayfalloff 1.10          // Falloff of sun rays
+#define rayfalloffconst 0.125    // Increase to increase minimum 'length' of sun rays
+#define raysunfalloff 1.5        // Ray strength falloff exponent
+#define centervis 0.3            // Ray opacity at center of sun
+#define sunrayocclude 0.75       // How much sun rays will 'overwrite' original image
+#define brightnessadd 1.25       // Additional sun ray color brightness for very bright rays
+#define offscreenrange 0.5       // Maximum offscreen position of sun before rays vanish
+#define sundisc 1                // Draws additional sun disc. 0 disables
+#define sundiscradius 0.025      // Radius of sun disc
 #define sundiscbrightness 1.4    // Brightness of sun disc
 #define sundiscdesaturate 0.4    // Desaturation of sun disc color, negative values for more saturation
-#define sundiscocclude 0.75        // How much the sun disc will 'overwrite' original image
-#define horizonclipping 1         // Prevents the sun disc from being drawn below the horizon. Might cause an FPS hit.
+#define sundiscocclude 0.75      // How much the sun disc will 'overwrite' original image
+#define horizonclipping 1        // Prevents the sun disc from being drawn below the horizon. Might cause an FPS hit.
 // end
 
 texture depthframe;
@@ -207,16 +207,13 @@ float4 alpha( float2 Tex : TEXCOORD0 ) : COLOR0
 
 technique T0 < string MGEinterface="MGE XE 0"; bool disableSunglare = true; >
 {
-    pass {PixelShader = compile ps_2_0 stretch();}
-    pass {PixelShader = compile ps_2_0 blurRHalf();}
-    
-#if N > 24
+    pass {PixelShader = compile ps_3_0 stretch();}
+    pass {PixelShader = compile ps_3_0 blurRHalf();}
+
     pass {PixelShader = compile ps_3_0 rays();}
-#else
-    pass {PixelShader = compile ps_2_b rays();}
-#endif
-    //pass {PixelShader = compile ps_2_0 blurR();}
-    pass {PixelShader = compile ps_2_0 blurT();}
-    pass {PixelShader = compile ps_2_0 combine();}
-    //pass {PixelShader = compile ps_2_0 alpha();}
+    //pass {PixelShader = compile ps_3_0 blurR();}
+    pass {PixelShader = compile ps_3_0 blurT();}
+    
+    pass {PixelShader = compile ps_3_0 combine();}
+    //pass {PixelShader = compile ps_3_0 alpha();}
 }

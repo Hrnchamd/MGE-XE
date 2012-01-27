@@ -109,6 +109,9 @@ public:
     void markWaterNode(float k);
     void disableScreenshotFunc();
     void disableSunglare();
+    bool isIntroDone();
+    bool isLoadingSplash();
+    void redirectMenuBackground(void (_stdcall *func)(int));
 
     void *getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);

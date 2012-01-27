@@ -33,7 +33,7 @@ MWBridge* MWBridge::Inst()
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::InitStaticMemory ()
+void MWBridge::InitStaticMemory()
 {
     // Bloodmoon v. 1080
     eNoMusicBreak = 0x00403659;
@@ -527,6 +527,7 @@ bool MWBridge::WaterReflects(float eyeZ)
 
 //-----------------------------------------------------------------------------
 
+// simulationTime - Total real time elapsed this session, does not advance in menus
 float MWBridge::simulationTime()
 {
     assert(m_loaded);
@@ -535,6 +536,7 @@ float MWBridge::simulationTime()
 
 //-----------------------------------------------------------------------------
 
+// frameTime - Duration of last frame in seconds
 float MWBridge::frameTime()
 {
     assert(m_loaded);
@@ -767,13 +769,11 @@ float MWBridge::WaterLevel()
 void MWBridge::HaggleMore(DWORD num)
 {
     assert(m_loaded);
- typedef void (_stdcall *mmVolumeProc)(float);
-typedef void (_stdcall *mmHaggleProc)();
-   mmHaggleProc proc = (mmHaggleProc)eHaggleMore;
+    mmHaggleProc proc = (mmHaggleProc)eHaggleMore;
     num -= 1;
     if (num != 0)
     {
-        long d = (long)read_dword(0x7D287C);
+        int d = (int)read_dword(0x7D287C);
         if (d <= 0)
             d -= num;
         else
@@ -790,10 +790,10 @@ void MWBridge::HaggleLess(DWORD num)
 {
     assert(m_loaded);
     mmHaggleProc proc = (mmHaggleProc)eHaggleLess;
-    long d =( long)read_dword(0x7D287C);
     num -=1;
     if (num != 0)
     {
+        int d = (int)read_dword(0x7D287C);
         if (d <= 0)
             d += num;
         else
@@ -907,6 +907,7 @@ bool MWBridge::IsPlayerWaiting()   //wait\sleep menu
 
 //-----------------------------------------------------------------------------
 
+// getPlayerMACP - Gets main game object holding the player state
 DWORD MWBridge::getPlayerMACP()
 {
     DWORD blah0 = read_dword(eMaster1 + 0x5c);
@@ -953,6 +954,7 @@ DWORD MWBridge::getPlayerTarget()
 
 //-----------------------------------------------------------------------------
 
+// getPlayerWeapon - Gets player weapon type
 int MWBridge::getPlayerWeapon()
 {
     DWORD macp = getPlayerMACP();
@@ -968,6 +970,7 @@ int MWBridge::getPlayerWeapon()
 
 //-----------------------------------------------------------------------------
 
+// isPlayerCasting - Tests is the player is currently casting
 bool MWBridge::isPlayerCasting()
 {
     DWORD macp = getPlayerMACP();
@@ -980,6 +983,7 @@ bool MWBridge::isPlayerCasting()
 
 //-----------------------------------------------------------------------------
 
+// isPlayerAimingWeapon - Tests if the player is in the drawing stage of attacking with a ranged weapon
 bool MWBridge::isPlayerAimingWeapon()
 {
     DWORD macp = getPlayerMACP();
@@ -999,6 +1003,7 @@ bool MWBridge::isPlayerAimingWeapon()
 
 //-----------------------------------------------------------------------------
 
+// toggleRipples - Turns off ripple generation from all sources
 void MWBridge::toggleRipples(BOOL enabled)
 {
     DWORD addr = eRipplesSwitch;
@@ -1013,6 +1018,8 @@ void MWBridge::toggleRipples(BOOL enabled)
 
 //-----------------------------------------------------------------------------
 
+// markWaterNode
+// Edits the water material to set (normally unused) specular power to a recognizable value
 void MWBridge::markWaterNode(float k)
 {
     // Get water node
@@ -1035,6 +1042,8 @@ void MWBridge::markWaterNode(float k)
 
 //-----------------------------------------------------------------------------
 
+// disableScreenshotFunc
+// Stops Morrowind from taking its own screenshots, or displaying an error message, when PrtScr is pressed
 void MWBridge::disableScreenshotFunc()
 {
     DWORD addr = 0x41b08a;
@@ -1048,20 +1057,55 @@ void MWBridge::disableScreenshotFunc()
 
 //-----------------------------------------------------------------------------
 
+// disableSunglare - Turns off the sunglare billboard and fullscreen glare that appears when looking at the sun
 void MWBridge::disableSunglare()
 {
     DWORD addr = 0x4404fb;
 
     // Replace jz short with nop (74 xx -> 90 90)
     DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 8, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
     write_byte(addr, 0x90);
     write_byte(addr+1, 0x90);
-    VirtualProtect((LPVOID)addr, 8, oldProtect, &oldProtect);
+    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
 
+// isIntroDone - Tests if both intro movies are finished, and main menu is about to display
+bool MWBridge::isIntroDone()
+{
+    return read_byte(0x7d5005) != 0;
+}
+
+//-----------------------------------------------------------------------------
+
+// isLoadingSplash - Tests if a splash screen is shown (as a proxy for post-main menu loading)
+bool MWBridge::isLoadingSplash()
+{
+    return read_byte(0x7d4294) != 0;
+}
+
+//-----------------------------------------------------------------------------
+
+// redirectMenuBackground - Redirects splash screen scenegraph draw call to another function
+void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
+{
+    DWORD addr = 0x04589fb;
+
+    // Reset to original if null is passed
+    DWORD calladdr = func ? (DWORD)func : 0x6cc7b0;
+
+    // Replace jump address
+    DWORD oldProtect;
+    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    write_dword(addr, calladdr - (addr+4));
+    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
+}
+
+//-----------------------------------------------------------------------------
+
+// getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
 void * MWBridge::getGMSTPointer(DWORD id)
 {
     DWORD addr = read_dword(eEnviro);
@@ -1073,9 +1117,10 @@ void * MWBridge::getGMSTPointer(DWORD id)
 
 //-----------------------------------------------------------------------------
 
+// getKeybindCode - Gets the scancode that an action is bound to
+// action -> the keybind order in the Morrowind controls menu
 DWORD MWBridge::getKeybindCode(DWORD action)
 {
-    // action -> the keybind order in the Morrowind controls menu
     DWORD addr = read_dword(eMaster1 + 0x4c) + 0x1b3c;
     return read_dword(addr + 16*action);
 }

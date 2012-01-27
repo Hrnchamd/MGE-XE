@@ -4,7 +4,6 @@
 #include "distantland.h"
 #include "distantshader.h"
 #include "support/log.h"
-#include <map>
 
 
 
@@ -26,7 +25,7 @@ void DistantLand::cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj)
     // Cull and sort
 	ViewFrustum range_frustum(&ds_viewproj);
     visGrass.RemoveAll();
-    currentWorldSpace->GrassStatics->GetVisibleMeshes(range_frustum, visGrass);
+    currentWorldSpace->GrassStatics->GetVisibleMeshesCoarse(range_frustum, visGrass);
 	visGrass.SortByState();
 
     buildGrassInstanceVB();

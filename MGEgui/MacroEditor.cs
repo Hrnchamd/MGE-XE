@@ -1229,46 +1229,12 @@ namespace MGEgui {
         	// cbFunction
         	// 
         	this.cbFunction.Items.AddRange(new object[] {
-        	        	        	"Take screenshot",
-        	        	        	"Toggle shaders",
-        	        	        	"Toggle fps counter",
-        	        	        	"Toggle crosshair",
-        	        	        	"Toggle zoom",
-        	        	        	"Increase zoom",
-        	        	        	"Decrease zoom",
-        	        	        	"Toggle messages",
-        	        	        	"Show last message",
-        	        	        	"Increase view range",
-        	        	        	"Decrease view range",
-        	        	        	"Next music track",
-        	        	        	"Disable music",
-        	        	        	"Toggle distant land",
-        	        	        	"Toggle shadows",
-        	        	        	"Toggle grass",
-        	        	        	"Toggle MW/MGE blending",
-        	        	        	"Increase FOV",
-        	        	        	"Decrease FOV",
-        	        	        	"Haggle +1",
-        	        	        	"Haggle +10",
-        	        	        	"Haggle +100",
-        	        	        	"Haggle +1000",
-        	        	        	"Haggle +10000",
-        	        	        	"Haggle -1",
-        	        	        	"Haggle -10",
-        	        	        	"Haggle -100",
-        	        	        	"Haggle -1000",
-        	        	        	"Haggle -10000",
-        	        	        	"Move forward 3rd PC camera",
-        	        	        	"Move back 3rd PC camera",
-        	        	        	"Move left 3rd PC camera",
-        	        	        	"Move right 3rd PC camera",
-        	        	        	"Move down 3rd PC camera",
-        	        	        	"Move up 3rd PC camera"});
+        	        	        	"See data source"});
         	this.cbFunction.Location = new System.Drawing.Point(72, 291);
         	this.cbFunction.Name = "cbFunction";
         	this.cbFunction.Size = new System.Drawing.Size(156, 21);
         	this.cbFunction.TabIndex = 120;
-        	this.cbFunction.Text = "Take screenshot";
+        	this.cbFunction.Text = "None";
         	// 
         	// label2
         	// 
@@ -1605,6 +1571,7 @@ namespace MGEgui {
         	this.Icon = global::MGEgui.Properties.Resources.AppIcon;
         	this.Name = "MacroEditorForm";
         	this.Text = "Macro editor";
+        	this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MacroEditorForm_Closing);
         	this.ResumeLayout(false);
         	this.PerformLayout();
         }
@@ -1758,6 +1725,9 @@ namespace MGEgui {
 
         public MacroEditorForm() {
             InitializeComponent();
+            cbFunction.DataSource = macroFuncData;
+            cbFunction.DisplayMember = "Description";
+            cbFunction.ValueMember = "Id";
             ValidateMacros();
             EndMacro();
         }
@@ -1769,7 +1739,7 @@ namespace MGEgui {
             // Disable macros for deprecated functions
             foreach(Macro m in Statics.Macros) {
                 if(m.Type == MacroType.Graphics) {
-                    if(mapFuncToIndex(m.Graphics.function) == -1)
+                    if(!IsValidMacroFunction(m.Graphics.function))
                         m.Type = MacroType.Unused;
                 }
             }
@@ -1826,7 +1796,7 @@ namespace MGEgui {
             }
             tbCLen.Text=ConsoleCommand.Count.ToString();
             tbCDesc.Text=Statics.Macros[Code].Console.Description;
-            cbFunction.SelectedIndex=mapFuncToIndex(Statics.Macros[Code].Graphics.function);
+            cbFunction.SelectedValue=Statics.Macros[Code].Graphics.function;
             cbTriggerEnabled.Enabled=false;
             tbTimeDelay.Enabled=false;
             switch(Statics.Macros[Code].Type) {
@@ -1994,8 +1964,13 @@ namespace MGEgui {
             e.Handled=true;
         }
 
+        private void MacroEditorForm_Closing(object sender, FormClosingEventArgs e) {
+            if(Editing != -1)
+                Statics.Macros[Editing].Type = savedMacroType;
+        }
+        
         private void bCancel_Click(object sender,EventArgs e) {
-            Statics.Macros[Editing].Type = savedMacroType;
+            Statics.Macros[Editing].Type = savedMacroType;            
             EndMacro();
         }
 
@@ -2013,7 +1988,7 @@ namespace MGEgui {
                 Statics.Macros[Editing].Console.Length=(byte)ConsoleCommand.Count;
                 Statics.Macros[Editing].Console.Description=tbCDesc.Text;
                 Array.Copy(Active,Statics.Macros[Editing].Press.KeyStates,Statics.MACROS);
-                Statics.Macros[Editing].Graphics.function=mapIndexToFunc(cbFunction.SelectedIndex);
+                Statics.Macros[Editing].Graphics.function=(byte)cbFunction.SelectedValue;
                 if(cbTrigger.SelectedIndex>0) {
                     Statics.Macros[Editing].Timer.TimerID=(byte)(cbTrigger.SelectedIndex-1);
                 } else {
@@ -2052,56 +2027,62 @@ namespace MGEgui {
             }
         }
 
-        private Dictionary<int, byte> dictFunctions = new Dictionary<int, byte> {
-            {0,0}, // "Take screenshot"
-            {1,13}, // "Toggle shaders"
-            {2,14}, // "Toggle fps counter"
-            {3,27}, // "Toggle crosshair"
-            {4,7}, // "Toggle zoom"
-            {5,8}, // "Increase zoom"
-            {6,9}, // "Decrease zoom"
-            {7,11}, // "Toggle messages"
-            {8,12}, // "Show last message"
-            {9,21}, // "Increase view range"
-            {10,22}, // "Decrease view range"
-            {11,28}, // "Next music track"
-            {12,29}, // "Disable music"
-            {13,36}, // "Toggle distant land"
-            {14,37}, // "Toggle shadows"
-            {15,38}, // "Toggle grass"
-            {16,39}, // "Toggle MW/MGE blending"
-            {17,41}, // "Increase FOV"
-            {18,42}, // "Decrease FOV"
-            {19,30}, // "Haggle +1"
-            {20,43}, // "Haggle +10"
-            {21,31}, // "Haggle +100"
-            {22,44}, // "Haggle +1000"
-            {23,32}, // "Haggle +10000"
-            {24,33}, // "Haggle -1"
-            {25,45}, // "Haggle -10"
-            {26,34}, // "Haggle -100"
-            {27,46}, // "Haggle -1000"
-            {28,35}, // "Haggle -10000"
-            {29,48}, // "Move forward 3rd PC camera"
-            {30,49}, // "Move back 3rd PC camera"
-            {31,50}, // "Move left 3rd PC camera"
-            {32,51}, // "Move right 3rd PC camera"
-            {33,52}, // "Move down 3rd PC camera"
-            {34,53} // "Move up 3rd PC camera"
-        };
-
-        private byte mapIndexToFunc(int i) {
-            return dictFunctions[i];
-        }
-
-        private int mapFuncToIndex(byte f) {
-        	foreach(KeyValuePair<int, byte> pair in dictFunctions)
-        	{
-        	    if(f == pair.Value)
-        	        return pair.Key;
-        	}
-        	return -1;
+        private struct MacroFunc
+        {
+            private byte id;
+            private string description;
+            
+            public MacroFunc(byte i, string d) { id = i; description = d; }
+            public byte Id { get { return id; } }
+            public string Description { get { return description; } }
         }
         
+        private bool IsValidMacroFunction(byte f)
+        {
+            foreach(MacroFunc mf in macroFuncData) {
+                if(f == mf.Id) return true;
+            }
+            return false;
+        }
+        
+        private List<MacroFunc> macroFuncData = new List<MacroFunc> {
+            new MacroFunc(0, "Take screenshot"),
+            new MacroFunc(13, "Toggle shaders"),
+            new MacroFunc(14, "Toggle fps counter"),
+            new MacroFunc(27, "Toggle crosshair"),
+            new MacroFunc(7, "Toggle zoom"),
+            new MacroFunc(8, "Increase zoom"),
+            new MacroFunc(9, "Decrease zoom"),
+            new MacroFunc(11, "Toggle messages"),
+            new MacroFunc(12, "Show last message"),
+            new MacroFunc(21, "Increase view range"),
+            new MacroFunc(22, "Decrease view range"),
+            new MacroFunc(28, "Next music track"),
+            new MacroFunc(29, "Disable music"),
+            new MacroFunc(36, "Toggle distant land"),
+            new MacroFunc(37, "Toggle shadows"),
+            new MacroFunc(38, "Toggle grass"),
+            new MacroFunc(39, "Toggle MW/MGE blending"),
+            new MacroFunc(40, "Toggle lighting mode"),
+            new MacroFunc(41, "Increase FOV"),
+            new MacroFunc(42, "Decrease FOV"),
+            new MacroFunc(30, "Haggle +1"),
+            new MacroFunc(43, "Haggle +10"),
+            new MacroFunc(31, "Haggle +100"),
+            new MacroFunc(44, "Haggle +1000"),
+            new MacroFunc(32, "Haggle +10000"),
+            new MacroFunc(33, "Haggle -1"),
+            new MacroFunc(45, "Haggle -10"),
+            new MacroFunc(34, "Haggle -100"),
+            new MacroFunc(46, "Haggle -1000"),
+            new MacroFunc(35, "Haggle -10000"),
+            new MacroFunc(48, "Move forward 3rd person cam"),
+            new MacroFunc(49, "Move back 3rd person cam"),
+            new MacroFunc(50, "Move left 3rd person cam"),
+            new MacroFunc(51, "Move right 3rd person cam"),
+            new MacroFunc(52, "Move down 3rd person cam"),
+            new MacroFunc(53, "Move up 3rd person cam"),
+        };
+
     }
 }

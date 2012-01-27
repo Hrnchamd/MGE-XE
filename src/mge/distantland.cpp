@@ -72,8 +72,9 @@ void DistantLand::renderStage0()
                     effect->EndPass();
                 }
 
-                // Draw distant statics
+                // Draw distant statics, with alpha dissolve as they pass the near view boundary
                 DWORD p = mwBridge->CellHasWeather() ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
+                effect->SetFloat(ehDissolveRange, 7168.0);
                 effect->BeginPass(p);
                 cullDistantStatics(&mwView, &distProj);
                 renderDistantStatics();
@@ -97,6 +98,10 @@ void DistantLand::renderStage0()
                 simulateDynamicWaves();
 
             effect->End();
+
+            // Reset matrices
+            effect->SetMatrix(ehView, &mwView);
+            effect->SetMatrix(ehProj, &mwProj);
 
             // Save distant land only frame to texture
             if(~Configuration.MGEFlags & NO_MW_MGE_BLEND)
@@ -148,18 +153,9 @@ void DistantLand::renderStage1()
         // Save state block manually since we can change FVF/decl
         device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
-        // Reset matrices used in stage 0
-        effect->SetMatrix(ehView, &mwView);
-        effect->SetMatrix(ehProj, &mwProj);
-
         // TODO: Locate this properly
         if(isDistantCell())
             cullGrass(&mwView, &mwProj);
-
-        // Depth texture from recorded renders and distant land
-        effectDepth->Begin(&passes, D3DXFX_DONOTSAVESTATE);
-        renderDepth();
-        effectDepth->End();
 
         if(isDistantCell())
         {
@@ -180,10 +176,16 @@ void DistantLand::renderStage1()
                 effect->BeginPass(PASS_RENDERSHADOW);
                 renderShadow();
                 effect->EndPass();
+
             }
 
             effect->End();
         }
+
+        // Depth texture from recorded renders and distant land
+        effectDepth->Begin(&passes, D3DXFX_DONOTSAVESTATE);
+        renderDepth();
+        effectDepth->End();
 
         // Restore render state
         stateSaved->Apply();
@@ -193,7 +195,7 @@ void DistantLand::renderStage1()
     recordMW.clear();
 }
 
-// renderStage2 - Render shadows and depth texture for other scenes (post-stencil redraw/alpha/1st person)
+// renderStage2 - Render shadows and depth texture for scenes 1+ (post-stencil redraw/alpha/1st person)
 void DistantLand::renderStage2()
 {
     DECLARE_MWBRIDGE
@@ -210,10 +212,6 @@ void DistantLand::renderStage2()
     {
         // Save state block manually since we can change FVF/decl
         device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
-
-        // Reset matrices used in stage 0
-        effect->SetMatrix(ehView, &mwView);
-        effect->SetMatrix(ehProj, &mwProj);
 
         if(isDistantCell())
         {
@@ -242,6 +240,7 @@ void DistantLand::renderStage2()
 
     recordMW.clear();
 }
+
 
 // renderStageBlend - Blend between MGE distant land and Morrowind, rendering caustics first so it blends out
 void DistantLand::renderStageBlend()
@@ -675,15 +674,7 @@ bool DistantLand::isDistantCell()
     return currentWorldSpace != 0;
 }
 
-// editProjectionZ - Alter the near and far clip planes of a projection matrix
-void DistantLand::editProjectionZ(D3DMATRIX *m, float zn, float zf)
-{
-    // Override near and far clip planes
-    m->_33 = zf / (zf - zn);
-    m->_43 = -zn * zf / (zf - zn);
-}
-
-// setView - Called when a D3D view matrix is set
+// setView - Called once per frame to setup view dependent data
 void DistantLand::setView(const D3DMATRIX *m)
 {
     DECLARE_MWBRIDGE
@@ -724,14 +715,22 @@ void DistantLand::setProjection(D3DMATRIX *proj)
         editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * 8192.0);
 }
 
-void DistantLand::setHorizonColour(const D3DCOLOR c)
+// editProjectionZ - Alter the near and far clip planes of a projection matrix
+void DistantLand::editProjectionZ(D3DMATRIX *m, float zn, float zf)
 {
-    horizonCol = RGBVECTOR(c);
+    // Override near and far clip planes
+    m->_33 = zf / (zf - zn);
+    m->_43 = -zn * zf / (zf - zn);
 }
 
-void DistantLand::setAmbientColour(const D3DCOLOR c)
+void DistantLand::setHorizonColour(const RGBVECTOR& c)
 {
-    ambCol = RGBVECTOR(c);
+    horizonCol = c;
+}
+
+void DistantLand::setAmbientColour(const RGBVECTOR& c)
+{
+    ambCol = c;
 }
 
 void DistantLand::setSunLight(const D3DLIGHT8 *s)
@@ -758,7 +757,8 @@ void DistantLand::setSunLight(const D3DLIGHT8 *s)
 
 // inspectIndexedPrimitive
 // Filters and records DIP calls for later use; returning false should cause the draw call to be skipped
-bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs)
+// Can also replace selected fixed function calls with an augmented shader
+bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, const LightState *lightrs)
 {
     DECLARE_MWBRIDGE
 
@@ -782,6 +782,12 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
         // If using atmosphere scattering, draw sky later in stage 0
         if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER))
             return false;
+    }
+    else if(Configuration.MGEFlags & USE_FFESHADER)
+    {
+        // Render Morrowind with replacement shaders
+        FixedFunctionShader::renderMorrowind(rs, frs, lightrs);
+        return false;
     }
 
     return true;

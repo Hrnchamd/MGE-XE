@@ -119,9 +119,9 @@ void DistantLand::renderShadowLayer(int layer, float radius)
     ViewFrustum range_frustum(viewproj);
     VisibleSet visible_set;
 
-    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, visible_set);
-    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, visible_set);
-    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, visible_set);
+    currentWorldSpace->NearStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
+    currentWorldSpace->FarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
+    currentWorldSpace->VeryFarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
 
     // Render land and statics
     if(mwBridge->IsExterior())
@@ -136,9 +136,8 @@ void DistantLand::renderShadow()
 {
     effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
     effect->SetTexture(ehTex3, texSoftShadow);
-    effect->CommitChanges();
 
-    for(vector<RenderedState>::iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    for(vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
     {
         if(i->blendEnable && i->destBlend == D3DBLEND_ONE)
             continue;

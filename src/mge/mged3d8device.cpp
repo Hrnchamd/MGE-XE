@@ -3,43 +3,64 @@
 #include "proxydx/d3d8texture.h"
 #include "proxydx/d3d8surface.h"
 
+#include <algorithm>
 #include "mgeversion.h"
 #include "configuration.h"
 #include "distantland.h"
 #include "mwbridge.h"
 #include "statusoverlay.h"
 #include "userhud.h"
+#include "videobackground.h"
 
-static int sceneCount = -1;
-static bool rendertargetNormal = true;
-static bool isHUDready = false;
-static bool isMainView = false;
-static bool isStencilScene = false;
-static bool isFrameComplete = false;
-static bool stage0Complete = false;
-static bool isWaterMaterial = false;
-static bool waterDrawn = false;
+static int sceneCount;
+static bool rendertargetNormal, isHUDready;
+static bool isMainView, isStencilScene, stage0Complete, isFrameComplete;
+static bool isWaterMaterial, waterDrawn;
 
 static RenderedState rs;
+static FragmentState frs;
+static LightState lightrs;
 
 static bool detectMenu(const D3DMATRIX* m);
 static void captureRenderState(D3DRENDERSTATETYPE a, DWORD b);
+static void captureFragmentRenderState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c);
 static void captureTransform(D3DTRANSFORMSTATETYPE a, const D3DMATRIX *b);
+static void captureLight(DWORD a, const D3DLIGHT8 *b);
+static void captureMaterial(const D3DMATERIAL8 *a);
 static float calcFPS();
 
 
 
 MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob) : ProxyDevice(real, ob)
 {
-    DECLARE_MWBRIDGE
-    mwBridge->disableScreenshotFunc();
+    // Initialize state here, as the device is released and recreated on fullscreen Alt-Tab
+    sceneCount = -1;
+    rendertargetNormal = true;
+    isHUDready = false;
+    isMainView = isStencilScene = stage0Complete = isFrameComplete = false;
+    isWaterMaterial = waterDrawn = false;
 
     Configuration.Zoom.zoom = 1.0;
     Configuration.Zoom.rate = 0;
     Configuration.Zoom.rateTarget = 0;
 
-    rendertargetNormal = true;
-    isHUDready = false;
+    // Initialize state recorder to D3D defaults
+    memset(&rs, 0, sizeof(rs));
+    rs.zWrite = true;
+    rs.cullMode = D3DCULL_CCW;
+
+    memset(&frs, 0, sizeof(frs));
+    for(FragmentState::Stage *s = &frs.stage[0]; s != &frs.stage[8]; ++s)
+    {
+        s->colorOp = D3DTOP_DISABLE;
+        s->alphaOp = D3DTOP_SELECTARG1;
+        s->colorArg1 = s->alphaArg1 = D3DTA_TEXTURE;
+        s->colorArg2 = s->alphaArg2 = D3DTA_CURRENT;
+        s->colorArg0 = s->alphaArg0 = s->resultArg = D3DTA_CURRENT;
+    }
+
+    lightrs.lights.clear();
+    lightrs.active.clear();
 }
 
 // Present - End of MW frame
@@ -52,6 +73,7 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
     if(!mwBridge->IsLoaded() && mwBridge->CanLoad())
     {
         mwBridge->Load();
+        mwBridge->disableScreenshotFunc();
         mwBridge->markWaterNode(99999.0f);
     }
 
@@ -103,6 +125,9 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
             Configuration.Zoom.zoom = std::max(1.0f, Configuration.Zoom.zoom);
             Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom, 8.0f);
         }
+
+        // Main menu background video
+        VideoPatch::monitor(realDevice);
     }
 
     // Reset scene identifiers
@@ -187,8 +212,6 @@ HRESULT _stdcall MGEProxyDevice::BeginScene()
 // MGE intercepts first scene to draw distant land before it finishes, others it applies shadows to
 HRESULT _stdcall MGEProxyDevice::EndScene()
 {
-    DECLARE_MWBRIDGE
-
     if(DistantLand::ready && rendertargetNormal)
     {
         // The following Morrowind scenes get past the filters:
@@ -287,6 +310,7 @@ HRESULT _stdcall MGEProxyDevice::SetTransform(D3DTRANSFORMSTATETYPE a, const D3D
 // Check for materials marked for hiding
 HRESULT _stdcall MGEProxyDevice::SetMaterial(const D3DMATERIAL8 *a)
 {
+    captureMaterial(a);
     isWaterMaterial = (a->Power == 99999.0f);
 
     return ProxyDevice::SetMaterial(a);
@@ -296,7 +320,9 @@ HRESULT _stdcall MGEProxyDevice::SetMaterial(const D3DMATERIAL8 *a)
 // Capture what the sun is doing
 HRESULT _stdcall MGEProxyDevice::SetLight(DWORD a, const D3DLIGHT8 *b)
 {
-    // Exterior sunlight appears to always be light 6
+    captureLight(a, b);
+
+    // Exterior sunlight/interior "sun" appears to always be light 6
     if(a == 6 && DistantLand::ready)
         DistantLand::setSunLight(b);
 
@@ -322,7 +348,9 @@ HRESULT _stdcall MGEProxyDevice::SetRenderState(D3DRENDERSTATETYPE a, DWORD b)
     {
         // Ambient is also never set properly when high enough outside that Morrowind renders nothing
         // Avoid changing ambient to pure white in this case
-        DistantLand::setAmbientColour(b);
+        RGBVECTOR amb = D3DCOLOR(b);
+        DistantLand::setAmbientColour(amb);
+        lightrs.globalAmbient.r = amb.r; lightrs.globalAmbient.g = amb.g; lightrs.globalAmbient.b = amb.b;
 
         if(DistantLand::ready && !stage0Complete && sceneCount == 0)
         {
@@ -340,6 +368,8 @@ HRESULT _stdcall MGEProxyDevice::SetRenderState(D3DRENDERSTATETYPE a, DWORD b)
 // Override some sampler options
 HRESULT _stdcall MGEProxyDevice::SetTextureStageState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c)
 {
+    captureFragmentRenderState(a, b, c);
+
     // Sampler overrides
     // Note that DX8 had sampling state bound to texture stages instead of samplers
     if(a == 0)
@@ -379,7 +409,7 @@ HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b
         else
         {
             // Let distant land record call and skip if signalled
-            if(!DistantLand::inspectIndexedPrimitive(sceneCount, &rs))
+            if(!DistantLand::inspectIndexedPrimitive(sceneCount, &rs, &frs, &lightrs))
                 return D3D_OK;
         }
     }
@@ -447,6 +477,21 @@ HRESULT _stdcall MGEProxyDevice::SetIndices(IDirect3DIndexBuffer8 *a, UINT b)
     return ProxyDevice::SetIndices(a, b);
 }
 
+HRESULT _stdcall MGEProxyDevice::LightEnable(DWORD a, BOOL b)
+{
+    if(b)
+    {
+        if(std::find(lightrs.active.begin(), lightrs.active.end(), a) == lightrs.active.end())
+            lightrs.active.push_back(a);
+    }
+    else
+    {
+        if(std::remove(lightrs.active.begin(), lightrs.active.end(), a) != lightrs.active.end())
+            lightrs.active.pop_back();
+    }
+    return ProxyDevice::LightEnable(a, b);
+}
+
 void captureRenderState(D3DRENDERSTATETYPE a, DWORD b)
 {
     switch(a)
@@ -460,6 +505,38 @@ void captureRenderState(D3DRENDERSTATETYPE a, DWORD b)
         case D3DRS_ALPHATESTENABLE: rs.alphaTest = (BYTE)b; break;
         case D3DRS_ALPHAFUNC: rs.alphaFunc = (BYTE)b; break;
         case D3DRS_ALPHAREF: rs.alphaRef = (BYTE)b; break;
+
+        case D3DRS_DIFFUSEMATERIALSOURCE: rs.matSrcDiffuse = (BYTE)b; break;
+        case D3DRS_SPECULARMATERIALSOURCE: rs.matSrcSpecular = (BYTE)b; break;
+        case D3DRS_AMBIENTMATERIALSOURCE: rs.matSrcAmbient = (BYTE)b; break;
+        case D3DRS_EMISSIVEMATERIALSOURCE: rs.matSrcEmissive = (BYTE)b; break;
+    }
+}
+
+void captureFragmentRenderState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c)
+{
+    FragmentState::Stage *s = &frs.stage[a];
+    FragmentState::Material *m = &frs.material;
+
+    switch(b)
+    {
+        case D3DTSS_COLOROP: s->colorOp = (BYTE)c; break;
+        case D3DTSS_COLORARG1: s->colorArg1 = (BYTE)c; break;
+        case D3DTSS_COLORARG2: s->colorArg2 = (BYTE)c; break;
+        case D3DTSS_ALPHAOP: s->alphaOp = (BYTE)c; break;
+        case D3DTSS_ALPHAARG1: s->alphaArg1 = (BYTE)c; break;
+        case D3DTSS_ALPHAARG2: s->alphaArg2 = (BYTE)c; break;
+        case D3DTSS_BUMPENVMAT00: m->bumpEnvMat[0][0] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT01: m->bumpEnvMat[0][1] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT10: m->bumpEnvMat[1][0] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT11: m->bumpEnvMat[1][1] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_TEXCOORDINDEX: s->texcoordIndex = c; break;
+        case D3DTSS_BUMPENVLSCALE: m->bumpLumiScale = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVLOFFSET: m->bumpLumiBias = reinterpret_cast<float&>(c); break;
+        case D3DTSS_TEXTURETRANSFORMFLAGS: s->texTransformFlags = c; break;
+        case D3DTSS_COLORARG0: s->colorArg0 = (BYTE)c; break;
+        case D3DTSS_ALPHAARG0: s->alphaArg0 = (BYTE)c; break;
+        case D3DTSS_RESULTARG: s->resultArg = (BYTE)c; break;
     }
 }
 
@@ -472,6 +549,41 @@ void captureTransform(D3DTRANSFORMSTATETYPE a, const D3DMATRIX *b)
         case D3DTS_WORLDMATRIX(2): rs.worldTransforms[2] = *b; break;
         case D3DTS_WORLDMATRIX(3): rs.worldTransforms[3] = *b; break;
     }
+}
+
+void captureLight(DWORD a, const D3DLIGHT8 *b)
+{
+    // Morrowind uses non-contigous light IDs up to a large number (>512)
+    LightState::Light *light = &lightrs.lights[a];
+
+    // Copy values relevant to Morrowind
+    // i.e. Morrowind has no spotlights and always sets range to FLT_MAX
+    // The only light source with ambient is sunlight
+    light->type = b->Type;
+    light->diffuse = b->Diffuse;
+
+    if(b->Type == D3DLIGHT_POINT)
+    {
+        light->position = b->Position;
+        light->falloff.x = b->Attenuation0;
+        light->falloff.y = b->Attenuation1;
+        light->falloff.z = b->Attenuation2;
+    }
+    else
+    {
+        D3DXVec3Normalize((D3DXVECTOR3*)&light->position, (D3DXVECTOR3*)&b->Direction);
+        light->ambient.x = b->Ambient.r;
+        light->ambient.y = b->Ambient.g;
+        light->ambient.z = b->Ambient.b;
+    }
+}
+
+void captureMaterial(const D3DMATERIAL8 *a)
+{
+    // Morrowind does not use specular lighting
+    frs.material.diffuse = a->Diffuse;
+    frs.material.ambient = a->Ambient;
+    frs.material.emissive = a->Emissive;
 }
 
 // --------------------------------------------------------

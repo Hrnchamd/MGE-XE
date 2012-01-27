@@ -113,6 +113,11 @@ void MacroFunctions::ToggleGrass() {
     displayFlag(USE_GRASS, "Grass enabled", "Grass disabled");
 }
 
+void MacroFunctions::ToggleLightingMode() {
+    Configuration.MGEFlags ^= USE_FFESHADER;
+    displayFlag(USE_FFESHADER, "New dynamic lighting", "Standard dynamic lighting");
+}
+
 void MacroFunctions::ToggleZoom() {
     Configuration.MGEFlags ^= ZOOM_ASPECT;
     displayFlag(ZOOM_ASPECT, "Zoom enabled", "Zoom disabled");

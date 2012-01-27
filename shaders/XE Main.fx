@@ -28,14 +28,14 @@ StatVertOut StaticExteriorVS (StatVertIn IN)
 
     // Decompress normal
     float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = normalize(mul(normal, world));
+    normal = mul(normal, world);
     
     // Lighting
     float emissive = IN.normal.w; // Emissive stored in 4th value in normal vector
     float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
     OUT.color = float4(saturate(IN.color.rgb * light), IN.color.a);
 
-    OUT.texcoords = IN.texcoords;
+    OUT.texcoords_range = float3(IN.texcoords, dist);
     return OUT;
 }
 
@@ -50,27 +50,35 @@ StatVertOut StaticInteriorVS (StatVertIn IN)
 
     // Fogging (interior)
     float3 eyevec = worldpos.xyz - EyePos.xyz;
-    OUT.fog = fogMWColour(length(eyevec));
+    float dist = length(eyevec);
+    OUT.fog = fogMWColour(dist);
 
     // Decompress normal
     float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = normalize(mul(normal, world));
+    normal = mul(normal, world);
     
     // Lighting
     float emissive = IN.normal.w; // Emissive stored in 4th value in normal vector
     float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
     OUT.color = float4(saturate(IN.color.rgb * light), IN.color.a);
 
-    OUT.texcoords = IN.texcoords;
+    OUT.texcoords_range = float3(IN.texcoords, dist);
     return OUT;
 }
 
 float4 StaticPS (StatVertOut IN): COLOR0
 {
-    float4 result = tex2D(sampBaseTex, IN.texcoords);
+    float2 texcoords = IN.texcoords_range.xy;
+    float range = IN.texcoords_range.z;
+    
+    float4 result = tex2D(sampBaseTex, texcoords);
     result.rgb *= IN.color.rgb;
     result.rgb = fogApply(result.rgb, IN.fog);
-
+    
+    // Transition out alpha tested textures inside view boundary;
+    // range is approximate due to interpolation
+    result.a -= saturate((dissolveRange - range) / 512.0);
+    
     return result;
 }
 
@@ -106,7 +114,7 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
 
     // Decompress normal
     float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = normalize(instancedMul(normal, IN.world0, IN.world1, IN.world2));
+    normal = instancedMul(normal, IN.world0, IN.world1, IN.world2);
     
     // Lighting (with backface culling turned off, grass shading requires tweak factors)
     float3 light = 0.5 * SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb; // + emissive; (some grass has it for no reason producing overbrightness)

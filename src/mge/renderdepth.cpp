@@ -57,6 +57,7 @@ void DistantLand::renderDepth()
 
         if(Configuration.MGEFlags & USE_GRASS)
         {
+            // Grass
             effectDepth->BeginPass(PASS_RENDERGRASSDEPTHINST);
             renderGrassInstZ();
             effectDepth->EndPass();
@@ -92,7 +93,7 @@ void DistantLand::renderDepthAdditional()
 void DistantLand::renderDepthRecorded()
 {
     // Recorded renders
-    for(vector<RenderedState>::iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    for(vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
     {
         // Set variables in main effect; variables are shared via effect pool
         if((i->alphaTest || i->blendEnable) && i->texture)

@@ -1,9 +1,10 @@
 
-#include "QuadTree.h"
-#include <assert.h>
+#include "quadtree.h"
 #include <algorithm>
 
-const float QuadTreeNode::QUADTREE_MIN_DIST = 20.0f;
+static const size_t QUADTREE_MAX_DEPTH = 8;
+static const size_t QUADTREE_TARGET_LEAF_SIZE = 6;
+static const float QUADTREE_MIN_DIST = 20.0f;
 
 //-----------------------------------------------------------------------------
 // QuadTreeMesh class
@@ -97,13 +98,6 @@ bool QuadTreeMesh::operator==(const QuadTreeMesh& rh)
 // VisibleSet class
 //-----------------------------------------------------------------------------
 
-void VisibleSet::AddMesh(const QuadTreeMesh *mesh)
-{
-    visible_set.push_back(mesh);
-}
-
-//-----------------------------------------------------------------------------
-
 void VisibleSet::RemoveAll()
 {
     visible_set.clear();
@@ -134,7 +128,7 @@ void VisibleSet::Render(
         const QuadTreeMesh *const m = *mesh;
 
         // Set texture if it has changed
-        if (effect && texture_handle && last_texture != m->tex)
+        if(effect && texture_handle && last_texture != m->tex)
         {
             effectPool->SetTexture(*texture_handle, m->tex);
             if(hasalpha_handle)
@@ -167,7 +161,7 @@ void VisibleSet::Render(
         }
 
         // Commit any changes that were made to the effect
-        if (effect_changed)
+        if(effect_changed)
             effect->CommitChanges();
 
         device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, (*mesh)->verts, 0, (*mesh)->faces);
@@ -193,63 +187,6 @@ void VisibleSet::SortByTexture()
 //-----------------------------------------------------------------------------
 // QuadTreeNode class
 //-----------------------------------------------------------------------------
-
-void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside)
-{
-    // Check if this node is fully outside the frustum.
-    // If inside = true then that means it has already been determined that this entire branch is visible
-    if(inside == false)
-    {
-        ViewFrustum::Containment result = frustum.ContainsSphere(sphere);
-
-        if(result == ViewFrustum::OUTSIDE)
-            return;
-
-        if(result == ViewFrustum::INSIDE)
-            inside = true;
-    }
-
-    // If this node has children, check them
-    if(GetChildCount() > 0)
-    {
-        if(children[0])
-            children[0]->GetVisibleMeshes(frustum, visible_set, inside);
-
-        if(children[1])
-            children[1]->GetVisibleMeshes(frustum, visible_set, inside);
-
-        if(children[2])
-            children[2]->GetVisibleMeshes(frustum, visible_set, inside);
-
-        if(children[3])
-            children[3]->GetVisibleMeshes(frustum, visible_set, inside);
-
-        return;
-    }
-
-    // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
-    for(size_t i = 0, size = meshes.size(); i < size; ++i)
-    {
-        const QuadTreeMesh *mesh = meshes[i];
-
-        if(inside == false)
-        {
-            ViewFrustum::Containment res = frustum.ContainsSphere(mesh->sphere);
-            if(res == ViewFrustum::OUTSIDE)
-                continue;
-
-            if(res == ViewFrustum::INTERSECTS)
-            {
-                // The sphere intersects one of the edges of the screen, so try the box test
-                res = frustum.ContainsBox(mesh->box);
-                if(res == ViewFrustum::OUTSIDE)
-                    continue;
-            }
-        }
-
-        visible_set.AddMesh(mesh);
-    }
-}
 
 void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set, bool inside)
 {
@@ -312,7 +249,53 @@ void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR
         float viewlimit = viewsphere.w + mesh->sphere.radius;
 
         if(rangesquared <= viewlimit*viewlimit)
-            visible_set.AddMesh(mesh);
+            visible_set.visible_set.push_back(mesh);
+    }
+}
+
+void QuadTreeNode::GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside)
+{
+    // Check if this node is fully outside the frustum.
+    // If inside = true then that means it has already been determined that this entire branch is visible
+    if(inside == false)
+    {
+        ViewFrustum::Containment result = frustum.ContainsSphere(sphere);
+
+        if(result == ViewFrustum::OUTSIDE)
+            return;
+
+        if(result == ViewFrustum::INSIDE)
+            inside = true;
+    }
+
+    // If this node has children, check them
+    if(GetChildCount() > 0)
+    {
+        if(children[0])
+            children[0]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+
+        if(children[1])
+            children[1]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+
+        if(children[2])
+            children[2]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+
+        if(children[3])
+            children[3]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+
+        return;
+    }
+
+    // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
+    for(size_t i = 0, size = meshes.size(); i < size; ++i)
+    {
+        const QuadTreeMesh *mesh = meshes[i];
+
+        // Only test bounding sphere
+        if(inside == false && frustum.ContainsSphere(mesh->sphere) == ViewFrustum::OUTSIDE)
+            continue;
+
+        visible_set.visible_set.push_back(mesh);
     }
 }
 
@@ -320,14 +303,7 @@ void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR
 
 void QuadTreeNode::AddMesh(QuadTreeMesh *new_mesh, int depth)
 {
-
-    // If this node has no meshes or children, go ahead and add the mesh to it
     size_t meshes_size = meshes.size();
-    if(GetChildCount() == 0 && meshes_size == 0)
-    {
-        meshes.push_back(new_mesh);
-        return;
-    }
 
     // If we have reached the last level of the quad tree, add the mesh and return
     if(depth == 0)
@@ -336,14 +312,19 @@ void QuadTreeNode::AddMesh(QuadTreeMesh *new_mesh, int depth)
         return;
     }
 
+    // If this node has no meshes or children, go ahead and add the mesh to it
+    if(GetChildCount() == 0 && meshes_size < QUADTREE_TARGET_LEAF_SIZE)
+    {
+        meshes.push_back(new_mesh);
+        return;
+    }
+
     // If there are already meshes at this node, add it anyway if it's close enough to the first one
     if(meshes_size > 0)
     {
-        D3DXVECTOR3 dif = new_mesh->sphere.center - meshes[0]->sphere.center;
-        float dist = D3DXVec3Length(&dif);
-        if(dist <= QUADTREE_MIN_DIST)
+        D3DXVECTOR3 diff = new_mesh->sphere.center - meshes[0]->sphere.center;
+        if(D3DXVec3Length(&diff) <= QUADTREE_MIN_DIST)
         {
-            // Go ahead and add the mesh here
             meshes.push_back(new_mesh);
             return;
         }
@@ -352,13 +333,8 @@ void QuadTreeNode::AddMesh(QuadTreeMesh *new_mesh, int depth)
     // Push down the new mesh and the existing ones
     PushDown(new_mesh, depth);
 
-    // Any existing meshes need to be pushed down too
-    if(meshes_size > 0)
-    {
-        QuadTreeMesh **meshes_ptr = &(meshes[0]);
-        for (size_t i = 0; i < meshes_size; ++i)
-            PushDown(meshes_ptr[i], depth);
-    }
+    for (size_t i = 0; i != meshes_size; ++i)
+        PushDown(meshes[i], depth);
 
     // Clear mesh list
     meshes.clear();
@@ -457,7 +433,7 @@ bool QuadTreeNode::Optimize()
 
             // Replace this child with its child
             children[i] = new_child;
-            //delete old_child;
+            // old_child dealloc handled when MemoryPool is flushed
         }
     }
 
@@ -476,73 +452,25 @@ bool QuadTreeNode::Optimize()
 BoundingSphere QuadTreeNode::CalcVolume()
 {
     // Traverse down until we reach the leaf nodes, then percolate the bounding spheres back up
-    if(GetChildCount() != 0)
+    sphere = BoundingSphere();
+
+    if(children[0])
+        sphere += children[0]->CalcVolume();
+
+    if(children[1])
+        sphere += children[1]->CalcVolume();
+
+    if(children[2])
+        sphere += children[2]->CalcVolume();
+
+    if(children[3])
+        sphere += children[3]->CalcVolume();
+
+    if(sphere.empty())
     {
-        bool first_sphere = true;
-
-        if(children[0])
-        {
-            if(first_sphere)
-            {
-                sphere = children[0]->CalcVolume();
-                first_sphere = false;
-            }
-            else
-            {
-                sphere += children[0]->CalcVolume();
-            }
-        }
-        if(children[1])
-        {
-            if(first_sphere)
-            {
-                sphere = children[1]->CalcVolume();
-                first_sphere = false;
-            }
-            else
-            {
-                sphere += children[1]->CalcVolume();
-            }
-        }
-        if(children[2])
-        {
-            if(first_sphere)
-            {
-                sphere = children[2]->CalcVolume();
-                first_sphere = false;
-            }
-            else
-            {
-                sphere += children[2]->CalcVolume();
-            }
-        }
-        if(children[3])
-        {
-            if(first_sphere)
-            {
-                sphere = children[3]->CalcVolume();
-                first_sphere = false;
-            }
-            else
-            {
-                sphere += children[3]->CalcVolume();
-            }
-        }
-
-        // Return sum of all child spheres
-        return sphere;
-    }
-
-    // This node dosen't have any children, so sum the bounds of its meshes
-    size_t meshes_size = meshes.size();
-    if(meshes_size > 0)
-    {
-        QuadTreeMesh* *meshes_ptr = &(meshes[0]);
-
-        sphere = meshes_ptr[0]->sphere;
-
-        for(size_t i = 1; i < meshes_size; ++i)
-            sphere += meshes_ptr[i]->sphere;
+        // This node doesn't have any children, so sum the bounds of its meshes
+        for(size_t i = 0; i < meshes.size(); ++i)
+            sphere += meshes[i]->sphere;
     }
 
     return sphere;
@@ -578,7 +506,7 @@ QuadTreeNode::QuadTreeNode(QuadTree *owner)
     children[2] = 0;
     children[3] = 0;
 
-    float box_size = 0.0f;
+    box_size = 0.0f;
     box_center.x = 0.0f;
     box_center.y = 0.0f;
 
@@ -639,7 +567,7 @@ void QuadTree::AddMesh(
                                  faces,
                                  iBuffer);
 
-    m_root_node->AddMesh(new_mesh);
+    m_root_node->AddMesh(new_mesh, QUADTREE_MAX_DEPTH);
 }
 
 //-----------------------------------------------------------------------------
@@ -663,29 +591,21 @@ void QuadTree::Clear()
 
 //-----------------------------------------------------------------------------
 
-void QuadTree::GetVisibleMeshes(const ViewFrustum& frustum, VisibleSet& visible_set)
-{
-    m_root_node->GetVisibleMeshes(frustum, visible_set);
-}
-
-//-----------------------------------------------------------------------------
-
 void QuadTree::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& sphere, VisibleSet& visible_set)
 {
     m_root_node->GetVisibleMeshes(frustum, sphere, visible_set);
 }
 
-//-----------------------------------------------------------------------------
-
-void QuadTree::SetBoxSize(float size)
+void QuadTree::GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set)
 {
-    m_root_node->box_size = size;
+    m_root_node->GetVisibleMeshesCoarse(frustum, visible_set);
 }
 
 //-----------------------------------------------------------------------------
 
-void QuadTree::SetBoxCenter(const D3DXVECTOR2& center)
+void QuadTree::SetBox(float size, const D3DXVECTOR2& center)
 {
+    m_root_node->box_size = size;
     m_root_node->box_center = center;
 }
 
