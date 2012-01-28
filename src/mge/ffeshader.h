@@ -31,13 +31,13 @@ struct FragmentState
         BYTE colorArg0, alphaArg0, resultArg;
         DWORD texcoordIndex;
         DWORD texTransformFlags;
+        float bumpEnvMat[2][2];
+        float bumpLumiScale, bumpLumiBias;
     } stage[8];
 
     struct Material
     {
         D3DCOLORVALUE diffuse, ambient, emissive;
-        float bumpEnvMat[2][2];
-        float bumpLumiScale, bumpLumiBias;
     } material;
 };
 
@@ -71,6 +71,8 @@ class FixedFunctionShader
         DWORD vertexMaterial : 2;
         DWORD fogMode : 1;
         DWORD activeStages : 3;
+        DWORD usesBumpmap : 1;
+        DWORD bumpmapStage : 3;
         DWORD usesTexgen : 1;
         DWORD texgenStage : 3;
 

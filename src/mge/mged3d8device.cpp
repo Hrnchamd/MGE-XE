@@ -516,7 +516,6 @@ void captureRenderState(D3DRENDERSTATETYPE a, DWORD b)
 void captureFragmentRenderState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c)
 {
     FragmentState::Stage *s = &frs.stage[a];
-    FragmentState::Material *m = &frs.material;
 
     switch(b)
     {
@@ -526,13 +525,13 @@ void captureFragmentRenderState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c)
         case D3DTSS_ALPHAOP: s->alphaOp = (BYTE)c; break;
         case D3DTSS_ALPHAARG1: s->alphaArg1 = (BYTE)c; break;
         case D3DTSS_ALPHAARG2: s->alphaArg2 = (BYTE)c; break;
-        case D3DTSS_BUMPENVMAT00: m->bumpEnvMat[0][0] = reinterpret_cast<float&>(c); break;
-        case D3DTSS_BUMPENVMAT01: m->bumpEnvMat[0][1] = reinterpret_cast<float&>(c); break;
-        case D3DTSS_BUMPENVMAT10: m->bumpEnvMat[1][0] = reinterpret_cast<float&>(c); break;
-        case D3DTSS_BUMPENVMAT11: m->bumpEnvMat[1][1] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT00: s->bumpEnvMat[0][0] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT01: s->bumpEnvMat[0][1] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT10: s->bumpEnvMat[1][0] = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVMAT11: s->bumpEnvMat[1][1] = reinterpret_cast<float&>(c); break;
         case D3DTSS_TEXCOORDINDEX: s->texcoordIndex = c; break;
-        case D3DTSS_BUMPENVLSCALE: m->bumpLumiScale = reinterpret_cast<float&>(c); break;
-        case D3DTSS_BUMPENVLOFFSET: m->bumpLumiBias = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVLSCALE: s->bumpLumiScale = reinterpret_cast<float&>(c); break;
+        case D3DTSS_BUMPENVLOFFSET: s->bumpLumiBias = reinterpret_cast<float&>(c); break;
         case D3DTSS_TEXTURETRANSFORMFLAGS: s->texTransformFlags = c; break;
         case D3DTSS_COLORARG0: s->colorArg0 = (BYTE)c; break;
         case D3DTSS_ALPHAARG0: s->alphaArg0 = (BYTE)c; break;

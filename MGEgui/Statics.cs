@@ -260,14 +260,15 @@ namespace MGEgui {
                     Localizations.Add (langfile);
                 }
             } catch { };
-            LocalizationInterface.Localization language = null;
+            string language = "English (default)";
             bool autoLanguage = true;
             try {
                 INIFile MGEini = new INIFile (iniFileName, new INIFile.INIVariableDef [] { INIFile.iniDefEmpty, MainForm.iniLanguage, MainForm.iniAutoLang });
-                language = Localizations [MGEini.getKeyString ("Language")];
+                language = MGEini.getKeyString ("Language");
                 autoLanguage = (MGEini.getKeyValue ("AutoLang") == 1);
-                if (language != null) Localizations.ApplyStrings ("", strings, language);
             } catch { }
+            Localizations.Current = language;
+            Localizations.ApplyStrings("", strings);
 
             if (args.mutex && !MutexCheck.PerformCheck ()) {
                 MessageBox.Show (strings ["MGEguiRunning"], strings ["Error"]);
@@ -315,7 +316,7 @@ namespace MGEgui {
                 Triggers [i] = new Trigger ();
             }
             DXMain.GetDeviceCaps ();
-            mf = new MainForm (language, autoLanguage);
+            mf = new MainForm (autoLanguage);
             Application.Run (mf);
         }
 

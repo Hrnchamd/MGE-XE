@@ -23,7 +23,7 @@ namespace MGEgui {
         System.Drawing.Point gbMainSettingsLocation;
         System.Drawing.Point gbMainUILocation;
 
-        public MainForm (LocalizationInterface.Localization Language, bool AutoLang) {
+        public MainForm (bool AutoLang) {
             InitializeComponent ();
             //Attach dud context menus to combo boxes
             cmbAntiAlias.ContextMenu = DudMenu;
@@ -50,7 +50,7 @@ namespace MGEgui {
             //Get available UI localizations and set UI language
             cmbUILanguage.Items.AddRange (Statics.Localizations.Languages);
             if (AutoLang) cbUILangAuto.Checked = true;
-            else if (Language != null) cmbUILanguage.SelectedIndex = cmbUILanguage.FindStringExact (Language.Language);
+            else cmbUILanguage.SelectedIndex = cmbUILanguage.FindStringExact (Statics.Localizations.Current);
             //Store default locations
             gbMainSettingsLocation = gbMainSettings.Location;
             gbMainUILocation = gbMainUI.Location;
@@ -1540,12 +1540,6 @@ namespace MGEgui {
             gbDLWtrWave.Enabled = status;
         }
 
-        private void MainForm_Resize (object sender, EventArgs e) {
-            int y = (this.Size.Height - this.MinimumSize.Height) / 3;
-            gbMainSettings.Location = new System.Drawing.Point (gbMainSettingsLocation.X, gbMainSettingsLocation.Y + y);
-            gbMainUI.Location = new System.Drawing.Point (gbMainUILocation.X, this.Size.Height + gbMainUILocation.Y - y);
-        }
-
         private void cmbUILanguage_SelectedIndexChanged (object sender, EventArgs e) {
             Statics.Localizations.Current = cmbUILanguage.Text;
             string s = tbSShotDir.Text;
@@ -1559,17 +1553,12 @@ namespace MGEgui {
             bool status = cbUILangAuto.Checked;
             cmbUILanguage.Enabled = !status;
             if (status) {
-                int index = cmbUILanguage.FindStringExact (LocalizationInterface.SysLang);
-                if (index == -1) {
-                    index = cmbUILanguage.FindStringExact (LocalizationInterface.SysLangRev);
-                    if (index == -1) {
-                        index = cmbUILanguage.FindString (LocalizationInterface.SysLangOrg);
-                        if (index == -1) {
-                            index = cmbUILanguage.FindString (LocalizationInterface.SysLangEng);
-                        }
-                    }
-                }
-                if (index != -1) cmbUILanguage.SelectedIndex = index;
+                int index = cmbUILanguage.FindStringExact(LocalizationInterface.SysLang);
+                if (index == -1) index = cmbUILanguage.FindStringExact(LocalizationInterface.SysLangRev);
+                if (index == -1) index = cmbUILanguage.FindString(LocalizationInterface.SysLangOrg);
+                if (index == -1) index = cmbUILanguage.FindString(LocalizationInterface.SysLangEng);
+                if (index == -1) index = cmbUILanguage.FindString(Statics.Localizations.Current);
+                cmbUILanguage.SelectedIndex = index;
             }
         }
 

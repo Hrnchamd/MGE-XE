@@ -2634,11 +2634,10 @@ namespace MGEgui {
         	this.Controls.Add(this.tabControl);
         	this.Icon = global::MGEgui.Properties.Resources.AppIcon;
         	this.MaximizeBox = false;
-        	this.MinimumSize = new System.Drawing.Size(554, 409);
+        	this.MinimumSize = new System.Drawing.Size(600, 478);
         	this.Name = "MainForm";
         	this.Text = "     ";
         	this.Closing += new System.ComponentModel.CancelEventHandler(this.MainForm_FormClosing);
-        	this.Resize += new System.EventHandler(this.MainForm_Resize);
         	this.tpInput.ResumeLayout(false);
         	this.gbMWLighting.ResumeLayout(false);
         	this.gbMWLighting.PerformLayout();

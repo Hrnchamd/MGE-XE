@@ -150,13 +150,18 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     effectFFE->SetFloat(ehLightFalloffConstant, bufferFalloffConstant);
 
     // Bump mapping state
+    if(sk.usesBumpmap)
+    {
+        effectFFE->SetFloatArray(ehBumpMatrix, &frs->stage[sk.bumpmapStage].bumpEnvMat[0][0], 4);
+        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &frs->stage[sk.bumpmapStage].bumpLumiScale, 2);
+    }
+
+    // Texgen texture matrix
     if(sk.usesTexgen)
     {
         D3DXMATRIX m;
         device->GetTransform((D3DTRANSFORMSTATETYPE)(D3DTS_TEXTURE0 + sk.texgenStage), &m);
         effectFFE->SetMatrix(ehTexgenTransform, &m);
-        effectFFE->SetFloatArray(ehBumpMatrix, &frs->material.bumpEnvMat[0][0], 4);
-        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &frs->material.bumpLumiScale, 2);
     }
 
      // Copy texture bindings from fixed function pipe
@@ -295,7 +300,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
             buf << "texgenSphere(" << texRouting[texGenSrcIndex] << "); ";
             break;
         }
-        buf << "texgen = mul(float4(texgen, 1), texgenTransform).xyz;";
+        buf << "texgen = mul(float4(texgen, 1), texgenTransform).xyz; ";
         texRouting[sk.uvSets] = "texgen.xy";
     }
 
@@ -451,7 +456,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
     if(hr != D3D_OK)
     {
-        LOG::logline("!! Generating FFE shader: compile error");
+        LOG::logline("!! Generating FFE shader: compile error %xh", hr);
         if(errors)
         {
             LOG::logline("!! %s", errors->GetBufferPointer());
@@ -512,8 +517,6 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState *rs, const Fragmen
     usesSkinning = rs->vertexBlendState ? 1 : 0;
     vertexColour = (rs->fvf & D3DFVF_DIFFUSE) ? 1 : 0;
     heavyLighting = (lightrs->active.size() > 4) ? 1 : 0;
-    vertexMaterial = 0;
-    fogMode = 0;
 
     // Match diffuse+ambient, emissive or static material
     if(vertexColour)
@@ -545,6 +548,11 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState *rs, const Fragmen
         stage[i].texcoordIndex = s->texcoordIndex & 3;
         stage[i].texcoordGen = s->texcoordIndex >> 16;
 
+        if(s->colorOp == D3DTOP_BUMPENVMAP || s->colorOp == D3DTOP_BUMPENVMAPLUMINANCE)
+        {
+            usesBumpmap = 1;
+            bumpmapStage = i;
+        }
         if(stage[i].texcoordGen)
         {
             usesTexgen = 1;

@@ -110,7 +110,7 @@ namespace MGEgui.Localization {
                 return currentLocalization.Language;
             }
             set {
-                if(localizations.ContainsKey(value))
+                if(value != null && localizations.ContainsKey(value))
                     currentLocalization = localizations[value];
                 else
                     currentLocalization = localizations[baseLocalization];
