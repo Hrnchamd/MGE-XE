@@ -1,5 +1,5 @@
 
-#include "proxydx/d3d8header.h"
+#include "doublesurface.h"
 #include <vector>
 
 enum EffectVariableID {
@@ -17,23 +17,6 @@ struct MGEShader
 };
 
 typedef void (*MGEShaderUpdateFunc)(MGEShader *);
-
-class SurfaceDoubleBuffer
-{
-public:
-    int i;
-    IDirect3DTexture9 *t[2];
-    IDirect3DSurface9 *s[2];
-
-    void init(IDirect3DTexture9 *textures[2], IDirect3DSurface9 *surfaces[2]);
-    IDirect3DTexture9 * sourceTexture();
-    IDirect3DSurface9 * sourceSurface();
-    IDirect3DTexture9 * sinkTexture();
-    IDirect3DSurface9 * sinkSurface();
-
-    void cycle();
-    void exchangeSource(IDirect3DTexture9**, IDirect3DSurface9**);
-};
 
 class PostShaders
 {

@@ -1,9 +1,9 @@
 
-#include "proxydx/d3d8header.h"
 #include "configuration.h"
 #include "distantland.h"
 #include "distantshader.h"
 #include "postshaders.h"
+#include "doublesurface.h"
 #include "mwbridge.h"
 
 
@@ -170,12 +170,12 @@ void DistantLand::simulateDynamicWaves()
 {
     DECLARE_MWBRIDGE
 
-    device->SetFVF(fvfWave);
-    device->SetStreamSource(0, vbWaveSim, 0, 32);
-
     static bool resetRippleSurface = true;
     static float remainingWaveTime = 0;
     static const float waveStep = 0.0125f;  // time per wave simulation step (1/80 sec)
+
+    device->SetFVF(fvfWave);
+    device->SetStreamSource(0, vbWaveSim, 0, 32);
 
     // Calc number of wave iterations to run this frame
     float frameTime = std::min(mwBridge->frameTime(), 0.5f);
@@ -244,13 +244,25 @@ void DistantLand::simulateDynamicWaves()
         }
 
         // Apply wave equation numWaveSteps times
-        RenderTargetSwitcher rtsw(surfRain, NULL);
-        effect->SetTexture(ehTex4, texRain);
+        // Uses double buffering to avoid reads and writes on the same target
+        RenderTargetSwitcher rtsw(surfRippleBuffer, NULL);
+        SurfaceDoubleBuffer doublebuffer;
+        doublebuffer.init(texRain, surfRain, texRippleBuffer, surfRippleBuffer);
 
         effect->BeginPass(PASS_WAVESTEP);
         for(int i = 0; i != numWaveSteps; ++i)
+        {
+            device->SetRenderTarget(0, doublebuffer.sinkSurface());
+            effect->SetTexture(ehTex4, doublebuffer.sourceTexture());
+            effect->CommitChanges();
+
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
+            doublebuffer.cycle();
+        }
         effect->EndPass();
+
+        if(doublebuffer.sourceSurface() != surfRain)
+            device->StretchRect(surfRippleBuffer, 0, surfRain, 0, D3DTEXF_NONE);
     }
     else if(resetRippleSurface)
     {
@@ -260,9 +272,6 @@ void DistantLand::simulateDynamicWaves()
     }
 
     // Player local ripples
-    RenderTargetSwitcher rtsw(surfRipples, NULL);
-    effect->SetTexture(ehTex4, texRipples);
-
     // Move ripple texture with player; lock to texel alignment to prevent visible jitter
     const D3DXVECTOR3 *playerPos = (const D3DXVECTOR3 *)mwBridge->PlayerPositionPointer();
     static int lastXpos = (int)floor(playerPos->x / waveTexWorldRes);
@@ -277,7 +286,7 @@ void DistantLand::simulateDynamicWaves()
     lastXpos = newXpos;
     lastYpos = newYpos;
 
-    int shiftXp = (shiftX > 0)  ?+shiftX : 0;
+    int shiftXp = (shiftX > 0) ? +shiftX : 0;
     int shiftXn = (shiftX < 0) ? -shiftX : 0;
     int shiftYp = (shiftY > 0) ? +shiftY : 0;
     int shiftYn = (shiftY < 0) ? -shiftY : 0;
@@ -297,13 +306,18 @@ void DistantLand::simulateDynamicWaves()
 
     device->ColorFill(surfRippleBuffer, 0, 0x80808080);
     device->StretchRect(surfRipples, &source, surfRippleBuffer, &target, D3DTEXF_NONE);
-    device->StretchRect(surfRippleBuffer, 0, surfRipples, 0, D3DTEXF_NONE);
 
-    // Create waves around the player
+    // Water simulation; realigned water starts in surfRippleBuffer
+    // Uses double buffering to avoid reads and writes on the same target
+    RenderTargetSwitcher rtsw(surfRipples, NULL);
+    SurfaceDoubleBuffer doublebuffer;
+    doublebuffer.init(texRippleBuffer, surfRippleBuffer, texRipples, surfRipples);
+
     float rippleOrigin[2];
     float dz = playerPos->z - mwBridge->WaterLevel();
     if(dz < 0 && dz > -128.0f * mwBridge->PlayerHeight())
     {
+        // Create waves around the player
         effect->BeginPass(PASS_PLAYERWAVE);
         for(int i = 0; i != numWaveSteps; ++i)
         {
@@ -312,9 +326,13 @@ void DistantLand::simulateDynamicWaves()
             rippleOrigin[0] = w * shiftX + 0.5f;
             rippleOrigin[1] = w * shiftY + 0.5f;
 
+            device->SetRenderTarget(0, doublebuffer.sinkSurface());
+            effect->SetTexture(ehTex4, doublebuffer.sourceTexture());
             effect->SetFloatArray(ehRippleOrigin, rippleOrigin, 2);
             effect->CommitChanges();
+
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
+            doublebuffer.cycle();
         }
         effect->EndPass();
     }
@@ -322,8 +340,18 @@ void DistantLand::simulateDynamicWaves()
     // Apply wave equation numWaveSteps times
     effect->BeginPass(PASS_WAVESTEP);
     for(int i = 0; i != numWaveSteps; ++i)
+    {
+        device->SetRenderTarget(0, doublebuffer.sinkSurface());
+        effect->SetTexture(ehTex4, doublebuffer.sourceTexture());
+        effect->CommitChanges();
+
         device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 1);
+        doublebuffer.cycle();
+    }
     effect->EndPass();
+
+    if(doublebuffer.sourceSurface() != surfRipples)
+        device->StretchRect(surfRippleBuffer, 0, surfRipples, 0, D3DTEXF_NONE);
 
     // Set wave texture world origin
     static float halfWaveTexWorldSize = 0.5f * waveTexWorldRes * waveTexResolution;

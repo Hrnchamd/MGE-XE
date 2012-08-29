@@ -125,10 +125,23 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
             bufferPosition[pointLightCount + MaxLights] = light->position.y;
             bufferPosition[pointLightCount + 2*MaxLights] = light->position.z;
 
-            // Scatter attenuation factors for vectorization (falloffConstant doesn't vary per light)
-            bufferFalloffConstant = light->falloff.x;
-            bufferFalloffLinear[pointLightCount] = light->falloff.y;
-            bufferFalloffQuadratic[pointLightCount] = light->falloff.z;
+            // Scatter attenuation factors for vectorization
+            if(light->falloff.x > 0)
+            {
+                // Standard point light source (falloffConstant doesn't vary per light)
+                bufferFalloffConstant = light->falloff.x;
+                bufferFalloffLinear[pointLightCount] = light->falloff.y;
+                bufferFalloffQuadratic[pointLightCount] = light->falloff.z;
+            }
+            else
+            {
+                // Projectile light source, normally hard coded by Morrowind to { 0, 0.1, 0 }
+                // or light magic effect, ambient light
+                bufferFalloffQuadratic[pointLightCount] = 4e-5;
+                //bufferPosition[pointLightCount + 2*MaxLights] = light->position.z + 200.0;
+                //bufferFalloffQuadratic[pointLightCount] = 0.25 * (light->falloff.y * light->falloff.y);
+                //LOG::logline("%f %f %f", light->falloff.x, light->falloff.y, light->falloff.z);
+            }
             ++pointLightCount;
         }
         else if(light->type == D3DLIGHT_DIRECTIONAL)
@@ -216,7 +229,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
         return effectDefaultPurple;
     }
 
-    // Pack texcoords into interpolators and cache names per stage
+    // Pack 2d texcoords into interpolators and map to stages
     const char *strInterpolators[] = { "01", "23" };
     const char *strTexcoordPacking[] = { ".xy", ".zw" };
     string texcoordNames[8], texSamplers[8];
@@ -233,7 +246,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
         texSamplers[i] =buf.str();
     }
 
-    // Vertex format coupling
+    // Vertex format coupling, generate equivalent struct to input FVF
     buf.str(string());
 
     if(sk.usesSkinning)
@@ -245,7 +258,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
     genVBCoupling = buf.str();
 
-    // Pixel shader coupling
+    // Pixel shader coupling, passes texcoords and colours
     buf.str(string());
 
     if(sk.vertexColour)
@@ -322,19 +335,19 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
     genVertexColour = buf.str();
 
     // Lighting
-    switch(sk.heavyLighting)
-    {
-        case 0: genLightCount = "4"; break;
-        case 1: genLightCount = "8"; break;
-    }
+    if(sk.vertexMaterial == 0)
+        genLightCount = "0";
+    else
+        genLightCount = sk.heavyLighting ? "8" : "4";
 
     // Vertex material
     buf.str(string());
     switch(sk.vertexMaterial)
     {
-        case 0: buf << "diffuse = vertexMaterialNone(d, a);"; break;
-        case 1: buf << "diffuse = vertexMaterialDiffAmb(d, a, IN.col);"; break;
-        case 2: buf << "diffuse = vertexMaterialEmissive(d, a, IN.col);"; break;
+        case 0: buf << "diffuse = 1.0;"; break;
+        case 1: buf << "diffuse = vertexMaterialNone(d, a);"; break;
+        case 2: buf << "diffuse = vertexMaterialDiffAmb(d, a, IN.col);"; break;
+        case 3: buf << "diffuse = vertexMaterialEmissive(d, a, IN.col);"; break;
     }
     genMaterial = buf.str();
 
@@ -516,15 +529,20 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState *rs, const Fragmen
     uvSets = (rs->fvf & D3DFVF_TEXCOUNT_MASK) >> D3DFVF_TEXCOUNT_SHIFT;
     usesSkinning = rs->vertexBlendState ? 1 : 0;
     vertexColour = (rs->fvf & D3DFVF_DIFFUSE) ? 1 : 0;
-    heavyLighting = (lightrs->active.size() > 4) ? 1 : 0;
 
-    // Match diffuse+ambient, emissive or static material
-    if(vertexColour)
+    // Match constant material, diffuse+ambient vcol, or emissive vcol
+    if(rs->useLighting)
     {
-        if(rs->matSrcDiffuse == D3DMCS_COLOR1)
-            vertexMaterial = 1;
-        else if(rs->matSrcEmissive == D3DMCS_COLOR1)
-            vertexMaterial = 2;
+        heavyLighting = (lightrs->active.size() > 4) ? 1 : 0;
+        vertexMaterial = 1;
+
+        if(vertexColour)
+        {
+            if(rs->matSrcDiffuse == D3DMCS_COLOR1)
+                vertexMaterial = 2;
+            else if(rs->matSrcEmissive == D3DMCS_COLOR1)
+                vertexMaterial = 3;
+        }
     }
 
     // Match premultipled alpha or additive blending
@@ -576,7 +594,7 @@ void FixedFunctionShader::ShaderKey::log() const
     const char *opsymbols[] = { "?", "disable", "select1", "select2", "mul", "mul2x", "mul4x", "add", "addsigned", "addsigned2x", "sub", "?", "blend.diffuse", "blend.texture", "?", "?", "?", "?", "?", "?", "?", "?", "bump", "bump.l", "dp3", "mad", "?" };
     const char *argsymbols[] = { "diffuse", "current", "texture", "tfactor", "specular", "temp", "constant" };
 
-    LOG::logline("   Input state: UVs:%d skin:%d vcol:%d lights:%d vmat:%d fogm:%d", uvSets, usesSkinning, vertexColour, heavyLighting ? 8 : 4, vertexMaterial, fogMode);
+    LOG::logline("   Input state: UVs:%d skin:%d vcol:%d lights:%d vmat:%d fogm:%d", uvSets, usesSkinning, vertexColour, vertexMaterial ? (heavyLighting ? 8 : 4) : 0, vertexMaterial, fogMode);
     LOG::logline("   Texture stages:");
     for(int i = 0; i != activeStages; ++i)
     {

@@ -49,22 +49,27 @@ sampler sampFFE3 = sampler_state { texture = <tex3>; };
 //------------------------------------------------------------
 // Transform library functions
 
+// Vertex transforms, note that scaled normals are normalized in the pixel shader
 float4 rigidVertex(float4 pos) { return mul(pos, world); }
 float3 rigidNormal(float3 normal) { return mul(float4(normal, 0), world).xyz; }
 
 float4 skinnedVertex(float4 pos, float4 weights) { return skin(pos, weights); }
 float3 skinnedNormal(float3 normal, float4 weights) { return skin(float4(normal, 0), weights).xyz; }
 
-float3 texgenNormal(float3 normal) { return mul(float4(normal, 0), view).xyz; }
+// Texgens with world space inputs, normals must be normalized due to ubiquitous scaling matrices
+float3 texgenNormal(float3 normal) { return mul(float4(normalize(normal), 0), view).xyz; }
 float3 texgenPosition(float4 pos) { return mul(pos, view).xyz; }
-float3 texgenReflection(float4 pos, float3 normal) { float3 r = reflect(normalize(pos.xyz - EyePos), normal); return mul(float4(r, 0), view).xyz; }
+float3 texgenReflection(float4 pos, float3 normal) { float3 r = reflect(normalize(pos.xyz - EyePos), normalize(normal)); return mul(float4(r, 0), view).xyz; }
 float3 texgenSphere(float2 tex) { return float3(0.5 * tex + 0.5, 0); }
 
 //------------------------------------------------------------
 // Lighting library functions
 
+// Number of light groups; lights are vectorized into groups of 4
+static const int LGs = max(1, ceil(FFE_LIGHTS_ACTIVE / 4.0));
+
 // Point lights
-float4 calcLighting4(float4 lightvec[6], int group, float3 normal)
+float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal)
 {
     float4 dist2 = 0, lambert = 0;
     
@@ -82,17 +87,17 @@ float4 calcLighting4(float4 lightvec[6], int group, float3 normal)
     
     // Attenuation
     float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffConstant);
-    //float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffLinear[group] * dist + lightFalloffConstant);
+    // (slower) float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffLinear[group] * dist + lightFalloffConstant);
     return lambert * att;
 }
 
-float3 calcPointLighting(uniform int lights, float4 lightvec[6], float3 normal)
+float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 normal)
 {
-    float4 lambert[2];
+    float4 lambert[LGs];
     float3 l = 0;    
-    
-    lambert[0] = calcLighting4(lightvec, 0, normal);
-    lambert[1] = calcLighting4(lightvec, 1, normal);
+
+    for(int i = 0; i != LGs; ++i)
+        lambert[i] = calcLighting4(lightvec, i, normal);
     
     for(int i = 0; i != lights; ++i)
         l += lambert[i/4][i%4] * lightDiffuse[i];
@@ -142,13 +147,13 @@ struct FFEPixel
     
     /* template */ FFE_SHADER_COUPLING
     
-    float4 lightvec[6] : TEXCOORD2;
+    float4 lightvec[3*LGs] : TEXCOORD2;
 };
 
 //------------------------------------------------------------
 // Shader framework
 
-// Vectorized lighting reduces instruction count by 50%
+// Relatively simple, notably passes lighting vectors in interpolators
 FFEPixel PerPixelVS(FFEVertIn IN)
 {
     FFEPixel OUT;
@@ -170,7 +175,7 @@ FFEPixel PerPixelVS(FFEVertIn IN)
     /* template */ FFE_VERTEX_COLOUR
     
     // Point lighting setup, vectorized
-    for(int i = 0; i != 2; ++i)
+    for(int i = 0; i != LGs; ++i)
     {
         OUT.lightvec[3*i + 0] = lightPosition[i + 0] - worldpos.x;
         OUT.lightvec[3*i + 1] = lightPosition[i + 2] - worldpos.y;
@@ -183,19 +188,19 @@ FFEPixel PerPixelVS(FFEVertIn IN)
 // Bumpmap stages return dUdV alpha channel due to select1 alpha op
 float4 bumpmapStage(sampler s, float2 tc, float4 dUdV)
 {
-    float2 offset = mul(float2x2(bumpMatrix.xy, bumpMatrix.zw), dUdV.rg);
+    float2 offset = mul(dUdV.rg, float2x2(bumpMatrix.xy, bumpMatrix.zw));
     return float4(tex2D(s, tc + offset).rgb, dUdV.a);
 }
 
 float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL)
 {
-    float2 offset = mul(float2x2(bumpMatrix.xy, bumpMatrix.zw), dUdVL.rg);
-    float4 c = float4(tex2D(s, tc + offset).rgb, dUdVL.a);
+    float4 c = bumpmapStage(s, tc, dUdVL);
     c.rgb *= dUdVL.b * bumpLumiScaleBias.x + bumpLumiScaleBias.y;
     return c;
 }
 
 // Per-pixel lighting augmented with semi-HDR tonemap
+// Vectorized lighting reduces instruction count by 50%
 float4 PerPixelPS(FFEPixel IN) : COLOR0
 {
     float3 normal = normalize(IN.nrm_fog.xyz);
@@ -213,11 +218,11 @@ float4 PerPixelPS(FFEPixel IN) : COLOR0
     // Texturing and combinators
     float4 c = diffuse;
     /* template */ FFE_TEXTURING
-
+    
     // Static tonemap and final fogging
     c.rgb = tonemap(c.rgb);
     /* template */ FFE_FOG_APPLICATION
-
+    
     return c;
 }
 

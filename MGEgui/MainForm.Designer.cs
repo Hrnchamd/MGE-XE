@@ -130,6 +130,9 @@ namespace MGEgui {
         	this.bDistantLandWizard = new System.Windows.Forms.Button();
         	this.cbDLDistantLand = new System.Windows.Forms.CheckBox();
         	this.gbDistantLand = new System.Windows.Forms.GroupBox();
+        	this.gbXEFeatures = new System.Windows.Forms.GroupBox();
+        	this.cbPerPixelLighting = new System.Windows.Forms.CheckBox();
+        	this.cbDLSunShadows = new System.Windows.Forms.CheckBox();
         	this.bMWLightSettings = new System.Windows.Forms.Button();
         	this.pDLStatics = new System.Windows.Forms.Panel();
         	this.cbDLDistantStatics = new System.Windows.Forms.CheckBox();
@@ -232,6 +235,7 @@ namespace MGEgui {
         	this.tabControl.SuspendLayout();
         	this.tpDL.SuspendLayout();
         	this.gbDistantLand.SuspendLayout();
+        	this.gbXEFeatures.SuspendLayout();
         	this.pDLStatics.SuspendLayout();
         	this.gbDLStatics.SuspendLayout();
         	((System.ComponentModel.ISupportInitialize)(this.udDLDistVeryFar)).BeginInit();
@@ -1568,6 +1572,7 @@ namespace MGEgui {
         	this.gbDistantLand.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
         	        	        	| System.Windows.Forms.AnchorStyles.Left) 
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
+        	this.gbDistantLand.Controls.Add(this.gbXEFeatures);
         	this.gbDistantLand.Controls.Add(this.bMWLightSettings);
         	this.gbDistantLand.Controls.Add(this.pDLStatics);
         	this.gbDistantLand.Controls.Add(this.cbDLAutoDist);
@@ -1582,6 +1587,37 @@ namespace MGEgui {
         	this.gbDistantLand.Size = new System.Drawing.Size(562, 409);
         	this.gbDistantLand.TabIndex = 1;
         	this.gbDistantLand.TabStop = false;
+        	// 
+        	// gbXEFeatures
+        	// 
+        	this.gbXEFeatures.Controls.Add(this.cbPerPixelLighting);
+        	this.gbXEFeatures.Controls.Add(this.cbDLSunShadows);
+        	this.gbXEFeatures.Location = new System.Drawing.Point(288, 331);
+        	this.gbXEFeatures.Name = "gbXEFeatures";
+        	this.gbXEFeatures.Size = new System.Drawing.Size(262, 72);
+        	this.gbXEFeatures.TabIndex = 11;
+        	this.gbXEFeatures.TabStop = false;
+        	this.gbXEFeatures.Text = "XE";
+        	// 
+        	// cbPerPixelLighting
+        	// 
+        	this.cbPerPixelLighting.AutoSize = true;
+        	this.cbPerPixelLighting.Location = new System.Drawing.Point(18, 43);
+        	this.cbPerPixelLighting.Name = "cbPerPixelLighting";
+        	this.cbPerPixelLighting.Size = new System.Drawing.Size(167, 17);
+        	this.cbPerPixelLighting.TabIndex = 1;
+        	this.cbPerPixelLighting.Text = "Per-pixel lighting shader (beta)";
+        	this.cbPerPixelLighting.UseVisualStyleBackColor = true;
+        	// 
+        	// cbDLSunShadows
+        	// 
+        	this.cbDLSunShadows.AutoSize = true;
+        	this.cbDLSunShadows.Location = new System.Drawing.Point(18, 19);
+        	this.cbDLSunShadows.Name = "cbDLSunShadows";
+        	this.cbDLSunShadows.Size = new System.Drawing.Size(137, 17);
+        	this.cbDLSunShadows.TabIndex = 0;
+        	this.cbDLSunShadows.Text = "Dynamic solar shadows";
+        	this.cbDLSunShadows.UseVisualStyleBackColor = true;
         	// 
         	// bMWLightSettings
         	// 
@@ -1861,7 +1897,7 @@ namespace MGEgui {
         	this.gbDLWater.Controls.Add(this.gbDLWtrRefl);
         	this.gbDLWater.Location = new System.Drawing.Point(288, 96);
         	this.gbDLWater.Name = "gbDLWater";
-        	this.gbDLWater.Size = new System.Drawing.Size(262, 276);
+        	this.gbDLWater.Size = new System.Drawing.Size(262, 229);
         	this.gbDLWater.TabIndex = 9;
         	this.gbDLWater.TabStop = false;
         	this.gbDLWater.Text = "&Water";
@@ -1883,9 +1919,9 @@ namespace MGEgui {
         	        	        	| System.Windows.Forms.AnchorStyles.Right)));
         	this.gbDLWtrCaust.Controls.Add(this.lDLWtrCaust);
         	this.gbDLWtrCaust.Controls.Add(this.udDLWtrCaust);
-        	this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 172);
+        	this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 170);
         	this.gbDLWtrCaust.Name = "gbDLWtrCaust";
-        	this.gbDLWtrCaust.Size = new System.Drawing.Size(250, 52);
+        	this.gbDLWtrCaust.Size = new System.Drawing.Size(250, 50);
         	this.gbDLWtrCaust.TabIndex = 4;
         	this.gbDLWtrCaust.TabStop = false;
         	this.gbDLWtrCaust.Text = "&Caustics [underwater refracted lighting]";
@@ -1929,7 +1965,7 @@ namespace MGEgui {
         	this.gbDLWtrWave.Enabled = false;
         	this.gbDLWtrWave.Location = new System.Drawing.Point(6, 114);
         	this.gbDLWtrWave.Name = "gbDLWtrWave";
-        	this.gbDLWtrWave.Size = new System.Drawing.Size(250, 52);
+        	this.gbDLWtrWave.Size = new System.Drawing.Size(250, 50);
         	this.gbDLWtrWave.TabIndex = 3;
         	this.gbDLWtrWave.TabStop = false;
         	// 
@@ -2680,6 +2716,8 @@ namespace MGEgui {
         	this.tpDL.PerformLayout();
         	this.gbDistantLand.ResumeLayout(false);
         	this.gbDistantLand.PerformLayout();
+        	this.gbXEFeatures.ResumeLayout(false);
+        	this.gbXEFeatures.PerformLayout();
         	this.pDLStatics.ResumeLayout(false);
         	this.pDLStatics.PerformLayout();
         	this.gbDLStatics.ResumeLayout(false);
@@ -2724,6 +2762,9 @@ namespace MGEgui {
         	this.tpInstructions.PerformLayout();
         	this.ResumeLayout(false);
         }
+        private System.Windows.Forms.CheckBox cbPerPixelLighting;
+        private System.Windows.Forms.CheckBox cbDLSunShadows;
+        private System.Windows.Forms.GroupBox gbXEFeatures;
         private System.Windows.Forms.Button bMWLightSettings;
         public System.Windows.Forms.CheckBox cbDLReflInterior;
         private System.Windows.Forms.TableLayoutPanel tableLayoutDisplay;

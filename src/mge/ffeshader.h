@@ -16,7 +16,7 @@ struct RenderedState
     D3DXMATRIX worldTransforms[4];
     BYTE blendEnable, srcBlend, destBlend;
     BYTE alphaTest, alphaFunc, alphaRef;
-    BYTE matSrcDiffuse, matSrcSpecular, matSrcAmbient, matSrcEmissive;
+    BYTE useLighting, matSrcDiffuse, matSrcEmissive;
 
     D3DPRIMITIVETYPE primType;
     UINT baseIndex, minIndex, vertCount, startIndex, primCount;

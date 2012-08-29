@@ -350,7 +350,6 @@ Technique T0 {
         ZWriteEnable = false;
         StencilEnable = false;
         CullMode = CW;
-        FogEnable = false;
 
         AlphaBlendEnable = true;
         SrcBlend = Zero;
@@ -367,7 +366,6 @@ Technique T0 {
         ZWriteEnable = true;
         ZFunc = LessEqual;
         CullMode = CW;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -382,7 +380,6 @@ Technique T0 {
         ZWriteEnable = true;
         ZFunc = LessEqual;
         CullMode = CCW;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -397,7 +394,6 @@ Technique T0 {
         ZWriteEnable = true;
         ZFunc = LessEqual;
         CullMode = CW;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = true;
@@ -414,7 +410,6 @@ Technique T0 {
         ZWriteEnable = true;
         ZFunc = LessEqual;
         CullMode = CW;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = true;
@@ -450,7 +445,6 @@ Technique T0 {
         
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
-        StencilEnable = false;
 
         VertexShader = compile vs_3_0 WaterVS ();
         PixelShader = compile ps_3_0 WaterPS ();
@@ -476,7 +470,6 @@ Technique T0 {
         ZWriteEnable = false;
         CullMode = None;
         StencilEnable = false;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -491,7 +484,6 @@ Technique T0 {
         ZWriteEnable = false;
         StencilEnable = false;
         CullMode = CW;
-        FogEnable = false;
 
         AlphaBlendEnable = true;
         SrcBlend = SrcAlpha;
@@ -508,7 +500,6 @@ Technique T0 {
         ZWriteEnable = false;
         StencilEnable = false;
         CullMode = none;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -523,7 +514,6 @@ Technique T0 {
         ZWriteEnable = false;
         StencilEnable = false;
         CullMode = none;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -538,7 +528,6 @@ Technique T0 {
         ZWriteEnable = false;
         StencilEnable = false;
         CullMode = none;
-        FogEnable = false;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;

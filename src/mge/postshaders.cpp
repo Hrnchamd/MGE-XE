@@ -330,7 +330,6 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
     // Turn off useless states
     device->SetRenderState(D3DRS_ZENABLE, 0);
     device->SetRenderState(D3DRS_ZWRITEENABLE, 0);
-    device->SetRenderState(D3DRS_FOGENABLE, 0);
     device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
     device->SetRenderState(D3DRS_ALPHATESTENABLE, 0);
 
@@ -393,11 +392,12 @@ IDirect3DTexture9 * PostShaders::borrowBuffer(int n)
     IDirect3DSurface9 *backbuffer;
 
     // Make a backbuffer copy for temporary use
+    doublebuffer.select(n);
     device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
-    device->StretchRect(backbuffer, 0, doublebuffer.s[n], 0, D3DTEXF_NONE);
+    device->StretchRect(backbuffer, 0, doublebuffer.sourceSurface(), 0, D3DTEXF_NONE);
     backbuffer->Release();
 
-    return doublebuffer.t[n];
+    return doublebuffer.sourceTexture();
 }
 
 void PostShaders::applyBlend()
@@ -407,27 +407,4 @@ void PostShaders::applyBlend()
     device->SetStreamSource(0, vbPost, 0, 32);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
-}
-
-// -------------------------------------------------------------------------
-
-void SurfaceDoubleBuffer::init(IDirect3DTexture9 *textures[2], IDirect3DSurface9 *surfaces[2])
-{
-    i = 0;
-    t[0] = textures[0]; t[1] = textures[1];
-    s[0] = surfaces[0]; s[1] = surfaces[1];
-}
-
-IDirect3DTexture9 * SurfaceDoubleBuffer::sourceTexture() { return t[i]; }
-IDirect3DSurface9 * SurfaceDoubleBuffer::sourceSurface() { return s[i]; }
-
-IDirect3DTexture9 * SurfaceDoubleBuffer::sinkTexture() { return t[1 - i]; }
-IDirect3DSurface9 * SurfaceDoubleBuffer::sinkSurface() { return s[1 - i]; }
-
-void SurfaceDoubleBuffer::cycle() { i = 1 - i; }
-
-void SurfaceDoubleBuffer::exchangeSource(IDirect3DTexture9 **pptex, IDirect3DSurface9 **ppsurf)
-{
-    std::swap(t[i], *pptex);
-    std::swap(s[i], *ppsurf);
 }

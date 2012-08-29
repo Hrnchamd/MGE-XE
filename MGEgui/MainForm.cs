@@ -125,12 +125,14 @@ namespace MGEgui {
             { "DLReflBlur", new string [] { "cbDLReflBlur" } },
             { "DLReflLand", new string [] { "cbDLReflLand" } },
             { "DLReflNStatics", new string [] { "cbDLReflNStatics" } },
-            { "DLReflFStatics", new string [] { "cbDLReflFStatics" } },
+            { "DLReflIntr", new string [] { "cbDLReflInterior" } },
             { "DLScatter", new string [] { "cbDLScattering" } },
             { "DLSkyRefl", new string [] { "cbDLSkyRefl" } },
             { "DLWthr", new string [] { "bDLWthr" } },
             { "DLWtrCaust", new string [] { "udDLWtrCaust", "lDLWtrCaust" } },
             { "DLWtrWave", new string [] { "udDLWtrWave", "lDLWtrWave" } },
+            { "DLSunShadows", new string[] { "cbDLSunShadows" } },
+            { "PerPixelLighting", new string[] { "cbPerPixelLighting" } },
         /* In-game */
             { "DisableMGE", new string [] { "cbDisableMGE" } },
             { "DisableMWSE", new string [] { "cbDisableMWSE" } },
@@ -376,6 +378,8 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniScattering = new INIFile.INIVariableDef ("Scatter", siniDL, "Use Atmosphere Scattering", INIFile.INIBoolType.YesNo, "No");
         private static INIFile.INIVariableDef iniWaveHght = new INIFile.INIVariableDef ("WaveHght", siniDL, "Water Wave Height", INIFile.INIVariableType.Byte, "50", 0, 250);
         private static INIFile.INIVariableDef iniCaustics = new INIFile.INIVariableDef ("Caustics", siniDL, "Water Caustics Intensity", INIFile.INIVariableType.Byte, "50", 0, 100);
+        private static INIFile.INIVariableDef iniShadows = new INIFile.INIVariableDef ("SunShadows", siniDL, "Sun Shadows", INIFile.INIBoolType.OnOff, "On");
+        private static INIFile.INIVariableDef iniPixelLighting = new INIFile.INIVariableDef ("PPLighting", siniDL, "Per Pixel Shader", INIFile.INIBoolType.OnOff, "Off");
         #endregion
 
         private static INIFile.INIVariableDef [] iniSettings = {
@@ -400,7 +404,8 @@ namespace MGEgui {
             iniAboveBeg, iniAboveEnd, iniBelowBeg, iniBelowEnd,
             iniInterBeg, iniInterEnd, iniSkyRefl, iniDynRipples,
             iniDLShader, iniReflBlur, iniExpFog, iniDLExpMul,
-            iniScattering, iniWaveHght, iniCaustics
+            iniScattering, iniWaveHght, iniCaustics,
+            iniShadows, iniPixelLighting
         };
 
         private void LoadGraphicsSettings () {
@@ -482,6 +487,8 @@ namespace MGEgui {
             rbDLAutoByDrawDist.Checked = (autoDistBy == 1);
             rbDLAutoByAFogEnd.Checked = (autoDistBy == 2);
             cbDLAutoDist.Checked = (iniFile.getKeyValue ("AutoDist") == 1);
+            cbDLSunShadows.Checked = (iniFile.getKeyValue ("SunShadows") == 1);
+            cbPerPixelLighting.Checked = (iniFile.getKeyValue ("PPLighting") == 1);
             loading = false;
         }
 
@@ -547,6 +554,8 @@ namespace MGEgui {
             iniFile.setKey ("ExpFog", cbDLFogExp.Checked);
             iniFile.setKey ("DLExpMul", (double)udDLFogExpMul.Value);
             iniFile.setKey ("Scatter", cbDLScattering.Checked);
+            iniFile.setKey ("SunShadows", cbDLSunShadows.Checked);
+            iniFile.setKey ("PPLighting", cbPerPixelLighting.Checked);
             iniFile.save ();
             try {
                 RegistryKey key = Registry.LocalMachine.OpenSubKey (Statics.reg_mw, true);

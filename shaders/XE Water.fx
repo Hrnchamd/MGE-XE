@@ -13,6 +13,7 @@ sampler sampRefract = sampler_state { texture = <tex2>; minfilter = linear; magf
 //------------------------------------------------------------
 // Water constants
 
+static const float kDistantZBias = 5e-6;
 static const float _lightfactor = 1 - pow(1 - SunVis, 2);
 static const float3 _depthcolor = _lightfactor * SunCol * float3(0.03, 0.04, 0.05) + (2 * SkyCol + FogCol2) * float3(0.075, 0.08, 0.085);
 static const float3 _SunCollf = SunCol * _lightfactor;
@@ -114,7 +115,7 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     OUT.position = mul(OUT.position, proj);
 
     // Match bias in distant land projection
-    OUT.position.z *= 1.0 + 5e-6 * step(8192, OUT.position.w);
+    OUT.position.z *= 1.0 + kDistantZBias * step(8192, OUT.position.w);
     
     OUT.screenpos = float4(0.5 * (1 + rcpres) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
@@ -136,8 +137,8 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
 
     // Apply vertex displacement
     float t = 0.4 * time;
-    float height = tex3Dlod(sampWater3d, float4(OUT.texcoords.zw, t, 0)).a;
-    float height2 = tex3Dlod(sampWater3d, float4(OUT.texcoords.xy, t, 0)).a;
+    float height = tex3Dlod(sampWater3d, float4(OUT.pos.xy / 1104, t, 0)).a;
+    float height2 = tex3Dlod(sampWater3d, float4(OUT.pos.xy / 3900, t, 0)).a;
     float dist = length(EyePos.xyz - OUT.pos.xyz);
 
     float addheight = waveHeight * (lerp(height, height2, saturate(dist/8000)) - 0.5) * saturate(1 - dist/6400) * saturate(dist/200);
@@ -146,14 +147,14 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     // Match bias in distant land projection
     OUT.position = mul(OUT.pos, view);
     OUT.position = mul(OUT.position, proj);
-    OUT.position.z *= 1.0 + 5e-6 * step(8192, OUT.position.w);
+    OUT.position.z *= 1.0 + kDistantZBias * step(8192, OUT.position.w);
     OUT.screenpos = float4(0.5 * (1 + rcpres) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
     // Clamp reflection point to be above surface
     float4 clampedPos = OUT.pos - float4(0, 0, abs(addheight), 0);
     clampedPos = mul(clampedPos, view);
     clampedPos = mul(clampedPos, proj);
-    clampedPos.z *= 1.0 + 5e-6 * step(8192, clampedPos.w);
+    clampedPos.z *= 1.0 + kDistantZBias * step(8192, clampedPos.w);
     OUT.screenposclamp = float4(0.5 * (1 + rcpres) * clampedPos.w + float2(0.5, -0.5) * clampedPos.xy, clampedPos.zw);
     
     return OUT;
@@ -281,7 +282,7 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
 //------------------------------------------------------------
 // Caustics post-process
 
-DeferredOut CausticsVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1)
+DeferredOut CausticsVS(float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1)
 {
     DeferredOut OUT;
     
@@ -296,7 +297,7 @@ DeferredOut CausticsVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 nd
     return OUT;
 }
 
-float4 CausticsPS (DeferredOut IN) : COLOR0
+float4 CausticsPS(DeferredOut IN) : COLOR0
 {
     float3 c = tex2Dlod(sampBaseTex, IN.tex).rgb;
     float depth = tex2Dlod(sampDepth, IN.tex).r;
@@ -326,7 +327,7 @@ struct WaveVertOut
     float2 texcoord : TEXCOORD0;
 };
 
-WaveVertOut WaveVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
+WaveVertOut WaveVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0)
 {
     WaveVertOut OUT;
     OUT.pos = mul(pos, proj);
@@ -336,7 +337,7 @@ WaveVertOut WaveVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
 
 //------------------------------------------------------------
 
-float4 WaveStepPS (float2 Tex : TEXCOORD0) : COLOR0
+float4 WaveStepPS(float2 Tex : TEXCOORD0) : COLOR0
 {
     float4 c = 2 * tex2D(sampRain, Tex) - 1;
     float4 ret = {0, c.r, 0, 0};
@@ -372,7 +373,7 @@ float4 WaveStepPS (float2 Tex : TEXCOORD0) : COLOR0
     return ret;
 }
 
-float4 PlayerWavePS (float2 Tex : TEXCOORD0) : COLOR0
+float4 PlayerWavePS(float2 Tex : TEXCOORD0) : COLOR0
 {
     float4 ret = tex2D(sampRain, Tex);
     float wavesize = (1.0 + 0.055 * sin(16 * time) + 0.065 * sin(12.87645 * time)) * playerWaveSize;

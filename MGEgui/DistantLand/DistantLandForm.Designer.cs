@@ -130,7 +130,7 @@ namespace MGEgui.DistantLand {
         	this.statusWarnings.Image = ((System.Drawing.Image)(resources.GetObject("statusWarnings.Image")));
         	this.statusWarnings.ImageTransparentColor = System.Drawing.Color.Transparent;
         	this.statusWarnings.Name = "statusWarnings";
-        	this.statusWarnings.Size = new System.Drawing.Size(82, 20);
+        	this.statusWarnings.Size = new System.Drawing.Size(76, 20);
         	this.statusWarnings.Text = "Warnings";
         	this.statusWarnings.ToolTipText = "View warnings from last setup step";
         	this.statusWarnings.ButtonClick += new System.EventHandler(this.statusWarnings_ButtonClick);
@@ -182,6 +182,7 @@ namespace MGEgui.DistantLand {
         	// 
         	// lInstructions
         	// 
+        	this.lInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
         	this.lInstructions.AutoSize = true;
         	this.lInstructions.Location = new System.Drawing.Point(6, 251);
         	this.lInstructions.Name = "lInstructions";
@@ -214,7 +215,7 @@ namespace MGEgui.DistantLand {
         	// 
         	// bPlugsFromINI
         	// 
-        	this.bPlugsFromINI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+        	this.bPlugsFromINI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
         	this.bPlugsFromINI.Location = new System.Drawing.Point(331, 217);
         	this.bPlugsFromINI.Name = "bPlugsFromINI";
         	this.bPlugsFromINI.Size = new System.Drawing.Size(125, 23);
@@ -841,7 +842,7 @@ namespace MGEgui.DistantLand {
         	// lFinishDesc
         	// 
         	this.lFinishDesc.AutoSize = true;
-        	this.lFinishDesc.Location = new System.Drawing.Point(8, 3);
+        	this.lFinishDesc.Location = new System.Drawing.Point(8, 6);
         	this.lFinishDesc.Name = "lFinishDesc";
         	this.lFinishDesc.Size = new System.Drawing.Size(202, 13);
         	this.lFinishDesc.TabIndex = 0;

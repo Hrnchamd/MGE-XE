@@ -48,6 +48,9 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob) : ProxyDe
     memset(&rs, 0, sizeof(rs));
     rs.zWrite = true;
     rs.cullMode = D3DCULL_CCW;
+    rs.useLighting = true;
+    rs.matSrcDiffuse = D3DMCS_COLOR1;
+    rs.matSrcEmissive = D3DMCS_MATERIAL;
 
     memset(&frs, 0, sizeof(frs));
     for(FragmentState::Stage *s = &frs.stage[0]; s != &frs.stage[8]; ++s)
@@ -506,9 +509,8 @@ void captureRenderState(D3DRENDERSTATETYPE a, DWORD b)
         case D3DRS_ALPHAFUNC: rs.alphaFunc = (BYTE)b; break;
         case D3DRS_ALPHAREF: rs.alphaRef = (BYTE)b; break;
 
+        case D3DRS_LIGHTING: rs.useLighting = (BYTE)b; break;
         case D3DRS_DIFFUSEMATERIALSOURCE: rs.matSrcDiffuse = (BYTE)b; break;
-        case D3DRS_SPECULARMATERIALSOURCE: rs.matSrcSpecular = (BYTE)b; break;
-        case D3DRS_AMBIENTMATERIALSOURCE: rs.matSrcAmbient = (BYTE)b; break;
         case D3DRS_EMISSIVEMATERIALSOURCE: rs.matSrcEmissive = (BYTE)b; break;
     }
 }

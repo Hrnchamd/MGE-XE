@@ -133,7 +133,8 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, EXP_FOG_BIT, siniDL, "Use Exponential Fog", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_ATM_SCATTER_BIT, siniDL, "Use Atmosphere Scattering", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_GRASS_BIT, siniDL, "Render Grass", True, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, USE_SHADOWS_BIT, siniDL, "Dynamic Shadows", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_SHADOWS_BIT, siniDL, "Sun Shadows", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_FFESHADER_BIT, siniDL, "Per Pixel Shader", False, &dictBool, DICTONLY, 0, 0},
 
     // Generic Variables
     {&Configuration.AALevel, t_uint8, 1, siniGlobGraph, "Antialiasing Level", "None", &dictAA, DICTONLY, 0, 0},
