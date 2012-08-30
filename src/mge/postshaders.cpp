@@ -333,6 +333,9 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
     device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
     device->SetRenderState(D3DRS_ALPHATESTENABLE, 0);
 
+    // Make sure fogging is off, drivers are not consistent in applying fog to post-transform vertices
+    device->SetRenderState(D3DRS_FOGENABLE, 0);
+
     // Resolve back buffer to lastshader surface
     device->StretchRect(backbuffer, 0, surfaceLastShader, 0, D3DTEXF_NONE);
 
