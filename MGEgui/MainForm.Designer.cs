@@ -1590,6 +1590,7 @@ namespace MGEgui {
         	// 
         	// gbXEFeatures
         	// 
+        	this.gbXEFeatures.Anchor = System.Windows.Forms.AnchorStyles.Top;
         	this.gbXEFeatures.Controls.Add(this.cbPerPixelLighting);
         	this.gbXEFeatures.Controls.Add(this.cbDLSunShadows);
         	this.gbXEFeatures.Location = new System.Drawing.Point(288, 331);
