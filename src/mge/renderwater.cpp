@@ -87,23 +87,23 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 
 void DistantLand::renderReflectedSky()
 {
-    float adjustZ = -2.0 * eyePos.z;
+    // Sky objects are not correctly positioned at infinity, so correction is required
+    const float adjustZ = -2.0 * eyePos.z;
 
-    for(vector<RenderedState>::iterator i = recordSky.begin(); i != recordSky.end(); ++i)
+    for(vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
     {
-        // Adjust world transform, as skydome is positioned in eye space instead of world space
-        i->worldTransforms[0]._43 += adjustZ;
+        // Adjust world transform, as skydome is positioned relative to the viewer
+        D3DXMATRIX worldTransform = i->worldTransforms[0];
+        worldTransform._43 += adjustZ;
 
-        // Re-adjust sky to approximate change in visible normal distribution with distance
-        // Normals pointing away are obscured by waves, so median normal will change
-        if(i->texture == 0)
-            i->worldTransforms[0]._43 += 600.0;
-
-        effect->SetMatrix(ehWorld, &i->worldTransforms[0]);
+        effect->SetMatrix(ehWorld, &worldTransform);
         effect->SetBool(ehHasAlpha, i->texture != 0);
+        effect->SetBool(ehHasBones, i->texture == 0);
         effect->SetTexture(ehTex0, i->texture);
         effect->CommitChanges();
         device->SetRenderState(D3DRS_ALPHABLENDENABLE, i->texture ? 1 : 0);
+        device->SetRenderState(D3DRS_SRCBLEND, i->srcBlend);
+        device->SetRenderState(D3DRS_DESTBLEND, i->destBlend);
 
         device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
         device->SetIndices(i->ib);

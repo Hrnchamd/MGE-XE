@@ -280,14 +280,14 @@ struct SkyVertOut
 SkyVertOut SkyVS (StatVertIn IN)
 {
     SkyVertOut OUT;
-
-    // Screw around with skydome, align default mesh with horizon
     float4 pos = IN.pos;
+    
+    // Screw around with skydome, align default mesh with horizon
     if(!hasalpha)
         pos.z = 50 * (IN.pos.z + 200);
-        
+    
     pos = mul(pos, world);
-    OUT.skypos = pos - float4(world[3][0], world[3][1], world[3][2], world[3][3]);
+    OUT.skypos = float4(pos.xyz - EyePos, 1);
 
     pos = mul(pos, view);
     OUT.pos = mul(pos, proj);
@@ -303,11 +303,20 @@ static const float ditherSky[4][4] = { 0.001176, 0.001961, -0.001176, -0.001699,
 
 float4 SkyPS (SkyVertOut IN, float2 vpos : VPOS) : COLOR0
 {
-    // Sample texture at lod 0 avoiding mip blurring, or return colour from scattering for sky
+    float4 c = 0;
+    
     if(hasalpha)
-        return IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
-    else
-        return fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
+        // Sample texture at lod 0 avoiding mip blurring
+        c = IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
+        
+    if(hasbones)
+    {
+        // Use colour from scattering for sky (but preserves alpha)
+        float4 f = fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
+        c.rgb = f.rgb;
+    }
+        
+    return c;
 }
 
 //-----------------------------------------------------------------------------

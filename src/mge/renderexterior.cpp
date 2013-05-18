@@ -11,14 +11,19 @@
 void DistantLand::renderSky()
 {
     // Recorded renders
-    for(vector<RenderedState>::iterator i = recordSky.begin(); i != recordSky.end(); ++i)
+    for(vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
     {
         // Set variables in main effect; variables are shared via effect pool
+        effect->SetTexture(ehTex0, i->texture);
         if(i->texture)
         {
-            // Textured object; draw as normal in shader
-            effect->SetTexture(ehTex0, i->texture);
+            // Textured object; draw as normal in shader,
+            // except moon shadow (prevents stars shining through moons) which
+            // requires colour to be replaced with atmosphere scattering colour
+            bool isMoonShadow = i->destBlend == D3DBLEND_INVSRCALPHA && !i->useLighting;
+
             effect->SetBool(ehHasAlpha, true);
+            effect->SetBool(ehHasBones, isMoonShadow);
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
             device->SetRenderState(D3DRS_SRCBLEND, i->srcBlend);
             device->SetRenderState(D3DRS_DESTBLEND, i->destBlend);
@@ -27,6 +32,7 @@ void DistantLand::renderSky()
         {
             // Sky; perform atmosphere scattering in shader
             effect->SetBool(ehHasAlpha, false);
+            effect->SetBool(ehHasBones, true);
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
         }
 

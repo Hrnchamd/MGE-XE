@@ -796,6 +796,10 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
     {
         recordSky.push_back(*rs);
 
+        // Check for moon geometry, and mark those records by setting lighting off
+        if(frs->material.emissive.a == kMoonTag)
+            recordSky.back().useLighting = false;
+
         // If using atmosphere scattering, draw sky later in stage 0
         if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER))
             return false;

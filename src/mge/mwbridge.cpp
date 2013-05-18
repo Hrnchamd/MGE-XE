@@ -1027,7 +1027,7 @@ void MWBridge::markWaterNode(float k)
     addr = read_dword(addr + 0xb4ec);
     addr = read_dword(addr + 0xb4);
 
-    // Look for NiMaterialProperty in property list
+    // Look for NiMaterialProperty in property list (skipping first property)
     DWORD linknode;
     for(linknode = read_dword(addr + 0x8c); linknode; linknode = read_dword(linknode + 4))
     {
@@ -1038,6 +1038,38 @@ void MWBridge::markWaterNode(float k)
     // Write to specular power member
     if(linknode)
         write_float(read_dword(linknode) + 0x4c, k);
+}
+
+//-----------------------------------------------------------------------------
+
+// markMoonNodes
+// Edits the material for both moons to set (normally unused) specular power to a recognizable value
+void MWBridge::markMoonNodes(float k)
+{
+    DWORD addr = read_dword(eMaster);
+    addr = read_dword(addr + 0x58);
+
+    // Get masser node
+    DWORD moon = read_dword(addr + 0x48);
+    moon = read_dword(moon + 0x10);
+
+    // Look for NiMaterialProperty in first property slot
+    DWORD node = read_dword(moon + 0x88);
+
+    // Write to specular power member
+    if(node && read_dword(node) == 0x75036c)
+        write_float(node + 0x4c, k);
+
+    // Get secunda node
+    moon = read_dword(addr + 0x44);
+    moon = read_dword(moon + 0x10);
+
+    // Look for NiMaterialProperty in first property slot
+    node = read_dword(moon + 0x88);
+
+    // Write to specular power member
+    if(node && read_dword(node) == 0x75036c)
+        write_float(node + 0x4c, k);
 }
 
 //-----------------------------------------------------------------------------

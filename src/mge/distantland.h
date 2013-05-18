@@ -25,6 +25,7 @@ public:
     static const float waveTexWorldRes = 2.5f;
     static const int GrassInstStride = 48;
     static const int MaxGrassElements = 8192;
+    static const float kMoonTag = 88888.0f;
 
     static bool ready;
     static bool isRenderCached;

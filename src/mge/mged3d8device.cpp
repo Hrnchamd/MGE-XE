@@ -585,6 +585,7 @@ void captureMaterial(const D3DMATERIAL8 *a)
     frs.material.diffuse = a->Diffuse;
     frs.material.ambient = a->Ambient;
     frs.material.emissive = a->Emissive;
+    frs.material.emissive.a = a->Power;
 }
 
 // --------------------------------------------------------

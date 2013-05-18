@@ -324,6 +324,13 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Depth shader compiled OK");
 
+    if(Configuration.MGEFlags & USE_ATM_SCATTER)
+    {
+        // Mark moon geometry for detection
+        DECLARE_MWBRIDGE
+        mwBridge->markMoonNodes(kMoonTag);
+    }
+
     return true;
 }
 
