@@ -32,7 +32,7 @@ namespace MGEgui {
             // Set initial directories
             this.OpenFileDialog.InitialDirectory = this.SaveFileDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             // Title
-            Text = "Morrowind Graphics Extender XE 0.9";
+            Text = "Morrowind Graphics Extender XE " + Statics.versionNumber;
             // Set default tooltip text reading speed
             Statics.tipReadSpeed = (int)(1000 / double.Parse (cmbTipReadSpd.Text));
             // set a handler for each control which sets tooltip popup timeout dependent on tooltip text length
