@@ -340,7 +340,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     // View position
     effect->SetMatrix(ehView, view);
     effect->SetMatrix(ehProj, proj);
-    effect->SetFloatArray(ehEyePos, eyePos,3);
+    effect->SetFloatArray(ehEyePos, eyePos, 3);
 
     // Sunlight
     RGBVECTOR totalAmb = sunAmb + ambCol;
@@ -448,10 +448,14 @@ void DistantLand::adjustFog()
             else
             {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
+                // Linear density matched to exp fog at dist = 1280 and dist = 7168
                 fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
                 fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
+
+                float expStart = exp(-(1280.0 - fogNearStart) / (fogNearEnd - fogNearStart));
                 float expEnd = exp(-(7168.0 - fogNearStart) / (fogNearEnd - fogNearStart));
-                fogNearEnd =  (7168.0 - expEnd * fogNearStart) / (1.0 - expEnd);
+                fogNearStart = 1280.0 + (7168.0 - 1280.0) * (1 - expStart) / (expEnd - expStart);
+                fogNearEnd = 1280.0 + (7168.0 - 1280.0) * -expStart / (expEnd - expStart);
             }
         }
         else
@@ -486,7 +490,7 @@ void DistantLand::adjustFog()
         D3DXCOLOR c0(c), c1(c);
 
         // Simplified version of scattering from the shader
-        const D3DXVECTOR3 scatter(0.07, 0.36, 0.76);
+        const D3DXVECTOR3 scatter1(0.07, 0.36, 0.76);
         const D3DXVECTOR3 scatter2(0.16, 0.37, 0.62);
         const RGBVECTOR *skyCol = mwBridge->CurSkyColVector();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
@@ -500,13 +504,21 @@ void DistantLand::adjustFog()
         float fogE = fogEnd / Configuration.DL.ExpFogDistMult;
         float fogdist = (7168.0 - fogS) / (fogE - fogS);
         float fog = saturate(exp(-fogdist));
-        fogdist = saturate(0.19 * fogdist);
+        fogdist = saturate(0.21 * fogdist);
 
-        float mie = 1.246 * sunaltitude2;
+        D3DXVECTOR2 horizonDir(eyeVec.x, eyeVec.y);
+        D3DXVec2Normalize(&horizonDir, &horizonDir);
+        float suncos =  horizonDir.x * sunPos.x + horizonDir.y * sunPos.y;
+        float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
         float rayl = 1 - 0.09 * mie;
         float atmdep = 1.33;
 
-        D3DXVECTOR3 att = atmdep * scatter2 * (sunaltitude_a + mie);
+        D3DXVECTOR3 scatter;
+        scatter.x = lerp(scatter2.x, scatter1.x, suncos);
+        scatter.y = lerp(scatter2.y, scatter1.y, suncos);
+        scatter.z = lerp(scatter2.z, scatter1.z, suncos);
+
+        D3DXVECTOR3 att = atmdep * scatter * (sunaltitude_a + mie);
         att.x = (1 - exp(-fogdist * att.x)) / att.x;
         att.y = (1 - exp(-fogdist * att.y)) / att.y;
         att.z = (1 - exp(-fogdist * att.z)) / att.z;
