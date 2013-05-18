@@ -110,6 +110,9 @@ D3DXHANDLE DistantLand::ehTime;
 D3DXHANDLE DistantLand::ehRippleOrigin;
 D3DXHANDLE DistantLand::ehWaveHeight;
 
+void (*DistantLand::captureScreenFunc)(IDirect3DSurface9 *);
+
+
 static vector<DistantStatic> DistantStatics;
 static unordered_map< string, vector<UsedDistantStatic> > UsedDistantStatics;
 

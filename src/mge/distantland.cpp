@@ -582,6 +582,13 @@ void DistantLand::postProcess()
             texDistantBlend = PostShaders::borrowBuffer(0);
             isRenderCached = true;
         }
+        else if(captureScreenFunc)
+        {
+            IDirect3DSurface9 *surface = captureScreen();
+            (*captureScreenFunc)(surface);
+            if(surface) surface->Release();
+            captureScreenFunc = NULL;
+        }
 
         // Shadow map inset
         ///renderShadowDebug();
@@ -805,6 +812,13 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
     return true;
 }
 
+// requestCaptureNoUI - Set a function to be called with a screen capture
+// just after post-processing and before the UI is drawn
+void DistantLand::requestCaptureNoUI(void (*func)(IDirect3DSurface9 *))
+{
+    captureScreenFunc = func;
+}
+
 // captureScreen - Capture a screenshot, fixing any alpha channel issue
 IDirect3DSurface9 * DistantLand::captureScreen()
 {
@@ -814,6 +828,9 @@ IDirect3DSurface9 * DistantLand::captureScreen()
     // Resolve multisampled back buffer
     t = PostShaders::borrowBuffer(0);
     t->GetSurfaceLevel(0, &s);
+
+    // Cancel render cache, borrowBuffer just overwrote it
+    isRenderCached = false;
 
     // Set alpha channel to opaque in case something with alpha write was rendered
     D3DVIEWPORT9 vp;
