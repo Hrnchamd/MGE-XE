@@ -141,12 +141,22 @@ namespace MGEgui.Localization {
         
         public void Apply (Form form, Localization localization) {
             FieldInfo messages_field;
-            Dictionary<string, string> dict;
-            dict = localization.langFile.getSectionKeys(form.Name + ".Text");
+            Dictionary<string, string> dict = localization.langFile.getSectionKeys(form.Name + ".Text");
+            
+            if(dict.ContainsKey(form.Name))
+            	form.Text = dict[form.Name];
+            
             foreach(KeyValuePair<string, string> entry in dict) {
                 Control[] controls = form.Controls.Find(entry.Key, true);
                 foreach(Control control in controls) {
-                    if(!(control is ComboBox))
+                    if(control is ComboBox) {
+                    	ComboBox cmb = (ComboBox)control;
+                    	int preserveIndex = cmb.SelectedIndex;
+                    	cmb.Items.Clear();
+                    	cmb.Items.AddRange(entry.Value.Split(';'));
+                    	cmb.SelectedIndex = preserveIndex;
+                    }
+                    else
                         control.Text = entry.Value;
                 }
             }
@@ -181,6 +191,28 @@ namespace MGEgui.Localization {
                         }
                     }
                 }
+            }
+        }
+
+        public void ApplyDialogs (Form form, string[] dialogs) {
+            ApplyDialogs(form, dialogs, localizations[baseLocalization]);
+            ApplyDialogs(form, dialogs, currentLocalization);
+        }
+        
+        public void ApplyDialogs (Form form, string[] dialogs, Localization localization) {
+            FieldInfo field;
+            Dictionary<string, string> dict = localization.langFile.getSectionKeys(form.Name + ".Text");
+            
+            // Applies localization to named dialogs, however they must be public members
+            foreach(string dialogname in dialogs) {
+            	field = form.GetType().GetField(dialogname);
+            	if(field != null && dict.ContainsKey(dialogname)) {
+            		object d = field.GetValue(form);
+            		if(d is FileDialog)
+            			(d as FileDialog).Title = dict[dialogname];
+            		else if(d is FolderBrowserDialog)
+            			(d as FolderBrowserDialog).Description = dict[dialogname];
+            	}
             }
         }
 

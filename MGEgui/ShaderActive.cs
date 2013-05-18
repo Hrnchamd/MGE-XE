@@ -273,7 +273,7 @@ namespace MGEgui {
             if(lbAvailable.SelectedIndex==-1) return;
 
             DirectX.DXMain.CreateDevice(this);
-            if (DirectX.Shaders.CompileShader(false, null, null, null, Statics.runDir + "\\" + Statics.pathShaders + "\\" + (string)lbAvailable.SelectedItem + ".fx") != null) {
+            if (DirectX.Shaders.CompileShader(false, null, null, Statics.runDir + "\\" + Statics.pathShaders + "\\" + (string)lbAvailable.SelectedItem + ".fx") != null) {
                 MessageBox.Show("That shader does not currently compile.");
             } else {
                 lbSelected.Items.Add(string.Copy((string)lbAvailable.SelectedItem));

@@ -15,6 +15,7 @@ namespace MGEgui.DistantLand
         public OverrideListForm(ListBox lbList, Label lList) {
             InitializeComponent();
             Statics.Localizations.Apply(this);
+            Statics.Localizations.ApplyDialogs(this, new string[] { "openStaticListDialog" });
 
             this.openStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             lStaticOverrideList = lList;

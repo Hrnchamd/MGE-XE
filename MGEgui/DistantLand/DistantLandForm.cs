@@ -12,6 +12,7 @@ namespace MGEgui.DistantLand {
         public DistantLandForm(bool exists) {
             InitializeComponent();
             Statics.Localizations.Apply(this);
+            Statics.Localizations.ApplyDialogs(this, new string[] { "saveStaticListDialog" });
 
             this.saveStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             Exists = exists;
@@ -179,7 +180,7 @@ namespace MGEgui.DistantLand {
         private const string iniDLWizardStatOvr = "DLWizard Static Overrides";
         
         // INI key definitions
-        private static INIFile.INIVariableDef iniPlugSort = new INIFile.INIVariableDef("PlugSort", iniDLWizardSets, "Plugins view sort order", INIFile.INIVariableType.Dictionary, "Type", sortOrder);
+        private static INIFile.INIVariableDef iniPlugSort = new INIFile.INIVariableDef("PlugSort", iniDLWizardSets, "Plugins view sort order", INIFile.INIVariableType.Dictionary, "Load order", sortOrder);
         private static INIFile.INIVariableDef iniTexRes = new INIFile.INIVariableDef("TexRes", iniDLWizardSets, "World texture resolution", INIFile.INIVariableType.Dictionary, "2048", texRes);
         private static INIFile.INIVariableDef iniNormRes = new INIFile.INIVariableDef("NormRes", iniDLWizardSets, "World normalmap resolution", INIFile.INIVariableType.Dictionary, "1024", texRes);
         private static INIFile.INIVariableDef iniTex2Step = new INIFile.INIVariableDef("Tex2Step", iniDLWizardSets, "Create world texture in two steps", INIFile.INIBoolType.Text, "False");
@@ -731,23 +732,23 @@ namespace MGEgui.DistantLand {
                             index = line.IndexOf(':');
                             if (index != -1) line = line.Substring(0, index);
                             line = line.Trim();
-                            if (line.Length > 0) {
+                            if (line.Length > 0 && line[0] != '#') {
                                 if (line.StartsWith("[") && line.EndsWith("]")) {
                                     section = line.Substring(1, line.Length - 2);
                                     continue;
                                 }
                                 index = line.LastIndexOf('=');
-                                bool oldcomment = (line[0] == '#');
                                 if (index != -1) {
                                     string mesh = line.Substring(0, index);
                                     string value = line.Substring(index + 1);
                                     byte type;
                                     if (byte.TryParse(value, out type)) {
                                         if (type != 3 && type <= 6) OverrideList[line] = new staticOverride(type);
-                                        else if (type > 6 && !oldcomment) warnings.Add("Warning: Invalid type specified in statics list '" + overrideList + "' line '" + line + "'");
+                                        else if (type > 6) warnings.Add("Warning: Invalid type specified in statics list '" + overrideList + "' line '" + line + "'");
                                     } else OverrideList[mesh] = new staticOverride(value);
-                                } else if (!oldcomment) warnings.Add("Warning: Failed to parse line in statics list '" + overrideList + "': '" + line + "'");
-                                if (oldcomment) warnings.Add("Warning: Deprecated line comment '#' character spotted in statics list '" + overrideList + "', use ':' (colon) character for comments. Line '" + line + "' will be ignored.");
+                                } else {
+                                	warnings.Add("Warning: Failed to parse line in statics list '" + overrideList + "': '" + line + "'");
+                                }
                             }
                             break;
                         case "names":

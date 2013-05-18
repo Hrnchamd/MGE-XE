@@ -166,7 +166,7 @@
         private System.Windows.Forms.Button bDown;
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.Button bSave;
-        private System.Windows.Forms.OpenFileDialog openStaticListDialog;
+        public System.Windows.Forms.OpenFileDialog openStaticListDialog;
 
     }
 }

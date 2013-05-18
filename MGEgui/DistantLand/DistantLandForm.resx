@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -127,16 +127,16 @@
   <data name="statusWarnings.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAAAgBJREFUOE+tk91L
-        01EYx8/O9tt0OEgSawYSRY0siBVkza68yCglNKq7/oD6FwpCCMHeoKt2USQrwagsKkpBjZKoC7VNnbmt
-        fs7WfGG5phOzvXz6aVtCsZzQgQfO8z3n+Z7Pcw5HiBwDhC7XWt76wpyuPbkoqavTH8u7KLsxHlXsP+KS
-        +IxIj/bLWU23rIkq/tXk+zYp0mAlMSu4cE7flDFfvbXYdEnt/JTgZaclbbevIxkzog7r0QxK8qII+2Vs
-        RtWlmi9v0IoUwEFUFVxv1t9elWLCbTo7PSJYnNtE26UCioptECkjopr5MrhMYfvnhYb69AQHlBShLby9
-        s54dFTthuJSFyGbC/YJb13QdOSn8r0xNaq9gPlROylPB5OttHKreDT4bSe8upkaL+PxOLlFU/UXhdArF
-        1y35+KYwlfZXkfxwAMYc+LoqIVBJcsRBIriHQLfAdUW6NQOpxcqLeJ4YWr3PBN8D+0kFauDTYbydB6mt
-        LoXxIyT8NaQDR5nos6J26di+VZ76TdHbWlg2+EiHv2ej1vsJ0uP1ED5O+819WIrLIXqaZLBe0xsg1MDQ
-        Y8Hdq4aQZmBcNum4YWjxagae+4L391Zi6IFAfS4YaPtDfygZeyEpUDIUZrOwOs8rPa5Go9vVKDOxNM/m
-        2fmvvOWi9Jw5qTzVzt675j/y3wt+AmrNLZVEBB6cAAAAAElFTkSuQmCC
+        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIASURBVDhPxU/fS1NxFD/3e3c3HQ6SxJqBRFEjC2IFWbMn
+        HzJKCY3qrT+g/oWCEEKwX9BTeyiSlWBUFhVp4ITaQz2s2tTZdm9dtdtMuTU2J2a79376ul0xipH10gcO
+        nPM55/Phc6gcABLs9t+xMCf0G4sMbW3iEZtaPfIZyf89z5DTyUpGWY5Tnr9Klf/iSn1NkwV4UcgRzp0R
+        u+zVn02yszWt8zOE8IDH8vvXwMg6oY6J4KuaVaXQZJbV3wtm98V1XCQBCCCjEq52izftk/Im0zHX6dlx
+        wuLcBvRdqEBVtQ/Q66CrbnwaKabwlS7LQIuKUKOSCW0TXt5ai20N24GxWizoG5F+TbhxRRi0T39PIT93
+        dakRwrxWDzPegM8vtuBA804g5YOR2IGZZBU+vmJLKZpKip8QDJKUCjPIkUrTkptgvNsHTASQGmoElEYY
+        4wEUJndBCRNCl1iMSxivlRTxR47exBPCN2UvTKUF+HAQiWf70dpcC0wdQkFugaUcxnTUC3VIwNbN7IQt
+        JYr0VtaNPBCQHF7Pfz8Ga6odSB9F//U98FTXA5mTMCbbOd8BaB0YfUi4fdmhcamzaDB4zdGT4Abxu4S3
+        d1Zq9B5BfUp40/cLf59hYoChQrJTuN3kDZ6VhkOdzliok9m11C/Py31p7jnP4qeOS4+5dHfR4D+C6Ace
+        9S14THSARgAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="DudMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

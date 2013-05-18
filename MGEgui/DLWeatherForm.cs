@@ -27,8 +27,19 @@ namespace MGEgui {
         public DLWeatherForm() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
+            LocalizeDefaultButtons(Statics.strings["Default"]);
             defaults = new Dictionary<string, float>();
             LoadSettings();
+        }
+        
+        private void LocalizeDefaultButtons(string s)
+        {
+        	foreach(Control c in gbWind.Controls)
+        		if(c is Button) c.Text = s;
+        	foreach(Control c in gbFogDay.Controls)
+        		if(c is Button) c.Text = s;
+        	foreach(Control c in gbFogOffsDay.Controls)
+        		if(c is Button) c.Text = s;
         }
 
         private const string iniDLWeather = "Distant Land Weather";

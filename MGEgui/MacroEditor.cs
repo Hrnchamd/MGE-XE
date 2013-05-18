@@ -1723,8 +1723,22 @@ namespace MGEgui {
         public bool[] Active=new bool[Statics.MACROS];
         public ArrayList ConsoleCommand=new ArrayList();
 
+        private List<byte> macroOrdering = new List<byte> {
+        	0, 13, 14, 27, 7, 8, 9, 11, 12, 21, 22, 28, 29, 36, 37, 38,
+        	39, 40, 41, 42, 30, 43, 31, 44, 32, 33, 45, 34, 46, 35, 48, 49,
+        	50, 51, 52, 53
+        };
+        private List<MacroFunc> macroFuncData = new List<MacroFunc>();
+        public static Dictionary<string, string> strings = new Dictionary<string, string>();
+        
         public MacroEditorForm() {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
+            
+            foreach(byte m in macroOrdering) {
+            	macroFuncData.Add(new MacroFunc(m, strings["Macro"+m.ToString("D3")]));
+            }
+            
             cbFunction.DataSource = macroFuncData;
             cbFunction.DisplayMember = "Description";
             cbFunction.ValueMember = "Id";
@@ -1751,7 +1765,7 @@ namespace MGEgui {
         /// </summary>
         /// <param name="Partial">true to not change any form properties</param>
         public void EndMacro() {
-            Text="Macro editor";
+            Text=strings["NormalTitle"];
             formtype=MacroFormType.Editor;
             cbFunction.Enabled=false;
             cbMacroType.Enabled=false;
@@ -1786,7 +1800,7 @@ namespace MGEgui {
         /// </summary>
         /// <param name="Code">The macro to start editing</param>
         public void StartMacro(int Code) {
-            Text="Editing macro 0x"+Code.ToString("x");
+            Text=strings["EditModeTitle"]+" 0x"+Code.ToString("x");
             Editing=Code;
             Active=new bool[Statics.MACROS];
             Array.Copy(Statics.Macros[Code].Press.KeyStates,Active,Statics.MACROS);
@@ -1941,7 +1955,7 @@ namespace MGEgui {
                     return;
                 case MacroFormType.Console:
                     if(ConsoleCommand.Count>=255) {
-                        MessageBox.Show("Console command length cannot exceed 256 key state changes","Error");
+                    	MessageBox.Show(strings["CommandLengthExceeded"],Statics.strings["Error"]);
                         break;
                     }
                     if(rbDown.Checked) {
@@ -1955,7 +1969,7 @@ namespace MGEgui {
                     tbCLen.Text=ConsoleCommand.Count.ToString();
                     return;
                 default:
-                    MessageBox.Show("Keyboard should not currently be enabled","Error");
+                    MessageBox.Show(strings["KeyboardError"],Statics.strings["Error"]);
                     return;
             }
         }
@@ -2045,44 +2059,5 @@ namespace MGEgui {
             return false;
         }
         
-        private List<MacroFunc> macroFuncData = new List<MacroFunc> {
-            new MacroFunc(0, "Take screenshot"),
-            new MacroFunc(13, "Toggle shaders"),
-            new MacroFunc(14, "Toggle fps counter"),
-            new MacroFunc(27, "Toggle crosshair"),
-            new MacroFunc(7, "Toggle zoom"),
-            new MacroFunc(8, "Increase zoom"),
-            new MacroFunc(9, "Decrease zoom"),
-            new MacroFunc(11, "Toggle messages"),
-            new MacroFunc(12, "Show last message"),
-            new MacroFunc(21, "Increase view range"),
-            new MacroFunc(22, "Decrease view range"),
-            new MacroFunc(28, "Next music track"),
-            new MacroFunc(29, "Disable music"),
-            new MacroFunc(36, "Toggle distant land"),
-            new MacroFunc(37, "Toggle shadows"),
-            new MacroFunc(38, "Toggle grass"),
-            new MacroFunc(39, "Toggle MW/MGE blending"),
-            new MacroFunc(40, "Toggle lighting mode"),
-            new MacroFunc(41, "Increase FOV"),
-            new MacroFunc(42, "Decrease FOV"),
-            new MacroFunc(30, "Haggle +1"),
-            new MacroFunc(43, "Haggle +10"),
-            new MacroFunc(31, "Haggle +100"),
-            new MacroFunc(44, "Haggle +1000"),
-            new MacroFunc(32, "Haggle +10000"),
-            new MacroFunc(33, "Haggle -1"),
-            new MacroFunc(45, "Haggle -10"),
-            new MacroFunc(34, "Haggle -100"),
-            new MacroFunc(46, "Haggle -1000"),
-            new MacroFunc(35, "Haggle -10000"),
-            new MacroFunc(48, "Move forward 3rd person cam"),
-            new MacroFunc(49, "Move back 3rd person cam"),
-            new MacroFunc(50, "Move left 3rd person cam"),
-            new MacroFunc(51, "Move right 3rd person cam"),
-            new MacroFunc(52, "Move down 3rd person cam"),
-            new MacroFunc(53, "Move up 3rd person cam"),
-        };
-
     }
 }

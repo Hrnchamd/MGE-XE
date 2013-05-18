@@ -82,6 +82,7 @@ namespace MGEgui {
 
         public RemapDialog() {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
             DialogResult=DialogResult.Cancel;
         }
 

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D9;
 using MGEgui.INI;
@@ -16,6 +17,7 @@ namespace MGEgui.DirectX {
         private static Surface lastShaderSurface;
         private static Surface lastPassSurface;
 
+        private static int frameWidth, frameHeight;
         private static VertexBuffer vBuffer;
         private static Int64 basetime;
 
@@ -85,12 +87,17 @@ namespace MGEgui.DirectX {
         }
 
         private static shader LoadShaderTextures(Effect effect) {
-            try { effect.SetTexture("thisframe", thisFrame); } catch { } //throws an exception if this parameter doesn't exist :(
-            try { effect.SetTexture("lastpass", lastPass); } catch { }
+            try { effect.SetTexture("lastpass", lastPass); } catch { } //throws an exception if this parameter doesn't exist :(
             try { effect.SetTexture("lastshader", lastShader); } catch { }
             try { effect.SetTexture("depthframe", depthFrame); } catch { }
-            try { effect.SetValue("rcpres", new Vector4(1.0f/1024.0f, 1.0f/1024.0f, 0, 1)); } catch { }
-			try { effect.SetValue("HDR", new Vector4(0.5f, 0.5f, 0.5f, 0.5f)); } catch { }
+            try { effect.SetValue("rcpres", new Vector4(1f/frameWidth, 1f/frameHeight, 0, 1)); } catch { }
+            try { effect.SetValue("fov", 85f); } catch { }
+            try { effect.SetValue("fogstart", 819.2f); } catch { }
+            try { effect.SetValue("fogrange", 65536.0f); } catch { }
+            try { effect.SetValue("waterlevel", 0f); } catch { }
+			try { effect.SetValue("HDR", new Vector4(0.25f, 0.25f, 0.25f, 02.5f)); } catch { }
+			try { effect.SetValue("eyepos", new Vector3(0f, 0f, 128f)); } catch { }
+			try { effect.SetValue("eyevec", new Vector3(1f, 0f, 0f)); } catch { }
 
             int count=1;
             while(true) {
@@ -121,14 +128,35 @@ namespace MGEgui.DirectX {
             return s;
         }
 
-        private static string Setup(string pic1, string pic2, string pic3) {
+        private static string Setup(string framepath, string depthpath) {
+        	if(framepath == null) framepath = Statics.runDir + @"\mge3\preview_frame.dds";
+        	if(depthpath == null) depthpath = Statics.runDir + @"\mge3\preview_depth.dds";
+        	
+            try {
+                thisFrame = Texture.FromFile(DXMain.device, framepath, D3DX.FromFile, D3DX.FromFile, 1, Usage.None, Format.Unknown, Pool.Default, Filter.None, Filter.None, 0);
+                depthFrame = Texture.FromFile(DXMain.device, depthpath, D3DX.FromFile, D3DX.FromFile, 1, Usage.None, Format.Unknown, Pool.Default, Filter.None, Filter.None, 0);
+                if(thisFrame==null||depthFrame==null) throw new ApplicationException();
+        		
+        		frameWidth = thisFrame.GetLevelDescription(0).Width;
+        		frameHeight = thisFrame.GetLevelDescription(0).Height;
+                lastShader = new Texture(DXMain.device, frameWidth, frameHeight, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                lastPass = new Texture(DXMain.device, frameWidth, frameHeight, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+                if(lastShader==null||lastPass==null) throw new ApplicationException();
+
+                thisFrameSurface = thisFrame.GetSurfaceLevel(0);
+                lastShaderSurface = lastShader.GetSurfaceLevel(0);
+                lastPassSurface = lastPass.GetSurfaceLevel(0);
+            } catch {
+                return "Unable to create the required textures";
+            }
+        	
             try {
                 vBuffer = new VertexBuffer(DXMain.device, GenericVertex.Stride*4, Usage.WriteOnly, GenericVertex.format, Pool.Default);
                 DataStream verts = vBuffer.Lock(0, 0, LockFlags.None);
-                verts.Write(new GenericVertex(-000.5f, -000.5f, 0, 1, 0, 0));
-                verts.Write(new GenericVertex(-000.5f, +1023.5f, 0, 1, 0, 1));
-                verts.Write(new GenericVertex(+1023.5f, -000.5f, 0, 1, 1, 0));
-                verts.Write(new GenericVertex(+1023.5f, +1023.5f, 0, 1, 1, 1));
+                verts.Write(new GenericVertex(-0.5f, -0.5f, 0, 1, 0, 0));
+                verts.Write(new GenericVertex(-0.5f, frameHeight-0.5f, 0, 1, 0, 1));
+                verts.Write(new GenericVertex(frameWidth-0.5f, -0.5f, 0, 1, 1, 0));
+                verts.Write(new GenericVertex(frameWidth-0.5f, frameHeight-0.5f, 0, 1, 1, 1));
                 vBuffer.Unlock();
             } catch {
                 return "Unable to create vertex buffer";
@@ -143,29 +171,11 @@ namespace MGEgui.DirectX {
                 return "Unable to set device state";
             }
 
-            try {
-                thisFrame = Texture.FromFile(DXMain.device, pic1 == null ? Statics.runDir + "\\mge3\\preview.bmp" : pic1,
-                                    1024, 1024, 1, Usage.RenderTarget, DXMain.format, Pool.Default, Filter.Linear, Filter.Linear, 0);
-                depthFrame = Texture.FromFile(DXMain.device, pic3 == null ? Statics.runDir + "\\mge3\\depth.bmp" : pic3,
-                    1024, 1024, 1, Usage.RenderTarget, DXMain.format, Pool.Default, Filter.Linear, Filter.Linear, 0);
-                lastShader = Texture.FromFile(DXMain.device, pic1 == null ? Statics.runDir + "\\mge3\\preview.bmp" : pic1,
-                                    1024, 1024, 1, Usage.RenderTarget, DXMain.format, Pool.Default, Filter.Linear, Filter.Linear, 0);
-                lastPass = new Texture(DXMain.device, 1024, 1024, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
-
-                if(thisFrame==null||lastPass==null||lastShader==null||depthFrame==null) throw new ApplicationException();
-
-                thisFrameSurface = thisFrame.GetSurfaceLevel(0);
-                lastShaderSurface = lastShader.GetSurfaceLevel(0);
-                lastPassSurface = lastPass.GetSurfaceLevel(0);
-            } catch {
-                return "Unable to create the required textures";
-            }
-
             basetime = DateTime.Now.Ticks;
             return null;
         }
 
-        internal static string CompileShader(bool Render, string pic1, string pic2, string pic3, string shaderpath) {
+        internal static string CompileShader(bool Render, string framepath, string depthpath, string shaderpath) {
             Reset();
 
             Effect effect;
@@ -189,16 +199,16 @@ namespace MGEgui.DirectX {
                 return null;
             }
 
-            string s = Setup(pic1, pic2, pic3);
+            string s = Setup(framepath, depthpath);
             if(s != null) return s;
 
             effects.Add(LoadShaderTextures(effect));
             return null;
         }
 
-        internal static string PreviewShaderChain(string pic1, string pic2, string pic3) {
+        internal static string PreviewShaderChain(string framepath, string depthpath) {
             Reset();
-            string sp = Setup(pic1, pic2, pic3);
+            string sp = Setup(framepath, depthpath);
             if(sp != null) return sp;
 
             INIFile iniFile = new INIFile(Statics.iniFileName, ShaderActive.iniShaderWhat, true);
@@ -238,33 +248,33 @@ namespace MGEgui.DirectX {
                 double t = (DateTime.Now.Ticks - basetime) / 10000000.0;
                 
                 DXMain.device.BeginScene();
+                DXMain.device.StretchRectangle(thisFrameSurface, lastPassSurface, TextureFilter.None);
+                
                 for(int i=0; i<effects.Count; i++) {
+                    DXMain.device.StretchRectangle(lastPassSurface, lastShaderSurface, TextureFilter.None);
+                    
                     if(effects[i].ehTime != null) effects[i].effect.SetValue(effects[i].ehTime, t);
                     if(effects[i].ehHDR != null) effects[i].effect.SetValue(effects[i].ehHDR, new Vector4((float)HDR_val, (float)HDR_val, (float)HDR_val, (float)HDR_val));
 
-                    if (i > 0) {
-                        DXMain.device.StretchRectangle(lastPassSurface, DXMain.Rect, lastShaderSurface, DXMain.Rect, TextureFilter.None);
-                    } else {
-                        DXMain.device.StretchRectangle(thisFrameSurface, DXMain.Rect, lastShaderSurface, DXMain.Rect, TextureFilter.None);
-                    }
                     int passes = effects[i].effect.Begin(FX.None);
                     for(int pass = 0;pass < passes;pass++) {
                         effects[i].effect.BeginPass(pass);
                         DXMain.device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
-                        DXMain.device.StretchRectangle(DXMain.BackBuffer, DXMain.Rect, lastPassSurface, DXMain.Rect, TextureFilter.None);
+                        DXMain.device.StretchRectangle(DXMain.BackBuffer, lastPassSurface, TextureFilter.None);
                         effects[i].effect.EndPass();
                     }
                     effects[i].effect.End();
                 }
+                
                 DXMain.device.EndScene();
-                DXMain.device.StretchRectangle(DXMain.BackBuffer, DXMain.Rect, lastPassSurface, DXMain.Rect, TextureFilter.None);
+                DXMain.device.StretchRectangle(DXMain.BackBuffer, lastPassSurface, TextureFilter.None);
             } else {
                 for (int i = 0; i < 6; i++) DXMain.device.SetTexture(i, thisFrame);
                 DXMain.device.BeginScene();
                 DXMain.device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
                 DXMain.device.EndScene();
             }
-            DXMain.device.Present(/*window*/);
+            DXMain.device.Present();
         }
     }
 }

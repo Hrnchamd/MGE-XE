@@ -63,6 +63,7 @@ DSound = "You appear to have a part of an old version of MGE installed.\nYou nee
 Error = "Error"
 Warning = "Warning"
 Message = "Message"
+Default = "Default"
 Close = "&Close"
 MGEguiRunning = "MGEXEgui is already running."
 MGEMissing = "One or more of MGE's files appear to be missing. Please reinstall."
@@ -80,34 +81,23 @@ Translation = "English translation"
 
 [MainForm.Strings]
 About = "About"
-
-;; {0} will be replaced by 'ResetSaved' when 'cbClearINI' is selected
 AskReset = "Are you sure you want to reset all main {0}settings to default values?"
-
-;; used on the About window
 CreatedBy = "Created by"
-
 DLDelDifferent = "Distant land files already exist, but are from a different version of MGE and must be deleted to continue.\nDo you wish to continue?"
 DLDelOldCorrupt = "Distant land files already exist, but are either incomplete, corrupt, or from an older version of MGE and must be deleted to continue.\nDo you wish to continue?"
 DLDiffer = "Distant land files have not been created or are from a different version of MGE.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
 DLLackSM3 = "Your graphics card lacks the Shader Model 3.0 support required to use Distant Land."
 DLVertexFog = "Distant land is not compatible with vertex fog when using some graphics cards.\nIf the distant land does not appear in game, or appears untextured, try switching back to pixel fog."
 DSMissing = "The distant statics files are missing.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
-
-;; {0} can be either 'SetTooNew' or 'SetTooOld'
 ErrImpSet = "Error importing old graphics save file.\n\n{0}"
-
-;; {0} can be either 'InpTooNew' or 'InpTooOld'
 ErrLdInp = "Error loading input save file.\n\n{0}"
-
-;; used on the About window
 FurtherDevel = "Further development"
-
 GraphCaps = "Graphics capabilities"
 ImpOldSet = "Old graphics save file was found.\n\nDo you want to import settings?"
 ImportSet = "Import settings"
 InpTooNew = "The input save file is newer than this version of MGE."
 InpTooOld = "The input save file is too old to import."
+LightOverride = "This setting automatically modifies your lighting coefficients. (see the in-game tab)\nYou may want to reset them when turning off this feature."
 MacrTrigErr = "An error occurred while loading input macros or triggers.\nIt may be due to using a new version of MGE.\nRecovery will occur, but some macros may no longer be available."
 MWIniNotInMGE = "Settings file does not contain ini data."
 NoDLOrOld = "Distant Land files have not been created or are from an older version of MGE.\nUse the 'Distant land file creation wizard' on the Tools tab to create them."
@@ -122,13 +112,15 @@ SetTooNew = "The graphics save file is newer than this version of MGE."
 SetTooOld = "The graphics save file is too old to be imported."
 TooHighAA = "Your selected antialiasing level is not supported by your graphics card."
 TooHighAF = "Your selected anisotropic filtering level is not supported by your graphics card."
-
-;; {0}, {1} & {2} will be integer numbers of maximum reported levels
 ViewCaps = "Max fullscreen antialiasing level: {0}x\nMax windowed antialiasing level: {1}x\nMax anisotropic filtering level: {2}x\n\nGraphics drivers often report their capabilities incorrectly.\nIf you think your graphics card only supports lower levels of AA,\nthen you will need to reduce it by hand if you use best quality mode."
 
 
 
 [MainForm.Text]
+;;;;   dialogs   ;;;;
+OpenFileDialog = "Select settings file to import"
+SaveFileDialog = "Export settings"
+SShotFolderDialog = "Select output folder for screenshots taken in game:"
 
 ;;;;   buttons   ;;;;
 bAbout = "About"
@@ -145,6 +137,8 @@ bMacroEd = "Macro editor"
 bMWLightingReset = "Reset"
 bMWLightSettings = "Light Settings..."
 bRemapper = "Key remapper"
+bReportingShowLog = "Open last mgeXE.log"
+bReportingShowDLWizardLog = "Open DL generator log"
 bResetSettings = "Reset settings"
 bShaderEd = "Shader setup"
 bSShotDirBrowse = "Browse"
@@ -190,6 +184,12 @@ cbUILangAuto = "Autodetect"
 cbWindowed = "Windowed mode"
 cbYesToAll = "Allow yes to all load errors"
 
+;;;;   combo boxes   ;;;;
+cmbAnisoLevel = "Off;2x;4x;8x;16x"
+cmbAntiAlias = "Off;2x;4x;8x;16x"
+cmbFogMode = "Depth pixel (Fast);Depth vertex;Range vertex (Best)"
+cmbVWait = "Off;On;x2;x3;x4"
+
 ;;;;   group boxes   ;;;;
 gbDisplay = "Display"
 gbDLDrawDist = "&Draw Distance"
@@ -197,6 +197,7 @@ gbDLFog = "&Fog"
 gbDLWater = "&Water"
 gbDLWtrCaust = "&Caustics [underwater refracted lighting]"
 gbDLWtrRefl = "Reflections"
+gbErrorReporting = "Error reporting"
 gbFog = "Fog"
 gbInputOpts = "Options"
 gbInputTools = "Input tools"
@@ -204,7 +205,7 @@ gbMainInfo = "Information"
 gbMainSettings = "Settings"
 gbMainUI = "User Interface"
 gbMsgs = "MGE status messages"
-gbMWGeneral = "General settings"
+gbMWGeneral = "Morrowind engine settings"
 gbMWLighting = "Dynamic lighting coefficients"
 gbRendOpts = "Options"
 gbScene = "Renderer"
@@ -354,7 +355,7 @@ DLSunShadows = "Enables fully dynamic shadows cast by the sun."
 DLWthr = "Distant Land settings for all Morrowind weather types.\nYou can set there fog and wind ratios for each weather type."
 DLWtrCaust = "This sets the intensity of underwater caustic lighting in percent.\nSetting it to 0 will disable caustics. The default value is 50."
 DLWtrWave = "This sets the height of water waves in Morrowind units.\nA graphics card with vertex texture fetch support is required for this feature.\nSuggested value for wave height is 30-50."
-PerPixelLighting = "Replaces Morrowind's rendering with a shader-based system that delivers better quality lighting.\nIn beta, may display complex modded meshes incorrectly."
+PerPixelLighting = "Replaces Morrowind's rendering with a shader-based system that delivers better quality lighting.\nIn beta, so it may display bumpmap modded meshes incorrectly."
 
 ; In-game tab
 DisableMGE = "Disables hooking of DirectX input and 3D interface by Morrowind Graphics Extender.\nNote that this doesn't disable MGE's internal version of MWSE, so you don't need to run its external version."
@@ -375,7 +376,7 @@ MsgsTime = "Changes the maximum length of time for which MGE status messages wil
 ; Morrowind.ini section
 Screenshots = "The 'Screen Shot Enable' line.\nCheck this to enable Morrowind's inbuilt screenshot function.\nMGE captures and saves screenshots when you press the PrintScreen key if MGE is enabled."
 YesToAll = "The 'AllowYesToAll' line.\nCheck this to add an additional 'yes to all' option when clicking through multiple warning messages."
-HQShadows = "The 'High Detail Shadows' line.\nCheck this to enable much better quality actor shadows.\nThis will cause a huge FPS hit, particularly with certain incompatible meshes."
+HQShadows = "The 'High Detail Shadows' line.\nCheck this to enable much better quality actor shadows.\nThis will cause a huge FPS hit, particularly with modded meshes."
 ThreadLoad = "The 'DontThreadLoad' line.\nCheck this to allow Morrowind to load new cells in a separate thread."
 ShowFPS = "The 'Show FPS' line.\nCheck this to enable Morrowind's inbuilt FPS counter."
 Audio = "The 'Disable Audio' line.\nCheck this to disable most of Morrowind's audio. Music is unaffected by this setting."
@@ -392,6 +393,7 @@ InvalidHeight = "Invalid value entered for screen height"
 DimensionError = "Screen width and height must be greater than 0"
 
 [ResolutionForm.Text]
+ResolutionForm = "Select Resolution"
 lScrWdth = "Screen Width"
 lScrHght = "Screen Height"
 lArbRes = "Arbitrary resolutions can only be set in windowed mode."
@@ -402,6 +404,7 @@ bOK = "OK"
 
 ;;; Shader setup
 [ShaderActive.Text]
+ShaderActive = "Set active shaders"
 lAvailableList = "Available shaders"
 lActiveList = "Active Shaders"
 bSave = "Save"
@@ -416,6 +419,7 @@ lShaderUsage = "Double-click to add or remove shaders from the active list.\n\nR
 
 ;;; Weather options
 [DLWeatherForm.Text]
+DLWeatherForm = "Distant Land Weather Settings"
 gbWind = "Wind speed factor"
 gbFogDay = "Fog range factor"
 gbFogOffsDay = "Fog offset"
@@ -429,8 +433,8 @@ lAsh = "Ashstorm"
 lBlight = "Blight"
 lSnow = "Snow"
 lBlizzard = "Blizzard"
-bReset = "Reset"
 bCancel = "Cancel"
+bReset = "Reset"
 bSave = "Save"
 
 [DLWeatherForm.Tooltips]
@@ -489,7 +493,9 @@ TexResError = "You have selected a texture resolution above that which your grap
 
 
 [DistantLandForm.Text]
+DistantLandForm = "Distant Land Setup Wizard"
 statusWarnings = "Warnings"
+saveStaticListDialog = "Save static list"
 
 tabPlugs = "Plugins"
 lInstructions = "Standard usage: Click 'Use current load order' then 'Continue'"
@@ -505,6 +511,7 @@ rbPlugsLoad = "by load order"
 bPlugsRun = "Continue"
 
 tabTex = "Land Textures"
+lTexDesc = "Higher resolutions look better at the expense of a greater fps hit.\nMaximum texture size:  "
 lTexNormalMemUse = "VRAM usage:"
 lTexWorldMemUse = "VRAM usage:"
 lTexWorldResolution = "World texture resolution"
@@ -518,15 +525,18 @@ tabMesh = "Land Meshes"
 lMeshDesc = "Higher detail reduces mesh errors at the cost of more memory use."
 lMeshWorldDetail = "World mesh detail"
 lMeshAutoInfo = "World mesh detail is auto-calculated based on the size of the world resulting from the selected plugins list - this value may change from what you had set previously if you choose different set of plugins."
+cmbMeshWorldDetail = "Ultra High;Very High;High;Medium;Low"
 bMeshSkip = "Skip Mesh Creation"
 bMeshRun = "Create Land Meshes"
 
 tabStat = "Statics"
+lStatDesc = "The static size represents the minimum size of a mesh in ingame Morrowind units.\nSmaller numbers increase the number of statics drawn."
 lStatMinSize = "Minimum static size"
 lStatGrassDensity = "Grass density percent"
 lStatSimplifyMeshes = "Mesh detail"
 lStatSkipMipLevels = "Mipmap levels to skip"
 lStatSkipMipDesc = "Skipping mipmap levels reduces\nthe required vram in-game"
+cmbStatSimplifyMeshes = "Full;90%;75%;50%;25%"
 cbStatActivators = "Include activators"
 cbStatIncludeMisc = "Include misc objects"
 cbStatIntWater = "Include reflective water in interiors\n(increases load time)"
@@ -546,6 +556,7 @@ bFinish = "Finish"
 
 ;;; Distant land dialogs
 [RunSetupForm.Text]
+RunSetupForm = "Choose data creation method"
 bAutoSetup = "Automatic setup everything"
 bRun = "Run above steps using saved / default settings"
 bSetup = "Re-run Distant Land Configuration Setup >>>"
@@ -557,6 +568,8 @@ lOr = "or"
 cbDebug = "DEBUG"
 
 [DirectoriesForm.Text]
+DirectoriesForm = "Plugin directories"
+folderAdd = "Choose folder to be added to list of additional directories scanned for plugins:"
 lDirectories = "Additional directories that will be scanned for plugins:"
 bClear = "Clear"
 bAdd = "Add"
@@ -565,6 +578,8 @@ bCancel = "Cancel"
 bSave = "Save"
 
 [OverrideListForm.Text]
+OverrideListForm = "Selected Static Override Lists"
+openStaticListDialog = "Open static override list"
 bClear = "Clear"
 bAdd = "Add"
 bRemove = "Remove"
@@ -572,3 +587,114 @@ bUp = "Move\nUp"
 bDown = "Move\nDown"
 bCancel = "Cancel"
 bSave = "Save"
+
+
+
+;;; Input tools
+[MacroEditorForm.Strings]
+NormalTitle = "Macro editor"
+EditModeTitle = "Editing macro"
+CommandLengthExceeded = "Console command length cannot exceed 256 key state changes"
+KeyboardError = "Keyboard should not currently be enabled"
+Macro000 = "Take screenshot"
+Macro013 = "Toggle shaders"
+Macro014 = "Toggle fps counter"
+Macro027 = "Toggle crosshair"
+Macro007 = "Toggle zoom"
+Macro008 = "Increase zoom"
+Macro009 = "Decrease zoom"
+Macro011 = "Toggle messages"
+Macro012 = "Show last message"
+Macro021 = "Increase view range"
+Macro022 = "Decrease view range"
+Macro028 = "Next music track"
+Macro029 = "Disable music"
+Macro036 = "Toggle distant land"
+Macro037 = "Toggle shadows"
+Macro038 = "Toggle grass"
+Macro039 = "Toggle MW/MGE blending"
+Macro040 = "Toggle lighting mode"
+Macro041 = "Increase FOV"
+Macro042 = "Decrease FOV"
+Macro030 = "Haggle +1"
+Macro043 = "Haggle +10"
+Macro031 = "Haggle +100"
+Macro044 = "Haggle +1000"
+Macro032 = "Haggle +10000"
+Macro033 = "Haggle -1"
+Macro045 = "Haggle -10"
+Macro034 = "Haggle -100"
+Macro046 = "Haggle -1000"
+Macro035 = "Haggle -10000"
+Macro048 = "Move forward 3rd person cam"
+Macro049 = "Move back 3rd person cam"
+Macro050 = "Move left 3rd person cam"
+Macro051 = "Move right 3rd person cam"
+Macro052 = "Move down 3rd person cam"
+Macro053 = "Move up 3rd person cam"
+
+[KeyRemapper.Strings]
+NormalTitle = "Key remapper"
+EditModeTitle = "Remapping key"
+
+[RemapDialog.Text]
+RemapDialog = "Please hit a key"
+bCancel = "Cancel"
+bClear = "Clear"
+
+
+
+;;; Shader editor
+[ShaderEditorForm.Text]
+ShaderEditor = "New file - Shader Editor"
+OpenImage = "Select image"
+OpenShader = "Open shader"
+SaveShader = "Save shader"
+bShaderFlags = "Edit shader flags"
+bValidate = "Validate"
+bPreview = "Preview"
+bPreviewChain = "Preview active chain"
+bSetImage = "Set <thisframe>"
+bSetDepthImage = "Set <depthframe>"
+
+[ShaderEditorForm.Strings]
+CannotReadFlags = "Could not read shader flags. Something may be wrong with the code."
+Compiling = "Compiling..."
+CompileSuccess = "Compile successful."
+NewFile = "New file"
+PreviewChainError = "Could not preview shader chain."
+Save = "Save"
+SavePrompt = "Save current shader file?"
+ShaderEditor = "Shader Editor"
+
+[ShaderFlagsEd.Text]
+ShaderFlagsEd = "Shader flags"
+bOK = "OK"
+bCancel = "Cancel"
+cbSFNotInt = "Disabled in interiors"
+cbSFNotExt = "Disabled in exteriors"
+cbSFNotIntExt = "Disabled in interiors acting like exteriors (like Mournhold)"
+cbSFNotUnderwater = "Disabled when underwater"
+cbSFNotAboveWater = "Disabled when above water"
+cbSFSunVis = "Disabled when sun is visible"
+cbSFNotSunVis = "Disabled when sun is not visible (i.e. sun opacity is zero)"
+
+[RenderWindow.Text]
+RenderWindow = "Preview Window"
+cbShader = "Enable shader"
+fpsLabel = "FPS: "
+hdrLabel = "HDR"
+cmbCycles = "50 frames;100 frames;500 frames;1000 frames"
+bBenchmark = "Benchmark"
+
+[RenderWindow.Strings]
+FPS = "FPS: "
+Benchmark1 = "Completed "
+Benchmark2 = " frames."
+Benchmark3 = "Standard time: "
+Benchmark4 = "Shaded time: "
+Benchmark5 = "Time spent rendering each shaded frame: "
+Benchmark6 = " seconds"
+Benchmark7 = "Shader performance hit: "
+Benchmark8 = "Estimated reduction in Morrowind fps:"
+Benchmark9 = "This fps hit is calculated by assuming that Morrowind is limited only by your graphics card. Because morrowind is usually cpu limited, the real fps hit is likely to be far lower."

@@ -20,15 +20,7 @@ namespace MGEgui.DistantLand {
             return System.Drawing.Color.FromArgb(s.r, s.g, s.b).ToArgb();
         }
 
-        public static RGB operator +(RGB a,RGB b) {
-            RGB res= new RGB(a.r, a.g, a.b);
-            res.r+=b.r;
-            res.g=b.g;
-            res.b=b.b;
-            return res;
-        }
-
-        public static readonly RGB White =new RGB((byte)255, (byte)255, (byte)255);
+        public static readonly RGB White = new RGB((byte)255, (byte)255, (byte)255);
     }
 
     struct Normal {
@@ -49,7 +41,7 @@ namespace MGEgui.DistantLand {
             x=X; y=Y; z=Z;
         }
 
-        public static readonly Normal Up=new Normal(0, 0, 1);
+        public static readonly Normal Up=new Normal(0f, 0f, 1f);
 
         public static Normal operator+(Normal a, Normal b) {
             return new Normal(a.x+b.x, a.y+b.y, a.z+b.z);
@@ -84,8 +76,7 @@ namespace MGEgui.DistantLand {
 
     class LTEXSorter : System.Collections.Generic.IComparer<LTEX> {
         public int Compare(LTEX a, LTEX b) {
-            if(a.index==b.index) return 0;
-            if(a.index>b.index) return 1; else return -1;
+			return a.index.CompareTo(b.index);
         }
     }
 }

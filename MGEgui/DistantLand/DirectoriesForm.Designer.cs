@@ -152,6 +152,6 @@
         private System.Windows.Forms.Button bSave;
         private System.Windows.Forms.ListBox lbDirectories;
         private System.Windows.Forms.Label lDirectories;
-        private System.Windows.Forms.FolderBrowserDialog folderAdd;
+        public System.Windows.Forms.FolderBrowserDialog folderAdd;
     }
 }

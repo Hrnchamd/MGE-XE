@@ -181,6 +181,7 @@ namespace MGEgui {
 
         public ShaderFlagsEd() {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
         }
 
         public void setCheckboxes(UInt32 flags){

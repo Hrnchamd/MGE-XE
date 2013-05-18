@@ -166,6 +166,7 @@ namespace MGEgui {
         /* names of used files */
         public const string fn_nul = "NUL";
         public const string fn_mwini = "Morrowind.ini";
+        public const string fn_runtimelog = "mgeXE.log";
         public const string iniFileName = "MGE3/MGE.ini";
         public const string fn_settings = "MGE3/settings";
         public const string fn_oldsettings = "MGE3/old-settings";

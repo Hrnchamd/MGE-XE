@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Collections.Generic;
 using ArrayList=System.Collections.ArrayList;
 
 namespace MGEgui {
@@ -1355,13 +1356,16 @@ namespace MGEgui {
         private Button bClear;
         public byte Mapping;
 
+        public static Dictionary<string, string> strings = new Dictionary<string, string>();
+        
         public KeyRemapper() {
             InitializeComponent();
+            Statics.Localizations.Apply(this);
             EndRemap();
         }
 
         private void StartRemap() {
-            Text="Remapping key 0x"+Mapping.ToString("x");
+        	Text=strings["EditModeTitle"]+" 0x"+Mapping.ToString("x");
             foreach(Control c in Controls) {
                 if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
                     c.Enabled=false;
@@ -1382,7 +1386,7 @@ namespace MGEgui {
         }
 
         private void EndRemap() {
-            Text="Key remapper";
+        	Text=strings["NormalTitle"];
             Mapping=0;
             foreach(Control c in Controls) {
                 if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {

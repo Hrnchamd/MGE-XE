@@ -22,7 +22,6 @@ namespace MGEgui.DirectX {
         private static int adapter;
 
         public static MGECaps mCaps = new MGECaps();
-        public static readonly System.Drawing.Rectangle Rect = new System.Drawing.Rectangle(0, 0, 1024, 1024);
         public static int Adapter { get { return adapter; } }
         public static Format format { get { return _format; } private set { _format=value; } }
 
@@ -36,18 +35,13 @@ namespace MGEgui.DirectX {
 
         static DXMain() {
         	d3d = new Direct3D();
+        	format = Format.A8R8G8B8;
         	
-            try {
-                format = d3d.Adapters[adapter].CurrentDisplayMode.Format;
-            } catch {
-                format = Format.X8R8G8B8;
-            }
-
             devParams=new PresentParameters();
             devParams.BackBufferCount=1;
             devParams.BackBufferFormat=format;
-            devParams.BackBufferHeight=1024;
-            devParams.BackBufferWidth=1024;
+            devParams.BackBufferWidth=960;
+            devParams.BackBufferHeight=540;
             devParams.EnableAutoDepthStencil=false;
             devParams.Multisample=MultisampleType.None;
             devParams.SwapEffect=SwapEffect.Discard;
@@ -119,7 +113,7 @@ namespace MGEgui.DirectX {
         }
 
         public static bool CheckAALevel(int level, bool windowed) {
-            return d3d.CheckDeviceMultisampleType(adapter, DeviceType.Hardware, Format.X8R8G8B8, windowed, (MultisampleType)level);
+        	return d3d.CheckDeviceMultisampleType(adapter, DeviceType.Hardware, Format.X8R8G8B8, windowed, (MultisampleType)(1 << level));
         }
     }
 }

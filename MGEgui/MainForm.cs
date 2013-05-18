@@ -15,13 +15,8 @@ namespace MGEgui {
     public partial class MainForm : Form {
 
         private bool Save = true;
-
         private bool loading = true;
-
         private string clearedSSDir;
-
-        System.Drawing.Point gbMainSettingsLocation;
-        System.Drawing.Point gbMainUILocation;
 
         public MainForm (bool AutoLang) {
             InitializeComponent ();
@@ -51,10 +46,7 @@ namespace MGEgui {
             cmbUILanguage.Items.AddRange (Statics.Localizations.Languages);
             if (AutoLang) cbUILangAuto.Checked = true;
             else cmbUILanguage.SelectedIndex = cmbUILanguage.FindStringExact (Statics.Localizations.Current);
-            //Store default locations
-            gbMainSettingsLocation = gbMainSettings.Location;
-            gbMainUILocation = gbMainUI.Location;
-            gbMainUILocation.Y -= this.Size.Height;
+
             //Load settings
             LoadSettings ();
         }
@@ -218,20 +210,9 @@ namespace MGEgui {
         private static Dictionary<string, double> antiAliasDict = new Dictionary<string, double> {
             {"None", 0},
             {"2x", 1},
-            {"3x", 2},
-            {"4x", 3},
-            {"5x", 4},
-            {"6x", 5},
-            {"7x", 6},
-            {"8x", 7},
-            {"9x", 8},
-            {"10x", 9},
-            {"11x", 10},
-            {"12x", 11},
-            {"13x", 12},
-            {"14x", 13},
-            {"15x", 14},
-            {"16x", 15}
+            {"4x", 2},
+            {"8x", 3},
+            {"16x", 4}
         };
 
         private static Dictionary<string, double> zBufferDict = new Dictionary<string, double> {
@@ -503,7 +484,7 @@ namespace MGEgui {
             // Graphics
             iniFile.setKey ("AntiAlias", cmbAntiAlias.SelectedIndex);
             iniFile.setKey ("VWait", cmbVWait.SelectedIndex);
-            iniFile.setKey ("Refresh", cmbRefreshRate.Text);
+            iniFile.setKey ("Refresh", cmbRefreshRate.SelectedIndex == 0 ? "Default" : cmbRefreshRate.Text);
             iniFile.setKey ("AnisoLvl", cmbAnisoLevel.SelectedIndex);
             iniFile.setKey ("LODBias", (double)udLOD.Value);
             iniFile.setKey ("FogMode", cmbFogMode.SelectedIndex);
@@ -580,7 +561,7 @@ namespace MGEgui {
             loading = true;
             switch (i = br.ReadByte ()) {
                 case 0: cmbAntiAlias.SelectedIndex = 0; break;
-                default: cmbAntiAlias.SelectedIndex = i - 1; break;
+                default: cmbAntiAlias.SelectedIndex = (int)Math.Log(i - 1, 2); break;
             }
             switch (br.ReadByte ()) {
                 case 3: cmbVWait.SelectedIndex = 0; break;
@@ -921,28 +902,6 @@ namespace MGEgui {
             if (Save) SaveSettings ();
         }
 
-        private void bQuality_Click (object sender, EventArgs e) {
-            int MaxAA = cbWindowed.Checked ? DXMain.mCaps.MaxWindowedAA : DXMain.mCaps.MaxFullscreenAA;
-            if (MaxAA == 0) cmbAntiAlias.SelectedIndex = 0; else cmbAntiAlias.SelectedIndex = MaxAA - 1;
-            switch (DXMain.mCaps.MaxAF) {
-                case 2:
-                    cmbAnisoLevel.SelectedIndex = 1;
-                    break;
-                case 4:
-                    cmbAnisoLevel.SelectedIndex = 2;
-                    break;
-                case 8:
-                    cmbAnisoLevel.SelectedIndex = 3;
-                    break;
-                case 16:
-                    cmbAnisoLevel.SelectedIndex = 4;
-                    break;
-                default:
-                    cmbAnisoLevel.SelectedIndex = 0;
-                    break;
-            }
-        }
-
         private void bHelp_Click (object sender, EventArgs e) {
             try {
                 System.Diagnostics.Process p = System.Diagnostics.Process.Start (@"http://morrgraphext.wiki.sourceforge.net/");
@@ -1056,8 +1015,8 @@ namespace MGEgui {
 
         private void bCalcRefresh_Click (object sender, EventArgs e) {
             cmbRefreshRate.Items.Clear();
-            cmbRefreshRate.Items.Add("Default");
-            cmbRefreshRate.Text = "Default";
+            cmbRefreshRate.Items.Add(Statics.strings["Default"]);
+            cmbRefreshRate.Text = Statics.strings["Default"];
 
             try
             {
@@ -1175,14 +1134,14 @@ namespace MGEgui {
         }
 
         private void cmbFogMode_SelectedIndexChanged (object sender, EventArgs e) {
-            if (cmbFogMode.SelectedIndex != 0 && cbDLDistantLand.Checked) {
+            if (cmbFogMode.SelectedIndex != 0 && cbDLDistantLand.Checked && !loading) {
                 MessageBox.Show (strings ["DLVertexFog"], Statics.strings ["Warning"]);
             }
         }
 
         private void cmbAlias_SelectedIndexChanged (object sender, EventArgs e) {
             if (cmbAntiAlias.SelectedIndex == 0) return;
-            if (!DXMain.CheckAALevel (cmbAntiAlias.SelectedIndex + 1, cbWindowed.Checked)) {
+            if (!DXMain.CheckAALevel (cmbAntiAlias.SelectedIndex, cbWindowed.Checked)) {
                 MessageBox.Show (strings ["TooHighAA"], Statics.strings ["Error"]);
                 cmbAntiAlias.SelectedIndex = 0;
             }
@@ -1552,10 +1511,14 @@ namespace MGEgui {
         private void cmbUILanguage_SelectedIndexChanged (object sender, EventArgs e) {
             Statics.Localizations.Current = cmbUILanguage.Text;
             string s = tbSShotDir.Text;
-            Statics.Localizations.ApplyStrings ("", Statics.strings);
-            Statics.Localizations.Apply (this);
+            
+            loading = true;
+            Statics.Localizations.ApplyStrings("", Statics.strings);
+            Statics.Localizations.Apply(this);
+            Statics.Localizations.ApplyDialogs(this, new string[] { "OpenFileDialog", "SaveFileDialog", "SShotFolderDialog" });
             clearedSSDir = tbSShotDir.Text;
             if (tbSShotDir.TextAlign != HorizontalAlignment.Center) tbSShotDir.Text = s;
+            loading = false;
         }
 
         private void cbUILangAuto_CheckedChanged (object sender, EventArgs e) {
@@ -1588,10 +1551,36 @@ namespace MGEgui {
             catch {}
         }
 
-        private void bMWLightingReset_click(object sender, EventArgs e) {
+        private void bMWLightingReset_Click(object sender, EventArgs e) {
             udLightingConst.Value = 0;
-            udLightingLinear.Value = (decimal)3.0;
+            udLightingLinear.Value = 3.0M;
             udLightingQuad.Value = 0;
+        }
+        
+        private void cbPerPixelLighting_CheckedChanged(object sender, EventArgs e) {
+        	if(loading) return;
+        	if(cbPerPixelLighting.Checked)
+        	{
+        		MessageBox.Show(strings["LightOverride"], Statics.strings["Warning"]);
+	            udLightingConst.Value = 0.27M;
+	            udLightingLinear.Value = 0;
+	            udLightingQuad.Value = 5.4M;
+        	}
+        }
+        
+        private void bReportingShowLog_Click(object sender, EventArgs e) {
+        	displayLogFile(Statics.fn_runtimelog);
+        }
+        
+        private void bReportingShowDLWizardLog_Click(object sender, EventArgs e) {
+        	displayLogFile(Statics.fn_dllog);
+        }
+        
+        private void displayLogFile(string path) {
+        	if(File.Exists(path)) {
+	        	LogViewerForm f = new LogViewerForm(path);
+	        	f.ShowDialog();
+        	}        	
         }
     }
 

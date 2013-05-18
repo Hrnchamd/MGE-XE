@@ -31,7 +31,7 @@ namespace MGEgui.DirectX {
                     if (data.Length>6 && data[1] == 0 && (data[2] == 2 || data[2] == 10)) {
                         data[5] = data[6] = 0;
                     }
-                    tex=Texture.FromStream(DXMain.device, new System.IO.MemoryStream(data), 0, 0, 0, Usage.None, Format.Unknown, Pool.Managed, Filter.Triangle|Filter.Dither, Filter.Box, 0);
+                    tex=Texture.FromStream(DXMain.device, new System.IO.MemoryStream(data), 0, 0, 0, Usage.None, Format.Unknown, Pool.Managed, Filter.Triangle|Filter.Dither, Filter.Box|Filter.Srgb, 0);
                     //tex.GenerateMipSubLevels();
                     //TextureLoader.FilterTexture(tex, 0, Filter.Box);
                     texCache[filePath]=tex;
@@ -75,7 +75,7 @@ namespace MGEgui.DirectX {
             Format format;
             
             try {
-                Texture t = Texture.FromMemory(DXMain.device, data, 0, 0, 0, Usage.None, Format.Unknown, Pool.Scratch, Filter.Triangle|Filter.Dither, Filter.Triangle, 0);
+                Texture t = Texture.FromMemory(DXMain.device, data, 0, 0, 0, Usage.None, Format.Unknown, Pool.Scratch, Filter.Triangle|Filter.Dither, Filter.Triangle|Filter.Srgb, 0);
                 sd = t.GetLevelDescription(0);
                 t.Dispose();
             }
@@ -290,7 +290,7 @@ namespace MGEgui.DirectX {
                     wv3 = SampleWeightData(ref WeightData, x, y);
                     wv4 = SampleWeightData(ref WeightData, x + 1, y);
                     wv5 = SampleWeightData(ref WeightData, x + 2, y);
-                    wv6 = SampleWeightData(ref WeightData, x + 2, y);
+                    wv6 = SampleWeightData(ref WeightData, x + 3, y);
 
                     float value;
                     value = 0.0f;
@@ -352,13 +352,13 @@ namespace MGEgui.DirectX {
                     //We're not at the edge, so add some influence from the surrounding weights
                     //Additional incides
                     WeightVertex wv0, wv1, wv2, wv3, wv4, wv5, wv6, wvfinal;
-                    wv0 = SampleWeightData(ref FirstPassWD, x, y - 2);
+                    wv0 = SampleWeightData(ref FirstPassWD, x, y - 3);
                     wv1 = SampleWeightData(ref FirstPassWD, x, y - 2);
                     wv2 = SampleWeightData(ref FirstPassWD, x, y - 1);
                     wv3 = SampleWeightData(ref FirstPassWD, x, y);
                     wv4 = SampleWeightData(ref FirstPassWD, x, y + 1);
                     wv5 = SampleWeightData(ref FirstPassWD, x, y + 2);
-                    wv6 = SampleWeightData(ref FirstPassWD, x, y - 2);
+                    wv6 = SampleWeightData(ref FirstPassWD, x, y + 3);
 
                     float value;
                     value = 0.0f;
