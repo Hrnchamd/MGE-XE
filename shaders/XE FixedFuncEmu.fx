@@ -6,7 +6,8 @@
 #include "XE Common.fx"
 
 shared float4 materialDiffuse, materialAmbient, materialEmissive;
-shared float3 lightAmbient, lightSunDiffuse, lightDiffuse[8];
+shared float3 lightSceneAmbient, lightSunDiffuse, lightDiffuse[8];
+shared float4 lightAmbient[2];
 shared float4 lightSunDirection, lightPosition[6];
 shared float4 lightFalloffQuadratic[2], lightFalloffLinear[2];
 shared float lightFalloffConstant;
@@ -88,7 +89,7 @@ float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal)
     // Attenuation
     float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffConstant);
     // (slower) float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffLinear[group] * dist + lightFalloffConstant);
-    return lambert * att;
+    return (lambert + lightAmbient[group]) * att;
 }
 
 float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 normal)
@@ -208,7 +209,7 @@ float4 PerPixelPS(FFEPixel IN) : COLOR0
     
     // Standard morrowind lighting: sun, ambient, and point lights
     float3 d = lightSunDiffuse * saturate(dot(normal, -lightSunDirection));
-    float3 a = lightAmbient;
+    float3 a = lightSceneAmbient;
     d += calcPointLighting(FFE_LIGHTS_ACTIVE, IN.lightvec, normal);
     
     // Material

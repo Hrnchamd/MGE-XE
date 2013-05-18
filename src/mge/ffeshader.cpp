@@ -13,8 +13,8 @@ ID3DXEffect *FixedFunctionShader::effectDefaultPurple;
 D3DXHANDLE FixedFunctionShader::ehWorld, FixedFunctionShader::ehVertexBlendState, FixedFunctionShader::ehVertexBlendPalette;
 D3DXHANDLE FixedFunctionShader::ehTex0, FixedFunctionShader::ehTex1, FixedFunctionShader::ehTex2, FixedFunctionShader::ehTex3;
 D3DXHANDLE FixedFunctionShader::ehMaterialDiffuse, FixedFunctionShader::ehMaterialAmbient, FixedFunctionShader::ehMaterialEmissive;
-D3DXHANDLE FixedFunctionShader::ehLightAmbient, FixedFunctionShader::ehLightSunDiffuse, FixedFunctionShader::ehLightDiffuse;
-D3DXHANDLE FixedFunctionShader::ehLightSunDirection, FixedFunctionShader::ehLightPosition;
+D3DXHANDLE FixedFunctionShader::ehLightSceneAmbient, FixedFunctionShader::ehLightSunDiffuse, FixedFunctionShader::ehLightDiffuse;
+D3DXHANDLE FixedFunctionShader::ehLightSunDirection, FixedFunctionShader::ehLightPosition, FixedFunctionShader::ehLightAmbient;
 D3DXHANDLE FixedFunctionShader::ehLightFalloffQuadratic, FixedFunctionShader::ehLightFalloffLinear, FixedFunctionShader::ehLightFalloffConstant;
 D3DXHANDLE FixedFunctionShader::ehTexgenTransform, FixedFunctionShader::ehBumpMatrix, FixedFunctionShader::ehBumpLumiScaleBias;
 
@@ -55,10 +55,11 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ehMaterialDiffuse = effect->GetParameterByName(0, "materialDiffuse");
     ehMaterialAmbient = effect->GetParameterByName(0, "materialAmbient");
     ehMaterialEmissive = effect->GetParameterByName(0, "materialEmissive");
-    ehLightAmbient = effect->GetParameterByName(0, "lightAmbient");
+    ehLightSceneAmbient = effect->GetParameterByName(0, "lightSceneAmbient");
     ehLightSunDiffuse = effect->GetParameterByName(0, "lightSunDiffuse");
     ehLightSunDirection = effect->GetParameterByName(0, "lightSunDirection");
     ehLightDiffuse = effect->GetParameterByName(0, "lightDiffuse");
+    ehLightAmbient = effect->GetParameterByName(0, "lightAmbient");
     ehLightPosition = effect->GetParameterByName(0, "lightPosition");
     ehLightFalloffQuadratic = effect->GetParameterByName(0, "lightFalloffQuadratic");
     ehLightFalloffLinear = effect->GetParameterByName(0, "lightFalloffLinear");
@@ -82,7 +83,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     if(!(sk == lastsk))
     {
         // Read from shader cache / generate
-        map<ShaderKey, ID3DXEffect*>::iterator iEffect = cacheEffects.find(sk);
+        map<ShaderKey, ID3DXEffect*>::const_iterator iEffect = cacheEffects.find(sk);
         lastsk = sk;
 
         if(iEffect != cacheEffects.end())
@@ -99,10 +100,12 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     // Set up lighting
     const size_t MaxLights = 8;
     D3DXVECTOR4 bufferDiffuse[MaxLights];
+    float bufferAmbient[MaxLights];
     float bufferPosition[3 * MaxLights];
     float bufferFalloffQuadratic[MaxLights], bufferFalloffLinear[MaxLights], bufferFalloffConstant;
 
     memset(&bufferDiffuse, 0, sizeof(bufferDiffuse));
+    memset(&bufferAmbient, 0, sizeof(bufferAmbient));
     memset(&bufferPosition, 0, sizeof(bufferPosition));
     memset(&bufferFalloffQuadratic, 0, sizeof(bufferFalloffQuadratic));
     memset(&bufferFalloffLinear, 0, sizeof(bufferFalloffLinear));
@@ -133,14 +136,26 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
                 bufferFalloffLinear[pointLightCount] = light->falloff.y;
                 bufferFalloffQuadratic[pointLightCount] = light->falloff.z;
             }
+            else if(light->falloff.y == 0.10000001f)
+            {
+                // Projectile light source, normally hard coded by Morrowind to { 0, 3 * (1/30), 0 }
+                // Needs to be made significantly brighter to look cool
+                bufferFalloffQuadratic[pointLightCount] = 5e-5;
+            }
             else
             {
-                // Projectile light source, normally hard coded by Morrowind to { 0, 0.1, 0 }
-                // or light magic effect, ambient light
-                bufferFalloffQuadratic[pointLightCount] = 4e-5;
-                //bufferPosition[pointLightCount + 2*MaxLights] = light->position.z + 200.0;
-                //bufferFalloffQuadratic[pointLightCount] = 0.25 * (light->falloff.y * light->falloff.y);
-                //LOG::logline("%f %f %f", light->falloff.x, light->falloff.y, light->falloff.z);
+                // Light magic effect, calculated by { 0, 3 / (22 * spell magnitude), 0 }
+                // A mix of ambient (falloff but no N.L component) and over-bright diffuse lighting
+                // It is approximated with a half-lambert weight + quadratic falloff
+                // Light colour is altered to avoid ridiculous peak light levels
+                // The point source is moved up slightly as it is often embedded in the ground
+                float brightness = 0.15 + 1e-4 / light->falloff.y;
+                bufferDiffuse[pointLightCount].x *= brightness;
+                bufferDiffuse[pointLightCount].y *= brightness;
+                bufferDiffuse[pointLightCount].z *= brightness;
+                bufferAmbient[pointLightCount] = 0.6;
+                bufferFalloffQuadratic[pointLightCount] = 4e-1 * light->falloff.y * light->falloff.y;
+                bufferPosition[pointLightCount + 2*MaxLights] += 20.0;
             }
             ++pointLightCount;
         }
@@ -154,9 +169,18 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         }
     }
 
-    effectFFE->SetFloatArray(ehLightAmbient, ambient, 3);
+    // Special case, check if ambient state is pure white (distant land ignores this for a reason)
+    // Morrowind temporarily sets this for full bright particle effects, but just adding it
+    // to other ambient sources above would cause over-brightness
+    DWORD checkAmbient;
+    device->GetRenderState(D3DRS_AMBIENT, &checkAmbient);
+    if(checkAmbient == 0xffffffff)
+        ambient.r = ambient.g = ambient.b = 1.0;
+
+    effectFFE->SetFloatArray(ehLightSceneAmbient, ambient, 3);
     effectFFE->SetFloatArray(ehLightSunDiffuse, sunDiffuse, 3);
     effectFFE->SetVectorArray(ehLightDiffuse, bufferDiffuse, MaxLights);
+    effectFFE->SetFloatArray(ehLightAmbient, bufferAmbient, MaxLights);
     effectFFE->SetFloatArray(ehLightPosition, bufferPosition, 3 * MaxLights);
     effectFFE->SetFloatArray(ehLightFalloffQuadratic, bufferFalloffQuadratic, MaxLights);
     effectFFE->SetFloatArray(ehLightFalloffLinear, bufferFalloffLinear, MaxLights);
