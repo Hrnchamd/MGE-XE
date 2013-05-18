@@ -617,43 +617,41 @@ void DistantLand::updatePostShader(MGEShader *shader)
 {
     DECLARE_MWBRIDGE
 
-    ID3DXEffect *effect = shader->effect;
-
     // Internal textures
     // TODO: Should be set once at init time
-    effect->SetTexture(shader->ehVars[EV_depthframe], texDepthFrame);
-    effect->SetTexture(shader->ehVars[EV_watertexture], texWater);
+    shader->SetTexture(EV_depthframe, texDepthFrame);
+    shader->SetTexture(EV_watertexture, texWater);
 
     // View position
     float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.Zoom.zoom : 1.0;
-    effect->SetMatrix(shader->ehVars[EV_mview], &mwView);
-    effect->SetMatrix(shader->ehVars[EV_mproj], &mwProj);
-    effect->SetFloatArray(shader->ehVars[EV_eyevec], eyeVec, 3);
-    effect->SetFloatArray(shader->ehVars[EV_eyepos], eyePos, 3);
-    effect->SetFloat(shader->ehVars[EV_fov], Configuration.ScreenFOV / zoom);
+    shader->SetMatrix(EV_mview, &mwView);
+    shader->SetMatrix(EV_mproj, &mwProj);
+    shader->SetFloatArray(EV_eyevec, eyeVec, 3);
+    shader->SetFloatArray(EV_eyepos, eyePos, 3);
+    shader->SetFloat(EV_fov, Configuration.ScreenFOV / zoom);
 
     // Lighting
     RGBVECTOR totalAmb = sunAmb + ambCol;
-    effect->SetFloatArray(shader->ehVars[EV_sunvec], sunVec, 3);
-    effect->SetFloatArray(shader->ehVars[EV_suncol], sunCol, 3);
-    effect->SetFloatArray(shader->ehVars[EV_sunamb], totalAmb, 3);
-    effect->SetFloatArray(shader->ehVars[EV_sunpos], sunPos, 3);
-    effect->SetFloat(shader->ehVars[EV_sunvis], lerp(sunVis, 1.0, 0.333 * niceWeather));
+    shader->SetFloatArray(EV_sunvec, sunVec, 3);
+    shader->SetFloatArray(EV_suncol, sunCol, 3);
+    shader->SetFloatArray(EV_sunamb, totalAmb, 3);
+    shader->SetFloatArray(EV_sunpos, sunPos, 3);
+    shader->SetFloat(EV_sunvis, lerp(sunVis, 1.0, 0.333 * niceWeather));
 
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
-    effect->SetFloat(shader->ehVars[EV_fogstart], fogS);
-    effect->SetFloat(shader->ehVars[EV_fogrange], fogE);
-    effect->SetFloatArray(shader->ehVars[EV_fogcol], horizonCol, 3);
+    shader->SetFloat(EV_fogstart, fogS);
+    shader->SetFloat(EV_fogrange, fogE);
+    shader->SetFloatArray(EV_fogcol, horizonCol, 3);
 
     // Other
     // In cells without water, set very low waterlevel for shaders that clip against water
     float water = mwBridge->CellHasWater() ? mwBridge->WaterLevel() : -1e9;
-    effect->SetFloat(shader->ehVars[EV_time], mwBridge->simulationTime());
-    effect->SetFloat(shader->ehVars[EV_waterlevel], water);
-    effect->SetBool(shader->ehVars[EV_isinterior], !mwBridge->CellHasWeather());
-    effect->SetBool(shader->ehVars[EV_isunderwater], mwBridge->IsUnderwater(eyePos.z));
+    shader->SetFloat(EV_time, mwBridge->simulationTime());
+    shader->SetFloat(EV_waterlevel, water);
+    shader->SetBool(EV_isinterior, !mwBridge->CellHasWeather());
+    shader->SetBool(EV_isunderwater, mwBridge->IsUnderwater(eyePos.z));
 }
 
 //------------------------------------------------------------

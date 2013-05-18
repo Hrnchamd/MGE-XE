@@ -32,7 +32,7 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ID3DXEffect *effect;
     ID3DXBuffer *errors;
 
-    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3, constantPool, &effect, &errors);
+    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effect, &errors);
     if(hr != D3D_OK)
     {
         if(errors)
@@ -165,8 +165,9 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     // Bump mapping state
     if(sk.usesBumpmap)
     {
-        effectFFE->SetFloatArray(ehBumpMatrix, &frs->stage[sk.bumpmapStage].bumpEnvMat[0][0], 4);
-        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &frs->stage[sk.bumpmapStage].bumpLumiScale, 2);
+        const FragmentState::Stage *bumpStage = &frs->stage[sk.bumpmapStage];
+        effectFFE->SetFloatArray(ehBumpMatrix, &bumpStage->bumpEnvMat[0][0], 4);
+        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &bumpStage->bumpLumiScale, 2);
     }
 
     // Texgen texture matrix
@@ -243,7 +244,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
         texcoordNames[i] = buf.str();
         buf.str(string());
         buf << "tex2D(sampFFE" << i << ", IN." << texcoordNames[i] << ")";
-        texSamplers[i] =buf.str();
+        texSamplers[i] = buf.str();
     }
 
     // Vertex format coupling, generate equivalent struct to input FVF
@@ -398,7 +399,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
         case D3DTOP_BLENDTEXTUREALPHA:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
-            buf << "float4 temp" << i << "= " << arg3 << "; lerp(" << arg1 << ", " << arg1 << ", temp" << i <<".a);"; break;
+            buf << "float4 temp" << i << " = " << arg3 << "; lerp(" << arg1 << ", " << arg1 << ", temp" << i <<".a);"; break;
 
         case D3DTOP_BUMPENVMAP:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
@@ -465,7 +466,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
     LOG::logline("-- Generating replacement fixed function shader");
     sk.log();
-    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3, constantPool, &effectFFE, &errors);
+    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effectFFE, &errors);
 
     if(hr != D3D_OK)
     {
@@ -475,6 +476,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
             LOG::logline("!! %s", errors->GetBufferPointer());
             errors->Release();
         }
+        LOG::logline("");
         effectDefaultPurple->AddRef();
         effectFFE = effectDefaultPurple;
     }
@@ -598,7 +600,7 @@ void FixedFunctionShader::ShaderKey::log() const
     LOG::logline("   Texture stages:");
     for(int i = 0; i != activeStages; ++i)
     {
-        if(stage[i].colorOp != D3DTOP_MULTIPLYADD)
+        if(stage[i].colorOp != D3DTOP_MULTIPLYADD) // or D3DTOP_LERP (unused)
         {
             LOG::logline("    [%d] % 12s    %s, %s            uv %d texgen %d", i,
                                 opsymbols[stage[i].colorOp], argsymbols[stage[i].colorArg1], argsymbols[stage[i].colorArg2],

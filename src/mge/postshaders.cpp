@@ -68,7 +68,7 @@ bool PostShaders::initShaderChain()
         ID3DXBuffer *errors;
 
         sprintf_s(path, MAX_PATH, "Data Files\\shaders\\XEshaders\\%s.fx", p);
-        HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, 0, 0, &shader.effect, &errors);
+        HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &shader.effect, &errors);
 
         if(hr == D3D_OK)
         {
@@ -149,7 +149,7 @@ void PostShaders::initShader(MGEShader *shader)
     if(glare) Configuration.MGEFlags |= NO_MW_SUNGLARE;
 
     // Constants
-    effect->SetFloatArray(shader->ehVars[EV_rcpres], rcpRes, 2);
+    shader->SetFloatArray(EV_rcpres, rcpRes, 2);
 }
 
 void PostShaders::loadShaderDependencies(MGEShader *shader)
@@ -358,14 +358,14 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
             continue;
 
         updateVarsFunc(&*s);
-        effect->SetFloatArray(s->ehVars[EV_HDR], adaptPoint, 4);
-        effect->SetTexture(s->ehVars[EV_lastshader], texLastShader);
+        s->SetFloatArray(EV_HDR, adaptPoint, 4);
+        s->SetTexture(EV_lastshader, texLastShader);
         effect->Begin(&passes, 0);
 
         for(UINT p = 0; p != passes; ++p)
         {
             device->SetRenderTarget(0, doublebuffer.sinkSurface());
-            effect->SetTexture(s->ehVars[EV_lastpass], doublebuffer.sourceTexture());
+            s->SetTexture(EV_lastpass, doublebuffer.sourceTexture());
 
             effect->BeginPass(p);
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
@@ -410,4 +410,37 @@ void PostShaders::applyBlend()
     device->SetStreamSource(0, vbPost, 0, 32);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+
+
+// Effect helpers, silently ignores attempts to set non-existing shader variables
+void MGEShader::SetTexture(EffectVariableID id, LPDIRECT3DBASETEXTURE9 tex)
+{
+    if(ehVars[id]) effect->SetTexture(ehVars[id], tex);
+}
+
+void MGEShader::SetMatrix(EffectVariableID id, const D3DXMATRIX *m)
+{
+    if(ehVars[id]) effect->SetMatrix(ehVars[id], m);
+}
+
+void MGEShader::SetFloatArray(EffectVariableID id, const float *x, int n)
+{
+    if(ehVars[id]) effect->SetFloatArray(ehVars[id], x, n);
+}
+
+void MGEShader::SetFloat(EffectVariableID id, float x)
+{
+    if(ehVars[id]) effect->SetFloat(ehVars[id], x);
+}
+
+void MGEShader::SetInt(EffectVariableID id, int x)
+{
+    if(ehVars[id]) effect->SetInt(ehVars[id], x);
+}
+
+void MGEShader::SetBool(EffectVariableID id, bool b)
+{
+    if(ehVars[id]) effect->SetBool(ehVars[id], b);
 }
