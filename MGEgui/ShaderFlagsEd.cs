@@ -137,7 +137,7 @@ namespace MGEgui {
         	// 
         	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
         	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.ClientSize = new System.Drawing.Size(349, 218);
+        	this.ClientSize = new System.Drawing.Size(369, 218);
         	this.ControlBox = false;
         	this.Controls.Add(this.bCancel);
         	this.Controls.Add(this.bOK);
@@ -150,8 +150,8 @@ namespace MGEgui {
         	this.Controls.Add(this.cbSFNotInt);
         	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
         	this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-        	this.MaximumSize = new System.Drawing.Size(355, 243);
-        	this.MinimumSize = new System.Drawing.Size(355, 243);
+        	this.MaximumSize = new System.Drawing.Size(375, 243);
+        	this.MinimumSize = new System.Drawing.Size(375, 243);
         	this.Name = "ShaderFlagsEd";
         	this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
         	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

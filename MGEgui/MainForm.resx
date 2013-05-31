@@ -151,8 +151,7 @@ Distant land setup
 
 In-game setup
 
-1. The macro editor lets you bind keys to MGE functions. It's recommended to bind "toggle shaders",
-so you can turn them off if the fps hit is too much.
+1. The macro editor lets you bind keys to MGE functions. It's recommended to bind "toggle shaders", so you can turn them off if the fps hit is too much.
 2. Turn off "responsive menu caching" if you have SLI or Crossfire, they cause slowdown with this feature.
 3. Set up third person camera position if you wish to use it.
 
