@@ -1297,7 +1297,7 @@ namespace MGEgui {
             dist_root = Math.Sqrt(draw_distance);
 
             if (autoDistances != AutoDistance.byAFogEnd) {
-                udDLFogAStart.Value = (decimal)(draw_distance * 0.05);
+                udDLFogAStart.Value = (decimal)(draw_distance * 0.15);
                 udDLFogAEnd.Value = (decimal)draw_distance;
             }
             udDLFogBStart.Value = -0.5M;
@@ -1543,7 +1543,7 @@ namespace MGEgui {
         	if(cbPerPixelLighting.Checked)
         	{
         		MessageBox.Show(strings["LightOverride"], Statics.strings["Warning"]);
-	            udLightingConst.Value = 0.35M;
+	            udLightingConst.Value = 0.33M;
 	            udLightingLinear.Value = 0;
 	            udLightingQuad.Value = 4.2M;
         	}

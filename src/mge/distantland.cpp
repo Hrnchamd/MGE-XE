@@ -528,7 +528,8 @@ void DistantLand::adjustFog()
         c1.r = k0.x * k1.x; c1.g = k0.y * k1.y; c1.b = k0.z * k1.z;
 
         // Convert from additive inscatter to Direct3D fog model
-        c1 /= 1.0 - fog;
+        // The correction factor is clamped to avoid creating infinities
+        c1 /= std::max(0.02, 1.0 - fog);
 
         // Scattering fog only occurs in nice weather
         c0 = (1.0f - niceWeather) * c0 + niceWeather * c1;

@@ -11,7 +11,7 @@ map<FixedFunctionShader::ShaderKey, ID3DXEffect *> FixedFunctionShader::cacheEff
 ID3DXEffect *FixedFunctionShader::effectDefaultPurple;
 
 D3DXHANDLE FixedFunctionShader::ehWorld, FixedFunctionShader::ehVertexBlendState, FixedFunctionShader::ehVertexBlendPalette;
-D3DXHANDLE FixedFunctionShader::ehTex0, FixedFunctionShader::ehTex1, FixedFunctionShader::ehTex2, FixedFunctionShader::ehTex3;
+D3DXHANDLE FixedFunctionShader::ehTex0, FixedFunctionShader::ehTex1, FixedFunctionShader::ehTex2, FixedFunctionShader::ehTex3, FixedFunctionShader::ehTex4, FixedFunctionShader::ehTex5;
 D3DXHANDLE FixedFunctionShader::ehMaterialDiffuse, FixedFunctionShader::ehMaterialAmbient, FixedFunctionShader::ehMaterialEmissive;
 D3DXHANDLE FixedFunctionShader::ehLightSceneAmbient, FixedFunctionShader::ehLightSunDiffuse, FixedFunctionShader::ehLightDiffuse;
 D3DXHANDLE FixedFunctionShader::ehLightSunDirection, FixedFunctionShader::ehLightPosition, FixedFunctionShader::ehLightAmbient;
@@ -51,6 +51,8 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ehTex1 = effect->GetParameterByName(0, "tex1");
     ehTex2 = effect->GetParameterByName(0, "tex2");
     ehTex3 = effect->GetParameterByName(0, "tex3");
+    ehTex4 = effect->GetParameterByName(0, "tex4");
+    ehTex5 = effect->GetParameterByName(0, "tex5");
 
     ehMaterialDiffuse = effect->GetParameterByName(0, "materialDiffuse");
     ehMaterialAmbient = effect->GetParameterByName(0, "materialAmbient");
@@ -139,6 +141,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
             else if(light->falloff.y == 0.10000001f)
             {
                 // Projectile light source, normally hard coded by Morrowind to { 0, 3 * (1/30), 0 }
+                // This falloff value cannot be produced by other magic effects
                 // Needs to be made significantly brighter to look cool
                 bufferFalloffQuadratic[pointLightCount] = 5e-5;
             }
@@ -203,10 +206,10 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     }
 
      // Copy texture bindings from fixed function pipe
-    IDirect3DBaseTexture9 *tex;
-    for(n = 0; n != std::min((int)sk.activeStages, 4); ++n)
+    const D3DXHANDLE ehIndex[] = { ehTex0, ehTex1, ehTex2, ehTex3, ehTex4, ehTex5 };
+    for(n = 0; n != std::min((int)sk.activeStages, 6); ++n)
     {
-        D3DXHANDLE ehIndex[] = { ehTex0, ehTex1, ehTex2, ehTex3 };
+        IDirect3DBaseTexture9 *tex;
         device->GetTexture(n, &tex);
         effectFFE->SetTexture(ehIndex[n], tex);
         if(tex) tex->Release();
@@ -369,7 +372,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
     buf.str(string());
     switch(sk.vertexMaterial)
     {
-        case 0: buf << "diffuse = 1.0;"; break;
+        case 0: buf << "diffuse = " << (sk.vertexColour ? "IN.col;" : "1.0;"); break;
         case 1: buf << "diffuse = vertexMaterialNone(d, a);"; break;
         case 2: buf << "diffuse = vertexMaterialDiffAmb(d, a, IN.col);"; break;
         case 3: buf << "diffuse = vertexMaterialEmissive(d, a, IN.col);"; break;
