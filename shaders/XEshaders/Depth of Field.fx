@@ -31,7 +31,7 @@ static const float fpa = 10.0; // accomodation, dpt
 
 static const float pupil = 0.006; // pupil diameter, m
 
-static const float blur_radius = 0.283; // base blur radius;
+static const float blur_radius = 0.273; // base blur radius;
 // higher values mean more blur when out of DoF and shorter DoF
 static const float blur_falloff = 2.0; // More means more blur and less respect for edges
 static const float R = 6.0; // maximum blur radius in pixels

@@ -111,7 +111,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     memset(&bufferPosition, 0, sizeof(bufferPosition));
     memset(&bufferFalloffQuadratic, 0, sizeof(bufferFalloffQuadratic));
     memset(&bufferFalloffLinear, 0, sizeof(bufferFalloffLinear));
-    bufferFalloffConstant = 1.0;
+    bufferFalloffConstant = 0.33;
 
     // Check each active light
     RGBVECTOR sunDiffuse(0, 0, 0), ambient = lightrs->globalAmbient;
@@ -138,27 +138,41 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
                 bufferFalloffLinear[pointLightCount] = light->falloff.y;
                 bufferFalloffQuadratic[pointLightCount] = light->falloff.z;
             }
+            else if(light->falloff.z > 0)
+            {
+                // Probably a magic light source patched by Morrowind Code Patch
+                // Patched falloff calculation is quadratic only, which needs to be
+                // modified to account for the standard falloffConstant
+                // Diffuse colour is correctly specified with the patch
+                // Some overbrightness is applied to diffuse to cause glowing
+                bufferDiffuse[pointLightCount].x *= bufferFalloffConstant;
+                bufferDiffuse[pointLightCount].y *= bufferFalloffConstant;
+                bufferDiffuse[pointLightCount].z *= bufferFalloffConstant;
+                bufferAmbient[pointLightCount] = 1.0 + 1e-4 / sqrt(light->falloff.z);
+                bufferFalloffQuadratic[pointLightCount] = bufferFalloffConstant * light->falloff.z;
+            }
             else if(light->falloff.y == 0.10000001f)
             {
                 // Projectile light source, normally hard coded by Morrowind to { 0, 3 * (1/30), 0 }
                 // This falloff value cannot be produced by other magic effects
-                // Needs to be made significantly brighter to look cool
+                // Replacement falloff is significantly brighter to look cool
+                // Avoids modifying colour or position
                 bufferFalloffQuadratic[pointLightCount] = 5e-5;
             }
-            else
+            else if(light->falloff.y > 0)
             {
-                // Light magic effect, calculated by { 0, 3 / (22 * spell magnitude), 0 }
+                // Light magic effect, falloffs calculated by { 0, 3 / (22 * spell magnitude), 0 }
                 // A mix of ambient (falloff but no N.L component) and over-bright diffuse lighting
                 // It is approximated with a half-lambert weight + quadratic falloff
-                // Light colour is altered to avoid ridiculous peak light levels
+                // Light colour is altered to avoid variable brightness from Morrowind bugs
                 // The point source is moved up slightly as it is often embedded in the ground
-                float brightness = 0.15 + 1e-4 / light->falloff.y;
-                bufferDiffuse[pointLightCount].x *= brightness;
-                bufferDiffuse[pointLightCount].y *= brightness;
-                bufferDiffuse[pointLightCount].z *= brightness;
-                bufferAmbient[pointLightCount] = 0.6;
-                bufferFalloffQuadratic[pointLightCount] = 4e-1 * light->falloff.y * light->falloff.y;
-                bufferPosition[pointLightCount + 2*MaxLights] += 20.0;
+                float brightness = 0.25 + 1e-4 / light->falloff.y;
+                bufferDiffuse[pointLightCount].x = brightness;
+                bufferDiffuse[pointLightCount].y = brightness;
+                bufferDiffuse[pointLightCount].z = brightness;
+                bufferAmbient[pointLightCount] = 1.0;
+                bufferFalloffQuadratic[pointLightCount] = 0.5555 * light->falloff.y * light->falloff.y;
+                bufferPosition[pointLightCount + 2*MaxLights] += 25.0;
             }
             ++pointLightCount;
         }

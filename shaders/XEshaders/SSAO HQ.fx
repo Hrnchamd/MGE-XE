@@ -23,10 +23,9 @@ static const float blur_radius = 4.0; // In pixels
 // **
 
 float2 rcpres;
-float3 eyepos;
-float3 eyevec;
-float fogstart;
-float fogrange;
+float3 eyepos, eyevec;
+float fogstart, fogrange;
+float3 fogcol;
 float waterlevel;
 float fov;
 
@@ -253,8 +252,9 @@ float4 combine(float2 tex : TEXCOORD0) : COLOR
     float fog = saturate((fogrange - dist) / (fogrange - fogstart));
 #endif
 
-    float4 result = tex2D(s0, tex) * (1 - final * fog * fog);
-    return result;
+
+    float3 result = lerp(tex2D(s0, tex).rgb, (1 - fog) * fogcol, final);
+    return float4(result, 1);
 } 
 
 

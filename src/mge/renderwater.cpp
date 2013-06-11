@@ -92,9 +92,17 @@ void DistantLand::renderReflectedSky()
 
     for(vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
     {
-        // Adjust world transform, as skydome is positioned relative to the viewer
+        // Adjust world transform, as skydome objects are positioned relative to the viewer
         D3DXMATRIX worldTransform = i->worldTransforms[0];
         worldTransform._43 += adjustZ;
+
+        if(i->texture == 0)
+        {
+            // Inflate sky mesh towards infinity, makes skypos in shader calculate correctly
+            D3DXMATRIX scale;
+            D3DXMatrixScaling(&scale, 1e6, 1e6, 1e6);
+            D3DXMatrixMultiply(&worldTransform, &scale, &worldTransform);
+        }
 
         effect->SetMatrix(ehWorld, &worldTransform);
         effect->SetBool(ehHasAlpha, i->texture != 0);
