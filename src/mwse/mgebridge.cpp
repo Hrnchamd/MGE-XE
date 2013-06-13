@@ -4,6 +4,7 @@
 #include "funcgmst.h"
 #include "funchud.h"
 #include "funczoom.h"
+#include "funcweather.h"
 
 
 struct TES3MACHINE;
@@ -26,6 +27,13 @@ void MWSE_MGEPlugin::init(DWORD vm_global, DWORD vm_addinstr)
 
     MWSEAddInstruction(0x3a00, new mwseGetGS(*vm));
     MWSEAddInstruction(0x3a01, new mwseSetGS(*vm));
+
+    MWSEAddInstruction(0x3a80, new mwseSetSkyColour(*vm));
+    MWSEAddInstruction(0x3a81, new mwseSetFogColour(*vm));
+    MWSEAddInstruction(0x3a82, new mwseSetAmbientColour(*vm));
+    MWSEAddInstruction(0x3a83, new mwseSetSunColour(*vm));
+    MWSEAddInstruction(0x3a84, new mwseSetSunrise(*vm));
+    MWSEAddInstruction(0x3a85, new mwseSetSunset(*vm));
 
     MWSEAddInstruction(0x3700, new mwseWipeAll(*vm));
     MWSEAddInstruction(0x3701, new mwseOutputDebugString(*vm));

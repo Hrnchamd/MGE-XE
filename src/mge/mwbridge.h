@@ -49,7 +49,7 @@ public:
     void setSceneFogCol(DWORD c);
     bool CellHasWeather();
     float* GetWindVector();
-    DWORD WthrStruc(int wthr);
+    DWORD GetWthrStruct(int wthr);
     int GetWthrString(int wthr, int offset, char str[]);
     void SetWthrString(int wthr, int offset, char str[]);
     bool CellHasWater();
@@ -67,14 +67,8 @@ public:
 
     void GetSunDir(float& x, float& y, float& z);
     BYTE GetSunVis();
-    float GetSunriseHour();
-    void SetSunriseHour(float hour);
-    float GetSunriseDuration();
-    void SetSunriseDuration(float duration);
-    float GetSunsetHour();
-    void SetSunsetHour(float hour);
-    float GetSunsetDuration();
-    void SetSunsetDuration(float duration);
+    void setSunriseTimes(float t, float duration);
+    void setSunsetTimes(float t, float duration);
 
     DWORD IntCurCellAddr();
     bool IntLikeExterior();

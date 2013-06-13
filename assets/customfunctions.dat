@@ -2218,10 +2218,71 @@ function
 	Opcode = 0x3a01
 end
 function
-	Name = XSetGSint
+	Name = XSetGSlong
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
 	Param1 = Long
 	Param2 = Long
 	Opcode = 0x3a01
+end
+
+function
+	Name = XSetWeatherSky
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a80
+end
+function
+	Name = XSetWeatherFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a81
+end
+function
+	Name = XSetWeatherAmbient
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a82
+end
+function
+	Name = XSetWeatherSun
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a83
+end
+function
+	Name = XSetSunrise
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Float
+    Param2 = Float
+	Opcode = 0x3a84
+end
+function
+	Name = XSetSunset
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Float
+    Param2 = Float
+	Opcode = 0x3a85
 end

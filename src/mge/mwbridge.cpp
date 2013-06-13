@@ -449,14 +449,11 @@ float * MWBridge::GetWindVector()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::WthrStruc(int wthr)
+DWORD MWBridge::GetWthrStruct(int wthr)
 {
     assert(m_loaded);
-    if (wthr >= 0 && wthr <= 9)
-    {
-        DWORD addr = read_dword(eWthrArray + (wthr << 2));
-        if (addr != 0) return addr;
-    }
+    if(wthr >= 0 && wthr <= 9)
+        return read_dword(eWthrArray + 4*wthr);
     return 0;
 }
 
@@ -465,12 +462,13 @@ DWORD MWBridge::WthrStruc(int wthr)
 int MWBridge::GetWthrString(int wthr, int offset, char str[])
 {
     assert(m_loaded);
+    DWORD addr = GetWthrStruct(wthr);
     int i = 0;
-    DWORD addr = WthrStruc(wthr);
-    if (addr != 0)
+
+    if(addr != 0)
     {
         addr += offset;
-        while ((str[i] = read_byte(addr)) != 0)
+        while((str[i] = read_byte(addr)) != 0)
         {
             ++addr;
             ++i;
@@ -485,17 +483,19 @@ int MWBridge::GetWthrString(int wthr, int offset, char str[])
 void MWBridge::SetWthrString(int wthr, int offset, char str[])
 {
     assert(m_loaded);
+    DWORD addr = GetWthrStruct(wthr);
     int i = 0;
-    DWORD addr = WthrStruc(wthr);
-    if (addr != 0)
+
+    if(addr != 0)
     {
-        addr += offset;
         char c;
+        addr += offset;
         do
         {
-            write_byte(addr++, c = str[i++]);
+            c = str[i++];
+            write_byte(addr++, c);
         }
-        while (c != 0);
+        while(c != 0);
     }
 }
 
@@ -638,65 +638,19 @@ BYTE MWBridge::GetSunVis()
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::GetSunriseHour()
+// setSunriseTimes - Sets sunrise time and duration
+void MWBridge::setSunriseTimes(float t, float duration)
 {
-    assert(m_loaded);
-    return read_float(eSunriseHour);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunriseHour(float hour)
-{
-    assert(m_loaded);
-    write_float(eSunriseHour, hour);
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::GetSunriseDuration()
-{
-    assert(m_loaded);
-    return read_float(eSunriseDuration);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunriseDuration(float duration)
-{
-    assert(m_loaded);
+    write_float(eSunriseHour, t);
     write_float(eSunriseDuration, duration);
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::GetSunsetHour()
+// setSunsetTimes - Sets sunset time and duration
+void MWBridge::setSunsetTimes(float t, float duration)
 {
-    assert(m_loaded);
-    return read_float(eSunsetHour);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunsetHour(float hour)
-{
-    assert(m_loaded);
-    write_float(eSunsetHour, hour);
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::GetSunsetDuration()
-{
-    assert(m_loaded);
-    return read_float(eSunsetDuration);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunsetDuration(float duration)
-{
-    assert(m_loaded);
+    write_float(eSunsetHour, t);
     write_float(eSunsetDuration, duration);
 }
 
