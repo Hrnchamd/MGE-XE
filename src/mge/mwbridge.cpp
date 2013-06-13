@@ -420,6 +420,15 @@ RGBVECTOR* MWBridge::CurFogColVector()
 
 //-----------------------------------------------------------------------------
 
+DWORD MWBridge::getSceneFogCol()
+{
+    DWORD addr = read_dword(eEnviro) + 0x9c;
+    addr = read_dword(addr) + 0x1c;
+    return read_dword(addr);
+}
+
+//-----------------------------------------------------------------------------
+
 void MWBridge::setSceneFogCol(DWORD c)
 {
     DWORD addr = read_dword(eEnviro) + 0x9c;
@@ -840,21 +849,21 @@ float MWBridge::PlayerPositionZ()
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::PlayerHeight()   //player eyes height, in CS
+float MWBridge::PlayerHeight()   // player eyes height, in CS
 {
-    float height = read_float(0x7D39F0); //like "Master", only read, in game PlayerHeight*125.0f
+    float height = read_float(0x7D39F0); // like "Master", only read, in game PlayerHeight*125.0f
     return (height == 0 ? 1.0f : height);
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsPlayerWaiting()   //wait\sleep menu
+bool MWBridge::IsPlayerWaiting()   // wait/sleep menu
 {
     DWORD addr = eMaster1;
-    if (addr != 0)
+    if(addr != 0)
     {
-        addr=read_dword(addr + 0x354);
-        if (addr != 0) return (read_byte(addr) == 0x01);
+        addr = read_dword(addr + 0x354);
+        if(addr != 0) return (read_byte(addr) == 0x01);
     }
     return false;
 }
@@ -864,9 +873,9 @@ bool MWBridge::IsPlayerWaiting()   //wait\sleep menu
 // getPlayerMACP - Gets main game object holding the player state
 DWORD MWBridge::getPlayerMACP()
 {
-    DWORD blah0 = read_dword(eMaster1 + 0x5c);
-    DWORD blah1 = read_dword(blah0 + 0x24);
-    return read_dword(blah1);
+    DWORD addr = read_dword(eMaster1 + 0x5c);
+    addr = read_dword(addr + 0x24);
+    return read_dword(addr);
 }
 
 //-----------------------------------------------------------------------------

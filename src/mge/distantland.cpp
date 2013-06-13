@@ -482,12 +482,11 @@ void DistantLand::adjustFog()
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
-    DWORD c;
-    device->GetRenderState(D3DRS_FOGCOLOR, &c);
+    RGBVECTOR c = mwBridge->getSceneFogCol();
 
     if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
     {
-        D3DXCOLOR c0(c), c1(c);
+        RGBVECTOR c0(c), c1(c);
 
         // Simplified version of scattering from the shader
         const D3DXVECTOR3 scatter1(0.07, 0.36, 0.76);
@@ -535,19 +534,20 @@ void DistantLand::adjustFog()
         c0 = (1.0f - niceWeather) * c0 + niceWeather * c1;
 
         // Save colour for matching near fog in shaders
-        nearfogCol = RGBVECTOR(c0);
+        nearfogCol = c0;
 
         // Alter Morrowind's fog colour through its scenegraph
         // This way it automatically restores the correct colour if it has to switch fog modes mid-frame
-        mwBridge->setSceneFogCol((DWORD)nearfogCol);
+        DWORD fc = (DWORD)nearfogCol;
+        mwBridge->setSceneFogCol(fc);
 
         // Set device fog colour to propagate change immediately
-        device->SetRenderState(D3DRS_FOGCOLOR, (DWORD)nearfogCol);
+        device->SetRenderState(D3DRS_FOGCOLOR, fc);
     }
     else
     {
         // Save colour for matching near fog in shaders
-        nearfogCol = RGBVECTOR(c);
+        nearfogCol = c;
     }
 }
 

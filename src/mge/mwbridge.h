@@ -46,6 +46,7 @@ public:
     float GetWeatherRatio();
     RGBVECTOR* CurSkyColVector();
     RGBVECTOR* CurFogColVector();
+    DWORD getSceneFogCol();
     void setSceneFogCol(DWORD c);
     bool CellHasWeather();
     float* GetWindVector();

@@ -420,8 +420,9 @@ bool DistantLand::initWater()
         if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
         {
             // Higher mesh density near player
+            // The mesh requires density past 8192 units to cover the z discontinuity at distant land
             r = float(t) / float(resT);
-            r = 6400.0f * (0.85f * powf(r, 3) + 0.15f * r);
+            r = 9600.0f * (0.9f * powf(r, 3) + 0.1f * r);
             // Extend last ring past horizon
             if((t+1) == resT) r = 500000.0f;
         }
