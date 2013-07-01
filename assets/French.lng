@@ -78,7 +78,7 @@ bImport = "Importer des paramètres"
 bMacroEd = "Lancer l'éditeur de macro"
 bMWLightingReset = "Réinit."
 bMWLightSettings = "Paramètres d'éclairage..."
-bRemapper = "Lancer remappeur touche"
+bRemapper = "Lancer remappeur touches"
 bReportingShowLog = "Ouvrir mgeXE.log"
 bReportingShowDLWizardLog = "Ouvrir le générateur DL log"
 bResetSettings = "Restaurer les paramètres"
@@ -129,6 +129,7 @@ cbYesToAll = "Dire OUI à toutes les erreurs de chargement"
 ;;;;   combo boxes   ;;;;
 cmbAnisoLevel = "Aucun;2x;4x;8x;16x"
 cmbAntiAlias = "Aucun;2x;4x;8x;16x"
+cmbRefreshRate = "Défaut;59;60"
 cmbFogMode = "Depth pixel (Rapide);Depth vertex;Range vertex (Meilleur)"
 cmbVWait = "Arrêt;Marche;x2;x3;x4"
 
@@ -182,7 +183,7 @@ lFOV = "FOV Horiz."
 lFPSLimit = "Limiteur de FPS"
 lHDR = "Temps de réaction du HDR"
 lHDR2 = "secs"
-lInstructions = "Guide de configuration standard de MGE :\n\n\nConfiguration des graphismes et de la chaîne des shaders\n\n1. Sélectionner la résolution d'écran désirée. Cliquer sur 'FOV Auto' si vous préférez que MGE ajuste automatiquement votre FOV \nen fonction de votre résolution d'écran.\n2. Utiliser le filtrage Anisotrope (au moins 4x). Sélectionner le mode de brouillard "Range vertex".\n3. Paramétrer votre chaîne de shaders en cliquant sur [Éditeur des shaders], et ensuite suivez les notes écrites.\n\n\nConfiguration des Paysages Distants\n\n1. Lancez l'assistant de création des Paysages Distants.\n2. Cliquer sur le bouton 'utiliser ordre charg.', et ensuite sur 'Continuer'.\n3. Cliquer sur le bouton 'Tout régler automatiquement'.\n4. Attendre qu'il finisse (cela peut prendre quelques minutes, cela dépend à quel point est moddé votre jeu Morrowind).\n5. Vérifier la barre de statut pour de possibles erreurs.\n\n\nConfiguration en jeu\n\n1. L'éditeur de macros vous permet de lier des touches à des fonctions de MGE. Il est recommandé de lier la fonction "toggle shaders" à une touche,\n   comme cela vous pouvez les arrêter/démarrer en jeu d'un coup si la consommation de FPS est trop forte.\n2. Si vous possédez un SLI ou Crossfire, décochez la fonction "Cache du menu réactif" car elle cause des ralentissements sinon.\n3. Réglez la position de la caméra à la 3e personne si vous souhaitez l'utiliser.\n\n\nVous devriez être maintenant paré à jouer ! ^^\n\nPer-pixel lighting shader (beta) => \n\nSi vous souhaitez activer cette option, assurez-vous d'avoir coché la case à l'onglet 'Paysages Distants'."
+lInstructions = "Guide de configuration standard de MGE XE :\n\n\nConfiguration des graphismes et de la chaîne des shaders\n\n1. Sélectionner la résolution d'écran désirée. Cliquer sur 'FOV Auto' si vous préférez que MGE ajuste automatiquement votre FOV \nen fonction de votre résolution d'écran.\n2. Utiliser le filtrage Anisotrope (au moins 4x). Sélectionner le mode de brouillard "Range vertex (Meilleur)".\n3. Paramétrer votre chaîne de shaders en cliquant sur [Éditeur des shaders], et ensuite suivez les notes écrites.\n\n\nConfiguration des Paysages Distants\n\n1. Lancez l'assistant de création des Paysages Distants.\n2. Cliquer sur le bouton 'utiliser ordre charg.', et ensuite sur 'Continuer'.\n3. Cliquer sur le bouton 'Tout régler automatiquement'.\n4. Attendre qu'il finisse (cela peut prendre quelques minutes, cela dépend à quel point est moddé votre jeu Morrowind).\n5. Vérifier la barre de statut pour de possibles erreurs.\n\n\nConfiguration en jeu\n\n1. L'éditeur de macros vous permet de lier des touches à des fonctions de MGE. Il est recommandé de lier la Fonction "Bouton des shaders" à une touche,\n   comme cela vous pouvez les arrêter/démarrer en jeu d'un coup si la consommation de FPS est trop forte.\n2. Si vous possédez un SLI ou Crossfire, décochez la fonction "Cache du menu réactif" car sinon elle causera des ralentissements.\n3. Réglez la position de la caméra à la 3e personne si vous souhaitez l'utiliser.\n\n\nVous devriez être maintenant paré à jouer ! ^^\n\n\nShader d'éclairage par pixel (béta) => Si vous souhaitez activer cette option, assurez-vous d'avoir coché la case à l'onglet 'Paysages Distants'."
 lLightingConst = "Constant"
 lLightingLin = "Linéaire"
 lLightingQuad = "Quadratique"
@@ -361,7 +362,7 @@ lShaderUsage = "Double-cliquer pour ajouter ou retirer un shader de la liste de 
 
 ;;; Weather options
 [DLWeatherForm.Text]
-DLWeatherForm = "Distant Land Weather Settings"
+DLWeatherForm = "Paramètres des temps distants"
 gbWind = "Facteur vitesse vent"
 gbFogDay = "Facteur portée brouill."
 gbFogOffsDay = "Offset du brouillard"
@@ -377,7 +378,7 @@ lSnow = "Neigeux"
 lBlizzard = "Tempête de neige"
 bReset = "Réinitialiser"
 bCancel = "Annuler"
-bSave = "Sauvegarder"
+bSave = "Enregistrer"
 
 [DLWeatherForm.Tooltips]
 Save = "Sauvegarde tous les paramétres des temps et ferme la fenêtre de paramétrage des temps."
@@ -518,7 +519,7 @@ bClear = "Tout vider"
 bAdd = "Ajouter"
 bRemove = "Retirer"
 bCancel = "Annuler"
-bSave = "Sauvegarder"
+bSave = "Enregistrer"
 
 [OverrideListForm.Text]
 OverrideListForm = "Sélectionnez une ou des liste d'outrepassement de statiques"
@@ -529,14 +530,41 @@ bRemove = "Retier"
 bUp = "Mont\ner"
 bDown = "Desc\nendre"
 bCancel = "Annuler"
-bSave = "Sauvegarder"
+bSave = "Enregistrer"
 
 
 
 ;;; Input tools
+
+[MacroEditorForm.Text]
+bCancel = "Annuler"
+bClear = "Vider la commande console"
+bSave = "Enregistrer"
+cbTriggerEnabled = "Déclencheur activé"
+cbMacroType = "Inutilisé;Console1;Console2;Hammer1;Hammer2;Unhammer;AHammer1;AHammer2;AUnhammer;Presser1;Presser2;Dépresser;Début déclencheur;Fin déclencheur;Fonction"
+lCommandLength = "Longueur commande"
+lCommandDesc = "Description commande"
+lMacroFunction = "Fonction"
+lMacroType = "Type de Macro"
+lTriggerDelay = "Délai déclencheur"
+lTriggerNum = "Déclencheur"
+rbTap = "Taper"
+rbDown = "Bas"
+rbUp = "Haut"
+b100 = "Souris 1"
+b101 = "Souris 2"
+b102 = "Souris 3"
+b103 = "Souris 4"
+b104 = "Souris 5"
+b105 = "Souris 6"
+b106 = "Souris 7"
+b107 = "Souris 8"
+b108 = "Souris-molette haut"
+b109 = "Souris-molette bas"
+
 [MacroEditorForm.Strings]
-NormalTitle = "Éditeur de macro"
-EditModeTitle = "Édition de macro (Bouton = activer/désactiver/alterner entre)"
+NormalTitle = "Éditeur de macro - http://sourceforge.net/apps/mediawiki/morrgraphext/index.php?title=Macro_Editor"
+EditModeTitle = "Édition de macro (Bouton = activer/désactiver/alterner entre) http://sourceforge.net/apps/mediawiki/morrgraphext/index.php?title=Macro_Editor"
 CommandLengthExceeded = "La longueur de la commande console ne peut pas excéder 256 de changement d'état de touche"
 KeyboardError = "Le clavier ne devrait pas être actuellement activé"
 Macro000 = "Prendre capture d'écran"
@@ -576,6 +604,9 @@ Macro051 = "Dépl. vers droite cam mode 3ème personne"
 Macro052 = "Dépl. vers bas cam mode 3ème personne"
 Macro053 = "Dépl. vers haut cam mode 3ème personne"
 
+[KeyRemapper.Text]
+bClear = "Effacer tout"
+
 [KeyRemapper.Strings]
 NormalTitle = "Remappeur de touches"
 EditModeTitle = "Remappant une touche"
@@ -598,6 +629,28 @@ bPreview = "Aperçu"
 bPreviewChain = "Aperçu chaîne active"
 bSetImage = "Régler<thisframe>"
 bSetDepthImage = "Régler<depthframe>"
+
+
+;; toolbar tips
+bShaderNew = "Nouveau"
+bShaderOpen = "Ouvrir"
+bShaderSave = "Enregistrer"
+bShaderSaveAs = "Enregistrer sous"
+
+;; menus
+fileToolStripMenuItem = "&Fichier"
+editToolStripMenuItem = "&Éditer"
+newToolStripMenuItem = "&Nouveau"
+openToolStripMenuItem = "&Ouvrire"
+saveToolStripMenuItem = "&Enregistrer"
+saveAsToolStripMenuItem = "Enregistrer &sous"
+exitToolStripMenuItem = "Q&uitter"
+undoToolStripMenuItem = "&Défaire"
+redoToolStripMenuItem = "&Refaire"
+cutToolStripMenuItem = "Co&uper"
+copyToolStripMenuItem = "&Copier"
+pasteToolStripMenuItem = "&Coller"
+selectAllToolStripMenuItem = "Sélectionner &tout"
 
 [ShaderEditorForm.Strings]
 CannotReadFlags = "N'arrives pas à lire les réglages du shader. Vérifier que le code n'a pas d'erreurs."
@@ -631,7 +684,7 @@ bBenchmark = "Benchmark"
 
 [RenderWindow.Strings]
 FPS = "FPS : "
-Benchmark1 = "Completé "
+Benchmark1 = "Complété "
 Benchmark2 = " frames."
 Benchmark3 = "Temps standard : "
 Benchmark4 = "Temps avec shader : "
