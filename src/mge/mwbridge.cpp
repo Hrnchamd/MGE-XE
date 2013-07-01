@@ -647,20 +647,13 @@ BYTE MWBridge::GetSunVis()
 
 //-----------------------------------------------------------------------------
 
-// setSunriseTimes - Sets sunrise time and duration
-void MWBridge::setSunriseTimes(float t, float duration)
+// setSunriseSunset - Sets sunrise and sunset time and duration
+void MWBridge::setSunriseSunset(float rise_time, float rise_dur, float set_time, float set_dur)
 {
-    write_float(eSunriseHour, t);
-    write_float(eSunriseDuration, duration);
-}
-
-//-----------------------------------------------------------------------------
-
-// setSunsetTimes - Sets sunset time and duration
-void MWBridge::setSunsetTimes(float t, float duration)
-{
-    write_float(eSunsetHour, t);
-    write_float(eSunsetDuration, duration);
+    write_float(eSunriseHour, rise_time);
+    write_float(eSunriseDuration, rise_dur);
+    write_float(eSunsetHour, set_time);
+    write_float(eSunsetDuration, set_dur);
 }
 
 //-----------------------------------------------------------------------------

@@ -33,7 +33,8 @@ struct mwseInstruction
 
     inline bool vmPush(VMREGTYPE val);
     inline bool vmPush(VMFLOAT val);
-    inline bool vmPop(void *val);
+    inline bool vmPop(VMREGTYPE *val);
+    inline bool vmPop(VMFLOAT *val);
     inline const char * vmGetString(void *str);
     const char * vmPopString();
 
@@ -41,6 +42,7 @@ struct mwseInstruction
 	TES3MACHINE& vm;
 };
 
+// vmPush(VMREGTYPE) - Pushes an integer (of any type) onto the stack
 inline bool mwseInstruction::vmPush(VMREGTYPE val)
 {
     // Call <vtbl + 0x34> bool TES3MACHINE::push(VMREGTYPE)
@@ -51,6 +53,7 @@ inline bool mwseInstruction::vmPush(VMREGTYPE val)
     return f(&vm, 0, val);
 }
 
+// vmPush(VMREGTYPE) - Pushes a float onto the stack
 inline bool mwseInstruction::vmPush(VMFLOAT val)
 {
     // Call <vtbl + 0x38> bool TES3MACHINE::push(VMFLOAT)
@@ -61,7 +64,8 @@ inline bool mwseInstruction::vmPush(VMFLOAT val)
     return f(&vm, 0, val);
 }
 
-inline bool mwseInstruction::vmPop(void *val)
+// vmPop(VMREGTYPE*) - Pops an integer (of any type) off the stack
+inline bool mwseInstruction::vmPop(VMREGTYPE *val)
 {
     // Call <vtbl + 0x3c> bool TES3MACHINE::pop(VMREGTYPE&)
     // uses properties of fastcall to put vm in ecx
@@ -71,6 +75,18 @@ inline bool mwseInstruction::vmPop(void *val)
     return f(&vm, 0, val);
 }
 
+// vmPop(VMFLOAT*) - Pops a float off the stack
+inline bool mwseInstruction::vmPop(VMFLOAT *val)
+{
+    // Call <vtbl + 0x3c> bool TES3MACHINE::pop(VMREGTYPE&)
+    // uses properties of fastcall to put vm in ecx
+    typedef bool (__fastcall *vmpop_t)(TES3MACHINE*, int, void *);
+    vmpop_t f = *reinterpret_cast<vmpop_t*>(*(BYTE**)(&vm) + 0x3c);
+
+    return f(&vm, 0, val);
+}
+
+// vmGetString(void*) - Returns a null-terminated string copied from the stack, given a stack pointer
 inline const char * mwseInstruction::vmGetString(void *str)
 {
     // Call <vtbl + 0x6c> const char * TES3MACHINE::GetString(VPVOID)

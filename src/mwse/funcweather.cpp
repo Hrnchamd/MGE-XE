@@ -107,33 +107,19 @@ bool mwseSetSunColour::execute(mwseInstruction *_this)
 }
 
 
-MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetSunrise)
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetSunriseSunset)
 
-// SetSunrise <float time> <float duration>
-bool mwseSetSunrise::execute(mwseInstruction *_this)
+// SetSunriseSunset <float rise_time> <float rise_duration> <float set_time> <float set_duration>
+bool mwseSetSunriseSunset::execute(mwseInstruction *_this)
 {
-    VMFLOAT t, duration;
+    VMFLOAT rise_time, rise_dur, set_time, set_dur;
 
-	if(!_this->vmPop(&t)) return false;
-	if(!_this->vmPop(&duration)) return false;
+	if(!_this->vmPop(&rise_time)) return false;
+	if(!_this->vmPop(&rise_dur)) return false;
+	if(!_this->vmPop(&set_time)) return false;
+	if(!_this->vmPop(&set_dur)) return false;
 
     DECLARE_MWBRIDGE
-    mwBridge->setSunriseTimes(t, duration);
-	return true;
-}
-
-
-MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetSunset)
-
-// SetSunset <float time> <float duration>
-bool mwseSetSunset::execute(mwseInstruction *_this)
-{
-    VMFLOAT t, duration;
-
-	if(!_this->vmPop(&t)) return false;
-	if(!_this->vmPop(&duration)) return false;
-
-    DECLARE_MWBRIDGE
-    mwBridge->setSunsetTimes(t, duration);
+    mwBridge->setSunriseSunset(rise_time, rise_dur, set_time, set_dur);
 	return true;
 }

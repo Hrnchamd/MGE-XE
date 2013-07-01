@@ -2271,18 +2271,12 @@ function
 	Opcode = 0x3a83
 end
 function
-	Name = XSetSunrise
+	Name = XSetSunriseSunset
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
     Param1 = Float
     Param2 = Float
+    Param3 = Float
+    Param4 = Float
 	Opcode = 0x3a84
-end
-function
-	Name = XSetSunset
-	Options = MWSE | AllowGlobal | ShortVar | AllowVar
-	Return = None
-    Param1 = Float
-    Param2 = Float
-	Opcode = 0x3a85
 end
