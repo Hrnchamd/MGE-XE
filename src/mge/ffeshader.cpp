@@ -11,10 +11,10 @@ map<FixedFunctionShader::ShaderKey, ID3DXEffect *> FixedFunctionShader::cacheEff
 ID3DXEffect *FixedFunctionShader::effectDefaultPurple;
 
 D3DXHANDLE FixedFunctionShader::ehWorld, FixedFunctionShader::ehVertexBlendState, FixedFunctionShader::ehVertexBlendPalette;
-D3DXHANDLE FixedFunctionShader::ehTex0, FixedFunctionShader::ehTex1, FixedFunctionShader::ehTex2, FixedFunctionShader::ehTex3;
+D3DXHANDLE FixedFunctionShader::ehTex0, FixedFunctionShader::ehTex1, FixedFunctionShader::ehTex2, FixedFunctionShader::ehTex3, FixedFunctionShader::ehTex4, FixedFunctionShader::ehTex5;
 D3DXHANDLE FixedFunctionShader::ehMaterialDiffuse, FixedFunctionShader::ehMaterialAmbient, FixedFunctionShader::ehMaterialEmissive;
-D3DXHANDLE FixedFunctionShader::ehLightAmbient, FixedFunctionShader::ehLightSunDiffuse, FixedFunctionShader::ehLightDiffuse;
-D3DXHANDLE FixedFunctionShader::ehLightSunDirection, FixedFunctionShader::ehLightPosition;
+D3DXHANDLE FixedFunctionShader::ehLightSceneAmbient, FixedFunctionShader::ehLightSunDiffuse, FixedFunctionShader::ehLightDiffuse;
+D3DXHANDLE FixedFunctionShader::ehLightSunDirection, FixedFunctionShader::ehLightPosition, FixedFunctionShader::ehLightAmbient;
 D3DXHANDLE FixedFunctionShader::ehLightFalloffQuadratic, FixedFunctionShader::ehLightFalloffLinear, FixedFunctionShader::ehLightFalloffConstant;
 D3DXHANDLE FixedFunctionShader::ehTexgenTransform, FixedFunctionShader::ehBumpMatrix, FixedFunctionShader::ehBumpLumiScaleBias;
 
@@ -32,7 +32,7 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ID3DXEffect *effect;
     ID3DXBuffer *errors;
 
-    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3, constantPool, &effect, &errors);
+    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effect, &errors);
     if(hr != D3D_OK)
     {
         if(errors)
@@ -51,14 +51,17 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ehTex1 = effect->GetParameterByName(0, "tex1");
     ehTex2 = effect->GetParameterByName(0, "tex2");
     ehTex3 = effect->GetParameterByName(0, "tex3");
+    ehTex4 = effect->GetParameterByName(0, "tex4");
+    ehTex5 = effect->GetParameterByName(0, "tex5");
 
     ehMaterialDiffuse = effect->GetParameterByName(0, "materialDiffuse");
     ehMaterialAmbient = effect->GetParameterByName(0, "materialAmbient");
     ehMaterialEmissive = effect->GetParameterByName(0, "materialEmissive");
-    ehLightAmbient = effect->GetParameterByName(0, "lightAmbient");
+    ehLightSceneAmbient = effect->GetParameterByName(0, "lightSceneAmbient");
     ehLightSunDiffuse = effect->GetParameterByName(0, "lightSunDiffuse");
     ehLightSunDirection = effect->GetParameterByName(0, "lightSunDirection");
     ehLightDiffuse = effect->GetParameterByName(0, "lightDiffuse");
+    ehLightAmbient = effect->GetParameterByName(0, "lightAmbient");
     ehLightPosition = effect->GetParameterByName(0, "lightPosition");
     ehLightFalloffQuadratic = effect->GetParameterByName(0, "lightFalloffQuadratic");
     ehLightFalloffLinear = effect->GetParameterByName(0, "lightFalloffLinear");
@@ -82,7 +85,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     if(!(sk == lastsk))
     {
         // Read from shader cache / generate
-        map<ShaderKey, ID3DXEffect*>::iterator iEffect = cacheEffects.find(sk);
+        map<ShaderKey, ID3DXEffect*>::const_iterator iEffect = cacheEffects.find(sk);
         lastsk = sk;
 
         if(iEffect != cacheEffects.end())
@@ -99,10 +102,12 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     // Set up lighting
     const size_t MaxLights = 8;
     D3DXVECTOR4 bufferDiffuse[MaxLights];
+    float bufferAmbient[MaxLights];
     float bufferPosition[3 * MaxLights];
     float bufferFalloffQuadratic[MaxLights], bufferFalloffLinear[MaxLights], bufferFalloffConstant;
 
     memset(&bufferDiffuse, 0, sizeof(bufferDiffuse));
+    memset(&bufferAmbient, 0, sizeof(bufferAmbient));
     memset(&bufferPosition, 0, sizeof(bufferPosition));
     memset(&bufferFalloffQuadratic, 0, sizeof(bufferFalloffQuadratic));
     memset(&bufferFalloffLinear, 0, sizeof(bufferFalloffLinear));
@@ -133,14 +138,27 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
                 bufferFalloffLinear[pointLightCount] = light->falloff.y;
                 bufferFalloffQuadratic[pointLightCount] = light->falloff.z;
             }
+            else if(light->falloff.y == 0.10000001f)
+            {
+                // Projectile light source, normally hard coded by Morrowind to { 0, 3 * (1/30), 0 }
+                // This falloff value cannot be produced by other magic effects
+                // Needs to be made significantly brighter to look cool
+                bufferFalloffQuadratic[pointLightCount] = 5e-5;
+            }
             else
             {
-                // Projectile light source, normally hard coded by Morrowind to { 0, 0.1, 0 }
-                // or light magic effect, ambient light
-                bufferFalloffQuadratic[pointLightCount] = 4e-5;
-                //bufferPosition[pointLightCount + 2*MaxLights] = light->position.z + 200.0;
-                //bufferFalloffQuadratic[pointLightCount] = 0.25 * (light->falloff.y * light->falloff.y);
-                //LOG::logline("%f %f %f", light->falloff.x, light->falloff.y, light->falloff.z);
+                // Light magic effect, calculated by { 0, 3 / (22 * spell magnitude), 0 }
+                // A mix of ambient (falloff but no N.L component) and over-bright diffuse lighting
+                // It is approximated with a half-lambert weight + quadratic falloff
+                // Light colour is altered to avoid ridiculous peak light levels
+                // The point source is moved up slightly as it is often embedded in the ground
+                float brightness = 0.15 + 1e-4 / light->falloff.y;
+                bufferDiffuse[pointLightCount].x *= brightness;
+                bufferDiffuse[pointLightCount].y *= brightness;
+                bufferDiffuse[pointLightCount].z *= brightness;
+                bufferAmbient[pointLightCount] = 0.6;
+                bufferFalloffQuadratic[pointLightCount] = 4e-1 * light->falloff.y * light->falloff.y;
+                bufferPosition[pointLightCount + 2*MaxLights] += 20.0;
             }
             ++pointLightCount;
         }
@@ -154,9 +172,18 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         }
     }
 
-    effectFFE->SetFloatArray(ehLightAmbient, ambient, 3);
+    // Special case, check if ambient state is pure white (distant land ignores this for a reason)
+    // Morrowind temporarily sets this for full bright particle effects, but just adding it
+    // to other ambient sources above would cause over-brightness
+    DWORD checkAmbient;
+    device->GetRenderState(D3DRS_AMBIENT, &checkAmbient);
+    if(checkAmbient == 0xffffffff)
+        ambient.r = ambient.g = ambient.b = 1.0;
+
+    effectFFE->SetFloatArray(ehLightSceneAmbient, ambient, 3);
     effectFFE->SetFloatArray(ehLightSunDiffuse, sunDiffuse, 3);
     effectFFE->SetVectorArray(ehLightDiffuse, bufferDiffuse, MaxLights);
+    effectFFE->SetFloatArray(ehLightAmbient, bufferAmbient, MaxLights);
     effectFFE->SetFloatArray(ehLightPosition, bufferPosition, 3 * MaxLights);
     effectFFE->SetFloatArray(ehLightFalloffQuadratic, bufferFalloffQuadratic, MaxLights);
     effectFFE->SetFloatArray(ehLightFalloffLinear, bufferFalloffLinear, MaxLights);
@@ -165,8 +192,9 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     // Bump mapping state
     if(sk.usesBumpmap)
     {
-        effectFFE->SetFloatArray(ehBumpMatrix, &frs->stage[sk.bumpmapStage].bumpEnvMat[0][0], 4);
-        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &frs->stage[sk.bumpmapStage].bumpLumiScale, 2);
+        const FragmentState::Stage *bumpStage = &frs->stage[sk.bumpmapStage];
+        effectFFE->SetFloatArray(ehBumpMatrix, &bumpStage->bumpEnvMat[0][0], 4);
+        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &bumpStage->bumpLumiScale, 2);
     }
 
     // Texgen texture matrix
@@ -178,10 +206,10 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     }
 
      // Copy texture bindings from fixed function pipe
-    IDirect3DBaseTexture9 *tex;
-    for(n = 0; n != std::min((int)sk.activeStages, 4); ++n)
+    const D3DXHANDLE ehIndex[] = { ehTex0, ehTex1, ehTex2, ehTex3, ehTex4, ehTex5 };
+    for(n = 0; n != std::min((int)sk.activeStages, 6); ++n)
     {
-        D3DXHANDLE ehIndex[] = { ehTex0, ehTex1, ehTex2, ehTex3 };
+        IDirect3DBaseTexture9 *tex;
         device->GetTexture(n, &tex);
         effectFFE->SetTexture(ehIndex[n], tex);
         if(tex) tex->Release();
@@ -243,7 +271,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
         texcoordNames[i] = buf.str();
         buf.str(string());
         buf << "tex2D(sampFFE" << i << ", IN." << texcoordNames[i] << ")";
-        texSamplers[i] =buf.str();
+        texSamplers[i] = buf.str();
     }
 
     // Vertex format coupling, generate equivalent struct to input FVF
@@ -344,7 +372,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
     buf.str(string());
     switch(sk.vertexMaterial)
     {
-        case 0: buf << "diffuse = 1.0;"; break;
+        case 0: buf << "diffuse = " << (sk.vertexColour ? "IN.col;" : "1.0;"); break;
         case 1: buf << "diffuse = vertexMaterialNone(d, a);"; break;
         case 2: buf << "diffuse = vertexMaterialDiffAmb(d, a, IN.col);"; break;
         case 3: buf << "diffuse = vertexMaterialEmissive(d, a, IN.col);"; break;
@@ -398,7 +426,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
         case D3DTOP_BLENDTEXTUREALPHA:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
-            buf << "float4 temp" << i << "= " << arg3 << "; lerp(" << arg1 << ", " << arg1 << ", temp" << i <<".a);"; break;
+            buf << "float4 temp" << i << " = " << arg3 << "; lerp(" << arg1 << ", " << arg1 << ", temp" << i <<".a);"; break;
 
         case D3DTOP_BUMPENVMAP:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
@@ -465,7 +493,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
     LOG::logline("-- Generating replacement fixed function shader");
     sk.log();
-    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3, constantPool, &effectFFE, &errors);
+    HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effectFFE, &errors);
 
     if(hr != D3D_OK)
     {
@@ -475,6 +503,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
             LOG::logline("!! %s", errors->GetBufferPointer());
             errors->Release();
         }
+        LOG::logline("");
         effectDefaultPurple->AddRef();
         effectFFE = effectDefaultPurple;
     }
@@ -598,7 +627,7 @@ void FixedFunctionShader::ShaderKey::log() const
     LOG::logline("   Texture stages:");
     for(int i = 0; i != activeStages; ++i)
     {
-        if(stage[i].colorOp != D3DTOP_MULTIPLYADD)
+        if(stage[i].colorOp != D3DTOP_MULTIPLYADD) // or D3DTOP_LERP (unused)
         {
             LOG::logline("    [%d] % 12s    %s, %s            uv %d texgen %d", i,
                                 opsymbols[stage[i].colorOp], argsymbols[stage[i].colorArg1], argsymbols[stage[i].colorArg2],

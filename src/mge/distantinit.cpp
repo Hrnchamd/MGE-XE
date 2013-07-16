@@ -110,6 +110,9 @@ D3DXHANDLE DistantLand::ehTime;
 D3DXHANDLE DistantLand::ehRippleOrigin;
 D3DXHANDLE DistantLand::ehWaveHeight;
 
+void (*DistantLand::captureScreenFunc)(IDirect3DSurface9 *);
+
+
 static vector<DistantStatic> DistantStatics;
 static unordered_map< string, vector<UsedDistantStatic> > UsedDistantStatics;
 
@@ -256,7 +259,7 @@ bool DistantLand::initShader()
         return false;
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effect, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Main", errors);
@@ -303,7 +306,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effectShadow, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Shadowmap", errors);
@@ -312,7 +315,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shadow map shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effectDepth, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Depth", errors);
@@ -320,6 +323,13 @@ bool DistantLand::initShader()
     }
 
     LOG::logline("-- Depth shader compiled OK");
+
+    if(Configuration.MGEFlags & USE_ATM_SCATTER)
+    {
+        // Mark moon geometry for detection
+        DECLARE_MWBRIDGE
+        mwBridge->markMoonNodes(kMoonTag);
+    }
 
     return true;
 }

@@ -32,7 +32,7 @@ namespace MGEgui {
             // Set initial directories
             this.OpenFileDialog.InitialDirectory = this.SaveFileDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             // Title
-            Text = "Morrowind Graphics Extender XE 0.9";
+            Text = "Morrowind Graphics Extender XE " + Statics.versionNumber;
             // Set default tooltip text reading speed
             Statics.tipReadSpeed = (int)(1000 / double.Parse (cmbTipReadSpd.Text));
             // set a handler for each control which sets tooltip popup timeout dependent on tooltip text length
@@ -1297,17 +1297,18 @@ namespace MGEgui {
             dist_root = Math.Sqrt(draw_distance);
 
             if (autoDistances != AutoDistance.byAFogEnd) {
-                udDLFogAStart.Value = (decimal)(draw_distance * (cbDLFogExp.Checked ? 0.15 : 0.05));
+                udDLFogAStart.Value = (decimal)(draw_distance * 0.15);
                 udDLFogAEnd.Value = (decimal)draw_distance;
             }
             udDLFogBStart.Value = -0.5M;
             udDLFogBEnd.Value = 0.3M;
             udDLFogIStart.Value = 0.0M;
             udDLFogIEnd.Value = 2.0M;
-            udDLDistNear.Value = (decimal)(draw_distance * 0.2 * (cbDLFogExp.Checked ? 0.75 : 1.0));
-            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.9 * (cbDLFogExp.Checked ? 0.75 : 1.0));
-            udDLDistFar.Value = (udDLDistNear.Value + udDLDistVeryFar.Value) * 0.5M;
-            //Make sure improper values have not been generated
+            udDLDistNear.Value = (decimal)(draw_distance * 0.3);
+            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.95);
+            udDLDistFar.Value = (decimal)(draw_distance * 0.7);
+            
+            // Make sure improper values have not been generated
             loading = false;
             ValidateDistances (sender, e);
         }
@@ -1452,26 +1453,6 @@ namespace MGEgui {
             cbDLScattering.Checked &= status;
             if (loading) return;
             
-            decimal draw_dist = udDLDrawDist.Value;
-            decimal near_dist = udDLDistNear.Value;
-            decimal far_dist = udDLDistFar.Value;
-            decimal vfar_dist = udDLDistVeryFar.Value;
-            if (status) {
-                draw_dist = Math.Min(draw_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-                near_dist = Math.Min(near_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-                far_dist = Math.Min(far_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-                vfar_dist = Math.Min(vfar_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-            } else {
-                draw_dist = Math.Max(draw_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-                near_dist = Math.Max(near_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-                far_dist = Math.Max(far_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-                vfar_dist = Math.Max(vfar_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-            }
-            udDLDrawDist.Value = draw_dist;
-            udDLDistNear.Value = near_dist;
-            udDLDistFar.Value = far_dist;
-            udDLDistVeryFar.Value = vfar_dist;
-            
             if (cbDLAutoDist.Checked) AutoSetDistances (sender, e);
         }
 
@@ -1562,9 +1543,9 @@ namespace MGEgui {
         	if(cbPerPixelLighting.Checked)
         	{
         		MessageBox.Show(strings["LightOverride"], Statics.strings["Warning"]);
-	            udLightingConst.Value = 0.27M;
+	            udLightingConst.Value = 0.33M;
 	            udLightingLinear.Value = 0;
-	            udLightingQuad.Value = 5.4M;
+	            udLightingQuad.Value = 4.2M;
         	}
         }
         

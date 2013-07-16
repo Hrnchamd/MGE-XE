@@ -5,8 +5,10 @@
 
 #include "XE Common.fx"
 
+shared texture tex4, tex5;
 shared float4 materialDiffuse, materialAmbient, materialEmissive;
-shared float3 lightAmbient, lightSunDiffuse, lightDiffuse[8];
+shared float3 lightSceneAmbient, lightSunDiffuse, lightDiffuse[8];
+shared float4 lightAmbient[2];
 shared float4 lightSunDirection, lightPosition[6];
 shared float4 lightFalloffQuadratic[2], lightFalloffLinear[2];
 shared float lightFalloffConstant;
@@ -18,6 +20,8 @@ sampler sampFFE0 = sampler_state { texture = <tex0>; };
 sampler sampFFE1 = sampler_state { texture = <tex1>; };
 sampler sampFFE2 = sampler_state { texture = <tex2>; };
 sampler sampFFE3 = sampler_state { texture = <tex3>; };
+sampler sampFFE4 = sampler_state { texture = <tex4>; };
+sampler sampFFE5 = sampler_state { texture = <tex5>; };
 
 //------------------------------------------------------------
 
@@ -88,7 +92,7 @@ float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal)
     // Attenuation
     float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffConstant);
     // (slower) float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffLinear[group] * dist + lightFalloffConstant);
-    return lambert * att;
+    return (lambert + lightAmbient[group]) * att;
 }
 
 float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 normal)
@@ -109,7 +113,7 @@ float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 norm
 float3 tonemap(float3 c)
 {
     // Curve maps 0 -> 0, 1.0 -> 0.84, up to 2.2 -> 1.0
-    c = min(c, 2.2);
+    c = clamp(c, 0, 2.2);
     c = (((0.0548303 * c - 0.189786) * c - 0.154732) * c + 1.12969) * c;
     return c;
 }
@@ -166,7 +170,7 @@ FFEPixel PerPixelVS(FFEVertIn IN)
     OUT.pos = mul(worldpos, view);
     float dist = length(OUT.pos);
     OUT.pos = mul(OUT.pos, proj);
-    OUT.nrm_fog = float4(normal, fogScalar(dist));
+    OUT.nrm_fog = float4(normal, fogMWScalar(dist));
     
     // Texcoord routing and texgen
     /* template */ FFE_TEXCOORDS_TEXGEN
@@ -195,7 +199,7 @@ float4 bumpmapStage(sampler s, float2 tc, float4 dUdV)
 float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL)
 {
     float4 c = bumpmapStage(s, tc, dUdVL);
-    c.rgb *= dUdVL.b * bumpLumiScaleBias.x + bumpLumiScaleBias.y;
+    c.rgb *= saturate(dUdVL.b * bumpLumiScaleBias.x + bumpLumiScaleBias.y);
     return c;
 }
 
@@ -208,7 +212,7 @@ float4 PerPixelPS(FFEPixel IN) : COLOR0
     
     // Standard morrowind lighting: sun, ambient, and point lights
     float3 d = lightSunDiffuse * saturate(dot(normal, -lightSunDirection));
-    float3 a = lightAmbient;
+    float3 a = lightSceneAmbient;
     d += calcPointLighting(FFE_LIGHTS_ACTIVE, IN.lightvec, normal);
     
     // Material

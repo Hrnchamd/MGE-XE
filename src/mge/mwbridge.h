@@ -107,6 +107,7 @@ public:
 
     void toggleRipples(BOOL enabled);
     void markWaterNode(float k);
+    void markMoonNodes(float k);
     void disableScreenshotFunc();
     void disableSunglare();
     bool isIntroDone();

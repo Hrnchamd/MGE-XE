@@ -50,7 +50,7 @@ namespace MGEgui {
             this.bShaderSaveAs = new System.Windows.Forms.ToolStripButton();
             this.bShaderFlags = new System.Windows.Forms.Button();
             this.MenuStrip = new System.Windows.Forms.MenuStrip();
-            this.fileToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.newToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator = new System.Windows.Forms.ToolStripSeparator();
@@ -252,7 +252,7 @@ namespace MGEgui {
             // 
             this.MenuStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                                    this.fileToolStripMenuItem1,
+                                    this.fileToolStripMenuItem,
                                     this.editToolStripMenuItem});
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
@@ -262,9 +262,9 @@ namespace MGEgui {
             this.MenuStrip.TabIndex = 15;
             this.MenuStrip.Text = "MenuStrip";
             // 
-            // fileToolStripMenuItem1
+            // fileToolStripMenuItem
             // 
-            this.fileToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
                                     this.newToolStripMenuItem,
                                     this.openToolStripMenuItem,
                                     this.toolStripSeparator,
@@ -272,9 +272,9 @@ namespace MGEgui {
                                     this.saveAsToolStripMenuItem,
                                     this.toolStripSeparator2,
                                     this.exitToolStripMenuItem});
-            this.fileToolStripMenuItem1.Name = "fileToolStripMenuItem1";
-            this.fileToolStripMenuItem1.Size = new System.Drawing.Size(37, 24);
-            this.fileToolStripMenuItem1.Text = "&File";
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 24);
+            this.fileToolStripMenuItem.Text = "&File";
             // 
             // newToolStripMenuItem
             // 
@@ -459,7 +459,7 @@ namespace MGEgui {
         private ToolStripButton bShaderSaveAs;
         private Button bShaderFlags;
         private MenuStrip MenuStrip;
-        private ToolStripMenuItem fileToolStripMenuItem1;
+        private ToolStripMenuItem fileToolStripMenuItem;
         private ToolStripMenuItem newToolStripMenuItem;
         private ToolStripMenuItem openToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator;

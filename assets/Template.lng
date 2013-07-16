@@ -591,6 +591,32 @@ bSave = "Save"
 
 
 ;;; Input tools
+[MacroEditorForm.Text]
+bCancel = "Cancel"
+bClear = "Clear console command"
+bSave = "Save"
+cbTriggerEnabled = "Trigger enabled"
+cbMacroType = "Unused;Console1;Console2;Hammer1;Hammer2;Unhammer;AHammer1;AHammer2;AUnhammer;Press1;Press2;Unpress;Start Trigger;End Trigger;Function"
+lCommandLength = "Command length"
+lCommandDesc = "Command description"
+lMacroFunction = "Function"
+lMacroType = "Macro type"
+lTriggerDelay = "Trigger delay"
+lTriggerNum = "Trigger"
+rbTap = "Tap"
+rbDown = "Down"
+rbUp = "Up"
+b100 = "Mouse 1"
+b101 = "Mouse 2"
+b102 = "Mouse 3"
+b103 = "Mouse 4"
+b104 = "Mouse 5"
+b105 = "Mouse 6"
+b106 = "Mouse 7"
+b107 = "Mouse 8"
+b108 = "Mouse\nwheel up"
+b109 = "Mouse\nwheel down"
+
 [MacroEditorForm.Strings]
 NormalTitle = "Macro editor"
 EditModeTitle = "Editing macro"
@@ -633,6 +659,9 @@ Macro051 = "Move right 3rd person cam"
 Macro052 = "Move down 3rd person cam"
 Macro053 = "Move up 3rd person cam"
 
+[KeyRemapper.Text]
+bClear = "Clear all"
+
 [KeyRemapper.Strings]
 NormalTitle = "Key remapper"
 EditModeTitle = "Remapping key"
@@ -656,6 +685,27 @@ bPreview = "Preview"
 bPreviewChain = "Preview active chain"
 bSetImage = "Set <thisframe>"
 bSetDepthImage = "Set <depthframe>"
+
+;; toolbar tips
+bShaderNew = "New"
+bShaderOpen = "Open"
+bShaderSave = "Save"
+bShaderSaveAs = "Save as"
+
+;; menus
+fileToolStripMenuItem = "&File"
+editToolStripMenuItem = "&Edit"
+newToolStripMenuItem = "&New"
+openToolStripMenuItem = "&Open"
+saveToolStripMenuItem = "&Save"
+saveAsToolStripMenuItem = "Save &As"
+exitToolStripMenuItem = "E&xit"
+undoToolStripMenuItem = "&Undo"
+redoToolStripMenuItem = "&Redo"
+cutToolStripMenuItem = "Cu&t"
+copyToolStripMenuItem = "&Copy"
+pasteToolStripMenuItem = "&Paste"
+selectAllToolStripMenuItem = "Select &All"
 
 [ShaderEditorForm.Strings]
 CannotReadFlags = "Could not read shader flags. Something may be wrong with the code."

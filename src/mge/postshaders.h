@@ -14,6 +14,13 @@ struct MGEShader
     ID3DXEffect* effect;
     int disableFlags;
     D3DXHANDLE ehVars[32];
+
+    void SetTexture(EffectVariableID id, LPDIRECT3DBASETEXTURE9 tex);
+    void SetMatrix(EffectVariableID id, const D3DXMATRIX *m);
+    void SetFloatArray(EffectVariableID id, const float *x, int n);
+    void SetFloat(EffectVariableID id, float x);
+    void SetInt(EffectVariableID id, int x);
+    void SetBool(EffectVariableID id, bool b);
 };
 
 typedef void (*MGEShaderUpdateFunc)(MGEShader *);
@@ -38,6 +45,7 @@ public:
     static void loadShaderDependencies(MGEShader *shader);
     static bool initBuffers();
     static void release();
+
     static void evalAdaptHDR(IDirect3DSurface *source, int environmentFlags, float dt);
     static void shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environmentFlags, float frameTime);
     static IDirect3DTexture9 * borrowBuffer(int n);

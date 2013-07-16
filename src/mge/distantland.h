@@ -25,6 +25,7 @@ public:
     static const float waveTexWorldRes = 2.5f;
     static const int GrassInstStride = 48;
     static const int MaxGrassElements = 8192;
+    static const float kMoonTag = 88888.0f;
 
     static bool ready;
     static bool isRenderCached;
@@ -99,6 +100,8 @@ public:
     static D3DXHANDLE ehRippleOrigin;
     static D3DXHANDLE ehWaveHeight;
 
+    static void (*captureScreenFunc)(IDirect3DSurface9 *);
+
     static bool init(IDirect3DDevice9 *realDevice);
     static bool initShader();
     static bool initDepth();
@@ -163,6 +166,7 @@ public:
     static void updatePostShader(MGEShader *shader);
 
     static IDirect3DSurface9 * captureScreen();
+    static void requestCaptureNoUI(void (*func)(IDirect3DSurface9 *));
 };
 
 class RenderTargetSwitcher
