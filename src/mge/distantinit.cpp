@@ -621,6 +621,12 @@ bool DistantLand::loadDistantStatics()
 {
     DWORD unused;
 
+    if(GetFileAttributes("data files/distantland/statics") == INVALID_FILE_ATTRIBUTES)
+    {
+        LOG::logline("!! Distant statics have not been generated");
+        return true;
+    }
+
     HANDLE h = CreateFile("data files/distantland/statics/usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE)
     {
@@ -903,8 +909,8 @@ bool DistantLand::initLandscape()
 
     if(GetFileAttributes("data files\\distantland\\world") == INVALID_FILE_ATTRIBUTES)
     {
-        LOG::logline("!! Distant land has not been generated. It is required for MGE XE to run.");
-        return false;
+        LOG::logline("!! Distant land has not been generated");
+        return true;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
@@ -1060,9 +1066,12 @@ void DistantLand::release()
     }
     meshCollectionLand.clear();
 
-    texWorldColour->Release(); texWorldColour = 0;
-    texWorldNormals->Release(); texWorldNormals = 0;
-    texWorldDetail->Release(); texWorldDetail = 0;
+    if(texWorldColour)
+    {
+        texWorldColour->Release(); texWorldColour = 0;
+        texWorldNormals->Release(); texWorldNormals = 0;
+        texWorldDetail->Release(); texWorldDetail = 0;
+    }
 
     BSAClearTextureCache();
 
