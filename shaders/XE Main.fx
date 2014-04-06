@@ -248,15 +248,15 @@ DeferredOut MGEBlendVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 nd
 float4 MGEBlendPS (DeferredOut IN) : COLOR0
 {
     const float zone = 512.0, bound = 7168.0 - zone;
-    float v, w = tex2Dlod(sampDepth, IN.tex).r;
+    float v, w = tex2Dlod(sampDepthPoint, IN.tex).r;
     
     if(w > bound)
     {
         // tex2Dlod allows texld to be moved into the branch, as grad calculation is not required
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(rcpres.x, 0, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(0, rcpres.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(rcpres.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, rcpres.y, 0, 0)).r);
     }
     
     //w = length(w * IN.eye);   // causes some errors with distant land

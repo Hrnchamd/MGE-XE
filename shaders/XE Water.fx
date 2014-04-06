@@ -300,7 +300,7 @@ DeferredOut CausticsVS(float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc
 float4 CausticsPS(DeferredOut IN) : COLOR0
 {
     float3 c = tex2Dlod(sampBaseTex, IN.tex).rgb;
-    float depth = tex2Dlod(sampDepth, IN.tex).r;
+    float depth = tex2Dlod(sampDepthPoint, IN.tex).r;
     float fog = fogMWScalar(depth);
 
     clip(7168.0 - depth);

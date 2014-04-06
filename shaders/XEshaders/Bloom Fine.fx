@@ -20,9 +20,9 @@ float fogstart, fogrange;
 
 texture lastshader, lastpass, depthframe;
 
-sampler s0 = sampler_state { texture=<lastshader>; addressu = clamp; addressv = clamp; magfilter = none; minfilter = none; };
-sampler s1 = sampler_state { texture=<lastpass>; addressu = clamp; addressv = clamp; magfilter = linear; minfilter = linear; };
-sampler s2 = sampler_state { texture=<depthframe>; addressu = clamp; addressv = clamp; magfilter = none; minfilter = none; };
+sampler s0 = sampler_state { texture = <lastshader>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s1 = sampler_state { texture = <lastpass>; addressu = clamp; addressv = clamp; magfilter = linear; minfilter = linear; };
+sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
 
 
 

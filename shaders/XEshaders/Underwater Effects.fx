@@ -12,7 +12,7 @@ texture depthframe;
 texture watertexture;
 
 sampler s0 = sampler_state { texture = <lastshader>; magfilter = linear; minfilter = linear; };
-sampler s1 = sampler_state { texture = <depthframe>; magfilter = none; minfilter = none; };
+sampler s1 = sampler_state { texture = <depthframe>; magfilter = point; minfilter = point; };
 sampler s2 = sampler_state { texture = <watertexture>; magfilter = linear; minfilter = linear; };
 
 

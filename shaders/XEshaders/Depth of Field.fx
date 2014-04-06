@@ -45,14 +45,14 @@ texture lastshader;
 texture lastpass;
 texture depthframe;
 
-sampler s0 = sampler_state { texture=<lastshader>; };
-sampler s1 = sampler_state { texture=<depthframe>; AddressU=Clamp; AddressV=Clamp; };
-sampler s3 = sampler_state { texture=<lastpass>; AddressU=Mirror; AddressV=Mirror; MagFilter=Linear; MinFilter=Linear; };
+sampler s0 = sampler_state { texture = <lastshader>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s1 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s3 = sampler_state { texture = <lastpass>; addressu = mirror; addressv = mirror; magfilter = linear; minfilter = linear; };
 
 
 #ifdef ROTATE
 texture tex1 < string src="noise64.tga"; >;
-sampler s2 = sampler_state { texture=<tex1>; AddressU=Wrap; AddressV=Wrap; };
+sampler s2 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = linear; minfilter = linear; };
 #endif
 
 

@@ -52,12 +52,12 @@ vector rcpres;
 float fogrange, fogstart;
 bool isInterior, isUnderwater;
 
-sampler s0 = sampler_state { texture=<lastshader>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu=mirror; addressv=mirror; };
-sampler s1 = sampler_state { texture=<lastpass>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu=mirror; addressv=mirror; };
+sampler s0 = sampler_state { texture = <lastshader>; minfilter = linear; magfilter = linear; addressu = mirror; addressv = mirror; };
+sampler s1 = sampler_state { texture = <lastpass>; minfilter = linear; magfilter = linear; addressu = mirror; addressv = mirror; };
 
 #if ( ( BLOOM_FX_SKY != 1 ) || ( BLOOM_FX_HANDS != 1 ) )
     texture depthframe;
-    sampler sDepth = sampler_state { texture=<depthframe>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu=clamp; addressv = clamp; };
+    sampler sDepth = sampler_state { texture = <depthframe>; minfilter = point; magfilter = point; addressu = clamp; addressv = clamp; };
 #endif
 
 
