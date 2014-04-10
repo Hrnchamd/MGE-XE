@@ -16,15 +16,6 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 {
     LOG::logline(">> D3D Proxy CreateDevice");
 
-    // Override device parameters
-    if(e->Flags & D3DPRESENTFLAG_LOCKABLE_BACKBUFFER)
-        e->Flags ^= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
-
-    e->MultiSampleType = (D3DMULTISAMPLE_TYPE)Configuration.AALevel;
-    e->AutoDepthStencilFormat = (D3DFORMAT)Configuration.ZBufFormat;
-    e->FullScreen_RefreshRateInHz = (!e->Windowed) ? Configuration.RefreshRate : 0;
-    e->FullScreen_PresentationInterval = (Configuration.VWait == 255) ? D3DPRESENT_INTERVAL_IMMEDIATE : Configuration.VWait;
-
     if(e->Windowed)
     {
         if(Configuration.Borderless)
@@ -43,8 +34,41 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
         }
     }
 
-    // Device creation
-    HRESULT hr = ProxyD3D::CreateDevice(a, b, c, d, e, f);
+    // Map 16x antialiasing to equivalent CSAA
+    D3DMULTISAMPLE_TYPE msaaSamples = (Configuration.AALevel == 16) ? D3DMULTISAMPLE_8_SAMPLES : (D3DMULTISAMPLE_TYPE)Configuration.AALevel;
+    DWORD msaaQuality = (Configuration.AALevel == 16) ? 2 : 0;
+
+    // Override device parameters
+    // Note that Morrowind will look at the modified parameters
+    if(e->Flags & D3DPRESENTFLAG_LOCKABLE_BACKBUFFER)
+        e->Flags ^= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+
+    e->MultiSampleType = msaaSamples;
+    e->AutoDepthStencilFormat = (D3DFORMAT)Configuration.ZBufFormat;
+    e->FullScreen_RefreshRateInHz = (!e->Windowed) ? Configuration.RefreshRate : 0;
+    e->FullScreen_PresentationInterval = (Configuration.VWait == 255) ? D3DPRESENT_INTERVAL_IMMEDIATE : Configuration.VWait;
+
+    // Convert presentation parameters to DX9
+    D3DPRESENT_PARAMETERS9 pp;
+
+    pp.BackBufferWidth = e->BackBufferWidth;
+    pp.BackBufferHeight = e->BackBufferHeight;
+    pp.BackBufferFormat = e->BackBufferFormat;
+    pp.BackBufferCount = e->BackBufferCount;
+    pp.MultiSampleType = e->MultiSampleType;
+    pp.MultiSampleQuality = msaaQuality;
+    pp.SwapEffect = e->SwapEffect;
+    pp.hDeviceWindow = e->hDeviceWindow;
+    pp.Windowed = e->Windowed;
+    pp.Flags = e->Flags;
+    pp.EnableAutoDepthStencil = e->EnableAutoDepthStencil;
+    pp.AutoDepthStencilFormat = e->AutoDepthStencilFormat;
+    pp.FullScreen_RefreshRateInHz = e->FullScreen_RefreshRateInHz;
+    pp.PresentationInterval = e->FullScreen_PresentationInterval;
+
+    // Create device in the same manner as the proxy
+    IDirect3DDevice9 *realDevice = NULL;
+    HRESULT hr = realD3D->CreateDevice(a, b, c, d, &pp, &realDevice);
 
     if(hr != D3D_OK)
     {
@@ -52,10 +76,9 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
         return hr;
     }
 
-    // Set up default render states
-    IDirect3DDevice9 *realDevice = static_cast<ProxyDevice *>(*f)->realDevice;
-    realDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, (Configuration.AALevel > 0));
+    *f = factoryProxyDevice(realDevice);
 
+    // Set up default render states
     Configuration.ScaleFilter = (Configuration.AnisoLevel > 0) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
     Configuration.MipFilter = D3DTEXF_LINEAR;
 
@@ -90,6 +113,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     realDevice->SetRenderState(D3DRS_FOGVERTEXMODE, FogVertexMode);
     realDevice->SetRenderState(D3DRS_FOGTABLEMODE, FogPixelMode);
     realDevice->SetRenderState(D3DRS_RANGEFOGENABLE, RangedFog);
+    realDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, (Configuration.AALevel > 0));
 
     LOG::logline("<< D3D Proxy CreateDevice");
     return D3D_OK;
