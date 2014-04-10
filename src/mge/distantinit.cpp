@@ -69,6 +69,7 @@ D3DXVECTOR4 DistantLand::sunVec, DistantLand::sunPos;
 float DistantLand::sunVis;
 RGBVECTOR DistantLand::sunCol, DistantLand::sunAmb, DistantLand::ambCol;
 RGBVECTOR DistantLand::nearfogCol, DistantLand::horizonCol;
+RGBVECTOR DistantLand::atmOutscatter, DistantLand::atmInscatter;
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
 float DistantLand::windScaling, DistantLand::niceWeather;
@@ -96,6 +97,8 @@ D3DXHANDLE DistantLand::ehSunAmb;
 D3DXHANDLE DistantLand::ehSunVec;
 D3DXHANDLE DistantLand::ehSunPos;
 D3DXHANDLE DistantLand::ehSunVis;
+D3DXHANDLE DistantLand::ehOutscatter;
+D3DXHANDLE DistantLand::ehInscatter;
 D3DXHANDLE DistantLand::ehSkyCol;
 D3DXHANDLE DistantLand::ehFogCol1;
 D3DXHANDLE DistantLand::ehFogCol2;
@@ -326,6 +329,13 @@ bool DistantLand::initShader()
 
     if(Configuration.MGEFlags & USE_ATM_SCATTER)
     {
+        // Default scatter coefficients
+        atmOutscatter = RGBVECTOR(0.07, 0.36, 0.76);
+        atmInscatter = RGBVECTOR(0.25, 0.38, 0.48);
+
+        ehOutscatter = effect->GetParameterByName(0, "outscatter");
+        ehInscatter = effect->GetParameterByName(0, "inscatter");
+
         // Mark moon geometry for detection
         DECLARE_MWBRIDGE
         mwBridge->markMoonNodes(kMoonTag);

@@ -45,3 +45,12 @@ struct mwseSetSunriseSunset : public mwseInstruction
 private:
 	static vtable_t vtable;
 };
+
+struct mwseSetScattering : public mwseInstruction
+{
+	mwseSetScattering(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+	static __fastcall bool execute(mwseInstruction *_this);
+
+private:
+	static vtable_t vtable;
+};

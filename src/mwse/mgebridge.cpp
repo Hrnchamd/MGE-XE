@@ -33,6 +33,7 @@ void MWSE_MGEPlugin::init(DWORD vm_global, DWORD vm_addinstr)
     MWSEAddInstruction(0x3a82, new mwseSetAmbientColour(*vm));
     MWSEAddInstruction(0x3a83, new mwseSetSunColour(*vm));
     MWSEAddInstruction(0x3a84, new mwseSetSunriseSunset(*vm));
+    MWSEAddInstruction(0x3a85, new mwseSetScattering(*vm));
 
     MWSEAddInstruction(0x3700, new mwseWipeAll(*vm));
     MWSEAddInstruction(0x3701, new mwseOutputDebugString(*vm));

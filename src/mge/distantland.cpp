@@ -292,7 +292,7 @@ void DistantLand::renderStageBlend()
     stateSaved->Release();
 }
 
-// renderStageWater - Render distant water without blend, for exceptional cases
+// renderStageWater - Render replacement water plane
 void DistantLand::renderStageWater()
 {
     DECLARE_MWBRIDGE
@@ -363,6 +363,12 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehFogCol2, horizonCol, 3);
     effect->SetFloat(ehNiceWeather, niceWeather);
 
+    if(Configuration.MGEFlags & USE_ATM_SCATTER)
+    {
+        effect->SetFloatArray(ehOutscatter, atmOutscatter, 3);
+        effect->SetFloatArray(ehInscatter, atmInscatter, 3);
+    }
+
     // Wind, requires smoothing as it is very noisy
     static float smoothWind[2];
     if(!mwBridge->IsMenu())
@@ -379,9 +385,16 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloat(ehTime, mwBridge->simulationTime());
 }
 
+// setScattering - Set scattering coefficients for atmospheric scattering shader
+void DistantLand::setScattering(const RGBVECTOR& out, const RGBVECTOR& in)
+{
+    atmOutscatter = out;
+    atmInscatter = in;
+}
+
 static float lerp(float x0, float x1, float t)
 {
-    return (1-t)*x0 + t*x1;
+    return (1.0f-t) * x0 + t * x1;
 }
 
 static float saturate(float x)
@@ -490,8 +503,6 @@ void DistantLand::adjustFog()
         RGBVECTOR c0(c), c1(c);
 
         // Simplified version of scattering from the shader
-        const D3DXVECTOR3 scatter1(0.07, 0.36, 0.76);
-        const D3DXVECTOR3 scatter2(0.16, 0.37, 0.62);
         const RGBVECTOR *skyCol = mwBridge->CurSkyColVector();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
         const float sunaltitude = pow(1 + sunPos.z, 10);
@@ -513,10 +524,11 @@ void DistantLand::adjustFog()
         float rayl = 1 - 0.09 * mie;
         float atmdep = 1.33;
 
+        RGBVECTOR midscatter = 0.5f * (atmInscatter + atmOutscatter);
         D3DXVECTOR3 scatter;
-        scatter.x = lerp(scatter2.x, scatter1.x, suncos);
-        scatter.y = lerp(scatter2.y, scatter1.y, suncos);
-        scatter.z = lerp(scatter2.z, scatter1.z, suncos);
+        scatter.x = lerp(midscatter.r, atmOutscatter.r, suncos);
+        scatter.y = lerp(midscatter.g, atmOutscatter.g, suncos);
+        scatter.z = lerp(midscatter.b, atmOutscatter.b, suncos);
 
         D3DXVECTOR3 att = atmdep * scatter * (sunaltitude_a + mie);
         att.x = (1 - exp(-fogdist * att.x)) / att.x;

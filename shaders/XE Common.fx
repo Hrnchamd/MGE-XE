@@ -125,13 +125,14 @@ float fogMWScalar(float dist)
 #endif
 
 #ifdef USE_SCATTERING
-    static const float3 scatter = {0.07, 0.36, 0.76};
-    static const float3 scatter2 = {0.16, 0.37, 0.62};
     static const float3 newskycol = 0.38 * SkyCol + float3(0.23, 0.39, 0.68);
     static const float sunaltitude = pow(1 + SunPos.z, 10);
     static const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
     static const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
     static const float sunaltitude2 = saturate(exp(-2 * SunPos.z)) * saturate(sunaltitude);
+
+    float3 outscatter, inscatter;
+    static const float3 midscatter = 0.5 * (outscatter + inscatter);
 
     float4 fogColour(float3 dir, float dist)
     {
@@ -159,7 +160,9 @@ float fogMWScalar(float dist)
             float rayl = 1 - 0.09 * mie;
             
             float atmdep = 1.33 * exp(-2 * saturate(dir.z));
-            float3 att = atmdep * lerp(scatter2, scatter, suncos) * (sunaltitude_a + mie);
+            // float3 sunscatter = lerp(inscatter, outscatter, 0.5 * (1 + suncos));
+            float3 sunscatter = lerp(midscatter, outscatter, suncos);
+            float3 att = atmdep * sunscatter * (sunaltitude_a + mie);
             att = (1 - exp(-fogdist * att)) / att;
             
             float3 colour = 0.125 * mie + newskycol * rayl;

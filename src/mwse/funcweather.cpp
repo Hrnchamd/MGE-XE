@@ -1,5 +1,6 @@
 
 #include "mge/mwbridge.h"
+#include "mge/distantland.h"
 #include "funcweather.h"
 
 
@@ -121,5 +122,26 @@ bool mwseSetSunriseSunset::execute(mwseInstruction *_this)
 
     DECLARE_MWBRIDGE
     mwBridge->setSunriseSunset(rise_time, rise_dur, set_time, set_dur);
+	return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetScattering)
+
+// SetWeatherScattering <float outscatter_red> <float outscatter_green> <float outscatter_blue> <float inscatter_red> <float inscatter_geen> <float inscatter_blue>
+bool mwseSetScattering::execute(mwseInstruction *_this)
+{
+    VMFLOAT outscatter_r, outscatter_g, outscatter_b;
+    VMFLOAT inscatter_r, inscatter_g, inscatter_b;
+
+	if(!_this->vmPop(&outscatter_r)) return false;
+	if(!_this->vmPop(&outscatter_g)) return false;
+	if(!_this->vmPop(&outscatter_b)) return false;
+	if(!_this->vmPop(&inscatter_r)) return false;
+	if(!_this->vmPop(&inscatter_g)) return false;
+	if(!_this->vmPop(&inscatter_b)) return false;
+
+    RGBVECTOR outscatter(outscatter_r, outscatter_g, outscatter_b), inscatter(inscatter_r, inscatter_g, inscatter_b);
+    DistantLand::setScattering(outscatter, inscatter);
 	return true;
 }

@@ -76,6 +76,7 @@ public:
     static float sunVis;
     static RGBVECTOR sunCol, sunAmb, ambCol;
     static RGBVECTOR nearfogCol, horizonCol;
+    static RGBVECTOR atmOutscatter, atmInscatter;
     static float fogStart, fogEnd;
     static float fogNearStart, fogNearEnd;
     static float windScaling, niceWeather;
@@ -91,6 +92,7 @@ public:
     static D3DXHANDLE ehSunCol, ehSunAmb, ehSunVec;
     static D3DXHANDLE ehSkyCol, ehFogCol1, ehFogCol2;
     static D3DXHANDLE ehSunPos, ehSunVis;
+    static D3DXHANDLE ehOutscatter, ehInscatter;
     static D3DXHANDLE ehFogStart, ehFogRange;
     static D3DXHANDLE ehFogNearStart, ehFogNearRange;
     static D3DXHANDLE ehDissolveRange;
@@ -124,6 +126,7 @@ public:
     static void setHorizonColour(const RGBVECTOR& c);
     static void setAmbientColour(const RGBVECTOR& c);
     static void setSunLight(const D3DLIGHT8 *s);
+    static void setScattering(const RGBVECTOR& out, const RGBVECTOR& in);
     static void adjustFog();
     static bool inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
 
