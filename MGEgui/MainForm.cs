@@ -68,11 +68,10 @@ namespace MGEgui {
             { "TipReadSpd", new string [] { "lTipReadSpd", "cmbTipReadSpd", "lTipRSpdUnit" } },
         /* Graphics */
             { "Resolution", new string [] { "tbResolution", "lResolution" } },
-            { "CalcResolution", new string [] { "bCalcResolution" } },
+            { "CalcResolution", new string [] { "bSelectResolution" } },
             { "Windowed", new string [] { "cbWindowed" } },
             { "Aspect", new string [] { "tbAspect", "lAspect" } },
-            { "RefreshRate", new string [] { "cmbRefreshRate", "lRefreshRate" } },
-            { "CalcRefresh", new string [] { "bCalcRefresh" } },
+            { "RefreshRate", new string [] { "tbRefreshRate", "lRefreshRate" } },
             { "AntiAlias", new string [] { "cmbAntiAlias", "lAntiAlias" } },
             { "AnisoLevel", new string [] { "cmbAnisoLevel", "lAnisoLevel" } },
             { "VWait", new string [] { "cmbVWait", "lVWait" } },
@@ -401,8 +400,6 @@ namespace MGEgui {
             INIFile iniFile = new INIFile (reset ? Statics.fn_nul : Statics.iniFileName, iniSettings, true);
             if (reset)
                 iniFile.fileName = Statics.iniFileName;
-            else
-                bCalcRefresh_Click (null, null);
             if (save) {
                 iniFile.initialize ();
                 iniFile.save ();
@@ -413,8 +410,8 @@ namespace MGEgui {
             // Graphics
             cmbAntiAlias.SelectedIndex = (int)iniFile.getKeyValue ("AntiAlias");
             cmbVWait.SelectedIndex = (int)iniFile.getKeyValue ("VWait");
-            cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact (iniFile.getKeyValue ("Refresh").ToString ());
-            if (cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
+            tbRefreshRate.Text = iniFile.getKeyValue ("Refresh").ToString();
+            if(tbRefreshRate.Text == "0") tbRefreshRate.Text = "Default";
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue ("AnisoLvl");
             udLOD.Value = (decimal)iniFile.getKeyValue ("LODBias");
             cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue ("FogMode");
@@ -484,7 +481,7 @@ namespace MGEgui {
             // Graphics
             iniFile.setKey ("AntiAlias", cmbAntiAlias.SelectedIndex);
             iniFile.setKey ("VWait", cmbVWait.SelectedIndex);
-            iniFile.setKey ("Refresh", cmbRefreshRate.SelectedIndex == 0 ? "Default" : cmbRefreshRate.Text);
+            iniFile.setKey ("Refresh", tbRefreshRate.Text);
             iniFile.setKey ("AnisoLvl", cmbAnisoLevel.SelectedIndex);
             iniFile.setKey ("LODBias", (double)udLOD.Value);
             iniFile.setKey ("FogMode", cmbFogMode.SelectedIndex);
@@ -572,11 +569,8 @@ namespace MGEgui {
                 default: cmbVWait.SelectedIndex = 5; break;
             }
             switch (i = br.ReadByte ()) {
-                case 0: cmbRefreshRate.SelectedIndex = 0; break;
-                default:
-                    cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact (i.ToString ());
-                    if (cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
-                    break;
+                case 0: tbRefreshRate.Text = "Default"; break;
+                default: tbRefreshRate.Text = i.ToString(); break;
             }
             cbFPSCounter.Checked = br.ReadBoolean ();
             cbDisplayMessages.Checked = br.ReadBoolean ();
@@ -916,9 +910,6 @@ namespace MGEgui {
         }
 
         private void cbWindowed_CheckedChanged (object sender, EventArgs e) {
-            cmbRefreshRate.Enabled = !cbWindowed.Checked && !cbDisableMGE.Checked;
-            lRefreshRate.Enabled = !cbWindowed.Checked && !cbDisableMGE.Checked;
-            bCalcRefresh.Enabled = !cbWindowed.Checked && !cbDisableMGE.Checked;
             RegistryKey key = null;
             try {
                 key = Registry.LocalMachine.OpenSubKey (Statics.reg_mw, true);
@@ -1013,33 +1004,13 @@ namespace MGEgui {
             gbMsgs.Enabled = status;
         }
 
-        private void bCalcRefresh_Click (object sender, EventArgs e) {
-            cmbRefreshRate.Items.Clear();
-            cmbRefreshRate.Items.Add(Statics.strings["Default"]);
-            cmbRefreshRate.Text = Statics.strings["Default"];
-
-            try
-            {
-                int width, height;
-                RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
-                width = (int)key.GetValue("Screen Width");
-                height = (int)key.GetValue("Screen Height");
-                key.Close();
-                
-                foreach (int i in DirectX.DXMain.GetRefreshRates(width, height))
-                    cmbRefreshRate.Items.Add(i.ToString());
-            }
-            catch {}
-        }
-
-        private void bCalcResolution_Click (object sender, EventArgs e) {
+        private void bSelectResolution_Click (object sender, EventArgs e) {
             System.Drawing.Point p;
-            if (ResolutionForm.ShowDialog (out p, cbWindowed.Checked)) {
+            int refresh;
+            
+            if (ResolutionForm.ShowDialog (out p, out refresh, cbWindowed.Checked)) {
                 tbResolution.Text = p.X.ToString () + " x " + p.Y.ToString ();
-                string refrRate = cmbRefreshRate.Text;
-                bCalcRefresh_Click (null, null);
-                cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact (refrRate);
-                if (cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
+                tbRefreshRate.Text = (refresh == 0) ? "Default" : refresh.ToString();
                 CalcAspectRatio (p.X, p.Y);
             }
         }
@@ -1398,9 +1369,6 @@ namespace MGEgui {
 
         private void cbDisableMGE_CheckedChanged (object sender, EventArgs e) {
             bool status = !this.cbDisableMGE.Checked;
-            this.cmbRefreshRate.Enabled = status && !cbWindowed.Checked;
-            this.lRefreshRate.Enabled = status && !cbWindowed.Checked;
-            this.bCalcRefresh.Enabled = status && !cbWindowed.Checked;
             this.gbScene.Enabled = status;
             this.gbSShot.Enabled = status;
             this.gbMsgs.Enabled = status;

@@ -109,6 +109,7 @@ namespace MGEgui {
             this.udFOV = new System.Windows.Forms.NumericUpDown();
             this.lFOV = new System.Windows.Forms.Label();
             this.gbDisplay = new System.Windows.Forms.GroupBox();
+            this.tbRefreshRate = new System.Windows.Forms.TextBox();
             this.tableLayoutDisplay = new System.Windows.Forms.TableLayoutPanel();
             this.cmbAntiAlias = new System.Windows.Forms.ComboBox();
             this.lAntiAlias = new System.Windows.Forms.Label();
@@ -117,10 +118,8 @@ namespace MGEgui {
             this.lAnisoLevel = new System.Windows.Forms.Label();
             this.lVWait = new System.Windows.Forms.Label();
             this.tbAspect = new System.Windows.Forms.TextBox();
-            this.bCalcResolution = new System.Windows.Forms.Button();
+            this.bSelectResolution = new System.Windows.Forms.Button();
             this.cbWindowed = new System.Windows.Forms.CheckBox();
-            this.cmbRefreshRate = new System.Windows.Forms.ComboBox();
-            this.bCalcRefresh = new System.Windows.Forms.Button();
             this.tbResolution = new System.Windows.Forms.TextBox();
             this.lResolution = new System.Windows.Forms.Label();
             this.lAspect = new System.Windows.Forms.Label();
@@ -1298,12 +1297,11 @@ namespace MGEgui {
             // 
             this.gbDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDisplay.Controls.Add(this.tbRefreshRate);
             this.gbDisplay.Controls.Add(this.tableLayoutDisplay);
             this.gbDisplay.Controls.Add(this.tbAspect);
-            this.gbDisplay.Controls.Add(this.bCalcResolution);
+            this.gbDisplay.Controls.Add(this.bSelectResolution);
             this.gbDisplay.Controls.Add(this.cbWindowed);
-            this.gbDisplay.Controls.Add(this.cmbRefreshRate);
-            this.gbDisplay.Controls.Add(this.bCalcRefresh);
             this.gbDisplay.Controls.Add(this.tbResolution);
             this.gbDisplay.Controls.Add(this.lResolution);
             this.gbDisplay.Controls.Add(this.lAspect);
@@ -1314,6 +1312,15 @@ namespace MGEgui {
             this.gbDisplay.TabIndex = 0;
             this.gbDisplay.TabStop = false;
             this.gbDisplay.Text = "Display";
+            // 
+            // tbRefreshRate
+            // 
+            this.tbRefreshRate.Location = new System.Drawing.Point(182, 51);
+            this.tbRefreshRate.Name = "tbRefreshRate";
+            this.tbRefreshRate.ReadOnly = true;
+            this.tbRefreshRate.Size = new System.Drawing.Size(52, 20);
+            this.tbRefreshRate.TabIndex = 6;
+            this.tbRefreshRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // tableLayoutDisplay
             // 
@@ -1431,46 +1438,24 @@ namespace MGEgui {
             this.tbAspect.TabIndex = 2;
             this.tbAspect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
-            // bCalcResolution
+            // bSelectResolution
             // 
-            this.bCalcResolution.Location = new System.Drawing.Point(10, 48);
-            this.bCalcResolution.Name = "bCalcResolution";
-            this.bCalcResolution.Size = new System.Drawing.Size(166, 25);
-            this.bCalcResolution.TabIndex = 1;
-            this.bCalcResolution.Text = "Select screen resolution";
-            this.bCalcResolution.Click += new System.EventHandler(this.bCalcResolution_Click);
+            this.bSelectResolution.Location = new System.Drawing.Point(10, 48);
+            this.bSelectResolution.Name = "bSelectResolution";
+            this.bSelectResolution.Size = new System.Drawing.Size(166, 25);
+            this.bSelectResolution.TabIndex = 1;
+            this.bSelectResolution.Text = "Select screen resolution";
+            this.bSelectResolution.Click += new System.EventHandler(this.bSelectResolution_Click);
             // 
             // cbWindowed
             // 
             this.cbWindowed.AutoSize = true;
-            this.cbWindowed.Location = new System.Drawing.Point(182, 54);
+            this.cbWindowed.Location = new System.Drawing.Point(366, 25);
             this.cbWindowed.Name = "cbWindowed";
             this.cbWindowed.Size = new System.Drawing.Size(106, 17);
             this.cbWindowed.TabIndex = 3;
             this.cbWindowed.Text = "Windowed mode";
             this.cbWindowed.CheckedChanged += new System.EventHandler(this.cbWindowed_CheckedChanged);
-            // 
-            // cmbRefreshRate
-            // 
-            this.cmbRefreshRate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbRefreshRate.ItemHeight = 13;
-            this.cmbRefreshRate.Items.AddRange(new object[] {
-                                    "Default"});
-            this.cmbRefreshRate.Location = new System.Drawing.Point(475, 22);
-            this.cmbRefreshRate.Name = "cmbRefreshRate";
-            this.cmbRefreshRate.Size = new System.Drawing.Size(72, 21);
-            this.cmbRefreshRate.TabIndex = 3;
-            this.cmbRefreshRate.Text = "Default";
-            // 
-            // bCalcRefresh
-            // 
-            this.bCalcRefresh.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bCalcRefresh.Location = new System.Drawing.Point(364, 49);
-            this.bCalcRefresh.Name = "bCalcRefresh";
-            this.bCalcRefresh.Size = new System.Drawing.Size(185, 25);
-            this.bCalcRefresh.TabIndex = 5;
-            this.bCalcRefresh.Text = "Find valid refresh rates";
-            this.bCalcRefresh.Click += new System.EventHandler(this.bCalcRefresh_Click);
             // 
             // tbResolution
             // 
@@ -1479,6 +1464,7 @@ namespace MGEgui {
             this.tbResolution.ReadOnly = true;
             this.tbResolution.Size = new System.Drawing.Size(80, 20);
             this.tbResolution.TabIndex = 0;
+            this.tbResolution.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // lResolution
             // 
@@ -1501,10 +1487,10 @@ namespace MGEgui {
             // 
             // lRefreshRate
             // 
-            this.lRefreshRate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lRefreshRate.Location = new System.Drawing.Point(292, 21);
+            this.lRefreshRate.AutoSize = true;
+            this.lRefreshRate.Location = new System.Drawing.Point(240, 54);
             this.lRefreshRate.Name = "lRefreshRate";
-            this.lRefreshRate.Size = new System.Drawing.Size(177, 21);
+            this.lRefreshRate.Size = new System.Drawing.Size(65, 13);
             this.lRefreshRate.TabIndex = 0;
             this.lRefreshRate.Text = "Refresh rate";
             this.lRefreshRate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -2799,6 +2785,7 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.TextBox tbRefreshRate;
         private System.Windows.Forms.Button bReportingShowLog;
         private System.Windows.Forms.Button bReportingShowDLWizardLog;
         private System.Windows.Forms.GroupBox gbErrorReporting;
@@ -2872,12 +2859,10 @@ namespace MGEgui {
         public CheckBox cbDisplayMessages;
         public TabPage tpGlobal;
         public TextBox tbResolution;
-        public Button bCalcResolution;
+        public Button bSelectResolution;
         public Label lResolution;
         public CheckBox cbWindowed;
-        public Button bCalcRefresh;
         public Label lRefreshRate;
-        public ComboBox cmbRefreshRate;
         public ComboBox cmbAntiAlias;
         public Label lAntiAlias;
         public ComboBox cmbVWait;
