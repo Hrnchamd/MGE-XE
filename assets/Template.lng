@@ -182,6 +182,7 @@ cbSubtitles = "Show subtitles"
 cbThreadLoad = "Thread loading"
 cbUILangAuto = "Autodetect"
 cbWindowed = "Windowed mode"
+cbBorderless = "Borderless window"
 cbYesToAll = "Allow yes to all load errors"
 
 ;;;;   combo boxes   ;;;;
@@ -300,6 +301,7 @@ TipReadSpd = "This changes the fadeout time of MGEgui tooltips for selected read
 Resolution = "This is Morrowind's current screen resolution."
 CalcResolution = "Click this to change Morrowind's resolution.\nIn windowed mode you can use any resolution you like.\nNon 4:3 aspect ratios may not work perfectly. These are marked with an '*'."
 Windowed = "Check this to run Morrowind in a window instead of fullscreen."
+Borderless = "Check this to have the window appear without borders, at the centre of the screen.\nAllows a window to simulate fullscreen mode."
 Aspect = "This is selected screen resolution calculated aspect ratio."
 RefreshRate = "Sets the monitor refresh rate for fullscreen mode.\nThis has no effect in windowed mode."
 CalcRefresh = "Finds the valid refresh rates for Morrowind's currently selected resolution.\nValid refresh rates depend on resolution and monitor.\nChanging resolution within MGEgui does an auto-search of valid refresh rates."

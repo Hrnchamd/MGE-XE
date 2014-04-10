@@ -109,6 +109,7 @@ namespace MGEgui {
             this.udFOV = new System.Windows.Forms.NumericUpDown();
             this.lFOV = new System.Windows.Forms.Label();
             this.gbDisplay = new System.Windows.Forms.GroupBox();
+            this.cbBorderless = new System.Windows.Forms.CheckBox();
             this.tbRefreshRate = new System.Windows.Forms.TextBox();
             this.tableLayoutDisplay = new System.Windows.Forms.TableLayoutPanel();
             this.cmbAntiAlias = new System.Windows.Forms.ComboBox();
@@ -1297,6 +1298,7 @@ namespace MGEgui {
             // 
             this.gbDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDisplay.Controls.Add(this.cbBorderless);
             this.gbDisplay.Controls.Add(this.tbRefreshRate);
             this.gbDisplay.Controls.Add(this.tableLayoutDisplay);
             this.gbDisplay.Controls.Add(this.tbAspect);
@@ -1312,6 +1314,17 @@ namespace MGEgui {
             this.gbDisplay.TabIndex = 0;
             this.gbDisplay.TabStop = false;
             this.gbDisplay.Text = "Display";
+            // 
+            // cbBorderless
+            // 
+            this.cbBorderless.AutoSize = true;
+            this.cbBorderless.Enabled = false;
+            this.cbBorderless.Location = new System.Drawing.Point(366, 53);
+            this.cbBorderless.Name = "cbBorderless";
+            this.cbBorderless.Size = new System.Drawing.Size(114, 17);
+            this.cbBorderless.TabIndex = 7;
+            this.cbBorderless.Text = "Borderless window";
+            this.cbBorderless.UseVisualStyleBackColor = true;
             // 
             // tbRefreshRate
             // 
@@ -2785,6 +2798,7 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.CheckBox cbBorderless;
         private System.Windows.Forms.TextBox tbRefreshRate;
         private System.Windows.Forms.Button bReportingShowLog;
         private System.Windows.Forms.Button bReportingShowDLWizardLog;

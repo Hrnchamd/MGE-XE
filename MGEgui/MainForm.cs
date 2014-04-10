@@ -70,6 +70,7 @@ namespace MGEgui {
             { "Resolution", new string [] { "tbResolution", "lResolution" } },
             { "CalcResolution", new string [] { "bSelectResolution" } },
             { "Windowed", new string [] { "cbWindowed" } },
+            { "Borderless", new string [] { "cbBorderless" } },
             { "Aspect", new string [] { "tbAspect", "lAspect" } },
             { "RefreshRate", new string [] { "tbRefreshRate", "lRefreshRate" } },
             { "AntiAlias", new string [] { "cmbAntiAlias", "lAntiAlias" } },
@@ -307,6 +308,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniAntiAlias = new INIFile.INIVariableDef ("AntiAlias", siniGlobGraph, "Antialiasing Level", INIFile.INIVariableType.Dictionary, "None", antiAliasDict);
         private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "Immediate", vWaitDict);
         private static INIFile.INIVariableDef iniRefresh = new INIFile.INIVariableDef ("Refresh", siniGlobGraph, "Refresh Rate", INIFile.INIVariableType.Byte, "Default", refreshDict, 0, 240);
+        private static INIFile.INIVariableDef iniBorderless = new INIFile.INIVariableDef ("Borderless", siniGlobGraph, "Borderless Window", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "Off", anisoLevelDict);
         private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -2, 2, 3);
         private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef ("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Depth pixel", fogModeDict);
@@ -367,7 +369,7 @@ namespace MGEgui {
             // Main
             iniVersion, iniIipSpeed, iniLanguage, iniAutoLang,
             // Graphics
-            iniAntiAlias, iniVWait, iniRefresh,
+            iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
             iniFPSCount, iniHWShader, iniHDRTime,
             iniSSFormat, iniSSName, iniSSDir, iniSSNum,
@@ -412,6 +414,7 @@ namespace MGEgui {
             cmbVWait.SelectedIndex = (int)iniFile.getKeyValue ("VWait");
             tbRefreshRate.Text = iniFile.getKeyValue ("Refresh").ToString();
             if(tbRefreshRate.Text == "0") tbRefreshRate.Text = "Default";
+            cbBorderless.Checked = (iniFile.getKeyValue ("Borderless") == 1);
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue ("AnisoLvl");
             udLOD.Value = (decimal)iniFile.getKeyValue ("LODBias");
             cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue ("FogMode");
@@ -482,6 +485,7 @@ namespace MGEgui {
             iniFile.setKey ("AntiAlias", cmbAntiAlias.SelectedIndex);
             iniFile.setKey ("VWait", cmbVWait.SelectedIndex);
             iniFile.setKey ("Refresh", tbRefreshRate.Text);
+            iniFile.setKey ("Borderless", cbBorderless.Checked);
             iniFile.setKey ("AnisoLvl", cmbAnisoLevel.SelectedIndex);
             iniFile.setKey ("LODBias", (double)udLOD.Value);
             iniFile.setKey ("FogMode", cmbFogMode.SelectedIndex);
@@ -917,6 +921,7 @@ namespace MGEgui {
                     key.SetValue ("Fullscreen", new byte [] { Convert.ToByte (!cbWindowed.Checked) });
                     key.Close ();
                 }
+                cbBorderless.Enabled = cbWindowed.Checked;
             } catch {
                 MessageBox.Show (strings ["RegNotWrit"], Statics.strings ["Error"]);
             }
