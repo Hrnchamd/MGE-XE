@@ -49,6 +49,7 @@ namespace MGEgui {
             // 
             // cmbRes
             // 
+            this.cmbRes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRes.Location = new System.Drawing.Point(12, 12);
             this.cmbRes.Name = "cmbRes";
             this.cmbRes.Size = new System.Drawing.Size(104, 21);
@@ -131,12 +132,11 @@ namespace MGEgui {
             // 
             // cmbRefreshRate
             // 
-            this.cmbRefreshRate.FormattingEnabled = true;
+            this.cmbRefreshRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRefreshRate.Location = new System.Drawing.Point(221, 12);
             this.cmbRefreshRate.Name = "cmbRefreshRate";
             this.cmbRefreshRate.Size = new System.Drawing.Size(70, 21);
             this.cmbRefreshRate.TabIndex = 6;
-            this.cmbRefreshRate.Text = "Default";
             // 
             // lRefreshRate
             // 
@@ -215,6 +215,7 @@ namespace MGEgui {
             
             tbWidth.Text = sWidth.ToString();
             tbHeight.Text = sHeight.ToString();
+            cmbRefreshRate.Items.Add(Statics.strings["Default"]);
             
             foreach(Resolution p in Resolutions) {
                 cmbRes.Items.Add(p);

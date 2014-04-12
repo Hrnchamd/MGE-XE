@@ -1447,7 +1447,7 @@ namespace MGEgui {
             this.tbAspect.Location = new System.Drawing.Point(182, 22);
             this.tbAspect.Name = "tbAspect";
             this.tbAspect.ReadOnly = true;
-            this.tbAspect.Size = new System.Drawing.Size(36, 20);
+            this.tbAspect.Size = new System.Drawing.Size(52, 20);
             this.tbAspect.TabIndex = 2;
             this.tbAspect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1491,7 +1491,7 @@ namespace MGEgui {
             // lAspect
             // 
             this.lAspect.AutoSize = true;
-            this.lAspect.Location = new System.Drawing.Point(224, 25);
+            this.lAspect.Location = new System.Drawing.Point(240, 25);
             this.lAspect.Name = "lAspect";
             this.lAspect.Size = new System.Drawing.Size(63, 13);
             this.lAspect.TabIndex = 0;
