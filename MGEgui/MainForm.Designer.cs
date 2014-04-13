@@ -1123,7 +1123,12 @@ namespace MGEgui {
             this.udFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.udFPSLimit.Location = new System.Drawing.Point(367, 76);
             this.udFPSLimit.Maximum = new decimal(new int[] {
-                                    120,
+                                    144,
+                                    0,
+                                    0,
+                                    0});
+            this.udFPSLimit.Minimum = new decimal(new int[] {
+                                    10,
                                     0,
                                     0,
                                     0});
@@ -1131,6 +1136,11 @@ namespace MGEgui {
             this.udFPSLimit.Size = new System.Drawing.Size(63, 20);
             this.udFPSLimit.TabIndex = 18;
             this.udFPSLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udFPSLimit.Value = new decimal(new int[] {
+                                    144,
+                                    0,
+                                    0,
+                                    0});
             // 
             // udHDR
             // 
