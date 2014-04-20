@@ -2292,3 +2292,18 @@ function
     Param6 = Float
 	Opcode = 0x3a85
 end
+
+function
+	Name = MGEEnableShader
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3ab0
+end
+function
+	Name = MGEDisableShader
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3ab1
+end

@@ -5,6 +5,7 @@
 #include "funchud.h"
 #include "funczoom.h"
 #include "funcweather.h"
+#include "funcshader.h"
 
 
 struct TES3MACHINE;
@@ -76,12 +77,9 @@ void MWSE_MGEPlugin::init(DWORD vm_global, DWORD vm_addinstr)
     MWSEAddInstruction(0x3776, new mwseStopZoom(*vm));
     MWSEAddInstruction(0x3777, new mwseGetZoom(*vm));
 
-    /* Unimplemented
-    MWSEAddInstruction(0x378e, new mwseLoadShaderEffect(*this));
-    MWSEAddInstruction(0x378f, new mwseUnloadShaderEffect(*this));
-    MWSEAddInstruction(0x3791, new mwseSetEffectVarLong(*this));
-    MWSEAddInstruction(0x3792, new mwseSetEffectVarFloat(*this));
-    MWSEAddInstruction(0x3793, new mwseSetEffectVarVector(*this));
-    MWSEAddInstruction(0x3794, new mwseSetEffectVarTexture(*this));
-    */
+    MWSEAddInstruction(0x3791, new mwseSetShaderLong(*vm));
+    MWSEAddInstruction(0x3792, new mwseSetShaderFloat(*vm));
+    MWSEAddInstruction(0x3793, new mwseSetShaderVector(*vm));
+    MWSEAddInstruction(0x3ab0, new mwseEnableShader(*vm));
+    MWSEAddInstruction(0x3ab1, new mwseDisableShader(*vm));
 }

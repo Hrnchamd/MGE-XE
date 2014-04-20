@@ -1,6 +1,7 @@
 
 #include "doublesurface.h"
 #include <vector>
+#include <string>
 
 enum EffectVariableID {
     EV_lastshader, EV_lastpass, EV_depthframe, EV_watertexture,
@@ -12,7 +13,9 @@ enum EffectVariableID {
 struct MGEShader
 {
     ID3DXEffect* effect;
+    bool enabled;
     int disableFlags;
+    std::string name;
     D3DXHANDLE ehVars[32];
 
     void SetTexture(EffectVariableID id, LPDIRECT3DBASETEXTURE9 tex);
@@ -45,6 +48,12 @@ public:
     static void loadShaderDependencies(MGEShader *shader);
     static bool initBuffers();
     static void release();
+
+    static MGEShader* findShader(const char *shaderName);
+    static bool setShaderVar(const char *shaderName, const char *varName, int x);
+    static bool setShaderVar(const char *shaderName, const char *varName, float x);
+    static bool setShaderVar(const char *shaderName, const char *varName, float *v);
+    static bool setShaderEnable(const char *shaderName, bool enable);
 
     static void evalAdaptHDR(IDirect3DSurface *source, int environmentFlags, float dt);
     static void shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environmentFlags, float frameTime);

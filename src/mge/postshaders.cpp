@@ -8,7 +8,7 @@
 #include "mwbridge.h"
 #include "postshaders.h"
 
-// Must match enum EffectVariableID
+// Must match enum EffectVariableID in postshaders.h
 const char * effectVariableList[] = {
     "lastshader", "lastpass", "depthframe", "watertexture",
     "eyevec", "eyepos", "sunvec", "suncol", "sunamb", "sunpos", "sunvis", "HDR",
@@ -34,6 +34,7 @@ float PostShaders::rcpRes[2];
 
 
 
+// init - Initialize post-processing shader system
 bool PostShaders::init(IDirect3DDevice9 *realDevice)
 {
     LOG::logline(">> Post Process shader init");
@@ -52,6 +53,7 @@ bool PostShaders::init(IDirect3DDevice9 *realDevice)
 static const D3DXMACRO macroExpFog = { "USE_EXPFOG", "" };
 static const D3DXMACRO macroTerminator = { 0, 0 };
 
+// initShaderChain - Load and prepare all shaders, ignoring invalid shaders
 bool PostShaders::initShaderChain()
 {
     char path[MAX_PATH];
@@ -74,6 +76,8 @@ bool PostShaders::initShaderChain()
         {
             if(checkShaderVersion(&shader))
             {
+                shader.name = std::string(p);
+                shader.enabled = true;
                 initShader(&shader);
                 loadShaderDependencies(&shader);
                 shaders.push_back(shader);
@@ -107,6 +111,9 @@ bool PostShaders::initShaderChain()
     return true;
 }
 
+// checkShaderVersion
+// Checks effect annotation to see if the shader was designed for MGE XE,
+// as MGE shaders use an incompatible set of variables
 bool PostShaders::checkShaderVersion(MGEShader *shader)
 {
     ID3DXEffect *effect = shader->effect;
@@ -127,6 +134,7 @@ bool PostShaders::checkShaderVersion(MGEShader *shader)
     return false;
 }
 
+// initShader - Binds standard game environment variables
 void PostShaders::initShader(MGEShader *shader)
 {
     ID3DXEffect *effect = shader->effect;
@@ -152,6 +160,7 @@ void PostShaders::initShader(MGEShader *shader)
     shader->SetFloatArray(EV_rcpres, rcpRes, 2);
 }
 
+// loadShaderDependencies - Loads textures referenced inside a shader
 void PostShaders::loadShaderDependencies(MGEShader *shader)
 {
     ID3DXEffect *effect = shader->effect;
@@ -177,6 +186,7 @@ void PostShaders::loadShaderDependencies(MGEShader *shader)
     }
 }
 
+// initBuffers - Create ping-pong buffers and HDR resolve surfaces
 bool PostShaders::initBuffers()
 {
     // Check view dimensions
@@ -257,6 +267,7 @@ bool PostShaders::initBuffers()
     return true;
 }
 
+// release - Cleans up Direct3D resources
 void PostShaders::release()
 {
     for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
@@ -274,6 +285,7 @@ void PostShaders::release()
     surfReadback->Release();
 }
 
+// evalAdaptHDR - Downsample and readback a frame to get an averaged luminance for HDR
 void PostShaders::evalAdaptHDR(IDirect3DSurface *source, int environmentFlags, float dt)
 {
     D3DLOCKED_RECT lock;
@@ -318,6 +330,7 @@ void PostShaders::evalAdaptHDR(IDirect3DSurface *source, int environmentFlags, f
     device->GetRenderTargetData(surfReadqueue, surfReadback);
 }
 
+// shaderTime - Applies all post processing shaders for the current frame
 void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environmentFlags, float frameTime)
 {
     IDirect3DSurface9 *backbuffer, *depthstencil;
@@ -354,6 +367,8 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
         ID3DXEffect *effect = s->effect;
         UINT passes;
 
+        if(!s->enabled)
+            continue;
         if(s->disableFlags & environmentFlags)
             continue;
 
@@ -390,6 +405,7 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
     depthstencil->Release();
 }
 
+// borrowBuffer - Utility function for distant land to temporarily use a ping-pong buffer
 IDirect3DTexture9 * PostShaders::borrowBuffer(int n)
 {
     IDirect3DSurface9 *backbuffer;
@@ -403,6 +419,7 @@ IDirect3DTexture9 * PostShaders::borrowBuffer(int n)
     return doublebuffer.sourceTexture();
 }
 
+// applyBlend - Utility function for distant land to render a full-screen shader
 void PostShaders::applyBlend()
 {
     // Render with vertex shader by using a different FVF for the same buffer
@@ -410,6 +427,63 @@ void PostShaders::applyBlend()
     device->SetStreamSource(0, vbPost, 0, 32);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+
+
+// Scripting interface for shaders
+MGEShader* PostShaders::findShader(const char *shaderName)
+{
+    for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
+    {
+        if(s->name == shaderName)
+            return &*s;
+    }
+    return 0;
+}
+bool PostShaders::setShaderVar(const char *shaderName, const char *varName, int x)
+{
+    MGEShader *shader = findShader(shaderName);
+    if(!shader) return false;
+
+    D3DXHANDLE ehVar = shader->effect->GetParameterByName(0, varName);
+    if(!ehVar) return false;
+
+    shader->effect->SetInt(ehVar, x);
+    return true;
+}
+
+bool PostShaders::setShaderVar(const char *shaderName, const char *varName, float x)
+{
+    MGEShader *shader = findShader(shaderName);
+    if(!shader) return false;
+
+    D3DXHANDLE ehVar = shader->effect->GetParameterByName(0, varName);
+    if(!ehVar) return false;
+
+    shader->effect->SetFloat(ehVar, x);
+    return true;
+}
+
+bool PostShaders::setShaderVar(const char *shaderName, const char *varName, float *v)
+{
+    MGEShader *shader = findShader(shaderName);
+    if(!shader) return false;
+
+    D3DXHANDLE ehVar = shader->effect->GetParameterByName(0, varName);
+    if(!ehVar) return false;
+
+    shader->effect->SetFloatArray(ehVar, v, 4);
+    return true;
+}
+
+bool PostShaders::setShaderEnable(const char *shaderName, bool enable)
+{
+    MGEShader *shader = findShader(shaderName);
+    if(!shader) return false;
+
+    shader->enabled = enable;
+    return true;
 }
 
 
