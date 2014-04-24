@@ -135,6 +135,11 @@ void MacroFunctions::ToggleLightingMode() {
     displayFlag(USE_FFESHADER, "New dynamic lighting", "Standard dynamic lighting");
 }
 
+void MacroFunctions::ToggleTransparencyAA() {
+    Configuration.MGEFlags ^= TRANSPARENCY_AA;
+    displayFlag(TRANSPARENCY_AA, "Transparency AA enabled", "Transparency AA disabled");
+}
+
 void MacroFunctions::ToggleZoom() {
     Configuration.MGEFlags ^= ZOOM_ASPECT;
     displayFlag(ZOOM_ASPECT, "Zoom enabled", "Zoom disabled");

@@ -27,6 +27,8 @@ IDirect3DVertexDeclaration9 *DistantLand::StaticDecl;
 IDirect3DVertexDeclaration9 *DistantLand::WaterDecl;
 IDirect3DVertexDeclaration9 *DistantLand::GrassDecl;
 
+VendorSpecificRendering DistantLand::vsr;
+
 unordered_map<string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
 const DistantLand::WorldSpace *DistantLand::currentWorldSpace;
 QuadTree DistantLand::LandQuadTree;
@@ -177,6 +179,7 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
 
     device = realDevice;
     LOG::logline(">> Distant Land init");
+    vsr.init(device);
 
     LOG::logline(">> Distant Land init BSAs");
     InitBSAs();

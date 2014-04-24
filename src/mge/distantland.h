@@ -1,6 +1,7 @@
 
 #include "quadtree.h"
 #include "ffeshader.h"
+#include "specificrender.h"
 #include <string>
 #include <vector>
 #include <tr1/unordered_map>
@@ -40,6 +41,8 @@ public:
     static IDirect3DVertexDeclaration9 *StaticDecl;
     static IDirect3DVertexDeclaration9 *WaterDecl;
     static IDirect3DVertexDeclaration9 *GrassDecl;
+
+    static VendorSpecificRendering vsr;
 
     static unordered_map<string, WorldSpace> mapWorldSpaces;
     static const WorldSpace *currentWorldSpace;

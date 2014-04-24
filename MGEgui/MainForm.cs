@@ -311,6 +311,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "Off", anisoLevelDict);
         private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -2, 2, 3);
         private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef ("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Depth pixel", fogModeDict);
+        private static INIFile.INIVariableDef iniTransparencyAA = new INIFile.INIVariableDef ("TrAA", siniRendState, "Transparency Antialiasing", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef ("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniMessages = new INIFile.INIVariableDef ("Messages", siniRendState, "MGE Messages", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
@@ -370,7 +371,7 @@ namespace MGEgui {
             // Graphics
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
-            iniFPSCount, iniHWShader, iniHDRTime,
+            iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
             iniSSFormat, iniSSName, iniSSDir, iniSSNum,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniCam3rdCustom,

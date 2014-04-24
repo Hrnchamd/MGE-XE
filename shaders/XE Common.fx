@@ -285,3 +285,13 @@ float4 skin(float4 pos, float4 blend)
 }
 
 //------------------------------------------------------------
+// Alpha-to-coverage
+
+// Calculates a coverage value from alpha, such that
+// coverage = 1 at the alpha test level (alpha_ref) and falls off quickly (falloff_rate)
+float calc_coverage(float a, float alpha_ref, float falloff_rate)
+{
+    return saturate(falloff_rate * (a - alpha_ref) + alpha_ref);
+}
+
+//------------------------------------------------------------

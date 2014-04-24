@@ -79,6 +79,9 @@ float4 StaticPS (StatVertOut IN): COLOR0
     // range is approximate due to interpolation
     result.a -= saturate((dissolveRange - range) / 512.0);
     
+    // Alpha to coverage conversion
+    result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
+    
     return result;
 }
 
@@ -149,6 +152,9 @@ float4 GrassPS (GrassVertOut IN): COLOR0
     
     // Fogging
     result.rgb = fogApply(result.rgb, IN.fog);
+    
+    // Alpha to coverage conversion
+    result.a = calc_coverage(result.a, 128.0/255.0, 4.0);
     
     return result;
 }

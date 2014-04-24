@@ -28,8 +28,8 @@
 #define MWSE_DISABLED           MASK(MWSE_DISABLED_BIT)
 #define USE_FFESHADER_BIT       10
 #define USE_FFESHADER           MASK(USE_FFESHADER_BIT)
-#define SET_SHADER_VARS_BIT     11
-#define SET_SHADER_VARS         MASK(SET_SHADER_VARS_BIT)
+#define TRANSPARENCY_AA_BIT     11
+#define TRANSPARENCY_AA         MASK(TRANSPARENCY_AA_BIT)
 #define USE_HDR_BIT             12
 #define USE_HDR                 MASK(USE_HDR_BIT)
 #define FPS_HOLD_BIT            13

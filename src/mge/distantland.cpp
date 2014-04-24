@@ -76,8 +76,12 @@ void DistantLand::renderStage0()
                 DWORD p = mwBridge->CellHasWeather() ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
                 effect->SetFloat(ehDissolveRange, 7168.0);
                 effect->BeginPass(p);
+                vsr.beginAlphaToCoverage(device);
+
                 cullDistantStatics(&mwView, &distProj);
                 renderDistantStatics();
+
+                vsr.endAlphaToCoverage(device);
                 effect->EndPass();
             }
 
@@ -166,7 +170,9 @@ void DistantLand::renderStage1()
             if(Configuration.MGEFlags & USE_GRASS)
             {
                 effect->BeginPass(PASS_RENDERGRASSINST);
+                vsr.beginAlphaToCoverage(device);
                 renderGrassInst();
+                vsr.endAlphaToCoverage(device);
                 effect->EndPass();
             }
 

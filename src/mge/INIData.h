@@ -135,6 +135,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.LODBias, t_float, 1, siniRendState, "Mipmap LOD Bias", "0", NULL, MINMAX, -2, 2},
     {&Configuration.ScreenFOV, t_float, 1, siniRendState, "Horizontal Screen FOV", "75", NULL, MINMAX, 5, 150},
     {&Configuration.FogMode, t_uint8, 1, siniRendState, "Fog Mode", "Depth pixel", &dictFogMode, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.HDRReactionSpeed, t_float, 1, siniMisc, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
 
     // Generic Variables
