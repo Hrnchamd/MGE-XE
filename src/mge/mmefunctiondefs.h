@@ -87,7 +87,7 @@ enum GraphicsFuncs {
     GF_HaggleLess10000 = 35,        // Decreases barter amount by 10000
     GF_ToggleDL = 36,               // Toggles distant land
     GF_ToggleShadows = 37,          // Toggles dynamic shadows
-    GF_ToggleGrass = 38,	        // Toggles grass
+    GF_ToggleGrass = 38,            // Toggles grass
     GF_ToggleMwMgeBlending = 39,    // Toggles MW/MGE blending
     GF_ToggleLightingMode = 40,     // Toggles enhanced lighting shader
     GF_IncreaseFOV = 41,            // Increases FOV

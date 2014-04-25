@@ -39,13 +39,13 @@ bool MGEhud::init(IDirect3DDevice9 *d)
     }
 
     ID3DXBuffer *errors;
-	hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE HUD.fx", 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &effectStandard, &errors);
-	if(hr != D3D_OK)
-	{
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE HUD.fx", 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &effectStandard, &errors);
+    if(hr != D3D_OK)
+    {
         LOG::logline("!! HUD Shader errors: %s", errors->GetBufferPointer());
         errors->Release();
         return false;
-	}
+    }
 
     if(element_names.empty())
         reset();

@@ -3,99 +3,99 @@
 
 struct mwseEnableZoom : public mwseInstruction
 {
-	mwseEnableZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseEnableZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseDisableZoom : public mwseInstruction
 {
-	mwseDisableZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseDisableZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseToggleZoom : public mwseInstruction
 {
-	mwseToggleZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseToggleZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseZoomIn : public mwseInstruction
 {
-	mwseZoomIn(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseZoomIn(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseZoomOut : public mwseInstruction
 {
-	mwseZoomOut(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseZoomOut(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseZoomInBy : public mwseInstruction
 {
-	mwseZoomInBy(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseZoomInBy(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseZoomOutBy : public mwseInstruction
 {
-	mwseZoomOutBy(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseZoomOutBy(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseSetZoom : public mwseInstruction
 {
-	mwseSetZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseSetZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseZoom : public mwseInstruction
 {
-	mwseZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseStopZoom : public mwseInstruction
 {
-	mwseStopZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseStopZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };
 
 struct mwseGetZoom : public mwseInstruction
 {
-	mwseGetZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-	static __fastcall bool execute(mwseInstruction *_this);
+    mwseGetZoom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
 
 private:
-	static vtable_t vtable;
+    static vtable_t vtable;
 };

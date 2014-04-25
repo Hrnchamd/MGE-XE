@@ -13,7 +13,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseWipeAll)
 bool mwseWipeAll::execute(mwseInstruction *_this)
 {
     resetMWSEHud();
-	return true;
+    return true;
 }
 
 
@@ -22,8 +22,8 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseOutputDebugString)
 // OutputDebugString
 bool mwseOutputDebugString::execute(mwseInstruction *_this)
 {
-	const char *str = _this->vmPopString();
-	if(!str) return false;
+    const char *str = _this->vmPopString();
+    if(!str) return false;
 
     LOG::logline("%s", str);
     return true;
@@ -45,8 +45,8 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetVersion)
 // GetVersion -> returns <long version>
 bool mwseGetVersion::execute(mwseInstruction *_this)
 {
-	VMREGTYPE ret = MGE_MWSE_VERSION;
-	return _this->vmPush(ret);
+    VMREGTYPE ret = MGE_MWSE_VERSION;
+    return _this->vmPush(ret);
 }
 
 
@@ -55,8 +55,8 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetScreenWidth)
 // GetScreenWidth -> returns <short width>
 bool mwseGetScreenWidth::execute(mwseInstruction *_this)
 {
-	VMREGTYPE ret = MGEhud::getScreenWidth();
-	return _this->vmPush(ret);
+    VMREGTYPE ret = MGEhud::getScreenWidth();
+    return _this->vmPush(ret);
 }
 
 
@@ -65,6 +65,6 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetScreenHeight)
 // GetScreenHeight -> returns <short height>
 bool mwseGetScreenHeight::execute(mwseInstruction *_this)
 {
-	VMREGTYPE ret = MGEhud::getScreenHeight();
-	return _this->vmPush(ret);
+    VMREGTYPE ret = MGEhud::getScreenHeight();
+    return _this->vmPush(ret);
 }

@@ -47,7 +47,7 @@ static void SaveScreenshot(IDirect3DSurface9 *surface)
     if(!surface) { StatusOverlay::setStatus("Screenshot failed - Surface error"); return; }
 
     // Set up path
-	if(strlen(Configuration.SSDir) > 0)
+    if(strlen(Configuration.SSDir) > 0)
     {
         usedir = true;
 
@@ -156,18 +156,18 @@ void MacroFunctions::DecreaseZoom() {
 }
 
 void MacroFunctions::ToggleCrosshair() {
-	DECLARE_MWBRIDGE
-	mwBridge->ToggleCrosshair();
+    DECLARE_MWBRIDGE
+    mwBridge->ToggleCrosshair();
 }
 
 void MacroFunctions::NextTrack() {
     DECLARE_MWBRIDGE
-	mwBridge->SkipToNextTrack();
+    mwBridge->SkipToNextTrack();
 }
 
 void MacroFunctions::DisableMusic() {
     DECLARE_MWBRIDGE
-	mwBridge->DisableMusic();
+    mwBridge->DisableMusic();
 }
 
 void MacroFunctions::IncreaseFOV() {

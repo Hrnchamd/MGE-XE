@@ -22,20 +22,20 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetSkyColour)
 // time_enum -> Sunrise = 0, Day = 1, Sunset = 2, Night = 3
 bool mwseSetSkyColour::execute(mwseInstruction *_this)
 {
-	VMREGTYPE weather_id, time_enum, r, g, b;
+    VMREGTYPE weather_id, time_enum, r, g, b;
 
-	if(!_this->vmPop(&weather_id)) return false;
-	if(!_this->vmPop(&time_enum)) return false;
-	if(!_this->vmPop(&r)) return false;
-	if(!_this->vmPop(&g)) return false;
-	if(!_this->vmPop(&b)) return false;
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&time_enum)) return false;
+    if(!_this->vmPop(&r)) return false;
+    if(!_this->vmPop(&g)) return false;
+    if(!_this->vmPop(&b)) return false;
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
     MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
     w->skyCol[time_enum] = col;
 
-	return true;
+    return true;
 }
 
 
@@ -45,20 +45,20 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetFogColour)
 // time_enum -> Sunrise = 0, Day = 1, Sunset = 2, Night = 3
 bool mwseSetFogColour::execute(mwseInstruction *_this)
 {
-	VMREGTYPE weather_id, time_enum, r, g, b;
+    VMREGTYPE weather_id, time_enum, r, g, b;
 
-	if(!_this->vmPop(&weather_id)) return false;
-	if(!_this->vmPop(&time_enum)) return false;
-	if(!_this->vmPop(&r)) return false;
-	if(!_this->vmPop(&g)) return false;
-	if(!_this->vmPop(&b)) return false;
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&time_enum)) return false;
+    if(!_this->vmPop(&r)) return false;
+    if(!_this->vmPop(&g)) return false;
+    if(!_this->vmPop(&b)) return false;
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
     MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
     w->fogCol[time_enum] = col;
 
-	return true;
+    return true;
 }
 
 
@@ -68,20 +68,20 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetAmbientColour)
 // time_enum -> Sunrise = 0, Day = 1, Sunset = 2, Night = 3
 bool mwseSetAmbientColour::execute(mwseInstruction *_this)
 {
-	VMREGTYPE weather_id, time_enum, r, g, b;
+    VMREGTYPE weather_id, time_enum, r, g, b;
 
-	if(!_this->vmPop(&weather_id)) return false;
-	if(!_this->vmPop(&time_enum)) return false;
-	if(!_this->vmPop(&r)) return false;
-	if(!_this->vmPop(&g)) return false;
-	if(!_this->vmPop(&b)) return false;
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&time_enum)) return false;
+    if(!_this->vmPop(&r)) return false;
+    if(!_this->vmPop(&g)) return false;
+    if(!_this->vmPop(&b)) return false;
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
     MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
     w->ambientCol[time_enum] = col;
 
-	return true;
+    return true;
 }
 
 
@@ -91,20 +91,20 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetSunColour)
 // time_enum -> Sunrise = 0, Day = 1, Sunset = 2, Night = 3
 bool mwseSetSunColour::execute(mwseInstruction *_this)
 {
-	VMREGTYPE weather_id, time_enum, r, g, b;
+    VMREGTYPE weather_id, time_enum, r, g, b;
 
-	if(!_this->vmPop(&weather_id)) return false;
-	if(!_this->vmPop(&time_enum)) return false;
-	if(!_this->vmPop(&r)) return false;
-	if(!_this->vmPop(&g)) return false;
-	if(!_this->vmPop(&b)) return false;
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&time_enum)) return false;
+    if(!_this->vmPop(&r)) return false;
+    if(!_this->vmPop(&g)) return false;
+    if(!_this->vmPop(&b)) return false;
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
     MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
     w->sunCol[time_enum] = col;
 
-	return true;
+    return true;
 }
 
 
@@ -115,14 +115,14 @@ bool mwseSetSunriseSunset::execute(mwseInstruction *_this)
 {
     VMFLOAT rise_time, rise_dur, set_time, set_dur;
 
-	if(!_this->vmPop(&rise_time)) return false;
-	if(!_this->vmPop(&rise_dur)) return false;
-	if(!_this->vmPop(&set_time)) return false;
-	if(!_this->vmPop(&set_dur)) return false;
+    if(!_this->vmPop(&rise_time)) return false;
+    if(!_this->vmPop(&rise_dur)) return false;
+    if(!_this->vmPop(&set_time)) return false;
+    if(!_this->vmPop(&set_dur)) return false;
 
     DECLARE_MWBRIDGE
     mwBridge->setSunriseSunset(rise_time, rise_dur, set_time, set_dur);
-	return true;
+    return true;
 }
 
 
@@ -134,14 +134,14 @@ bool mwseSetScattering::execute(mwseInstruction *_this)
     VMFLOAT outscatter_r, outscatter_g, outscatter_b;
     VMFLOAT inscatter_r, inscatter_g, inscatter_b;
 
-	if(!_this->vmPop(&outscatter_r)) return false;
-	if(!_this->vmPop(&outscatter_g)) return false;
-	if(!_this->vmPop(&outscatter_b)) return false;
-	if(!_this->vmPop(&inscatter_r)) return false;
-	if(!_this->vmPop(&inscatter_g)) return false;
-	if(!_this->vmPop(&inscatter_b)) return false;
+    if(!_this->vmPop(&outscatter_r)) return false;
+    if(!_this->vmPop(&outscatter_g)) return false;
+    if(!_this->vmPop(&outscatter_b)) return false;
+    if(!_this->vmPop(&inscatter_r)) return false;
+    if(!_this->vmPop(&inscatter_g)) return false;
+    if(!_this->vmPop(&inscatter_b)) return false;
 
     RGBVECTOR outscatter(outscatter_r, outscatter_g, outscatter_b), inscatter(inscatter_r, inscatter_g, inscatter_b);
     DistantLand::setScattering(outscatter, inscatter);
-	return true;
+    return true;
 }

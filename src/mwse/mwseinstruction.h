@@ -27,9 +27,9 @@ struct mwseInstruction
 
     mwseInstruction(TES3MACHINE& mach) : vm(mach) {}
 
-	static __fastcall void destructor(mwseInstruction *_this) {}
-	static __stdcall int getOperands(OPCODE opcode, VPVOID operanddata) { return 0; }
-	static __fastcall bool execute(mwseInstruction *_this) { return false; }
+    static __fastcall void destructor(mwseInstruction *_this) {}
+    static __stdcall int getOperands(OPCODE opcode, VPVOID operanddata) { return 0; }
+    static __fastcall bool execute(mwseInstruction *_this) { return false; }
 
     inline bool vmPush(VMREGTYPE val);
     inline bool vmPush(VMFLOAT val);
@@ -38,8 +38,8 @@ struct mwseInstruction
     inline const char * vmGetString(void *str);
     const char * vmPopString();
 
-	vtable_t *vptr;
-	TES3MACHINE& vm;
+    vtable_t *vptr;
+    TES3MACHINE& vm;
 };
 
 // vmPush(VMREGTYPE) - Pushes an integer (of any type) onto the stack

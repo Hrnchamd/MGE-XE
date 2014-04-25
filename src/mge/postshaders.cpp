@@ -99,7 +99,7 @@ bool PostShaders::initShaderChain()
         }
     }
 
-    LOG::logline("-- Shader chain indicates HDR %s",  (Configuration.MGEFlags & USE_HDR) ? "On" : "Off");
+    LOG::logline("-- Shader chain indicates HDR %s", (Configuration.MGEFlags & USE_HDR) ? "On" : "Off");
 
     if(Configuration.MGEFlags & NO_MW_SUNGLARE)
     {
