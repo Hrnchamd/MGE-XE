@@ -12,7 +12,7 @@
 static const float shade = 0.4;
 
 // Shade colouration, how much each channel is affected by shadow
-static const float3 shadecolour = float3(1.0, 0.97, 0.84);
+static const float3 shadecolour = float3(1.0, 0.97, 0.81);
 
 // ESM exponent, affects shadow fade near shadow casters, bounded by float accuracy to ~88
 // Higher means less fade at shadow root, but sharper shadows

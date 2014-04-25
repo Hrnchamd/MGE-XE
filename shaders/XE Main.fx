@@ -139,7 +139,7 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
 float4 GrassPS (GrassVertOut IN): COLOR0
 {
     float4 result = tex2D(sampBaseTex, IN.texcoords);
-    clip(result.a - 2.0/255.0);
+    clip(result.a - 64.0/255.0);
     result.rgb *= IN.colour.rgb;
 
     // Soft shadowing
