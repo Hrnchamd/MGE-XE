@@ -101,6 +101,7 @@ struct ConfigurationStruct
     bool Force3rdPerson;
     struct { float x, y, z; } Offset3rdPerson;
     bool CrosshairAutohide;
+    float UIScale;
 
     struct
     {

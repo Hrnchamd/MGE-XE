@@ -78,6 +78,8 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
         mwBridge->Load();
         mwBridge->disableScreenshotFunc();
         mwBridge->markWaterNode(99999.0f);
+        if(Configuration.UIScale != 1.0f)
+            mwBridge->setUIScale(Configuration.UIScale);
     }
 
     if(mwBridge->IsLoaded())

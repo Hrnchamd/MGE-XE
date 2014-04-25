@@ -144,11 +144,12 @@ const iniSetting iniSettings[] = {
     {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "MGE Screenshot ", NULL, 0, 0, 0},
     {&Configuration.SSMinNumChars, t_uint8, 1, siniRendState, "Screenshot Number Min Length", "3", NULL, MINMAX, 1, 5},
     {&Configuration.StatusTimeout, t_int32, 1, siniRendState, "MGE Messages Timeout", "2000", NULL, MINMAX, 1000, 10000},
-    {&Configuration.Force3rdPerson, t_bool,  1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
-    {&Configuration.Offset3rdPerson.x, t_float,  1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
-    {&Configuration.Offset3rdPerson.y, t_float,  1, siniMisc, "Initial 3rd Person Camera Y", "-160", NULL, MINMAX, -2500.0, 2500.0},
-    {&Configuration.Offset3rdPerson.z, t_float,  1, siniMisc, "Initial 3rd Person Camera Z", "0", NULL, MINMAX, -250.0, 250.0},
+    {&Configuration.Force3rdPerson, t_bool, 1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
+    {&Configuration.Offset3rdPerson.x, t_float, 1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
+    {&Configuration.Offset3rdPerson.y, t_float, 1, siniMisc, "Initial 3rd Person Camera Y", "-160", NULL, MINMAX, -2500.0, 2500.0},
+    {&Configuration.Offset3rdPerson.z, t_float, 1, siniMisc, "Initial 3rd Person Camera Z", "0", NULL, MINMAX, -250.0, 250.0},
     {&Configuration.CrosshairAutohide, t_bool, 1, siniMisc, "Crosshair Autohide", "False", &dictBool, DICTONLY, 0, 0},
+    {&Configuration.UIScale, t_float, 1, siniRendState, "UI Scaling", "1", NULL, MINMAX, 1.0, 5.0},
 
     // Shaders, flat list
     {&Configuration.ShaderChain, t_set, sizeof(Configuration.ShaderChain), siniShaders, NULL, NULL, NULL, 0, 0, 0},
@@ -199,7 +200,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.DL.FogD[8], t_float, 1, siniDLWeather, "Snow Fog Ratio", "0.5", NULL, MINMAX, 0.001, 2},
     {&Configuration.DL.FgOD[8], t_float, 1, siniDLWeather, "Snow Fog Offset", "40", NULL, MINMAX, 0, 90},
     {&Configuration.DL.Wind[9], t_float, 1, siniDLWeather, "Blizzard Wind Ratio", "0.9", NULL, MINMAX, 0, 1},
-    {&Configuration.DL.FogD[9], t_float, 1, siniDLWeather, "Blizzard Fog Ratio", "0.16", NULL, MINMAX,  0.001, 2},
+    {&Configuration.DL.FogD[9], t_float, 1, siniDLWeather, "Blizzard Fog Ratio", "0.16", NULL, MINMAX, 0.001, 2},
     {&Configuration.DL.FgOD[9], t_float, 1, siniDLWeather, "Blizzard Fog Offset", "70", NULL, MINMAX, 0, 90}
 };
 

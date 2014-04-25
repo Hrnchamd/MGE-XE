@@ -93,6 +93,8 @@ namespace MGEgui {
             this.bSShotDirBrowse = new System.Windows.Forms.Button();
             this.lSShotNum = new System.Windows.Forms.Label();
             this.gbScene = new System.Windows.Forms.GroupBox();
+            this.udUIScale = new System.Windows.Forms.NumericUpDown();
+            this.lUIScale = new System.Windows.Forms.Label();
             this.lHDR2 = new System.Windows.Forms.Label();
             this.bAutoFOV = new System.Windows.Forms.Button();
             this.lFPSLimit = new System.Windows.Forms.Label();
@@ -229,6 +231,7 @@ namespace MGEgui {
             this.tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udSShotNum)).BeginInit();
             this.gbScene.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udHDR)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udLOD)).BeginInit();
@@ -1065,6 +1068,8 @@ namespace MGEgui {
             // 
             this.gbScene.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbScene.Controls.Add(this.udUIScale);
+            this.gbScene.Controls.Add(this.lUIScale);
             this.gbScene.Controls.Add(this.lHDR2);
             this.gbScene.Controls.Add(this.bAutoFOV);
             this.gbScene.Controls.Add(this.lFPSLimit);
@@ -1087,6 +1092,44 @@ namespace MGEgui {
             this.gbScene.TabStop = false;
             this.gbScene.Text = "Renderer";
             // 
+            // udUIScale
+            // 
+            this.udUIScale.DecimalPlaces = 2;
+            this.udUIScale.Increment = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udUIScale.Location = new System.Drawing.Point(341, 49);
+            this.udUIScale.Maximum = new decimal(new int[] {
+                                    5,
+                                    0,
+                                    0,
+                                    0});
+            this.udUIScale.Minimum = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    0});
+            this.udUIScale.Name = "udUIScale";
+            this.udUIScale.Size = new System.Drawing.Size(90, 20);
+            this.udUIScale.TabIndex = 23;
+            this.udUIScale.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udUIScale.Value = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    0});
+            // 
+            // lUIScale
+            // 
+            this.lUIScale.AutoSize = true;
+            this.lUIScale.Location = new System.Drawing.Point(437, 51);
+            this.lUIScale.Name = "lUIScale";
+            this.lUIScale.Size = new System.Drawing.Size(84, 13);
+            this.lUIScale.TabIndex = 22;
+            this.lUIScale.Text = "Menu UI scaling";
+            // 
             // lHDR2
             // 
             this.lHDR2.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -1100,9 +1143,9 @@ namespace MGEgui {
             // bAutoFOV
             // 
             this.bAutoFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bAutoFOV.Location = new System.Drawing.Point(292, 23);
+            this.bAutoFOV.Location = new System.Drawing.Point(289, 23);
             this.bAutoFOV.Name = "bAutoFOV";
-            this.bAutoFOV.Size = new System.Drawing.Size(69, 20);
+            this.bAutoFOV.Size = new System.Drawing.Size(72, 20);
             this.bAutoFOV.TabIndex = 20;
             this.bAutoFOV.Text = "Auto FOV";
             this.bAutoFOV.UseVisualStyleBackColor = true;
@@ -1111,17 +1154,17 @@ namespace MGEgui {
             // lFPSLimit
             // 
             this.lFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lFPSLimit.AutoSize = true;
-            this.lFPSLimit.Location = new System.Drawing.Point(436, 78);
+            this.lFPSLimit.Location = new System.Drawing.Point(10, 116);
             this.lFPSLimit.Name = "lFPSLimit";
-            this.lFPSLimit.Size = new System.Drawing.Size(56, 13);
+            this.lFPSLimit.Size = new System.Drawing.Size(139, 13);
             this.lFPSLimit.TabIndex = 19;
             this.lFPSLimit.Text = "FPS limiter";
+            this.lFPSLimit.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // udFPSLimit
             // 
             this.udFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.udFPSLimit.Location = new System.Drawing.Point(367, 76);
+            this.udFPSLimit.Location = new System.Drawing.Point(155, 114);
             this.udFPSLimit.Maximum = new decimal(new int[] {
                                     144,
                                     0,
@@ -1133,9 +1176,10 @@ namespace MGEgui {
                                     0,
                                     0});
             this.udFPSLimit.Name = "udFPSLimit";
-            this.udFPSLimit.Size = new System.Drawing.Size(63, 20);
+            this.udFPSLimit.Size = new System.Drawing.Size(56, 20);
             this.udFPSLimit.TabIndex = 18;
             this.udFPSLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udFPSLimit.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
             this.udFPSLimit.Value = new decimal(new int[] {
                                     144,
                                     0,
@@ -1171,7 +1215,7 @@ namespace MGEgui {
             // bShaderEd
             // 
             this.bShaderEd.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bShaderEd.Location = new System.Drawing.Point(145, 19);
+            this.bShaderEd.Location = new System.Drawing.Point(140, 19);
             this.bShaderEd.Name = "bShaderEd";
             this.bShaderEd.Size = new System.Drawing.Size(112, 25);
             this.bShaderEd.TabIndex = 17;
@@ -1194,7 +1238,7 @@ namespace MGEgui {
                                     "Depth pixel (Fast)",
                                     "Depth vertex",
                                     "Range vertex (Best)"});
-            this.cmbFogMode.Location = new System.Drawing.Point(298, 49);
+            this.cmbFogMode.Location = new System.Drawing.Point(298, 75);
             this.cmbFogMode.Name = "cmbFogMode";
             this.cmbFogMode.Size = new System.Drawing.Size(133, 21);
             this.cmbFogMode.TabIndex = 13;
@@ -1205,7 +1249,7 @@ namespace MGEgui {
             // 
             this.lFogMode.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFogMode.AutoSize = true;
-            this.lFogMode.Location = new System.Drawing.Point(437, 52);
+            this.lFogMode.Location = new System.Drawing.Point(437, 78);
             this.lFogMode.Name = "lFogMode";
             this.lFogMode.Size = new System.Drawing.Size(54, 13);
             this.lFogMode.TabIndex = 12;
@@ -1215,7 +1259,7 @@ namespace MGEgui {
             // 
             this.lLOD.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lLOD.AutoSize = true;
-            this.lLOD.Location = new System.Drawing.Point(436, 104);
+            this.lLOD.Location = new System.Drawing.Point(437, 104);
             this.lLOD.Name = "lLOD";
             this.lLOD.Size = new System.Drawing.Size(91, 13);
             this.lLOD.TabIndex = 9;
@@ -1230,7 +1274,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udLOD.Location = new System.Drawing.Point(366, 102);
+            this.udLOD.Location = new System.Drawing.Point(367, 102);
             this.udLOD.Maximum = new decimal(new int[] {
                                     2,
                                     0,
@@ -1258,7 +1302,7 @@ namespace MGEgui {
             // cbFPSCounter
             // 
             this.cbFPSCounter.AutoSize = true;
-            this.cbFPSCounter.Location = new System.Drawing.Point(10, 100);
+            this.cbFPSCounter.Location = new System.Drawing.Point(9, 91);
             this.cbFPSCounter.Name = "cbFPSCounter";
             this.cbFPSCounter.Size = new System.Drawing.Size(83, 17);
             this.cbFPSCounter.TabIndex = 5;
@@ -2749,6 +2793,7 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udSShotNum)).EndInit();
             this.gbScene.ResumeLayout(false);
             this.gbScene.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udHDR)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udLOD)).EndInit();
@@ -2808,6 +2853,8 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Label lUIScale;
+        private System.Windows.Forms.NumericUpDown udUIScale;
         private System.Windows.Forms.CheckBox cbBorderless;
         private System.Windows.Forms.TextBox tbRefreshRate;
         private System.Windows.Forms.Button bReportingShowLog;

@@ -1093,6 +1093,31 @@ void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
 
 //-----------------------------------------------------------------------------
 
+// setUIScale - Configures the scaling of Morrowind's UI system, must be called early before main menu
+void MWBridge::setUIScale(float scale)
+{
+    DWORD addr = read_dword(eMaster);
+    DWORD w, h;
+
+    // Read UI viewport width and height
+    w = read_dword(addr + 0x78);
+    h = read_dword(addr + 0x7c);
+    // Calculate a smaller viewport that will be scaled up by Morrowind
+    w = (DWORD)(w / scale);
+    h = (DWORD)(h / scale);
+    // Write new viewport size
+    write_dword(addr + 0x78, w);
+    write_dword(addr + 0x7c, h);
+
+    // Call UI configuration method to update scaling
+    // uses properties of fastcall to put object in ecx
+    typedef void (__fastcall *uiproc)(DWORD, int, DWORD);
+    uiproc ui_configureUIScale = (uiproc)0x40f2a0;
+    ui_configureUIScale(addr, 0, w);
+}
+
+//-----------------------------------------------------------------------------
+
 // getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
 void * MWBridge::getGMSTPointer(DWORD id)
 {

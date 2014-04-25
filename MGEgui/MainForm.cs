@@ -85,6 +85,7 @@ namespace MGEgui {
             { "HWShader", new string [] { "cbHWShader" } },
             { "ShaderEd", new string [] { "bShaderEd" } },
             { "HDRTime", new string [] { "udHDR", "lHDR" } },
+            { "UIScale", new string [] { "udUIScale", "lUIScale" } },
             { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
             { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
             { "SShotDir", new string [] { "lSShotDir", "tbSShotDir" } },
@@ -317,6 +318,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
         private static INIFile.INIVariableDef iniHWShader = new INIFile.INIVariableDef ("HWShader", siniRendState, "Hardware Shader", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
+        private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef ("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 1, 5, 3);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
         private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "MGE Screenshot ");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef ("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
@@ -372,7 +374,7 @@ namespace MGEgui {
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
-            iniSSFormat, iniSSName, iniSSDir, iniSSNum,
+            iniUIScale, iniSSFormat, iniSSName, iniSSDir, iniSSNum,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniCam3rdCustom,
             iniCam3rdX, iniCam3rdY, iniCam3rdZ,
@@ -423,6 +425,7 @@ namespace MGEgui {
             cbDisplayMessages.Checked = (iniFile.getKeyValue ("Messages") == 1);
             udMsgsTime.Value = (decimal)iniFile.getKeyValue ("MsgTime");
             cbHWShader.Checked = (iniFile.getKeyValue ("HWShader") == 1);
+            udUIScale.Value = (decimal)iniFile.getKeyValue ("UIScale");
             cmbSShotFormat.SelectedIndex = (int)iniFile.getKeyValue ("SSFormat");
             tbSShotDir.Text = iniFile.getKeyString ("SSDir");
             if (tbSShotDir.Text.Length == 0) bSSDirClear_Click (null, null);
@@ -494,6 +497,7 @@ namespace MGEgui {
             iniFile.setKey ("Messages", cbDisplayMessages.Checked);
             iniFile.setKey ("MsgTime", (double)udMsgsTime.Value);
             iniFile.setKey ("HWShader", cbHWShader.Checked);
+            iniFile.setKey ("UIScale", (double)udUIScale.Value);
             iniFile.setKey ("SSFormat", cmbSShotFormat.SelectedIndex);
             if (tbSShotDir.TextAlign == HorizontalAlignment.Left) iniFile.setKey ("SSDir", tbSShotDir.Text);
             else iniFile.setKey ("SSDir", "");

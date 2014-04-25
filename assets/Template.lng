@@ -316,6 +316,7 @@ FogMode = "Sets the type of fog that Morrowind uses. Vertex range is the most ac
 FPSCounter = "Enables MGE's FPS counter.\nThis is unrelated to Morrowind's FPS counter, and can be used instead of or as well as it.\nDisplay messages (see In-Game tab) must be checked for this to work."
 HWShader = "Enables post-processing shaders.\nThey can be toggled in-game with the macro editor's 'toggle shaders' function."
 ShaderEd = "Opens a window where you may change the list of active shaders."
+UIScale = "Adjusts the scale of Morrowind's menus and UI.\nThe default scale is 1.0."
 HDRTime = "This controls how the HDR shader reacts to brightness changes. Lower values mean faster HDR response."
 SShotFormat = "Sets the format in which MGE will save screenshots.\nMGE XE overrides Morrowind's standard screenshot command."
 SShotName = "Every saved MGE screenshot will start its file name with this prefix."

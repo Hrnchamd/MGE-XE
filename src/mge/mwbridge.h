@@ -107,6 +107,7 @@ public:
     bool isIntroDone();
     bool isLoadingSplash();
     void redirectMenuBackground(void (_stdcall *func)(int));
+    void setUIScale(float scale);
 
     void *getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
