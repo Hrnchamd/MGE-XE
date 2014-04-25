@@ -1114,6 +1114,20 @@ void MWBridge::setUIScale(float scale)
     typedef void (__fastcall *uiproc)(DWORD, int, DWORD);
     uiproc ui_configureUIScale = (uiproc)0x40f2a0;
     ui_configureUIScale(addr, 0, w);
+
+    // Patch raycast system to use UI viewport size instead of D3D viewport size
+    addr = 0x6f5157;
+    const BYTE patch[] = {
+        0xa1, 0xdc, 0x67, 0x7c, 0x00,       // mov eax, eMaster
+        0x8b, 0x78, 0x78,                   // mov edi, [eax+0x78]
+        0x8b, 0x40, 0x7c,                   // mov eax, [eax+0x7c]
+        0x90, 0x90, 0x90                    // nops
+    };
+
+    DWORD oldProtect;
+    VirtualProtect((LPVOID)addr, sizeof(patch), PAGE_EXECUTE_READWRITE, &oldProtect);
+    memcpy((void *)addr, patch, sizeof(patch));
+    VirtualProtect((LPVOID)addr, sizeof(patch), oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
