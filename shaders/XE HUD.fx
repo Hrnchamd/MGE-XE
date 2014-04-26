@@ -4,7 +4,7 @@
 // Standard HUD shader
 
 texture tex;
-sampler s0 = sampler_state { texture = <tex>; magfilter = none; addressu = clamp; addressv = clamp; };
+sampler s0 = sampler_state { texture = <tex>; minfilter = point; magfilter = point; addressu = clamp; addressv = clamp; };
 
 float4 hud(float2 t : TEXCOORD) : COLOR0
 {

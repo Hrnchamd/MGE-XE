@@ -483,7 +483,7 @@ Technique T0 {
     Pass P8 {
         ZEnable = false;
         ZWriteEnable = false;
-        CullMode = None;
+        CullMode = none;
         StencilEnable = false;
 
         AlphaBlendEnable = false;

@@ -13,7 +13,7 @@ float4 HDR;
 static float exposure = (1 + sensitivity * (neutral_point - HDR.x)) * sqrt(HDR.y/HDR.x);
 
 texture lastshader;
-sampler s0 = sampler_state { texture = <lastshader>; minfilter = none; magfilter = none; };
+sampler s0 = sampler_state { texture = <lastshader>; minfilter = point; magfilter = point; };
 
 
 float4 tone(float2 tex : TEXCOORD) : COLOR0
