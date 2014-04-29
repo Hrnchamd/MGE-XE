@@ -506,7 +506,7 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
     ID3DXBuffer *errors;
 
     LOG::logline("-- Generating replacement fixed function shader");
-    sk.log();
+    //sk.log();
     HRESULT hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effectFFE, &errors);
 
     if(hr != D3D_OK)

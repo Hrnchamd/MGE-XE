@@ -38,7 +38,13 @@ void DistantLand::buildGrassInstanceVB()
 
     if(visGrass.visible_set.size() > MaxGrassElements)
     {
-        LOG::logline("Too many grass instances. (%d)", visGrass.visible_set.size());
+        static bool warnOnce = true;
+        if(warnOnce)
+        {
+            LOG::logline("!! Too many grass instances. (%d elements, limit %d)", visGrass.visible_set.size(), MaxGrassElements);
+            LOG::logline("!! Reduce grass density to avoid flickering grass.");
+            warnOnce = false;
+        }
         visGrass.visible_set.resize(MaxGrassElements);
     }
 
