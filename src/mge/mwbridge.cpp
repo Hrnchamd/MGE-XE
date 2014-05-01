@@ -6,7 +6,23 @@
 
 static MWBridge m_instance;
 
-typedef void (_stdcall *mmHaggleProc)();
+
+class VirtualMemWriteAccessor
+{
+    void *address;
+    size_t length;
+    DWORD oldProtect;
+
+public:
+    VirtualMemWriteAccessor(void *addr, size_t len) : address(addr), length(len)
+    {
+        VirtualProtect(address, length, PAGE_EXECUTE_READWRITE, &oldProtect);
+    }
+    ~VirtualMemWriteAccessor()
+    {
+        VirtualProtect(address, length, oldProtect, &oldProtect);
+    }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -288,7 +304,7 @@ bool MWBridge::IsExterior()
 {
     assert(m_loaded);
     DWORD addr = read_dword(eEnviro);
-    if ( addr !=0 )
+    if ( addr != 0 )
         return read_dword(addr + 0xAC) == 0;
     else
         return 0;
@@ -725,6 +741,7 @@ float MWBridge::WaterLevel()
 void MWBridge::HaggleMore(DWORD num)
 {
     assert(m_loaded);
+    typedef void (_stdcall *mmHaggleProc)();
     mmHaggleProc proc = (mmHaggleProc)eHaggleMore;
     num -= 1;
     if (num != 0)
@@ -745,8 +762,9 @@ void MWBridge::HaggleMore(DWORD num)
 void MWBridge::HaggleLess(DWORD num)
 {
     assert(m_loaded);
+    typedef void (_stdcall *mmHaggleProc)();
     mmHaggleProc proc = (mmHaggleProc)eHaggleLess;
-    num -=1;
+    num -= 1;
     if (num != 0)
     {
         int d = (int)read_dword(0x7D287C);
@@ -966,10 +984,9 @@ void MWBridge::toggleRipples(BOOL enabled)
     DWORD code = read_dword(addr);
     if (enabled && code == 0x33504D8B || !enabled && code == 0x3390C931) return;
     code = enabled ? 0x33504D8B : 0x3390C931;
-    DWORD oldProtect;
-    VirtualProtect((LPVOID) addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_dword(addr, code);
-    VirtualProtect((LPVOID) addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1037,10 +1054,8 @@ void MWBridge::disableScreenshotFunc()
     DWORD addr = 0x41b08a;
 
     // Replace jz short with jmp (74 -> eb)
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_byte(addr, 0xeb);
-    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1051,11 +1066,9 @@ void MWBridge::disableSunglare()
     DWORD addr = 0x4404fb;
 
     // Replace jz short with nop (74 xx -> 90 90)
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_byte(addr, 0x90);
     write_byte(addr+1, 0x90);
-    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1085,10 +1098,8 @@ void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
     DWORD calladdr = func ? (DWORD)func : 0x6cc7b0;
 
     // Replace jump address
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_dword(addr, calladdr - (addr+4));
-    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1124,10 +1135,8 @@ void MWBridge::setUIScale(float scale)
         0x90, 0x90, 0x90                    // nops
     };
 
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, sizeof(patch), PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
     memcpy((void *)addr, patch, sizeof(patch));
-    VirtualProtect((LPVOID)addr, sizeof(patch), oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
