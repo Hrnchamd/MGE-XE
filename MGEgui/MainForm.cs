@@ -1519,10 +1519,15 @@ namespace MGEgui {
         	if(loading) return;
         	if(cbPerPixelLighting.Checked)
         	{
-        		MessageBox.Show(strings["LightOverride"], Statics.strings["Warning"]);
-	            udLightingConst.Value = 0.33M;
+        		MessageBox.Show(strings["LightOverrideOn"], Statics.strings["Warning"]);
+	            udLightingConst.Value = 0.36M;
 	            udLightingLinear.Value = 0;
-	            udLightingQuad.Value = 4.2M;
+	            udLightingQuad.Value = 3.25M;
+        	}
+        	else
+        	{
+        		MessageBox.Show(strings["LightOverrideOff"], Statics.strings["Warning"]);
+        		bMWLightingReset_Click(null, null);
         	}
         }
         

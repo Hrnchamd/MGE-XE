@@ -1651,9 +1651,9 @@ namespace MGEgui {
             this.cbPerPixelLighting.AutoSize = true;
             this.cbPerPixelLighting.Location = new System.Drawing.Point(18, 43);
             this.cbPerPixelLighting.Name = "cbPerPixelLighting";
-            this.cbPerPixelLighting.Size = new System.Drawing.Size(167, 17);
+            this.cbPerPixelLighting.Size = new System.Drawing.Size(137, 17);
             this.cbPerPixelLighting.TabIndex = 1;
-            this.cbPerPixelLighting.Text = "Per-pixel lighting shader (beta)";
+            this.cbPerPixelLighting.Text = "Per-pixel lighting shader";
             this.cbPerPixelLighting.UseVisualStyleBackColor = true;
             this.cbPerPixelLighting.CheckedChanged += new System.EventHandler(this.cbPerPixelLighting_CheckedChanged);
             // 
