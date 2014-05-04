@@ -839,6 +839,121 @@ end
 #end
 
 
+## MWSE 0.9.3
+function
+	Name = XDropItem
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0d
+end
+function
+	Name = XEquipItem
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0e
+end
+function
+	Name = XSetName
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0f
+end
+function
+	Name = XGetSpellEffects
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Opcode = 0x3f10
+end
+function
+	Name = XSetOwner
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f11
+end
+function
+	Name = XCast
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f12
+end
+function
+	Name = XAddSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3fA0
+end
+function
+	Name = XRemoveSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3fA1
+end
+function
+	Name = XSetValue
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3e61
+end
+function
+	Name = XSetWeight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e62
+end
+function
+	Name = XSetQuality
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e63
+end
+function
+	Name = XSetCondition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3e64
+end
+function
+	Name = XSetMaxCondition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3e65
+end
+function
+	Name = XSetCharge
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e66
+end
+function
+	Name = XSetMaxCharge
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e67
+end
+function
+	Name = XStringMatch
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3e68
+end
+
+
 # MGE extensions
 function
 	Name = MGEWipeAll
