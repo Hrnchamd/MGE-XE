@@ -57,7 +57,7 @@ ViewCaps = "Maks. poziom pełnoekranowego wygładzania krawędzi: {0}x\nMaks. po
 [MainForm.Text]
 bAbout = "O programie..."
 bCalcRefresh = "Znajdź częstotliwości odświeżania"
-bCalcResolution = "Zmień rozdzielczości ekranu"
+bSelectResolution = "Zmień rozdzielczości ekranu"
 bDistantLandWizard = "Kreator tworzenia odległego terenu"
 bDLDynRipples = "Ustawienia ..."
 bDLOptions = "Opcje..."
@@ -224,7 +224,7 @@ AspectZoom = "Zaznaczenie tej opcji pozwoli na korektę proporcji podczas używa
 Audio = "Zmienia opcję linii \"Disable Audio\".\nZaznacz, aby wyłączyć większość efektów dźwiękowych Morrowind.\nMuzyka nie jest wyłączana przez to ustawienie."
 BindAI = "Zaznaczenie tego pola spowoduje przypisanie zasięgu działania SI do zasięgu widzenia.\nZwiększenie zasięgu widzenia przez MGE automatycznie zwiększy zasięg SI."
 CalcRefresh = "Odszukuje dostępne częstotliwości odświeżania monitora dla aktualnie wybranej rozdzielczości ekranu.\nDostępne częstotliwości odświeżania zależą od rozdzielczości, karty graficznej i wybrania koloru 16-bitowego.\nZmiany przeprowadzone przez MGEgui powodują automatyczne przeszukanie dostępnych częstotliwości odświeżania."
-CalcResolution = "Kliknij, aby zmienić rozdzielczość ekranu lub rozmiar okna Morrowind.\nW trybie okienkowym można używać dowolnych wartości rozmiaru okna.\nTryby graficzne o proporcji innej niż 4:3 mogą nie działać poprawnie.\nSą one oznaczone przez \"*\"."
+SelectResolution = "Kliknij, aby zmienić rozdzielczość ekranu lub rozmiar okna Morrowind.\nW trybie okienkowym można używać dowolnych wartości rozmiaru okna."
 Cam3rdPrsn = "Zaznacz, aby dostosować parametry kamery używanej z pozycji 3 osoby.\nParametry określone przez tę opcję zastąpią domyślne ustawienia gry przy uruchamianiu Morrowind.\nOpcja ta nie musi być włączona, aby zmieniać położenie kamery poprzez makro, lub skrypt.\nSkrypty mogą wyłączyć zastępowanie parametrów kamery ustawionych przez tę opcję."
 Cam3rdX = "Ustawia poziome przesunięcie pozycji kamery 3-cio osobowej względem oczu bohatera.\nWartości ujemne przesuwają kamerę w lewo, natomiast dodatnie w prawo."
 Cam3rdY = "Ustawia przesunięcie kamery 3-ciej osoby względem pozycji oczu, wzdłuż kierunku widzenia.\nWartości bardziej ujemne przesuną kamerę do tyłu, a mniej ujemne przesuną ją do przodu, bliżej postaci gracza.\nJedynie wartości ujemne są wykorzystywane, ponieważ to ustawienie, jak również odpowiadające mu funkcje makr,\npozwalają jedynie na ustawienie kamery 3-cio osobowej z tyłu za bohaterem. Aby ustawić kamerę przed oczami bohatera,\nnależy utworzyć skrypt, który to zrobi."

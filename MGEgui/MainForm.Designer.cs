@@ -784,7 +784,7 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.bMacroEd.Location = new System.Drawing.Point(6, 19);
             this.bMacroEd.Name = "bMacroEd";
-            this.bMacroEd.Size = new System.Drawing.Size(155, 25);
+            this.bMacroEd.Size = new System.Drawing.Size(155, 35);
             this.bMacroEd.TabIndex = 0;
             this.bMacroEd.Text = "Macro editor";
             this.bMacroEd.Click += new System.EventHandler(this.bMacroEd_Click);
@@ -793,9 +793,9 @@ namespace MGEgui {
             // 
             this.bRemapper.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRemapper.Location = new System.Drawing.Point(6, 50);
+            this.bRemapper.Location = new System.Drawing.Point(6, 60);
             this.bRemapper.Name = "bRemapper";
-            this.bRemapper.Size = new System.Drawing.Size(155, 25);
+            this.bRemapper.Size = new System.Drawing.Size(155, 35);
             this.bRemapper.TabIndex = 1;
             this.bRemapper.Text = "Key remapper";
             this.bRemapper.Click += new System.EventHandler(this.bRemapper_Click);
@@ -1215,9 +1215,9 @@ namespace MGEgui {
             // bShaderEd
             // 
             this.bShaderEd.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bShaderEd.Location = new System.Drawing.Point(140, 19);
+            this.bShaderEd.Location = new System.Drawing.Point(135, 19);
             this.bShaderEd.Name = "bShaderEd";
-            this.bShaderEd.Size = new System.Drawing.Size(112, 25);
+            this.bShaderEd.Size = new System.Drawing.Size(122, 25);
             this.bShaderEd.TabIndex = 17;
             this.bShaderEd.Text = "Shader setup";
             this.bShaderEd.Click += new System.EventHandler(this.bShaderEd_Click);
@@ -1373,7 +1373,7 @@ namespace MGEgui {
             // 
             this.cbBorderless.AutoSize = true;
             this.cbBorderless.Enabled = false;
-            this.cbBorderless.Location = new System.Drawing.Point(366, 53);
+            this.cbBorderless.Location = new System.Drawing.Point(386, 53);
             this.cbBorderless.Name = "cbBorderless";
             this.cbBorderless.Size = new System.Drawing.Size(114, 17);
             this.cbBorderless.TabIndex = 7;
@@ -1517,7 +1517,7 @@ namespace MGEgui {
             // cbWindowed
             // 
             this.cbWindowed.AutoSize = true;
-            this.cbWindowed.Location = new System.Drawing.Point(366, 25);
+            this.cbWindowed.Location = new System.Drawing.Point(386, 25);
             this.cbWindowed.Name = "cbWindowed";
             this.cbWindowed.Size = new System.Drawing.Size(106, 17);
             this.cbWindowed.TabIndex = 3;
@@ -1560,7 +1560,7 @@ namespace MGEgui {
             this.lRefreshRate.Size = new System.Drawing.Size(65, 13);
             this.lRefreshRate.TabIndex = 0;
             this.lRefreshRate.Text = "Refresh rate";
-            this.lRefreshRate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lRefreshRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tabControl
             // 

@@ -68,7 +68,7 @@ namespace MGEgui {
             { "TipReadSpd", new string [] { "lTipReadSpd", "cmbTipReadSpd", "lTipRSpdUnit" } },
         /* Graphics */
             { "Resolution", new string [] { "tbResolution", "lResolution" } },
-            { "CalcResolution", new string [] { "bSelectResolution" } },
+            { "SelectResolution", new string [] { "bSelectResolution" } },
             { "Windowed", new string [] { "cbWindowed" } },
             { "Borderless", new string [] { "cbBorderless" } },
             { "Aspect", new string [] { "tbAspect", "lAspect" } },

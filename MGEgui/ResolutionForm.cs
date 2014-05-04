@@ -114,7 +114,7 @@ namespace MGEgui {
             // bOK
             // 
             this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bOK.Location = new System.Drawing.Point(292, 145);
+            this.bOK.Location = new System.Drawing.Point(301, 145);
             this.bOK.Name = "bOK";
             this.bOK.Size = new System.Drawing.Size(75, 23);
             this.bOK.TabIndex = 4;
@@ -140,15 +140,17 @@ namespace MGEgui {
             // 
             // lRefreshRate
             // 
+            this.lRefreshRate.AutoSize = true;
             this.lRefreshRate.Location = new System.Drawing.Point(297, 15);
             this.lRefreshRate.Name = "lRefreshRate";
-            this.lRefreshRate.Size = new System.Drawing.Size(86, 17);
+            this.lRefreshRate.Size = new System.Drawing.Size(65, 13);
             this.lRefreshRate.TabIndex = 7;
             this.lRefreshRate.Text = "Refresh rate";
+            this.lRefreshRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ResolutionForm
             // 
-            this.ClientSize = new System.Drawing.Size(385, 180);
+            this.ClientSize = new System.Drawing.Size(394, 180);
             this.Controls.Add(this.lRefreshRate);
             this.Controls.Add(this.cmbRefreshRate);
             this.Controls.Add(this.lResolution);

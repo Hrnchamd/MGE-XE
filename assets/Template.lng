@@ -127,7 +127,7 @@ SShotFolderDialog = "Select output folder for screenshots taken in game:"
 bAbout = "About"
 bAutoFOV = "Auto FOV"
 bCalcRefresh = "Find valid refresh rates"
-bCalcResolution = "Select screen resolution"
+bSelectResolution = "Select screen resolution"
 bDistantLandWizard = "Distant land generator wizard"
 bDLDynRipples = "Settings..."
 bDLWthr = "Weat&her Settings..."
@@ -259,6 +259,7 @@ lSShotNum = "Num. chars min"
 lTipReadSpd = "Tooltip reading speed"
 lTipRSpdUnit = "chars/sec."
 lUILanguage = "Language"
+lUIScale = "Menu UI scaling"
 lVWait = "VSync"
 
 ;;;;   radio buttons   ;;;;
@@ -300,7 +301,7 @@ TipReadSpd = "This changes the fadeout time of MGEgui tooltips for selected read
 
 ; Graphics tab
 Resolution = "This is Morrowind's current screen resolution."
-CalcResolution = "Click this to change Morrowind's resolution.\nIn windowed mode you can use any resolution you like.\nNon 4:3 aspect ratios may not work perfectly. These are marked with an '*'."
+SelectResolution = "Click this to change Morrowind's resolution.\nIn windowed mode you can use any resolution you like."
 Windowed = "Check this to run Morrowind in a window instead of fullscreen."
 Borderless = "Check this to have the window appear without borders, at the centre of the screen.\nAllows a window to simulate fullscreen mode."
 Aspect = "This is selected screen resolution calculated aspect ratio."
@@ -398,6 +399,8 @@ DimensionError = "Screen width and height must be greater than 0"
 
 [ResolutionForm.Text]
 ResolutionForm = "Select Resolution"
+lResolution = "Resolution"
+lRefreshRate = "Refresh rate"
 lScrWdth = "Screen Width"
 lScrHght = "Screen Height"
 lArbRes = "Arbitrary resolutions can only be set in windowed mode."
@@ -493,6 +496,18 @@ NoPluginsSelected = "You haven't selected any plugins"
 CantSkipLand = "Landscape texture and mesh generation can only be skipped if the files already exist."
 CantSkipMesh = "Landscape mesh generation can only be skipped if the files already exist."
 TexResError = "You have selected a texture resolution above that which your graphics card supports."
+SummaryStage1Working = "Waiting for land textures generation to complete"
+SummaryStage2Working = "Waiting for land meshes generation to complete"
+SummaryStage3Working = "Waiting for statics generation to complete"
+SummaryStage4Working = "Waiting for distant textures generation to complete"
+SummaryStage1Complete = "Land textures generation complete"
+SummaryStage2Complete = "Land meshes generation complete"
+SummaryStage3Complete = "Statics generation complete"
+SummaryStage4Complete = "Distant textures generation complete"
+SummaryStage1Skip = "Skipping land textures generation"
+SummaryStage2Skip = "Skipping land meshes generation"
+SummaryStage3Skip = "Skipping statics generation"
+SummaryStage4Skip = "Skipping distant textures generation"
 
 
 

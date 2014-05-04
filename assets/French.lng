@@ -68,7 +68,7 @@ SShotFolderDialog = "Sélectionner le dossier de destination pour les captures d
 bAbout = "À propos"
 bAutoFOV = "FOV Auto"
 bCalcRefresh = "Détecter le bon taux de rafraîchi."
-bCalcResolution = "Changer la résolution du jeu"
+bSelectResolution = "Changer la résolution du jeu"
 bDistantLandWizard = "Assistant de création des Paysages Distants"
 bDLDynRipples = "Paramètres..."
 bDLWthr = "Configurations& temps..."
@@ -82,7 +82,7 @@ bRemapper = "Lancer remappeur touches"
 bReportingShowLog = "Ouvrir mgeXE.log"
 bReportingShowDLWizardLog = "Ouvrir le générateur DL log"
 bResetSettings = "Restaurer les paramètres"
-bShaderEd = "Éditeur des Shaders"
+bShaderEd = "Config. des Shaders"
 bSShotDirBrowse = "Parcourir"
 bSShotDirClear = "Effacer"
 
@@ -241,7 +241,7 @@ TipReadSpd = "Ceci change le temps d'affichage des infobulles de MGEgui, ce qui 
 
 ; Graphics tab
 Resolution = "Il s'agit de la résolution d'écran actuelle de Morrowind."
-CalcResolution = "Cliquer sur celui-ci afin de changer la résolution du jeu Morrowind.\nEn mode fenêtré vous pouvez utiliser la résolution que vous souhaitez.\nLes résolutions au format non 4:3 peuvent ne pas fonctionner correctement. Ce sont celles marquées avec une '*'."
+SelectResolution = "Cliquer sur celui-ci afin de changer la résolution du jeu Morrowind.\nEn mode fenêtré vous pouvez utiliser la résolution que vous souhaitez."
 Windowed = "Cocher cette case afin de lancer Morrowind dans une fenêtre au lieu du plein écran."
 Aspect = "C'est le format sélectionné basé sur la résolution du jeu choisie."
 RefreshRate = "Régle le taux de rafraîchissement du moniteur pour le mode plein écran.\nCeci n'a aucun effet en mode fenêtré."
@@ -337,6 +337,8 @@ DimensionError = "La largeur et hauteur de l'écran doivent être plus grande qu
 
 [ResolutionForm.Text]
 ResolutionForm = "Sélectionner la résolution jeu"
+lResolution = "Résolution"
+lRefreshRate = "Taux de\nrafraîchissement"
 lScrWdth = "Largeur de l'écran"
 lScrHght = "Hauteur de l'écran"
 lArbRes = "Les résolutions arbitraires ne peuvent être sélectionnées \nqu'en mode fenêtré."
