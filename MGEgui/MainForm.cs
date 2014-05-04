@@ -320,9 +320,8 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
         private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef ("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 1, 5, 3);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
-        private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "MGE Screenshot ");
+        private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "Morrowind");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef ("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
-        private static INIFile.INIVariableDef iniSSNum = new INIFile.INIVariableDef ("SSNum", siniRendState, "Screenshot Number Min Length", INIFile.INIVariableType.Byte, "3", 1, 5);
         // In-game
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniMisc, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
@@ -374,7 +373,7 @@ namespace MGEgui {
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
-            iniUIScale, iniSSFormat, iniSSName, iniSSDir, iniSSNum,
+            iniUIScale, iniSSFormat, iniSSName, iniSSDir,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniCam3rdCustom,
             iniCam3rdX, iniCam3rdY, iniCam3rdZ,
@@ -430,7 +429,6 @@ namespace MGEgui {
             tbSShotDir.Text = iniFile.getKeyString ("SSDir");
             if (tbSShotDir.Text.Length == 0) bSSDirClear_Click (null, null);
             tbSShotName.Text = iniFile.getKeyString ("SSName");
-            udSShotNum.Value = (decimal)iniFile.getKeyValue ("SSNum");
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue ("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue ("DisableMWSE") == 1);
@@ -501,8 +499,7 @@ namespace MGEgui {
             iniFile.setKey ("SSFormat", cmbSShotFormat.SelectedIndex);
             if (tbSShotDir.TextAlign == HorizontalAlignment.Left) iniFile.setKey ("SSDir", tbSShotDir.Text);
             else iniFile.setKey ("SSDir", "");
-            iniFile.setKey ("SSName", tbSShotName.Text);
-            iniFile.setKey ("SSNum", (double)udSShotNum.Value);
+            iniFile.setKey ("SSName", tbSShotName.Text.TrimEnd());
             // In-game
             iniFile.setKey ("DisableMWSE", cbDisableMWSE.Checked);
             iniFile.setKey ("HDRTime", (double)udHDR.Value);

@@ -88,10 +88,8 @@ namespace MGEgui {
             this.lSShotName = new System.Windows.Forms.Label();
             this.tbSShotName = new System.Windows.Forms.TextBox();
             this.tbSShotDir = new System.Windows.Forms.TextBox();
-            this.udSShotNum = new System.Windows.Forms.NumericUpDown();
             this.bSShotDirClear = new System.Windows.Forms.Button();
             this.bSShotDirBrowse = new System.Windows.Forms.Button();
-            this.lSShotNum = new System.Windows.Forms.Label();
             this.gbScene = new System.Windows.Forms.GroupBox();
             this.udUIScale = new System.Windows.Forms.NumericUpDown();
             this.lUIScale = new System.Windows.Forms.Label();
@@ -229,7 +227,6 @@ namespace MGEgui {
             this.tpGlobal.SuspendLayout();
             this.gbSShot.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udSShotNum)).BeginInit();
             this.gbScene.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).BeginInit();
@@ -881,28 +878,24 @@ namespace MGEgui {
             // 
             // lSShotFormat
             // 
-            this.lSShotFormat.AutoSize = true;
-            this.lSShotFormat.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lSShotFormat.Location = new System.Drawing.Point(297, 0);
-            this.lSShotFormat.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
+            this.lSShotFormat.Location = new System.Drawing.Point(405, 24);
             this.lSShotFormat.Name = "lSShotFormat";
-            this.lSShotFormat.Size = new System.Drawing.Size(39, 25);
+            this.lSShotFormat.Size = new System.Drawing.Size(86, 17);
             this.lSShotFormat.TabIndex = 0;
             this.lSShotFormat.Text = "Format";
-            this.lSShotFormat.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lSShotFormat.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // cmbSShotFormat
             // 
-            this.cmbSShotFormat.Dock = System.Windows.Forms.DockStyle.Right;
             this.cmbSShotFormat.Items.AddRange(new object[] {
                                     "BMP",
                                     "JPEG",
                                     "DDS",
                                     "PNG",
                                     "TGA"});
-            this.cmbSShotFormat.Location = new System.Drawing.Point(342, 3);
+            this.cmbSShotFormat.Location = new System.Drawing.Point(497, 21);
             this.cmbSShotFormat.Name = "cmbSShotFormat";
-            this.cmbSShotFormat.Size = new System.Drawing.Size(45, 21);
+            this.cmbSShotFormat.Size = new System.Drawing.Size(56, 21);
             this.cmbSShotFormat.TabIndex = 1;
             this.cmbSShotFormat.Text = "PNG";
             // 
@@ -925,10 +918,10 @@ namespace MGEgui {
             this.gbSShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.gbSShot.Controls.Add(this.tableLayoutPanel1);
-            this.gbSShot.Controls.Add(this.udSShotNum);
             this.gbSShot.Controls.Add(this.bSShotDirClear);
             this.gbSShot.Controls.Add(this.bSShotDirBrowse);
-            this.gbSShot.Controls.Add(this.lSShotNum);
+            this.gbSShot.Controls.Add(this.cmbSShotFormat);
+            this.gbSShot.Controls.Add(this.lSShotFormat);
             this.gbSShot.Location = new System.Drawing.Point(8, 295);
             this.gbSShot.Name = "gbSShot";
             this.gbSShot.Size = new System.Drawing.Size(562, 89);
@@ -941,17 +934,13 @@ namespace MGEgui {
             this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 4;
+            this.tableLayoutPanel1.ColumnCount = 2;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutPanel1.Controls.Add(this.lSShotDir, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lSShotName, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.tbSShotName, 1, 0);
             this.tableLayoutPanel1.Controls.Add(this.tbSShotDir, 1, 2);
-            this.tableLayoutPanel1.Controls.Add(this.cmbSShotFormat, 3, 0);
-            this.tableLayoutPanel1.Controls.Add(this.lSShotFormat, 2, 0);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 18);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 3;
@@ -963,12 +952,12 @@ namespace MGEgui {
             // 
             // lSShotDir
             // 
-            this.lSShotDir.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lSShotDir.AutoSize = true;
-            this.lSShotDir.Location = new System.Drawing.Point(3, 37);
+            this.lSShotDir.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lSShotDir.Location = new System.Drawing.Point(3, 30);
             this.lSShotDir.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lSShotDir.Name = "lSShotDir";
-            this.lSShotDir.Size = new System.Drawing.Size(82, 13);
+            this.lSShotDir.Size = new System.Drawing.Size(82, 26);
             this.lSShotDir.TabIndex = 0;
             this.lSShotDir.Text = "Output directory";
             this.lSShotDir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -980,57 +969,30 @@ namespace MGEgui {
             this.lSShotName.Location = new System.Drawing.Point(5, 0);
             this.lSShotName.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lSShotName.Name = "lSShotName";
-            this.lSShotName.Size = new System.Drawing.Size(80, 25);
+            this.lSShotName.Size = new System.Drawing.Size(80, 24);
             this.lSShotName.TabIndex = 0;
             this.lSShotName.Text = "File name prefix";
             this.lSShotName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // tbSShotName
             // 
-            this.tbSShotName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbSShotName.Dock = System.Windows.Forms.DockStyle.Left;
             this.tbSShotName.Location = new System.Drawing.Point(91, 3);
             this.tbSShotName.Name = "tbSShotName";
-            this.tbSShotName.Size = new System.Drawing.Size(200, 20);
+            this.tbSShotName.Size = new System.Drawing.Size(296, 20);
             this.tbSShotName.TabIndex = 0;
             this.tbSShotName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.fileNameFilter_KeyPress);
             // 
             // tbSShotDir
             // 
-            this.tbSShotDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.SetColumnSpan(this.tbSShotDir, 3);
-            this.tbSShotDir.Location = new System.Drawing.Point(91, 34);
+            this.tbSShotDir.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tbSShotDir.Location = new System.Drawing.Point(91, 33);
             this.tbSShotDir.Name = "tbSShotDir";
             this.tbSShotDir.ReadOnly = true;
             this.tbSShotDir.Size = new System.Drawing.Size(296, 20);
             this.tbSShotDir.TabIndex = 3;
             this.tbSShotDir.Text = "- Morrowind folder -";
             this.tbSShotDir.TextAlignChanged += new System.EventHandler(this.tbSSDir_TextAlignChanged);
-            // 
-            // udSShotNum
-            // 
-            this.udSShotNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.udSShotNum.Location = new System.Drawing.Point(521, 22);
-            this.udSShotNum.Maximum = new decimal(new int[] {
-                                    5,
-                                    0,
-                                    0,
-                                    0});
-            this.udSShotNum.Minimum = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    0});
-            this.udSShotNum.Name = "udSShotNum";
-            this.udSShotNum.Size = new System.Drawing.Size(32, 20);
-            this.udSShotNum.TabIndex = 2;
-            this.udSShotNum.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udSShotNum.Value = new decimal(new int[] {
-                                    3,
-                                    0,
-                                    0,
-                                    0});
             // 
             // bSShotDirClear
             // 
@@ -1053,16 +1015,6 @@ namespace MGEgui {
             this.bSShotDirBrowse.Text = "Browse";
             this.bSShotDirBrowse.UseVisualStyleBackColor = true;
             this.bSShotDirBrowse.Click += new System.EventHandler(this.bSShotDirBrowse_Click);
-            // 
-            // lSShotNum
-            // 
-            this.lSShotNum.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lSShotNum.Location = new System.Drawing.Point(378, 20);
-            this.lSShotNum.Name = "lSShotNum";
-            this.lSShotNum.Size = new System.Drawing.Size(137, 21);
-            this.lSShotNum.TabIndex = 0;
-            this.lSShotNum.Text = "Num. chars minimum";
-            this.lSShotNum.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // gbScene
             // 
@@ -2790,7 +2742,6 @@ namespace MGEgui {
             this.gbSShot.PerformLayout();
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udSShotNum)).EndInit();
             this.gbScene.ResumeLayout(false);
             this.gbScene.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).EndInit();
@@ -2986,8 +2937,6 @@ namespace MGEgui {
         public GroupBox gbSShot;
         public Label lSShotDir;
         public TextBox tbSShotDir;
-        public Label lSShotNum;
-        public NumericUpDown udSShotNum;
         public Button bSShotDirClear;
         public Button bSShotDirBrowse;
         public TextBox tbSShotName;

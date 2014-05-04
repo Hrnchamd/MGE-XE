@@ -95,7 +95,6 @@ struct ConfigurationStruct
     BYTE SSFormat;
     char SSDir[208];
     char SSName[32];
-    BYTE SSMinNumChars;
     float HDRReactionSpeed;
     int StatusTimeout;
     bool Force3rdPerson;
