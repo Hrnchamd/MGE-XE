@@ -1108,23 +1108,30 @@ void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
 void MWBridge::setUIScale(float scale)
 {
     DWORD addr = read_dword(eMaster);
-    DWORD w, h;
+    int w, h;
 
     // Read UI viewport width and height
     w = read_dword(addr + 0x78);
     h = read_dword(addr + 0x7c);
     // Calculate a smaller viewport that will be scaled up by Morrowind
-    w = (DWORD)(w / scale);
-    h = (DWORD)(h / scale);
+    w = (int)(w / scale);
+    h = (int)(h / scale);
     // Write new viewport size
     write_dword(addr + 0x78, w);
     write_dword(addr + 0x7c, h);
 
     // Call UI configuration method to update scaling
     // uses properties of fastcall to put object in ecx
-    typedef void (__fastcall *uiproc)(DWORD, int, DWORD);
-    uiproc ui_configureUIScale = (uiproc)0x40f2a0;
+    typedef void (__fastcall *uiproc1)(DWORD, int, DWORD);
+    uiproc1 ui_configureUIScale = (uiproc1)0x40f2a0;
     ui_configureUIScale(addr, 0, w);
+
+    // Call UI configuration method to update mouse bounds
+    // uses properties of fastcall to put object in ecx
+    typedef void (__fastcall *uiproc2)(DWORD, int, int, int, int, int);
+    uiproc2 ui_configureUIMouseArea = (uiproc2)0x408740;
+    int w_half = (w+1) / 2, h_half = (h+1) / 2;
+    ui_configureUIMouseArea(read_dword(addr + 0x50), 0, -w_half, -h_half, w_half, h_half);
 
     // Patch raycast system to use UI viewport size instead of D3D viewport size
     addr = 0x6f5157;
