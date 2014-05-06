@@ -190,7 +190,8 @@ void MacroFunctions::HaggleLess10000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(
 static void displayCamPosition()
 {
     char str[256];
-    sprintf_s(str, 256, "Camera offset at (%.0f, %.0f, %.0f)", Configuration.Offset3rdPerson.x, Configuration.Offset3rdPerson.y, Configuration.Offset3rdPerson.z);
+    snprintf(str, sizeof(str), "Camera offset at (%.0f, %.0f, %.0f)",
+             Configuration.Offset3rdPerson.x, Configuration.Offset3rdPerson.y, Configuration.Offset3rdPerson.z);
     StatusOverlay::setStatus(str);
 }
 

@@ -69,7 +69,7 @@ bool PostShaders::initShaderChain()
         MGEShader shader;
         ID3DXBuffer *errors;
 
-        sprintf_s(path, MAX_PATH, "Data Files\\shaders\\XEshaders\\%s.fx", p);
+        snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", p);
         HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &shader.effect, &errors);
 
         if(hr == D3D_OK)
@@ -178,7 +178,7 @@ void PostShaders::loadShaderDependencies(MGEShader *shader)
         if(effect->GetString(ehTextureSrc, &texturesrc) == D3D_OK)
         {
             IDirect3DTexture9 *tex;
-            sprintf(texturepath, "Data Files\\textures\\%s", texturesrc);
+            snprintf(texturepath, sizeof(texturepath), "Data Files\\textures\\%s", texturesrc);
 
             if(D3DXCreateTextureFromFile(device, texturepath, &tex) == D3D_OK)
                 effect->SetTexture(ehTextureRef, tex);

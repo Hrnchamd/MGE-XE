@@ -322,7 +322,7 @@ void MGEhud::setEffect(hud_id hud, const char *effect)
     // Load new effect if string is not empty
     if(*effect)
     {
-        sprintf_s(path, MAX_PATH, "Data Files\\shaders\\%s.fx", effect);
+        snprintf(path, sizeof(path), "Data Files\\shaders\\%s.fx", effect);
         HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &e->effect, &errors);
 
         if(hr == D3D_OK)
