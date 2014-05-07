@@ -32,7 +32,7 @@ namespace MGEgui {
             // Set initial directories
             this.OpenFileDialog.InitialDirectory = this.SaveFileDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             // Title
-            Text = "Morrowind Graphics Extender XE " + Statics.versionNumber;
+            Text = Statics.programName + " " + Statics.versionNumber;
             // Set default tooltip text reading speed
             Statics.tipReadSpeed = (int)(1000 / double.Parse (cmbTipReadSpd.Text));
             // set a handler for each control which sets tooltip popup timeout dependent on tooltip text length
@@ -1097,7 +1097,7 @@ namespace MGEgui {
         }
 
         private void bAbout_Click (object sender, EventArgs e) {
-            string s = String.Format ("Morrowind Graphics Extender\n{0}\n\n{1} Timeslip, LizTail, Krzymar, Phal, Hrnchamd", Statics.versionString, strings ["CreatedBy"], strings ["FurtherDevel"]);
+            string s = String.Format("{0}\n{1}\n\n{2} Timeslip, LizTail, Krzymar, Phal, Hrnchamd", Statics.programName, Statics.versionString, strings["CreatedBy"], strings["FurtherDevel"]);
             if (cmbUILanguage.SelectedIndex > 0) {
                 string ttn = Statics.strings ["Translation"];
                 string ttr = Statics.Localizations [cmbUILanguage.Text].Translator;

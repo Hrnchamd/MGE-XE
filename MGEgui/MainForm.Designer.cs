@@ -878,6 +878,7 @@ namespace MGEgui {
             // 
             // lSShotFormat
             // 
+            this.lSShotFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lSShotFormat.Location = new System.Drawing.Point(405, 24);
             this.lSShotFormat.Name = "lSShotFormat";
             this.lSShotFormat.Size = new System.Drawing.Size(86, 17);
@@ -887,6 +888,7 @@ namespace MGEgui {
             // 
             // cmbSShotFormat
             // 
+            this.cmbSShotFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbSShotFormat.Items.AddRange(new object[] {
                                     "BMP",
                                     "JPEG",
@@ -976,7 +978,8 @@ namespace MGEgui {
             // 
             // tbSShotName
             // 
-            this.tbSShotName.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tbSShotName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSShotName.Location = new System.Drawing.Point(91, 3);
             this.tbSShotName.Name = "tbSShotName";
             this.tbSShotName.Size = new System.Drawing.Size(296, 20);
@@ -985,7 +988,8 @@ namespace MGEgui {
             // 
             // tbSShotDir
             // 
-            this.tbSShotDir.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tbSShotDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSShotDir.Location = new System.Drawing.Point(91, 33);
             this.tbSShotDir.Name = "tbSShotDir";
             this.tbSShotDir.ReadOnly = true;
@@ -1046,6 +1050,7 @@ namespace MGEgui {
             // 
             // udUIScale
             // 
+            this.udUIScale.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.udUIScale.DecimalPlaces = 2;
             this.udUIScale.Increment = new decimal(new int[] {
                                     1,
@@ -1075,6 +1080,7 @@ namespace MGEgui {
             // 
             // lUIScale
             // 
+            this.lUIScale.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lUIScale.AutoSize = true;
             this.lUIScale.Location = new System.Drawing.Point(437, 51);
             this.lUIScale.Name = "lUIScale";

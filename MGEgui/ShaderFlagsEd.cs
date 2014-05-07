@@ -32,133 +32,162 @@ namespace MGEgui {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-        	this.cbSFNotSunVis = new System.Windows.Forms.CheckBox();
-        	this.cbSFSunVis = new System.Windows.Forms.CheckBox();
-        	this.cbSFNotAboveWater = new System.Windows.Forms.CheckBox();
-        	this.cbSFNotUnderwater = new System.Windows.Forms.CheckBox();
-        	this.cbSFNotIntExt = new System.Windows.Forms.CheckBox();
-        	this.cbSFNotExt = new System.Windows.Forms.CheckBox();
-        	this.cbSFNotInt = new System.Windows.Forms.CheckBox();
-        	this.bOK = new System.Windows.Forms.Button();
-        	this.bCancel = new System.Windows.Forms.Button();
-        	this.SuspendLayout();
-        	// 
-        	// cbSFNotSunVis
-        	// 
-        	this.cbSFNotSunVis.AutoSize = true;
-        	this.cbSFNotSunVis.Location = new System.Drawing.Point(12, 150);
-        	this.cbSFNotSunVis.Name = "cbSFNotSunVis";
-        	this.cbSFNotSunVis.Size = new System.Drawing.Size(289, 17);
-        	this.cbSFNotSunVis.TabIndex = 13;
-        	this.cbSFNotSunVis.Text = "Disabled when sun is not visible (i.e. sun opacity is zero)";
-        	this.cbSFNotSunVis.UseVisualStyleBackColor = false;
-        	// 
-        	// cbSFSunVis
-        	// 
-        	this.cbSFSunVis.AutoSize = true;
-        	this.cbSFSunVis.Location = new System.Drawing.Point(12, 127);
-        	this.cbSFSunVis.Name = "cbSFSunVis";
-        	this.cbSFSunVis.Size = new System.Drawing.Size(158, 17);
-        	this.cbSFSunVis.TabIndex = 12;
-        	this.cbSFSunVis.Text = "Disabled when sun is visible";
-        	this.cbSFSunVis.UseVisualStyleBackColor = false;
-        	// 
-        	// cbSFNotAboveWater
-        	// 
-        	this.cbSFNotAboveWater.AutoSize = true;
-        	this.cbSFNotAboveWater.Location = new System.Drawing.Point(12, 104);
-        	this.cbSFNotAboveWater.Name = "cbSFNotAboveWater";
-        	this.cbSFNotAboveWater.Size = new System.Drawing.Size(158, 17);
-        	this.cbSFNotAboveWater.TabIndex = 11;
-        	this.cbSFNotAboveWater.Text = "Disabled when above water";
-        	this.cbSFNotAboveWater.UseVisualStyleBackColor = false;
-        	// 
-        	// cbSFNotUnderwater
-        	// 
-        	this.cbSFNotUnderwater.AutoSize = true;
-        	this.cbSFNotUnderwater.Location = new System.Drawing.Point(12, 81);
-        	this.cbSFNotUnderwater.Name = "cbSFNotUnderwater";
-        	this.cbSFNotUnderwater.Size = new System.Drawing.Size(152, 17);
-        	this.cbSFNotUnderwater.TabIndex = 10;
-        	this.cbSFNotUnderwater.Text = "Disabled when underwater";
-        	this.cbSFNotUnderwater.UseVisualStyleBackColor = false;
-        	// 
-        	// cbSFNotIntExt
-        	// 
-        	this.cbSFNotIntExt.AutoSize = true;
-        	this.cbSFNotIntExt.Location = new System.Drawing.Point(12, 58);
-        	this.cbSFNotIntExt.Name = "cbSFNotIntExt";
-        	this.cbSFNotIntExt.Size = new System.Drawing.Size(288, 17);
-        	this.cbSFNotIntExt.TabIndex = 9;
-        	this.cbSFNotIntExt.Text = "Disabled in interiors acting like exteriors (like Mournhold)";
-        	this.cbSFNotIntExt.UseVisualStyleBackColor = false;
-        	// 
-        	// cbSFNotExt
-        	// 
-        	this.cbSFNotExt.AutoSize = true;
-        	this.cbSFNotExt.Location = new System.Drawing.Point(12, 35);
-        	this.cbSFNotExt.Name = "cbSFNotExt";
-        	this.cbSFNotExt.Size = new System.Drawing.Size(120, 17);
-        	this.cbSFNotExt.TabIndex = 8;
-        	this.cbSFNotExt.Text = "Disabled in exteriors";
-        	this.cbSFNotExt.UseVisualStyleBackColor = false;
-        	// 
-        	// cbSFNotInt
-        	// 
-        	this.cbSFNotInt.AutoSize = true;
-        	this.cbSFNotInt.Location = new System.Drawing.Point(12, 12);
-        	this.cbSFNotInt.Name = "cbSFNotInt";
-        	this.cbSFNotInt.Size = new System.Drawing.Size(117, 17);
-        	this.cbSFNotInt.TabIndex = 7;
-        	this.cbSFNotInt.Text = "Disabled in interiors";
-        	this.cbSFNotInt.UseVisualStyleBackColor = false;
-        	// 
-        	// bOK
-        	// 
-        	this.bOK.Location = new System.Drawing.Point(181, 183);
-        	this.bOK.Name = "bOK";
-        	this.bOK.Size = new System.Drawing.Size(75, 23);
-        	this.bOK.TabIndex = 0;
-        	this.bOK.Text = "OK";
-        	this.bOK.UseVisualStyleBackColor = true;
-        	this.bOK.Click += new System.EventHandler(this.bClose_Click);
-        	// 
-        	// bCancel
-        	// 
-        	this.bCancel.Location = new System.Drawing.Point(262, 183);
-        	this.bCancel.Name = "bCancel";
-        	this.bCancel.Size = new System.Drawing.Size(75, 23);
-        	this.bCancel.TabIndex = 1;
-        	this.bCancel.Text = "Cancel";
-        	this.bCancel.UseVisualStyleBackColor = true;
-        	this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
-        	// 
-        	// ShaderFlagsEd
-        	// 
-        	this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-        	this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        	this.ClientSize = new System.Drawing.Size(369, 218);
-        	this.ControlBox = false;
-        	this.Controls.Add(this.bCancel);
-        	this.Controls.Add(this.bOK);
-        	this.Controls.Add(this.cbSFNotSunVis);
-        	this.Controls.Add(this.cbSFSunVis);
-        	this.Controls.Add(this.cbSFNotAboveWater);
-        	this.Controls.Add(this.cbSFNotUnderwater);
-        	this.Controls.Add(this.cbSFNotIntExt);
-        	this.Controls.Add(this.cbSFNotExt);
-        	this.Controls.Add(this.cbSFNotInt);
-        	this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-        	this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-        	this.MaximumSize = new System.Drawing.Size(375, 243);
-        	this.MinimumSize = new System.Drawing.Size(375, 243);
-        	this.Name = "ShaderFlagsEd";
-        	this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-        	this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-        	this.Text = "Shader flags";
-        	this.ResumeLayout(false);
-        	this.PerformLayout();
+            this.cbSFNotSunVis = new System.Windows.Forms.CheckBox();
+            this.cbSFSunVis = new System.Windows.Forms.CheckBox();
+            this.cbSFNotAboveWater = new System.Windows.Forms.CheckBox();
+            this.cbSFNotUnderwater = new System.Windows.Forms.CheckBox();
+            this.cbSFNotIntExt = new System.Windows.Forms.CheckBox();
+            this.cbSFNotExt = new System.Windows.Forms.CheckBox();
+            this.cbSFNotInt = new System.Windows.Forms.CheckBox();
+            this.bOK = new System.Windows.Forms.Button();
+            this.bCancel = new System.Windows.Forms.Button();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.SuspendLayout();
+            // 
+            // cbSFNotSunVis
+            // 
+            this.cbSFNotSunVis.AutoSize = true;
+            this.cbSFNotSunVis.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotSunVis.Location = new System.Drawing.Point(3, 141);
+            this.cbSFNotSunVis.Name = "cbSFNotSunVis";
+            this.cbSFNotSunVis.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotSunVis.TabIndex = 13;
+            this.cbSFNotSunVis.Text = "Disabled when sun is not visible (i.e. sun opacity is zero)";
+            this.cbSFNotSunVis.UseVisualStyleBackColor = false;
+            // 
+            // cbSFSunVis
+            // 
+            this.cbSFSunVis.AutoSize = true;
+            this.cbSFSunVis.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFSunVis.Location = new System.Drawing.Point(3, 118);
+            this.cbSFSunVis.Name = "cbSFSunVis";
+            this.cbSFSunVis.Size = new System.Drawing.Size(349, 17);
+            this.cbSFSunVis.TabIndex = 12;
+            this.cbSFSunVis.Text = "Disabled when sun is visible";
+            this.cbSFSunVis.UseVisualStyleBackColor = false;
+            // 
+            // cbSFNotAboveWater
+            // 
+            this.cbSFNotAboveWater.AutoSize = true;
+            this.cbSFNotAboveWater.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotAboveWater.Location = new System.Drawing.Point(3, 95);
+            this.cbSFNotAboveWater.Name = "cbSFNotAboveWater";
+            this.cbSFNotAboveWater.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotAboveWater.TabIndex = 11;
+            this.cbSFNotAboveWater.Text = "Disabled when above water";
+            this.cbSFNotAboveWater.UseVisualStyleBackColor = false;
+            // 
+            // cbSFNotUnderwater
+            // 
+            this.cbSFNotUnderwater.AutoSize = true;
+            this.cbSFNotUnderwater.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotUnderwater.Location = new System.Drawing.Point(3, 72);
+            this.cbSFNotUnderwater.Name = "cbSFNotUnderwater";
+            this.cbSFNotUnderwater.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotUnderwater.TabIndex = 10;
+            this.cbSFNotUnderwater.Text = "Disabled when underwater";
+            this.cbSFNotUnderwater.UseVisualStyleBackColor = false;
+            // 
+            // cbSFNotIntExt
+            // 
+            this.cbSFNotIntExt.AutoSize = true;
+            this.cbSFNotIntExt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotIntExt.Location = new System.Drawing.Point(3, 49);
+            this.cbSFNotIntExt.Name = "cbSFNotIntExt";
+            this.cbSFNotIntExt.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotIntExt.TabIndex = 9;
+            this.cbSFNotIntExt.Text = "Disabled in interiors acting like exteriors (like Mournhold)";
+            this.cbSFNotIntExt.UseVisualStyleBackColor = false;
+            // 
+            // cbSFNotExt
+            // 
+            this.cbSFNotExt.AutoSize = true;
+            this.cbSFNotExt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotExt.Location = new System.Drawing.Point(3, 26);
+            this.cbSFNotExt.Name = "cbSFNotExt";
+            this.cbSFNotExt.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotExt.TabIndex = 8;
+            this.cbSFNotExt.Text = "Disabled in exteriors";
+            this.cbSFNotExt.UseVisualStyleBackColor = false;
+            // 
+            // cbSFNotInt
+            // 
+            this.cbSFNotInt.AutoSize = true;
+            this.cbSFNotInt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotInt.Location = new System.Drawing.Point(3, 3);
+            this.cbSFNotInt.Name = "cbSFNotInt";
+            this.cbSFNotInt.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotInt.TabIndex = 7;
+            this.cbSFNotInt.Text = "Disabled in interiors";
+            this.cbSFNotInt.UseVisualStyleBackColor = false;
+            // 
+            // bOK
+            // 
+            this.bOK.Location = new System.Drawing.Point(211, 206);
+            this.bOK.Name = "bOK";
+            this.bOK.Size = new System.Drawing.Size(75, 23);
+            this.bOK.TabIndex = 0;
+            this.bOK.Text = "OK";
+            this.bOK.UseVisualStyleBackColor = true;
+            this.bOK.Click += new System.EventHandler(this.bClose_Click);
+            // 
+            // bCancel
+            // 
+            this.bCancel.Location = new System.Drawing.Point(292, 206);
+            this.bCancel.Name = "bCancel";
+            this.bCancel.Size = new System.Drawing.Size(75, 23);
+            this.bCancel.TabIndex = 1;
+            this.bCancel.Text = "Cancel";
+            this.bCancel.UseVisualStyleBackColor = true;
+            this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
+            // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.Controls.Add(this.cbSFNotInt, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.cbSFNotExt, 0, 1);
+            this.tableLayoutPanel1.Controls.Add(this.cbSFNotIntExt, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.cbSFNotSunVis, 0, 6);
+            this.tableLayoutPanel1.Controls.Add(this.cbSFNotUnderwater, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.cbSFSunVis, 0, 5);
+            this.tableLayoutPanel1.Controls.Add(this.cbSFNotAboveWater, 0, 4);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(355, 188);
+            this.tableLayoutPanel1.TabIndex = 14;
+            // 
+            // ShaderFlagsEd
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(379, 241);
+            this.ControlBox = false;
+            this.Controls.Add(this.tableLayoutPanel1);
+            this.Controls.Add(this.bCancel);
+            this.Controls.Add(this.bOK);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = global::MGEgui.Properties.Resources.AppIcon;
+            this.MaximumSize = new System.Drawing.Size(385, 270);
+            this.MinimumSize = new System.Drawing.Size(385, 270);
+            this.Name = "ShaderFlagsEd";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Text = "Shader flags";
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.ResumeLayout(false);
         }
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 
         #endregion
 

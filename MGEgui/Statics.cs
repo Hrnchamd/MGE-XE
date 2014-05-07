@@ -155,6 +155,7 @@ namespace MGEgui {
         /// <summary>
         /// Used to ensure that created options files match the dll versions
         /// </summary>
+        public const string programName = "Morrowind Graphics Extender XE";
         public const string versionNumber = "0.9.10";
         public const string versionString = "v" + versionNumber;
         public const byte SaveVersion = 47;

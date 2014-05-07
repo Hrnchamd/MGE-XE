@@ -132,20 +132,20 @@ namespace MGEgui {
             // bSetImage
             // 
             this.bSetImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSetImage.Location = new System.Drawing.Point(430, 538);
+            this.bSetImage.Location = new System.Drawing.Point(410, 538);
             this.bSetImage.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.bSetImage.Name = "bSetImage";
-            this.bSetImage.Size = new System.Drawing.Size(105, 23);
+            this.bSetImage.Size = new System.Drawing.Size(115, 23);
             this.bSetImage.TabIndex = 10;
             this.bSetImage.Text = "Set <thisframe>";
             this.bSetImage.Click += new System.EventHandler(this.bSetImage_Click);
             // 
             // bPreviewChain
             // 
-            this.bPreviewChain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bPreviewChain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bPreviewChain.Location = new System.Drawing.Point(184, 538);
             this.bPreviewChain.Name = "bPreviewChain";
-            this.bPreviewChain.Size = new System.Drawing.Size(128, 23);
+            this.bPreviewChain.Size = new System.Drawing.Size(134, 23);
             this.bPreviewChain.TabIndex = 4;
             this.bPreviewChain.Text = "Preview active chain";
             this.bPreviewChain.Click += new System.EventHandler(this.bPreviewChain_Click);
@@ -153,10 +153,10 @@ namespace MGEgui {
             // bSetDepthImage
             // 
             this.bSetDepthImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSetDepthImage.Location = new System.Drawing.Point(535, 538);
+            this.bSetDepthImage.Location = new System.Drawing.Point(525, 538);
             this.bSetDepthImage.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
             this.bSetDepthImage.Name = "bSetDepthImage";
-            this.bSetDepthImage.Size = new System.Drawing.Size(105, 23);
+            this.bSetDepthImage.Size = new System.Drawing.Size(115, 23);
             this.bSetDepthImage.TabIndex = 12;
             this.bSetDepthImage.Text = "Set <depthframe>";
             this.bSetDepthImage.Click += new System.EventHandler(this.bSetDepthImage_click);
@@ -241,9 +241,10 @@ namespace MGEgui {
             // 
             // bShaderFlags
             // 
-            this.bShaderFlags.Location = new System.Drawing.Point(510, 53);
+            this.bShaderFlags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bShaderFlags.Location = new System.Drawing.Point(500, 53);
             this.bShaderFlags.Name = "bShaderFlags";
-            this.bShaderFlags.Size = new System.Drawing.Size(130, 23);
+            this.bShaderFlags.Size = new System.Drawing.Size(140, 23);
             this.bShaderFlags.TabIndex = 13;
             this.bShaderFlags.Text = "Edit shader flags";
             this.bShaderFlags.Click += new System.EventHandler(this.bShaderFlags_Click);
@@ -481,7 +482,7 @@ namespace MGEgui {
         private string FramePath = null;
         private string DepthPath = null;
         private string FullFileName = null;
-        private string EditingName = "New file";
+        private string EditingName = null;
         private bool ShaderModified = false;
         
         public static Dictionary<string, string> strings = new Dictionary<string, string>();
@@ -493,6 +494,7 @@ namespace MGEgui {
             
             this.OpenImage.InitialDirectory = Statics.runDir + @"\mge3";
             this.OpenShader.InitialDirectory = this.SaveShader.InitialDirectory = Statics.runDir + @"\" + Statics.pathShaders;
+            EditingName = strings["NewFile"];
 
             if(shaderfile != null)
             {
@@ -504,8 +506,9 @@ namespace MGEgui {
                 sr.Close();
     
                 ShaderModified = false;
-                this.Text = EditingName + " - " + strings["ShaderEditor"];
             }
+            
+            this.Text = EditingName + " - " + strings["ShaderEditor"];
         }
 
         private bool Validate(IntPtr handle,bool Render) {
