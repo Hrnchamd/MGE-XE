@@ -8,7 +8,11 @@ struct MWWeather
 {
     struct RGBfloat { float r, g, b; };
 
-    int unk0[5];
+    void *vtbl;
+    int id;
+    float transitionDelta, glareView;
+    int unk0;
+
     RGBfloat ambientCol[4];
     RGBfloat fogCol[4];
     RGBfloat skyCol[4];
@@ -32,8 +36,11 @@ bool mwseSetSkyColour::execute(mwseInstruction *_this)
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
-    MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
-    w->skyCol[time_enum] = col;
+    if(w && time_enum >= 0 && time_enum <= 3)
+    {
+        MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
+        w->skyCol[time_enum] = col;
+    }
 
     return true;
 }
@@ -55,8 +62,11 @@ bool mwseSetFogColour::execute(mwseInstruction *_this)
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
-    MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
-    w->fogCol[time_enum] = col;
+    if(w && time_enum >= 0 && time_enum <= 3)
+    {
+        MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
+        w->fogCol[time_enum] = col;
+    }
 
     return true;
 }
@@ -78,8 +88,11 @@ bool mwseSetAmbientColour::execute(mwseInstruction *_this)
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
-    MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
-    w->ambientCol[time_enum] = col;
+    if(w && time_enum >= 0 && time_enum <= 3)
+    {
+        MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
+        w->ambientCol[time_enum] = col;
+    }
 
     return true;
 }
@@ -101,8 +114,11 @@ bool mwseSetSunColour::execute(mwseInstruction *_this)
 
     DECLARE_MWBRIDGE
     MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
-    MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
-    w->sunCol[time_enum] = col;
+    if(w && time_enum >= 0 && time_enum <= 3)
+    {
+        MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
+        w->sunCol[time_enum] = col;
+    }
 
     return true;
 }

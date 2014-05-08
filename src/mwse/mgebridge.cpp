@@ -77,9 +77,9 @@ void MWSE_MGEPlugin::init(DWORD vm_global, DWORD vm_addinstr)
     MWSEAddInstruction(0x3776, new mwseStopZoom(*vm));
     MWSEAddInstruction(0x3777, new mwseGetZoom(*vm));
 
-    MWSEAddInstruction(0x3791, new mwseSetShaderLong(*vm));
-    MWSEAddInstruction(0x3792, new mwseSetShaderFloat(*vm));
-    MWSEAddInstruction(0x3793, new mwseSetShaderVector(*vm));
     MWSEAddInstruction(0x3ab0, new mwseEnableShader(*vm));
     MWSEAddInstruction(0x3ab1, new mwseDisableShader(*vm));
+    MWSEAddInstruction(0x3ab2, new mwseSetShaderFloat(*vm));
+    MWSEAddInstruction(0x3ab3, new mwseSetShaderLong(*vm));
+    MWSEAddInstruction(0x3ab4, new mwseSetShaderVector(*vm));
 }

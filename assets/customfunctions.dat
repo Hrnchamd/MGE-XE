@@ -2422,3 +2422,33 @@ function
 	Param1 = Long | String
 	Opcode = 0x3ab1
 end
+function
+	Name = MGEShaderSetFloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Float
+	Opcode = 0x3ab2
+end
+function
+	Name = MGEShaderSetLong
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Long
+	Opcode = 0x3ab3
+end
+function
+	Name = MGEShaderSetVector
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Float
+	Param4 = Float
+	Param5 = Float
+	Param6 = Float
+	Opcode = 0x3ab4
+end
