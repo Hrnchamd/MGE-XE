@@ -18,19 +18,22 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 
     if(e->Windowed)
     {
+        HWND hMainWnd = GetParent(c);
+        int wx = std::max(0, (GetSystemMetrics(SM_CXSCREEN) - (int)e->BackBufferWidth) / 2);
+        int wy = std::max(0, (GetSystemMetrics(SM_CYSCREEN) - (int)e->BackBufferHeight) / 2);
+
         if(Configuration.Borderless)
         {
             // Remove non-client window parts and move window flush to screen edge / centre if smaller than display
-            int wx = std::max(0, (GetSystemMetrics(SM_CXSCREEN) - (int)e->BackBufferWidth) / 2);
-            int wy = std::max(0, (GetSystemMetrics(SM_CYSCREEN) - (int)e->BackBufferHeight) / 2);
-
-            SetWindowLong(GetParent(c), GWL_STYLE, WS_VISIBLE);
-            SetWindowPos(GetParent(c), NULL, wx, wy, e->BackBufferWidth, e->BackBufferHeight, SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
+            SetWindowLong(hMainWnd, GWL_STYLE, WS_VISIBLE);
+            SetWindowPos(hMainWnd, NULL, wx, wy, e->BackBufferWidth, e->BackBufferHeight, SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
         }
         else
         {
-            // Move window to top left corner
-            SetWindowPos(GetParent(c), NULL, 0, 0, 0, 0, SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
+            // Move window to top, with client area centred on one axis
+            RECT rect = { wx, wy, e->BackBufferWidth, e->BackBufferHeight };
+            AdjustWindowRect(&rect, GetWindowLong(hMainWnd, GWL_STYLE), FALSE);
+            SetWindowPos(hMainWnd, NULL, rect.left, 0, 0, 0, SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
         }
     }
 
