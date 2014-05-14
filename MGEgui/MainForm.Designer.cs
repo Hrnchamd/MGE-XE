@@ -1064,10 +1064,10 @@ namespace MGEgui {
                                     0,
                                     0});
             this.udUIScale.Minimum = new decimal(new int[] {
-                                    1,
+                                    5,
                                     0,
                                     0,
-                                    0});
+                                    65536});
             this.udUIScale.Name = "udUIScale";
             this.udUIScale.Size = new System.Drawing.Size(90, 20);
             this.udUIScale.TabIndex = 23;
