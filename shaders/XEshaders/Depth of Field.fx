@@ -1,16 +1,19 @@
 // Depth of Field
 // v12 by Knu
 // tweaked to save your poor blurry hands by peachykeen
+// includes distance blur in fog conditions
 
 // Compatibility: MGE XE 0, fully working
 
 float2 rcpres;
 float fov;
+float fogstart, fogrange;
 
 static float t =  2.0 * tan(radians(0.5 * fov));
 static float k = 0.00001;
 static float unit2m = 0.0142;
 static float eps = 0.000001;
+static float fogoffset = saturate(-fogstart / (fogrange - fogstart));
 
 // **
 // ** ADJUSTABLE VARIABLES
@@ -28,7 +31,7 @@ static const float fpa = 10.0; // accomodation, dpt
 
 static const float pupil = 0.006; // pupil diameter, m
 
-static const float blur_radius = 0.283; // base blur radius;
+static const float blur_radius = 0.273; // base blur radius;
 // higher values mean more blur when out of DoF and shorter DoF
 static const float blur_falloff = 2.0; // More means more blur and less respect for edges
 static const float R = 6.0; // maximum blur radius in pixels
@@ -42,14 +45,14 @@ texture lastshader;
 texture lastpass;
 texture depthframe;
 
-sampler s0 = sampler_state { texture=<lastshader>; };
-sampler s1 = sampler_state { texture=<depthframe>; AddressU=Clamp; AddressV=Clamp; };
-sampler s3 = sampler_state { texture=<lastpass>; AddressU=Mirror; AddressV=Mirror; MagFilter=Linear; MinFilter=Linear; };
+sampler s0 = sampler_state { texture = <lastshader>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s1 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s3 = sampler_state { texture = <lastpass>; addressu = mirror; addressv = mirror; magfilter = linear; minfilter = linear; };
 
 
 #ifdef ROTATE
 texture tex1 < string src="noise64.tga"; >;
-sampler s2 = sampler_state { texture=<tex1>; AddressU=Wrap; AddressV=Wrap; };
+sampler s2 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = linear; minfilter = linear; };
 #endif
 
 
@@ -77,14 +80,14 @@ float4 dof(float2 tex : TEXCOORD) : COLOR0
     float s = tex2D(s1, float2(0.5, 0.5)).r * unit2m;
 
     float z_corr = length(float3((tex.x - 0.5) * t, (tex.y - 0.5) * t / rcpres.y * rcpres.x, 1));
-    float z = tex2D(s1, tex).r;
-    float savemyhands = smoothstep(40, 55, z);
-    z = z * z_corr * unit2m;
-
+    float z = z_corr * unit2m * tex2D(s1, tex).r;
+    float savemyhands = smoothstep(0.568, 0.781, z);
+    
     float fpf = clamp(1 / s + fr, fp, fp + fpa);
     float c = pupil * (fr - fpf + 1 / z) / fr / k * blur_radius;
-    c = min(abs(c / Rfixed), 1) * savemyhands;
-
+    float fog = fogoffset * saturate(z / (4 * fogrange * unit2m));
+    
+    c = min(abs(c / Rfixed) + fog, 1) * savemyhands;
     return float4(tex2D(s0, tex).rgb, c);
 }
 

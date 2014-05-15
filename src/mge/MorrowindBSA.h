@@ -1,9 +1,9 @@
 
 struct RetData {
-	void* ptr;
-	unsigned int size;
+    void* ptr;
+    unsigned int size;
 
-	RetData(void* _ptr, unsigned int _size) { ptr=_ptr; size=_size; }
+    RetData(void* _ptr, unsigned int _size) { ptr = _ptr; size = _size; }
 };
 
 void InitBSAs();

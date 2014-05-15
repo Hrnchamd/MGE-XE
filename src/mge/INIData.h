@@ -40,19 +40,8 @@ const tdictionary dictBool = {countof(dictentBool), dictentBool};
 const tdictent dictentAA [] = {
     {"None", 0},
     {"2x", 2},
-    {"3x", 3},
     {"4x", 4},
-    {"5x", 5},
-    {"6x", 6},
-    {"7x", 7},
     {"8x", 8},
-    {"9x", 9},
-    {"10x", 10},
-    {"11x", 11},
-    {"12x", 12},
-    {"13x", 13},
-    {"14x", 14},
-    {"15x", 15},
     {"16x", 16}
 };
 const tdictionary dictAA = {countof(dictentAA), dictentAA};
@@ -136,26 +125,30 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, USE_SHADOWS_BIT, siniDL, "Sun Shadows", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_FFESHADER_BIT, siniDL, "Per Pixel Shader", False, &dictBool, DICTONLY, 0, 0},
 
-    // Generic Variables
+    // Renderer options
     {&Configuration.AALevel, t_uint8, 1, siniGlobGraph, "Antialiasing Level", "None", &dictAA, DICTONLY, 0, 0},
     {&Configuration.ZBufFormat, t_uint8, 1, siniGlobGraph, "Z-Buffer Format", "D24S8", &dictZBuf, DICTONLY, 0, 0},
     {&Configuration.VWait, t_uint8, 1, siniGlobGraph, "VWait", "Immediate", &dictVWait, DICTONLY, 0, 0},
     {&Configuration.RefreshRate, t_uint8, 1, siniGlobGraph, "Refresh Rate", "Default", &dictRefrRate, MINMAX, 0, 240},
+    {&Configuration.Borderless, t_bool, 1, siniGlobGraph, "Borderless Window", "True", &dictBool, DICTONLY, 0, 0},
     {&Configuration.AnisoLevel, t_uint8, 1, siniRendState, "Anisotropic Filtering Level", "Off", &dictAnisoLvl, DICTONLY, 0, 0},
     {&Configuration.LODBias, t_float, 1, siniRendState, "Mipmap LOD Bias", "0", NULL, MINMAX, -2, 2},
     {&Configuration.ScreenFOV, t_float, 1, siniRendState, "Horizontal Screen FOV", "75", NULL, MINMAX, 5, 150},
     {&Configuration.FogMode, t_uint8, 1, siniRendState, "Fog Mode", "Depth pixel", &dictFogMode, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.HDRReactionSpeed, t_float, 1, siniMisc, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
+
+    // Generic Variables
     {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},
     {&Configuration.SSDir, t_string, sizeof(Configuration.SSDir), siniRendState, "Screenshot Output Directory", "", NULL, 0, 0, 0},
-    {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "MGE Screenshot ", NULL, 0, 0, 0},
-    {&Configuration.SSMinNumChars, t_uint8, 1, siniRendState, "Screenshot Number Min Length", "3", NULL, MINMAX, 1, 5},
-    {&Configuration.ReactionSpeed, t_float, 1, siniMisc, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
+    {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "Morrowind", NULL, 0, 0, 0},
     {&Configuration.StatusTimeout, t_int32, 1, siniRendState, "MGE Messages Timeout", "2000", NULL, MINMAX, 1000, 10000},
-    {&Configuration.Force3rdPerson, t_bool,  1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
-    {&Configuration.Offset3rdPerson.x, t_float,  1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
-    {&Configuration.Offset3rdPerson.y, t_float,  1, siniMisc, "Initial 3rd Person Camera Y", "-160", NULL, MINMAX, -2500.0, 2500.0},
-    {&Configuration.Offset3rdPerson.z, t_float,  1, siniMisc, "Initial 3rd Person Camera Z", "0", NULL, MINMAX, -250.0, 250.0},
+    {&Configuration.Force3rdPerson, t_bool, 1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
+    {&Configuration.Offset3rdPerson.x, t_float, 1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
+    {&Configuration.Offset3rdPerson.y, t_float, 1, siniMisc, "Initial 3rd Person Camera Y", "-160", NULL, MINMAX, -2500.0, 2500.0},
+    {&Configuration.Offset3rdPerson.z, t_float, 1, siniMisc, "Initial 3rd Person Camera Z", "0", NULL, MINMAX, -250.0, 250.0},
     {&Configuration.CrosshairAutohide, t_bool, 1, siniMisc, "Crosshair Autohide", "False", &dictBool, DICTONLY, 0, 0},
+    {&Configuration.UIScale, t_float, 1, siniRendState, "UI Scaling", "1", NULL, MINMAX, 0.5, 5.0},
 
     // Shaders, flat list
     {&Configuration.ShaderChain, t_set, sizeof(Configuration.ShaderChain), siniShaders, NULL, NULL, NULL, 0, 0, 0},
@@ -206,7 +199,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.DL.FogD[8], t_float, 1, siniDLWeather, "Snow Fog Ratio", "0.5", NULL, MINMAX, 0.001, 2},
     {&Configuration.DL.FgOD[8], t_float, 1, siniDLWeather, "Snow Fog Offset", "40", NULL, MINMAX, 0, 90},
     {&Configuration.DL.Wind[9], t_float, 1, siniDLWeather, "Blizzard Wind Ratio", "0.9", NULL, MINMAX, 0, 1},
-    {&Configuration.DL.FogD[9], t_float, 1, siniDLWeather, "Blizzard Fog Ratio", "0.16", NULL, MINMAX,  0.001, 2},
+    {&Configuration.DL.FogD[9], t_float, 1, siniDLWeather, "Blizzard Fog Ratio", "0.16", NULL, MINMAX, 0.001, 2},
     {&Configuration.DL.FgOD[9], t_float, 1, siniDLWeather, "Blizzard Fog Offset", "70", NULL, MINMAX, 0, 90}
 };
 

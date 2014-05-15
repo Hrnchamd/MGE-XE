@@ -143,17 +143,17 @@ namespace MGEgui {
         	this.bCancel = new System.Windows.Forms.Button();
         	this.cbMacroType = new System.Windows.Forms.ComboBox();
         	this.DudMenu = new System.Windows.Forms.ContextMenu();
-        	this.label1 = new System.Windows.Forms.Label();
+        	this.lMacroType = new System.Windows.Forms.Label();
         	this.cbFunction = new System.Windows.Forms.ComboBox();
-        	this.label2 = new System.Windows.Forms.Label();
+        	this.lMacroFunction = new System.Windows.Forms.Label();
         	this.cbTrigger = new System.Windows.Forms.ComboBox();
-        	this.label3 = new System.Windows.Forms.Label();
+        	this.lTriggerNum = new System.Windows.Forms.Label();
         	this.tbTimeDelay = new System.Windows.Forms.TextBox();
-        	this.label4 = new System.Windows.Forms.Label();
+        	this.lTriggerDelay = new System.Windows.Forms.Label();
         	this.tbCLen = new System.Windows.Forms.TextBox();
-        	this.label5 = new System.Windows.Forms.Label();
+        	this.lCommandLength = new System.Windows.Forms.Label();
         	this.tbCDesc = new System.Windows.Forms.TextBox();
-        	this.label6 = new System.Windows.Forms.Label();
+        	this.lCommandDesc = new System.Windows.Forms.Label();
         	this.bClear = new System.Windows.Forms.Button();
         	this.cbTriggerEnabled = new System.Windows.Forms.CheckBox();
         	this.b100 = new System.Windows.Forms.Button();
@@ -1217,14 +1217,14 @@ namespace MGEgui {
         	this.cbMacroType.SelectedIndexChanged += new System.EventHandler(this.cbMacroType_SelectedIndexChanged);
         	this.cbMacroType.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeypress);
         	// 
-        	// label1
+        	// lMacroType
         	// 
-        	this.label1.AutoSize = true;
-        	this.label1.Location = new System.Drawing.Point(234, 268);
-        	this.label1.Name = "label1";
-        	this.label1.Size = new System.Drawing.Size(60, 13);
-        	this.label1.TabIndex = 0;
-        	this.label1.Text = "Macro type";
+        	this.lMacroType.AutoSize = true;
+        	this.lMacroType.Location = new System.Drawing.Point(234, 268);
+        	this.lMacroType.Name = "lMacroType";
+        	this.lMacroType.Size = new System.Drawing.Size(60, 13);
+        	this.lMacroType.TabIndex = 0;
+        	this.lMacroType.Text = "Macro type";
         	// 
         	// cbFunction
         	// 
@@ -1236,14 +1236,14 @@ namespace MGEgui {
         	this.cbFunction.TabIndex = 120;
         	this.cbFunction.Text = "None";
         	// 
-        	// label2
+        	// lMacroFunction
         	// 
-        	this.label2.AutoSize = true;
-        	this.label2.Location = new System.Drawing.Point(234, 294);
-        	this.label2.Name = "label2";
-        	this.label2.Size = new System.Drawing.Size(48, 13);
-        	this.label2.TabIndex = 0;
-        	this.label2.Text = "Function";
+        	this.lMacroFunction.AutoSize = true;
+        	this.lMacroFunction.Location = new System.Drawing.Point(234, 294);
+        	this.lMacroFunction.Name = "lMacroFunction";
+        	this.lMacroFunction.Size = new System.Drawing.Size(48, 13);
+        	this.lMacroFunction.TabIndex = 0;
+        	this.lMacroFunction.Text = "Function";
         	// 
         	// cbTrigger
         	// 
@@ -1254,7 +1254,7 @@ namespace MGEgui {
         	        	        	"2",
         	        	        	"3",
         	        	        	"4"});
-        	this.cbTrigger.Location = new System.Drawing.Point(303, 266);
+        	this.cbTrigger.Location = new System.Drawing.Point(309, 266);
         	this.cbTrigger.Name = "cbTrigger";
         	this.cbTrigger.Size = new System.Drawing.Size(72, 21);
         	this.cbTrigger.TabIndex = 121;
@@ -1262,32 +1262,32 @@ namespace MGEgui {
         	this.cbTrigger.SelectedIndexChanged += new System.EventHandler(this.cbTrigger_SelectedIndexChanged);
         	this.cbTrigger.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeypress);
         	// 
-        	// label3
+        	// lTriggerNum
         	// 
-        	this.label3.AutoSize = true;
-        	this.label3.Location = new System.Drawing.Point(381, 269);
-        	this.label3.Name = "label3";
-        	this.label3.Size = new System.Drawing.Size(40, 13);
-        	this.label3.TabIndex = 0;
-        	this.label3.Text = "Trigger";
+        	this.lTriggerNum.AutoSize = true;
+        	this.lTriggerNum.Location = new System.Drawing.Point(387, 269);
+        	this.lTriggerNum.Name = "lTriggerNum";
+        	this.lTriggerNum.Size = new System.Drawing.Size(40, 13);
+        	this.lTriggerNum.TabIndex = 0;
+        	this.lTriggerNum.Text = "Trigger";
         	// 
         	// tbTimeDelay
         	// 
-        	this.tbTimeDelay.Location = new System.Drawing.Point(303, 294);
+        	this.tbTimeDelay.Location = new System.Drawing.Point(309, 294);
         	this.tbTimeDelay.MaxLength = 4;
         	this.tbTimeDelay.Name = "tbTimeDelay";
         	this.tbTimeDelay.Size = new System.Drawing.Size(72, 20);
         	this.tbTimeDelay.TabIndex = 122;
         	this.tbTimeDelay.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.NumKeysOnly);
         	// 
-        	// label4
+        	// lTriggerDelay
         	// 
-        	this.label4.AutoSize = true;
-        	this.label4.Location = new System.Drawing.Point(381, 295);
-        	this.label4.Name = "label4";
-        	this.label4.Size = new System.Drawing.Size(68, 13);
-        	this.label4.TabIndex = 0;
-        	this.label4.Text = "Trigger delay";
+        	this.lTriggerDelay.AutoSize = true;
+        	this.lTriggerDelay.Location = new System.Drawing.Point(387, 295);
+        	this.lTriggerDelay.Name = "lTriggerDelay";
+        	this.lTriggerDelay.Size = new System.Drawing.Size(68, 13);
+        	this.lTriggerDelay.TabIndex = 0;
+        	this.lTriggerDelay.Text = "Trigger delay";
         	// 
         	// tbCLen
         	// 
@@ -1297,14 +1297,14 @@ namespace MGEgui {
         	this.tbCLen.Size = new System.Drawing.Size(102, 20);
         	this.tbCLen.TabIndex = 124;
         	// 
-        	// label5
+        	// lCommandLength
         	// 
-        	this.label5.AutoSize = true;
-        	this.label5.Location = new System.Drawing.Point(582, 270);
-        	this.label5.Name = "label5";
-        	this.label5.Size = new System.Drawing.Size(86, 13);
-        	this.label5.TabIndex = 0;
-        	this.label5.Text = "Command length";
+        	this.lCommandLength.AutoSize = true;
+        	this.lCommandLength.Location = new System.Drawing.Point(582, 270);
+        	this.lCommandLength.Name = "lCommandLength";
+        	this.lCommandLength.Size = new System.Drawing.Size(86, 13);
+        	this.lCommandLength.TabIndex = 0;
+        	this.lCommandLength.Text = "Command length";
         	// 
         	// tbCDesc
         	// 
@@ -1313,13 +1313,13 @@ namespace MGEgui {
         	this.tbCDesc.Size = new System.Drawing.Size(102, 20);
         	this.tbCDesc.TabIndex = 125;
         	// 
-        	// label6
+        	// lCommandDesc
         	// 
-        	this.label6.Location = new System.Drawing.Point(582, 294);
-        	this.label6.Name = "label6";
-        	this.label6.Size = new System.Drawing.Size(115, 13);
-        	this.label6.TabIndex = 0;
-        	this.label6.Text = "Command description";
+        	this.lCommandDesc.Location = new System.Drawing.Point(582, 294);
+        	this.lCommandDesc.Name = "lCommandDesc";
+        	this.lCommandDesc.Size = new System.Drawing.Size(115, 13);
+        	this.lCommandDesc.TabIndex = 0;
+        	this.lCommandDesc.Text = "Command description";
         	// 
         	// bClear
         	// 
@@ -1333,7 +1333,7 @@ namespace MGEgui {
         	// cbTriggerEnabled
         	// 
         	this.cbTriggerEnabled.AutoSize = true;
-        	this.cbTriggerEnabled.Location = new System.Drawing.Point(364, 320);
+        	this.cbTriggerEnabled.Location = new System.Drawing.Point(368, 321);
         	this.cbTriggerEnabled.Name = "cbTriggerEnabled";
         	this.cbTriggerEnabled.Size = new System.Drawing.Size(100, 17);
         	this.cbTriggerEnabled.TabIndex = 123;
@@ -1341,6 +1341,7 @@ namespace MGEgui {
         	// 
         	// b100
         	// 
+        	this.b100.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b100.Location = new System.Drawing.Point(12, 226);
         	this.b100.Name = "b100";
         	this.b100.Size = new System.Drawing.Size(64, 32);
@@ -1350,6 +1351,7 @@ namespace MGEgui {
         	// 
         	// b101
         	// 
+        	this.b101.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b101.Location = new System.Drawing.Point(82, 226);
         	this.b101.Name = "b101";
         	this.b101.Size = new System.Drawing.Size(64, 32);
@@ -1359,6 +1361,7 @@ namespace MGEgui {
         	// 
         	// b102
         	// 
+        	this.b102.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b102.Location = new System.Drawing.Point(152, 226);
         	this.b102.Name = "b102";
         	this.b102.Size = new System.Drawing.Size(64, 32);
@@ -1368,6 +1371,7 @@ namespace MGEgui {
         	// 
         	// b103
         	// 
+        	this.b103.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b103.Location = new System.Drawing.Point(222, 226);
         	this.b103.Name = "b103";
         	this.b103.Size = new System.Drawing.Size(64, 32);
@@ -1377,6 +1381,7 @@ namespace MGEgui {
         	// 
         	// b104
         	// 
+        	this.b104.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b104.Location = new System.Drawing.Point(292, 226);
         	this.b104.Name = "b104";
         	this.b104.Size = new System.Drawing.Size(64, 32);
@@ -1386,6 +1391,7 @@ namespace MGEgui {
         	// 
         	// b105
         	// 
+        	this.b105.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b105.Location = new System.Drawing.Point(362, 226);
         	this.b105.Name = "b105";
         	this.b105.Size = new System.Drawing.Size(64, 32);
@@ -1395,6 +1401,7 @@ namespace MGEgui {
         	// 
         	// b106
         	// 
+        	this.b106.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b106.Location = new System.Drawing.Point(432, 226);
         	this.b106.Name = "b106";
         	this.b106.Size = new System.Drawing.Size(64, 32);
@@ -1404,6 +1411,7 @@ namespace MGEgui {
         	// 
         	// b107
         	// 
+        	this.b107.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.25F);
         	this.b107.Location = new System.Drawing.Point(502, 226);
         	this.b107.Name = "b107";
         	this.b107.Size = new System.Drawing.Size(64, 32);
@@ -1446,17 +1454,17 @@ namespace MGEgui {
         	this.Controls.Add(this.b100);
         	this.Controls.Add(this.cbTriggerEnabled);
         	this.Controls.Add(this.bClear);
-        	this.Controls.Add(this.label6);
+        	this.Controls.Add(this.lCommandDesc);
         	this.Controls.Add(this.tbCDesc);
-        	this.Controls.Add(this.label5);
+        	this.Controls.Add(this.lCommandLength);
         	this.Controls.Add(this.tbCLen);
-        	this.Controls.Add(this.label4);
+        	this.Controls.Add(this.lTriggerDelay);
         	this.Controls.Add(this.tbTimeDelay);
-        	this.Controls.Add(this.label3);
+        	this.Controls.Add(this.lTriggerNum);
         	this.Controls.Add(this.cbTrigger);
         	this.Controls.Add(this.bCancel);
-        	this.Controls.Add(this.label2);
-        	this.Controls.Add(this.label1);
+        	this.Controls.Add(this.lMacroFunction);
+        	this.Controls.Add(this.lMacroType);
         	this.Controls.Add(this.cbFunction);
         	this.Controls.Add(this.cbMacroType);
         	this.Controls.Add(this.bSave);
@@ -1689,18 +1697,18 @@ namespace MGEgui {
         private System.Windows.Forms.Button bSave;
         private System.Windows.Forms.Button bCancel;
         private System.Windows.Forms.ComboBox cbMacroType;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lMacroType;
         private System.Windows.Forms.ContextMenu DudMenu;
         private System.Windows.Forms.ComboBox cbFunction;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label lMacroFunction;
         private System.Windows.Forms.ComboBox cbTrigger;
-        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lTriggerNum;
         private System.Windows.Forms.TextBox tbTimeDelay;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lTriggerDelay;
         private System.Windows.Forms.TextBox tbCLen;
-        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lCommandLength;
         private System.Windows.Forms.TextBox tbCDesc;
-        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label lCommandDesc;
         private System.Windows.Forms.Button bClear;
         private System.Windows.Forms.CheckBox cbTriggerEnabled;
         private Button b100;
@@ -1725,8 +1733,8 @@ namespace MGEgui {
 
         private List<byte> macroOrdering = new List<byte> {
         	0, 13, 14, 27, 7, 8, 9, 11, 12, 21, 22, 28, 29, 36, 37, 38,
-        	39, 40, 41, 42, 30, 43, 31, 44, 32, 33, 45, 34, 46, 35, 48, 49,
-        	50, 51, 52, 53
+        	39, 40, 5, 41, 42, 30, 43, 31, 44, 32, 33, 45, 34, 46, 35, 48,
+        	49, 50, 51, 52, 53
         };
         private List<MacroFunc> macroFuncData = new List<MacroFunc>();
         public static Dictionary<string, string> strings = new Dictionary<string, string>();
@@ -2013,6 +2021,7 @@ namespace MGEgui {
         }
 
         private void cbMacroType_SelectedIndexChanged(object sender,EventArgs e) {
+        	if(Editing == -1) return;
             int i=Editing;
             Statics.Macros[i].Type=(MacroType)(cbMacroType.SelectedIndex);
             StartMacro(i);

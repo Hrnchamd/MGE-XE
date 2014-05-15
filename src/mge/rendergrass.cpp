@@ -9,8 +9,8 @@
 
 void DistantLand::cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
-	D3DXMATRIX ds_proj = *proj, ds_viewproj;
-	float zn = 4.0f, zf = 7168.0f;
+    D3DXMATRIX ds_proj = *proj, ds_viewproj;
+    float zn = 4.0f, zf = 7168.0f;
 
     // Don't draw beyond fully fogged distance; early out if frustum is empty
     if(~Configuration.MGEFlags & EXP_FOG)
@@ -18,15 +18,15 @@ void DistantLand::cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj)
     if(zf <= zn)
         return;
 
-	// Create a clipping frustum for visibility determination
-	editProjectionZ(&ds_proj, zn, zf);
-	ds_viewproj = (*view) * ds_proj;
+    // Create a clipping frustum for visibility determination
+    editProjectionZ(&ds_proj, zn, zf);
+    ds_viewproj = (*view) * ds_proj;
 
     // Cull and sort
-	ViewFrustum range_frustum(&ds_viewproj);
+    ViewFrustum range_frustum(&ds_viewproj);
     visGrass.RemoveAll();
     currentWorldSpace->GrassStatics->GetVisibleMeshesCoarse(range_frustum, visGrass);
-	visGrass.SortByState();
+    visGrass.SortByState();
 
     buildGrassInstanceVB();
 }
@@ -38,7 +38,13 @@ void DistantLand::buildGrassInstanceVB()
 
     if(visGrass.visible_set.size() > MaxGrassElements)
     {
-        LOG::logline("Too many grass instances. (%d)", visGrass.visible_set.size());
+        static bool warnOnce = true;
+        if(warnOnce)
+        {
+            LOG::logline("!! Too many grass instances. (%d elements, limit %d)", visGrass.visible_set.size(), MaxGrassElements);
+            LOG::logline("!! Reduce grass density to avoid flickering grass.");
+            warnOnce = false;
+        }
         visGrass.visible_set.resize(MaxGrassElements);
     }
 

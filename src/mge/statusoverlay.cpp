@@ -61,7 +61,7 @@ void StatusOverlay::setStatus(const char *s)
 
 void StatusOverlay::setFPS(float fps)
 {
-    sprintf(fpsText, "%4.0f fps", fps);
+    snprintf(fpsText, sizeof(fpsText), "%4.0f", fps);
 }
 
 void StatusOverlay::showLastStatus()

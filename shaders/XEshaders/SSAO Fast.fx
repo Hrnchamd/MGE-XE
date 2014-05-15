@@ -24,10 +24,8 @@ static const float blur_radius = 5.0; // In pixels
 // **
 
 float2 rcpres;
-float3 eyepos;
-float3 eyevec;
-float fogstart;
-float fogrange;
+float3 eyepos, eyevec;
+float fogstart, fogrange;
 float waterlevel;
 float fov;
 
@@ -35,10 +33,10 @@ texture lastshader;
 texture lastpass;
 texture depthframe;
 
-sampler s0 = sampler_state {texture=<lastshader>; AddressU=Clamp; AddressV=Clamp;};
-sampler s1 = sampler_state {texture=<lastpass>; AddressU=Clamp; AddressV=Clamp; MagFilter=Linear; MinFilter=Linear;};
-sampler s4 = sampler_state {texture=<lastpass>; AddressU=Mirror; AddressV=Mirror;};
-sampler s2 = sampler_state {texture=<depthframe>; AddressU=Clamp; AddressV=Clamp;};
+sampler s0 = sampler_state { texture = <lastshader>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s1 = sampler_state { texture = <lastpass>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s4 = sampler_state { texture = <lastpass>; addressu = mirror; addressv = mirror; magfilter = linear; minfilter = linear; };
+sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
 
 
 
@@ -51,7 +49,7 @@ static const float2 halfpix = 0.5 * rcpres;
 
 #ifdef ROTATE
 texture tex1 < string src="noise8q.tga"; >;
-sampler s3 = sampler_state { texture=<tex1>; AddressU=Wrap; AddressV=Wrap; };
+sampler s3 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = linear; minfilter = linear; };
 #endif
 
 
@@ -213,9 +211,8 @@ float4 combine(float2 tex : TEXCOORD0) : COLOR
     float fog = saturate((fogrange - dist) / (fogrange - fogstart));
 #endif
 
-    float4 result = tex2D(s0, tex);
-    result *= 1 - final * fog * fog;
-    return result;
+    float3 result = tex2D(s0, tex).rgb * (1 - final * pow(fog, 3));
+    return float4(result, 1);
 } 
 
 

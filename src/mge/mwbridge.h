@@ -46,10 +46,11 @@ public:
     float GetWeatherRatio();
     RGBVECTOR* CurSkyColVector();
     RGBVECTOR* CurFogColVector();
+    DWORD getSceneFogCol();
     void setSceneFogCol(DWORD c);
     bool CellHasWeather();
     float* GetWindVector();
-    DWORD WthrStruc(int wthr);
+    DWORD GetWthrStruct(int wthr);
     int GetWthrString(int wthr, int offset, char str[]);
     void SetWthrString(int wthr, int offset, char str[]);
     bool CellHasWater();
@@ -67,14 +68,7 @@ public:
 
     void GetSunDir(float& x, float& y, float& z);
     BYTE GetSunVis();
-    float GetSunriseHour();
-    void SetSunriseHour(float hour);
-    float GetSunriseDuration();
-    void SetSunriseDuration(float duration);
-    float GetSunsetHour();
-    void SetSunsetHour(float hour);
-    float GetSunsetDuration();
-    void SetSunsetDuration(float duration);
+    void setSunriseSunset(float rise_time, float rise_dur, float set_time, float set_dur);
 
     DWORD IntCurCellAddr();
     bool IntLikeExterior();
@@ -107,11 +101,13 @@ public:
 
     void toggleRipples(BOOL enabled);
     void markWaterNode(float k);
+    void markMoonNodes(float k);
     void disableScreenshotFunc();
     void disableSunglare();
     bool isIntroDone();
     bool isLoadingSplash();
     void redirectMenuBackground(void (_stdcall *func)(int));
+    void setUIScale(float scale);
 
     void *getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);

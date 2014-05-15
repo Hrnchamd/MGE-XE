@@ -99,10 +99,10 @@ class FixedFunctionShader
     static ID3DXEffect *effectDefaultPurple;
 
     static D3DXHANDLE ehWorld, ehVertexBlendState, ehVertexBlendPalette;
-    static D3DXHANDLE ehTex0, ehTex1, ehTex2, ehTex3;
+    static D3DXHANDLE ehTex0, ehTex1, ehTex2, ehTex3, ehTex4, ehTex5;
     static D3DXHANDLE ehMaterialDiffuse, ehMaterialAmbient, ehMaterialEmissive;
-    static D3DXHANDLE ehLightAmbient, ehLightSunDiffuse, ehLightSunDirection;
-    static D3DXHANDLE ehLightDiffuse, ehLightPosition;
+    static D3DXHANDLE ehLightSceneAmbient, ehLightSunDiffuse, ehLightSunDirection;
+    static D3DXHANDLE ehLightDiffuse, ehLightAmbient, ehLightPosition;
     static D3DXHANDLE ehLightFalloffQuadratic, ehLightFalloffLinear, ehLightFalloffConstant;
     static D3DXHANDLE ehTexgenTransform, ehBumpMatrix, ehBumpLumiScaleBias;
 

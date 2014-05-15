@@ -8,15 +8,15 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetGS)
 // GetGS <long gmst_id> -> returns <long/float value>
 bool mwseGetGS::execute(mwseInstruction *_this)
 {
-	VMLONG Arg1;
-	VMREGTYPE ret;
+    VMLONG Arg1;
+    VMREGTYPE ret;
 
-	if(!_this->vmPop(&Arg1)) return false;
+    if(!_this->vmPop(&Arg1)) return false;
 
     DECLARE_MWBRIDGE
     ret = *(VMREGTYPE *)mwBridge->getGMSTPointer(Arg1);
 
-	return _this->vmPush(ret);
+    return _this->vmPush(ret);
 }
 
 
@@ -25,15 +25,15 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetGS)
 // SetGS <long gmst_id> <long/float value>
 bool mwseSetGS::execute(mwseInstruction *_this)
 {
-	VMLONG Arg1;
-	VMLONG Arg2;
+    VMLONG Arg1;
+    VMLONG Arg2;
 
-	if(!_this->vmPop(&Arg1)) return false;
-	if(!_this->vmPop(&Arg2)) return false;
+    if(!_this->vmPop(&Arg1)) return false;
+    if(!_this->vmPop(&Arg2)) return false;
 
     DECLARE_MWBRIDGE
     void *gmst = mwBridge->getGMSTPointer(Arg1);
     *(VMLONG *)gmst = Arg2;
 
-	return true;
+    return true;
 }

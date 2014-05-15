@@ -79,6 +79,9 @@ float4 StaticPS (StatVertOut IN): COLOR0
     // range is approximate due to interpolation
     result.a -= saturate((dissolveRange - range) / 512.0);
     
+    // Alpha to coverage conversion
+    result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
+    
     return result;
 }
 
@@ -136,7 +139,7 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
 float4 GrassPS (GrassVertOut IN): COLOR0
 {
     float4 result = tex2D(sampBaseTex, IN.texcoords);
-    clip(result.a - 2.0/255.0);
+    clip(result.a - 64.0/255.0);
     result.rgb *= IN.colour.rgb;
 
     // Soft shadowing
@@ -149,6 +152,9 @@ float4 GrassPS (GrassVertOut IN): COLOR0
     
     // Fogging
     result.rgb = fogApply(result.rgb, IN.fog);
+    
+    // Alpha to coverage conversion
+    result.a = calc_coverage(result.a, 128.0/255.0, 4.0);
     
     return result;
 }
@@ -248,15 +254,15 @@ DeferredOut MGEBlendVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 nd
 float4 MGEBlendPS (DeferredOut IN) : COLOR0
 {
     const float zone = 512.0, bound = 7168.0 - zone;
-    float v, w = tex2Dlod(sampDepth, IN.tex).r;
+    float v, w = tex2Dlod(sampDepthPoint, IN.tex).r;
     
     if(w > bound)
     {
         // tex2Dlod allows texld to be moved into the branch, as grad calculation is not required
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(rcpres.x, 0, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepth, IN.tex + float4(0, rcpres.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(rcpres.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, rcpres.y, 0, 0)).r);
     }
     
     //w = length(w * IN.eye);   // causes some errors with distant land
@@ -280,14 +286,14 @@ struct SkyVertOut
 SkyVertOut SkyVS (StatVertIn IN)
 {
     SkyVertOut OUT;
-
-    // Screw around with skydome, align default mesh with horizon
     float4 pos = IN.pos;
+    
+    // Screw around with skydome, align default mesh with horizon
     if(!hasalpha)
         pos.z = 50 * (IN.pos.z + 200);
-        
+    
     pos = mul(pos, world);
-    OUT.skypos = pos - float4(world[3][0], world[3][1], world[3][2], world[3][3]);
+    OUT.skypos = float4(pos.xyz - EyePos, 1);
 
     pos = mul(pos, view);
     OUT.pos = mul(pos, proj);
@@ -303,11 +309,20 @@ static const float ditherSky[4][4] = { 0.001176, 0.001961, -0.001176, -0.001699,
 
 float4 SkyPS (SkyVertOut IN, float2 vpos : VPOS) : COLOR0
 {
-    // Sample texture at lod 0 avoiding mip blurring, or return colour from scattering for sky
+    float4 c = 0;
+    
     if(hasalpha)
-        return IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
-    else
-        return fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
+        // Sample texture at lod 0 avoiding mip blurring
+        c = IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
+        
+    if(hasbones)
+    {
+        // Use colour from scattering for sky (but preserves alpha)
+        float4 f = fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
+        c.rgb = f.rgb;
+    }
+        
+    return c;
 }
 
 //-----------------------------------------------------------------------------
@@ -468,7 +483,7 @@ Technique T0 {
     Pass P8 {
         ZEnable = false;
         ZWriteEnable = false;
-        CullMode = None;
+        CullMode = none;
         StencilEnable = false;
 
         AlphaBlendEnable = false;

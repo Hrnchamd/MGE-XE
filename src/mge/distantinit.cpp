@@ -27,6 +27,8 @@ IDirect3DVertexDeclaration9 *DistantLand::StaticDecl;
 IDirect3DVertexDeclaration9 *DistantLand::WaterDecl;
 IDirect3DVertexDeclaration9 *DistantLand::GrassDecl;
 
+VendorSpecificRendering DistantLand::vsr;
+
 unordered_map<string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
 const DistantLand::WorldSpace *DistantLand::currentWorldSpace;
 QuadTree DistantLand::LandQuadTree;
@@ -69,6 +71,7 @@ D3DXVECTOR4 DistantLand::sunVec, DistantLand::sunPos;
 float DistantLand::sunVis;
 RGBVECTOR DistantLand::sunCol, DistantLand::sunAmb, DistantLand::ambCol;
 RGBVECTOR DistantLand::nearfogCol, DistantLand::horizonCol;
+RGBVECTOR DistantLand::atmOutscatter, DistantLand::atmInscatter;
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
 float DistantLand::windScaling, DistantLand::niceWeather;
@@ -96,6 +99,8 @@ D3DXHANDLE DistantLand::ehSunAmb;
 D3DXHANDLE DistantLand::ehSunVec;
 D3DXHANDLE DistantLand::ehSunPos;
 D3DXHANDLE DistantLand::ehSunVis;
+D3DXHANDLE DistantLand::ehOutscatter;
+D3DXHANDLE DistantLand::ehInscatter;
 D3DXHANDLE DistantLand::ehSkyCol;
 D3DXHANDLE DistantLand::ehFogCol1;
 D3DXHANDLE DistantLand::ehFogCol2;
@@ -109,6 +114,9 @@ D3DXHANDLE DistantLand::ehNiceWeather;
 D3DXHANDLE DistantLand::ehTime;
 D3DXHANDLE DistantLand::ehRippleOrigin;
 D3DXHANDLE DistantLand::ehWaveHeight;
+
+void (*DistantLand::captureScreenFunc)(IDirect3DSurface9 *);
+
 
 static vector<DistantStatic> DistantStatics;
 static unordered_map< string, vector<UsedDistantStatic> > UsedDistantStatics;
@@ -135,7 +143,7 @@ const D3DVERTEXELEMENT9 WaterElem[] = {
 
 // World mesh vertex declaration
 const D3DVERTEXELEMENT9 LandElem[] = {
-    {0, 0,  D3DDECLTYPE_FLOAT3,   D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
+    {0, 0,  D3DDECLTYPE_FLOAT3,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
     {0, 12, D3DDECLTYPE_SHORT2N, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
     D3DDECL_END()
 };
@@ -143,8 +151,8 @@ const D3DVERTEXELEMENT9 LandElem[] = {
 // Distant static vertex declaration
 const D3DVERTEXELEMENT9 StaticElem[] = {
     {0, 0,  D3DDECLTYPE_FLOAT16_4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-    {0, 8,  D3DDECLTYPE_UBYTE4N,   D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
-    {0, 12, D3DDECLTYPE_D3DCOLOR,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+    {0, 8,  D3DDECLTYPE_UBYTE4N,   D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   0},
+    {0, 12, D3DDECLTYPE_D3DCOLOR,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR,    0},
     {0, 16, D3DDECLTYPE_FLOAT16_2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
     D3DDECL_END()
 };
@@ -153,12 +161,12 @@ const D3DVERTEXELEMENT9 StaticElem[] = {
 const D3DVERTEXELEMENT9 GrassElem[] =
 {
     {0, 0,  D3DDECLTYPE_FLOAT16_4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
-    {0, 8,  D3DDECLTYPE_UBYTE4N, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL, 0},
-    {0, 12, D3DDECLTYPE_D3DCOLOR,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR, 0},
+    {0, 8,  D3DDECLTYPE_UBYTE4N,   D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   0},
+    {0, 12, D3DDECLTYPE_D3DCOLOR,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR,    0},
     {0, 16, D3DDECLTYPE_FLOAT16_2, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 0},
-    {1, 0,  D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1},
-    {1, 16, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2},
-    {1, 32, D3DDECLTYPE_FLOAT4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3},
+    {1, 0,  D3DDECLTYPE_FLOAT4,    D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 1},
+    {1, 16, D3DDECLTYPE_FLOAT4,    D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 2},
+    {1, 32, D3DDECLTYPE_FLOAT4,    D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_TEXCOORD, 3},
     D3DDECL_END()
 };
 
@@ -171,6 +179,7 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
 
     device = realDevice;
     LOG::logline(">> Distant Land init");
+    vsr.init(device);
 
     LOG::logline(">> Distant Land init BSAs");
     InitBSAs();
@@ -256,7 +265,7 @@ bool DistantLand::initShader()
         return false;
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effect, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Main", errors);
@@ -303,7 +312,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effectShadow, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Shadowmap", errors);
@@ -312,7 +321,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shadow map shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3, effectPool, &effectDepth, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Depth", errors);
@@ -320,6 +329,20 @@ bool DistantLand::initShader()
     }
 
     LOG::logline("-- Depth shader compiled OK");
+
+    if(Configuration.MGEFlags & USE_ATM_SCATTER)
+    {
+        // Default scatter coefficients
+        atmOutscatter = RGBVECTOR(0.07, 0.36, 0.76);
+        atmInscatter = RGBVECTOR(0.25, 0.38, 0.48);
+
+        ehOutscatter = effect->GetParameterByName(0, "outscatter");
+        ehInscatter = effect->GetParameterByName(0, "inscatter");
+
+        // Mark moon geometry for detection
+        DECLARE_MWBRIDGE
+        mwBridge->markMoonNodes(kMoonTag);
+    }
 
     return true;
 }
@@ -410,8 +433,9 @@ bool DistantLand::initWater()
         if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
         {
             // Higher mesh density near player
+            // The mesh requires density past 8192 units to cover the z discontinuity at distant land
             r = float(t) / float(resT);
-            r = 6400.0f * (0.85f * powf(r, 3) + 0.15f * r);
+            r = 9600.0f * (0.9f * powf(r, 3) + 0.1f * r);
             // Extend last ring past horizon
             if((t+1) == resT) r = 500000.0f;
         }
@@ -609,6 +633,12 @@ bool DistantLand::initDistantStatics()
 bool DistantLand::loadDistantStatics()
 {
     DWORD unused;
+
+    if(GetFileAttributes("data files/distantland/statics") == INVALID_FILE_ATTRIBUTES)
+    {
+        LOG::logline("!! Distant statics have not been generated");
+        return true;
+    }
 
     HANDLE h = CreateFile("data files/distantland/statics/usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE)
@@ -892,8 +922,8 @@ bool DistantLand::initLandscape()
 
     if(GetFileAttributes("data files\\distantland\\world") == INVALID_FILE_ATTRIBUTES)
     {
-        LOG::logline("!! Distant land has not been generated. It is required for MGE XE to run.");
-        return false;
+        LOG::logline("!! Distant land has not been generated");
+        return true;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
@@ -967,8 +997,8 @@ bool DistantLand::initLandscape()
             i->vbuffer = vb;
             i->ibuffer = ib;
 
-            qtmin.x = std::min(qtmin.x,  i->sphere.center.x - i->sphere.radius);
-            qtmin.y = std::min(qtmin.y,  i->sphere.center.y - i->sphere.radius);
+            qtmin.x = std::min(qtmin.x, i->sphere.center.x - i->sphere.radius);
+            qtmin.y = std::min(qtmin.y, i->sphere.center.y - i->sphere.radius);
             qtmax.x = std::max(qtmax.x, i->sphere.center.x + i->sphere.radius);
             qtmax.y = std::max(qtmax.y, i->sphere.center.y + i->sphere.radius);
         }
@@ -1049,9 +1079,12 @@ void DistantLand::release()
     }
     meshCollectionLand.clear();
 
-    texWorldColour->Release(); texWorldColour = 0;
-    texWorldNormals->Release(); texWorldNormals = 0;
-    texWorldDetail->Release(); texWorldDetail = 0;
+    if(texWorldColour)
+    {
+        texWorldColour->Release(); texWorldColour = 0;
+        texWorldNormals->Release(); texWorldNormals = 0;
+        texWorldDetail->Release(); texWorldDetail = 0;
+    }
 
     BSAClearTextureCache();
 

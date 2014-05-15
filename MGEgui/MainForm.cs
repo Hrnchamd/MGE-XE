@@ -32,7 +32,7 @@ namespace MGEgui {
             // Set initial directories
             this.OpenFileDialog.InitialDirectory = this.SaveFileDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             // Title
-            Text = "Morrowind Graphics Extender XE 0.9";
+            Text = Statics.programName + " " + Statics.versionNumber;
             // Set default tooltip text reading speed
             Statics.tipReadSpeed = (int)(1000 / double.Parse (cmbTipReadSpd.Text));
             // set a handler for each control which sets tooltip popup timeout dependent on tooltip text length
@@ -68,11 +68,11 @@ namespace MGEgui {
             { "TipReadSpd", new string [] { "lTipReadSpd", "cmbTipReadSpd", "lTipRSpdUnit" } },
         /* Graphics */
             { "Resolution", new string [] { "tbResolution", "lResolution" } },
-            { "CalcResolution", new string [] { "bCalcResolution" } },
+            { "SelectResolution", new string [] { "bSelectResolution" } },
             { "Windowed", new string [] { "cbWindowed" } },
+            { "Borderless", new string [] { "cbBorderless" } },
             { "Aspect", new string [] { "tbAspect", "lAspect" } },
-            { "RefreshRate", new string [] { "cmbRefreshRate", "lRefreshRate" } },
-            { "CalcRefresh", new string [] { "bCalcRefresh" } },
+            { "RefreshRate", new string [] { "tbRefreshRate", "lRefreshRate" } },
             { "AntiAlias", new string [] { "cmbAntiAlias", "lAntiAlias" } },
             { "AnisoLevel", new string [] { "cmbAnisoLevel", "lAnisoLevel" } },
             { "VWait", new string [] { "cmbVWait", "lVWait" } },
@@ -85,6 +85,7 @@ namespace MGEgui {
             { "HWShader", new string [] { "cbHWShader" } },
             { "ShaderEd", new string [] { "bShaderEd" } },
             { "HDRTime", new string [] { "udHDR", "lHDR" } },
+            { "UIScale", new string [] { "udUIScale", "lUIScale" } },
             { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
             { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
             { "SShotDir", new string [] { "lSShotDir", "tbSShotDir" } },
@@ -186,9 +187,8 @@ namespace MGEgui {
         private void LoadMWINI () {
             INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default);
             
-            // Clamp to 120fps maximum
-            double fpslimit = Math.Min(mwini.getKeyValue("FPSLimit"), 120.0);
-            udFPSLimit.Value = new Decimal(fpslimit);
+            // Clamp to FPS control maximum
+            udFPSLimit.Value = Math.Min(new Decimal(mwini.getKeyValue("FPSLimit")), udFPSLimit.Maximum);
             
             cbScreenshots.Checked = (mwini.getKeyValue("SSEnable") == 1);
             cbThreadLoad.Checked = (mwini.getKeyValue("NoThread") != 1);
@@ -308,18 +308,20 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniAntiAlias = new INIFile.INIVariableDef ("AntiAlias", siniGlobGraph, "Antialiasing Level", INIFile.INIVariableType.Dictionary, "None", antiAliasDict);
         private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "Immediate", vWaitDict);
         private static INIFile.INIVariableDef iniRefresh = new INIFile.INIVariableDef ("Refresh", siniGlobGraph, "Refresh Rate", INIFile.INIVariableType.Byte, "Default", refreshDict, 0, 240);
+        private static INIFile.INIVariableDef iniBorderless = new INIFile.INIVariableDef ("Borderless", siniGlobGraph, "Borderless Window", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "Off", anisoLevelDict);
         private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -2, 2, 3);
         private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef ("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Depth pixel", fogModeDict);
+        private static INIFile.INIVariableDef iniTransparencyAA = new INIFile.INIVariableDef ("TrAA", siniRendState, "Transparency Antialiasing", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef ("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniMessages = new INIFile.INIVariableDef ("Messages", siniRendState, "MGE Messages", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
         private static INIFile.INIVariableDef iniHWShader = new INIFile.INIVariableDef ("HWShader", siniRendState, "Hardware Shader", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
+        private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef ("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 0.5, 5, 3);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
-        private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "MGE Screenshot ");
+        private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "Morrowind");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef ("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
-        private static INIFile.INIVariableDef iniSSNum = new INIFile.INIVariableDef ("SSNum", siniRendState, "Screenshot Number Min Length", INIFile.INIVariableType.Byte, "3", 1, 5);
         // In-game
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniMisc, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
@@ -368,10 +370,10 @@ namespace MGEgui {
             // Main
             iniVersion, iniIipSpeed, iniLanguage, iniAutoLang,
             // Graphics
-            iniAntiAlias, iniVWait, iniRefresh,
+            iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
-            iniFPSCount, iniHWShader, iniHDRTime,
-            iniSSFormat, iniSSName, iniSSDir, iniSSNum,
+            iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
+            iniUIScale, iniSSFormat, iniSSName, iniSSDir,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniCam3rdCustom,
             iniCam3rdX, iniCam3rdY, iniCam3rdZ,
@@ -401,8 +403,6 @@ namespace MGEgui {
             INIFile iniFile = new INIFile (reset ? Statics.fn_nul : Statics.iniFileName, iniSettings, true);
             if (reset)
                 iniFile.fileName = Statics.iniFileName;
-            else
-                bCalcRefresh_Click (null, null);
             if (save) {
                 iniFile.initialize ();
                 iniFile.save ();
@@ -413,8 +413,9 @@ namespace MGEgui {
             // Graphics
             cmbAntiAlias.SelectedIndex = (int)iniFile.getKeyValue ("AntiAlias");
             cmbVWait.SelectedIndex = (int)iniFile.getKeyValue ("VWait");
-            cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact (iniFile.getKeyValue ("Refresh").ToString ());
-            if (cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
+            tbRefreshRate.Text = iniFile.getKeyValue ("Refresh").ToString();
+            if(tbRefreshRate.Text == "0") tbRefreshRate.Text = "Default";
+            cbBorderless.Checked = (iniFile.getKeyValue ("Borderless") == 1);
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue ("AnisoLvl");
             udLOD.Value = (decimal)iniFile.getKeyValue ("LODBias");
             cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue ("FogMode");
@@ -423,11 +424,11 @@ namespace MGEgui {
             cbDisplayMessages.Checked = (iniFile.getKeyValue ("Messages") == 1);
             udMsgsTime.Value = (decimal)iniFile.getKeyValue ("MsgTime");
             cbHWShader.Checked = (iniFile.getKeyValue ("HWShader") == 1);
+            udUIScale.Value = (decimal)iniFile.getKeyValue ("UIScale");
             cmbSShotFormat.SelectedIndex = (int)iniFile.getKeyValue ("SSFormat");
             tbSShotDir.Text = iniFile.getKeyString ("SSDir");
             if (tbSShotDir.Text.Length == 0) bSSDirClear_Click (null, null);
             tbSShotName.Text = iniFile.getKeyString ("SSName");
-            udSShotNum.Value = (decimal)iniFile.getKeyValue ("SSNum");
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue ("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue ("DisableMWSE") == 1);
@@ -484,7 +485,8 @@ namespace MGEgui {
             // Graphics
             iniFile.setKey ("AntiAlias", cmbAntiAlias.SelectedIndex);
             iniFile.setKey ("VWait", cmbVWait.SelectedIndex);
-            iniFile.setKey ("Refresh", cmbRefreshRate.SelectedIndex == 0 ? "Default" : cmbRefreshRate.Text);
+            iniFile.setKey ("Refresh", tbRefreshRate.Text);
+            iniFile.setKey ("Borderless", cbBorderless.Checked);
             iniFile.setKey ("AnisoLvl", cmbAnisoLevel.SelectedIndex);
             iniFile.setKey ("LODBias", (double)udLOD.Value);
             iniFile.setKey ("FogMode", cmbFogMode.SelectedIndex);
@@ -493,11 +495,11 @@ namespace MGEgui {
             iniFile.setKey ("Messages", cbDisplayMessages.Checked);
             iniFile.setKey ("MsgTime", (double)udMsgsTime.Value);
             iniFile.setKey ("HWShader", cbHWShader.Checked);
+            iniFile.setKey ("UIScale", (double)udUIScale.Value);
             iniFile.setKey ("SSFormat", cmbSShotFormat.SelectedIndex);
             if (tbSShotDir.TextAlign == HorizontalAlignment.Left) iniFile.setKey ("SSDir", tbSShotDir.Text);
             else iniFile.setKey ("SSDir", "");
-            iniFile.setKey ("SSName", tbSShotName.Text);
-            iniFile.setKey ("SSNum", (double)udSShotNum.Value);
+            iniFile.setKey ("SSName", tbSShotName.Text.TrimEnd());
             // In-game
             iniFile.setKey ("DisableMWSE", cbDisableMWSE.Checked);
             iniFile.setKey ("HDRTime", (double)udHDR.Value);
@@ -572,11 +574,8 @@ namespace MGEgui {
                 default: cmbVWait.SelectedIndex = 5; break;
             }
             switch (i = br.ReadByte ()) {
-                case 0: cmbRefreshRate.SelectedIndex = 0; break;
-                default:
-                    cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact (i.ToString ());
-                    if (cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
-                    break;
+                case 0: tbRefreshRate.Text = "Default"; break;
+                default: tbRefreshRate.Text = i.ToString(); break;
             }
             cbFPSCounter.Checked = br.ReadBoolean ();
             cbDisplayMessages.Checked = br.ReadBoolean ();
@@ -916,9 +915,6 @@ namespace MGEgui {
         }
 
         private void cbWindowed_CheckedChanged (object sender, EventArgs e) {
-            cmbRefreshRate.Enabled = !cbWindowed.Checked && !cbDisableMGE.Checked;
-            lRefreshRate.Enabled = !cbWindowed.Checked && !cbDisableMGE.Checked;
-            bCalcRefresh.Enabled = !cbWindowed.Checked && !cbDisableMGE.Checked;
             RegistryKey key = null;
             try {
                 key = Registry.LocalMachine.OpenSubKey (Statics.reg_mw, true);
@@ -926,6 +922,7 @@ namespace MGEgui {
                     key.SetValue ("Fullscreen", new byte [] { Convert.ToByte (!cbWindowed.Checked) });
                     key.Close ();
                 }
+                cbBorderless.Enabled = cbWindowed.Checked;
             } catch {
                 MessageBox.Show (strings ["RegNotWrit"], Statics.strings ["Error"]);
             }
@@ -1013,33 +1010,13 @@ namespace MGEgui {
             gbMsgs.Enabled = status;
         }
 
-        private void bCalcRefresh_Click (object sender, EventArgs e) {
-            cmbRefreshRate.Items.Clear();
-            cmbRefreshRate.Items.Add(Statics.strings["Default"]);
-            cmbRefreshRate.Text = Statics.strings["Default"];
-
-            try
-            {
-                int width, height;
-                RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
-                width = (int)key.GetValue("Screen Width");
-                height = (int)key.GetValue("Screen Height");
-                key.Close();
-                
-                foreach (int i in DirectX.DXMain.GetRefreshRates(width, height))
-                    cmbRefreshRate.Items.Add(i.ToString());
-            }
-            catch {}
-        }
-
-        private void bCalcResolution_Click (object sender, EventArgs e) {
+        private void bSelectResolution_Click (object sender, EventArgs e) {
             System.Drawing.Point p;
-            if (ResolutionForm.ShowDialog (out p, cbWindowed.Checked)) {
+            int refresh;
+            
+            if (ResolutionForm.ShowDialog (out p, out refresh, cbWindowed.Checked)) {
                 tbResolution.Text = p.X.ToString () + " x " + p.Y.ToString ();
-                string refrRate = cmbRefreshRate.Text;
-                bCalcRefresh_Click (null, null);
-                cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact (refrRate);
-                if (cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
+                tbRefreshRate.Text = (refresh == 0) ? "Default" : refresh.ToString();
                 CalcAspectRatio (p.X, p.Y);
             }
         }
@@ -1120,7 +1097,7 @@ namespace MGEgui {
         }
 
         private void bAbout_Click (object sender, EventArgs e) {
-            string s = String.Format ("Morrowind Graphics Extender\n{0}\n\n{1} Timeslip, LizTail, Krzymar, Phal, Hrnchamd", Statics.versionString, strings ["CreatedBy"], strings ["FurtherDevel"]);
+            string s = String.Format("{0}\n{1}\n\n{2} Timeslip, LizTail, Krzymar, Phal, Hrnchamd", Statics.programName, Statics.versionString, strings["CreatedBy"], strings["FurtherDevel"]);
             if (cmbUILanguage.SelectedIndex > 0) {
                 string ttn = Statics.strings ["Translation"];
                 string ttr = Statics.Localizations [cmbUILanguage.Text].Translator;
@@ -1297,17 +1274,18 @@ namespace MGEgui {
             dist_root = Math.Sqrt(draw_distance);
 
             if (autoDistances != AutoDistance.byAFogEnd) {
-                udDLFogAStart.Value = (decimal)(draw_distance * (cbDLFogExp.Checked ? 0.15 : 0.05));
+                udDLFogAStart.Value = (decimal)(draw_distance * 0.15);
                 udDLFogAEnd.Value = (decimal)draw_distance;
             }
             udDLFogBStart.Value = -0.5M;
             udDLFogBEnd.Value = 0.3M;
             udDLFogIStart.Value = 0.0M;
             udDLFogIEnd.Value = 2.0M;
-            udDLDistNear.Value = (decimal)(draw_distance * 0.2 * (cbDLFogExp.Checked ? 0.75 : 1.0));
-            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.9 * (cbDLFogExp.Checked ? 0.75 : 1.0));
-            udDLDistFar.Value = (udDLDistNear.Value + udDLDistVeryFar.Value) * 0.5M;
-            //Make sure improper values have not been generated
+            udDLDistNear.Value = (decimal)(draw_distance * 0.3);
+            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.95);
+            udDLDistFar.Value = (decimal)(draw_distance * 0.7);
+            
+            // Make sure improper values have not been generated
             loading = false;
             ValidateDistances (sender, e);
         }
@@ -1397,9 +1375,6 @@ namespace MGEgui {
 
         private void cbDisableMGE_CheckedChanged (object sender, EventArgs e) {
             bool status = !this.cbDisableMGE.Checked;
-            this.cmbRefreshRate.Enabled = status && !cbWindowed.Checked;
-            this.lRefreshRate.Enabled = status && !cbWindowed.Checked;
-            this.bCalcRefresh.Enabled = status && !cbWindowed.Checked;
             this.gbScene.Enabled = status;
             this.gbSShot.Enabled = status;
             this.gbMsgs.Enabled = status;
@@ -1451,26 +1426,6 @@ namespace MGEgui {
             cbDLScattering.Enabled = status;
             cbDLScattering.Checked &= status;
             if (loading) return;
-            
-            decimal draw_dist = udDLDrawDist.Value;
-            decimal near_dist = udDLDistNear.Value;
-            decimal far_dist = udDLDistFar.Value;
-            decimal vfar_dist = udDLDistVeryFar.Value;
-            if (status) {
-                draw_dist = Math.Min(draw_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-                near_dist = Math.Min(near_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-                far_dist = Math.Min(far_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-                vfar_dist = Math.Min(vfar_dist * udDLFogExpMul.Value, udDLDrawDist.Maximum);
-            } else {
-                draw_dist = Math.Max(draw_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-                near_dist = Math.Max(near_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-                far_dist = Math.Max(far_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-                vfar_dist = Math.Max(vfar_dist / udDLFogExpMul.Value, udDLDrawDist.Minimum);
-            }
-            udDLDrawDist.Value = draw_dist;
-            udDLDistNear.Value = near_dist;
-            udDLDistFar.Value = far_dist;
-            udDLDistVeryFar.Value = vfar_dist;
             
             if (cbDLAutoDist.Checked) AutoSetDistances (sender, e);
         }
@@ -1561,10 +1516,15 @@ namespace MGEgui {
         	if(loading) return;
         	if(cbPerPixelLighting.Checked)
         	{
-        		MessageBox.Show(strings["LightOverride"], Statics.strings["Warning"]);
-	            udLightingConst.Value = 0.27M;
+        		MessageBox.Show(strings["LightOverrideOn"], Statics.strings["Warning"]);
+	            udLightingConst.Value = 0.36M;
 	            udLightingLinear.Value = 0;
-	            udLightingQuad.Value = 5.4M;
+	            udLightingQuad.Value = 3.25M;
+        	}
+        	else
+        	{
+        		MessageBox.Show(strings["LightOverrideOff"], Statics.strings["Warning"]);
+        		bMWLightingReset_Click(null, null);
         	}
         }
         

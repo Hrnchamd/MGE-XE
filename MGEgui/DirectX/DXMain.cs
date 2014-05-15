@@ -113,7 +113,18 @@ namespace MGEgui.DirectX {
         }
 
         public static bool CheckAALevel(int level, bool windowed) {
-        	return d3d.CheckDeviceMultisampleType(adapter, DeviceType.Hardware, Format.X8R8G8B8, windowed, (MultisampleType)(1 << level));
+            if(level < 4)
+            {
+                // <= 8x MSAA
+            	return d3d.CheckDeviceMultisampleType(adapter, DeviceType.Hardware, Format.X8R8G8B8, windowed, (MultisampleType)(1 << level));
+            }
+            else
+            {
+                // 16x is a special case, map to 16x CSAA (8 samples, quality 2)
+                Int32 qualityLevels;
+            	bool result = d3d.CheckDeviceMultisampleType(adapter, DeviceType.Hardware, Format.X8R8G8B8, windowed, MultisampleType.EightSamples, out qualityLevels);
+            	return result && (qualityLevels >= 3);
+            }
         }
     }
 }

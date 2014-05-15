@@ -9,8 +9,8 @@
 //////////////
 
 static const float bloomThreshold = 0.48;     // 0.0 everything blooms <-> 1.0 nothing blooms
-static const float bloomLevel = 0.25;         // 0.0 minimum glow <-> 1.0 nuclear shine
-static const float bloomColourSens = 0.36;    // 0.0 monochrome <-> 1.0 oversaturated
+static const float bloomLevel = 0.23;         // 0.0 minimum glow <-> 1.0 nuclear shine
+static const float bloomColourSens = 0.39;    // 0.0 monochrome <-> 1.0 oversaturated
 static const float bloomGamma = 2.45;         // for linear domain mixing (Morrowind is somewhat dark)
 
 
@@ -20,9 +20,9 @@ float fogstart, fogrange;
 
 texture lastshader, lastpass, depthframe;
 
-sampler s0 = sampler_state { texture=<lastshader>; addressu = clamp; addressv = clamp; magfilter = none; minfilter = none; };
-sampler s1 = sampler_state { texture=<lastpass>; addressu = clamp; addressv = clamp; magfilter = linear; minfilter = linear; };
-sampler s2 = sampler_state { texture=<depthframe>; addressu = clamp; addressv = clamp; magfilter = none; minfilter = none; };
+sampler s0 = sampler_state { texture = <lastshader>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s1 = sampler_state { texture = <lastpass>; addressu = clamp; addressv = clamp; magfilter = linear; minfilter = linear; };
+sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
 
 
 
@@ -42,7 +42,7 @@ float4 energyLevels(in float2 Tex : TEXCOORD) : COLOR0
 }
 
 static const int N = 7;
-static const float kernel[N] = { 0.08, 0.18, 0.24, 0.22, 0.24, 0.18, 0.08 };
+static const float kernel[N] = { 0.05, 0.14, 0.31, 0.22, 0.31, 0.14, 0.05 };
 static const float taps[N] = { -6.5, -4.5, -2.5, 0, 2.5, 4.5, 6.5 };
 
 float4 blurVert(in float2 Tex : TEXCOORD) : COLOR0

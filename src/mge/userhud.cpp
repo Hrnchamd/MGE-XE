@@ -39,13 +39,13 @@ bool MGEhud::init(IDirect3DDevice9 *d)
     }
 
     ID3DXBuffer *errors;
-	hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE HUD.fx", 0, 0, 0, 0, &effectStandard, &errors);
-	if(hr != D3D_OK)
-	{
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE HUD.fx", 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &effectStandard, &errors);
+    if(hr != D3D_OK)
+    {
         LOG::logline("!! HUD Shader errors: %s", errors->GetBufferPointer());
         errors->Release();
         return false;
-	}
+    }
 
     if(element_names.empty())
         reset();
@@ -123,6 +123,8 @@ void MGEhud::draw()
 
 void MGEhud::release()
 {
+    LOG::logline(">> HUD release");
+
     // Only release D3D resources
     // HUD status must be remembered if the device restarts on alt-tab
     std::map<std::string, MGEhud::hud_id>::const_iterator i;
@@ -143,7 +145,7 @@ void MGEhud::release()
     effectStandard->Release();
     vbHUD->Release();
 
-    LOG::logline("-- HUD release");
+    LOG::logline("<< HUD release");
 }
 
 int MGEhud::getScreenWidth()
@@ -320,8 +322,8 @@ void MGEhud::setEffect(hud_id hud, const char *effect)
     // Load new effect if string is not empty
     if(*effect)
     {
-        sprintf_s(path, MAX_PATH, "Data Files\\shaders\\%s.fx", effect);
-        HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, 0, 0, &e->effect, &errors);
+        snprintf(path, sizeof(path), "Data Files\\shaders\\%s.fx", effect);
+        HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &e->effect, &errors);
 
         if(hr == D3D_OK)
         {

@@ -12,23 +12,48 @@
 
 
 
+static void SaveScreenshot(IDirect3DSurface9 *surface);
+
+
 void MacroFunctions::TakeScreenshot()
 {
-    const char * strImageExtensions[] = { ".bmp", ".jpg", ".dds", ".png", ".tga" };
-    const D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
-    char filename[256], path[256];
-    bool usedir = false;
-    struct _stat unusedstat;
+    DECLARE_MWBRIDGE
 
     // Requires distant land to be loaded
     if(!DistantLand::ready) return;
 
-    // Grab copy of surface
-    IDirect3DSurface9 *surface = DistantLand::captureScreen();
+    if(mwBridge->IsMenu())
+    {
+        // Save screen including UI
+        IDirect3DSurface9 *surface = DistantLand::captureScreen();
+        SaveScreenshot(surface);
+        if(surface) surface->Release();
+    }
+    else
+    {
+        // Request distant land to save screen without UI
+        DistantLand::requestCaptureNoUI(&SaveScreenshot);
+    }
+}
+
+static void SaveScreenshot(IDirect3DSurface9 *surface)
+{
+    const char * strImageExtensions[] = { ".bmp", ".jpg", ".dds", ".png", ".tga" };
+    const D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
+
+    char filename[MAX_PATH], path[MAX_PATH];
+    bool usedir = false;
+    struct _stat unusedstat;
+    SYSTEMTIME t;
+
     if(!surface) { StatusOverlay::setStatus("Screenshot failed - Surface error"); return; }
 
     // Set up path
-	if(strlen(Configuration.SSDir) > 0)
+    GetLocalTime(&t);
+    snprintf(filename, sizeof(filename), "%s %04d-%02d-%02d %02d.%02d.%02d.%03d",
+             Configuration.SSName, t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
+
+    if(strlen(Configuration.SSDir) > 0)
     {
         usedir = true;
 
@@ -37,32 +62,21 @@ void MacroFunctions::TakeScreenshot()
     }
 
     if(usedir)
-        sprintf(filename, "%s\\%s", Configuration.SSDir, Configuration.SSName);
+        snprintf(path, sizeof(path), "%s\\%s%s", Configuration.SSDir, filename, strImageExtensions[Configuration.SSFormat]);
     else
-        sprintf(filename, "%s", Configuration.SSName);
+        snprintf(path, sizeof(path), "%s%s", filename, strImageExtensions[Configuration.SSFormat]);
 
-    // Find first unused screenshot number
-    for(unsigned long n = 1; n <= 99999; ++n)
+    // Save screenshot to desired format
+    HRESULT hr = D3DXSaveSurfaceToFile(path, formats[Configuration.SSFormat], surface, NULL, NULL);
+    if(SUCCEEDED(hr))
     {
-        sprintf(path, "%s%0*d%s", filename, Configuration.SSMinNumChars, n, strImageExtensions[Configuration.SSFormat]);
-        if (_stat(path, &unusedstat) == -1)
-        {
-            HRESULT hr = D3DXSaveSurfaceToFile(path, formats[Configuration.SSFormat], surface, NULL, NULL);
-            if(SUCCEEDED(hr))
-            {
-                sprintf(filename, "%s%0*d", Configuration.SSName, Configuration.SSMinNumChars, n);
-                StatusOverlay::setStatus(filename);
-            }
-            else
-            {
-                sprintf(filename, "Screenshot failed - D3DX Error %x", hr);
-                StatusOverlay::setStatus(filename);
-            }
-            break;
-        }
+        StatusOverlay::setStatus(filename);
     }
-
-    surface->Release();
+    else
+    {
+        snprintf(filename, sizeof(filename), "Screenshot failed - D3DX Error %lx", hr);
+        StatusOverlay::setStatus(filename);
+    }
 }
 
 static void displayFlag(DWORD flag, const char *en, const char *ds)
@@ -118,6 +132,11 @@ void MacroFunctions::ToggleLightingMode() {
     displayFlag(USE_FFESHADER, "New dynamic lighting", "Standard dynamic lighting");
 }
 
+void MacroFunctions::ToggleTransparencyAA() {
+    Configuration.MGEFlags ^= TRANSPARENCY_AA;
+    displayFlag(TRANSPARENCY_AA, "Transparency AA enabled", "Transparency AA disabled");
+}
+
 void MacroFunctions::ToggleZoom() {
     Configuration.MGEFlags ^= ZOOM_ASPECT;
     displayFlag(ZOOM_ASPECT, "Zoom enabled", "Zoom disabled");
@@ -134,18 +153,18 @@ void MacroFunctions::DecreaseZoom() {
 }
 
 void MacroFunctions::ToggleCrosshair() {
-	DECLARE_MWBRIDGE
-	mwBridge->ToggleCrosshair();
+    DECLARE_MWBRIDGE
+    mwBridge->ToggleCrosshair();
 }
 
 void MacroFunctions::NextTrack() {
     DECLARE_MWBRIDGE
-	mwBridge->SkipToNextTrack();
+    mwBridge->SkipToNextTrack();
 }
 
 void MacroFunctions::DisableMusic() {
     DECLARE_MWBRIDGE
-	mwBridge->DisableMusic();
+    mwBridge->DisableMusic();
 }
 
 void MacroFunctions::IncreaseFOV() {
@@ -168,38 +187,64 @@ void MacroFunctions::HaggleLess100() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(10
 void MacroFunctions::HaggleLess1000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(1000); }
 void MacroFunctions::HaggleLess10000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(10000); }
 
+static void displayCamPosition()
+{
+    char str[256];
+    snprintf(str, sizeof(str), "Camera offset at (%.0f, %.0f, %.0f)",
+             Configuration.Offset3rdPerson.x, Configuration.Offset3rdPerson.y, Configuration.Offset3rdPerson.z);
+    StatusOverlay::setStatus(str);
+}
+
 void MacroFunctions::MoveForward3PCam() {
     DECLARE_MWBRIDGE
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+    {
         Configuration.Offset3rdPerson.y = std::min(-25.0, Configuration.Offset3rdPerson.y * 0.96);
+        displayCamPosition();
+    }
 }
 
 void MacroFunctions::MoveBack3PCam() {
     DECLARE_MWBRIDGE
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+    {
         Configuration.Offset3rdPerson.y = std::max(-2500.0, Configuration.Offset3rdPerson.y * 1.04);
+        displayCamPosition();
+    }
 }
 
 void MacroFunctions::MoveLeft3PCam() {
     DECLARE_MWBRIDGE
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+    {
         Configuration.Offset3rdPerson.x = std::max(-125.0, Configuration.Offset3rdPerson.x - 1.0);
+        displayCamPosition();
+    }
 }
 
 void MacroFunctions::MoveRight3PCam() {
     DECLARE_MWBRIDGE
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+    {
         Configuration.Offset3rdPerson.x = std::min(125.0, Configuration.Offset3rdPerson.x + 1.0);
+        displayCamPosition();
+    }
 }
 
 void MacroFunctions::MoveDown3PCam() {
     DECLARE_MWBRIDGE
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+    {
         Configuration.Offset3rdPerson.z = std::max(-125.0, Configuration.Offset3rdPerson.z - 1.0);
+        displayCamPosition();
+    }
 }
 
 void MacroFunctions::MoveUp3PCam() {
     DECLARE_MWBRIDGE
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
+    {
         Configuration.Offset3rdPerson.z = std::min(125.0, Configuration.Offset3rdPerson.z + 1.0);
+        displayCamPosition();
+    }
 }

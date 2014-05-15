@@ -141,8 +141,10 @@ namespace MGEgui.Localization {
         
         public void Apply (Form form, Localization localization) {
             FieldInfo messages_field;
-            Dictionary<string, string> dict = localization.langFile.getSectionKeys(form.Name + ".Text");
+            List<ToolStrip> toolstrips = new List<ToolStrip>();
+            foreach(Control c in form.Controls) { if(c is ToolStrip) toolstrips.Add((ToolStrip)c); }
             
+            Dictionary<string, string> dict = localization.langFile.getSectionKeys(form.Name + ".Text");
             if(dict.ContainsKey(form.Name))
             	form.Text = dict[form.Name];
             
@@ -158,6 +160,13 @@ namespace MGEgui.Localization {
                     }
                     else
                         control.Text = entry.Value;
+                }
+                
+                foreach(ToolStrip ts in toolstrips) {
+                	ToolStripItem[] items = ts.Items.Find(entry.Key, true);
+                	foreach(ToolStripItem tsitem in items) {
+                		tsitem.Text = entry.Value;
+                	}
                 }
             }
 

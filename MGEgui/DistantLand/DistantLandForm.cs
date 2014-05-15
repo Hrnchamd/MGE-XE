@@ -2311,14 +2311,26 @@ namespace MGEgui.DistantLand {
             lFinishDesc.Text = "";
             string spc = "   ";
             string mark = "» ";
-            if (SetupFlags["ChkLandTex"]) lFinishDesc.Text += (stage == 1 ? mark : spc) + (stage > 1 ? "Land textures generation" : "Waiting for land textures generation to") + " complete\r\n";
-            else lFinishDesc.Text += (stage == 1 ? mark : spc) + (stage > 1 ? "Land textures generation" : "Waiting for land textures generation to be") + " skipped\r\n";
-            if (SetupFlags["ChkLandMesh"]) lFinishDesc.Text += (stage == 2 ? mark : spc) + (stage > 2 ? "Land meshes generation" : "Waiting for land meshes generation to") + " complete\r\n";
-            else lFinishDesc.Text += (stage == 2 ? mark : spc) + (stage > 2 ? "Land meshes generation" : "Waiting for land meshes generation to be") + " skipped\r\n";
-            if (SetupFlags["ChkStatics"]) lFinishDesc.Text += (stage == 3 ? mark : spc) + (stage > 3 ? "Statics generation" : "Waiting for statics generation to") + " complete\r\n";
-            else lFinishDesc.Text += (stage == 3 ? mark : spc) + (stage > 3 ? "Statics generation" : "Waiting for statics generation to be") + " skipped\r\n";
-            if (SetupFlags["ChkStatics"]) lFinishDesc.Text += (stage == 4 ? mark : spc) + (stage > 4 ? "Distant textures generation" : "Waiting for distant textures generation to") + " complete\r\n";
-            else lFinishDesc.Text += (stage == 4 ? mark : spc) + (stage > 4 ? "Distant textures generation" : "Waiting for distant textures generation to be") + " skipped\r\n";
+            
+            if (SetupFlags["ChkLandTex"])
+                lFinishDesc.Text += (stage == 1 ? mark : spc) + (stage > 1 ? strings["SummaryStage1Complete"] : strings["SummaryStage1Working"]) + "\r\n";
+            else
+                lFinishDesc.Text += (stage == 1 ? mark : spc) + strings["SummaryStage1Skip"] + "\r\n";
+            
+            if (SetupFlags["ChkLandMesh"])
+                lFinishDesc.Text += (stage == 2 ? mark : spc) + (stage > 2 ? strings["SummaryStage2Complete"] : strings["SummaryStage2Working"]) + "\r\n";
+            else
+                lFinishDesc.Text += (stage == 2 ? mark : spc) + strings["SummaryStage2Skip"] + "\r\n";
+            
+            if (SetupFlags["ChkStatics"])
+                lFinishDesc.Text += (stage == 3 ? mark : spc) + (stage > 3 ? strings["SummaryStage3Complete"] : strings["SummaryStage3Working"]) + "\r\n";
+            else
+                lFinishDesc.Text += (stage == 3 ? mark : spc) + strings["SummaryStage3Skip"] + "\r\n";
+            
+            if (SetupFlags["ChkStatics"])
+                lFinishDesc.Text += (stage == 4 ? mark : spc) + (stage > 4 ? strings["SummaryStage4Complete"] : strings["SummaryStage4Working"]) + "\r\n";
+            else
+                lFinishDesc.Text += (stage == 4 ? mark : spc) + strings["SummaryStage4Skip"] + "\r\n";
         }
 
         void cmbTexWorldResolution_SelectedIndexChanged(object sender, EventArgs e) {

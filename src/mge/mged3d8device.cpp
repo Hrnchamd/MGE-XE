@@ -175,6 +175,11 @@ HRESULT _stdcall MGEProxyDevice::BeginScene()
             StatusOverlay::init(realDevice);
             StatusOverlay::setStatus(XE_VERSION_STRING);
             MGEhud::init(realDevice);
+
+            // Set scaling on Morrowind's UI system
+            if(Configuration.UIScale != 1.0f)
+                mwBridge->setUIScale(Configuration.UIScale);
+
             isHUDready = true;
         }
 
@@ -585,6 +590,7 @@ void captureMaterial(const D3DMATERIAL8 *a)
     frs.material.diffuse = a->Diffuse;
     frs.material.ambient = a->Ambient;
     frs.material.emissive = a->Emissive;
+    frs.material.emissive.a = a->Power;
 }
 
 // --------------------------------------------------------

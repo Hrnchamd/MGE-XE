@@ -1,6 +1,7 @@
 
 #include "quadtree.h"
 #include "ffeshader.h"
+#include "specificrender.h"
 #include <string>
 #include <vector>
 #include <tr1/unordered_map>
@@ -25,6 +26,7 @@ public:
     static const float waveTexWorldRes = 2.5f;
     static const int GrassInstStride = 48;
     static const int MaxGrassElements = 8192;
+    static const float kMoonTag = 88888.0f;
 
     static bool ready;
     static bool isRenderCached;
@@ -39,6 +41,8 @@ public:
     static IDirect3DVertexDeclaration9 *StaticDecl;
     static IDirect3DVertexDeclaration9 *WaterDecl;
     static IDirect3DVertexDeclaration9 *GrassDecl;
+
+    static VendorSpecificRendering vsr;
 
     static unordered_map<string, WorldSpace> mapWorldSpaces;
     static const WorldSpace *currentWorldSpace;
@@ -75,6 +79,7 @@ public:
     static float sunVis;
     static RGBVECTOR sunCol, sunAmb, ambCol;
     static RGBVECTOR nearfogCol, horizonCol;
+    static RGBVECTOR atmOutscatter, atmInscatter;
     static float fogStart, fogEnd;
     static float fogNearStart, fogNearEnd;
     static float windScaling, niceWeather;
@@ -90,6 +95,7 @@ public:
     static D3DXHANDLE ehSunCol, ehSunAmb, ehSunVec;
     static D3DXHANDLE ehSkyCol, ehFogCol1, ehFogCol2;
     static D3DXHANDLE ehSunPos, ehSunVis;
+    static D3DXHANDLE ehOutscatter, ehInscatter;
     static D3DXHANDLE ehFogStart, ehFogRange;
     static D3DXHANDLE ehFogNearStart, ehFogNearRange;
     static D3DXHANDLE ehDissolveRange;
@@ -98,6 +104,8 @@ public:
     static D3DXHANDLE ehTime;
     static D3DXHANDLE ehRippleOrigin;
     static D3DXHANDLE ehWaveHeight;
+
+    static void (*captureScreenFunc)(IDirect3DSurface9 *);
 
     static bool init(IDirect3DDevice9 *realDevice);
     static bool initShader();
@@ -121,6 +129,7 @@ public:
     static void setHorizonColour(const RGBVECTOR& c);
     static void setAmbientColour(const RGBVECTOR& c);
     static void setSunLight(const D3DLIGHT8 *s);
+    static void setScattering(const RGBVECTOR& out, const RGBVECTOR& in);
     static void adjustFog();
     static bool inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
 
@@ -163,6 +172,7 @@ public:
     static void updatePostShader(MGEShader *shader);
 
     static IDirect3DSurface9 * captureScreen();
+    static void requestCaptureNoUI(void (*func)(IDirect3DSurface9 *));
 };
 
 class RenderTargetSwitcher

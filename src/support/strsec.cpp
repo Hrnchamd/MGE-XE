@@ -7,15 +7,15 @@
 // Secure string functions are Microsoft-specific library functions
 // These are not intended to be secure, but to allow compilation with other targets
 
-int strcpy_s(char *dest, int n, const char *src) { strcpy(dest, src); return 0; }
+int strcpy_s(char *dest, size_t n, const char *src) { strcpy(dest, src); return 0; }
 
-int strcat_s(char *dest, int n, const char *src) { strcat(dest, src); return 0; }
+int strcat_s(char *dest, size_t n, const char *src) { strcat(dest, src); return 0; }
 
-int sprintf_s(char *dest, int n, const char *format, ...)
+int sprintf_s(char *dest, size_t n, const char *format, ...)
 {
     va_list args;
     va_start(args, format);
-    vsprintf(dest, format, args);
+    vsnprintf(dest, n, format, args);
     va_end(args);
     return 0;
 }

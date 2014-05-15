@@ -6,7 +6,23 @@
 
 static MWBridge m_instance;
 
-typedef void (_stdcall *mmHaggleProc)();
+
+class VirtualMemWriteAccessor
+{
+    void *address;
+    size_t length;
+    DWORD oldProtect;
+
+public:
+    VirtualMemWriteAccessor(void *addr, size_t len) : address(addr), length(len)
+    {
+        VirtualProtect(address, length, PAGE_EXECUTE_READWRITE, &oldProtect);
+    }
+    ~VirtualMemWriteAccessor()
+    {
+        VirtualProtect(address, length, oldProtect, &oldProtect);
+    }
+};
 
 //-----------------------------------------------------------------------------
 
@@ -288,7 +304,7 @@ bool MWBridge::IsExterior()
 {
     assert(m_loaded);
     DWORD addr = read_dword(eEnviro);
-    if ( addr !=0 )
+    if ( addr != 0 )
         return read_dword(addr + 0xAC) == 0;
     else
         return 0;
@@ -420,6 +436,15 @@ RGBVECTOR* MWBridge::CurFogColVector()
 
 //-----------------------------------------------------------------------------
 
+DWORD MWBridge::getSceneFogCol()
+{
+    DWORD addr = read_dword(eEnviro) + 0x9c;
+    addr = read_dword(addr) + 0x1c;
+    return read_dword(addr);
+}
+
+//-----------------------------------------------------------------------------
+
 void MWBridge::setSceneFogCol(DWORD c)
 {
     DWORD addr = read_dword(eEnviro) + 0x9c;
@@ -449,14 +474,11 @@ float * MWBridge::GetWindVector()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::WthrStruc(int wthr)
+DWORD MWBridge::GetWthrStruct(int wthr)
 {
     assert(m_loaded);
-    if (wthr >= 0 && wthr <= 9)
-    {
-        DWORD addr = read_dword(eWthrArray + (wthr << 2));
-        if (addr != 0) return addr;
-    }
+    if(wthr >= 0 && wthr <= 9)
+        return read_dword(eWthrArray + 4*wthr);
     return 0;
 }
 
@@ -465,12 +487,13 @@ DWORD MWBridge::WthrStruc(int wthr)
 int MWBridge::GetWthrString(int wthr, int offset, char str[])
 {
     assert(m_loaded);
+    DWORD addr = GetWthrStruct(wthr);
     int i = 0;
-    DWORD addr = WthrStruc(wthr);
-    if (addr != 0)
+
+    if(addr != 0)
     {
         addr += offset;
-        while ((str[i] = read_byte(addr)) != 0)
+        while((str[i] = read_byte(addr)) != 0)
         {
             ++addr;
             ++i;
@@ -485,17 +508,19 @@ int MWBridge::GetWthrString(int wthr, int offset, char str[])
 void MWBridge::SetWthrString(int wthr, int offset, char str[])
 {
     assert(m_loaded);
+    DWORD addr = GetWthrStruct(wthr);
     int i = 0;
-    DWORD addr = WthrStruc(wthr);
-    if (addr != 0)
+
+    if(addr != 0)
     {
-        addr += offset;
         char c;
+        addr += offset;
         do
         {
-            write_byte(addr++, c = str[i++]);
+            c = str[i++];
+            write_byte(addr++, c);
         }
-        while (c != 0);
+        while(c != 0);
     }
 }
 
@@ -638,66 +663,13 @@ BYTE MWBridge::GetSunVis()
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::GetSunriseHour()
+// setSunriseSunset - Sets sunrise and sunset time and duration
+void MWBridge::setSunriseSunset(float rise_time, float rise_dur, float set_time, float set_dur)
 {
-    assert(m_loaded);
-    return read_float(eSunriseHour);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunriseHour(float hour)
-{
-    assert(m_loaded);
-    write_float(eSunriseHour, hour);
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::GetSunriseDuration()
-{
-    assert(m_loaded);
-    return read_float(eSunriseDuration);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunriseDuration(float duration)
-{
-    assert(m_loaded);
-    write_float(eSunriseDuration, duration);
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::GetSunsetHour()
-{
-    assert(m_loaded);
-    return read_float(eSunsetHour);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunsetHour(float hour)
-{
-    assert(m_loaded);
-    write_float(eSunsetHour, hour);
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::GetSunsetDuration()
-{
-    assert(m_loaded);
-    return read_float(eSunsetDuration);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::SetSunsetDuration(float duration)
-{
-    assert(m_loaded);
-    write_float(eSunsetDuration, duration);
+    write_float(eSunriseHour, rise_time);
+    write_float(eSunriseDuration, rise_dur);
+    write_float(eSunsetHour, set_time);
+    write_float(eSunsetDuration, set_dur);
 }
 
 //-----------------------------------------------------------------------------
@@ -769,6 +741,7 @@ float MWBridge::WaterLevel()
 void MWBridge::HaggleMore(DWORD num)
 {
     assert(m_loaded);
+    typedef void (_stdcall *mmHaggleProc)();
     mmHaggleProc proc = (mmHaggleProc)eHaggleMore;
     num -= 1;
     if (num != 0)
@@ -789,8 +762,9 @@ void MWBridge::HaggleMore(DWORD num)
 void MWBridge::HaggleLess(DWORD num)
 {
     assert(m_loaded);
+    typedef void (_stdcall *mmHaggleProc)();
     mmHaggleProc proc = (mmHaggleProc)eHaggleLess;
-    num -=1;
+    num -= 1;
     if (num != 0)
     {
         int d = (int)read_dword(0x7D287C);
@@ -886,21 +860,21 @@ float MWBridge::PlayerPositionZ()
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::PlayerHeight()   //player eyes height, in CS
+float MWBridge::PlayerHeight()   // player eyes height, in CS
 {
-    float height = read_float(0x7D39F0); //like "Master", only read, in game PlayerHeight*125.0f
+    float height = read_float(0x7D39F0); // like "Master", only read, in game PlayerHeight*125.0f
     return (height == 0 ? 1.0f : height);
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsPlayerWaiting()   //wait\sleep menu
+bool MWBridge::IsPlayerWaiting()   // wait/sleep menu
 {
     DWORD addr = eMaster1;
-    if (addr != 0)
+    if(addr != 0)
     {
-        addr=read_dword(addr + 0x354);
-        if (addr != 0) return (read_byte(addr) == 0x01);
+        addr = read_dword(addr + 0x354);
+        if(addr != 0) return (read_byte(addr) == 0x01);
     }
     return false;
 }
@@ -910,9 +884,9 @@ bool MWBridge::IsPlayerWaiting()   //wait\sleep menu
 // getPlayerMACP - Gets main game object holding the player state
 DWORD MWBridge::getPlayerMACP()
 {
-    DWORD blah0 = read_dword(eMaster1 + 0x5c);
-    DWORD blah1 = read_dword(blah0 + 0x24);
-    return read_dword(blah1);
+    DWORD addr = read_dword(eMaster1 + 0x5c);
+    addr = read_dword(addr + 0x24);
+    return read_dword(addr);
 }
 
 //-----------------------------------------------------------------------------
@@ -1010,10 +984,9 @@ void MWBridge::toggleRipples(BOOL enabled)
     DWORD code = read_dword(addr);
     if (enabled && code == 0x33504D8B || !enabled && code == 0x3390C931) return;
     code = enabled ? 0x33504D8B : 0x3390C931;
-    DWORD oldProtect;
-    VirtualProtect((LPVOID) addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_dword(addr, code);
-    VirtualProtect((LPVOID) addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1027,7 +1000,7 @@ void MWBridge::markWaterNode(float k)
     addr = read_dword(addr + 0xb4ec);
     addr = read_dword(addr + 0xb4);
 
-    // Look for NiMaterialProperty in property list
+    // Look for NiMaterialProperty in property list (skipping first property)
     DWORD linknode;
     for(linknode = read_dword(addr + 0x8c); linknode; linknode = read_dword(linknode + 4))
     {
@@ -1042,6 +1015,38 @@ void MWBridge::markWaterNode(float k)
 
 //-----------------------------------------------------------------------------
 
+// markMoonNodes
+// Edits the material for both moons to set (normally unused) specular power to a recognizable value
+void MWBridge::markMoonNodes(float k)
+{
+    DWORD addr = read_dword(eMaster);
+    addr = read_dword(addr + 0x58);
+
+    // Get masser node
+    DWORD moon = read_dword(addr + 0x48);
+    moon = read_dword(moon + 0x10);
+
+    // Look for NiMaterialProperty in first property slot
+    DWORD node = read_dword(moon + 0x88);
+
+    // Write to specular power member
+    if(node && read_dword(node) == 0x75036c)
+        write_float(node + 0x4c, k);
+
+    // Get secunda node
+    moon = read_dword(addr + 0x44);
+    moon = read_dword(moon + 0x10);
+
+    // Look for NiMaterialProperty in first property slot
+    node = read_dword(moon + 0x88);
+
+    // Write to specular power member
+    if(node && read_dword(node) == 0x75036c)
+        write_float(node + 0x4c, k);
+}
+
+//-----------------------------------------------------------------------------
+
 // disableScreenshotFunc
 // Stops Morrowind from taking its own screenshots, or displaying an error message, when PrtScr is pressed
 void MWBridge::disableScreenshotFunc()
@@ -1049,10 +1054,8 @@ void MWBridge::disableScreenshotFunc()
     DWORD addr = 0x41b08a;
 
     // Replace jz short with jmp (74 -> eb)
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_byte(addr, 0xeb);
-    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1063,11 +1066,9 @@ void MWBridge::disableSunglare()
     DWORD addr = 0x4404fb;
 
     // Replace jz short with nop (74 xx -> 90 90)
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_byte(addr, 0x90);
     write_byte(addr+1, 0x90);
-    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
 }
 
 //-----------------------------------------------------------------------------
@@ -1097,10 +1098,52 @@ void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
     DWORD calladdr = func ? (DWORD)func : 0x6cc7b0;
 
     // Replace jump address
-    DWORD oldProtect;
-    VirtualProtect((LPVOID)addr, 4, PAGE_EXECUTE_READWRITE, &oldProtect);
+    VirtualMemWriteAccessor vw((void*)addr, 4);
     write_dword(addr, calladdr - (addr+4));
-    VirtualProtect((LPVOID)addr, 4, oldProtect, &oldProtect);
+}
+
+//-----------------------------------------------------------------------------
+
+// setUIScale - Configures the scaling of Morrowind's UI system, must be called early before main menu
+void MWBridge::setUIScale(float scale)
+{
+    DWORD addr = read_dword(eMaster);
+    int w, h;
+
+    // Read UI viewport width and height
+    w = read_dword(addr + 0x78);
+    h = read_dword(addr + 0x7c);
+    // Calculate a smaller viewport that will be scaled up by Morrowind
+    w = (int)(w / scale);
+    h = (int)(h / scale);
+    // Write new viewport size
+    write_dword(addr + 0x78, w);
+    write_dword(addr + 0x7c, h);
+
+    // Call UI configuration method to update scaling
+    // uses properties of fastcall to put object in ecx
+    typedef void (__fastcall *uiproc1)(DWORD, int, DWORD);
+    uiproc1 ui_configureUIScale = (uiproc1)0x40f2a0;
+    ui_configureUIScale(addr, 0, w);
+
+    // Call UI configuration method to update mouse bounds
+    // uses properties of fastcall to put object in ecx
+    typedef void (__fastcall *uiproc2)(DWORD, int, int, int, int, int);
+    uiproc2 ui_configureUIMouseArea = (uiproc2)0x408740;
+    int w_half = (w+1) / 2, h_half = (h+1) / 2;
+    ui_configureUIMouseArea(read_dword(addr + 0x50), 0, -w_half, -h_half, w_half, h_half);
+
+    // Patch raycast system to use UI viewport size instead of D3D viewport size
+    addr = 0x6f5157;
+    const BYTE patch[] = {
+        0xa1, 0xdc, 0x67, 0x7c, 0x00,       // mov eax, eMaster
+        0x8b, 0x78, 0x78,                   // mov edi, [eax+0x78]
+        0x8b, 0x40, 0x7c,                   // mov eax, [eax+0x7c]
+        0x90, 0x90, 0x90                    // nops
+    };
+
+    VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
+    memcpy((void *)addr, patch, sizeof(patch));
 }
 
 //-----------------------------------------------------------------------------

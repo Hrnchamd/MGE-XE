@@ -839,6 +839,121 @@ end
 #end
 
 
+## MWSE 0.9.3
+function
+	Name = XDropItem
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0d
+end
+function
+	Name = XEquipItem
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0e
+end
+function
+	Name = XSetName
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f0f
+end
+function
+	Name = XGetSpellEffects
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Opcode = 0x3f10
+end
+function
+	Name = XSetOwner
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f11
+end
+function
+	Name = XCast
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3f12
+end
+function
+	Name = XAddSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3fA0
+end
+function
+	Name = XRemoveSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3fA1
+end
+function
+	Name = XSetValue
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3e61
+end
+function
+	Name = XSetWeight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e62
+end
+function
+	Name = XSetQuality
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e63
+end
+function
+	Name = XSetCondition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3e64
+end
+function
+	Name = XSetMaxCondition
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3e65
+end
+function
+	Name = XSetCharge
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e66
+end
+function
+	Name = XSetMaxCharge
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Float
+	Opcode = 0x3e67
+end
+function
+	Name = XStringMatch
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long | String
+	Param2 = Long | String
+	Opcode = 0x3e68
+end
+
+
 # MGE extensions
 function
 	Name = MGEWipeAll
@@ -2218,10 +2333,122 @@ function
 	Opcode = 0x3a01
 end
 function
-	Name = XSetGSint
+	Name = XSetGSlong
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
 	Param1 = Long
 	Param2 = Long
 	Opcode = 0x3a01
+end
+
+function
+	Name = XSetWeatherSky
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a80
+end
+function
+	Name = XSetWeatherFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a81
+end
+function
+	Name = XSetWeatherAmbient
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a82
+end
+function
+	Name = XSetWeatherSun
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Short
+	Param2 = Short
+    Param3 = Long
+    Param4 = Long
+    Param5 = Long
+	Opcode = 0x3a83
+end
+function
+	Name = XSetSunriseSunset
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Float
+    Param2 = Float
+    Param3 = Float
+    Param4 = Float
+	Opcode = 0x3a84
+end
+function
+	Name = XSetWeatherScattering
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Float
+    Param2 = Float
+    Param3 = Float
+    Param4 = Float
+    Param5 = Float
+    Param6 = Float
+	Opcode = 0x3a85
+end
+
+function
+	Name = MGEEnableShader
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3ab0
+end
+function
+	Name = MGEDisableShader
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3ab1
+end
+function
+	Name = MGEShaderSetFloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Float
+	Opcode = 0x3ab2
+end
+function
+	Name = MGEShaderSetLong
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Long
+	Opcode = 0x3ab3
+end
+function
+	Name = MGEShaderSetVector
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Float
+	Param4 = Float
+	Param5 = Float
+	Param6 = Float
+	Opcode = 0x3ab4
 end

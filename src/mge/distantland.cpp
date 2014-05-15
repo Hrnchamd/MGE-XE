@@ -76,8 +76,12 @@ void DistantLand::renderStage0()
                 DWORD p = mwBridge->CellHasWeather() ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
                 effect->SetFloat(ehDissolveRange, 7168.0);
                 effect->BeginPass(p);
+                vsr.beginAlphaToCoverage(device);
+
                 cullDistantStatics(&mwView, &distProj);
                 renderDistantStatics();
+
+                vsr.endAlphaToCoverage(device);
                 effect->EndPass();
             }
 
@@ -166,7 +170,9 @@ void DistantLand::renderStage1()
             if(Configuration.MGEFlags & USE_GRASS)
             {
                 effect->BeginPass(PASS_RENDERGRASSINST);
+                vsr.beginAlphaToCoverage(device);
                 renderGrassInst();
+                vsr.endAlphaToCoverage(device);
                 effect->EndPass();
             }
 
@@ -292,7 +298,7 @@ void DistantLand::renderStageBlend()
     stateSaved->Release();
 }
 
-// renderStageWater - Render distant water without blend, for exceptional cases
+// renderStageWater - Render replacement water plane
 void DistantLand::renderStageWater()
 {
     DECLARE_MWBRIDGE
@@ -340,7 +346,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     // View position
     effect->SetMatrix(ehView, view);
     effect->SetMatrix(ehProj, proj);
-    effect->SetFloatArray(ehEyePos, eyePos,3);
+    effect->SetFloatArray(ehEyePos, eyePos, 3);
 
     // Sunlight
     RGBVECTOR totalAmb = sunAmb + ambCol;
@@ -363,6 +369,12 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehFogCol2, horizonCol, 3);
     effect->SetFloat(ehNiceWeather, niceWeather);
 
+    if(Configuration.MGEFlags & USE_ATM_SCATTER)
+    {
+        effect->SetFloatArray(ehOutscatter, atmOutscatter, 3);
+        effect->SetFloatArray(ehInscatter, atmInscatter, 3);
+    }
+
     // Wind, requires smoothing as it is very noisy
     static float smoothWind[2];
     if(!mwBridge->IsMenu())
@@ -379,9 +391,16 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloat(ehTime, mwBridge->simulationTime());
 }
 
+// setScattering - Set scattering coefficients for atmospheric scattering shader
+void DistantLand::setScattering(const RGBVECTOR& out, const RGBVECTOR& in)
+{
+    atmOutscatter = out;
+    atmInscatter = in;
+}
+
 static float lerp(float x0, float x1, float t)
 {
-    return (1-t)*x0 + t*x1;
+    return (1.0f-t) * x0 + t * x1;
 }
 
 static float saturate(float x)
@@ -448,10 +467,15 @@ void DistantLand::adjustFog()
             else
             {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
+                // Linear density matched to exp fog at dist = 1280 and dist = 7168 (or fog end if closer)
                 fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
                 fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
-                float expEnd = exp(-(7168.0 - fogNearStart) / (fogNearEnd - fogNearStart));
-                fogNearEnd =  (7168.0 - expEnd * fogNearStart) / (1.0 - expEnd);
+
+                float farIntercept = std::min(fogEnd, 7168.0f);
+                float expStart = exp(-(1280.0 - fogNearStart) / (fogNearEnd - fogNearStart));
+                float expEnd = exp(-(farIntercept - fogNearStart) / (fogNearEnd - fogNearStart));
+                fogNearStart = 1280.0 + (farIntercept - 1280.0) * (1 - expStart) / (expEnd - expStart);
+                fogNearEnd = 1280.0 + (farIntercept - 1280.0) * -expStart / (expEnd - expStart);
             }
         }
         else
@@ -478,16 +502,13 @@ void DistantLand::adjustFog()
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
-    DWORD c;
-    device->GetRenderState(D3DRS_FOGCOLOR, &c);
+    RGBVECTOR c = mwBridge->getSceneFogCol();
 
     if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
     {
-        D3DXCOLOR c0(c), c1(c);
+        RGBVECTOR c0(c), c1(c);
 
         // Simplified version of scattering from the shader
-        const D3DXVECTOR3 scatter(0.07, 0.36, 0.76);
-        const D3DXVECTOR3 scatter2(0.16, 0.37, 0.62);
         const RGBVECTOR *skyCol = mwBridge->CurSkyColVector();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
         const float sunaltitude = pow(1 + sunPos.z, 10);
@@ -500,13 +521,22 @@ void DistantLand::adjustFog()
         float fogE = fogEnd / Configuration.DL.ExpFogDistMult;
         float fogdist = (7168.0 - fogS) / (fogE - fogS);
         float fog = saturate(exp(-fogdist));
-        fogdist = saturate(0.19 * fogdist);
+        fogdist = saturate(0.21 * fogdist);
 
-        float mie = 1.246 * sunaltitude2;
+        D3DXVECTOR2 horizonDir(eyeVec.x, eyeVec.y);
+        D3DXVec2Normalize(&horizonDir, &horizonDir);
+        float suncos =  horizonDir.x * sunPos.x + horizonDir.y * sunPos.y;
+        float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
         float rayl = 1 - 0.09 * mie;
         float atmdep = 1.33;
 
-        D3DXVECTOR3 att = atmdep * scatter2 * (sunaltitude_a + mie);
+        RGBVECTOR midscatter = 0.5f * (atmInscatter + atmOutscatter);
+        D3DXVECTOR3 scatter;
+        scatter.x = lerp(midscatter.r, atmOutscatter.r, suncos);
+        scatter.y = lerp(midscatter.g, atmOutscatter.g, suncos);
+        scatter.z = lerp(midscatter.b, atmOutscatter.b, suncos);
+
+        D3DXVECTOR3 att = atmdep * scatter * (sunaltitude_a + mie);
         att.x = (1 - exp(-fogdist * att.x)) / att.x;
         att.y = (1 - exp(-fogdist * att.y)) / att.y;
         att.z = (1 - exp(-fogdist * att.z)) / att.z;
@@ -516,25 +546,27 @@ void DistantLand::adjustFog()
         c1.r = k0.x * k1.x; c1.g = k0.y * k1.y; c1.b = k0.z * k1.z;
 
         // Convert from additive inscatter to Direct3D fog model
-        c1 /= 1.0 - fog;
+        // The correction factor is clamped to avoid creating infinities
+        c1 /= std::max(0.02, 1.0 - fog);
 
         // Scattering fog only occurs in nice weather
         c0 = (1.0f - niceWeather) * c0 + niceWeather * c1;
 
         // Save colour for matching near fog in shaders
-        nearfogCol = RGBVECTOR(c0);
+        nearfogCol = c0;
 
         // Alter Morrowind's fog colour through its scenegraph
         // This way it automatically restores the correct colour if it has to switch fog modes mid-frame
-        mwBridge->setSceneFogCol((DWORD)nearfogCol);
+        DWORD fc = (DWORD)nearfogCol;
+        mwBridge->setSceneFogCol(fc);
 
         // Set device fog colour to propagate change immediately
-        device->SetRenderState(D3DRS_FOGCOLOR, (DWORD)nearfogCol);
+        device->SetRenderState(D3DRS_FOGCOLOR, fc);
     }
     else
     {
         // Save colour for matching near fog in shaders
-        nearfogCol = RGBVECTOR(c);
+        nearfogCol = c;
     }
 }
 
@@ -570,6 +602,13 @@ void DistantLand::postProcess()
             texDistantBlend = PostShaders::borrowBuffer(0);
             isRenderCached = true;
         }
+        else if(captureScreenFunc)
+        {
+            IDirect3DSurface9 *surface = captureScreen();
+            (*captureScreenFunc)(surface);
+            if(surface) surface->Release();
+            captureScreenFunc = NULL;
+        }
 
         // Shadow map inset
         ///renderShadowDebug();
@@ -598,43 +637,41 @@ void DistantLand::updatePostShader(MGEShader *shader)
 {
     DECLARE_MWBRIDGE
 
-    ID3DXEffect *effect = shader->effect;
-
     // Internal textures
     // TODO: Should be set once at init time
-    effect->SetTexture(shader->ehVars[EV_depthframe], texDepthFrame);
-    effect->SetTexture(shader->ehVars[EV_watertexture], texWater);
+    shader->SetTexture(EV_depthframe, texDepthFrame);
+    shader->SetTexture(EV_watertexture, texWater);
 
     // View position
     float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.Zoom.zoom : 1.0;
-    effect->SetMatrix(shader->ehVars[EV_mview], &mwView);
-    effect->SetMatrix(shader->ehVars[EV_mproj], &mwProj);
-    effect->SetFloatArray(shader->ehVars[EV_eyevec], eyeVec, 3);
-    effect->SetFloatArray(shader->ehVars[EV_eyepos], eyePos, 3);
-    effect->SetFloat(shader->ehVars[EV_fov], Configuration.ScreenFOV / zoom);
+    shader->SetMatrix(EV_mview, &mwView);
+    shader->SetMatrix(EV_mproj, &mwProj);
+    shader->SetFloatArray(EV_eyevec, eyeVec, 3);
+    shader->SetFloatArray(EV_eyepos, eyePos, 3);
+    shader->SetFloat(EV_fov, Configuration.ScreenFOV / zoom);
 
     // Lighting
     RGBVECTOR totalAmb = sunAmb + ambCol;
-    effect->SetFloatArray(shader->ehVars[EV_sunvec], sunVec, 3);
-    effect->SetFloatArray(shader->ehVars[EV_suncol], sunCol, 3);
-    effect->SetFloatArray(shader->ehVars[EV_sunamb], totalAmb, 3);
-    effect->SetFloatArray(shader->ehVars[EV_sunpos], sunPos, 3);
-    effect->SetFloat(shader->ehVars[EV_sunvis], lerp(sunVis, 1.0, 0.333 * niceWeather));
+    shader->SetFloatArray(EV_sunvec, sunVec, 3);
+    shader->SetFloatArray(EV_suncol, sunCol, 3);
+    shader->SetFloatArray(EV_sunamb, totalAmb, 3);
+    shader->SetFloatArray(EV_sunpos, sunPos, 3);
+    shader->SetFloat(EV_sunvis, lerp(sunVis, 1.0, 0.333 * niceWeather));
 
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
-    effect->SetFloat(shader->ehVars[EV_fogstart], fogS);
-    effect->SetFloat(shader->ehVars[EV_fogrange], fogE);
-    effect->SetFloatArray(shader->ehVars[EV_fogcol], horizonCol, 3);
+    shader->SetFloat(EV_fogstart, fogS);
+    shader->SetFloat(EV_fogrange, fogE);
+    shader->SetFloatArray(EV_fogcol, horizonCol, 3);
 
     // Other
     // In cells without water, set very low waterlevel for shaders that clip against water
     float water = mwBridge->CellHasWater() ? mwBridge->WaterLevel() : -1e9;
-    effect->SetFloat(shader->ehVars[EV_time], mwBridge->simulationTime());
-    effect->SetFloat(shader->ehVars[EV_waterlevel], water);
-    effect->SetBool(shader->ehVars[EV_isinterior], !mwBridge->CellHasWeather());
-    effect->SetBool(shader->ehVars[EV_isunderwater], mwBridge->IsUnderwater(eyePos.z));
+    shader->SetFloat(EV_time, mwBridge->simulationTime());
+    shader->SetFloat(EV_waterlevel, water);
+    shader->SetBool(EV_isinterior, !mwBridge->CellHasWeather());
+    shader->SetBool(EV_isunderwater, mwBridge->IsUnderwater(eyePos.z));
 }
 
 //------------------------------------------------------------
@@ -779,6 +816,10 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
     {
         recordSky.push_back(*rs);
 
+        // Check for moon geometry, and mark those records by setting lighting off
+        if(frs->material.emissive.a == kMoonTag)
+            recordSky.back().useLighting = false;
+
         // If using atmosphere scattering, draw sky later in stage 0
         if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER))
             return false;
@@ -793,6 +834,13 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
     return true;
 }
 
+// requestCaptureNoUI - Set a function to be called with a screen capture
+// just after post-processing and before the UI is drawn
+void DistantLand::requestCaptureNoUI(void (*func)(IDirect3DSurface9 *))
+{
+    captureScreenFunc = func;
+}
+
 // captureScreen - Capture a screenshot, fixing any alpha channel issue
 IDirect3DSurface9 * DistantLand::captureScreen()
 {
@@ -802,6 +850,9 @@ IDirect3DSurface9 * DistantLand::captureScreen()
     // Resolve multisampled back buffer
     t = PostShaders::borrowBuffer(0);
     t->GetSurfaceLevel(0, &s);
+
+    // Cancel render cache, borrowBuffer just overwrote it
+    isRenderCached = false;
 
     // Set alpha channel to opaque in case something with alpha write was rendered
     D3DVIEWPORT9 vp;

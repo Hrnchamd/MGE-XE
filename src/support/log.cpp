@@ -51,7 +51,7 @@ int LOG::log(const char* fmt, ...)
     if(handle != INVALID_HANDLE_VALUE) {
         DWORD size = strlen(buf);
         BOOL result = WriteFile(handle,buf,size,&written,NULL);
-        if(written != size) printf("log error: %d != %d\n",written,size);
+        if(written != size) printf("log error: %lu != %lu\n",written,size);
         if(!result) {
             FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,0,GetLastError(),0,buf,sizeof(buf),0);
             printf(buf);
@@ -88,7 +88,7 @@ int LOG::logline(const char* fmt, ...) {
     if(handle != INVALID_HANDLE_VALUE) {
         DWORD size = strlen(buf);
         BOOL result = WriteFile(handle,buf,size,&written,NULL);
-        if(written != size) printf("log error: %d != %d\n",written,size);
+        if(written != size) printf("log error: %lu != %lu\n",written,size);
         if(!result) {
             FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,0,GetLastError(),0,buf,sizeof(buf),0);
             printf(buf);
