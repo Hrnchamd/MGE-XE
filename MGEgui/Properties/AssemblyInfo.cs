@@ -2,11 +2,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("MGEgui")]
+[assembly: AssemblyTitle("MGEXEgui")]
 [assembly: AssemblyDescription("Graphical interface for changing MGE settings")]
 [assembly: AssemblyCompany("MGE Developers")]
-[assembly: AssemblyProduct("MGEgui")]
-[assembly: AssemblyCopyright("Copyright ©  2006 - 2013")]
+[assembly: AssemblyProduct("MGEXEgui")]
+[assembly: AssemblyCopyright("Copyright ©  2006 - 2014")]
 
 [assembly: AssemblyVersion(MGEgui.Statics.versionNumber)]
 [assembly: AssemblyFileVersion(MGEgui.Statics.versionNumber)]
