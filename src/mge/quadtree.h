@@ -1,6 +1,6 @@
 
-#include "DLMath.h"
-#include "MemoryPool.h"
+#include "dlmath.h"
+#include "memorypool.h"
 #include <vector>
 #include <map>
 #include <deque>

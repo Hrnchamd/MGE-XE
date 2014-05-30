@@ -7,7 +7,7 @@
 #include "distantshader.h"
 #include "dlformat.h"
 #include "postshaders.h"
-#include "MorrowindBSA.h"
+#include "morrowindbsa.h"
 #include "mwbridge.h"
 
 #define READ_FROM_BUFFER(src, dest, size) memcpy((void*)dest, (void*)src, size); src += size;

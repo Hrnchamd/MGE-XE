@@ -2,7 +2,7 @@
 #include <map>
 #include "proxydx/d3d8header.h"
 #include "support/strsec.h"
-#include "MorrowindBSA.h"
+#include "morrowindbsa.h"
 
 struct BSAEntry {
     HANDLE file;

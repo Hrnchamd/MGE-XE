@@ -6,7 +6,7 @@
 #include "support/winheader.h"
 
 #include "configuration.h"
-#include "INIData.h"
+#include "inidata.h"
 
 ConfigurationStruct Configuration;
 

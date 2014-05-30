@@ -1,5 +1,5 @@
 
-#include "DLMath.h"
+#include "dlmath.h"
 
 //-----------------------------------------------------------------------------
 // BoundingSphere class
