@@ -11,8 +11,8 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 {
     DECLARE_MWBRIDGE
 
-    // Switch to render target (borrow shadow z-buffer)
-    RenderTargetSwitcher rtsw(texReflection, surfShadowZ);
+    // Switch to render target
+    RenderTargetSwitcher rtsw(texReflection, surfReflectionZ);
     device->Clear(0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, horizonCol, 1.0, 0);
 
     // Calculate reflected view matrix, mirror plane at water mesh level

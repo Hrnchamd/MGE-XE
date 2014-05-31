@@ -9,6 +9,7 @@
 // Uniform variables
 
 shared float2 rcpres;
+shared float shadowRcpRes;
 shared matrix view, proj, world;
 shared matrix vertexblendpalette[4];
 shared matrix shadowviewproj[2];

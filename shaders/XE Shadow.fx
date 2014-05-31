@@ -27,13 +27,13 @@ float shadowDeltaZ(float4 shadow0pos, float4 shadow1pos)
     if(all(saturate(1 - abs(shadow0pos.xyz))))
     {
         // Layer 0, inner
-        float2 shadowUV = (0.5 + 0.5*shadowPixelSize) + float2(0.5, -0.5) * shadow0pos.xy;
+        float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow0pos.xy;
         dz = tex2D(sampDepth, shadowUV).g / ESM_scale - shadow0pos.z;
     }
     else if(all(saturate(1 - abs(shadow1pos.xyz))))
     {
         // Layer 1
-        float2 shadowUV = (0.5 + 0.5*shadowPixelSize) + float2(0.5, -0.5) * shadow1pos.xy;
+        float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow1pos.xy;
         dz = tex2D(sampDepth, shadowUV).r / ESM_scale - shadow1pos.z;
     }
     
@@ -143,7 +143,7 @@ DebugOut ShadowDebugVS (float4 pos : POSITION)
     OUT.pos = float4(0, 0, 0, 1);
     OUT.pos.x = 1 + 0.25 * (rcpres.x/rcpres.y) * (pos.x - 1);
     OUT.pos.y = 1 + 1.0/512.0 + 0.5 * (pos.y - 1);
-    OUT.tex = (0.5 + 0.5*shadowPixelSize) + float2(0.5, -0.5) * pos.xy;
+    OUT.tex = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * pos.xy;
     OUT.tex.y *= 2;
     
     return OUT;

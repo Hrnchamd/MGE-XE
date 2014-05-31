@@ -15,7 +15,7 @@ static const float shade = 0.4;
 static const float3 shadecolour = float3(1.0, 0.97, 0.81);
 
 // ESM exponent, affects shadow fade near shadow casters, bounded by float accuracy to ~88
-// Higher means less fade at shadow root, but sharper shadows
+// Higher means less fade at shadow root, but less effective softening of shadows
 static const float ESM_c = 60.0;
 
 // ESM bias, for countering blurred depth pushing surface depth values through objects
@@ -23,6 +23,3 @@ static const float ESM_bias = 2e-3 * ESM_c;
 
 // Scale stored depth to use (most of) FP16 range
 static const float ESM_scale = 32768.0;
-
-// Shadow map pixel dimension (fixed)
-static const float shadowPixelSize = 1/1024.0;

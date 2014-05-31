@@ -45,6 +45,7 @@ IDirect3DTexture9 *DistantLand::texDepthFrame;
 IDirect3DSurface9 *DistantLand::surfDepthDepth;
 IDirect3DTexture9 *DistantLand::texDistantBlend;
 IDirect3DTexture9 *DistantLand::texReflection;
+IDirect3DSurface9 *DistantLand::surfReflectionZ;
 IDirect3DVolumeTexture9 *DistantLand::texWater;
 IDirect3DVertexBuffer9 *DistantLand::vbWater;
 IDirect3DIndexBuffer9 *DistantLand::ibWater;
@@ -77,6 +78,7 @@ float DistantLand::fogNearStart, DistantLand::fogNearEnd;
 float DistantLand::windScaling, DistantLand::niceWeather;
 
 D3DXHANDLE DistantLand::ehRcpRes;
+D3DXHANDLE DistantLand::ehShadowRcpRes;
 D3DXHANDLE DistantLand::ehWorld;
 D3DXHANDLE DistantLand::ehView;
 D3DXHANDLE DistantLand::ehProj;
@@ -273,6 +275,7 @@ bool DistantLand::initShader()
     }
 
     ehRcpRes = effect->GetParameterByName(0, "rcpres");
+    ehShadowRcpRes = effect->GetParameterByName(0, "shadowRcpRes");
     ehView = effect->GetParameterByName(0, "view");
     ehProj = effect->GetParameterByName(0, "proj");
     ehShadowViewproj = effect->GetParameterByName(0, "shadowviewproj");
@@ -309,6 +312,7 @@ bool DistantLand::initShader()
     device->GetViewport(&vp);
     float rcpres[2] = { 1.0 / vp.Width, 1.0 / vp.Height };
     effect->SetFloatArray(ehRcpRes, rcpres, 2);
+    effect->SetFloat(ehShadowRcpRes, 1.0 / Configuration.DL.ShadowResolution);
 
     LOG::logline("-- Shader compiled OK");
 
@@ -375,17 +379,32 @@ bool DistantLand::initDepth()
 bool DistantLand::initWater()
 {
     HRESULT hr;
+    const UINT reflRes = 1024;
 
     // Reflection render target
-    hr = device->CreateTexture(1024, 1024, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texReflection, NULL);
+    hr = device->CreateTexture(reflRes, reflRes, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texReflection, NULL);
     if (hr != D3D_OK)
     {
         LOG::logline("!! Failed to create reflection render target");
         return false;
     }
 
-    // Reflection render re-uses shadow Z-buffer (1024x1024)
-    // (surfShadowZ)
+    // Reflection Z-buffer
+    if(Configuration.DL.ShadowResolution == reflRes)
+    {
+        // Re-use shadow Z-buffer
+        surfShadowZ->AddRef();
+        surfReflectionZ = surfShadowZ;
+    }
+    else
+    {
+        hr = device->CreateDepthStencilSurface(reflRes, reflRes, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, TRUE, &surfReflectionZ, NULL);
+        if(hr != D3D_OK)
+        {
+            LOG::logline("!! Failed to create reflection Z buffer");
+            return false;
+        }
+    }
 
     // Water normals and geometry
     const int resS = (Configuration.MGEFlags & DYNAMIC_RIPPLES) ? 150 : 16;
@@ -562,7 +581,7 @@ bool DistantLand::initShadow()
     // Use *16F since *32F may not be filtered
     const D3DFORMAT shadowFormat = D3DFMT_G16R16F;
     const D3DFORMAT shadowZFormat = D3DFMT_D24X8;
-    const UINT shadowSize = 1024;
+    const UINT shadowSize = Configuration.DL.ShadowResolution;
     HRESULT hr;
 
     hr = device->CreateTexture(shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texShadow, NULL);
@@ -1110,6 +1129,7 @@ void DistantLand::release()
 
     texWater->Release(); texWater = 0;
     texReflection->Release(); texReflection = 0;
+    surfReflectionZ->Release(); surfReflectionZ = 0;
     vbWater->Release(); vbWater = 0;
     ibWater->Release(); ibWater = 0;
     vbGrassInstances->Release(); vbGrassInstances = 0;

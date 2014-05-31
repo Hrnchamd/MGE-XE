@@ -60,6 +60,7 @@ public:
     static IDirect3DSurface9 *surfDepthDepth;
     static IDirect3DTexture9 *texDistantBlend;
     static IDirect3DTexture9 *texReflection;
+    static IDirect3DSurface9 *surfReflectionZ;
     static IDirect3DVolumeTexture9 *texWater;
     static IDirect3DVertexBuffer9 *vbWater;
     static IDirect3DIndexBuffer9 *ibWater;
@@ -84,7 +85,7 @@ public:
     static float fogNearStart, fogNearEnd;
     static float windScaling, niceWeather;
 
-    static D3DXHANDLE ehRcpRes;
+    static D3DXHANDLE ehRcpRes, ehShadowRcpRes;
     static D3DXHANDLE ehWorld, ehView, ehProj;
     static D3DXHANDLE ehShadowViewproj;
     static D3DXHANDLE ehVertexBlendState, ehVertexBlendPalette;

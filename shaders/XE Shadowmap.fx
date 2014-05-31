@@ -71,7 +71,7 @@ ShadowPostOut ShadowSoftenVS (float4 pos : POSITION)
     ShadowPostOut OUT;
     
     OUT.pos = pos;
-    OUT.texcoords = (0.5 + 0.5*shadowPixelSize) + float2(0.5, -0.5) * pos.xy;
+    OUT.texcoords = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * pos.xy;
     return OUT;
 }
 
@@ -82,17 +82,17 @@ float4 ShadowSoftenPS (ShadowPostOut IN) : COLOR0
     float4 s = tex2D(sampDepth, IN.texcoords);
     if(!hasalpha)
     {
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(-1.42*shadowPixelSize, 0));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(-0.71*shadowPixelSize, 0));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0.71*shadowPixelSize, 0));
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(1.42*shadowPixelSize, 0));
+        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(-1.42*shadowRcpRes, 0));
+        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(-0.71*shadowRcpRes, 0));
+        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0.71*shadowRcpRes, 0));
+        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(1.42*shadowRcpRes, 0));
     }
     else
     {
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(0, -1.42*shadowPixelSize));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0, -0.71*shadowPixelSize));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0, 0.71*shadowPixelSize));
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(0, 1.42*shadowPixelSize));
+        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(0, -1.42*shadowRcpRes));
+        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0, -0.71*shadowRcpRes));
+        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0, 0.71*shadowRcpRes));
+        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(0, 1.42*shadowRcpRes));
     }
 
     return s / 3.0;

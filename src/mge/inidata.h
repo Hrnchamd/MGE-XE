@@ -102,7 +102,7 @@ const tdictionary dictSSFormat = {countof(dictentSSFormat), dictentSSFormat};
 
 
 const iniSetting iniSettings[] = {
-    // Generic Flags
+    // Generic flags
     {&Configuration.MGEFlags, t_bit, FPS_COUNTER_BIT, siniRendState, "MGE FPS Counter", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, DISPLAY_MESSAGES_BIT, siniRendState, "MGE Messages", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
@@ -110,7 +110,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, MWSE_DISABLED_BIT, siniMisc, "Internal MWSE Disabled", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_MENU_CACHING_BIT, siniMisc, "Use Menu Background Caching", True, &dictBool, DICTONLY, 0, 0},
 
-    // Distant Land Flags
+    // Distant Land flags
     {&Configuration.MGEFlags, t_bit, USE_DISTANT_LAND_BIT, siniDL, "Distant Land", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_DISTANT_STATICS_BIT, siniDL, "Distant Statics", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECTIVE_WATER_BIT, siniDL, "Water Reflects Land", True, &dictBool, DICTONLY, 0, 0},
@@ -138,7 +138,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.HDRReactionSpeed, t_float, 1, siniMisc, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
 
-    // Generic Variables
+    // Generic variables
     {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},
     {&Configuration.SSDir, t_string, sizeof(Configuration.SSDir), siniRendState, "Screenshot Output Directory", "", NULL, 0, 0, 0},
     {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "Morrowind", NULL, 0, 0, 0},
@@ -153,7 +153,7 @@ const iniSetting iniSettings[] = {
     // Shaders, flat list
     {&Configuration.ShaderChain, t_set, sizeof(Configuration.ShaderChain), siniShaders, NULL, NULL, NULL, 0, 0, 0},
 
-    // Distant Land Variables
+    // Distant Land, variables
     {&Configuration.DL.DrawDist, t_float, 1, siniDL, "Draw Distance", "5", NULL, MINMAX, 1, 300},
     {&Configuration.DL.NearStaticEnd, t_float, 1, siniDL, "Near Statics End", "2", NULL, MINMAX, 2, 299.8},
     {&Configuration.DL.FarStaticEnd, t_float, 1, siniDL, "Far Statics End", "4", NULL, MINMAX, 2.1, 299.9},
@@ -166,11 +166,12 @@ const iniSetting iniSettings[] = {
     {&Configuration.DL.BelowWaterFogEnd, t_float, 1, siniDL, "Below Water Fog End", "0.3", NULL, MINMAX, 0.1, 300},
     {&Configuration.DL.InteriorFogStart, t_float, 1, siniDL, "Interior Fog Start", "0", NULL, MINMAX, -0.9, 9.9},
     {&Configuration.DL.InteriorFogEnd, t_float, 1, siniDL, "Interior Fog End", "2.0", NULL, MINMAX, 0.1, 10},
+    {&Configuration.DL.ExpFogDistMult, t_float, 1, siniDL, "Exponential Distance Multiplier", "4.0", NULL, MINMAX, 2.5, 5.0},
     {&Configuration.DL.WaterWaveHeight, t_uint8, 1, siniDL, "Water Wave Height", "0", NULL, MINMAX, 0, 250},
     {&Configuration.DL.WaterCaustics, t_uint8, 1, siniDL, "Water Caustics Intensity", "50", NULL, MINMAX, 0, 100},
-    {&Configuration.DL.ExpFogDistMult, t_float, 1, siniDL, "Exponential Distance Multiplier", "4.0", NULL, MINMAX, 2.5, 5.0},
+    {&Configuration.DL.ShadowResolution, t_uint32, 1, siniDL, "Shadow Resolution", "1024", NULL, MINMAX, 512, 8192},
 
-    // Distant land weather
+    // Distant Land, weather
     {&Configuration.DL.Wind[0], t_float, 1, siniDLWeather, "Clear Wind Ratio", "0.1", NULL, MINMAX, 0, 1},
     {&Configuration.DL.FogD[0], t_float, 1, siniDLWeather, "Clear Fog Ratio", "1", NULL, MINMAX, 0.001, 2},
     {&Configuration.DL.FgOD[0], t_float, 1, siniDLWeather, "Clear Fog Offset", "0", NULL, MINMAX, 0, 90},
