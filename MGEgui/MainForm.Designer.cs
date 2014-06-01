@@ -1628,13 +1628,13 @@ namespace MGEgui {
             // bMWLightSettings
             // 
             this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bMWLightSettings.Enabled = false;
-            this.bMWLightSettings.Location = new System.Drawing.Point(15, 378);
+            this.bMWLightSettings.Location = new System.Drawing.Point(150, 378);
             this.bMWLightSettings.Name = "bMWLightSettings";
             this.bMWLightSettings.Size = new System.Drawing.Size(128, 25);
             this.bMWLightSettings.TabIndex = 10;
             this.bMWLightSettings.Text = "Light Settings...";
             this.bMWLightSettings.UseVisualStyleBackColor = true;
+            this.bMWLightSettings.Click += new System.EventHandler(this.bMWLightSettings_Click);
             // 
             // pDLStatics
             // 
@@ -2062,7 +2062,7 @@ namespace MGEgui {
             // bDLWthr
             // 
             this.bDLWthr.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bDLWthr.Location = new System.Drawing.Point(150, 378);
+            this.bDLWthr.Location = new System.Drawing.Point(15, 378);
             this.bDLWthr.Name = "bDLWthr";
             this.bDLWthr.Size = new System.Drawing.Size(128, 25);
             this.bDLWthr.TabIndex = 8;

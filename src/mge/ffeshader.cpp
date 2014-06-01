@@ -18,6 +18,8 @@ D3DXHANDLE FixedFunctionShader::ehLightSunDirection, FixedFunctionShader::ehLigh
 D3DXHANDLE FixedFunctionShader::ehLightFalloffQuadratic, FixedFunctionShader::ehLightFalloffLinear, FixedFunctionShader::ehLightFalloffConstant;
 D3DXHANDLE FixedFunctionShader::ehTexgenTransform, FixedFunctionShader::ehBumpMatrix, FixedFunctionShader::ehBumpLumiScaleBias;
 
+float FixedFunctionShader::sunMultiplier, FixedFunctionShader::ambMultiplier;
+
 static string buildArgString(DWORD arg, const string& mask, const string& sampler);
 
 
@@ -71,7 +73,14 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ehBumpLumiScaleBias = effect->GetParameterByName(0, "bumpLumiScaleBias");
 
     effectDefaultPurple = effect;
+    sunMultiplier = ambMultiplier = 1.0;
     return true;
+}
+
+void FixedFunctionShader::updateLighting(float sunMult, float ambMult)
+{
+    sunMultiplier = sunMult;
+    ambMultiplier = ambMult;
 }
 
 void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const FragmentState *frs, const LightState *lightrs)
@@ -186,6 +195,10 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         }
     }
 
+    // Apply light multipliers, for HDR light levels
+    sunDiffuse *= sunMultiplier;
+    ambient *= ambMultiplier;
+
     // Special case, check if ambient state is pure white (distant land ignores this for a reason)
     // Morrowind temporarily sets this for full bright particle effects, but just adding it
     // to other ambient sources above would cause over-brightness
@@ -229,7 +242,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         if(tex) tex->Release();
     }
 
-   // Set common state and render
+    // Set common state and render
     effectFFE->SetInt(ehVertexBlendState, rs->vertexBlendState);
     if(rs->vertexBlendState)
         effectFFE->SetMatrixArray(ehVertexBlendPalette, rs->worldTransforms, 4);

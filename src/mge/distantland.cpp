@@ -27,6 +27,7 @@ void DistantLand::renderStage0()
     setView(&mwView);
     adjustFog();
     setupCommonEffect(&mwView, &mwProj);
+    FixedFunctionShader::updateLighting(lightSunMult, lightAmbMult);
 
     // Select distant static set
     selectDistantCell();
@@ -356,6 +357,14 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehSunPos, sunPos, 3);
     effect->SetFloat(ehSunVis, sunVis);
 
+    if(Configuration.MGEFlags & USE_FFESHADER)
+    {
+        // Apply light multiplier settings to distant land
+        RGBVECTOR s = lightSunMult * sunCol, a = lightAmbMult * totalAmb;
+        effect->SetFloatArray(ehSunCol, s, 3);
+        effect->SetFloatArray(ehSunAmb, a, 3);
+    }
+
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
@@ -428,12 +437,16 @@ void DistantLand::adjustFog()
             ws = lerp(Configuration.DL.Wind[wthr1], Configuration.DL.Wind[wthr2], ratio);
             niceWeather = lerp((wthr1 <= 1) ? 1.0 : 0.0, (wthr2 <= 1) ? 1.0 : 0.0, ratio);
             niceWeather *= niceWeather;
+            lightSunMult = lerp(Configuration.Lighting.SunMult[wthr1], Configuration.Lighting.SunMult[wthr2], ratio);
+            lightAmbMult = lerp(Configuration.Lighting.AmbMult[wthr1], Configuration.Lighting.AmbMult[wthr2], ratio);
         }
         else if (wthr1 >= 0 && wthr1 <= 9) {
             ff = Configuration.DL.FogD[wthr1];
             fo = Configuration.DL.FgOD[wthr1] / 100.0;
             ws = Configuration.DL.Wind[wthr1];
             niceWeather = (wthr1 <= 1) ? 1.0 : 0.0;
+            lightSunMult = Configuration.Lighting.SunMult[wthr1];
+            lightAmbMult = Configuration.Lighting.AmbMult[wthr1];
         }
 
         fogStart = ff * (Configuration.DL.AboveWaterFogStart - fo * Configuration.DL.AboveWaterFogEnd);
@@ -447,6 +460,8 @@ void DistantLand::adjustFog()
         fogEnd = Configuration.DL.InteriorFogEnd;
         niceWeather = 0;
         windScaling = 0;
+        lightSunMult = 1.0;
+        lightAmbMult = 1.0;
     }
 
     // Convert from cells to in-game units

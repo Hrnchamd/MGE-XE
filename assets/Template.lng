@@ -37,9 +37,15 @@
 ;; "\r\n"	- carriage return and line feed
 ;; "\r"		- carriage return
 ;;
-;; Other characters that are currently replaced by a special character when escaped are:
+;; Other characters that are replaced by a special character when escaped are:
 ;; "\b"		- backspace
 ;; "\t"		- tab
+;;
+;; The "&" character inside text indicates the character after will be an Alt+character
+;; shortcut that will select the control. These shortcuts appear as an underline; depending
+;; on your OS version, underlines will only appear after you press Alt. It is not necessary
+;; to have a shortcut for everything, if you wish to add them it should be a unique letter
+;; for the tab page or menu.
 ;;
 ;; Backslash character inside a localized string (\) needs to be escaped too - i.e. "\\",
 ;; otherwise it won't be displayed, because it is used to escape following it character.
@@ -48,12 +54,14 @@
 ;; might be more or less strict for finding the start and end of quoted strings or comments,
 ;; than only by first and last occurance of quotation mark, and whether (;) is outside of it.
 ;;
-;; Currently only 3 types of sections are supported:
+;; Currently 3 types of sections are supported:
 ;; [<FormName>.Text]			- for replacing text displayed on controls
 ;; [<FormName>.ToolTips]		- for replacing tooltips of either controls or tab pages
 ;; [<FormName>.Strings]			- for replacing other strings that can be displayed
 ;;
-;; For now only "MainForm", and global strings are translatable (but no ComboBoxes yet).
+;; ComboBoxes are localized by using the ; character as an item seperator. The number of
+;; items must match the template.
+;;
 ;; Tooltips of tab pages are handled differently, so they use the name of a control.
 
 
@@ -446,11 +454,39 @@ bSave = "Save"
 
 [DLWeatherForm.Tooltips]
 Save = "Saves all weather settings and closes the Weather Settings window."
-Cancel = "Closes Weather Settings window without saving changed settings."
+Cancel = "Closes the Weather Settings window without saving changed settings."
 Reset = "Resets all weather settings to their default value."
 Wind = "The wind factor affects how fast grass moves in each weather due to wind speed."
 FogDay = "Here you can set fog factor for each Morrowind weather type.\nIt is multiplied by the standard above fog distance to get the fog for each weather.\nAllowed value range is from 0.001 to 2.0."
 FogOffs = "Here you can set percent of fog depth that will be moved behind player for each weather type.\nSetting fog offset higher will move fog closer towards and then past the player.\nThis effect may be used to emulate additional mist or haze for some weather types.\nAllowed offset range is 0% - 90%."
+
+
+
+;;; Weather options
+[LightingForm.Text]
+DLWeatherForm = "Per-pixel Lighting Settings"
+gbSun = "Sun brightness multiplier"
+gbAmbient = "Ambient brightness multiplier"
+lClear = "Clear"
+lCloudy = "Cloudy"
+lFoggy = "Foggy"
+lOvercast = "Overcast"
+lRain = "Rain"
+lThunder = "Thunderstorm"
+lAsh = "Ashstorm"
+lBlight = "Blight"
+lSnow = "Snow"
+lBlizzard = "Blizzard"
+bCancel = "Cancel"
+bReset = "Reset"
+bSave = "Save"
+
+[LightingForm.Tooltips]
+Save = "Saves all light settings and closes the Light Settings window."
+Cancel = "Closes the Lights Settings window without saving changed settings."
+Reset = "Resets all light settings to their default value."
+Sun = "Multiplies the brightness of sunlight, when used with the per-pixel lighting shader."
+Ambient = "Multiplies the brightness of ambient light, when used with the per-pixel lighting shader."
 
 
 

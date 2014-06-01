@@ -1,6 +1,6 @@
 
 // XE Main.fx
-// MGE XE 0.9
+// MGE XE 0.10
 // Main render sequence
 
 #include "XE Common.fx"
@@ -33,7 +33,7 @@ StatVertOut StaticExteriorVS (StatVertIn IN)
     // Lighting
     float emissive = IN.normal.w; // Emissive stored in 4th value in normal vector
     float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
-    OUT.color = float4(saturate(IN.color.rgb * light), IN.color.a);
+    OUT.color = float4(IN.color.rgb * light, IN.color.a);
 
     OUT.texcoords_range = float3(IN.texcoords, dist);
     return OUT;
@@ -60,7 +60,7 @@ StatVertOut StaticInteriorVS (StatVertIn IN)
     // Lighting
     float emissive = IN.normal.w; // Emissive stored in 4th value in normal vector
     float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
-    OUT.color = float4(saturate(IN.color.rgb * light), IN.color.a);
+    OUT.color = float4(IN.color.rgb * light, IN.color.a);
 
     OUT.texcoords_range = float3(IN.texcoords, dist);
     return OUT;
@@ -120,8 +120,8 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
     normal = instancedMul(normal, IN.world0, IN.world1, IN.world2);
     
     // Lighting (with backface culling turned off, grass shading requires tweak factors)
-    float3 light = 0.5 * SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb; // + emissive; (some grass has it for no reason producing overbrightness)
-    OUT.colour.rgb = saturate(light);    // vertex colour is also unreliable
+    float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb; // + emissive; (some grass has it for no reason producing overbrightness)
+    OUT.colour.rgb = 0.8 * light;    // vertex colour is also unreliable
 
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
     OUT.colour.a = shadowSunEstimate(0.5);
@@ -228,7 +228,8 @@ float4 LandscapePS (in LandVertOut IN) : COLOR0
     detail *= tex2D(sampDetail, IN.texcoord * 90).g + 0.5;
 
     // Lighting
-    result *= detail * saturate(saturate(dot(-SunVec, normal)) * SunCol + SunAmb);
+    result *= SunCol * saturate(dot(-SunVec, normal)) + SunAmb;
+    result *= detail;
 
     // Fogging
     result = fogApply(result, IN.fog);

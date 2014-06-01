@@ -106,10 +106,13 @@ class FixedFunctionShader
     static D3DXHANDLE ehLightFalloffQuadratic, ehLightFalloffLinear, ehLightFalloffConstant;
     static D3DXHANDLE ehTexgenTransform, ehBumpMatrix, ehBumpLumiScaleBias;
 
+    static float sunMultiplier, ambMultiplier;
+
     static ID3DXEffect * generateMWShader(const ShaderKey& sk);
 
 public:
     static bool init(IDirect3DDevice *d, ID3DXEffectPool *pool);
+    static void updateLighting(float sunMult, float ambMult);
     static void renderMorrowind(const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
     static void release();
 };

@@ -397,6 +397,34 @@ FogOffs = "Here you can set percent of fog depth that will be moved behind playe
 
 
 
+;;; Weather options
+[LightingForm.Text]
+DLWeatherForm = "Per-pixel Lighting Settings"
+gbSun = "Sun brightness multiplier"
+gbAmbient = "Ambient brightness multiplier"
+lClear = "Clear"
+lCloudy = "Cloudy"
+lFoggy = "Foggy"
+lOvercast = "Overcast"
+lRain = "Rain"
+lThunder = "Thunderstorm"
+lAsh = "Ashstorm"
+lBlight = "Blight"
+lSnow = "Snow"
+lBlizzard = "Blizzard"
+bCancel = "Cancel"
+bReset = "Reset"
+bSave = "Save"
+
+[LightingForm.Tooltips]
+Save = "Saves all light settings and closes the Light Settings window."
+Cancel = "Closes the Lights Settings window without saving changed settings."
+Reset = "Resets all light settings to their default value."
+Sun = "Multiplies the brightness of sunlight, when used with the per-pixel lighting shader."
+Ambient = "Multiplies the brightness of ambient light, when used with the per-pixel lighting shader."
+
+
+
 ;;; Distant land wizard
 [DistantLandForm.Strings]
 NoWarnings = "No Warnings"

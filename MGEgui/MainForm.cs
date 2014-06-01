@@ -1308,6 +1308,11 @@ namespace MGEgui {
             (new DLWeatherForm ()).ShowDialog ();
         }
 
+        private void bMWLightSettings_Click(object sender, EventArgs e)
+        {
+            (new LightingForm()).ShowDialog();
+        }
+        
         private void bDistantLandWizard_Click (object sender, EventArgs e) {
             if (!DXMain.mCaps.SupportsSM3) {
                 MessageBox.Show (strings ["DLLackSM3"], Statics.strings ["Error"]);
@@ -1542,6 +1547,7 @@ namespace MGEgui {
 	        	f.ShowDialog();
         	}        	
         }
+        
     }
 
 }

@@ -132,6 +132,12 @@ struct ConfigurationStruct
         float FgOD[10];
     } DL;
 
+    struct
+    {
+        float SunMult[10];
+        float AmbMult[10];
+    } Lighting;
+
     char ShaderChain[512];
 
     bool LoadSettings();

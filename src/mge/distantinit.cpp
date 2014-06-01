@@ -76,6 +76,7 @@ RGBVECTOR DistantLand::atmOutscatter, DistantLand::atmInscatter;
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
 float DistantLand::windScaling, DistantLand::niceWeather;
+float DistantLand::lightSunMult, DistantLand::lightAmbMult;
 
 D3DXHANDLE DistantLand::ehRcpRes;
 D3DXHANDLE DistantLand::ehShadowRcpRes;

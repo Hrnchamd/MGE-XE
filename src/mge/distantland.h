@@ -84,6 +84,7 @@ public:
     static float fogStart, fogEnd;
     static float fogNearStart, fogNearEnd;
     static float windScaling, niceWeather;
+    static float lightSunMult, lightAmbMult;
 
     static D3DXHANDLE ehRcpRes, ehShadowRcpRes;
     static D3DXHANDLE ehWorld, ehView, ehProj;

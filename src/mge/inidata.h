@@ -14,7 +14,8 @@ const char *sections[] = {
     "Misc",
     "Distant Land",
     "Distant Land Weather",
-    "Shader Chain"
+    "Shader Chain",
+    "Per Pixel Lighting"
 };
 
 const char *siniGlobGraph = sections[0];
@@ -24,6 +25,7 @@ const char *siniMisc = sections[3];
 const char *siniDL = sections[4];
 const char *siniDLWeather = sections[5];
 const char *siniShaders = sections[6];
+const char *siniPPLighting = sections[7];
 
 const tdictent dictentBool [] = {
     {False, 0},
@@ -201,7 +203,29 @@ const iniSetting iniSettings[] = {
     {&Configuration.DL.FgOD[8], t_float, 1, siniDLWeather, "Snow Fog Offset", "40", NULL, MINMAX, 0, 90},
     {&Configuration.DL.Wind[9], t_float, 1, siniDLWeather, "Blizzard Wind Ratio", "0.9", NULL, MINMAX, 0, 1},
     {&Configuration.DL.FogD[9], t_float, 1, siniDLWeather, "Blizzard Fog Ratio", "0.16", NULL, MINMAX, 0.001, 2},
-    {&Configuration.DL.FgOD[9], t_float, 1, siniDLWeather, "Blizzard Fog Offset", "70", NULL, MINMAX, 0, 90}
+    {&Configuration.DL.FgOD[9], t_float, 1, siniDLWeather, "Blizzard Fog Offset", "70", NULL, MINMAX, 0, 90},
+
+    // Per-pixel lighting
+    {&Configuration.Lighting.SunMult[0], t_float, 1, siniPPLighting, "Clear Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[0], t_float, 1, siniPPLighting, "Clear Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[1], t_float, 1, siniPPLighting, "Cloudy Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[1], t_float, 1, siniPPLighting, "Cloudy Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[2], t_float, 1, siniPPLighting, "Foggy Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[2], t_float, 1, siniPPLighting, "Foggy Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[3], t_float, 1, siniPPLighting, "Overcast Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[3], t_float, 1, siniPPLighting, "Overcast Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[4], t_float, 1, siniPPLighting, "Rain Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[4], t_float, 1, siniPPLighting, "Rain Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[5], t_float, 1, siniPPLighting, "Thunderstorm Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[5], t_float, 1, siniPPLighting, "Thunderstorm Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[6], t_float, 1, siniPPLighting, "Ashstorm Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[6], t_float, 1, siniPPLighting, "Ashstorm Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[7], t_float, 1, siniPPLighting, "Blight Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[7], t_float, 1, siniPPLighting, "Blight Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[8], t_float, 1, siniPPLighting, "Snow Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[8], t_float, 1, siniPPLighting, "Snow Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.SunMult[9], t_float, 1, siniPPLighting, "Blizzard Sun Brightness", "1", NULL, MINMAX, 0, 10},
+    {&Configuration.Lighting.AmbMult[9], t_float, 1, siniPPLighting, "Blizzard Ambient Brightness", "1", NULL, MINMAX, 0, 10}
 };
 
 #endif /* _INIDATA_H_ */
