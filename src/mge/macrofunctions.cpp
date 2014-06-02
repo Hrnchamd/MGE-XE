@@ -137,6 +137,18 @@ void MacroFunctions::ToggleTransparencyAA() {
     displayFlag(TRANSPARENCY_AA, "Transparency AA enabled", "Transparency AA disabled");
 }
 
+void MacroFunctions::IncreaseViewRange() {
+    DECLARE_MWBRIDGE
+    float r = mwBridge->GetViewDistance();
+    mwBridge->SetViewDistance(std::min(7168.0, r + 512.0));
+}
+
+void MacroFunctions::DecreaseViewRange() {
+    DECLARE_MWBRIDGE
+    float r = mwBridge->GetViewDistance();
+    mwBridge->SetViewDistance(std::max(2500.0, r - 512.0));
+}
+
 void MacroFunctions::ToggleZoom() {
     Configuration.MGEFlags ^= ZOOM_ASPECT;
     displayFlag(ZOOM_ASPECT, "Zoom enabled", "Zoom disabled");

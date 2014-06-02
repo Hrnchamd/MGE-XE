@@ -16,6 +16,8 @@ public:
     static void ToggleGrass();
     static void ToggleLightingMode();
     static void ToggleTransparencyAA();
+    static void IncreaseViewRange();
+    static void DecreaseViewRange();
     static void ToggleZoom();
     static void ResetEnableZoom();
     static void IncreaseZoom();
@@ -78,6 +80,8 @@ enum GraphicsFuncs {
     GF_ShowLastText = 12,           // Shows the last status text again
     GF_Shader = 13,                 // Toggles post-process shaders
     GF_ToggleFps = 14,              // Toggles the fps counter
+    GF_IncreaseView = 21,           // Increase the view distance
+    GF_DecreaseView = 22,           // Decrease the view distance
     GF_ToggleCrosshair = 27,        // Toggles the crosshair
     GF_NextTrack = 28,              // Starts the next music track playing
     GF_DisableMusic = 29,           // Sets the music really quiet (due to bug at zero volume)

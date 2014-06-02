@@ -121,6 +121,8 @@ void * CreateInputWrapper(void *real)
     FakeFuncs[GF_ToggleText] = MacroFunctions::ToggleStatusText;
     FakeFuncs[GF_ShowLastText] = MacroFunctions::ShowLastMessage;
     FakeFuncs[GF_ToggleFps] = MacroFunctions::ToggleFpsCounter;
+    FakeFuncs[GF_IncreaseView] = MacroFunctions::IncreaseViewRange;
+    FakeFuncs[GF_DecreaseView] = MacroFunctions::DecreaseViewRange;
     FakeFuncs[GF_ToggleCrosshair] = MacroFunctions::ToggleCrosshair;
     FakeFuncs[GF_NextTrack] = MacroFunctions::NextTrack;
     FakeFuncs[GF_DisableMusic] = MacroFunctions::DisableMusic;
