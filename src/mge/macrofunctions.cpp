@@ -142,9 +142,15 @@ void MacroFunctions::ToggleZoom() {
     displayFlag(ZOOM_ASPECT, "Zoom enabled", "Zoom disabled");
 }
 
+void MacroFunctions::ResetEnableZoom() {
+    Configuration.MGEFlags |= ZOOM_ASPECT;
+    Configuration.Zoom.zoom = 1.0;
+    StatusOverlay::setStatus("Zoom reset");
+}
+
 void MacroFunctions::IncreaseZoom() {
     if(Configuration.MGEFlags & ZOOM_ASPECT)
-        Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + 0.0625, 8.0);
+        Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + 0.0625, 40.0);
 }
 
 void MacroFunctions::DecreaseZoom() {

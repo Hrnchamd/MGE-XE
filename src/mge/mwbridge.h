@@ -59,6 +59,7 @@ public:
     float simulationTime();
     float frameTime();
 
+    float * getMouseSensitivityYX();
     float GetViewDistance();
     void SetViewDistance(float dist);
     float GetAIDistance();

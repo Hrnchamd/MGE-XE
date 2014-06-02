@@ -40,7 +40,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomIn)
 // ZoomIn
 bool mwseZoomIn::execute(mwseInstruction *_this)
 {
-    Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + 0.0625f, 8.0f);
+    Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + 0.0625f, 40.0f);
     return true;
 }
 

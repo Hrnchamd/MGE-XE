@@ -1732,7 +1732,7 @@ namespace MGEgui {
         public ArrayList ConsoleCommand=new ArrayList();
 
         private List<byte> macroOrdering = new List<byte> {
-        	0, 13, 14, 27, 7, 8, 9, 11, 12, 21, 22, 28, 29, 36, 37, 38,
+        	0, 13, 14, 27, 7, 10, 8, 9, 11, 12, 21, 22, 28, 29, 36, 37, 38,
         	39, 40, 5, 41, 42, 30, 43, 31, 44, 32, 33, 45, 34, 46, 35, 48,
         	49, 50, 51, 52, 53
         };

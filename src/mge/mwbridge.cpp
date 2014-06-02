@@ -570,6 +570,15 @@ float MWBridge::frameTime()
 
 //-----------------------------------------------------------------------------
 
+// getMouseSensitivityYX() - Returns address of mouse sensitivity struct
+// data is float[2], Y sensitivity component is first
+float * MWBridge::getMouseSensitivityYX()
+{
+    return reinterpret_cast<float *>(eMaster1 + 0xe8);
+}
+
+//-----------------------------------------------------------------------------
+
 float MWBridge::GetViewDistance()
 {
     assert(m_loaded);

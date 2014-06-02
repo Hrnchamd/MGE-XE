@@ -17,6 +17,10 @@ static bool rendertargetNormal, isHUDready;
 static bool isMainView, isStencilScene, stage0Complete, isFrameComplete;
 static bool isWaterMaterial, waterDrawn;
 
+static bool zoomSensSaved;
+static float zoomSensX, zoomSensY;
+static float crosshairTimeout;
+
 static RenderedState rs;
 static FragmentState frs;
 static LightState lightrs;
@@ -97,7 +101,6 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
         if(Configuration.CrosshairAutohide && !mwBridge->IsLoadScreen())
         {
             // Update crosshair visibility
-            static float crosshairTimeout;
             float t = mwBridge->simulationTime();
 
             // Turn on if Morrowind ray cast picks up a target
@@ -127,6 +130,27 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
             Configuration.Zoom.zoom += Configuration.Zoom.rate * mwBridge->frameTime();
             Configuration.Zoom.zoom = std::max(1.0f, Configuration.Zoom.zoom);
             Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom, 8.0f);
+        }
+
+        float *mwSens = mwBridge->getMouseSensitivityYX();
+        if((Configuration.MGEFlags & ZOOM_ASPECT) && !mwBridge->IsMenu())
+        {
+            // Adjust sensitivity to accommodate zoom level
+            if(!zoomSensSaved)
+            {
+                zoomSensY = mwSens[0];
+                zoomSensX = mwSens[1];
+                zoomSensSaved = true;
+            }
+            mwSens[0] = zoomSensY / Configuration.Zoom.zoom;
+            mwSens[1] = zoomSensX / Configuration.Zoom.zoom;
+        }
+        else if(zoomSensSaved)
+        {
+            // Restore unzoomed sensitivity
+            mwSens[0] = zoomSensY;
+            mwSens[1] = zoomSensX;
+            zoomSensSaved = false;
         }
 
         // Main menu background video

@@ -117,6 +117,7 @@ void * CreateInputWrapper(void *real)
     FakeFuncs[GF_ToggleZoom] = MacroFunctions::ToggleZoom;
     FakeFuncs[GF_IncreaseZoom] = MacroFunctions::IncreaseZoom;
     FakeFuncs[GF_DecreaseZoom] = MacroFunctions::DecreaseZoom;
+    FakeFuncs[GF_ResetEnableZoom] = MacroFunctions::ResetEnableZoom;
     FakeFuncs[GF_ToggleText] = MacroFunctions::ToggleStatusText;
     FakeFuncs[GF_ShowLastText] = MacroFunctions::ShowLastMessage;
     FakeFuncs[GF_ToggleFps] = MacroFunctions::ToggleFpsCounter;

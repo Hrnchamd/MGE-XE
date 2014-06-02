@@ -17,6 +17,7 @@ public:
     static void ToggleLightingMode();
     static void ToggleTransparencyAA();
     static void ToggleZoom();
+    static void ResetEnableZoom();
     static void IncreaseZoom();
     static void DecreaseZoom();
     static void ToggleCrosshair();
@@ -71,7 +72,8 @@ enum GraphicsFuncs {
     GF_ToggleTrAA = 5,              // Toggles transparency AA
     GF_ToggleZoom = 7,              // Toggles zoom on and off
     GF_IncreaseZoom = 8,            // Increases zoom
-    GF_DecreaseZoom = 9,            // Deceases zoom
+    GF_DecreaseZoom = 9,            // Decreases zoom
+    GF_ResetEnableZoom = 10,        // Resets zoom level and enables zoom
     GF_ToggleText = 11,             // Toggles status text and fps counter on/off
     GF_ShowLastText = 12,           // Shows the last status text again
     GF_Shader = 13,                 // Toggles post-process shaders
