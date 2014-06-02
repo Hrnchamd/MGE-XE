@@ -99,7 +99,7 @@ void DistantLand::renderShadowLayer(int layer, float radius)
     lookAt.z = 16.0 * floor(lookAt.z / 16.0);
 
     // Create shadow frustum centred on lookAt, looking along lightVec
-    const float zrange = 8192.0;
+    const float zrange = kCellSize;
     nearPos.x = lookAt.x - zrange * lightVec.x;
     nearPos.y = lookAt.y - zrange * lightVec.y;
     nearPos.z = lookAt.z - zrange * lightVec.z;

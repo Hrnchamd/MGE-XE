@@ -75,6 +75,7 @@ RGBVECTOR DistantLand::nearfogCol, DistantLand::horizonCol;
 RGBVECTOR DistantLand::atmOutscatter, DistantLand::atmInscatter;
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
+float DistantLand::nearViewRange;
 float DistantLand::windScaling, DistantLand::niceWeather;
 float DistantLand::lightSunMult, DistantLand::lightAmbMult;
 
@@ -111,7 +112,7 @@ D3DXHANDLE DistantLand::ehFogStart;
 D3DXHANDLE DistantLand::ehFogRange;
 D3DXHANDLE DistantLand::ehFogNearStart;
 D3DXHANDLE DistantLand::ehFogNearRange;
-D3DXHANDLE DistantLand::ehDissolveRange;
+D3DXHANDLE DistantLand::ehNearViewRange;
 D3DXHANDLE DistantLand::ehWindVec;
 D3DXHANDLE DistantLand::ehNiceWeather;
 D3DXHANDLE DistantLand::ehTime;
@@ -304,7 +305,7 @@ bool DistantLand::initShader()
     ehFogRange = effect->GetParameterByName(0, "FogRange");
     ehFogNearStart = effect->GetParameterByName(0, "nearFogStart");
     ehFogNearRange = effect->GetParameterByName(0, "nearFogRange");
-    ehDissolveRange = effect->GetParameterByName(0, "dissolveRange");
+    ehNearViewRange = effect->GetParameterByName(0, "nearViewRange");
     ehWindVec = effect->GetParameterByName(0, "WindVec");
     ehNiceWeather = effect->GetParameterByName(0, "niceWeather");
     ehTime = effect->GetParameterByName(0, "time");

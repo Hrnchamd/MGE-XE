@@ -8,8 +8,6 @@
 #include "mwbridge.h"
 
 
-const float kDistantZBias = 5e-6;
-
 
 
 // renderStage0 - Render distant land at beginning of scene 0, after sky
@@ -75,7 +73,6 @@ void DistantLand::renderStage0()
 
                 // Draw distant statics, with alpha dissolve as they pass the near view boundary
                 DWORD p = mwBridge->CellHasWeather() ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
-                effect->SetFloat(ehDissolveRange, 7168.0);
                 effect->BeginPass(p);
                 vsr.beginAlphaToCoverage(device);
 
@@ -322,7 +319,7 @@ void DistantLand::renderStageWater()
         if(u || i)
         {
             // Set up clip plane at fog end for certain environments to save fillrate
-            float clipAt = Configuration.DL.InteriorFogEnd * 8192.0;
+            float clipAt = Configuration.DL.InteriorFogEnd * kCellSize;
             D3DXPLANE clipPlane(0, 0, -clipAt, mwProj._33 * clipAt + mwProj._43);
             device->SetClipPlane(0, clipPlane);
             device->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
@@ -376,6 +373,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehSkyCol, sky, 3);
     effect->SetFloatArray(ehFogCol1, nearfogCol, 3);
     effect->SetFloatArray(ehFogCol2, horizonCol, 3);
+    effect->SetFloat(ehNearViewRange, nearViewRange);
     effect->SetFloat(ehNiceWeather, niceWeather);
 
     if(Configuration.MGEFlags & USE_ATM_SCATTER)
@@ -422,6 +420,8 @@ void DistantLand::adjustFog()
 {
     DECLARE_MWBRIDGE
 
+    nearViewRange = mwBridge->GetViewDistance();
+
     // Get fog cell ranges based on environment and weather
     if(mwBridge->IsUnderwater(eyePos.z)) {
         fogStart = Configuration.DL.BelowWaterFogStart;
@@ -465,8 +465,8 @@ void DistantLand::adjustFog()
     }
 
     // Convert from cells to in-game units
-    fogStart *= 8192.0;
-    fogEnd *= 8192.0;
+    fogStart *= kCellSize;
+    fogEnd *= kCellSize;
 
     if(Configuration.MGEFlags & USE_DISTANT_LAND)
     {
@@ -482,11 +482,11 @@ void DistantLand::adjustFog()
             else
             {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
-                // Linear density matched to exp fog at dist = 1280 and dist = 7168 (or fog end if closer)
+                // Linear density matched to exp fog at dist = 1280 and dist = viewrange (or fog end if closer)
                 fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
                 fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
 
-                float farIntercept = std::min(fogEnd, 7168.0f);
+                float farIntercept = std::min(fogEnd, nearViewRange);
                 float expStart = exp(-(1280.0 - fogNearStart) / (fogNearEnd - fogNearStart));
                 float expEnd = exp(-(farIntercept - fogNearStart) / (fogNearEnd - fogNearStart));
                 fogNearStart = 1280.0 + (farIntercept - 1280.0) * (1 - expStart) / (expEnd - expStart);
@@ -509,9 +509,9 @@ void DistantLand::adjustFog()
         device->GetRenderState(D3DRS_FOGEND, (DWORD *)&fogNearEnd);
 
         // Reset fog end on toggling distant land as Morrowind assumes it doesn't get changed
-        if(fogNearEnd > 7168.0)
+        if(fogNearEnd > nearViewRange)
         {
-            fogNearEnd = 7168.0;
+            fogNearEnd = nearViewRange;
             device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
         }
     }
@@ -534,7 +534,7 @@ void DistantLand::adjustFog()
         // Calculate scatter colour at Morrowind draw distance boundary
         float fogS = fogStart / Configuration.DL.ExpFogDistMult;
         float fogE = fogEnd / Configuration.DL.ExpFogDistMult;
-        float fogdist = (7168.0 - fogS) / (fogE - fogS);
+        float fogdist = (nearViewRange - fogS) / (fogE - fogS);
         float fog = saturate(exp(-fogdist));
         fogdist = saturate(0.21 * fogdist);
 
@@ -764,7 +764,7 @@ void DistantLand::setProjection(D3DMATRIX *proj)
     // Move near plane from 1.0 to 4.0 for more z accuracy
     // Move far plane back to edge of draw distance
     if(Configuration.MGEFlags & USE_DISTANT_LAND)
-        editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * 8192.0);
+        editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * kCellSize);
 }
 
 // editProjectionZ - Alter the near and far clip planes of a projection matrix

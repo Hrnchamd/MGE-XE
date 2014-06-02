@@ -24,7 +24,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 
     // Calculate new projection
     D3DXMATRIX reflProj = *proj;
-    editProjectionZ(&reflProj, 4.0, Configuration.DL.DrawDist * 8192.0);
+    editProjectionZ(&reflProj, 4.0, Configuration.DL.DrawDist * kCellSize);
     effect->SetMatrix(ehProj, &reflProj);
 
     // Clipping setup
@@ -63,11 +63,12 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     {
         // Draw statics reflection, with opposite culling and no dissolve
         DWORD p = (mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z)) ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
-        effect->SetFloat(ehDissolveRange, 0);
+        effect->SetFloat(ehNearViewRange, 0);
         effect->BeginPass(p);
         device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
         renderReflectedStatics(&reflView, &reflProj);
         effect->EndPass();
+        effect->SetFloat(ehNearViewRange, nearViewRange);
     }
 
     if((Configuration.MGEFlags & REFLECT_SKY) && !recordSky.empty() && !mwBridge->IsUnderwater(eyePos.z))
@@ -124,7 +125,7 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRI
 {
     // Select appropriate static clipping distance
     D3DXMATRIX ds_proj = *proj, ds_viewproj;
-    float zn = 4.0f, zf = Configuration.DL.NearStaticEnd * 8192.0f;
+    float zn = 4.0f, zf = Configuration.DL.NearStaticEnd * kCellSize;
 
     // Don't draw beyond fully fogged distance; early out if frustum is empty
     zf = min(fogEnd, zf);

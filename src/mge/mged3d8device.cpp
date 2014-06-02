@@ -220,10 +220,14 @@ HRESULT _stdcall MGEProxyDevice::BeginScene()
             if(!DistantLand::ready)
             {
                 if(DistantLand::init(realDevice))
-                    // Initially force view distance to max, required for full extent shadows
+                {
+                    // Initially force view distance to max, required for full extent shadows and grass
                     mwBridge->SetViewDistance(7168.0);
+                }
                 else
+                {
                     StatusOverlay::setStatus("Serious error. Check mgeXE.log for details.");
+                }
             }
         }
         else

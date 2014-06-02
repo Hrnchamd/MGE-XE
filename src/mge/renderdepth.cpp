@@ -21,7 +21,7 @@ void DistantLand::renderDepth()
 
     // Projection should cover whole scene
     D3DXMATRIX distProj = mwProj;
-    editProjectionZ(&distProj, 4.0f, Configuration.DL.DrawDist * 8192.0f);
+    editProjectionZ(&distProj, 4.0f, Configuration.DL.DrawDist * kCellSize);
     effect->SetMatrix(ehProj, &distProj);
 
     // Clear floating point buffer to far depth
@@ -78,7 +78,7 @@ void DistantLand::renderDepthAdditional()
 
     // Projection should cover whole scene
     D3DXMATRIX distProj = mwProj;
-    editProjectionZ(&distProj, 4.0f, Configuration.DL.DrawDist * 8192.0f);
+    editProjectionZ(&distProj, 4.0f, Configuration.DL.DrawDist * kCellSize);
     effect->SetMatrix(ehProj, &distProj);
 
     // Recorded draw calls

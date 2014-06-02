@@ -117,13 +117,13 @@ DepthVertOut DepthGrassInstVS (StatVertInstIn IN)
 
 float4 DepthLandPS (DepthVertOut IN) : COLOR0
 {
-    clip(IN.depth - 7168.0);
+    clip(IN.depth - nearViewRange);
     return IN.depth;
 }
 
 float4 DepthStaticPS (DepthVertOut IN) : COLOR0
 {
-    clip(IN.depth - 7168.0);
+    clip(IN.depth - nearViewRange);
 
     if(hasalpha)
     {
@@ -135,7 +135,7 @@ float4 DepthStaticPS (DepthVertOut IN) : COLOR0
 
 float4 DepthNearPS (DepthVertOut IN) : COLOR0
 {
-    clip(7168.0+64.0 - IN.depth);
+    clip(nearViewRange + 64.0 - IN.depth);
 
     // Respect alpha test
     if(hasalpha)

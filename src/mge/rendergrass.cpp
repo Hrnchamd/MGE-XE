@@ -10,7 +10,7 @@
 void DistantLand::cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
     D3DXMATRIX ds_proj = *proj, ds_viewproj;
-    float zn = 4.0f, zf = 7168.0f;
+    float zn = 4.0f, zf = nearViewRange;
 
     // Don't draw beyond fully fogged distance; early out if frustum is empty
     if(~Configuration.MGEFlags & EXP_FOG)

@@ -26,6 +26,8 @@ public:
     static const float waveTexWorldRes = 2.5f;
     static const int GrassInstStride = 48;
     static const int MaxGrassElements = 8192;
+    static const float kCellSize = 8192.0;
+    static const float kDistantZBias = 5e-6;
     static const float kMoonTag = 88888.0f;
 
     static bool ready;
@@ -83,6 +85,7 @@ public:
     static RGBVECTOR atmOutscatter, atmInscatter;
     static float fogStart, fogEnd;
     static float fogNearStart, fogNearEnd;
+    static float nearViewRange;
     static float windScaling, niceWeather;
     static float lightSunMult, lightAmbMult;
 
@@ -100,7 +103,7 @@ public:
     static D3DXHANDLE ehOutscatter, ehInscatter;
     static D3DXHANDLE ehFogStart, ehFogRange;
     static D3DXHANDLE ehFogNearStart, ehFogNearRange;
-    static D3DXHANDLE ehDissolveRange;
+    static D3DXHANDLE ehNearViewRange;
     static D3DXHANDLE ehWindVec;
     static D3DXHANDLE ehNiceWeather;
     static D3DXHANDLE ehTime;

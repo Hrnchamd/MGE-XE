@@ -49,7 +49,7 @@ void DistantLand::renderSky()
 void DistantLand::renderDistantLand(ID3DXEffect *e, const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
     D3DXMATRIX world, viewproj = (*view) * (*proj);
-    D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, Configuration.DL.DrawDist * 8192.0f);
+    D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, Configuration.DL.DrawDist * kCellSize);
 
     D3DXMatrixIdentity(&world);
     effect->SetMatrix(ehWorld, &world);
@@ -85,12 +85,12 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
 {
     D3DXMATRIX ds_proj = *proj, ds_viewproj;
     D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, 0);
-    float zn = 6400.0, zf = zn;
+    float zn = nearViewRange - 768.0, zf = zn;
     float cullDist = fogEnd;
 
     visDistant.RemoveAll();
 
-    zf = min(Configuration.DL.NearStaticEnd * 8192.0f, cullDist);
+    zf = min(Configuration.DL.NearStaticEnd * kCellSize, cullDist);
     if(zn < zf)
     {
         editProjectionZ(&ds_proj, zn, zf);
@@ -100,7 +100,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
-    zf = min(Configuration.DL.FarStaticEnd * 8192.0f, cullDist);
+    zf = min(Configuration.DL.FarStaticEnd * kCellSize, cullDist);
     if(zn < zf)
     {
         editProjectionZ(&ds_proj, zn, zf);
@@ -110,7 +110,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
-    zf = min(Configuration.DL.VeryFarStaticEnd * 8192.0f, cullDist);
+    zf = min(Configuration.DL.VeryFarStaticEnd * kCellSize, cullDist);
     if(zn < zf)
     {
         editProjectionZ(&ds_proj, zn, zf);
@@ -131,7 +131,7 @@ void DistantLand::renderDistantStatics()
     {
         // Set clipping to stop large architectural meshes (that don't match exactly)
         // from visible overdrawing and causing z-buffer occlusion
-        float clipAt = 6400.0;
+        float clipAt = nearViewRange - 768.0;
         D3DXPLANE clipPlane(0, 0, clipAt, -(mwProj._33 * clipAt + mwProj._43));
         device->SetClipPlane(0, clipPlane);
         device->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);

@@ -77,7 +77,7 @@ float4 StaticPS (StatVertOut IN): COLOR0
     
     // Transition out alpha tested textures inside view boundary;
     // range is approximate due to interpolation
-    result.a -= saturate((dissolveRange - range) / 512.0);
+    result.a -= saturate((nearViewRange - range) / 512.0);
     
     // Alpha to coverage conversion
     result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
@@ -254,7 +254,7 @@ DeferredOut MGEBlendVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 nd
 
 float4 MGEBlendPS (DeferredOut IN) : COLOR0
 {
-    const float zone = 512.0, bound = 7168.0 - zone;
+    const float zone = 512.0, bound = nearViewRange - zone;
     float v, w = tex2Dlod(sampDepthPoint, IN.tex).r;
     
     if(w > bound)

@@ -115,7 +115,7 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     OUT.position = mul(OUT.position, proj);
 
     // Match bias in distant land projection
-    OUT.position.z *= 1.0 + kDistantZBias * step(8192, OUT.position.w);
+    OUT.position.z *= 1.0 + kDistantZBias * step(nearViewRange, OUT.position.w);
     
     OUT.screenpos = float4(0.5 * (1 + rcpres) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
@@ -147,14 +147,14 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     // Match bias in distant land projection
     OUT.position = mul(OUT.pos, view);
     OUT.position = mul(OUT.position, proj);
-    OUT.position.z *= 1.0 + kDistantZBias * step(8192, OUT.position.w);
+    OUT.position.z *= 1.0 + kDistantZBias * step(nearViewRange, OUT.position.w);
     OUT.screenpos = float4(0.5 * (1 + rcpres) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
     // Clamp reflection point to be above surface
     float4 clampedPos = OUT.pos - float4(0, 0, abs(addheight), 0);
     clampedPos = mul(clampedPos, view);
     clampedPos = mul(clampedPos, proj);
-    clampedPos.z *= 1.0 + kDistantZBias * step(8192, clampedPos.w);
+    clampedPos.z *= 1.0 + kDistantZBias * step(nearViewRange, clampedPos.w);
     OUT.screenposclamp = float4(0.5 * (1 + rcpres) * clampedPos.w + float2(0.5, -0.5) * clampedPos.xy, clampedPos.zw);
     
     return OUT;
@@ -303,7 +303,7 @@ float4 CausticsPS(DeferredOut IN) : COLOR0
     float depth = tex2Dlod(sampDepthPoint, IN.tex).r;
     float fog = fogMWScalar(depth);
 
-    clip(7168.0 - depth);
+    clip(nearViewRange - depth);
 
     float3 uwpos = EyePos + IN.eye * depth;
     uwpos.z -= waterlevel;

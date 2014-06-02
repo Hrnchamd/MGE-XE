@@ -22,7 +22,7 @@ shared float3 SunVec, SunCol, SunAmb;
 shared float3 SkyCol, FogCol1, FogCol2;
 shared float FogStart, FogRange;
 shared float nearFogStart, nearFogRange;
-shared float dissolveRange;
+shared float nearViewRange;
 shared float3 SunPos;
 shared float SunVis;
 shared float2 WindVec;
@@ -213,7 +213,8 @@ float3 fogApply(float3 c, float4 f)
 
 float landBias(float dist)
 {
-    return -(16 + 60000 * saturate(1 - dist/6000));
+    float maxdist = nearViewRange - 1152;
+    return -16 + -10 * max(0, maxdist - dist);
 }
 
 //------------------------------------------------------------
