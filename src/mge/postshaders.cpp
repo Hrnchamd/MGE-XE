@@ -182,6 +182,8 @@ void PostShaders::loadShaderDependencies(MGEShader *shader)
 
             if(D3DXCreateTextureFromFile(device, texturepath, &tex) == D3D_OK)
                 effect->SetTexture(ehTextureRef, tex);
+            else
+                LOG::logline("!! Post shader %s failed to load texture %s", shader->name.c_str(), texturepath);
         }
     }
 }
