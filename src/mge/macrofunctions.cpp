@@ -161,13 +161,13 @@ void MacroFunctions::ResetEnableZoom() {
 }
 
 void MacroFunctions::IncreaseZoom() {
-    if(Configuration.MGEFlags & ZOOM_ASPECT)
-        Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + 0.0625, 40.0);
+    Configuration.MGEFlags |= ZOOM_ASPECT;
+    Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom * 1.0078125, 40.0);
 }
 
 void MacroFunctions::DecreaseZoom() {
-    if(Configuration.MGEFlags & ZOOM_ASPECT)
-        Configuration.Zoom.zoom = std::max(1.0, Configuration.Zoom.zoom - 0.0625);
+    Configuration.MGEFlags |= ZOOM_ASPECT;
+    Configuration.Zoom.zoom = std::max(1.0, Configuration.Zoom.zoom / 1.0078125);
 }
 
 void MacroFunctions::ToggleCrosshair() {
