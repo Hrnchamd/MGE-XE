@@ -4,66 +4,85 @@
 #include "support/strsec.h"
 #include "morrowindbsa.h"
 
-struct BSAEntry {
+
+
+struct BSAEntry
+{
     HANDLE file;
     DWORD position;
     DWORD size;
 };
 
-struct BSAHash3 {
+struct BSAHash3
+{
     union {
         struct {
-            DWORD value1;
-            DWORD value2;
+            DWORD value1, value2;
         };
         __int64 LValue;
     };
 };
 
+struct EntryData {
+    void *ptr;
+    unsigned int size;
+
+    EntryData() : ptr(0), size(0) {}
+    EntryData(void *_ptr, unsigned int _size) : ptr(_ptr), size(_size) {}
+    void release() { if(ptr) delete [] (char*)ptr; }
+};
+
 static std::map<__int64, BSAEntry> BSAEntries;
 static std::map<__int64, IDirect3DTexture9*> BSALoadedTextures;
 
-static BSAHash3 HashString(const char* str) {
+
+
+static BSAHash3 BSAHashString(const char* str)
+{
     BSAHash3 result;
 
     unsigned int len = (unsigned int)strlen(str);
 
-    //Use GhostWheel's code to hash the string
-    unsigned int l = (len>>1);
+    // Use GhostWheel's code to hash the string
+    unsigned int l = len >> 1;
     unsigned int sum, off, temp, i, n;
 
-    for(sum = off = i = 0; i < l; i++){
-        sum ^= ((unsigned int)(str[i])) << (off&0x1F);
+    for(sum = off = i = 0; i < l; i++)
+    {
+        sum ^= ((unsigned int)(str[i])) << (off & 0x1F);
         off += 8;
     }
     result.value1 = sum;
 
-    for(sum = off = 0; i < len; i++) {
-        temp = ((unsigned int)(str[i])) << (off&0x1F);
+    for(sum = off = 0; i < len; i++)
+    {
+        temp = ((unsigned int)(str[i])) << (off & 0x1F);
         sum ^= temp;
         n = temp & 0x1F;
-        sum = (sum << (32-n)) | (sum >> n);  // binary "rotate right"
+        sum = (sum << (32-n)) | (sum >> n);  // binary rotate right
         off += 8;
     }
     result.value2 = sum;
     return result;
 }
 
-static void OpenBSA(const char* path) {
-    HANDLE bsa;
-    bsa = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+static void BSAOpen(const char* path)
+{
+    HANDLE bsa = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
     if(bsa == INVALID_HANDLE_VALUE) return;
 
-    DWORD hashoffset, numfiles, unused;
-    ReadFile(bsa, &hashoffset, 4, &unused, 0);
-    if(unused !=4 || hashoffset != 0x100) {
+    DWORD hashoffset, numfiles, bytesread, unused;
+    ReadFile(bsa, &hashoffset, 4, &bytesread, 0);
+    if(bytesread != 4 || hashoffset != 0x100)
+    {
         CloseHandle(bsa);
         return;
     }
 
     ReadFile(bsa, &hashoffset, 4, &unused, 0);
     ReadFile(bsa, &numfiles, 4, &unused, 0);
-    for(DWORD i = 0; i < numfiles; i++) {
+    for(DWORD i = 0; i < numfiles; i++)
+    {
         BSAEntry entry;
         __int64 hash;
 
@@ -74,11 +93,12 @@ static void OpenBSA(const char* path) {
         entry.position += 12 + hashoffset + numfiles*8;
         SetFilePointer(bsa, 12+hashoffset + i*8, 0, FILE_BEGIN);
         ReadFile(bsa, &hash, 8, &unused, 0);
-        BSAEntries[hash]=entry;
+        BSAEntries[hash] = entry;
     }
 }
 
-void InitBSAs() {
+void BSAInit()
+{
     char path[MAX_PATH];
     WIN32_FIND_DATA data;
     HANDLE h = FindFirstFile("data files\\*.bsa", &data);
@@ -86,104 +106,124 @@ void InitBSAs() {
 
     strcpy(path, "data files\\");
     strcat(path, data.cFileName);
-    OpenBSA(path);
+    BSAOpen(path);
 
-    while(FindNextFile(h, &data)) {
+    while(FindNextFile(h, &data))
+    {
         strcpy(path, "data files\\");
         strcat(path, data.cFileName);
-        OpenBSA(path);
+        BSAOpen(path);
     }
     FindClose(h);
 }
 
-static RetData GetBSAEntry(BSAHash3 hash) {
+static EntryData BSAGetEntry(BSAHash3 hash)
+{
     std::map<__int64, BSAEntry>::const_iterator it = BSAEntries.find(hash.LValue);
-    if(it == BSAEntries.end()) return RetData(0, 0);
+    if(it == BSAEntries.end())
+        return EntryData();
+
     BSAEntry entry = it->second;
+    char *buf = new char[entry.size];
+    DWORD read;
 
     SetFilePointer(entry.file, entry.position, 0, FILE_BEGIN);
-    char* buf = new char[entry.size];
-    DWORD read;
     ReadFile(entry.file, buf, entry.size, &read, 0);
-    if(read != entry.size) { delete[] buf; return RetData(0, 0); }
-    return RetData(buf, entry.size);
+
+    if(read == entry.size)
+    {
+        return EntryData(buf, entry.size);
+    }
+    else
+    {
+        delete[] buf;
+        return EntryData();
+    }
 }
 
-static IDirect3DTexture9* BSALoadTexture2(IDirect3DDevice9 *dev, const char* filename) {
+static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char* filename)
+{
     char pathbuf[MAX_PATH];
+    BSAHash3 hash = BSAHashString(filename);
+    IDirect3DTexture9 *tex = 0;
     HANDLE file;
-    BSAHash3 hash = HashString(filename);
-    IDirect3DTexture9* tex = 0;
 
     // First check if the texture is already loaded
     std::map<__int64, IDirect3DTexture9*>::const_iterator it = BSALoadedTextures.find(hash.LValue);
-    if(it != BSALoadedTextures.end()) {
+    if(it != BSALoadedTextures.end())
+    {
         it->second->AddRef();
         return it->second;
     }
+
     // Next check the distant land folder
     strcpy(pathbuf, "data files\\distantland\\statics\\");
     strcat_s(pathbuf, MAX_PATH, filename);
-    file = CreateFile(pathbuf, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
-    if(file != INVALID_HANDLE_VALUE) {
-        CloseHandle(file);
+    if(GetFileAttributes(pathbuf) != INVALID_FILE_ATTRIBUTES)
+    {
         HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
-        if(!FAILED(hr)) {
-            BSALoadedTextures[hash.LValue] = tex; //Want to cache this even if the texture load failed;
+        if(hr == D3D_OK)
+        {
+            BSALoadedTextures[hash.LValue] = tex;
             return tex;
-        } else tex = 0;
+        }
     }
+
     // Then check the normal folder
     strcpy(pathbuf, "data files\\");
     strcat_s(pathbuf, MAX_PATH, filename);
-    file = CreateFile(pathbuf, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
-    if(file != INVALID_HANDLE_VALUE) {
-        CloseHandle(file);
+    if(GetFileAttributes(pathbuf) != INVALID_FILE_ATTRIBUTES)
+    {
         HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
-        if(!FAILED(hr)) {
-            BSALoadedTextures[hash.LValue] = tex; //Want to cache this even if the texture load failed;
+        if(hr == D3D_OK)
+        {
+            BSALoadedTextures[hash.LValue] = tex;
             return tex;
-        } else tex = 0;
+        }
     }
+
     // Finally check the BSAs
-    RetData rd = GetBSAEntry(hash);
-    if(rd.ptr) {
-        D3DXCreateTextureFromFileInMemoryEx(dev, rd.ptr, rd.size, 0,0,0,0, D3DFMT_UNKNOWN,
+    EntryData ed = BSAGetEntry(hash);
+    if(ed.ptr)
+    {
+        D3DXCreateTextureFromFileInMemoryEx(dev, ed.ptr, ed.size, 0,0,0,0, D3DFMT_UNKNOWN,
                     D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0,0,0, &tex);
-        delete [] (char *)rd.ptr;
-        BSALoadedTextures[hash.LValue] = tex; //Want to cache this even if the texture load failed;
+
+        // Cache even if the texture load failed
+        BSALoadedTextures[hash.LValue] = tex;
         return tex;
     }
+    ed.release();
 
     // File not found
     return 0;
 }
 
-IDirect3DTexture9* BSALoadTexture(IDirect3DDevice9 *dev, const char* filename) {
-    char fname[MAX_PATH];
-    strcpy(fname, "textures\\");
-    strcat(fname, filename);
+IDirect3DTexture9 * BSALoadTexture(IDirect3DDevice9 *dev, const char* filename)
+{
+    char pathbuf[MAX_PATH];
 
-    // try loading dds first
-    DWORD len = strlen(fname);
-    if(fname[len-1] != 's' || fname[len-2] != 'd' || fname[len-3] != 'd') {
-        char fname2[MAX_PATH];
-        strcpy(fname2, fname);
-        fname2[len-1] = 's';
-        fname2[len-2] = 'd';
-        fname2[len-3] = 'd';
-        IDirect3DTexture9* ret = BSALoadTexture2(dev, fname2);
-        if(ret) return ret;
-    }
+    // Prefer loading file with DDS extension first
+    strcpy(pathbuf, "textures\\");
+    strcat_s(pathbuf, MAX_PATH, filename);
+    strcpy(pathbuf + strlen(pathbuf) - 3, "dds");
 
-    return BSALoadTexture2(dev, fname);
+    IDirect3DTexture9 *ret = BSALoadTexture2(dev, pathbuf);
+    if(ret) return ret;
+
+    // Load file with original extension
+    strcpy(pathbuf, "textures\\");
+    strcat_s(pathbuf, MAX_PATH, filename);
+    return BSALoadTexture2(dev, pathbuf);
 }
 
-void BSAClearTextureCache() {
+void BSAClearTextureCache()
+{
     BSALoadedTextures.clear();
 }
 
-void BSACacheStats(int *total, int *memuse) {
+void BSACacheStats(int *total, int *memuse)
+{
     __int64 texMemUsage = 0;
 
     for(std::map<__int64, IDirect3DTexture9*>::const_iterator i = BSALoadedTextures.begin(); i != BSALoadedTextures.end(); ++i)

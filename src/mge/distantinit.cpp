@@ -186,7 +186,7 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
     vsr.init(device);
 
     LOG::logline(">> Distant Land init BSAs");
-    InitBSAs();
+    BSAInit();
 
     LOG::logline(">> Distant Land init shader");
     if(!initShader())
