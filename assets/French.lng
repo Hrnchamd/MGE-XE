@@ -362,7 +362,7 @@ bEditor = "Éditeur"
 bMoveUp = "Monter"
 bMoveDown = "Descendre"
 bClear = "Vider la liste"
-lShaderUsage = "Double-cliquez pour ajouter ou retirer un shader de la liste active. Respectez l'ordre des shaders: le premier shader en haut de la liste sera chargé en premier, et le dernier, à la fin de la liste, sera chargé en dernier mais il agira sur tous les shaders précédemment chargés\n\nListe recommandée:\nPerformance => Bloom Fine ou Bloom Soft\nQualité moyenne => DoF, Sunshafts, un des deux Bloom\nHaute qualité => SSAO, DoF, les deux Underwater Effects, Sunshafts, Bloom Fine ou Bloom Soft, HDR"
+lShaderUsage = "Double-cliquez pour ajouter ou retirer un shader de la liste active. Respectez l'ordre des shaders: le premier shader en haut de la liste sera chargé en premier, et le dernier, à la fin de la liste, sera chargé en dernier mais il agira sur tous les shaders précédemment chargés."
 
 
 

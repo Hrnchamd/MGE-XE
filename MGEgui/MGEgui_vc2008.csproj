@@ -218,10 +218,6 @@
       <SubType>Designer</SubType>
       <DependentUpon>ResolutionForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ShaderActive.resx">
-      <DependentUpon>ShaderActive.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="ShaderEd.resx">
       <DependentUpon>ShaderEd.cs</DependentUpon>
       <SubType>Designer</SubType>

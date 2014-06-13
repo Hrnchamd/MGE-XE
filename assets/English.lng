@@ -355,15 +355,35 @@ bOK = "OK"
 ;;; Shader setup
 [ShaderActive.Text]
 ShaderActive = "Set active shaders"
-lAvailableList = "Available shaders"
-lActiveList = "Active Shaders"
+
+lShaderOptions = "Shader options"
+lPresets = "Quality preset"
+cmbPresets = "Lowest;Low;Medium;High;Very High;Custom"
+lHDR = "HDR (Eye adaptation)"
+lSSAO = "SSAO"
+lBloom = "Bloom"
+lSunshafts = "Sunshafts"
+lDoF = "Depth of Field"
+lWaterSunshafts = "Underwater Sunshafts"
+lInteriorCaustics = "Interior Water Caustics"
+cmbHDR = "Off;On"
+cmbSSAO = "Off;Medium quality;High quality"
+cmbBloom = "Off;Fine;Soft"
+cmbSunshafts = "Off;On"
+cmbDoF = "Off;On"
+cmbWaterSunshafts = "Off;On"
+cmbInteriorCaustics = "Off;On"
+bAdvancedMode = "Modding >>>"
 bSave = "Save"
 bCancel = "Cancel"
+
+lAvailableList = "Available shaders"
+lActiveList = "Active Shaders"
 bEditor = "Editor"
 bMoveUp = "Move up"
 bMoveDown = "Move down"
 bClear = "Clear"
-lShaderUsage = "Double-click to add or remove shaders from the active list.\n\nRecommendations:\nPerformance - either Bloom\nMedium quality - DoF, Sunshafts, either Bloom\nHigh quality - SSAO, DoF, both Underwater Effects, Sunshafts, either Bloom, HDR"
+lShaderUsage = "Double-click to add or remove shaders from the active list.\n"
 
 
 
