@@ -20,11 +20,11 @@ struct LandMesh
 };
 
 struct DistantSubset {
-    float radius;                        // radius of bounding sphere
-    D3DXVECTOR3 center;         // center of bounding sphere
-    D3DXVECTOR3 min, max;    // corners of the axis-alligned bounding box
+    float radius;                       // radius of bounding sphere
+    D3DXVECTOR3 center;                 // center of bounding sphere
+    D3DXVECTOR3 min, max;               // corners of the axis-aligned bounding box
     IDirect3DTexture9 *tex;
-    bool hasalpha;                   // texture has alpha transparency
+    bool hasalpha;                      // texture has alpha transparency
     IDirect3DVertexBuffer9 *vbuffer;
     IDirect3DIndexBuffer9 *ibuffer;
     int verts;
@@ -33,8 +33,8 @@ struct DistantSubset {
 
 struct DistantStatic {
     unsigned char type;
-    D3DXVECTOR3 center;     // center of bounding sphere
-    float radius;                    // radius of bounding sphere
+    D3DXVECTOR3 center;                 // center of bounding sphere
+    float radius;                       // radius of bounding sphere
     int numSubsets;
     DistantSubset *subsets;
 };
@@ -42,12 +42,12 @@ struct DistantStatic {
 struct UsedDistantStatic {
     DWORD staticRef;
     D3DXMATRIX transform;
-    float radius;                   // radius * scale
-    D3DXVECTOR3 center;    // center + transform
+    float radius;                       // radius * scale
+    D3DXVECTOR3 center;                 // center + transform
     float scale;
     D3DXVECTOR3 pos;
 
-    BoundingSphere GetBoundingSphere(DistantSubset& sub)
+    BoundingSphere GetBoundingSphere(const DistantSubset& sub) const
     {
         BoundingSphere sphere;
         D3DXVec3TransformCoord(&sphere.center, &sub.center, &transform);
@@ -56,7 +56,7 @@ struct UsedDistantStatic {
         return sphere;
     }
 
-    BoundingBox GetBoundingBox(DistantSubset& sub)
+    BoundingBox GetBoundingBox(const DistantSubset& sub) const
     {
         BoundingBox box;
         box.Set(sub.min, sub.max);

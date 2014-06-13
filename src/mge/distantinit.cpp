@@ -844,17 +844,17 @@ bool DistantLand::initDistantStaticsBVH()
         vector<UsedDistantStatic> *uds = &UsedDistantStatics.find(iWS->first)->second;
         vector<UsedDistantStatic>::iterator i;
 
-        //Add objects to quadtree
+        // Initialize quadtrees
         QuadTree *NQTR = iWS->second.NearStatics = new QuadTree();
         QuadTree *FQTR =iWS->second.FarStatics = new QuadTree();
         QuadTree *VFQTR = iWS->second.VeryFarStatics = new QuadTree();
         QuadTree *GQTR = iWS->second.GrassStatics = new QuadTree();
 
-        //Calclulate optimal initial quadtree size
+        // Calclulate optimal initial quadtree size
         D3DXVECTOR2 max = D3DXVECTOR2(FLT_MIN, FLT_MIN);
         D3DXVECTOR2 min = D3DXVECTOR2(FLT_MAX, FLT_MAX);
 
-        //Find minimum and maximum x, y, and z positions
+        // Find xyz bounds
         for(i = uds->begin(); i != uds->end(); ++i)
         {
             float x = i->pos.x, y = i->pos.y;
@@ -875,36 +875,52 @@ bool DistantLand::initDistantStaticsBVH()
 
         for(i = uds->begin(); i != uds->end(); ++i)
         {
-            //Add all objects to the main quad tree
             DistantStatic *stat = &DistantStatics[i->staticRef];
+            QuadTree *targetQTR;
 
+            // Buildings are treated as larger objects, as they are typically
+            // smaller component meshes combined to make a single building
+            float radius = stat->radius;
+            if(stat->type == STATIC_BUILDING)
+                radius *= 2.0f;
+
+            // Select quadtree to place object in
+            switch(stat->type)
+            {
+            case STATIC_AUTO:
+            case STATIC_TREE:
+            case STATIC_BUILDING:
+                if(radius <= Configuration.DL.FarStaticMinSize)
+                    targetQTR = NQTR;
+                else if(radius <= Configuration.DL.VeryFarStaticMinSize)
+                    targetQTR = FQTR;
+                else
+                    targetQTR = VFQTR;
+                break;
+
+            case STATIC_GRASS:
+                targetQTR = GQTR;
+                break;
+
+            case STATIC_NEAR:
+                targetQTR = NQTR;
+                break;
+
+            case STATIC_FAR:
+                targetQTR = FQTR;
+                break;
+
+            case STATIC_VERY_FAR:
+                targetQTR = VFQTR;
+                break;
+
+            default:
+                continue;
+            }
+
+            // Add sub-meshes to appropriate quadtree
             for(int s = 0; s != stat->numSubsets; ++s)
             {
-                QuadTree *targetQTR;
-
-                //Add objects to appropriate quadtree
-                if(stat->type == STATIC_AUTO || stat->type == STATIC_TREE || stat->type == STATIC_BUILDING)
-                {
-                    float multiplier = (stat->type == STATIC_BUILDING) ? 2.0f : 1.0f;
-
-                    if (stat->radius <= Configuration.DL.FarStaticMinSize * multiplier)
-                        targetQTR = NQTR;
-                    else if (stat->radius <= Configuration.DL.VeryFarStaticMinSize * multiplier)
-                        targetQTR = FQTR;
-                    else
-                        targetQTR = VFQTR;
-                }
-                else if(stat->type == STATIC_GRASS)
-                    targetQTR = GQTR;
-                else if(stat->type == STATIC_NEAR)
-                    targetQTR = NQTR;
-                else if(stat->type == STATIC_FAR)
-                    targetQTR = FQTR;
-                else if(stat->type == STATIC_VERY_FAR)
-                    targetQTR = VFQTR;
-                else
-                    continue;
-
                 targetQTR->AddMesh(
                     i->GetBoundingSphere(stat->subsets[s]),
                     i->GetBoundingBox(stat->subsets[s]),
