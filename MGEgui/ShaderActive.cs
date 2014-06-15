@@ -32,10 +32,24 @@ namespace MGEgui {
         private static string[] presetUltra = new [] { effectSSAO[1], effectInteriorCaustics[0], effectWaterSunshafts[0], effectSunshafts[0], effectBloom[1], effectHDR[0] };
         
         public static string iniShaderChain = "Shader Chain";
-        public static INIFile.INIVariableDef[] iniShaderWhat = {
-            INIFile.iniDefEmpty
+        public static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef("HDRTime", "Misc", "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
+        public static INIFile.INIVariableDef[] iniShaderDefault = {
+            INIFile.iniDefEmpty, iniHDRTime
         };
         
+        #region tooltip_messages
+        public Dictionary<string, string[]> tooltip_messages = new Dictionary<string, string[]> {
+            { "HDR", new string [] { "cmbHDR", "lHDR" } },
+            { "HDRTime", new string [] { "udHDRTime", "lHDRTime" } },
+            { "SSAO", new string [] { "cmbSSAO", "lSSAO" } },
+            { "Bloom", new string [] { "cmbBloom", "lBloom" } },
+            { "Sunshafts", new string [] { "cmbSunshafts", "lSunshafts" } },
+            { "DoF", new string [] { "cmbDoF", "lDoF" } },
+            { "WaterSunshafts", new string [] { "cmbWaterSunshafts", "lWaterSunshafts" } },
+            { "InteriorCaustics", new string [] { "cmbInteriorCaustics", "lInteriorCaustics" } },
+        };
+        #endregion
+
         #region FormDesignerGunk
         /// <summary>
         /// Required designer variable.
@@ -60,6 +74,7 @@ namespace MGEgui {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.bMoveUp = new System.Windows.Forms.Button();
             this.lbSelected = new System.Windows.Forms.ListBox();
             this.lbAvailable = new System.Windows.Forms.ListBox();
@@ -92,9 +107,14 @@ namespace MGEgui {
             this.cmbInteriorCaustics = new System.Windows.Forms.ComboBox();
             this.lInteriorCaustics = new System.Windows.Forms.Label();
             this.bAdvancedMode = new System.Windows.Forms.Button();
+            this.udHDRTime = new System.Windows.Forms.NumericUpDown();
+            this.lHDRTime = new System.Windows.Forms.Label();
+            this.lHDRTime2 = new System.Windows.Forms.Label();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableLayoutPanelAdv.SuspendLayout();
             this.panelActions.SuspendLayout();
             this.panelActiveListActions.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udHDRTime)).BeginInit();
             this.SuspendLayout();
             // 
             // bMoveUp
@@ -141,7 +161,7 @@ namespace MGEgui {
             this.bSave.Location = new System.Drawing.Point(92, 376);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(90, 23);
-            this.bSave.TabIndex = 17;
+            this.bSave.TabIndex = 21;
             this.bSave.Text = "Save";
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
             // 
@@ -162,7 +182,7 @@ namespace MGEgui {
             this.bCancel.Location = new System.Drawing.Point(188, 376);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(90, 23);
-            this.bCancel.TabIndex = 18;
+            this.bCancel.TabIndex = 22;
             this.bCancel.Text = "Cancel";
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
             // 
@@ -234,7 +254,7 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelAdv.Size = new System.Drawing.Size(320, 410);
-            this.tableLayoutPanelAdv.TabIndex = 11;
+            this.tableLayoutPanelAdv.TabIndex = 23;
             // 
             // panelActions
             // 
@@ -300,7 +320,7 @@ namespace MGEgui {
             this.cmbHDR.Items.AddRange(new object[] {
                                     "Off",
                                     "On"});
-            this.cmbHDR.Location = new System.Drawing.Point(168, 100);
+            this.cmbHDR.Location = new System.Drawing.Point(168, 99);
             this.cmbHDR.Name = "cmbHDR";
             this.cmbHDR.Size = new System.Drawing.Size(110, 21);
             this.cmbHDR.TabIndex = 4;
@@ -314,10 +334,10 @@ namespace MGEgui {
                                     "Off",
                                     "Medium quality",
                                     "High quality"});
-            this.cmbSSAO.Location = new System.Drawing.Point(168, 127);
+            this.cmbSSAO.Location = new System.Drawing.Point(168, 152);
             this.cmbSSAO.Name = "cmbSSAO";
             this.cmbSSAO.Size = new System.Drawing.Size(110, 21);
-            this.cmbSSAO.TabIndex = 6;
+            this.cmbSSAO.TabIndex = 9;
             this.cmbSSAO.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // cmbBloom
@@ -328,10 +348,10 @@ namespace MGEgui {
                                     "Off",
                                     "Fine",
                                     "Soft"});
-            this.cmbBloom.Location = new System.Drawing.Point(168, 154);
+            this.cmbBloom.Location = new System.Drawing.Point(168, 179);
             this.cmbBloom.Name = "cmbBloom";
             this.cmbBloom.Size = new System.Drawing.Size(110, 21);
-            this.cmbBloom.TabIndex = 8;
+            this.cmbBloom.TabIndex = 11;
             this.cmbBloom.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // cmbSunshafts
@@ -341,10 +361,10 @@ namespace MGEgui {
             this.cmbSunshafts.Items.AddRange(new object[] {
                                     "Off",
                                     "On"});
-            this.cmbSunshafts.Location = new System.Drawing.Point(168, 181);
+            this.cmbSunshafts.Location = new System.Drawing.Point(168, 206);
             this.cmbSunshafts.Name = "cmbSunshafts";
             this.cmbSunshafts.Size = new System.Drawing.Size(110, 21);
-            this.cmbSunshafts.TabIndex = 10;
+            this.cmbSunshafts.TabIndex = 13;
             this.cmbSunshafts.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // cmbDoF
@@ -354,10 +374,10 @@ namespace MGEgui {
             this.cmbDoF.Items.AddRange(new object[] {
                                     "Off",
                                     "On"});
-            this.cmbDoF.Location = new System.Drawing.Point(168, 208);
+            this.cmbDoF.Location = new System.Drawing.Point(168, 233);
             this.cmbDoF.Name = "cmbDoF";
             this.cmbDoF.Size = new System.Drawing.Size(110, 21);
-            this.cmbDoF.TabIndex = 12;
+            this.cmbDoF.TabIndex = 15;
             this.cmbDoF.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // cmbWaterSunshafts
@@ -367,60 +387,60 @@ namespace MGEgui {
             this.cmbWaterSunshafts.Items.AddRange(new object[] {
                                     "Off",
                                     "On"});
-            this.cmbWaterSunshafts.Location = new System.Drawing.Point(168, 235);
+            this.cmbWaterSunshafts.Location = new System.Drawing.Point(168, 260);
             this.cmbWaterSunshafts.Name = "cmbWaterSunshafts";
             this.cmbWaterSunshafts.Size = new System.Drawing.Size(110, 21);
-            this.cmbWaterSunshafts.TabIndex = 14;
+            this.cmbWaterSunshafts.TabIndex = 17;
             this.cmbWaterSunshafts.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // lSSAO
             // 
-            this.lSSAO.Location = new System.Drawing.Point(12, 130);
+            this.lSSAO.Location = new System.Drawing.Point(12, 155);
             this.lSSAO.Name = "lSSAO";
             this.lSSAO.Size = new System.Drawing.Size(150, 13);
-            this.lSSAO.TabIndex = 5;
+            this.lSSAO.TabIndex = 8;
             this.lSSAO.Text = "SSAO";
             this.lSSAO.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lBloom
             // 
-            this.lBloom.Location = new System.Drawing.Point(12, 157);
+            this.lBloom.Location = new System.Drawing.Point(12, 182);
             this.lBloom.Name = "lBloom";
             this.lBloom.Size = new System.Drawing.Size(150, 13);
-            this.lBloom.TabIndex = 7;
+            this.lBloom.TabIndex = 10;
             this.lBloom.Text = "Bloom";
             this.lBloom.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lDoF
             // 
-            this.lDoF.Location = new System.Drawing.Point(12, 211);
+            this.lDoF.Location = new System.Drawing.Point(12, 236);
             this.lDoF.Name = "lDoF";
             this.lDoF.Size = new System.Drawing.Size(150, 13);
-            this.lDoF.TabIndex = 11;
+            this.lDoF.TabIndex = 14;
             this.lDoF.Text = "Depth of Field";
             this.lDoF.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lWaterSunshafts
             // 
-            this.lWaterSunshafts.Location = new System.Drawing.Point(12, 238);
+            this.lWaterSunshafts.Location = new System.Drawing.Point(12, 263);
             this.lWaterSunshafts.Name = "lWaterSunshafts";
             this.lWaterSunshafts.Size = new System.Drawing.Size(150, 13);
-            this.lWaterSunshafts.TabIndex = 13;
+            this.lWaterSunshafts.TabIndex = 16;
             this.lWaterSunshafts.Text = "Underwater Sunshafts";
             this.lWaterSunshafts.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lSunshafts
             // 
-            this.lSunshafts.Location = new System.Drawing.Point(12, 184);
+            this.lSunshafts.Location = new System.Drawing.Point(12, 209);
             this.lSunshafts.Name = "lSunshafts";
             this.lSunshafts.Size = new System.Drawing.Size(150, 13);
-            this.lSunshafts.TabIndex = 9;
+            this.lSunshafts.TabIndex = 12;
             this.lSunshafts.Text = "Sunshafts";
             this.lSunshafts.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // lHDR
             // 
-            this.lHDR.Location = new System.Drawing.Point(12, 103);
+            this.lHDR.Location = new System.Drawing.Point(12, 102);
             this.lHDR.Name = "lHDR";
             this.lHDR.Size = new System.Drawing.Size(150, 13);
             this.lHDR.TabIndex = 3;
@@ -434,36 +454,86 @@ namespace MGEgui {
             this.cmbInteriorCaustics.Items.AddRange(new object[] {
                                     "Off",
                                     "On"});
-            this.cmbInteriorCaustics.Location = new System.Drawing.Point(168, 261);
+            this.cmbInteriorCaustics.Location = new System.Drawing.Point(168, 287);
             this.cmbInteriorCaustics.Name = "cmbInteriorCaustics";
             this.cmbInteriorCaustics.Size = new System.Drawing.Size(110, 21);
-            this.cmbInteriorCaustics.TabIndex = 16;
+            this.cmbInteriorCaustics.TabIndex = 19;
             this.cmbInteriorCaustics.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // lInteriorCaustics
             // 
-            this.lInteriorCaustics.Location = new System.Drawing.Point(12, 264);
+            this.lInteriorCaustics.Location = new System.Drawing.Point(12, 290);
             this.lInteriorCaustics.Name = "lInteriorCaustics";
             this.lInteriorCaustics.Size = new System.Drawing.Size(150, 13);
-            this.lInteriorCaustics.TabIndex = 15;
+            this.lInteriorCaustics.TabIndex = 18;
             this.lInteriorCaustics.Text = "Interior Water Caustics";
             this.lInteriorCaustics.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // bAdvancedMode
             // 
-            this.bAdvancedMode.Location = new System.Drawing.Point(183, 302);
+            this.bAdvancedMode.Location = new System.Drawing.Point(183, 330);
             this.bAdvancedMode.Name = "bAdvancedMode";
             this.bAdvancedMode.Size = new System.Drawing.Size(95, 23);
-            this.bAdvancedMode.TabIndex = 19;
+            this.bAdvancedMode.TabIndex = 20;
             this.bAdvancedMode.Text = "Modding >>>";
             this.bAdvancedMode.UseVisualStyleBackColor = true;
             this.bAdvancedMode.Click += new System.EventHandler(this.bAdvancedMode_Click);
+            // 
+            // udHDRTime
+            // 
+            this.udHDRTime.DecimalPlaces = 2;
+            this.udHDRTime.Increment = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udHDRTime.Location = new System.Drawing.Point(168, 126);
+            this.udHDRTime.Maximum = new decimal(new int[] {
+                                    30,
+                                    0,
+                                    0,
+                                    0});
+            this.udHDRTime.Minimum = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    131072});
+            this.udHDRTime.Name = "udHDRTime";
+            this.udHDRTime.Size = new System.Drawing.Size(70, 20);
+            this.udHDRTime.TabIndex = 6;
+            this.udHDRTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udHDRTime.Value = new decimal(new int[] {
+                                    20,
+                                    0,
+                                    0,
+                                    65536});
+            // 
+            // lHDRTime
+            // 
+            this.lHDRTime.Location = new System.Drawing.Point(12, 128);
+            this.lHDRTime.Name = "lHDRTime";
+            this.lHDRTime.Size = new System.Drawing.Size(150, 13);
+            this.lHDRTime.TabIndex = 5;
+            this.lHDRTime.Text = "Exposure reaction time";
+            this.lHDRTime.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
+            // lHDRTime2
+            // 
+            this.lHDRTime2.AutoSize = true;
+            this.lHDRTime2.Location = new System.Drawing.Point(244, 128);
+            this.lHDRTime2.Name = "lHDRTime2";
+            this.lHDRTime2.Size = new System.Drawing.Size(24, 13);
+            this.lHDRTime2.TabIndex = 7;
+            this.lHDRTime2.Text = "sec";
             // 
             // ShaderActive
             // 
             this.AcceptButton = this.bSave;
             this.CancelButton = this.bCancel;
             this.ClientSize = new System.Drawing.Size(624, 411);
+            this.Controls.Add(this.lHDRTime2);
+            this.Controls.Add(this.lHDRTime);
+            this.Controls.Add(this.udHDRTime);
             this.Controls.Add(this.bAdvancedMode);
             this.Controls.Add(this.bSave);
             this.Controls.Add(this.bCancel);
@@ -495,9 +565,14 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.PerformLayout();
             this.panelActions.ResumeLayout(false);
             this.panelActiveListActions.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.udHDRTime)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        public System.Windows.Forms.ToolTip toolTip;
+        private System.Windows.Forms.Label lHDRTime2;
+        private System.Windows.Forms.Label lHDRTime;
+        private System.Windows.Forms.NumericUpDown udHDRTime;
         private System.Windows.Forms.Button bAdvancedMode;
         private System.Windows.Forms.Label lInteriorCaustics;
         private System.Windows.Forms.ComboBox cmbInteriorCaustics;
@@ -530,21 +605,26 @@ namespace MGEgui {
         public ShaderActive() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
+            this.Size = new System.Drawing.Size(this.MinimumSize.Width, this.Size.Height);
 
+            loadSettings();
+            onShaderListUpdate();
+        }
+        
+        private void loadSettings() {
             foreach (String s in Directory.GetFiles(Statics.runDir + "\\" + Statics.pathShaders)) {
                 if(s.EndsWith(".fx")) lbAvailable.Items.Add(Path.GetFileNameWithoutExtension(s));
             }
-
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniShaderWhat, true);
+            
+            INIFile iniFile = new INIFile(Statics.iniFileName, iniShaderDefault, true);
+            udHDRTime.Value = (decimal)iniFile.getKeyValue("HDRTime");
+                
             List<string> shaderList = new List<string>(iniFile.getSectList(iniShaderChain));
             foreach (string s in shaderList) {
 				if (File.Exists(Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx")) {
 	                lbSelected.Items.Add(s);
             	}
             }
-            
-            this.Size = new System.Drawing.Size(this.MinimumSize.Width, this.Size.Height);
-            onShaderListUpdate();
         }
 
         private void cmbPresets_Changed(object sender, EventArgs e) {
@@ -581,6 +661,7 @@ namespace MGEgui {
         
         private void onShaderListUpdate() {
             setup = true;
+
             cmbHDR.SelectedIndex = findShaderOption(effectHDR);
             cmbSSAO.SelectedIndex = findShaderOption(effectSSAO);
             cmbBloom.SelectedIndex = findShaderOption(effectBloom);
@@ -589,19 +670,17 @@ namespace MGEgui {
             cmbWaterSunshafts.SelectedIndex = findShaderOption(effectWaterSunshafts);
             cmbInteriorCaustics.SelectedIndex = findShaderOption(effectInteriorCaustics);
 
+            string[][] presets = new string[][] { presetLowest, presetLow, presetMed, presetHigh, presetUltra };
             IEnumerable<string> sel = lbSelected.Items.OfType<string>();
-            if(presetLowest.SequenceEqual(sel))
-                cmbPresets.SelectedIndex = 0;
-            else if(presetLow.SequenceEqual(sel))
-                cmbPresets.SelectedIndex = 1;
-            else if(presetMed.SequenceEqual(sel))
-                cmbPresets.SelectedIndex = 2;
-            else if(presetHigh.SequenceEqual(sel))
-                cmbPresets.SelectedIndex = 3;
-            else if(presetUltra.SequenceEqual(sel))
-                cmbPresets.SelectedIndex = 4;
-            else
-                cmbPresets.SelectedIndex = 5;
+
+            cmbPresets.SelectedIndex = 5;
+            for(int n = 0; n != presets.Count(); n++) {
+                if(presets[n].SequenceEqual(sel)) {
+                    cmbPresets.SelectedIndex = n;
+                    break;
+                }
+            }
+
             setup = false;
         }
         
@@ -627,12 +706,16 @@ namespace MGEgui {
                 MessageBox.Show("That shader does not currently compile.");
             } else {
                 lbSelected.Items.Add(string.Copy((string)lbAvailable.SelectedItem));
+                onShaderListUpdate();
             }
             DirectX.DXMain.CloseDevice();
         }
 
         private void lbSelected_DoubleClick(object sender,EventArgs e) {
-            if(lbSelected.SelectedIndex!=-1) lbSelected.Items.RemoveAt(lbSelected.SelectedIndex);
+            if(lbSelected.SelectedIndex!=-1) {
+                lbSelected.Items.RemoveAt(lbSelected.SelectedIndex);
+                onShaderListUpdate();
+            }
         }
 
         private void bCancel_Click(object sender,EventArgs e) {
@@ -640,12 +723,12 @@ namespace MGEgui {
         }
 
         private void bSave_Click(object sender,EventArgs e) {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniShaderWhat, true);
-            List<string> tempList = new List<string>();
-            foreach (string s in lbSelected.Items) tempList.Add(s);
-            iniFile.setSectOrderedList(iniShaderChain, tempList.ToArray());
+            INIFile iniFile = new INIFile(Statics.iniFileName, iniShaderDefault, true);
+            
+            iniFile.setKey("HDRTime", (double)udHDRTime.Value);
+            iniFile.setSectOrderedList(iniShaderChain, lbSelected.Items.OfType<string>().ToArray());
+            
             iniFile.save();
-
             Close();
         }
 

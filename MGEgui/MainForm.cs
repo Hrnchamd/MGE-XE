@@ -84,7 +84,6 @@ namespace MGEgui {
             { "FPSCounter", new string [] { "cbFPSCounter" } },
             { "HWShader", new string [] { "cbHWShader" } },
             { "ShaderEd", new string [] { "bShaderEd" } },
-            { "HDRTime", new string [] { "udHDR", "lHDR" } },
             { "UIScale", new string [] { "udUIScale", "lUIScale" } },
             { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
             { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
@@ -432,7 +431,6 @@ namespace MGEgui {
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue ("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue ("DisableMWSE") == 1);
-            udHDR.Value = (decimal)iniFile.getKeyValue ("HDRTime");
             cbCam3rdPrsn.Checked = (iniFile.getKeyValue ("Cam3rdCustom") == 1);
             udCam3rdX.Value = (decimal)iniFile.getKeyValue ("Cam3rdX");
             udCam3rdY.Value = (decimal)iniFile.getKeyValue ("Cam3rdY");
@@ -502,7 +500,6 @@ namespace MGEgui {
             iniFile.setKey ("SSName", tbSShotName.Text.TrimEnd());
             // In-game
             iniFile.setKey ("DisableMWSE", cbDisableMWSE.Checked);
-            iniFile.setKey ("HDRTime", (double)udHDR.Value);
             iniFile.setKey ("Cam3rdCustom", cbCam3rdPrsn.Checked);
             iniFile.setKey ("Cam3rdX", (double)udCam3rdX.Value);
             iniFile.setKey ("Cam3rdY", (double)udCam3rdY.Value);
@@ -604,7 +601,6 @@ namespace MGEgui {
             br.ReadBoolean (); // Used to be SM3 water
             udDLDistNear.Value = udValue (udDLDistNear, br.ReadByte ());
             udDLFogAEnd.Value = udValue (udDLFogAEnd, br.ReadByte ());
-            udHDR.Value = udValue (udHDR, (10.0 / br.ReadByte ()));
             if (version >= 44) {
                 udDLFogAStart.Value = udValue (udDLFogAStart, br.ReadByte ());
                 udDLFogBStart.Value = udValue (udDLFogBStart, br.ReadByte ());
