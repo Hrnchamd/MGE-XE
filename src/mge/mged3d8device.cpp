@@ -222,7 +222,8 @@ HRESULT _stdcall MGEProxyDevice::BeginScene()
                 if(DistantLand::init(realDevice))
                 {
                     // Initially force view distance to max, required for full extent shadows and grass
-                    mwBridge->SetViewDistance(7168.0);
+                    if(Configuration.MGEFlags & USE_DISTANT_LAND)
+                        mwBridge->SetViewDistance(7168.0);
                 }
                 else
                 {
