@@ -457,12 +457,12 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
         case D3DTOP_BUMPENVMAP:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
-            buf << "float4 bump = bumpmapStage(sampFFE" << i+1 << ", IN." << texcoordNames[i+1] << ", " << arg3 << "); c.a = bump.a;";
+            buf << "float4 bump = bumpmapStage(sampFFE" << i+1 << ", IN." << texcoordNames[i+1] << ", " << arg3 << ");";
             texSamplers[i+1] = "bump"; break;
 
         case D3DTOP_BUMPENVMAPLUMINANCE:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
-            buf << "float4 bump = bumpmapLumiStage(sampFFE" << i+1 << ", IN." << texcoordNames[i+1] << ", " << arg3 << "); c.a = bump.a;";
+            buf << "float4 bump = bumpmapLumiStage(sampFFE" << i+1 << ", IN." << texcoordNames[i+1] << ", " << arg3 << ");";
             texSamplers[i+1] = "bump"; break;
 
         case D3DTOP_DOTPRODUCT3:
