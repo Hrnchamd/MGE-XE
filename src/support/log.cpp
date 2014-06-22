@@ -10,9 +10,7 @@
 
 HANDLE LOG::handle = INVALID_HANDLE_VALUE;
 
-LOG::LOG() { }
 
-LOG::~LOG() { close(); }
 
 bool LOG::open(const char* filename)
 {

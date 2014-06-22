@@ -411,11 +411,8 @@ HRESULT _stdcall MGEProxyDevice::SetTextureStageState(DWORD a, D3DTEXTURESTAGEST
     // Note that DX8 had sampling state bound to texture stages instead of samplers
     if(a == 0)
     {
-        if(b == D3DTSS_MINFILTER && c == 2)
+        if(b == D3DTSS_MINFILTER && c == D3DTEXF_LINEAR)
             return realDevice->SetSamplerState(0, D3DSAMP_MINFILTER, Configuration.ScaleFilter);
-
-        if(b == D3DTSS_MIPFILTER && c == 2)
-            return realDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, Configuration.MipFilter);
 
         if(b == D3DTSS_MIPMAPLODBIAS && Configuration.LODBias)
             return realDevice->SetSamplerState(0, D3DSAMP_MIPMAPLODBIAS, *(DWORD *)&Configuration.LODBias);

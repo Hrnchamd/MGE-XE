@@ -91,7 +91,6 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 
     // Set up default render states
     Configuration.ScaleFilter = (Configuration.AnisoLevel > 0) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
-    Configuration.MipFilter = D3DTEXF_LINEAR;
 
     for(int i = 0; i != 4; ++i)
     {

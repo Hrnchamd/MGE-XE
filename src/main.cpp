@@ -58,7 +58,9 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
 
                 fixMWSEProblems(dll);
 
-                MWSE_MGEPlugin::init(vm_global, vm_addinstr);
+                if(~Configuration.MGEFlags & MGE_DISABLED)
+                    MWSE_MGEPlugin::init(vm_global, vm_addinstr);
+
                 LOG::logline("MWSE dll injected");
             }
             else

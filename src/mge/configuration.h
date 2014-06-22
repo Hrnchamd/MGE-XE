@@ -88,7 +88,6 @@ struct ConfigurationStruct
     bool Borderless;
     BYTE AnisoLevel;
     BYTE ScaleFilter;
-    BYTE MipFilter;
     float LODBias;
     float ScreenFOV;
     BYTE FogMode;
