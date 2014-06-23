@@ -899,7 +899,7 @@ namespace MGEgui {
 
         private void bHelp_Click (object sender, EventArgs e) {
             try {
-                System.Diagnostics.Process p = System.Diagnostics.Process.Start (@"http://morrgraphext.wiki.sourceforge.net/");
+                System.Diagnostics.Process p = System.Diagnostics.Process.Start (@"http://forums.bethsoft.com/forum/12-morrowind-mods/");
                 p.Close ();
             } catch { }
         }

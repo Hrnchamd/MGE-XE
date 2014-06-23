@@ -2552,7 +2552,6 @@ namespace MGEgui {
             // bHelp
             // 
             this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bHelp.Enabled = false;
             this.bHelp.Location = new System.Drawing.Point(396, 22);
             this.bHelp.Name = "bHelp";
             this.bHelp.Size = new System.Drawing.Size(160, 25);
