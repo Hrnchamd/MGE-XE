@@ -34,6 +34,21 @@ namespace MGEgui.DistantLand {
         }
 
         public static Dictionary<string, string> strings = new Dictionary<string, string>();
+
+        #region tooltip_messages
+        public Dictionary<string, string[]> tooltip_messages = new Dictionary<string, string[]> {
+            { "StaticMinSize", new string [] { "lStatMinSize", "cmbStatMinSize" } },
+            { "StaticGrassDensity", new string [] { "lStatGrassDensity", "cmbStatGrassDensity" } },
+            { "StaticSimplifyMesh", new string [] { "lStatSimplifyMeshes", "cmbStatSimplifyMeshes" } },
+            { "StaticSkipMips", new string [] { "lStatSkipMipLevels", "cmbStatSkipMipLevels" } },
+            { "IncludeActivators", new string [] { "cbStatActivators" } },
+            { "IncludeMisc", new string [] { "cbStatIncludeMisc" } },
+            { "IncludeIntExt", new string [] { "cbStatIntExt" } },
+            { "IncludeIntWater", new string [] { "cbStatIntWater" } },
+            { "EditOverrideList", new string [] { "bStatOverrideList" } },
+            { "ExportOverrideList", new string [] { "bStatExportStatics" } },
+        };
+        #endregion
         
         /* Static methods */
 

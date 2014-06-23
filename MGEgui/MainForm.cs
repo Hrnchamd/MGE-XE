@@ -88,7 +88,6 @@ namespace MGEgui {
             { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
             { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
             { "SShotDir", new string [] { "lSShotDir", "tbSShotDir" } },
-            { "SShotNum", new string [] { "lSShotNum", "udSShotNum" } },
             { "SShotDirBrowse", new string [] { "bSShotDirBrowse" } },
             { "SShotDirClear", new string [] { "bSShotDirClear" } },
         /* Distant Land */
@@ -125,6 +124,7 @@ namespace MGEgui {
             { "DLWtrWave", new string [] { "udDLWtrWave", "lDLWtrWave" } },
             { "DLSunShadows", new string[] { "cbDLSunShadows" } },
             { "PerPixelLighting", new string[] { "cbPerPixelLighting" } },
+            { "LightSettings", new string[] { "bMWLightSettings" } },
         /* In-game */
             { "DisableMGE", new string [] { "cbDisableMGE" } },
             { "DisableMWSE", new string [] { "cbDisableMWSE" } },

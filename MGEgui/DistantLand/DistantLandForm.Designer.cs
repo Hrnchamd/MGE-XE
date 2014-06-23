@@ -90,6 +90,7 @@ namespace MGEgui.DistantLand {
             this.lFinishDesc = new System.Windows.Forms.Label();
             this.bFinish = new System.Windows.Forms.Button();
             this.saveStaticListDialog = new System.Windows.Forms.SaveFileDialog();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.statusBar.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPlugs.SuspendLayout();
@@ -891,6 +892,7 @@ namespace MGEgui.DistantLand {
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        public System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label lInstructions;
         private System.Windows.Forms.Label lTexWorldMemUse;
         private System.Windows.Forms.Label lTexNormalMemUse;
