@@ -1273,17 +1273,17 @@ namespace MGEgui.DistantLand {
                 FileInfo[] files;
                 Plugins = new Dictionary<string, MWPlugin>();
                 Dirs = new List<string>(dirs);
-                files = dir.GetFiles("*?.esm");
+                files = dir.GetFiles("*.esm");
                 foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, true));
-                files = dir.GetFiles("*?.esp");
+                files = dir.GetFiles("*.esp");
                 foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, false));
                 List<string> removeDirs = new List<string>();
                 foreach (string dirName in Dirs) {
                     dir = new DirectoryInfo(dirName);
                     if (dir.Exists) {
-                        files = dir.GetFiles("*?.esm");
+                        files = dir.GetFiles("*.esm");
                         foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, true));
-                        files = dir.GetFiles("*?.esp");
+                        files = dir.GetFiles("*.esp");
                         foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, false));
                     } else removeDirs.Add(dirName);
                 }
@@ -1300,9 +1300,9 @@ namespace MGEgui.DistantLand {
                 foreach (string dirName in dirs) if (Dirs.IndexOf(dirName) == -1) {
                     DirectoryInfo dir = new DirectoryInfo(dirName);
                     if (dir.Exists) {
-                        FileInfo[] files = dir.GetFiles("*?.esm");
+                        FileInfo[] files = dir.GetFiles("*.esm");
                         foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, true));
-                        files = dir.GetFiles("*?.esp");
+                        files = dir.GetFiles("*.esp");
                         foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, false));
                     } else removeDirs.Add(dirName);
                 }
