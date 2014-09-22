@@ -14,7 +14,7 @@
 
 static int sceneCount;
 static bool rendertargetNormal, isHUDready;
-static bool isMainView, isStencilScene, stage0Complete, isFrameComplete;
+static bool isMainView, isStencilScene, stage0Complete, isFrameComplete, isHUDComplete;
 static bool isWaterMaterial, waterDrawn;
 
 static bool zoomSensSaved;
@@ -41,7 +41,7 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob) : ProxyDe
     sceneCount = -1;
     rendertargetNormal = true;
     isHUDready = false;
-    isMainView = isStencilScene = stage0Complete = isFrameComplete = false;
+    isMainView = isStencilScene = stage0Complete = isFrameComplete = isHUDComplete = false;
     isWaterMaterial = waterDrawn = false;
 
     Configuration.Zoom.zoom = 1.0;
@@ -162,6 +162,7 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
     stage0Complete = false;
     waterDrawn = false;
     isFrameComplete = false;
+    isHUDComplete = false;
 
     return ProxyDevice::Present(a, b, c, d);
 }
@@ -287,7 +288,7 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
         }
     }
 
-    if(isFrameComplete && isHUDready)
+    if(isFrameComplete && isHUDready && !isHUDComplete)
     {
         // Render user hud
         MGEhud::draw();
@@ -295,6 +296,8 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
         // Render status overlay
         StatusOverlay::setFPS(calcFPS());
         StatusOverlay::show(realDevice);
+
+        isHUDComplete = true;
     }
 
     return ProxyDevice::EndScene();
