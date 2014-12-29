@@ -4,5 +4,5 @@
 class MWSE_MGEPlugin
 {
 public:
-    static void init(DWORD vm_global, DWORD vm_addinstr);
+    static void init(HMODULE dll);
 };

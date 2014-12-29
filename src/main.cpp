@@ -46,20 +46,8 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
             HMODULE dll = LoadLibraryA("MWSE.dll");
             if(dll)
             {
-                // Import required functions
-                //DWORD (_stdcall *MWSEGetVM)() = GetProcAddress(dll, "MWSEGetVM");
-                //DWORD vm_global = MWSEGetVM();
-                //DWORD vm_addinstr = GetProcAddress(dll, "MWSEAddInstruction");
-
-                // Hackery; steal MWSE 0.9.4a VM global pointer and VM::AddInstruction member function
-                // TODO: Make MWSE export these, if it ever compiles
-                DWORD vm_global = *reinterpret_cast<DWORD*>((char*)(dll) + 0x595cc);
-                DWORD vm_addinstr = reinterpret_cast<DWORD>((char*)(dll) + 0x38950);
-
-                fixMWSEProblems(dll);
-
                 if(~Configuration.MGEFlags & MGE_DISABLED)
-                    MWSE_MGEPlugin::init(vm_global, vm_addinstr);
+                    MWSE_MGEPlugin::init(dll);
 
                 LOG::logline("MWSE dll injected");
             }
@@ -116,25 +104,4 @@ FARPROC getProc1(const char *lib, const char *funcname)
     strcat_s(path, MAX_PATH, lib);
     HMODULE dll = LoadLibraryA(path);
     return GetProcAddress(dll, funcname);
-}
-
-void fixMWSEProblems(HMODULE dll)
-{
-    // Bug: MWSE dynamically creates patch functions using memory allocated on the heap,
-    // where memory pages are not normally executable.
-    // Fix: Read MWSE structures and set executable flag on patch functions. Specific to MWSE 0.9.4a.
-
-    // BreakpointData struct from MWSE source/Breakpoint.cpp
-    // Dynamic allocated code is pointed to by overwritten
-    struct BreakpointData { void *addr; DWORD len; void *overwritten, *func; bool active; };
-    const int num_bps = 9;
-
-    BreakpointData *bpData = reinterpret_cast<BreakpointData*>((char*)(dll) + 0x56900);
-    for(int i = 0; i != num_bps; ++i, ++bpData)
-    {
-        void *patch = bpData->overwritten;
-        DWORD trueLen = bpData->len + 7, oldProtect;
-
-        VirtualProtect(patch, trueLen, PAGE_EXECUTE_READWRITE, &oldProtect);
-    }
 }
