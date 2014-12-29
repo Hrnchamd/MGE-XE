@@ -351,6 +351,15 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
     // Make sure fogging is off, drivers are not consistent in applying fog to post-transform vertices
     device->SetRenderState(D3DRS_FOGENABLE, 0);
 
+    // Bypass texgen and texture matrix for compatibility with WINE
+    // Normally texgen does not run on post-transform vertices, but WINE incorrectly does this
+    D3DXMATRIX ident;
+    D3DXMatrixIdentity(&ident);
+    device->SetTextureStageState(0, D3DTSS_TEXCOORDINDEX, 0);
+    device->SetTextureStageState(1, D3DTSS_TEXCOORDINDEX, 1);
+    device->SetTransform(D3DTS_TEXTURE0, &ident);
+    device->SetTransform(D3DTS_TEXTURE1, &ident);
+
     // Resolve back buffer to lastshader surface
     device->StretchRect(backbuffer, 0, surfaceLastShader, 0, D3DTEXF_NONE);
 
