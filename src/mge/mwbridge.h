@@ -109,6 +109,7 @@ public:
     bool isLoadingSplash();
     void redirectMenuBackground(void (_stdcall *func)(int));
     void setUIScale(float scale);
+    void patchUIConfigure(void (_stdcall *newfunc)());
 
     void *getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
@@ -131,6 +132,7 @@ protected:
     void write_word(const DWORD dwAddress, WORD word);
     void write_byte(const DWORD dwAddress, BYTE byte);
     void write_float(const DWORD dwAddress, float f);
+    void write_ptr(const DWORD dwAddress, void *ptr);
 
     /// Pointers to Morrowind Memory
     DWORD

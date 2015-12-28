@@ -204,6 +204,13 @@ void MWBridge::write_float(const DWORD dwAddress, float f)
 
 //-----------------------------------------------------------------------------
 
+void MWBridge::write_ptr(const DWORD dwAddress, void *ptr)
+{
+    *reinterpret_cast<void**>(dwAddress) = ptr;
+}
+
+//-----------------------------------------------------------------------------
+
 bool MWBridge::CanLoad()
 {
     // reads static address, so game doesn't need to be loaded
@@ -1114,6 +1121,7 @@ void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
 //-----------------------------------------------------------------------------
 
 // setUIScale - Configures the scaling of Morrowind's UI system, must be called early before main menu
+//              MWBridge is not required to be loaded for this function.
 void MWBridge::setUIScale(float scale)
 {
     DWORD addr = read_dword(eMaster);
@@ -1133,12 +1141,14 @@ void MWBridge::setUIScale(float scale)
     // uses properties of fastcall to put object in ecx
     typedef void (__fastcall *uiproc1)(DWORD, int, DWORD);
     uiproc1 ui_configureUIScale = (uiproc1)0x40f2a0;
+
     ui_configureUIScale(addr, 0, w);
 
     // Call UI configuration method to update mouse bounds
     // uses properties of fastcall to put object in ecx
     typedef void (__fastcall *uiproc2)(DWORD, int, int, int, int, int);
     uiproc2 ui_configureUIMouseArea = (uiproc2)0x408740;
+
     int w_half = (w+1) / 2, h_half = (h+1) / 2;
     ui_configureUIMouseArea(read_dword(addr + 0x50), 0, -w_half, -h_half, w_half, h_half);
 
@@ -1153,6 +1163,24 @@ void MWBridge::setUIScale(float scale)
 
     VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
     memcpy((void *)addr, patch, sizeof(patch));
+}
+
+//-----------------------------------------------------------------------------
+
+// patchUIConfigure - Patches the normal call to ui_configureUIScale to redirect to a new function.
+//                    MWBridge is not required to be loaded for this function.
+void MWBridge::patchUIConfigure(void (_stdcall *newfunc)())
+{
+    DWORD addr = 0x40e554;
+    BYTE patch[] = {
+        0xb8, 0xff, 0xff, 0xff, 0xff,       // mov eax, newfunc
+        0xff, 0xd0,                         // call eax
+        0xeb, 0x06                          // jmp past rest of block
+    };
+
+    VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
+    memcpy((void *)addr, patch, sizeof(patch));
+    write_ptr(addr + 1, reinterpret_cast<void*>(newfunc));
 }
 
 //-----------------------------------------------------------------------------

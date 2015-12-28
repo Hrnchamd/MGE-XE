@@ -4,13 +4,15 @@
 #include "support/log.h"
 #include "mge/configuration.h"
 #include "mge/mgeversion.h"
+#include "mge/mwinitpatch.h"
 #include "mwse/mgebridge.h"
+
+
 
 extern void * CreateD3DWrapper(UINT);
 extern void * CreateInputWrapper(void *);
 
 static FARPROC getProc1(const char *lib, const char *funcname);
-static void fixMWSEProblems(HMODULE dll);
 
 static const char *welcomeMessage = XE_VERSION_STRING;
 static bool isMW;
@@ -38,7 +40,13 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
         }
 
         if(Configuration.MGEFlags & MGE_DISABLED)
+        {
+            // Signal that DirectX proxies should not load
             isMW = false;
+
+            // Make Morrowind apply UI scaling, as the D3D proxy is not available to do it
+            MWInitPatch::patchUIScale();
+        }
 
         if(~Configuration.MGEFlags & MWSE_DISABLED)
         {
@@ -61,6 +69,8 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
     return true;
 }
 
+
+
 extern "C" void * _stdcall FakeDirect3DCreate(UINT version)
 {
     // Wrap Morrowind only, not TESCS
@@ -70,6 +80,7 @@ extern "C" void * _stdcall FakeDirect3DCreate(UINT version)
     }
     else
     {
+        // Use system D3D8
         typedef void * (_stdcall * D3DProc) (UINT);
         D3DProc func = (D3DProc)getProc1("\\d3d8.dll", "Direct3DCreate8");
         return (func)(version);
@@ -81,15 +92,15 @@ extern "C" HRESULT _stdcall FakeDirectInputCreate(HINSTANCE a, DWORD b, REFIID c
     typedef HRESULT (_stdcall * DInputProc) (HINSTANCE, DWORD, REFIID, void **, void *);
     DInputProc func = (DInputProc)getProc1("\\dinput8.dll", "DirectInput8Create");
 
-    void *ret = 0;
-    HRESULT hr = (func)(a, b, c, &ret, e);
+    void *dinput = 0;
+    HRESULT hr = (func)(a, b, c, &dinput, e);
 
     if(hr == S_OK)
     {
         if(isMW)
-            *d = CreateInputWrapper(ret);
+            *d = CreateInputWrapper(dinput);
         else
-            *d = ret;
+            *d = dinput;
     }
 
     return hr;
