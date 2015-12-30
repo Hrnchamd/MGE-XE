@@ -1,6 +1,5 @@
 
 #include "proxydx/d3d8header.h"
-#include "support/strsec.h"
 #include "support/log.h"
 #include "configuration.h"
 #include "distantland.h"
@@ -269,7 +268,7 @@ bool DistantLand::initShader()
         return false;
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Main", errors);
@@ -318,7 +317,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Shadowmap", errors);
@@ -327,7 +326,7 @@ bool DistantLand::initShader()
 
     LOG::logline("-- Shadow map shader compiled OK");
 
-    hr = D3DXCreateEffectFromFile(device, "Data files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
     if(hr != D3D_OK)
     {
         logShaderError("XE Depth", errors);
@@ -655,13 +654,13 @@ bool DistantLand::loadDistantStatics()
 {
     DWORD unused;
 
-    if(GetFileAttributes("data files/distantland/statics") == INVALID_FILE_ATTRIBUTES)
+    if(GetFileAttributes("Data Files\\distantland\\statics") == INVALID_FILE_ATTRIBUTES)
     {
         LOG::logline("!! Distant statics have not been generated");
         return true;
     }
 
-    HANDLE h = CreateFile("data files/distantland/statics/usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    HANDLE h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE)
     {
         LOG::logline("!! Required distant statics data is missing or corrupted");
@@ -672,7 +671,7 @@ bool DistantLand::loadDistantStatics()
     ReadFile(h, &DistantStaticCount, 4, &unused, 0);
     DistantStatics.resize(DistantStaticCount);
 
-    HANDLE h2 = CreateFile("data files/distantland/statics/static_meshes", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    HANDLE h2 = CreateFile("Data Files\\distantland\\statics\\static_meshes", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h2 == INVALID_HANDLE_VALUE)
     {
         LOG::logline("!! Required distant statics data is missing or corrupted");
@@ -957,27 +956,27 @@ bool DistantLand::initLandscape()
         return false;
     }
 
-    if(GetFileAttributes("data files\\distantland\\world") == INVALID_FILE_ATTRIBUTES)
+    if(GetFileAttributes("Data Files\\distantland\\world") == INVALID_FILE_ATTRIBUTES)
     {
         LOG::logline("!! Distant land has not been generated");
         return true;
     }
 
-    hr = D3DXCreateTextureFromFileEx(device, "Data files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
+    hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Could not load world texture for distant land");
         return false;
     }
 
-    hr = D3DXCreateTextureFromFileEx(device, "Data files\\distantland\\world_n.tga", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
+    hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world_n.tga", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Could not load world normal map texture for distant land");
         return false;
     }
 
-    hr = D3DXCreateTextureFromFileEx(device, "Data files\\textures\\MGE\\world_detail.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldDetail);
+    hr = D3DXCreateTextureFromFileEx(device, "Data Files\\textures\\MGE\\world_detail.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldDetail);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Could not load world detail texture for distant land");
@@ -986,7 +985,7 @@ bool DistantLand::initLandscape()
 
     LOG::logline("-- Landscape textures loaded");
 
-    HANDLE file = CreateFile("data files\\distantland\\world", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    HANDLE file = CreateFile("Data Files\\distantland\\world", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if(file == INVALID_HANDLE_VALUE) return false;
 
     DWORD mesh_count, unused;

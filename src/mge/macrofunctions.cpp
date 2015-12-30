@@ -1,8 +1,7 @@
 
-#include <stdio.h>
+#include <cstdio>
 #include <sys/stat.h>
 #include "proxydx/d3d8header.h"
-#include "support/strsec.h"
 
 #include "configuration.h"
 #include "mwbridge.h"
@@ -42,6 +41,7 @@ static void SaveScreenshot(IDirect3DSurface9 *surface)
     const D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
 
     char filename[MAX_PATH], path[MAX_PATH];
+    int str_sz;
     bool usedir = false;
     struct _stat unusedstat;
     SYSTEMTIME t;
@@ -50,8 +50,8 @@ static void SaveScreenshot(IDirect3DSurface9 *surface)
 
     // Set up path
     GetLocalTime(&t);
-    snprintf(filename, sizeof(filename), "%s %04d-%02d-%02d %02d.%02d.%02d.%03d",
-             Configuration.SSName, t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
+    std::snprintf(filename, sizeof(filename), "%s %04d-%02d-%02d %02d.%02d.%02d.%03d",
+                  Configuration.SSName, t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
 
     if(strlen(Configuration.SSDir) > 0)
     {
@@ -62,9 +62,15 @@ static void SaveScreenshot(IDirect3DSurface9 *surface)
     }
 
     if(usedir)
-        snprintf(path, sizeof(path), "%s\\%s%s", Configuration.SSDir, filename, strImageExtensions[Configuration.SSFormat]);
+        str_sz = std::snprintf(path, sizeof(path), "%s\\%s%s", Configuration.SSDir, filename, strImageExtensions[Configuration.SSFormat]);
     else
-        snprintf(path, sizeof(path), "%s%s", filename, strImageExtensions[Configuration.SSFormat]);
+        str_sz = std::snprintf(path, sizeof(path), "%s%s", filename, strImageExtensions[Configuration.SSFormat]);
+
+    if(str_sz >= sizeof(filename))
+    {
+        StatusOverlay::setStatus("Screenshot failed - Path too long");
+        return;
+    }
 
     // Save screenshot to desired format
     HRESULT hr = D3DXSaveSurfaceToFile(path, formats[Configuration.SSFormat], surface, NULL, NULL);
@@ -74,7 +80,7 @@ static void SaveScreenshot(IDirect3DSurface9 *surface)
     }
     else
     {
-        snprintf(filename, sizeof(filename), "Screenshot failed - D3DX Error %lx", hr);
+        std::snprintf(filename, sizeof(filename), "Screenshot failed - D3DX Error %lx", hr);
         StatusOverlay::setStatus(filename);
     }
 }
@@ -208,8 +214,8 @@ void MacroFunctions::HaggleLess10000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(
 static void displayCamPosition()
 {
     char str[256];
-    snprintf(str, sizeof(str), "Camera offset at (%.0f, %.0f, %.0f)",
-             Configuration.Offset3rdPerson.x, Configuration.Offset3rdPerson.y, Configuration.Offset3rdPerson.z);
+    std::snprintf(str, sizeof(str), "Camera offset at (%.0f, %.0f, %.0f)",
+                  Configuration.Offset3rdPerson.x, Configuration.Offset3rdPerson.y, Configuration.Offset3rdPerson.z);
     StatusOverlay::setStatus(str);
 }
 

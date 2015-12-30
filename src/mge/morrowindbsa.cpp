@@ -1,7 +1,8 @@
 
+#include <cstdio>
+#include <cstring>
 #include <map>
 #include "proxydx/d3d8header.h"
-#include "support/strsec.h"
 #include "morrowindbsa.h"
 
 
@@ -66,7 +67,7 @@ static BSAHash3 BSAHashString(const char* str)
     return result;
 }
 
-static void BSAOpen(const char* path)
+static void BSAOpen(const char *path)
 {
     HANDLE bsa = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
     if(bsa == INVALID_HANDLE_VALUE) return;
@@ -101,19 +102,15 @@ void BSAInit()
 {
     char path[MAX_PATH];
     WIN32_FIND_DATA data;
-    HANDLE h = FindFirstFile("data files\\*.bsa", &data);
+    HANDLE h = FindFirstFile("Data Files\\*.bsa", &data);
     if(h == INVALID_HANDLE_VALUE) return;
 
-    strcpy(path, "data files\\");
-    strcat(path, data.cFileName);
-    BSAOpen(path);
-
-    while(FindNextFile(h, &data))
+    do
     {
-        strcpy(path, "data files\\");
-        strcat(path, data.cFileName);
+        std::snprintf(path, sizeof(path), "Data Files\\%s", data.cFileName);
         BSAOpen(path);
-    }
+    } while(FindNextFile(h, &data));
+
     FindClose(h);
 }
 
@@ -141,12 +138,11 @@ static EntryData BSAGetEntry(BSAHash3 hash)
     }
 }
 
-static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char* filename)
+static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char *filename)
 {
     char pathbuf[MAX_PATH];
     BSAHash3 hash = BSAHashString(filename);
     IDirect3DTexture9 *tex = 0;
-    HANDLE file;
 
     // First check if the texture is already loaded
     std::map<__int64, IDirect3DTexture9*>::const_iterator it = BSALoadedTextures.find(hash.LValue);
@@ -157,8 +153,7 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char* fi
     }
 
     // Next check the distant land folder
-    strcpy(pathbuf, "data files\\distantland\\statics\\");
-    strcat_s(pathbuf, MAX_PATH, filename);
+    std::snprintf(pathbuf, sizeof(pathbuf), "Data Files\\distantland\\statics\\%s", filename);
     if(GetFileAttributes(pathbuf) != INVALID_FILE_ATTRIBUTES)
     {
         HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
@@ -170,8 +165,7 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char* fi
     }
 
     // Then check the normal folder
-    strcpy(pathbuf, "data files\\");
-    strcat_s(pathbuf, MAX_PATH, filename);
+    std::snprintf(pathbuf, sizeof(pathbuf), "Data Files\%s", filename);
     if(GetFileAttributes(pathbuf) != INVALID_FILE_ATTRIBUTES)
     {
         HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
@@ -199,21 +193,19 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char* fi
     return 0;
 }
 
-IDirect3DTexture9 * BSALoadTexture(IDirect3DDevice9 *dev, const char* filename)
+IDirect3DTexture9 * BSALoadTexture(IDirect3DDevice9 *dev, const char *filename)
 {
     char pathbuf[MAX_PATH];
 
     // Prefer loading file with DDS extension first
-    strcpy(pathbuf, "textures\\");
-    strcat_s(pathbuf, MAX_PATH, filename);
-    strcpy(pathbuf + strlen(pathbuf) - 3, "dds");
+    std::snprintf(pathbuf, sizeof(pathbuf), "textures\\%s", filename);
+    std::strcpy(pathbuf + strlen(pathbuf) - 3, "dds");
 
     IDirect3DTexture9 *ret = BSALoadTexture2(dev, pathbuf);
     if(ret) return ret;
 
     // Load file with original extension
-    strcpy(pathbuf, "textures\\");
-    strcat_s(pathbuf, MAX_PATH, filename);
+    std::snprintf(pathbuf, sizeof(pathbuf), "textures\\%s", filename);
     return BSALoadTexture2(dev, pathbuf);
 }
 

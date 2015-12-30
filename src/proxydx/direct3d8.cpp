@@ -1,5 +1,5 @@
 
-#include <string.h>
+#include <cstdio>
 #include "direct3d8.h"
 #include "d3d8device.h"
 
@@ -7,9 +7,9 @@ typedef IDirect3D8* (_stdcall *D3DProc8)(UINT);
 
 ProxyD3D::ProxyD3D(IDirect3D9 *real, UINT d3d8version) : refcount(1), realD3D(real)
 {
-    char path[MAX_PATH];
-    GetSystemDirectoryA(path, MAX_PATH);
-    strcat(path, "\\d3d8.dll");
+    char syspath[MAX_PATH], path[MAX_PATH];
+    GetSystemDirectoryA(syspath, sizeof(syspath));
+    std::snprintf(path, sizeof(path), "%s\\%s", syspath, "d3d8.dll");
 
     // Cache a D3D8-specific caps set, which may vary by version parameter
     HMODULE d3ddll = LoadLibrary(path);

@@ -2,10 +2,10 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <cstdio>
 
 #include "proxydx/d3d8header.h"
 #include "support/log.h"
-#include "support/strsec.h"
 #include "userhud.h"
 #include "morrowindbsa.h"
 
@@ -322,7 +322,7 @@ void MGEhud::setEffect(hud_id hud, const char *effect)
     // Load new effect if string is not empty
     if(*effect)
     {
-        snprintf(path, sizeof(path), "Data Files\\shaders\\%s.fx", effect);
+        std::snprintf(path, sizeof(path), "Data Files\\shaders\\%s.fx", effect);
         HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &e->effect, &errors);
 
         if(hr == D3D_OK)

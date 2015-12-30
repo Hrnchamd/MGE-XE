@@ -1,8 +1,8 @@
 
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
 #include "proxydx/d3d8header.h"
 #include "support/log.h"
-#include "support/strsec.h"
 
 #include "configuration.h"
 #include "mwbridge.h"
@@ -69,7 +69,7 @@ bool PostShaders::initShaderChain()
         MGEShader shader;
         ID3DXBuffer *errors;
 
-        snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", p);
+        std::snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", p);
         HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &shader.effect, &errors);
 
         if(hr == D3D_OK)
@@ -128,7 +128,7 @@ bool PostShaders::checkShaderVersion(MGEShader *shader)
 
     if(effect->GetString(ver, &verstr) == D3D_OK)
     {
-        if(strcmp(verstr, compatibleShader) == 0)
+        if(std::strcmp(verstr, compatibleShader) == 0)
             return true;
     }
     return false;
@@ -178,7 +178,7 @@ void PostShaders::loadShaderDependencies(MGEShader *shader)
         if(effect->GetString(ehTextureSrc, &texturesrc) == D3D_OK)
         {
             IDirect3DTexture9 *tex;
-            snprintf(texturepath, sizeof(texturepath), "Data Files\\textures\\%s", texturesrc);
+            std::snprintf(texturepath, sizeof(texturepath), "Data Files\\textures\\%s", texturesrc);
 
             if(D3DXCreateTextureFromFile(device, texturepath, &tex) == D3D_OK)
                 effect->SetTexture(ehTextureRef, tex);

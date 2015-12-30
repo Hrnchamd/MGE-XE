@@ -1,6 +1,5 @@
 
-#include <stdio.h>
-#include "support/strsec.h"
+#include <cstdio>
 
 #include "mged3d8device.h"
 #include "configuration.h"
@@ -55,13 +54,13 @@ void StatusOverlay::show(IDirect3DDevice9 *device)
 
 void StatusOverlay::setStatus(const char *s)
 {
-    strcpy_s(statusText, sizeof(statusText), s);
+    std::snprintf(statusText, sizeof(statusText), "%s", s);
     statusTimeout = GetTickCount() + Configuration.StatusTimeout;
 }
 
 void StatusOverlay::setFPS(float fps)
 {
-    snprintf(fpsText, sizeof(fpsText), "%4.0f", fps);
+    std::snprintf(fpsText, sizeof(fpsText), "%4.0f", fps);
 }
 
 void StatusOverlay::showLastStatus()

@@ -1,6 +1,6 @@
 
+#include <cstdio>
 #include "support/winheader.h"
-#include "support/strsec.h"
 #include "support/log.h"
 #include "mge/configuration.h"
 #include "mge/mgeversion.h"
@@ -82,7 +82,7 @@ extern "C" void * _stdcall FakeDirect3DCreate(UINT version)
     {
         // Use system D3D8
         typedef void * (_stdcall * D3DProc) (UINT);
-        D3DProc func = (D3DProc)getProc1("\\d3d8.dll", "Direct3DCreate8");
+        D3DProc func = (D3DProc)getProc1("d3d8.dll", "Direct3DCreate8");
         return (func)(version);
     }
 }
@@ -90,7 +90,7 @@ extern "C" void * _stdcall FakeDirect3DCreate(UINT version)
 extern "C" HRESULT _stdcall FakeDirectInputCreate(HINSTANCE a, DWORD b, REFIID c, void **d, void *e)
 {
     typedef HRESULT (_stdcall * DInputProc) (HINSTANCE, DWORD, REFIID, void **, void *);
-    DInputProc func = (DInputProc)getProc1("\\dinput8.dll", "DirectInput8Create");
+    DInputProc func = (DInputProc)getProc1("dinput8.dll", "DirectInput8Create");
 
     void *dinput = 0;
     HRESULT hr = (func)(a, b, c, &dinput, e);
@@ -110,9 +110,16 @@ extern "C" HRESULT _stdcall FakeDirectInputCreate(HINSTANCE a, DWORD b, REFIID c
 FARPROC getProc1(const char *lib, const char *funcname)
 {
     // Get the address of a single function from a dll
-    char path[MAX_PATH];
-    GetSystemDirectoryA(path, MAX_PATH);
-    strcat_s(path, MAX_PATH, lib);
+    char syspath[MAX_PATH], path[MAX_PATH];
+    GetSystemDirectoryA(syspath, sizeof(syspath));
+
+    int str_sz = std::snprintf(path, sizeof(path), "%s\\%s", syspath, lib);
+    if(str_sz >= sizeof(path))
+        return NULL;
+
     HMODULE dll = LoadLibraryA(path);
+    if(dll == NULL)
+        return NULL;
+
     return GetProcAddress(dll, funcname);
 }
