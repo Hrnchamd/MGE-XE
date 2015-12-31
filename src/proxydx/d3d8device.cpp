@@ -1,9 +1,12 @@
 
+#include "direct3d8.h"
 #include "d3d8device.h"
 #include "d3d8surface.h"
 #include "d3d8texture.h"
 
-ProxyDevice::ProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob) : refcount(1), realDevice(real), proxD3D8(ob), baseVertexIndex(0)
+
+
+ProxyDevice::ProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d) : refcount(1), realDevice(real), proxD3D8(d3d), baseVertexIndex(0)
 {
     GetGammaRamp(&gammaDefault);
 }
@@ -48,16 +51,19 @@ HRESULT _stdcall ProxyDevice::Present(const RECT *a, const RECT *b, HWND c, cons
 
 HRESULT _stdcall ProxyDevice::GetBackBuffer(UINT a, D3DBACKBUFFER_TYPE b, IDirect3DSurface8 **c)
 {
-    IDirect3DSurface9 *c2 = NULL;
-    DWORD unused = 4;
-    HRESULT hr;
-
+    IDirect3DSurface9 *c_real = NULL;
     *c = NULL;
-    hr  = realDevice->GetBackBuffer(0, a, b, &c2);
-    if(hr != D3D_OK || c2 == NULL) return hr;
 
-    hr = c2->GetPrivateData(guid_proxydx, (void *)c, &unused);
-    if(hr != D3D_OK) *c = new ProxySurface(c2, this);
+    HRESULT hr = realDevice->GetBackBuffer(0, a, b, &c_real);
+    if(hr != D3D_OK || c_real == NULL)
+        return hr;
+
+    ProxySurface *surface = ProxySurface::getProxyFromDX(c_real);
+    if(surface)
+        *c = surface;
+    else
+        *c = factoryProxySurface(c_real);
+
     return D3D_OK;
 }
 
@@ -95,11 +101,12 @@ void _stdcall ProxyDevice::GetGammaRamp(D3DGAMMARAMP *a)
 
 HRESULT _stdcall ProxyDevice::CreateTexture(UINT a, UINT b, UINT c, DWORD d, D3DFORMAT e, D3DPOOL f, IDirect3DTexture8 **g)
 {
-    IDirect3DTexture9 *g2 = NULL;
-    HRESULT hr = realDevice->CreateTexture(a, b, c, d, e, f, &g2, NULL);
-    if(hr != D3D_OK || g2 == NULL) return hr;
+    IDirect3DTexture9 *g_real = NULL;
+    HRESULT hr = realDevice->CreateTexture(a, b, c, d, e, f, &g_real, NULL);
+    if(hr != D3D_OK || g_real == NULL)
+        return hr;
 
-    *g = new ProxyTexture(g2, this);
+    *g = factoryProxyTexture(g_real);
     return D3D_OK;
 }
 
@@ -115,60 +122,62 @@ HRESULT _stdcall ProxyDevice::CreateIndexBuffer(UINT a, DWORD b, D3DFORMAT c, D3
 
 HRESULT _stdcall ProxyDevice::CreateRenderTarget(UINT a, UINT b, D3DFORMAT c, D3DMULTISAMPLE_TYPE d, BOOL e, IDirect3DSurface8 **f)
 {
-    IDirect3DSurface9 *f2 = NULL;
-    HRESULT hr = realDevice->CreateRenderTarget(a, b, c, d, 0, e, &f2, NULL);
-    if(hr != D3D_OK || f2 == NULL) return hr;
+    IDirect3DSurface9 *f_real = NULL;
+    HRESULT hr = realDevice->CreateRenderTarget(a, b, c, d, 0, e, &f_real, NULL);
+    if(hr != D3D_OK || f_real == NULL)
+        return hr;
 
-    *f = new ProxySurface(f2, this);
+    *f = factoryProxySurface(f_real);
     return D3D_OK;
 }
 
 HRESULT _stdcall ProxyDevice::CreateDepthStencilSurface(UINT a, UINT b, D3DFORMAT c, D3DMULTISAMPLE_TYPE d, IDirect3DSurface8 **e)
 {
     //Not sure if Discard should be true or false
-    IDirect3DSurface9 *e2 = NULL;
-    HRESULT hr = realDevice->CreateDepthStencilSurface(a, b, c, d, 0, false, &e2, NULL);
-    if(hr != D3D_OK) return hr;
+    IDirect3DSurface9 *e_real = NULL;
+    HRESULT hr = realDevice->CreateDepthStencilSurface(a, b, c, d, 0, FALSE, &e_real, NULL);
+    if(hr != D3D_OK)
+        return hr;
 
-    *e = new ProxySurface(e2, this);
+    *e = factoryProxySurface(e_real);
     return D3D_OK;
 }
 
 HRESULT _stdcall ProxyDevice::CreateImageSurface(UINT a, UINT b, D3DFORMAT c, IDirect3DSurface8 **d)
 {
-    IDirect3DSurface9 *d2 = NULL;
-    HRESULT hr = realDevice->CreateOffscreenPlainSurface(a, b, c, D3DPOOL_SYSTEMMEM, &d2, NULL);
-    if(hr != D3D_OK || d2 == NULL) return hr;
+    IDirect3DSurface9 *d_real = NULL;
+    HRESULT hr = realDevice->CreateOffscreenPlainSurface(a, b, c, D3DPOOL_SYSTEMMEM, &d_real, NULL);
+    if(hr != D3D_OK || d_real == NULL) return hr;
 
-    *d = new ProxySurface(d2, this);
+    *d = factoryProxySurface(d_real);
     return D3D_OK;
 }
 
 HRESULT _stdcall ProxyDevice::CopyRects(IDirect3DSurface8 *a, const RECT *b, UINT c, IDirect3DSurface8 *d, const POINT *e)
 {
-    IDirect3DSurface9 *a2 = ((ProxySurface *)a)->realSurface;
-    IDirect3DSurface9 *d2 = ((ProxySurface *)d)->realSurface;
+    IDirect3DSurface9 *a_real = static_cast<ProxySurface *>(a)->realSurface;
+    IDirect3DSurface9 *d_real = static_cast<ProxySurface *>(d)->realSurface;
 
     if(b == NULL && e == NULL)
     {
         D3DSURFACE_DESC9 source;
         D3DSURFACE_DESC9 dest;
 
-        if(a2->GetDesc(&source) != D3D_OK || d2->GetDesc(&dest) != D3D_OK)
+        if(a_real->GetDesc(&source) != D3D_OK || d_real->GetDesc(&dest) != D3D_OK)
         {
             return UnusedFunction();
         }
         else if(source.Usage == 1 && dest.Usage == 0)
         {
-            return realDevice->GetRenderTargetData(a2, d2);
+            return realDevice->GetRenderTargetData(a_real, d_real);
         }
         else if(source.Usage == 0 && dest.Usage == 1)
         {
-            return realDevice->UpdateSurface(a2, NULL, d2, NULL);
+            return realDevice->UpdateSurface(a_real, NULL, d_real, NULL);
         }
         else
         {
-            return realDevice->StretchRect(a2, NULL, d2, NULL, D3DTEXF_NONE);
+            return realDevice->StretchRect(a_real, NULL, d_real, NULL, D3DTEXF_NONE);
         }
     }
     else
@@ -181,47 +190,59 @@ HRESULT _stdcall ProxyDevice::CopyRects(IDirect3DSurface8 *a, const RECT *b, UIN
 
 HRESULT _stdcall ProxyDevice::UpdateTexture(IDirect3DBaseTexture8 *a, IDirect3DBaseTexture8 *b)
 {
-    IDirect3DTexture9 *a2 = ((ProxyTexture *)a)->realTexture;
-    IDirect3DTexture9 *b2 = ((ProxyTexture *)b)->realTexture;
-    return realDevice->UpdateTexture(a2, b2);
+    IDirect3DTexture9 *a_real = static_cast<ProxyTexture *>(a)->realTexture;
+    IDirect3DTexture9 *b_real = static_cast<ProxyTexture *>(b)->realTexture;
+    return realDevice->UpdateTexture(a_real, b_real);
 }
 
 HRESULT _stdcall ProxyDevice::SetRenderTarget(IDirect3DSurface8 *a, IDirect3DSurface8 *b)
 {
-    IDirect3DSurface9 *a2 = NULL;
-    IDirect3DSurface9 *b2 = NULL;
-    if(a != NULL) a2 = ((ProxySurface *)a)->realSurface;
-    if(b != NULL) b2 = ((ProxySurface *)b)->realSurface;
+    IDirect3DSurface9 *a_real = NULL;
+    IDirect3DSurface9 *b_real = NULL;
+    if(a != NULL) a_real = static_cast<ProxySurface *>(a)->realSurface;
+    if(b != NULL) b_real = static_cast<ProxySurface *>(b)->realSurface;
 
-    HRESULT hr = D3D_OK;
-    if(a2 != NULL) hr |= realDevice->SetRenderTarget(0, a2);
-    hr |= realDevice->SetDepthStencilSurface(b2);
-    return hr;
+    HRESULT hr1 = D3D_OK, hr2 = D3D_OK;
+    if(a_real != NULL)
+        hr1 = realDevice->SetRenderTarget(0, a_real);
+    hr2 = realDevice->SetDepthStencilSurface(b_real);
+
+    return (hr1 != D3D_OK) ? hr1 : hr2;
 }
 
 HRESULT _stdcall ProxyDevice::GetRenderTarget(IDirect3DSurface8 **a)
 {
-    IDirect3DSurface9 *a2 = NULL;
+    IDirect3DSurface9 *a_real = NULL;
     *a = NULL;
-    DWORD unused = 4;
-    HRESULT hr = realDevice->GetRenderTarget(0, &a2);
-    if(hr != D3D_OK || a2 == NULL) return hr;
 
-    hr = a2->GetPrivateData(guid_proxydx, (void *)a, &unused);
-    if(hr != D3D_OK) *a = new ProxySurface(a2, this);
+    HRESULT hr = realDevice->GetRenderTarget(0, &a_real);
+    if(hr != D3D_OK || a_real == NULL)
+        return hr;
+
+    ProxySurface *surface = ProxySurface::getProxyFromDX(a_real);
+    if(surface)
+        *a = surface;
+    else
+        *a = factoryProxySurface(a_real);
+
     return D3D_OK;
 }
 
 HRESULT _stdcall ProxyDevice::GetDepthStencilSurface(IDirect3DSurface8 **a)
 {
-    IDirect3DSurface9 *a2 = NULL;
+    IDirect3DSurface9 *a_real = NULL;
     *a = NULL;
-    DWORD unused = 4;
-    HRESULT hr = realDevice->GetDepthStencilSurface(&a2);
-    if(hr != D3D_OK || a2 == NULL) return hr;
 
-    hr = a2->GetPrivateData(guid_proxydx, (void *)a, &unused);
-    if(hr != D3D_OK) *a = new ProxySurface(a2, this);
+    HRESULT hr = realDevice->GetDepthStencilSurface(&a_real);
+    if(hr != D3D_OK || a_real == NULL)
+        return hr;
+
+    ProxySurface *surface = ProxySurface::getProxyFromDX(a_real);
+    if(surface)
+        *a = surface;
+    else
+        *a = factoryProxySurface(a_real);
+
     return D3D_OK;
 }
 
@@ -436,4 +457,17 @@ HRESULT _stdcall ProxyDevice::GetIndices(IDirect3DIndexBuffer8 **a, UINT *b)
 {
     *b = baseVertexIndex;
     return realDevice->GetIndices((IDirect3DIndexBuffer9 **)a);
+}
+
+//-----------------------------------------------------------------------------
+
+// Proxy methods
+IDirect3DTexture8 * ProxyDevice::factoryProxyTexture(IDirect3DTexture9 *tex)
+{
+    return new ProxyTexture(tex, this);
+}
+
+IDirect3DSurface8 * ProxyDevice::factoryProxySurface(IDirect3DSurface9 *surface)
+{
+    return new ProxySurface(surface, this);
 }

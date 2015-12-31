@@ -1,10 +1,13 @@
 
+#include "d3d8device.h"
 #include "d3d8surface.h"
 #include "d3d8texture.h"
 
-ProxyTexture::ProxyTexture(IDirect3DTexture9 *real, IDirect3DDevice8 *ob) : realTexture(real), proxDevice(ob)
+
+
+ProxyTexture::ProxyTexture(IDirect3DTexture9 *real, ProxyDevice *device) : realTexture(real), proxDevice(device)
 {
-    void *proxy = this;
+    ProxyTexture *proxy = this;
     real->SetPrivateData(guid_proxydx, (void *)&proxy, sizeof(proxy), 0);
 }
 
@@ -82,14 +85,19 @@ HRESULT _stdcall ProxyTexture::GetLevelDesc(UINT Level, D3DSURFACE_DESC8 *pDesc)
 
 HRESULT _stdcall ProxyTexture::GetSurfaceLevel(UINT Level, IDirect3DSurface8 **ppSurfaceLevel)
 {
-    IDirect3DSurface9 *b2;
+    IDirect3DSurface9 *surface_real = NULL;
     *ppSurfaceLevel = NULL;
-    DWORD unused = 4;
 
-    HRESULT hr = realTexture->GetSurfaceLevel(Level, &b2);
-    if(hr != D3D_OK || b2 == NULL) return hr;
-    hr = b2->GetPrivateData(guid_proxydx, (void *)ppSurfaceLevel, &unused);
-    if(hr != D3D_OK) *ppSurfaceLevel = new ProxySurface(b2, proxDevice);
+    HRESULT hr = realTexture->GetSurfaceLevel(Level, &surface_real);
+    if(hr != D3D_OK || surface_real == NULL)
+        return hr;
+
+    ProxySurface *surface = ProxySurface::getProxyFromDX(surface_real);
+    if(surface)
+        *ppSurfaceLevel = surface;
+    else
+        *ppSurfaceLevel = proxDevice->factoryProxySurface(surface_real);
+
     return D3D_OK;
 }
 
@@ -98,3 +106,18 @@ HRESULT _stdcall ProxyTexture::GetSurfaceLevel(UINT Level, IDirect3DSurface8 **p
 HRESULT _stdcall ProxyTexture::LockRect(UINT Level, D3DLOCKED_RECT *pLockedRect, CONST RECT *pRect, DWORD Flags) { return realTexture->LockRect(Level, pLockedRect, pRect, Flags); }
 HRESULT _stdcall ProxyTexture::UnlockRect(UINT Level) { return realTexture->UnlockRect(Level); }
 HRESULT _stdcall ProxyTexture::AddDirtyRect(CONST RECT *pDirtyRect ) { return realTexture->AddDirtyRect(pDirtyRect); }
+
+//-----------------------------------------------------------------------------
+
+// Proxy methods
+ProxyTexture * ProxyTexture::getProxyFromDX(IDirect3DTexture9 *real)
+{
+    ProxyTexture *tex;
+    DWORD data_sz = sizeof(tex);
+
+    HRESULT hr = real->GetPrivateData(guid_proxydx, (void *)&tex, &data_sz);
+    if(hr == D3D_OK)
+        return tex;
+
+    return 0;
+}

@@ -4,7 +4,7 @@
 class MGEProxyDevice : public ProxyDevice
 {
 public:
-    MGEProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob);
+    MGEProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d);
     ULONG _stdcall Release(void);
 
     HRESULT _stdcall Present(const RECT *a, const RECT *b, HWND c, const RGNDATA *d);

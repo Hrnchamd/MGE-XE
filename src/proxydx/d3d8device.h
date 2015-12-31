@@ -6,11 +6,11 @@ class ProxyDevice : public IDirect3DDevice8
 public:
     DWORD refcount;
     IDirect3DDevice9 *realDevice;
-    IDirect3D8 *proxD3D8;
+    ProxyD3D *proxD3D8;
     UINT baseVertexIndex;
     D3DGAMMARAMP gammaDefault;
 
-    ProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob);
+    ProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d);
 
     //-----------------------------------------------------------------------------
     /*** IUnknown methods ***/
@@ -142,4 +142,8 @@ public:
     HRESULT _stdcall DrawRectPatch(UINT a, const float *b, const D3DRECTPATCH_INFO *c) { return UnusedFunction(); }
     HRESULT _stdcall DrawTriPatch(UINT a, const float *b, const D3DTRIPATCH_INFO *c) { return UnusedFunction(); }
     HRESULT _stdcall DeletePatch(UINT a) { return UnusedFunction(); }
+
+    // Proxy methods
+    virtual IDirect3DTexture8 * factoryProxyTexture(IDirect3DTexture9 *tex);
+    virtual IDirect3DSurface8 * factoryProxySurface(IDirect3DSurface9 *surface);
 };

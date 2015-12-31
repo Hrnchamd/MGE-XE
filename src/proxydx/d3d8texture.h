@@ -5,9 +5,9 @@ class ProxyTexture : public IDirect3DTexture8
 {
 public:
     IDirect3DTexture9 *realTexture;
-    IDirect3DDevice8 *proxDevice;
+    ProxyDevice *proxDevice;
 
-    ProxyTexture(IDirect3DTexture9 *real, IDirect3DDevice8 *ob);
+    ProxyTexture(IDirect3DTexture9 *real, ProxyDevice *device);
 
     //-----------------------------------------------------------------------------
     /*** IUnknown methods ***/
@@ -35,4 +35,7 @@ public:
     HRESULT _stdcall LockRect(UINT Level, D3DLOCKED_RECT *pLockedRect, CONST RECT *pRect, DWORD Flags);
     HRESULT _stdcall UnlockRect(UINT Level);
     HRESULT _stdcall AddDirtyRect(CONST RECT *pDirtyRect);
+
+    // Proxy methods
+    static ProxyTexture * getProxyFromDX(IDirect3DTexture9 *real);
 };

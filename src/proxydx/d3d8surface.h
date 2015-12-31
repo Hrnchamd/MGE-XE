@@ -5,9 +5,9 @@ class ProxySurface : public IDirect3DSurface8
 {
 public:
     IDirect3DSurface9 *realSurface;
-    IDirect3DDevice8 *proxDevice;
+    ProxyDevice *proxDevice;
 
-    ProxySurface(IDirect3DSurface9 *real, IDirect3DDevice8 *ob);
+    ProxySurface(IDirect3DSurface9 *real, ProxyDevice *device);
 
     //-----------------------------------------------------------------------------
     /*** IUnknown methods ***/
@@ -28,4 +28,7 @@ public:
 
     HRESULT _stdcall LockRect(D3DLOCKED_RECT *pLockedRect, CONST RECT *pRect, DWORD Flags);
     HRESULT _stdcall UnlockRect();
+
+    // Proxy methods
+    static ProxySurface * getProxyFromDX(IDirect3DSurface9 *real);
 };
