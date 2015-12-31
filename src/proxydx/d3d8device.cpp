@@ -3,7 +3,7 @@
 #include "d3d8surface.h"
 #include "d3d8texture.h"
 
-ProxyDevice::ProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob) : refcount(1), realDevice(real), fakeD3D8(ob), baseVertexIndex(0)
+ProxyDevice::ProxyDevice(IDirect3DDevice9 *real, IDirect3D8 *ob) : refcount(1), realDevice(real), proxD3D8(ob), baseVertexIndex(0)
 {
     GetGammaRamp(&gammaDefault);
 }
@@ -32,8 +32,8 @@ ULONG _stdcall ProxyDevice::Release(void)
 HRESULT _stdcall ProxyDevice::TestCooperativeLevel(void) { return realDevice->TestCooperativeLevel(); }
 UINT _stdcall ProxyDevice::GetAvailableTextureMem(void) { return realDevice->GetAvailableTextureMem(); }
 HRESULT _stdcall ProxyDevice::ResourceManagerDiscardBytes(DWORD a) { return D3D_OK; }
-HRESULT _stdcall ProxyDevice::GetDirect3D(IDirect3D8 **a) { *a = fakeD3D8; fakeD3D8->AddRef(); return D3D_OK; }
-HRESULT _stdcall ProxyDevice::GetDeviceCaps(D3DCAPS8 *a) { return fakeD3D8->GetDeviceCaps(0, D3DDEVTYPE_HAL, a); }
+HRESULT _stdcall ProxyDevice::GetDirect3D(IDirect3D8 **a) { *a = proxD3D8; proxD3D8->AddRef(); return D3D_OK; }
+HRESULT _stdcall ProxyDevice::GetDeviceCaps(D3DCAPS8 *a) { return proxD3D8->GetDeviceCaps(0, D3DDEVTYPE_HAL, a); }
 HRESULT _stdcall ProxyDevice::GetDisplayMode(D3DDISPLAYMODE *a) { return realDevice->GetDisplayMode(0, a); }
 HRESULT _stdcall ProxyDevice::GetCreationParameters(D3DDEVICE_CREATION_PARAMETERS *a) { return realDevice->GetCreationParameters(a); }
 
@@ -56,7 +56,7 @@ HRESULT _stdcall ProxyDevice::GetBackBuffer(UINT a, D3DBACKBUFFER_TYPE b, IDirec
     hr  = realDevice->GetBackBuffer(0, a, b, &c2);
     if(hr != D3D_OK || c2 == NULL) return hr;
 
-    hr = c2->GetPrivateData(guid, (void *)c, &unused);
+    hr = c2->GetPrivateData(guid_proxydx, (void *)c, &unused);
     if(hr != D3D_OK) *c = new ProxySurface(c2, this);
     return D3D_OK;
 }
@@ -207,7 +207,7 @@ HRESULT _stdcall ProxyDevice::GetRenderTarget(IDirect3DSurface8 **a)
     HRESULT hr = realDevice->GetRenderTarget(0, &a2);
     if(hr != D3D_OK || a2 == NULL) return hr;
 
-    hr = a2->GetPrivateData(guid, (void *)a, &unused);
+    hr = a2->GetPrivateData(guid_proxydx, (void *)a, &unused);
     if(hr != D3D_OK) *a = new ProxySurface(a2, this);
     return D3D_OK;
 }
@@ -220,7 +220,7 @@ HRESULT _stdcall ProxyDevice::GetDepthStencilSurface(IDirect3DSurface8 **a)
     HRESULT hr = realDevice->GetDepthStencilSurface(&a2);
     if(hr != D3D_OK || a2 == NULL) return hr;
 
-    hr = a2->GetPrivateData(guid, (void *)a, &unused);
+    hr = a2->GetPrivateData(guid_proxydx, (void *)a, &unused);
     if(hr != D3D_OK) *a = new ProxySurface(a2, this);
     return D3D_OK;
 }

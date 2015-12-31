@@ -5,7 +5,7 @@ class ProxyTexture : public IDirect3DTexture8
 {
 public:
     IDirect3DTexture9 *realTexture;
-    IDirect3DDevice8 *fakeDevice;
+    IDirect3DDevice8 *proxDevice;
 
     ProxyTexture(IDirect3DTexture9 *real, IDirect3DDevice8 *ob);
 

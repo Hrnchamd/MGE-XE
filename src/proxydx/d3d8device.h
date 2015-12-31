@@ -6,7 +6,7 @@ class ProxyDevice : public IDirect3DDevice8
 public:
     DWORD refcount;
     IDirect3DDevice9 *realDevice;
-    IDirect3D8 *fakeD3D8;
+    IDirect3D8 *proxD3D8;
     UINT baseVertexIndex;
     D3DGAMMARAMP gammaDefault;
 

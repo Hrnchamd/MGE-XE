@@ -5,7 +5,7 @@ class ProxySurface : public IDirect3DSurface8
 {
 public:
     IDirect3DSurface9 *realSurface;
-    IDirect3DDevice8 *fakeDevice;
+    IDirect3DDevice8 *proxDevice;
 
     ProxySurface(IDirect3DSurface9 *real, IDirect3DDevice8 *ob);
 

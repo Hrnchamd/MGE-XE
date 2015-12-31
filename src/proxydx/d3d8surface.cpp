@@ -1,10 +1,10 @@
 
 #include "d3d8surface.h"
 
-ProxySurface::ProxySurface(IDirect3DSurface9 *real, IDirect3DDevice8 *ob) : realSurface(real), fakeDevice(ob)
+ProxySurface::ProxySurface(IDirect3DSurface9 *real, IDirect3DDevice8 *ob) : realSurface(real), proxDevice(ob)
 {
-    void *This = this;
-    real->SetPrivateData(guid, (void *)&This, 4, 0);
+    void *proxy = this;
+    real->SetPrivateData(guid_proxydx, (void *)&proxy, sizeof(proxy), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -28,7 +28,7 @@ ULONG _stdcall ProxySurface::Release()
 /*** IDirect3DSurface8 methods ***/
 //-----------------------------------------------------------------------------
 
-HRESULT _stdcall ProxySurface::GetDevice(IDirect3DDevice8 **ppDevice) { *ppDevice = fakeDevice; return D3D_OK; }
+HRESULT _stdcall ProxySurface::GetDevice(IDirect3DDevice8 **ppDevice) { *ppDevice = proxDevice; return D3D_OK; }
 HRESULT _stdcall ProxySurface::SetPrivateData(REFGUID refguid, CONST void *pData, DWORD SizeOfData, DWORD Flags) { return realSurface->SetPrivateData(refguid, pData, SizeOfData, Flags); }
 HRESULT _stdcall ProxySurface::GetPrivateData(REFGUID refguid, void *pData, DWORD *pSizeOfData) { return realSurface->GetPrivateData(refguid, pData, pSizeOfData); }
 HRESULT _stdcall ProxySurface::FreePrivateData(REFGUID refguid) { return realSurface->FreePrivateData(refguid); }

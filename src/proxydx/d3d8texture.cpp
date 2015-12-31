@@ -2,10 +2,10 @@
 #include "d3d8surface.h"
 #include "d3d8texture.h"
 
-ProxyTexture::ProxyTexture(IDirect3DTexture9 *real, IDirect3DDevice8 *ob) : realTexture(real), fakeDevice(ob)
+ProxyTexture::ProxyTexture(IDirect3DTexture9 *real, IDirect3DDevice8 *ob) : realTexture(real), proxDevice(ob)
 {
-    void *This = this;
-    real->SetPrivateData(guid, (void *)&This, 4, 0);
+    void *proxy = this;
+    real->SetPrivateData(guid_proxydx, (void *)&proxy, sizeof(proxy), 0);
 }
 
 //-----------------------------------------------------------------------------
@@ -29,7 +29,7 @@ ULONG _stdcall ProxyTexture::Release()
 /*** IDirect3DBaseTexture8 methods ***/
 //-----------------------------------------------------------------------------
 
-HRESULT _stdcall ProxyTexture::GetDevice(IDirect3DDevice8 **ppDevice) { *ppDevice = fakeDevice; return D3D_OK; }
+HRESULT _stdcall ProxyTexture::GetDevice(IDirect3DDevice8 **ppDevice) { *ppDevice = proxDevice; return D3D_OK; }
 
 HRESULT _stdcall ProxyTexture::SetPrivateData(REFGUID refguid, CONST void *pData, DWORD SizeOfData, DWORD Flags)
 {
@@ -88,8 +88,8 @@ HRESULT _stdcall ProxyTexture::GetSurfaceLevel(UINT Level, IDirect3DSurface8 **p
 
     HRESULT hr = realTexture->GetSurfaceLevel(Level, &b2);
     if(hr != D3D_OK || b2 == NULL) return hr;
-    hr = b2->GetPrivateData(guid, (void *)ppSurfaceLevel, &unused);
-    if(hr != D3D_OK) *ppSurfaceLevel = new ProxySurface(b2, fakeDevice);
+    hr = b2->GetPrivateData(guid_proxydx, (void *)ppSurfaceLevel, &unused);
+    if(hr != D3D_OK) *ppSurfaceLevel = new ProxySurface(b2, proxDevice);
     return D3D_OK;
 }
 

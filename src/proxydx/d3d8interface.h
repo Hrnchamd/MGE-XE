@@ -5,7 +5,7 @@
 
 #define UnusedFunction() D3DERR_INVALIDCALL
 
-//DX8 interface declerations
+// DX8 interface declarations
 DECLARE_INTERFACE_(IDirect3DSurface8, IUnknown)
 {
     /*** IUnknown methods ***/
@@ -177,7 +177,7 @@ DECLARE_INTERFACE_(IDirect3D8, IUnknown)
     STDMETHOD(CreateDevice)(UINT Adapter,D3DDEVTYPE DeviceType,HWND hFocusWindow,DWORD BehaviorFlags,D3DPRESENT_PARAMETERS8* pPresentationParameters,IDirect3DDevice8** ppReturnedDeviceInterface) PURE;
 };
 
-static const GUID guid =
+static const GUID guid_proxydx =
 { 0x7c204fb1, 0x9cac, 0x4b8d, { 0xba, 0xed, 0x7b, 0xf4, 0x8b, 0xf6, 0x3b, 0xb2 } };
 
 class ProxySurface;
