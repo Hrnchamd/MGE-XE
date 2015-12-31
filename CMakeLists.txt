@@ -30,7 +30,7 @@ set_target_properties (MGEfuncs PROPERTIES PREFIX "")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     # Compile options; optimize, strip symbols and kill stdcall decoration
-    set (CMAKE_CXX_FLAGS "-O2 -ffast-math -fgcse-after-reload -march=pentium4 -Wformat")
+    set (CMAKE_CXX_FLAGS "-O2 -mstackrealign -ffast-math -fgcse-after-reload -march=pentium4 -Wformat")
     set (CMAKE_EXE_LINKER_FLAGS "-s --kill-at")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
