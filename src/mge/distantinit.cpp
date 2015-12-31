@@ -747,6 +747,7 @@ bool DistantLand::loadDistantStatics()
             if(!tex)
             {
                 LOG::logline("Cannot load texture %s", texname);
+                errorTexture->AddRef();
                 tex = errorTexture;
             }
             subset->tex = tex;
