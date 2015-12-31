@@ -109,7 +109,8 @@ HRESULT _stdcall ProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d, D
     return D3D_OK;
 }
 
-IDirect3DDevice8* ProxyD3D::factoryProxyDevice(IDirect3DDevice9* d)
+// Proxy factory methods
+IDirect3DDevice8 * ProxyD3D::factoryProxyDevice(IDirect3DDevice9 *d)
 {
     return new ProxyDevice(d, this);
 }

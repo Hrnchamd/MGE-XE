@@ -129,7 +129,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     return D3D_OK;
 }
 
-IDirect3DDevice8* MGEProxyD3D::factoryProxyDevice(IDirect3DDevice9* d)
+IDirect3DDevice8* MGEProxyD3D::factoryProxyDevice(IDirect3DDevice9 *d)
 {
     LOG::logline("-- D3D Proxy Factory OK");
     return new MGEProxyDevice(d, this);

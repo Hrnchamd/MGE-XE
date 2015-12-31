@@ -408,8 +408,6 @@ HRESULT _stdcall ProxyDevice::ProcessVertices(UINT a, UINT b, UINT c, IDirect3DV
 
 //-----------------------------------------------------------------------------
 
-// function CreateVertexShader(pDeclaration, pFunction: PDWord; out pHandle: DWord; Usage: DWord): HResult; stdcall;
-
 HRESULT _stdcall ProxyDevice::SetVertexShader(DWORD a)
 {
     return realDevice->SetFVF(a);
