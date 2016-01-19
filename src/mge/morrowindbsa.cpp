@@ -1,11 +1,13 @@
 
 #include <cstdio>
 #include <cstring>
-#include <map>
+#include <tr1/unordered_map>
 #include "proxydx/d3d8header.h"
 #include "morrowindbsa.h"
 
 
+
+using std::tr1::unordered_map;
 
 struct BSAEntry
 {
@@ -33,8 +35,8 @@ struct EntryData {
     void release() { if(ptr) delete [] (char*)ptr; }
 };
 
-static std::map<__int64, BSAEntry> BSAEntries;
-static std::map<__int64, IDirect3DTexture9*> BSALoadedTextures;
+static unordered_map<__int64, BSAEntry> BSAEntries;
+static unordered_map<__int64, IDirect3DTexture9*> BSALoadedTextures;
 
 
 
@@ -116,7 +118,7 @@ void BSAInit()
 
 static EntryData BSAGetEntry(BSAHash3 hash)
 {
-    std::map<__int64, BSAEntry>::const_iterator it = BSAEntries.find(hash.LValue);
+    unordered_map<__int64, BSAEntry>::const_iterator it = BSAEntries.find(hash.LValue);
     if(it == BSAEntries.end())
         return EntryData();
 
@@ -145,7 +147,7 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char *fi
     IDirect3DTexture9 *tex = 0;
 
     // First check if the texture is already loaded
-    std::map<__int64, IDirect3DTexture9*>::const_iterator it = BSALoadedTextures.find(hash.LValue);
+    unordered_map<__int64, IDirect3DTexture9*>::const_iterator it = BSALoadedTextures.find(hash.LValue);
     if(it != BSALoadedTextures.end())
     {
         it->second->AddRef();
@@ -218,7 +220,7 @@ void BSACacheStats(int *total, int *memuse)
 {
     __int64 texMemUsage = 0;
 
-    for(std::map<__int64, IDirect3DTexture9*>::const_iterator i = BSALoadedTextures.begin(); i != BSALoadedTextures.end(); ++i)
+    for(unordered_map<__int64, IDirect3DTexture9*>::const_iterator i = BSALoadedTextures.begin(); i != BSALoadedTextures.end(); ++i)
     {
         D3DSURFACE_DESC texdesc;
         i->second->GetLevelDesc(0, &texdesc);

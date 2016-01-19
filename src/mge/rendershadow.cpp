@@ -137,7 +137,7 @@ void DistantLand::renderShadow()
     effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
     effect->SetTexture(ehTex3, texSoftShadow);
 
-    for(vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    for(std::vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
     {
         if(i->blendEnable && i->destBlend == D3DBLEND_ONE)
             continue;

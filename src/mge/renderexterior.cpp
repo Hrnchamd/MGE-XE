@@ -11,7 +11,7 @@
 void DistantLand::renderSky()
 {
     // Recorded renders
-    for(vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
+    for(std::vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
     {
         // Set variables in main effect; variables are shared via effect pool
         effect->SetTexture(ehTex0, i->texture);
@@ -90,7 +90,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
 
     visDistant.RemoveAll();
 
-    zf = min(Configuration.DL.NearStaticEnd * kCellSize, cullDist);
+    zf = std::min(Configuration.DL.NearStaticEnd * kCellSize, cullDist);
     if(zn < zf)
     {
         editProjectionZ(&ds_proj, zn, zf);
@@ -100,7 +100,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
-    zf = min(Configuration.DL.FarStaticEnd * kCellSize, cullDist);
+    zf = std::min(Configuration.DL.FarStaticEnd * kCellSize, cullDist);
     if(zn < zf)
     {
         editProjectionZ(&ds_proj, zn, zf);
@@ -110,7 +110,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
         currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
     }
 
-    zf = min(Configuration.DL.VeryFarStaticEnd * kCellSize, cullDist);
+    zf = std::min(Configuration.DL.VeryFarStaticEnd * kCellSize, cullDist);
     if(zn < zf)
     {
         editProjectionZ(&ds_proj, zn, zf);

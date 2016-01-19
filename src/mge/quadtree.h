@@ -5,9 +5,7 @@
 #include <map>
 #include <deque>
 
-using namespace std;
 
-//-----------------------------------------------------------------------------
 
 struct QuadTreeMesh {
     BoundingSphere sphere;
@@ -63,7 +61,7 @@ public:
     void SortByTexture();
     size_t size() const { return visible_set.size(); }
 
-    deque<const QuadTreeMesh*> visible_set;
+    std::deque<const QuadTreeMesh*> visible_set;
 };
 
 //-----------------------------------------------------------------------------
@@ -76,7 +74,7 @@ struct QuadTreeNode {
     float box_size;
     D3DXVECTOR2 box_center;
     BoundingSphere sphere;
-    vector<QuadTreeMesh*> meshes;
+    std::vector<QuadTreeMesh*> meshes;
 
     QuadTreeNode(QuadTree *owner);
     ~QuadTreeNode();

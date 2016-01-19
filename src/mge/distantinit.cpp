@@ -12,6 +12,11 @@
 #define READ_FROM_BUFFER(src, dest, size) memcpy((void*)dest, (void*)src, size); src += size;
 
 
+
+using std::string;
+using std::vector;
+using std::tr1::unordered_map;
+
 bool DistantLand::ready = false;
 bool DistantLand::isRenderCached = false;
 int DistantLand::numWaterVerts, DistantLand::numWaterTris;
@@ -37,7 +42,7 @@ VisibleSet DistantLand::visGrass;
 
 vector<RenderedState> DistantLand::recordMW;
 vector<RenderedState> DistantLand::recordSky;
-vector<pair<const QuadTreeMesh*, int> > DistantLand::batchedGrass;
+vector< std::pair<const QuadTreeMesh*, int> > DistantLand::batchedGrass;
 
 IDirect3DTexture9 *DistantLand::texWorldColour, *DistantLand::texWorldNormals, *DistantLand::texWorldDetail;
 IDirect3DTexture9 *DistantLand::texDepthFrame;

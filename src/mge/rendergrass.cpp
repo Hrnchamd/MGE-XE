@@ -14,7 +14,7 @@ void DistantLand::cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 
     // Don't draw beyond fully fogged distance; early out if frustum is empty
     if(~Configuration.MGEFlags & EXP_FOG)
-        zf = min(fogEnd, zf);
+        zf = std::min(fogEnd, zf);
     if(zf <= zn)
         return;
 
@@ -49,7 +49,7 @@ void DistantLand::buildGrassInstanceVB()
     }
 
     const QuadTreeMesh *mesh = *visGrass.visible_set.begin();
-    deque<const QuadTreeMesh*>::const_iterator m;
+    std::deque<const QuadTreeMesh*>::const_iterator m;
     float *vbwrite = 0;
     int nz = 0;
 
@@ -63,7 +63,7 @@ void DistantLand::buildGrassInstanceVB()
     {
         if(mesh->vBuffer != (*m)->vBuffer)
         {
-            batchedGrass.push_back(make_pair(mesh, nz));
+            batchedGrass.push_back(std::make_pair(mesh, nz));
             mesh = *m;
             nz = 0;
         }
@@ -76,7 +76,7 @@ void DistantLand::buildGrassInstanceVB()
         vbwrite += 12;
         nz++;
     }
-    batchedGrass.push_back(make_pair(mesh, nz));
+    batchedGrass.push_back(std::make_pair(mesh, nz));
     vbGrassInstances->Unlock();
 }
 
@@ -110,7 +110,7 @@ void DistantLand::renderGrassInstZ()
 void DistantLand::renderGrassCommon(ID3DXEffect *e)
 {
     int nz = 0;
-    for(vector<pair<const QuadTreeMesh*, int> >::iterator iz = batchedGrass.begin(); iz != batchedGrass.end(); ++iz)
+    for(std::vector< std::pair<const QuadTreeMesh*, int> >::iterator iz = batchedGrass.begin(); iz != batchedGrass.end(); ++iz)
     {
         effect->SetTexture(ehTex0, iz->first->tex);
         e->CommitChanges();

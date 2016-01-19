@@ -6,7 +6,7 @@
 #include <vector>
 #include <tr1/unordered_map>
 
-using namespace std::tr1;
+
 
 struct MGEShader;
 
@@ -46,16 +46,16 @@ public:
 
     static VendorSpecificRendering vsr;
 
-    static unordered_map<string, WorldSpace> mapWorldSpaces;
+    static std::tr1::unordered_map<std::string, WorldSpace> mapWorldSpaces;
     static const WorldSpace *currentWorldSpace;
     static QuadTree LandQuadTree;
     static VisibleSet visLand;
     static VisibleSet visDistant;
     static VisibleSet visGrass;
 
-    static vector<RenderedState> recordMW;
-    static vector<RenderedState> recordSky;
-    static vector< pair<const QuadTreeMesh*, int> > batchedGrass;
+    static std::vector<RenderedState> recordMW;
+    static std::vector<RenderedState> recordSky;
+    static std::vector< std::pair<const QuadTreeMesh*, int> > batchedGrass;
 
     static IDirect3DTexture9 *texWorldColour, *texWorldNormals, *texWorldDetail;
     static IDirect3DTexture9 *texDepthFrame;

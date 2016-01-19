@@ -91,7 +91,7 @@ void DistantLand::renderReflectedSky()
     // Sky objects are not correctly positioned at infinity, so correction is required
     const float adjustZ = -2.0 * eyePos.z;
 
-    for(vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
+    for(std::vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
     {
         // Adjust world transform, as skydome objects are positioned relative to the viewer
         D3DXMATRIX worldTransform = i->worldTransforms[0];
@@ -128,7 +128,7 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRI
     float zn = 4.0f, zf = Configuration.DL.NearStaticEnd * kCellSize;
 
     // Don't draw beyond fully fogged distance; early out if frustum is empty
-    zf = min(fogEnd, zf);
+    zf = std::min(fogEnd, zf);
     if(zf <= zn)
         return;
 

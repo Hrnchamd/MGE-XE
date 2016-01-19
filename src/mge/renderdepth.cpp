@@ -93,7 +93,7 @@ void DistantLand::renderDepthAdditional()
 void DistantLand::renderDepthRecorded()
 {
     // Recorded renders
-    for(vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    for(std::vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
     {
         // Set variables in main effect; variables are shared via effect pool
         if((i->alphaTest || i->blendEnable) && i->texture)

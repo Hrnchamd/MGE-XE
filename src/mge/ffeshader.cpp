@@ -3,7 +3,11 @@
 #include "ffeshader.h"
 #include "support/log.h"
 
-using namespace std;
+
+
+using std::string;
+using std::stringstream;
+using std::map;
 
 IDirect3DDevice *FixedFunctionShader::device;
 ID3DXEffectPool *FixedFunctionShader::constantPool;
