@@ -110,7 +110,7 @@ HRESULT _stdcall ProxyTexture::AddDirtyRect(CONST RECT *pDirtyRect ) { return re
 //-----------------------------------------------------------------------------
 
 // Proxy methods
-ProxyTexture * ProxyTexture::getProxyFromDX(IDirect3DTexture9 *real)
+ProxyTexture * ProxyTexture::getProxyFromDX(IDirect3DBaseTexture9 *real)
 {
     ProxyTexture *tex;
     DWORD data_sz = sizeof(tex);

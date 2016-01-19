@@ -37,5 +37,5 @@ public:
     HRESULT _stdcall AddDirtyRect(CONST RECT *pDirtyRect);
 
     // Proxy methods
-    static ProxyTexture * getProxyFromDX(IDirect3DTexture9 *real);
+    static ProxyTexture * getProxyFromDX(IDirect3DBaseTexture9 *real);
 };
