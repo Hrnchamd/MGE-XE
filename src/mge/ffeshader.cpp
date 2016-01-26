@@ -203,13 +203,17 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     sunDiffuse *= sunMultiplier;
     ambient *= ambMultiplier;
 
-    // Special case, check if ambient state is pure white (distant land ignores this for a reason)
-    // Morrowind temporarily sets this for full bright particle effects, but just adding it
+    // Special case, check if ambient state is pure white (distant land does not record this for a reason)
+    // Morrowind temporarily sets this for full-bright particle effects, but just adding it
     // to other ambient sources above would cause over-brightness
     DWORD checkAmbient;
     device->GetRenderState(D3DRS_AMBIENT, &checkAmbient);
     if(checkAmbient == 0xffffffff)
-        ambient.r = ambient.g = ambient.b = 1.0;
+    {
+        // Set lighting to result in full-bright equivalent after tonemapping
+        ambient.r = ambient.g = ambient.b = 1.25;
+        sunDiffuse.r = sunDiffuse.g = sunDiffuse.b = 0.0;
+    }
 
     effectFFE->SetFloatArray(ehLightSceneAmbient, ambient, 3);
     effectFFE->SetFloatArray(ehLightSunDiffuse, sunDiffuse, 3);
