@@ -4,7 +4,7 @@
 #include "VMTYPES.h"
 
 #define MWSEINSTRUCTION_DECLARE_VTABLE(classname) \
-mwseInstruction::vtable_t classname::vtable = { &classname::destructor, &classname::getOperands, &classname::execute };
+mwseInstruction::vtable_t classname::vtable = { &classname::deleting_destructor, &classname::getOperands, &classname::execute };
 
 struct TES3MACHINE;
 
@@ -20,14 +20,14 @@ struct mwseInstruction
             virtual thiscall bool execute(void);
         }
         */
-        void (__fastcall *d)(mwseInstruction*);
+        void (__fastcall *d)(mwseInstruction*, int, int);
         int (__stdcall *g)(/* ignore this pointer */ OPCODE, VPVOID);
         bool (__fastcall *e)(mwseInstruction*);
     } vtable_t;
 
     mwseInstruction(TES3MACHINE& mach) : vm(mach) {}
 
-    static __fastcall void destructor(mwseInstruction *_this) {}
+    static __fastcall void deleting_destructor(mwseInstruction *_this, int, int delete_flags) {}
     static __stdcall int getOperands(OPCODE opcode, VPVOID operanddata) { return 0; }
     static __fastcall bool execute(mwseInstruction *_this) { return false; }
 
