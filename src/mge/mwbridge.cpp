@@ -104,13 +104,14 @@ void MWBridge::Load()
     eShadowSlider = eTruRenderWidth + 0xC;        //0x84
     eCrosshair1 = eShadowSlider + 0x10;         //0x94
     eAI = eCrosshair1 + 0x4;            //0x98
+    eMenu = eMaster1 + 0xd6;
     eView0 = eAI + dwHRotScaleOff + 0x5C;  //0xF4
     eRenderWidth = eView0 + 0x4;                 //0xF8
     eView1 = eRenderWidth + 0x188;         //0x280
     eCombat = eView1 + 0x80;                //0x300
 
     eGamma = eMaster2 + 0x3C;  //0x3C  //00D1E090
-    eView4 = eGamma+ + 0x10;   //0x4C  //00D1E0A0
+    eView4 = eGamma + 0x10;   //0x4C  //00D1E0A0
     eLookMenu = eView4 + 0x9C;    //0xE8  //00D1E090
 
     eX = read_dword(eView0 - 0x10) + 0x1C;
@@ -123,7 +124,6 @@ void MWBridge::Load()
 
     eView3 = read_dword(eView1 - 0x10) + 0x114;
     eExt = read_dword(eView1 + 0x10) + 0x10;
-    eMenu = read_dword(read_dword(eView1 + 0x14) + 0x10) + 0x58;
     eMouseLim = read_dword(eD3D + 0x20) + 0x24;
 
     eGammaFunc = read_dword(read_dword(eMaster2) + 0x50);
@@ -322,7 +322,7 @@ bool MWBridge::IsExterior()
 bool MWBridge::IsMenu()
 {
     assert(m_loaded);
-    return (read_dword(eMenu) & 0x10000) != 0;
+    return read_byte(eMenu);
 }
 
 //-----------------------------------------------------------------------------
@@ -443,16 +443,7 @@ RGBVECTOR* MWBridge::CurFogColVector()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::getSceneFogCol()
-{
-    DWORD addr = read_dword(eEnviro) + 0x9c;
-    addr = read_dword(addr) + 0x1c;
-    return read_dword(addr);
-}
-
-//-----------------------------------------------------------------------------
-
-void MWBridge::setSceneFogCol(DWORD c)
+void MWBridge::setScenegraphFogCol(DWORD c)
 {
     DWORD addr = read_dword(eEnviro) + 0x9c;
     addr = read_dword(addr) + 0x1c;

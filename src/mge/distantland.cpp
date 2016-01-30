@@ -424,6 +424,11 @@ void DistantLand::adjustFog()
 
     nearViewRange = mwBridge->GetViewDistance();
 
+    // Morrowind does not update weather during menu mode and the frame after
+    // No need to run adjustment during menu mode
+    if(mwBridge->IsMenu())
+        return;
+
     // Get fog cell ranges based on environment and weather
     if(mwBridge->IsUnderwater(eyePos.z)) {
         fogStart = Configuration.DL.BelowWaterFogStart;
@@ -519,7 +524,8 @@ void DistantLand::adjustFog()
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
-    RGBVECTOR c = mwBridge->getSceneFogCol();
+    // This is a read of the unadjusted colour
+    RGBVECTOR c = *mwBridge->CurFogColVector();
 
     if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
     {
@@ -528,7 +534,7 @@ void DistantLand::adjustFog()
         // Simplified version of scattering from the shader
         const RGBVECTOR *skyCol = mwBridge->CurSkyColVector();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
-        const float sunaltitude = pow(1 + sunPos.z, 10);
+        const float sunaltitude = powf(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
         const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
         const float sunaltitude2 = saturate(exp(-2 * sunPos.z)) * saturate(sunaltitude);
@@ -575,7 +581,7 @@ void DistantLand::adjustFog()
         // Alter Morrowind's fog colour through its scenegraph
         // This way it automatically restores the correct colour if it has to switch fog modes mid-frame
         DWORD fc = (DWORD)nearfogCol;
-        mwBridge->setSceneFogCol(fc);
+        mwBridge->setScenegraphFogCol(fc);
 
         // Set device fog colour to propagate change immediately
         device->SetRenderState(D3DRS_FOGCOLOR, fc);
