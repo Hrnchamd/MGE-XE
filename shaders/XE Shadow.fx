@@ -151,13 +151,32 @@ DebugOut ShadowDebugVS (float4 pos : POSITION)
 
 float4 ShadowDebugPS (DebugOut IN) : COLOR0
 {
-    float z, s;
+    float z, red = 0;
+    float4 shadowClip, eyeClip;
     
     if(IN.tex.y < 1)
-        s = tex2D(sampDepth, IN.tex).r;
+    {
+        // Sample depth
+        float2 t = IN.tex;
+        z = tex2D(sampDepth, t).r / ESM_scale;
+        // Convert pixel position from shadow clip space directly to camera clip space
+        shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
+        eyeClip = mul(shadowClip, vertexblendpalette[0]);
+    }
     else
-        s = tex2D(sampDepth, IN.tex - float2(0, 1)).g;
+    {
+        // Sample depth
+        float2 t = IN.tex - float2(0, 1);
+        z = tex2D(sampDepth, t).g / ESM_scale;
+        // Convert pixel position from shadow clip space directly to camera clip space
+        shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
+        eyeClip = mul(shadowClip, vertexblendpalette[1]);
+    }
+
+    // Do perspective divide and mark the pixel if it falls within the camera frustum
+    eyeClip.xyz /= eyeClip.w;
+    if(abs(eyeClip.x) <= 1 && abs(eyeClip.y) <= 1 && eyeClip.z >= 0 && eyeClip.z <= 1)
+        red = saturate(1.5 - eyeClip.w / 8192);
     
-    z = s / ESM_scale;
-    return float4(0, saturate(1-2*z), saturate(2-2*z), 1);
+    return float4(red, saturate(1-2*z), saturate(2-2*z), 1);
 }

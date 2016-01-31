@@ -176,11 +176,21 @@ void DistantLand::renderShadowDebug()
 {
     UINT passes;
 
+    // Create shadow clip space -> camera clip space matrices
+    D3DXMATRIX inverseShadowViewProj, cameraViewProj, shadowToCameraProj[2];
+
+    D3DXMatrixMultiply(&cameraViewProj, &mwView, &mwProj);
+    D3DXMatrixInverse(&inverseShadowViewProj, NULL, &smViewproj[0]);
+    D3DXMatrixMultiply(&shadowToCameraProj[0], &inverseShadowViewProj, &cameraViewProj);
+    D3DXMatrixInverse(&inverseShadowViewProj, NULL, &smViewproj[1]);
+    D3DXMatrixMultiply(&shadowToCameraProj[1], &inverseShadowViewProj, &cameraViewProj);
+
     // Display shadow layers in top right corner
     effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
     effect->BeginPass(PASS_DEBUGSHADOW);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CW);
     effect->SetTexture(ehTex3, texSoftShadow);
+    effect->SetMatrixArray(ehVertexBlendPalette, shadowToCameraProj, 2);
     effect->CommitChanges();
     device->SetVertexDeclaration(WaterDecl);
     device->SetStreamSource(0, vbFullFrame, 0, 12);
