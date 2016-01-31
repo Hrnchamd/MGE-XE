@@ -79,23 +79,24 @@ float4 ShadowSoftenPS (ShadowPostOut IN) : COLOR0
 {
     // Filter all channels at the same time
     // Looks better without exp-space filtering, with a side effect of expanding silhouttes by about 1 pixel
-    float4 s = tex2D(sampDepth, IN.texcoords);
+    float4 t = float4(IN.texcoords, 0, 0);
+    float4 d = tex2Dlod(sampDepth, t);
     if(!hasalpha)
     {
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(-1.42*shadowRcpRes, 0));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(-0.71*shadowRcpRes, 0));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0.71*shadowRcpRes, 0));
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(1.42*shadowRcpRes, 0));
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*shadowRcpRes, 0, 0, 0));
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*shadowRcpRes, 0, 0, 0));
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*shadowRcpRes, 0, 0, 0));
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(1.42*shadowRcpRes, 0, 0, 0));
     }
     else
     {
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(0, -1.42*shadowRcpRes));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0, -0.71*shadowRcpRes));
-        s += 0.8 * tex2D(sampDepth, IN.texcoords + float2(0, 0.71*shadowRcpRes));
-        s += 0.2 * tex2D(sampDepth, IN.texcoords + float2(0, 1.42*shadowRcpRes));
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, -1.42*shadowRcpRes, 0, 0));
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, -0.71*shadowRcpRes, 0, 0));
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, 0.71*shadowRcpRes, 0, 0));
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, 1.42*shadowRcpRes, 0, 0));
     }
 
-    return s / 3.0;
+    return d / 3.0;
 }
 
 //-----------------------------------------------------------------------------

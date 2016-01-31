@@ -139,8 +139,13 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
 float4 GrassPS (GrassVertOut IN): COLOR0
 {
     float4 result = tex2D(sampBaseTex, IN.texcoords);
-    clip(result.a - 64.0/255.0);
     result.rgb *= IN.colour.rgb;
+
+    // Alpha test early
+    // Note: clip is not used here because at certain optimization levels,
+    // the texkill is pushed to the very end of the function
+    if(result.a < 64.0/255.0)
+        discard;
 
     // Soft shadowing
     float dz = shadowDeltaZ(IN.shadow0pos, IN.shadow1pos);

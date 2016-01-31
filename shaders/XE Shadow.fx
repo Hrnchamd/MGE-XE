@@ -24,17 +24,17 @@ float shadowDeltaZ(float4 shadow0pos, float4 shadow1pos)
 {
     float dz = 1e-6;
     
-    if(all(saturate(1 - abs(shadow0pos.xyz))))
+    [branch] if(all(saturate(1 - abs(shadow0pos.xyz))))
     {
         // Layer 0, inner
         float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow0pos.xy;
-        dz = tex2D(sampDepth, shadowUV).g / ESM_scale - shadow0pos.z;
+        dz = tex2Dlod(sampDepth, float4(shadowUV, 0, 0)).g / ESM_scale - shadow0pos.z;
     }
     else if(all(saturate(1 - abs(shadow1pos.xyz))))
     {
         // Layer 1
         float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow1pos.xy;
-        dz = tex2D(sampDepth, shadowUV).r / ESM_scale - shadow1pos.z;
+        dz = tex2Dlod(sampDepth, float4(shadowUV, 0, 0)).r / ESM_scale - shadow1pos.z;
     }
     
     return dz;
@@ -154,11 +154,11 @@ float4 ShadowDebugPS (DebugOut IN) : COLOR0
     float z, red = 0;
     float4 shadowClip, eyeClip;
     
-    if(IN.tex.y < 1)
+    [branch] if(IN.tex.y < 1)
     {
         // Sample depth
-        float2 t = IN.tex;
-        z = tex2D(sampDepth, t).r / ESM_scale;
+        float4 t = float4(IN.tex.x, IN.tex.y, 0, 0);
+        z = tex2Dlod(sampDepth, t).r / ESM_scale;
         // Convert pixel position from shadow clip space directly to camera clip space
         shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
         eyeClip = mul(shadowClip, vertexblendpalette[0]);
@@ -166,8 +166,8 @@ float4 ShadowDebugPS (DebugOut IN) : COLOR0
     else
     {
         // Sample depth
-        float2 t = IN.tex - float2(0, 1);
-        z = tex2D(sampDepth, t).g / ESM_scale;
+        float4 t = float4(IN.tex.x, IN.tex.y - 1, 0, 0);
+        z = tex2Dlod(sampDepth, t).g / ESM_scale;
         // Convert pixel position from shadow clip space directly to camera clip space
         shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
         eyeClip = mul(shadowClip, vertexblendpalette[1]);
