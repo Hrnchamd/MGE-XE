@@ -83,37 +83,45 @@ void DistantLand::renderShadowMap()
 void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *inverseCameraProj)
 {
     DECLARE_MWBRIDGE
-    D3DXVECTOR3 lookAt, nearPos;
-    D3DXVECTOR3 up(0, 0, 1);
+    D3DXVECTOR3 lookAt, lookAtEye, shadowCameraPos, up(0, 0, 1);
     D3DXMATRIX *view = &smView[layer], *proj = &smProj[layer], *viewproj = &smViewproj[layer];
 
     // Select light vector, sunPos during daytime, sunVec during night
     D3DXVECTOR4 lightVec = (sunPos.z > 0) ? -sunPos : sunVec;
 
-    // Centre of projection is ahead of the player
+    // Centre of projection is one radius ahead of the player
     // Not as far in z direction as player is likely looking at the ground plane rather than below
+    // This will be split into a non-texel-quantized but temporally stable view position part,
+    // and a texel-quantized view rotation part with small magnitude
     lookAt.x = eyePos.x + radius * eyeVec.x;
     lookAt.y = eyePos.y + radius * eyeVec.y;
     lookAt.z = eyePos.z + 0.5 * radius * eyeVec.z;
 
-    // Quantize projection centre to reduce texture swimming
-    lookAt.x = 16.0 * floor(lookAt.x / 16.0);
-    lookAt.y = 16.0 * floor(lookAt.y / 16.0);
-    lookAt.z = 16.0 * floor(lookAt.z / 16.0);
+    // Quantize eye position to partially reduce texture swimming during camera movement
+    lookAtEye.x = 16.0 * floor(0.0625 * eyePos.x);
+    lookAtEye.y = 16.0 * floor(0.0625 * eyePos.y);
+    lookAtEye.z = 16.0 * floor(0.0625 * eyePos.z);
 
-    // Create shadow frustum centred on lookAt, looking along lightVec
+    // Create shadow frustum centred on lookAtEye, looking along lightVec
     const float zrange = kCellSize;
-    nearPos.x = lookAt.x - zrange * lightVec.x;
-    nearPos.y = lookAt.y - zrange * lightVec.y;
-    nearPos.z = lookAt.z - zrange * lightVec.z;
+    shadowCameraPos.x = lookAtEye.x - zrange * lightVec.x;
+    shadowCameraPos.y = lookAtEye.y - zrange * lightVec.y;
+    shadowCameraPos.z = lookAtEye.z - zrange * lightVec.z;
 
-    D3DXMatrixLookAtRH(view, &nearPos, &lookAt, &up);
+    D3DXMatrixLookAtRH(view, &shadowCameraPos, &lookAtEye, &up);
     D3DXMatrixOrthoRH(proj, 2 * radius, (1 + fabs(lightVec.z)) * radius, 0, 2.0 * zrange);
     *viewproj = (*view) * (*proj);
 
-    // Texel quantization produces hideous temporal aliasing
-    //viewproj->_41 = floor(viewproj->_41 * 512.0) / 512.0;
-    //viewproj->_42 = floor(viewproj->_42 * 512.0) / 512.0;
+    // Transform remainder into shadow clip space and quantize
+    // Prevents all shimmer during camera rotation
+    D3DXVECTOR3 dv, deltaLookAt = lookAtEye - lookAt;
+    D3DXVec3TransformNormal(&dv, &deltaLookAt, viewproj);
+
+    // Quantize clip space range [-1, +1] over ShadowResolution texels
+    const float quantizer = 2.0 / Configuration.DL.ShadowResolution;
+    viewproj->_41 += quantizer * floor(dv.x / quantizer);
+    viewproj->_42 += quantizer * floor(dv.y / quantizer);
+    viewproj->_43 += dv.z;
 
     effect->SetMatrixArray(ehShadowViewproj, viewproj, 1);
     effectShadow->CommitChanges();
