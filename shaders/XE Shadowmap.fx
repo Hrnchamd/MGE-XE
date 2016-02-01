@@ -60,6 +60,8 @@ float4 ShadowPS (ShadowVertOut IN) : COLOR0
 //------------------------------------------------------------
 // Shadow map filtering
 
+static const float2 shadowAtlasRcpRes = shadowRcpRes * float2(shadowCascadeSize, 1);
+
 struct ShadowPostOut
 {
     float4 pos : POSITION;
@@ -71,32 +73,33 @@ ShadowPostOut ShadowSoftenVS (float4 pos : POSITION)
     ShadowPostOut OUT;
     
     OUT.pos = pos;
-    OUT.texcoords = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * pos.xy;
+    OUT.texcoords = (0.5 + 0.5*shadowAtlasRcpRes) + float2(0.5, -0.5) * pos.xy;
     return OUT;
 }
 
 float4 ShadowSoftenPS (ShadowPostOut IN) : COLOR0
 {
-    // Filter all channels at the same time
+    // Filter entire atlas
     // Looks better without exp-space filtering, with a side effect of expanding silhouttes by about 1 pixel
     float4 t = float4(IN.texcoords, 0, 0);
-    float4 d = tex2Dlod(sampDepth, t);
+    float d = tex2Dlod(sampDepth, t).r;
     if(!hasalpha)
     {
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*shadowRcpRes, 0, 0, 0));
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*shadowRcpRes, 0, 0, 0));
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*shadowRcpRes, 0, 0, 0));
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(1.42*shadowRcpRes, 0, 0, 0));
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
     }
     else
     {
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, -1.42*shadowRcpRes, 0, 0));
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, -0.71*shadowRcpRes, 0, 0));
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, 0.71*shadowRcpRes, 0, 0));
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, 1.42*shadowRcpRes, 0, 0));
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, -1.42*shadowAtlasRcpRes.y, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, -0.71*shadowAtlasRcpRes.y, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, 0.71*shadowAtlasRcpRes.y, 0, 0)).r;
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, 1.42*shadowAtlasRcpRes.y, 0, 0)).r;
     }
 
-    return d / 3.0;
+    d = d / 3.0;
+    return d.xxxx;
 }
 
 //-----------------------------------------------------------------------------

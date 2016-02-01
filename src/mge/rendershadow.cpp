@@ -15,6 +15,7 @@ static const float shadowFarRadius = 4000.0;
 // renderShadowMap
 // Renders multiple shadow map layers to channels in one texture
 // Applies filtering to soften shadow edges
+// This *must* restore render state on return
 void DistantLand::renderShadowMap()
 {
     IDirect3DSurface9 *target, *targetSoft;
@@ -23,12 +24,15 @@ void DistantLand::renderShadowMap()
 
     // Switch to render target
     RenderTargetSwitcher rtsw(targetSoft, surfShadowZ);
+    D3DVIEWPORT9 vp;
+    device->GetViewport(&vp);
 
     // Unbind shadow samplers
     effect->SetTexture(ehTex0, 0);
     effect->SetTexture(ehTex2, 0);
 
     // Clear floating point buffer to far depth
+    device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
     effectShadow->BeginPass(PASS_CLEARSHADOWMAP);
     effect->SetBool(ehHasAlpha, false);
     effectShadow->CommitChanges();
@@ -37,22 +41,16 @@ void DistantLand::renderShadowMap()
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
     effectShadow->EndPass();
 
-    // Render near layer (note: just ENABLE_GREEN fails at writing green with some drivers (i.e. mine))
-    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
-    device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
-    device->SetRenderState(D3DRS_COLORWRITEENABLE, ~D3DCOLORWRITEENABLE_RED);
+    // Render near layer (changes viewport)
     renderShadowLayer(0, shadowNearRadius);
-    effectShadow->EndPass();
 
-    // Render far layer
-    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
-    device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
-    device->SetRenderState(D3DRS_COLORWRITEENABLE, D3DCOLORWRITEENABLE_RED);
+    // Render far layer (changes viewport)
     renderShadowLayer(1, shadowFarRadius);
-    effectShadow->EndPass();
+
+    // Reset viewport
+    device->SetViewport(&vp);
 
     // Soften shadow map
-    device->SetRenderState(D3DRS_COLORWRITEENABLE, 0x0f);
     device->SetRenderTarget(0, target);
     effectShadow->BeginPass(PASS_SOFTENSHADOWMAP);
     effect->SetTexture(ehTex3, texSoftShadow);
@@ -123,12 +121,21 @@ void DistantLand::renderShadowLayer(int layer, float radius)
     currentWorldSpace->FarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
     currentWorldSpace->VeryFarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
 
+    // Clip to atlas region with viewport
+    const DWORD res = Configuration.DL.ShadowResolution;
+    D3DVIEWPORT9 vp = { layer * res, 0, res, res, 0.0f, 1.0f };
+    device->SetViewport(&vp);
+
     // Render land and statics
+    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
+
     if(mwBridge->IsExterior())
         renderDistantLand(effectShadow, view, proj);
 
     device->SetVertexDeclaration(StaticDecl);
     visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehWorld, SIZEOFSTATICVERT);
+
+    effectShadow->EndPass();
 }
 
 // renderShadow - Renders shadows (using blending) over Morrowind shadow receivers

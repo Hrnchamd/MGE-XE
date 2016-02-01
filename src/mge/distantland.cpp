@@ -634,7 +634,7 @@ void DistantLand::postProcess()
         }
 
         // Shadow map inset
-        ///renderShadowDebug();
+        ///if(!mwBridge->IsMenu()) renderShadowDebug();
 
         // Restore state
         stateSaved->Apply();

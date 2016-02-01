@@ -396,20 +396,11 @@ bool DistantLand::initWater()
     }
 
     // Reflection Z-buffer
-    if(Configuration.DL.ShadowResolution == reflRes)
+    hr = device->CreateDepthStencilSurface(reflRes, reflRes, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, TRUE, &surfReflectionZ, NULL);
+    if(hr != D3D_OK)
     {
-        // Re-use shadow Z-buffer
-        surfShadowZ->AddRef();
-        surfReflectionZ = surfShadowZ;
-    }
-    else
-    {
-        hr = device->CreateDepthStencilSurface(reflRes, reflRes, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, TRUE, &surfReflectionZ, NULL);
-        if(hr != D3D_OK)
-        {
-            LOG::logline("!! Failed to create reflection Z buffer");
-            return false;
-        }
+        LOG::logline("!! Failed to create reflection Z buffer");
+        return false;
     }
 
     // Water normals and geometry
@@ -584,25 +575,24 @@ bool DistantLand::initDynamicWaves()
 
 bool DistantLand::initShadow()
 {
-    // Use *16F since *32F may not be filtered
-    const D3DFORMAT shadowFormat = D3DFMT_G16R16F;
-    const D3DFORMAT shadowZFormat = D3DFMT_D24X8;
-    const UINT shadowSize = Configuration.DL.ShadowResolution;
+    const D3DFORMAT shadowFormat = D3DFMT_R16F, shadowZFormat = D3DFMT_D24X8;
+    const UINT shadowSize = Configuration.DL.ShadowResolution, cascades = 2;
     HRESULT hr;
 
-    hr = device->CreateTexture(shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texShadow, NULL);
+    // The shadow texture holds a horizontal-packed shadow atlas
+    hr = device->CreateTexture(cascades * shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texShadow, NULL);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Failed to create shadow render target");
         return false;
     }
-    hr = device->CreateTexture(shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texSoftShadow, NULL);
+    hr = device->CreateTexture(cascades * shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texSoftShadow, NULL);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Failed to create shadow render target");
         return false;
     }
-    hr = device->CreateDepthStencilSurface(shadowSize, shadowSize, shadowZFormat, D3DMULTISAMPLE_NONE, 0, TRUE, &surfShadowZ, NULL);
+    hr = device->CreateDepthStencilSurface(cascades * shadowSize, shadowSize, shadowZFormat, D3DMULTISAMPLE_NONE, 0, TRUE, &surfShadowZ, NULL);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Failed to create shadow Z buffer");
@@ -615,7 +605,7 @@ bool DistantLand::initShadow()
         return false;
     }
 
-    D3DXVECTOR3* v;
+    D3DXVECTOR3 *v;
     vbFullFrame->Lock(0, 0, (void**)&v, 0);
     v[0] = D3DXVECTOR3(-1.0f, 1.0f, 1.0f);
     v[1] = D3DXVECTOR3(-1.0f, -1.0f, 1.0f);

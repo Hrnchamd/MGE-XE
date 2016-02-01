@@ -6,6 +6,15 @@
 
 
 //------------------------------------------------------------
+// Engine parameters
+
+// Number of cascades that are rendered (this is hardcoded)
+static const int shadowCascades = 2;
+
+// Shadow atlas texture scaling factor
+static const float shadowCascadeSize = 1. / shadowCascades;
+
+//------------------------------------------------------------
 // Shadow parameters
 
 // Luminance reduction parameter for shadowed areas, recommend values in [0.25, 0.5]
