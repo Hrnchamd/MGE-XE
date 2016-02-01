@@ -57,6 +57,11 @@ float4 ShadowPS (ShadowVertOut IN) : COLOR0
     return ESM_scale * IN.depth;
 }
 
+float4 ShadowStencilPS (ShadowVertOut IN) : COLOR0
+{
+    return 1;
+}
+
 //------------------------------------------------------------
 // Shadow map filtering
 
@@ -122,19 +127,44 @@ technique T0 {
         PixelShader = compile ps_3_0 ShadowPS ();
     }
     //------------------------------------------------------------
-    // Used to render the shadow map
+    // Used to render the view frustum into the stencil
     Pass P1 {
+        ZEnable = false;
+        ZWriteEnable = false;
+        ColorWriteEnable = 0;
+        CullMode = none;
+        
+        StencilEnable = true;
+        StencilFunc = always;
+        StencilPass = replace;
+        StencilRef = 1;
+        
+        VertexShader = compile vs_3_0 ShadowVS ();
+        PixelShader = compile ps_3_0 ShadowStencilPS ();
+    }
+    //------------------------------------------------------------
+    // Used to render the shadow map
+    Pass P2 {
         ZEnable = true;
         ZWriteEnable = true;
+        ColorWriteEnable = red|green|blue|alpha;
+        CullMode = CW;
+        
+        StencilEnable = true;
+        StencilFunc = notequal;
+        StencilPass = keep;
+        StencilRef = 0;
         
         VertexShader = compile vs_3_0 ShadowVS ();
         PixelShader = compile ps_3_0 ShadowPS ();
     }
     //------------------------------------------------------------
     // Used to soften the shadow map
-    Pass P2 {
+    Pass P3 {
         ZEnable = false;
         ZWriteEnable = false;
+        
+        StencilEnable = false;
         
         VertexShader = compile vs_3_0 ShadowSoftenVS ();
         PixelShader = compile ps_3_0 ShadowSoftenPS ();

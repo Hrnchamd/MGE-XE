@@ -74,7 +74,7 @@ public:
 
     static IDirect3DTexture9 *texShadow, *texSoftShadow;
     static IDirect3DSurface9 *surfShadowZ;
-    static IDirect3DVertexBuffer9 *vbFullFrame;
+    static IDirect3DVertexBuffer9 *vbFullFrame, *vbClipCube;
 
     static D3DXMATRIX mwView, mwProj;
     static D3DXMATRIX smView[2], smProj[2], smViewproj[2];
@@ -169,7 +169,7 @@ public:
     static void renderDepthRecorded();
 
     static void renderShadowMap();
-    static void renderShadowLayer(int layer, float radius);
+    static void renderShadowLayer(int layer, float radius, const D3DXMATRIX *inverseCameraProj);
     static void renderShadow();
     static void renderShadowDebug();
 

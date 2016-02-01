@@ -32,7 +32,7 @@ void DistantLand::renderShadowMap()
     effect->SetTexture(ehTex2, 0);
 
     // Clear floating point buffer to far depth
-    device->Clear(0, 0, D3DCLEAR_ZBUFFER, 0, 1.0, 0);
+    device->Clear(0, 0, D3DCLEAR_ZBUFFER|D3DCLEAR_STENCIL, 0, 1.0, 0);
     effectShadow->BeginPass(PASS_CLEARSHADOWMAP);
     effect->SetBool(ehHasAlpha, false);
     effectShadow->CommitChanges();
@@ -41,11 +41,16 @@ void DistantLand::renderShadowMap()
     device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
     effectShadow->EndPass();
 
+    // Calculate transform to map view frustum into world space
+    D3DXMATRIX inverseCameraProj, cameraViewProj;
+    D3DXMatrixMultiply(&cameraViewProj, &mwView, &mwProj);
+    D3DXMatrixInverse(&inverseCameraProj, NULL, &cameraViewProj);
+
     // Render near layer (changes viewport)
-    renderShadowLayer(0, shadowNearRadius);
+    renderShadowLayer(0, shadowNearRadius, &inverseCameraProj);
 
     // Render far layer (changes viewport)
-    renderShadowLayer(1, shadowFarRadius);
+    renderShadowLayer(1, shadowFarRadius, &inverseCameraProj);
 
     // Reset viewport
     device->SetViewport(&vp);
@@ -75,7 +80,7 @@ void DistantLand::renderShadowMap()
 }
 
 // renderShadowLayer - Calculates projection for, and renders, one shadow layer
-void DistantLand::renderShadowLayer(int layer, float radius)
+void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *inverseCameraProj)
 {
     DECLARE_MWBRIDGE
     D3DXVECTOR3 lookAt, nearPos;
@@ -125,6 +130,14 @@ void DistantLand::renderShadowLayer(int layer, float radius)
     const DWORD res = Configuration.DL.ShadowResolution;
     D3DVIEWPORT9 vp = { layer * res, 0, res, res, 0.0f, 1.0f };
     device->SetViewport(&vp);
+
+    // Render view frustum to stencil, which limits rendering to visible texels
+    effect->SetMatrix(ehWorld, inverseCameraProj);
+    effectShadow->BeginPass(PASS_SHADOWSTENCIL);
+    device->SetVertexDeclaration(WaterDecl);
+    device->SetStreamSource(0, vbClipCube, 0, 12);
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 12);
+    effectShadow->EndPass();
 
     // Render land and statics
     effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
