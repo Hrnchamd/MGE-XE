@@ -43,7 +43,7 @@
             this.bClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bClear.Location = new System.Drawing.Point(416, 25);
             this.bClear.Name = "bClear";
-            this.bClear.Size = new System.Drawing.Size(96, 23);
+            this.bClear.Size = new System.Drawing.Size(118, 25);
             this.bClear.TabIndex = 0;
             this.bClear.Text = "Clear";
             this.bClear.UseVisualStyleBackColor = true;
@@ -54,7 +54,7 @@
             this.bAdd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bAdd.Location = new System.Drawing.Point(416, 54);
             this.bAdd.Name = "bAdd";
-            this.bAdd.Size = new System.Drawing.Size(96, 23);
+            this.bAdd.Size = new System.Drawing.Size(118, 25);
             this.bAdd.TabIndex = 1;
             this.bAdd.Text = "Add";
             this.bAdd.UseVisualStyleBackColor = true;
@@ -63,9 +63,9 @@
             // bRemove
             // 
             this.bRemove.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bRemove.Location = new System.Drawing.Point(416, 83);
+            this.bRemove.Location = new System.Drawing.Point(416, 85);
             this.bRemove.Name = "bRemove";
-            this.bRemove.Size = new System.Drawing.Size(96, 23);
+            this.bRemove.Size = new System.Drawing.Size(118, 25);
             this.bRemove.TabIndex = 2;
             this.bRemove.Text = "Remove";
             this.bRemove.UseVisualStyleBackColor = true;
@@ -75,9 +75,9 @@
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(416, 147);
+            this.bCancel.Location = new System.Drawing.Point(416, 143);
             this.bCancel.Name = "bCancel";
-            this.bCancel.Size = new System.Drawing.Size(96, 23);
+            this.bCancel.Size = new System.Drawing.Size(118, 25);
             this.bCancel.TabIndex = 3;
             this.bCancel.Text = "Cancel";
             this.bCancel.UseVisualStyleBackColor = true;
@@ -85,9 +85,9 @@
             // bSave
             // 
             this.bSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSave.Location = new System.Drawing.Point(416, 176);
+            this.bSave.Location = new System.Drawing.Point(416, 174);
             this.bSave.Name = "bSave";
-            this.bSave.Size = new System.Drawing.Size(96, 23);
+            this.bSave.Size = new System.Drawing.Size(118, 25);
             this.bSave.TabIndex = 4;
             this.bSave.Text = "Save";
             this.bSave.UseVisualStyleBackColor = true;
@@ -99,9 +99,12 @@
                                     | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lbDirectories.FormattingEnabled = true;
+            this.lbDirectories.HorizontalScrollbar = true;
+            this.lbDirectories.IntegralHeight = false;
+            this.lbDirectories.ItemHeight = 15;
             this.lbDirectories.Location = new System.Drawing.Point(12, 25);
             this.lbDirectories.Name = "lbDirectories";
-            this.lbDirectories.Size = new System.Drawing.Size(398, 173);
+            this.lbDirectories.Size = new System.Drawing.Size(398, 174);
             this.lbDirectories.Sorted = true;
             this.lbDirectories.TabIndex = 5;
             // 
@@ -110,7 +113,7 @@
             this.lDirectories.AutoSize = true;
             this.lDirectories.Location = new System.Drawing.Point(9, 5);
             this.lDirectories.Name = "lDirectories";
-            this.lDirectories.Size = new System.Drawing.Size(255, 13);
+            this.lDirectories.Size = new System.Drawing.Size(291, 15);
             this.lDirectories.TabIndex = 0;
             this.lDirectories.Text = "Additional directories that will be scanned for plugins:";
             // 
@@ -122,10 +125,10 @@
             // 
             // DirectoriesForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(524, 211);
+            this.ClientSize = new System.Drawing.Size(541, 211);
             this.Controls.Add(this.lDirectories);
             this.Controls.Add(this.lbDirectories);
             this.Controls.Add(this.bSave);
@@ -133,6 +136,7 @@
             this.Controls.Add(this.bRemove);
             this.Controls.Add(this.bAdd);
             this.Controls.Add(this.bClear);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MinimumSize = new System.Drawing.Size(540, 250);
             this.Name = "DirectoriesForm";

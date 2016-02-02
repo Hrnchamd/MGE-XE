@@ -33,9 +33,10 @@ namespace MGEgui.DistantLand {
             this.DudMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPlugs = new System.Windows.Forms.TabPage();
+            this.tableLayoutPlugins = new System.Windows.Forms.TableLayoutPanel();
+            this.clbPlugsModList = new System.Windows.Forms.CheckedListBox();
             this.lInstructions = new System.Windows.Forms.Label();
             this.lPlugsModList = new System.Windows.Forms.Label();
-            this.clbPlugsModList = new System.Windows.Forms.CheckedListBox();
             this.bPlugsFromINI = new System.Windows.Forms.Button();
             this.bPlugsAll = new System.Windows.Forms.Button();
             this.bPlugsClear = new System.Windows.Forms.Button();
@@ -65,6 +66,11 @@ namespace MGEgui.DistantLand {
             this.bMeshSkip = new System.Windows.Forms.Button();
             this.bMeshRun = new System.Windows.Forms.Button();
             this.tabStat = new System.Windows.Forms.TabPage();
+            this.flowLayoutStaticsOptions = new System.Windows.Forms.FlowLayoutPanel();
+            this.cbStatActivators = new System.Windows.Forms.CheckBox();
+            this.cbStatIncludeMisc = new System.Windows.Forms.CheckBox();
+            this.cbStatIntWater = new System.Windows.Forms.CheckBox();
+            this.cbStatIntExt = new System.Windows.Forms.CheckBox();
             this.lStatDesc = new System.Windows.Forms.Label();
             this.udStatMinSize = new System.Windows.Forms.NumericUpDown();
             this.lStatMinSize = new System.Windows.Forms.Label();
@@ -75,13 +81,9 @@ namespace MGEgui.DistantLand {
             this.cmbStatSkipMipLevels = new System.Windows.Forms.ComboBox();
             this.lStatSkipMipLevels = new System.Windows.Forms.Label();
             this.lStatSkipMipDesc = new System.Windows.Forms.Label();
-            this.cbStatActivators = new System.Windows.Forms.CheckBox();
-            this.cbStatIncludeMisc = new System.Windows.Forms.CheckBox();
-            this.cbStatIntWater = new System.Windows.Forms.CheckBox();
             this.bStatOverrideList = new System.Windows.Forms.Button();
             this.lStatOverrideList = new System.Windows.Forms.Label();
             this.lbStatOverrideList = new System.Windows.Forms.ListBox();
-            this.cbStatIntExt = new System.Windows.Forms.CheckBox();
             this.bStatExportStatics = new System.Windows.Forms.Button();
             this.bStatSkip = new System.Windows.Forms.Button();
             this.bStatRun = new System.Windows.Forms.Button();
@@ -94,10 +96,12 @@ namespace MGEgui.DistantLand {
             this.statusBar.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tabPlugs.SuspendLayout();
+            this.tableLayoutPlugins.SuspendLayout();
             this.gbPlugsSort.SuspendLayout();
             this.tabTex.SuspendLayout();
             this.tabMesh.SuspendLayout();
             this.tabStat.SuspendLayout();
+            this.flowLayoutStaticsOptions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udStatMinSize)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udStatGrassDensity)).BeginInit();
             this.tabFinish.SuspendLayout();
@@ -115,7 +119,7 @@ namespace MGEgui.DistantLand {
                                     this.statusText});
             this.statusBar.Location = new System.Drawing.Point(0, 339);
             this.statusBar.Name = "statusBar";
-            this.statusBar.Size = new System.Drawing.Size(524, 22);
+            this.statusBar.Size = new System.Drawing.Size(594, 22);
             this.statusBar.TabIndex = 0;
             this.statusBar.Text = "statusStrip1";
             // 
@@ -158,47 +162,44 @@ namespace MGEgui.DistantLand {
             this.tabControl.Location = new System.Drawing.Point(0, 0);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(524, 339);
+            this.tabControl.Size = new System.Drawing.Size(594, 339);
             this.tabControl.TabIndex = 1;
             this.tabControl.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabControl_Selecting);
             // 
             // tabPlugs
             // 
-            this.tabPlugs.Controls.Add(this.lInstructions);
+            this.tabPlugs.Controls.Add(this.tableLayoutPlugins);
             this.tabPlugs.Controls.Add(this.lPlugsModList);
-            this.tabPlugs.Controls.Add(this.clbPlugsModList);
             this.tabPlugs.Controls.Add(this.bPlugsFromINI);
             this.tabPlugs.Controls.Add(this.bPlugsAll);
             this.tabPlugs.Controls.Add(this.bPlugsClear);
             this.tabPlugs.Controls.Add(this.bPlugsDirs);
             this.tabPlugs.Controls.Add(this.gbPlugsSort);
             this.tabPlugs.Controls.Add(this.bPlugsRun);
-            this.tabPlugs.Location = new System.Drawing.Point(4, 25);
+            this.tabPlugs.Location = new System.Drawing.Point(4, 27);
             this.tabPlugs.Name = "tabPlugs";
             this.tabPlugs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPlugs.Size = new System.Drawing.Size(516, 310);
+            this.tabPlugs.Size = new System.Drawing.Size(586, 308);
             this.tabPlugs.TabIndex = 0;
             this.tabPlugs.Text = "Plugins";
             this.tabPlugs.UseVisualStyleBackColor = true;
             // 
-            // lInstructions
+            // tableLayoutPlugins
             // 
-            this.lInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lInstructions.AutoSize = true;
-            this.lInstructions.Location = new System.Drawing.Point(6, 284);
-            this.lInstructions.Name = "lInstructions";
-            this.lInstructions.Size = new System.Drawing.Size(308, 13);
-            this.lInstructions.TabIndex = 7;
-            this.lInstructions.Text = "Standard usage: Click \"Use current load order\" then \"Continue\"";
-            // 
-            // lPlugsModList
-            // 
-            this.lPlugsModList.AutoSize = true;
-            this.lPlugsModList.Location = new System.Drawing.Point(3, 5);
-            this.lPlugsModList.Name = "lPlugsModList";
-            this.lPlugsModList.Size = new System.Drawing.Size(202, 13);
-            this.lPlugsModList.TabIndex = 0;
-            this.lPlugsModList.Text = "Select plugins to use in distant land setup";
+            this.tableLayoutPlugins.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPlugins.ColumnCount = 1;
+            this.tableLayoutPlugins.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPlugins.Controls.Add(this.clbPlugsModList, 0, 0);
+            this.tableLayoutPlugins.Controls.Add(this.lInstructions, 0, 1);
+            this.tableLayoutPlugins.Location = new System.Drawing.Point(6, 25);
+            this.tableLayoutPlugins.Name = "tableLayoutPlugins";
+            this.tableLayoutPlugins.RowCount = 2;
+            this.tableLayoutPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPlugins.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPlugins.Size = new System.Drawing.Size(418, 284);
+            this.tableLayoutPlugins.TabIndex = 8;
             // 
             // clbPlugsModList
             // 
@@ -208,18 +209,39 @@ namespace MGEgui.DistantLand {
             this.clbPlugsModList.ContextMenuStrip = this.DudMenu;
             this.clbPlugsModList.FormattingEnabled = true;
             this.clbPlugsModList.IntegralHeight = false;
-            this.clbPlugsModList.Location = new System.Drawing.Point(6, 25);
+            this.clbPlugsModList.Location = new System.Drawing.Point(0, 0);
+            this.clbPlugsModList.Margin = new System.Windows.Forms.Padding(0);
             this.clbPlugsModList.Name = "clbPlugsModList";
-            this.clbPlugsModList.Size = new System.Drawing.Size(371, 255);
+            this.clbPlugsModList.Size = new System.Drawing.Size(418, 263);
             this.clbPlugsModList.TabIndex = 0;
             this.clbPlugsModList.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.clbPlugsModList_ItemCheck);
+            // 
+            // lInstructions
+            // 
+            this.lInstructions.AutoSize = true;
+            this.lInstructions.Location = new System.Drawing.Point(3, 266);
+            this.lInstructions.Margin = new System.Windows.Forms.Padding(3);
+            this.lInstructions.MaximumSize = new System.Drawing.Size(380, 0);
+            this.lInstructions.Name = "lInstructions";
+            this.lInstructions.Size = new System.Drawing.Size(339, 15);
+            this.lInstructions.TabIndex = 7;
+            this.lInstructions.Text = "Standard usage: Click \"Use current load order\" then \"Continue\"";
+            // 
+            // lPlugsModList
+            // 
+            this.lPlugsModList.AutoSize = true;
+            this.lPlugsModList.Location = new System.Drawing.Point(3, 5);
+            this.lPlugsModList.Name = "lPlugsModList";
+            this.lPlugsModList.Size = new System.Drawing.Size(225, 15);
+            this.lPlugsModList.TabIndex = 0;
+            this.lPlugsModList.Text = "Select plugins to use in distant land setup";
             // 
             // bPlugsFromINI
             // 
             this.bPlugsFromINI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bPlugsFromINI.Location = new System.Drawing.Point(383, 257);
+            this.bPlugsFromINI.Location = new System.Drawing.Point(430, 253);
             this.bPlugsFromINI.Name = "bPlugsFromINI";
-            this.bPlugsFromINI.Size = new System.Drawing.Size(125, 23);
+            this.bPlugsFromINI.Size = new System.Drawing.Size(148, 25);
             this.bPlugsFromINI.TabIndex = 1;
             this.bPlugsFromINI.Text = "Use current load order";
             this.bPlugsFromINI.UseVisualStyleBackColor = true;
@@ -228,9 +250,9 @@ namespace MGEgui.DistantLand {
             // bPlugsAll
             // 
             this.bPlugsAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bPlugsAll.Location = new System.Drawing.Point(383, 25);
+            this.bPlugsAll.Location = new System.Drawing.Point(430, 25);
             this.bPlugsAll.Name = "bPlugsAll";
-            this.bPlugsAll.Size = new System.Drawing.Size(125, 23);
+            this.bPlugsAll.Size = new System.Drawing.Size(148, 25);
             this.bPlugsAll.TabIndex = 2;
             this.bPlugsAll.Text = "Select all";
             this.bPlugsAll.UseVisualStyleBackColor = true;
@@ -239,9 +261,9 @@ namespace MGEgui.DistantLand {
             // bPlugsClear
             // 
             this.bPlugsClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bPlugsClear.Location = new System.Drawing.Point(383, 54);
+            this.bPlugsClear.Location = new System.Drawing.Point(430, 56);
             this.bPlugsClear.Name = "bPlugsClear";
-            this.bPlugsClear.Size = new System.Drawing.Size(125, 23);
+            this.bPlugsClear.Size = new System.Drawing.Size(148, 23);
             this.bPlugsClear.TabIndex = 3;
             this.bPlugsClear.Text = "Clear selected";
             this.bPlugsClear.UseVisualStyleBackColor = true;
@@ -250,9 +272,9 @@ namespace MGEgui.DistantLand {
             // bPlugsDirs
             // 
             this.bPlugsDirs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bPlugsDirs.Location = new System.Drawing.Point(383, 83);
+            this.bPlugsDirs.Location = new System.Drawing.Point(430, 85);
             this.bPlugsDirs.Name = "bPlugsDirs";
-            this.bPlugsDirs.Size = new System.Drawing.Size(125, 23);
+            this.bPlugsDirs.Size = new System.Drawing.Size(148, 25);
             this.bPlugsDirs.TabIndex = 4;
             this.bPlugsDirs.Text = "Plugin directories...";
             this.bPlugsDirs.UseVisualStyleBackColor = true;
@@ -264,9 +286,9 @@ namespace MGEgui.DistantLand {
             this.gbPlugsSort.Controls.Add(this.rbPlugsName);
             this.gbPlugsSort.Controls.Add(this.rbPlugsType);
             this.gbPlugsSort.Controls.Add(this.rbPlugsLoad);
-            this.gbPlugsSort.Location = new System.Drawing.Point(383, 152);
+            this.gbPlugsSort.Location = new System.Drawing.Point(430, 147);
             this.gbPlugsSort.Name = "gbPlugsSort";
-            this.gbPlugsSort.Size = new System.Drawing.Size(125, 89);
+            this.gbPlugsSort.Size = new System.Drawing.Size(148, 94);
             this.gbPlugsSort.TabIndex = 5;
             this.gbPlugsSort.TabStop = false;
             this.gbPlugsSort.Text = "Sort view:";
@@ -276,7 +298,7 @@ namespace MGEgui.DistantLand {
             this.rbPlugsName.AutoSize = true;
             this.rbPlugsName.Location = new System.Drawing.Point(6, 19);
             this.rbPlugsName.Name = "rbPlugsName";
-            this.rbPlugsName.Size = new System.Drawing.Size(65, 17);
+            this.rbPlugsName.Size = new System.Drawing.Size(71, 19);
             this.rbPlugsName.TabIndex = 0;
             this.rbPlugsName.Text = "by name";
             this.rbPlugsName.UseVisualStyleBackColor = true;
@@ -287,7 +309,7 @@ namespace MGEgui.DistantLand {
             this.rbPlugsType.AutoSize = true;
             this.rbPlugsType.Location = new System.Drawing.Point(6, 42);
             this.rbPlugsType.Name = "rbPlugsType";
-            this.rbPlugsType.Size = new System.Drawing.Size(59, 17);
+            this.rbPlugsType.Size = new System.Drawing.Size(64, 19);
             this.rbPlugsType.TabIndex = 1;
             this.rbPlugsType.TabStop = true;
             this.rbPlugsType.Text = "by type";
@@ -299,7 +321,7 @@ namespace MGEgui.DistantLand {
             this.rbPlugsLoad.AutoSize = true;
             this.rbPlugsLoad.Location = new System.Drawing.Point(6, 65);
             this.rbPlugsLoad.Name = "rbPlugsLoad";
-            this.rbPlugsLoad.Size = new System.Drawing.Size(86, 17);
+            this.rbPlugsLoad.Size = new System.Drawing.Size(95, 19);
             this.rbPlugsLoad.TabIndex = 2;
             this.rbPlugsLoad.Text = "by load order";
             this.rbPlugsLoad.UseVisualStyleBackColor = true;
@@ -309,9 +331,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bPlugsRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bPlugsRun.Enabled = false;
-            this.bPlugsRun.Location = new System.Drawing.Point(383, 286);
+            this.bPlugsRun.Location = new System.Drawing.Point(430, 284);
             this.bPlugsRun.Name = "bPlugsRun";
-            this.bPlugsRun.Size = new System.Drawing.Size(125, 23);
+            this.bPlugsRun.Size = new System.Drawing.Size(148, 25);
             this.bPlugsRun.TabIndex = 6;
             this.bPlugsRun.Text = "Continue";
             this.bPlugsRun.UseVisualStyleBackColor = true;
@@ -330,10 +352,10 @@ namespace MGEgui.DistantLand {
             this.tabTex.Controls.Add(this.cbTexTwoStep);
             this.tabTex.Controls.Add(this.bTexSkip);
             this.tabTex.Controls.Add(this.bTexRun);
-            this.tabTex.Location = new System.Drawing.Point(4, 25);
+            this.tabTex.Location = new System.Drawing.Point(4, 27);
             this.tabTex.Name = "tabTex";
             this.tabTex.Padding = new System.Windows.Forms.Padding(3);
-            this.tabTex.Size = new System.Drawing.Size(516, 310);
+            this.tabTex.Size = new System.Drawing.Size(586, 308);
             this.tabTex.TabIndex = 1;
             this.tabTex.Text = "Land Textures";
             this.tabTex.UseVisualStyleBackColor = true;
@@ -341,18 +363,18 @@ namespace MGEgui.DistantLand {
             // lTexNormalMemUse
             // 
             this.lTexNormalMemUse.AutoSize = true;
-            this.lTexNormalMemUse.Location = new System.Drawing.Point(313, 101);
+            this.lTexNormalMemUse.Location = new System.Drawing.Point(333, 101);
             this.lTexNormalMemUse.Name = "lTexNormalMemUse";
-            this.lTexNormalMemUse.Size = new System.Drawing.Size(73, 13);
+            this.lTexNormalMemUse.Size = new System.Drawing.Size(77, 15);
             this.lTexNormalMemUse.TabIndex = 6;
             this.lTexNormalMemUse.Text = "VRAM usage:";
             // 
             // lTexWorldMemUse
             // 
             this.lTexWorldMemUse.AutoSize = true;
-            this.lTexWorldMemUse.Location = new System.Drawing.Point(313, 65);
+            this.lTexWorldMemUse.Location = new System.Drawing.Point(333, 65);
             this.lTexWorldMemUse.Name = "lTexWorldMemUse";
-            this.lTexWorldMemUse.Size = new System.Drawing.Size(73, 13);
+            this.lTexWorldMemUse.Size = new System.Drawing.Size(77, 15);
             this.lTexWorldMemUse.TabIndex = 5;
             this.lTexWorldMemUse.Text = "VRAM usage:";
             // 
@@ -361,7 +383,7 @@ namespace MGEgui.DistantLand {
             this.lTexDesc.AutoSize = true;
             this.lTexDesc.Location = new System.Drawing.Point(11, 8);
             this.lTexDesc.Name = "lTexDesc";
-            this.lTexDesc.Size = new System.Drawing.Size(308, 26);
+            this.lTexDesc.Size = new System.Drawing.Size(344, 30);
             this.lTexDesc.TabIndex = 0;
             this.lTexDesc.Text = "Higher resolutions look better at the expense of a greater fps hit.\r\nMaximum text" +
             "ure size:  ";
@@ -379,7 +401,7 @@ namespace MGEgui.DistantLand {
                                     "4096"});
             this.cmbTexWorldResolution.Location = new System.Drawing.Point(11, 62);
             this.cmbTexWorldResolution.Name = "cmbTexWorldResolution";
-            this.cmbTexWorldResolution.Size = new System.Drawing.Size(100, 21);
+            this.cmbTexWorldResolution.Size = new System.Drawing.Size(100, 23);
             this.cmbTexWorldResolution.TabIndex = 0;
             this.cmbTexWorldResolution.SelectedIndexChanged += new System.EventHandler(this.cmbTexWorldResolution_SelectedIndexChanged);
             this.cmbTexWorldResolution.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeyPress);
@@ -389,7 +411,7 @@ namespace MGEgui.DistantLand {
             this.lTexWorldResolution.AutoSize = true;
             this.lTexWorldResolution.Location = new System.Drawing.Point(117, 65);
             this.lTexWorldResolution.Name = "lTexWorldResolution";
-            this.lTexWorldResolution.Size = new System.Drawing.Size(118, 13);
+            this.lTexWorldResolution.Size = new System.Drawing.Size(134, 15);
             this.lTexWorldResolution.TabIndex = 0;
             this.lTexWorldResolution.Text = "World texture resolution";
             // 
@@ -406,7 +428,7 @@ namespace MGEgui.DistantLand {
                                     "4096"});
             this.cmbTexWorldNormalRes.Location = new System.Drawing.Point(11, 98);
             this.cmbTexWorldNormalRes.Name = "cmbTexWorldNormalRes";
-            this.cmbTexWorldNormalRes.Size = new System.Drawing.Size(100, 21);
+            this.cmbTexWorldNormalRes.Size = new System.Drawing.Size(100, 23);
             this.cmbTexWorldNormalRes.TabIndex = 1;
             this.cmbTexWorldNormalRes.SelectedIndexChanged += new System.EventHandler(this.cmbTexWorldNormalRes_SelectedIndexChanged);
             this.cmbTexWorldNormalRes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeyPress);
@@ -416,7 +438,7 @@ namespace MGEgui.DistantLand {
             this.lTexWorldNormalRes.AutoSize = true;
             this.lTexWorldNormalRes.Location = new System.Drawing.Point(117, 101);
             this.lTexWorldNormalRes.Name = "lTexWorldNormalRes";
-            this.lTexWorldNormalRes.Size = new System.Drawing.Size(137, 13);
+            this.lTexWorldNormalRes.Size = new System.Drawing.Size(160, 15);
             this.lTexWorldNormalRes.TabIndex = 0;
             this.lTexWorldNormalRes.Text = "World normalmap resolution";
             // 
@@ -425,16 +447,16 @@ namespace MGEgui.DistantLand {
             this.lTexTwoStepDesc.AutoSize = true;
             this.lTexTwoStepDesc.Location = new System.Drawing.Point(8, 146);
             this.lTexTwoStepDesc.Name = "lTexTwoStepDesc";
-            this.lTexTwoStepDesc.Size = new System.Drawing.Size(385, 13);
+            this.lTexTwoStepDesc.Size = new System.Drawing.Size(433, 15);
             this.lTexTwoStepDesc.TabIndex = 0;
             this.lTexTwoStepDesc.Text = "Check this option to reduce vram consumption when creating very large textures";
             // 
             // cbTexTwoStep
             // 
             this.cbTexTwoStep.AutoSize = true;
-            this.cbTexTwoStep.Location = new System.Drawing.Point(11, 166);
+            this.cbTexTwoStep.Location = new System.Drawing.Point(11, 172);
             this.cbTexTwoStep.Name = "cbTexTwoStep";
-            this.cbTexTwoStep.Size = new System.Drawing.Size(179, 17);
+            this.cbTexTwoStep.Size = new System.Drawing.Size(198, 19);
             this.cbTexTwoStep.TabIndex = 2;
             this.cbTexTwoStep.Text = "Create world texture in two steps";
             this.cbTexTwoStep.UseVisualStyleBackColor = true;
@@ -443,9 +465,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bTexSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bTexSkip.Enabled = false;
-            this.bTexSkip.Location = new System.Drawing.Point(383, 257);
+            this.bTexSkip.Location = new System.Drawing.Point(433, 251);
             this.bTexSkip.Name = "bTexSkip";
-            this.bTexSkip.Size = new System.Drawing.Size(125, 23);
+            this.bTexSkip.Size = new System.Drawing.Size(145, 25);
             this.bTexSkip.TabIndex = 3;
             this.bTexSkip.Text = "Skip Texture Creation";
             this.bTexSkip.UseVisualStyleBackColor = true;
@@ -455,9 +477,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bTexRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bTexRun.Enabled = false;
-            this.bTexRun.Location = new System.Drawing.Point(383, 286);
+            this.bTexRun.Location = new System.Drawing.Point(433, 282);
             this.bTexRun.Name = "bTexRun";
-            this.bTexRun.Size = new System.Drawing.Size(125, 23);
+            this.bTexRun.Size = new System.Drawing.Size(145, 25);
             this.bTexRun.TabIndex = 4;
             this.bTexRun.Text = "Create Land Textures";
             this.bTexRun.UseVisualStyleBackColor = true;
@@ -471,9 +493,9 @@ namespace MGEgui.DistantLand {
             this.tabMesh.Controls.Add(this.lMeshAutoInfo);
             this.tabMesh.Controls.Add(this.bMeshSkip);
             this.tabMesh.Controls.Add(this.bMeshRun);
-            this.tabMesh.Location = new System.Drawing.Point(4, 25);
+            this.tabMesh.Location = new System.Drawing.Point(4, 27);
             this.tabMesh.Name = "tabMesh";
-            this.tabMesh.Size = new System.Drawing.Size(516, 310);
+            this.tabMesh.Size = new System.Drawing.Size(586, 308);
             this.tabMesh.TabIndex = 2;
             this.tabMesh.Text = "Land Meshes";
             this.tabMesh.UseVisualStyleBackColor = true;
@@ -498,22 +520,22 @@ namespace MGEgui.DistantLand {
                                     "Low"});
             this.cmbMeshWorldDetail.Location = new System.Drawing.Point(11, 54);
             this.cmbMeshWorldDetail.Name = "cmbMeshWorldDetail";
-            this.cmbMeshWorldDetail.Size = new System.Drawing.Size(100, 21);
+            this.cmbMeshWorldDetail.Size = new System.Drawing.Size(120, 23);
             this.cmbMeshWorldDetail.TabIndex = 0;
             this.cmbMeshWorldDetail.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeyPress);
             // 
             // lMeshWorldDetail
             // 
             this.lMeshWorldDetail.AutoSize = true;
-            this.lMeshWorldDetail.Location = new System.Drawing.Point(117, 57);
+            this.lMeshWorldDetail.Location = new System.Drawing.Point(137, 57);
             this.lMeshWorldDetail.Name = "lMeshWorldDetail";
-            this.lMeshWorldDetail.Size = new System.Drawing.Size(91, 13);
+            this.lMeshWorldDetail.Size = new System.Drawing.Size(103, 15);
             this.lMeshWorldDetail.TabIndex = 0;
             this.lMeshWorldDetail.Text = "World mesh detail";
             // 
             // lMeshAutoInfo
             // 
-            this.lMeshAutoInfo.Location = new System.Drawing.Point(8, 99);
+            this.lMeshAutoInfo.Location = new System.Drawing.Point(8, 107);
             this.lMeshAutoInfo.Name = "lMeshAutoInfo";
             this.lMeshAutoInfo.Size = new System.Drawing.Size(448, 84);
             this.lMeshAutoInfo.TabIndex = 0;
@@ -523,9 +545,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bMeshSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bMeshSkip.Enabled = false;
-            this.bMeshSkip.Location = new System.Drawing.Point(383, 257);
+            this.bMeshSkip.Location = new System.Drawing.Point(433, 251);
             this.bMeshSkip.Name = "bMeshSkip";
-            this.bMeshSkip.Size = new System.Drawing.Size(125, 23);
+            this.bMeshSkip.Size = new System.Drawing.Size(145, 25);
             this.bMeshSkip.TabIndex = 1;
             this.bMeshSkip.Text = "Skip Mesh Creation";
             this.bMeshSkip.UseVisualStyleBackColor = true;
@@ -535,9 +557,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bMeshRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bMeshRun.Enabled = false;
-            this.bMeshRun.Location = new System.Drawing.Point(383, 286);
+            this.bMeshRun.Location = new System.Drawing.Point(433, 282);
             this.bMeshRun.Name = "bMeshRun";
-            this.bMeshRun.Size = new System.Drawing.Size(125, 23);
+            this.bMeshRun.Size = new System.Drawing.Size(145, 25);
             this.bMeshRun.TabIndex = 2;
             this.bMeshRun.Text = "Create Land Meshes";
             this.bMeshRun.UseVisualStyleBackColor = true;
@@ -545,6 +567,7 @@ namespace MGEgui.DistantLand {
             // 
             // tabStat
             // 
+            this.tabStat.Controls.Add(this.flowLayoutStaticsOptions);
             this.tabStat.Controls.Add(this.lStatDesc);
             this.tabStat.Controls.Add(this.udStatMinSize);
             this.tabStat.Controls.Add(this.lStatMinSize);
@@ -555,30 +578,79 @@ namespace MGEgui.DistantLand {
             this.tabStat.Controls.Add(this.cmbStatSkipMipLevels);
             this.tabStat.Controls.Add(this.lStatSkipMipLevels);
             this.tabStat.Controls.Add(this.lStatSkipMipDesc);
-            this.tabStat.Controls.Add(this.cbStatActivators);
-            this.tabStat.Controls.Add(this.cbStatIncludeMisc);
-            this.tabStat.Controls.Add(this.cbStatIntWater);
             this.tabStat.Controls.Add(this.bStatOverrideList);
             this.tabStat.Controls.Add(this.lStatOverrideList);
             this.tabStat.Controls.Add(this.lbStatOverrideList);
-            this.tabStat.Controls.Add(this.cbStatIntExt);
             this.tabStat.Controls.Add(this.bStatExportStatics);
             this.tabStat.Controls.Add(this.bStatSkip);
             this.tabStat.Controls.Add(this.bStatRun);
             this.tabStat.Controls.Add(this.cbStatOverrideList);
-            this.tabStat.Location = new System.Drawing.Point(4, 25);
+            this.tabStat.Location = new System.Drawing.Point(4, 27);
             this.tabStat.Name = "tabStat";
-            this.tabStat.Size = new System.Drawing.Size(516, 310);
+            this.tabStat.Size = new System.Drawing.Size(586, 308);
             this.tabStat.TabIndex = 3;
             this.tabStat.Text = "Statics";
             this.tabStat.UseVisualStyleBackColor = true;
+            // 
+            // flowLayoutStaticsOptions
+            // 
+            this.flowLayoutStaticsOptions.Controls.Add(this.cbStatActivators);
+            this.flowLayoutStaticsOptions.Controls.Add(this.cbStatIncludeMisc);
+            this.flowLayoutStaticsOptions.Controls.Add(this.cbStatIntWater);
+            this.flowLayoutStaticsOptions.Controls.Add(this.cbStatIntExt);
+            this.flowLayoutStaticsOptions.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
+            this.flowLayoutStaticsOptions.Location = new System.Drawing.Point(296, 44);
+            this.flowLayoutStaticsOptions.Name = "flowLayoutStaticsOptions";
+            this.flowLayoutStaticsOptions.Size = new System.Drawing.Size(282, 167);
+            this.flowLayoutStaticsOptions.TabIndex = 15;
+            this.flowLayoutStaticsOptions.WrapContents = false;
+            // 
+            // cbStatActivators
+            // 
+            this.cbStatActivators.AutoSize = true;
+            this.cbStatActivators.Location = new System.Drawing.Point(3, 3);
+            this.cbStatActivators.Name = "cbStatActivators";
+            this.cbStatActivators.Size = new System.Drawing.Size(119, 19);
+            this.cbStatActivators.TabIndex = 4;
+            this.cbStatActivators.Text = "Include activators";
+            this.cbStatActivators.UseVisualStyleBackColor = true;
+            // 
+            // cbStatIncludeMisc
+            // 
+            this.cbStatIncludeMisc.AutoSize = true;
+            this.cbStatIncludeMisc.Location = new System.Drawing.Point(3, 28);
+            this.cbStatIncludeMisc.Name = "cbStatIncludeMisc";
+            this.cbStatIncludeMisc.Size = new System.Drawing.Size(134, 19);
+            this.cbStatIncludeMisc.TabIndex = 5;
+            this.cbStatIncludeMisc.Text = "Include misc objects";
+            this.cbStatIncludeMisc.UseVisualStyleBackColor = true;
+            // 
+            // cbStatIntWater
+            // 
+            this.cbStatIntWater.AutoSize = true;
+            this.cbStatIntWater.Location = new System.Drawing.Point(3, 53);
+            this.cbStatIntWater.Name = "cbStatIntWater";
+            this.cbStatIntWater.Size = new System.Drawing.Size(207, 34);
+            this.cbStatIntWater.TabIndex = 7;
+            this.cbStatIntWater.Text = "Include reflective water in interiors\r\n(increases load time)";
+            this.cbStatIntWater.UseVisualStyleBackColor = true;
+            // 
+            // cbStatIntExt
+            // 
+            this.cbStatIntExt.AutoSize = true;
+            this.cbStatIntExt.Location = new System.Drawing.Point(3, 93);
+            this.cbStatIntExt.Name = "cbStatIntExt";
+            this.cbStatIntExt.Size = new System.Drawing.Size(226, 19);
+            this.cbStatIntExt.TabIndex = 6;
+            this.cbStatIntExt.Text = "Include interiors behaving like exterior";
+            this.cbStatIntExt.UseVisualStyleBackColor = true;
             // 
             // lStatDesc
             // 
             this.lStatDesc.AutoSize = true;
             this.lStatDesc.Location = new System.Drawing.Point(11, 8);
             this.lStatDesc.Name = "lStatDesc";
-            this.lStatDesc.Size = new System.Drawing.Size(386, 26);
+            this.lStatDesc.Size = new System.Drawing.Size(440, 30);
             this.lStatDesc.TabIndex = 0;
             this.lStatDesc.Text = "The static size represents the minimum size of a mesh in ingame Morrowind units.\r" +
             "\nSmaller numbers increase the number of statics drawn.";
@@ -597,7 +669,7 @@ namespace MGEgui.DistantLand {
                                     0,
                                     0});
             this.udStatMinSize.Name = "udStatMinSize";
-            this.udStatMinSize.Size = new System.Drawing.Size(48, 20);
+            this.udStatMinSize.Size = new System.Drawing.Size(52, 23);
             this.udStatMinSize.TabIndex = 1;
             this.udStatMinSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udStatMinSize.Value = new decimal(new int[] {
@@ -609,9 +681,9 @@ namespace MGEgui.DistantLand {
             // lStatMinSize
             // 
             this.lStatMinSize.AutoSize = true;
-            this.lStatMinSize.Location = new System.Drawing.Point(65, 46);
+            this.lStatMinSize.Location = new System.Drawing.Point(69, 46);
             this.lStatMinSize.Name = "lStatMinSize";
-            this.lStatMinSize.Size = new System.Drawing.Size(97, 13);
+            this.lStatMinSize.Size = new System.Drawing.Size(113, 15);
             this.lStatMinSize.TabIndex = 0;
             this.lStatMinSize.Text = "Minimum static size";
             // 
@@ -624,7 +696,7 @@ namespace MGEgui.DistantLand {
                                     0});
             this.udStatGrassDensity.Location = new System.Drawing.Point(11, 70);
             this.udStatGrassDensity.Name = "udStatGrassDensity";
-            this.udStatGrassDensity.Size = new System.Drawing.Size(48, 20);
+            this.udStatGrassDensity.Size = new System.Drawing.Size(52, 23);
             this.udStatGrassDensity.TabIndex = 1;
             this.udStatGrassDensity.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udStatGrassDensity.Value = new decimal(new int[] {
@@ -636,9 +708,9 @@ namespace MGEgui.DistantLand {
             // lStatGrassDensity
             // 
             this.lStatGrassDensity.AutoSize = true;
-            this.lStatGrassDensity.Location = new System.Drawing.Point(64, 72);
+            this.lStatGrassDensity.Location = new System.Drawing.Point(68, 72);
             this.lStatGrassDensity.Name = "lStatGrassDensity";
-            this.lStatGrassDensity.Size = new System.Drawing.Size(109, 13);
+            this.lStatGrassDensity.Size = new System.Drawing.Size(119, 15);
             this.lStatGrassDensity.TabIndex = 0;
             this.lStatGrassDensity.Text = "Grass density percent";
             // 
@@ -654,7 +726,7 @@ namespace MGEgui.DistantLand {
                                     "25%"});
             this.cmbStatSimplifyMeshes.Location = new System.Drawing.Point(11, 96);
             this.cmbStatSimplifyMeshes.Name = "cmbStatSimplifyMeshes";
-            this.cmbStatSimplifyMeshes.Size = new System.Drawing.Size(48, 21);
+            this.cmbStatSimplifyMeshes.Size = new System.Drawing.Size(52, 23);
             this.cmbStatSimplifyMeshes.TabIndex = 2;
             this.cmbStatSimplifyMeshes.Text = "Full";
             this.cmbStatSimplifyMeshes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeyPress);
@@ -662,9 +734,9 @@ namespace MGEgui.DistantLand {
             // lStatSimplifyMeshes
             // 
             this.lStatSimplifyMeshes.AutoSize = true;
-            this.lStatSimplifyMeshes.Location = new System.Drawing.Point(65, 99);
+            this.lStatSimplifyMeshes.Location = new System.Drawing.Point(69, 99);
             this.lStatSimplifyMeshes.Name = "lStatSimplifyMeshes";
-            this.lStatSimplifyMeshes.Size = new System.Drawing.Size(61, 13);
+            this.lStatSimplifyMeshes.Size = new System.Drawing.Size(68, 15);
             this.lStatSimplifyMeshes.TabIndex = 0;
             this.lStatSimplifyMeshes.Text = "Mesh detail";
             // 
@@ -679,7 +751,7 @@ namespace MGEgui.DistantLand {
                                     "3"});
             this.cmbStatSkipMipLevels.Location = new System.Drawing.Point(11, 123);
             this.cmbStatSkipMipLevels.Name = "cmbStatSkipMipLevels";
-            this.cmbStatSkipMipLevels.Size = new System.Drawing.Size(48, 21);
+            this.cmbStatSkipMipLevels.Size = new System.Drawing.Size(52, 23);
             this.cmbStatSkipMipLevels.TabIndex = 3;
             this.cmbStatSkipMipLevels.Text = "1";
             this.cmbStatSkipMipLevels.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeyPress);
@@ -687,56 +759,28 @@ namespace MGEgui.DistantLand {
             // lStatSkipMipLevels
             // 
             this.lStatSkipMipLevels.AutoSize = true;
-            this.lStatSkipMipLevels.Location = new System.Drawing.Point(65, 126);
+            this.lStatSkipMipLevels.Location = new System.Drawing.Point(69, 126);
             this.lStatSkipMipLevels.Name = "lStatSkipMipLevels";
-            this.lStatSkipMipLevels.Size = new System.Drawing.Size(108, 13);
+            this.lStatSkipMipLevels.Size = new System.Drawing.Size(122, 15);
             this.lStatSkipMipLevels.TabIndex = 0;
             this.lStatSkipMipLevels.Text = "Mipmap levels to skip";
             // 
             // lStatSkipMipDesc
             // 
+            this.lStatSkipMipDesc.AutoSize = true;
             this.lStatSkipMipDesc.Location = new System.Drawing.Point(8, 151);
+            this.lStatSkipMipDesc.MaximumSize = new System.Drawing.Size(244, 0);
             this.lStatSkipMipDesc.Name = "lStatSkipMipDesc";
-            this.lStatSkipMipDesc.Size = new System.Drawing.Size(244, 78);
+            this.lStatSkipMipDesc.Size = new System.Drawing.Size(177, 30);
             this.lStatSkipMipDesc.TabIndex = 0;
             this.lStatSkipMipDesc.Text = "Skipping mipmap levels reduces\r\nthe required vram in-game";
-            // 
-            // cbStatActivators
-            // 
-            this.cbStatActivators.AutoSize = true;
-            this.cbStatActivators.Location = new System.Drawing.Point(266, 45);
-            this.cbStatActivators.Name = "cbStatActivators";
-            this.cbStatActivators.Size = new System.Drawing.Size(110, 17);
-            this.cbStatActivators.TabIndex = 4;
-            this.cbStatActivators.Text = "Include activators";
-            this.cbStatActivators.UseVisualStyleBackColor = true;
-            // 
-            // cbStatIncludeMisc
-            // 
-            this.cbStatIncludeMisc.AutoSize = true;
-            this.cbStatIncludeMisc.Location = new System.Drawing.Point(266, 74);
-            this.cbStatIncludeMisc.Name = "cbStatIncludeMisc";
-            this.cbStatIncludeMisc.Size = new System.Drawing.Size(122, 17);
-            this.cbStatIncludeMisc.TabIndex = 5;
-            this.cbStatIncludeMisc.Text = "Include misc objects";
-            this.cbStatIncludeMisc.UseVisualStyleBackColor = true;
-            // 
-            // cbStatIntWater
-            // 
-            this.cbStatIntWater.AutoSize = true;
-            this.cbStatIntWater.Location = new System.Drawing.Point(266, 138);
-            this.cbStatIntWater.Name = "cbStatIntWater";
-            this.cbStatIntWater.Size = new System.Drawing.Size(186, 30);
-            this.cbStatIntWater.TabIndex = 7;
-            this.cbStatIntWater.Text = "Include reflective water in interiors\r\n(increases load time)";
-            this.cbStatIntWater.UseVisualStyleBackColor = true;
             // 
             // bStatOverrideList
             // 
             this.bStatOverrideList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bStatOverrideList.Location = new System.Drawing.Point(8, 251);
+            this.bStatOverrideList.Location = new System.Drawing.Point(8, 240);
             this.bStatOverrideList.Name = "bStatOverrideList";
-            this.bStatOverrideList.Size = new System.Drawing.Size(48, 56);
+            this.bStatOverrideList.Size = new System.Drawing.Size(56, 64);
             this.bStatOverrideList.TabIndex = 10;
             this.bStatOverrideList.Text = "Edit\r\nlist";
             this.bStatOverrideList.UseVisualStyleBackColor = true;
@@ -746,9 +790,9 @@ namespace MGEgui.DistantLand {
             // 
             this.lStatOverrideList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.lStatOverrideList.Location = new System.Drawing.Point(66, 255);
+            this.lStatOverrideList.Location = new System.Drawing.Point(74, 244);
             this.lStatOverrideList.Name = "lStatOverrideList";
-            this.lStatOverrideList.Size = new System.Drawing.Size(307, 48);
+            this.lStatOverrideList.Size = new System.Drawing.Size(345, 56);
             this.lStatOverrideList.TabIndex = 0;
             this.lStatOverrideList.Text = "NO STATIC OVERRIDES PRESENT";
             this.lStatOverrideList.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -760,29 +804,21 @@ namespace MGEgui.DistantLand {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lbStatOverrideList.BackColor = System.Drawing.SystemColors.Control;
             this.lbStatOverrideList.FormattingEnabled = true;
-            this.lbStatOverrideList.Location = new System.Drawing.Point(62, 251);
+            this.lbStatOverrideList.HorizontalScrollbar = true;
+            this.lbStatOverrideList.ItemHeight = 15;
+            this.lbStatOverrideList.Location = new System.Drawing.Point(70, 240);
             this.lbStatOverrideList.Name = "lbStatOverrideList";
             this.lbStatOverrideList.SelectionMode = System.Windows.Forms.SelectionMode.None;
-            this.lbStatOverrideList.Size = new System.Drawing.Size(315, 56);
+            this.lbStatOverrideList.Size = new System.Drawing.Size(353, 64);
             this.lbStatOverrideList.TabIndex = 11;
-            // 
-            // cbStatIntExt
-            // 
-            this.cbStatIntExt.AutoSize = true;
-            this.cbStatIntExt.Location = new System.Drawing.Point(266, 102);
-            this.cbStatIntExt.Name = "cbStatIntExt";
-            this.cbStatIntExt.Size = new System.Drawing.Size(203, 17);
-            this.cbStatIntExt.TabIndex = 6;
-            this.cbStatIntExt.Text = "Include interiors behaving like exterior";
-            this.cbStatIntExt.UseVisualStyleBackColor = true;
             // 
             // bStatExportStatics
             // 
             this.bStatExportStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bStatExportStatics.Enabled = false;
-            this.bStatExportStatics.Location = new System.Drawing.Point(383, 228);
+            this.bStatExportStatics.Location = new System.Drawing.Point(433, 220);
             this.bStatExportStatics.Name = "bStatExportStatics";
-            this.bStatExportStatics.Size = new System.Drawing.Size(125, 23);
+            this.bStatExportStatics.Size = new System.Drawing.Size(145, 25);
             this.bStatExportStatics.TabIndex = 12;
             this.bStatExportStatics.Text = "Export list of statics";
             this.bStatExportStatics.UseVisualStyleBackColor = true;
@@ -792,9 +828,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bStatSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bStatSkip.Enabled = false;
-            this.bStatSkip.Location = new System.Drawing.Point(383, 257);
+            this.bStatSkip.Location = new System.Drawing.Point(433, 251);
             this.bStatSkip.Name = "bStatSkip";
-            this.bStatSkip.Size = new System.Drawing.Size(125, 23);
+            this.bStatSkip.Size = new System.Drawing.Size(145, 25);
             this.bStatSkip.TabIndex = 13;
             this.bStatSkip.Text = "Skip Static Creation";
             this.bStatSkip.UseVisualStyleBackColor = true;
@@ -804,9 +840,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bStatRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bStatRun.Enabled = false;
-            this.bStatRun.Location = new System.Drawing.Point(383, 286);
+            this.bStatRun.Location = new System.Drawing.Point(433, 282);
             this.bStatRun.Name = "bStatRun";
-            this.bStatRun.Size = new System.Drawing.Size(125, 23);
+            this.bStatRun.Size = new System.Drawing.Size(145, 25);
             this.bStatRun.TabIndex = 14;
             this.bStatRun.Text = "Create Statics";
             this.bStatRun.UseVisualStyleBackColor = true;
@@ -816,9 +852,9 @@ namespace MGEgui.DistantLand {
             // 
             this.cbStatOverrideList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbStatOverrideList.AutoSize = true;
-            this.cbStatOverrideList.Location = new System.Drawing.Point(8, 232);
+            this.cbStatOverrideList.Location = new System.Drawing.Point(8, 219);
             this.cbStatOverrideList.Name = "cbStatOverrideList";
-            this.cbStatOverrideList.Size = new System.Drawing.Size(264, 17);
+            this.cbStatOverrideList.Size = new System.Drawing.Size(290, 19);
             this.cbStatOverrideList.TabIndex = 9;
             this.cbStatOverrideList.Text = "Use lists of statics overriding parameters set above";
             this.cbStatOverrideList.UseVisualStyleBackColor = true;
@@ -827,9 +863,9 @@ namespace MGEgui.DistantLand {
             // 
             this.tabFinish.Controls.Add(this.lFinishDesc);
             this.tabFinish.Controls.Add(this.bFinish);
-            this.tabFinish.Location = new System.Drawing.Point(4, 25);
+            this.tabFinish.Location = new System.Drawing.Point(4, 27);
             this.tabFinish.Name = "tabFinish";
-            this.tabFinish.Size = new System.Drawing.Size(516, 310);
+            this.tabFinish.Size = new System.Drawing.Size(586, 308);
             this.tabFinish.TabIndex = 4;
             this.tabFinish.Text = "Finished";
             this.tabFinish.UseVisualStyleBackColor = true;
@@ -839,7 +875,7 @@ namespace MGEgui.DistantLand {
             this.lFinishDesc.AutoSize = true;
             this.lFinishDesc.Location = new System.Drawing.Point(11, 8);
             this.lFinishDesc.Name = "lFinishDesc";
-            this.lFinishDesc.Size = new System.Drawing.Size(202, 13);
+            this.lFinishDesc.Size = new System.Drawing.Size(229, 15);
             this.lFinishDesc.TabIndex = 0;
             this.lFinishDesc.Text = "Waiting for statics generation to complete";
             // 
@@ -847,9 +883,9 @@ namespace MGEgui.DistantLand {
             // 
             this.bFinish.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bFinish.Enabled = false;
-            this.bFinish.Location = new System.Drawing.Point(383, 286);
+            this.bFinish.Location = new System.Drawing.Point(453, 282);
             this.bFinish.Name = "bFinish";
-            this.bFinish.Size = new System.Drawing.Size(125, 23);
+            this.bFinish.Size = new System.Drawing.Size(125, 25);
             this.bFinish.TabIndex = 1;
             this.bFinish.Text = "Finish";
             this.bFinish.UseVisualStyleBackColor = true;
@@ -863,11 +899,14 @@ namespace MGEgui.DistantLand {
             // 
             // DistantLandForm
             // 
-            this.ClientSize = new System.Drawing.Size(524, 361);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(594, 361);
             this.Controls.Add(this.tabControl);
             this.Controls.Add(this.statusBar);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-            this.MinimumSize = new System.Drawing.Size(540, 400);
+            this.MinimumSize = new System.Drawing.Size(610, 400);
             this.Name = "DistantLandForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Distant Land Setup Wizard";
@@ -877,6 +916,8 @@ namespace MGEgui.DistantLand {
             this.tabControl.ResumeLayout(false);
             this.tabPlugs.ResumeLayout(false);
             this.tabPlugs.PerformLayout();
+            this.tableLayoutPlugins.ResumeLayout(false);
+            this.tableLayoutPlugins.PerformLayout();
             this.gbPlugsSort.ResumeLayout(false);
             this.gbPlugsSort.PerformLayout();
             this.tabTex.ResumeLayout(false);
@@ -885,6 +926,8 @@ namespace MGEgui.DistantLand {
             this.tabMesh.PerformLayout();
             this.tabStat.ResumeLayout(false);
             this.tabStat.PerformLayout();
+            this.flowLayoutStaticsOptions.ResumeLayout(false);
+            this.flowLayoutStaticsOptions.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udStatMinSize)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udStatGrassDensity)).EndInit();
             this.tabFinish.ResumeLayout(false);
@@ -892,6 +935,8 @@ namespace MGEgui.DistantLand {
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutStaticsOptions;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPlugins;
         public System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label lInstructions;
         private System.Windows.Forms.Label lTexWorldMemUse;

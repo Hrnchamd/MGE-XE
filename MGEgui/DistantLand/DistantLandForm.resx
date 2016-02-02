@@ -118,34 +118,37 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="backgroundWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
+    <value>102, 17</value>
   </metadata>
   <metadata name="statusBar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>163, 17</value>
+    <value>249, 17</value>
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="statusWarnings.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
         YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIASURBVDhPxU/fS1NxFD/3e3c3HQ6SxJqBRFEjC2IFWbMn
-        HzJKCY3qrT+g/oWCEEKwX9BTeyiSlWBUFhVp4ITaQz2s2tTZdm9dtdtMuTU2J2a79376ul0xipH10gcO
-        nPM55/Phc6gcABLs9t+xMCf0G4sMbW3iEZtaPfIZyf89z5DTyUpGWY5Tnr9Klf/iSn1NkwV4UcgRzp0R
-        u+zVn02yszWt8zOE8IDH8vvXwMg6oY6J4KuaVaXQZJbV3wtm98V1XCQBCCCjEq52izftk/Im0zHX6dlx
-        wuLcBvRdqEBVtQ/Q66CrbnwaKabwlS7LQIuKUKOSCW0TXt5ai20N24GxWizoG5F+TbhxRRi0T39PIT93
-        dakRwrxWDzPegM8vtuBA804g5YOR2IGZZBU+vmJLKZpKip8QDJKUCjPIkUrTkptgvNsHTASQGmoElEYY
-        4wEUJndBCRNCl1iMSxivlRTxR47exBPCN2UvTKUF+HAQiWf70dpcC0wdQkFugaUcxnTUC3VIwNbN7IQt
-        JYr0VtaNPBCQHF7Pfz8Ga6odSB9F//U98FTXA5mTMCbbOd8BaB0YfUi4fdmhcamzaDB4zdGT4Abxu4S3
-        d1Zq9B5BfUp40/cLf59hYoChQrJTuN3kDZ6VhkOdzliok9m11C/Py31p7jnP4qeOS4+5dHfR4D+C6Ace
-        9S14THSARgAAAABJRU5ErkJggg==
+        HzJKCY3qrT+g/oWCEEKwX9BTeyiSlWBUFha1QAflgz2s2pxXvRtdpzfXZDKmE7Pdez993a4Yxch66QMH
+        zvmc8/nwOVQOAAlW++9YXhT69RWGtjbxlEVtHPms5P2eZ5hPkTkZZguccv1Vqvy8Q0knyQTcKCwQrlwS
+        u6zVn01yczWtS2lCcMBler2boOfsUMdE8FXNhlLMxFkuNSEY3de3cJEEwIesSrjdLd63TsqbpCKOi3Pj
+        hJXFbei7VoGqag+QqUNGdeLLaDGFp3RZBlpYhDIiGdB2YOTBZuxp2AuM1WI5sx2zHwj3bglB6/T3FPG3
+        ji51mLCk1cOINuDru1041rwfUDzQ5X1IT1Zh5j1bTdFUUvwEv58kZYhBDlUaZrwJ+sQRYMoHZbARSDRC
+        H/ehkDyAxBAhcINFuITxWk8RHbD1yi8J3xKHYSRagM/HIb85itbmWmD6BArxFpiJk0iF3VAHBezeyc5Z
+        UqLh3sq60WcCYqGt/PczMKfbgdnT6L97CK7qeiB7HnqynfMdgNaB2HPCw5s2jUvtRYPgHVuPzA2ijwmf
+        Hq1X7AlBfUX42PcL/5Rh6jVDhWSlcDrJ7b8shQKd9kigk1m12q/Na31p7rnKohfOSi+49GDR4D+C6Ad0
+        pi02PsqgGwAAAABJRU5ErkJggg==
 </value>
   </data>
   <metadata name="DudMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>258, 18</value>
+    <value>348, 17</value>
   </metadata>
   <data name="lMeshAutoInfo.Text" xml:space="preserve">
     <value>World mesh detail is auto-calculated based on the size of the world resulting from the selected plugins list - this value may change from what you had set previously if you choose different set of plugins.</value>
   </data>
   <metadata name="saveStaticListDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>361, 21</value>
+    <value>448, 17</value>
+  </metadata>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
   </metadata>
 </root>
