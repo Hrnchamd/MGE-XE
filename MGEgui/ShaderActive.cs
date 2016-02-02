@@ -111,18 +111,23 @@ namespace MGEgui {
             this.lHDRTime = new System.Windows.Forms.Label();
             this.lHDRTime2 = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.tableRightAlign1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableRightAlign2 = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutPanelAdv.SuspendLayout();
             this.panelActions.SuspendLayout();
             this.panelActiveListActions.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udHDRTime)).BeginInit();
+            this.tableRightAlign1.SuspendLayout();
+            this.tableRightAlign2.SuspendLayout();
             this.SuspendLayout();
             // 
             // bMoveUp
             // 
-            this.bMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bMoveUp.Location = new System.Drawing.Point(4, 9);
+            this.bMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMoveUp.Location = new System.Drawing.Point(0, 9);
             this.bMoveUp.Name = "bMoveUp";
-            this.bMoveUp.Size = new System.Drawing.Size(75, 23);
+            this.bMoveUp.Size = new System.Drawing.Size(79, 23);
             this.bMoveUp.TabIndex = 0;
             this.bMoveUp.Text = "Move up";
             this.bMoveUp.Click += new System.EventHandler(this.bMoveUp_Click);
@@ -130,27 +135,30 @@ namespace MGEgui {
             // lbSelected
             // 
             this.lbSelected.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbSelected.Location = new System.Drawing.Point(11, 243);
+            this.lbSelected.ItemHeight = 15;
+            this.lbSelected.Location = new System.Drawing.Point(9, 244);
             this.lbSelected.Name = "lbSelected";
-            this.lbSelected.Size = new System.Drawing.Size(213, 126);
+            this.lbSelected.Size = new System.Drawing.Size(237, 124);
             this.lbSelected.TabIndex = 3;
             this.lbSelected.DoubleClick += new System.EventHandler(this.lbSelected_DoubleClick);
             // 
             // lbAvailable
             // 
             this.lbAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbAvailable.Location = new System.Drawing.Point(11, 24);
+            this.lbAvailable.ItemHeight = 15;
+            this.lbAvailable.Location = new System.Drawing.Point(9, 26);
             this.lbAvailable.Name = "lbAvailable";
-            this.lbAvailable.Size = new System.Drawing.Size(213, 192);
+            this.lbAvailable.Size = new System.Drawing.Size(237, 189);
             this.lbAvailable.TabIndex = 1;
             this.lbAvailable.DoubleClick += new System.EventHandler(this.lbAvailable_DoubleClick);
             // 
             // bMoveDown
             // 
-            this.bMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bMoveDown.Location = new System.Drawing.Point(4, 38);
+            this.bMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMoveDown.Location = new System.Drawing.Point(0, 38);
             this.bMoveDown.Name = "bMoveDown";
-            this.bMoveDown.Size = new System.Drawing.Size(75, 23);
+            this.bMoveDown.Size = new System.Drawing.Size(79, 23);
             this.bMoveDown.TabIndex = 1;
             this.bMoveDown.Text = "Move down";
             this.bMoveDown.Click += new System.EventHandler(this.bMoveDown_Click);
@@ -167,10 +175,11 @@ namespace MGEgui {
             // 
             // bClear
             // 
-            this.bClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bClear.Location = new System.Drawing.Point(4, 87);
+            this.bClear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.bClear.Location = new System.Drawing.Point(0, 85);
             this.bClear.Name = "bClear";
-            this.bClear.Size = new System.Drawing.Size(75, 23);
+            this.bClear.Size = new System.Drawing.Size(79, 23);
             this.bClear.TabIndex = 2;
             this.bClear.Text = "Clear";
             this.bClear.Click += new System.EventHandler(this.bClear_Click);
@@ -189,9 +198,9 @@ namespace MGEgui {
             // lAvailableList
             // 
             this.lAvailableList.AutoSize = true;
-            this.lAvailableList.Location = new System.Drawing.Point(11, 8);
+            this.lAvailableList.Location = new System.Drawing.Point(9, 8);
             this.lAvailableList.Name = "lAvailableList";
-            this.lAvailableList.Size = new System.Drawing.Size(90, 13);
+            this.lAvailableList.Size = new System.Drawing.Size(98, 15);
             this.lAvailableList.TabIndex = 0;
             this.lAvailableList.Text = "Available shaders";
             // 
@@ -200,19 +209,20 @@ namespace MGEgui {
             this.lActiveList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lActiveList.AutoSize = true;
-            this.lActiveList.Location = new System.Drawing.Point(11, 219);
+            this.lActiveList.Location = new System.Drawing.Point(9, 218);
             this.lActiveList.Name = "lActiveList";
             this.lActiveList.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
-            this.lActiveList.Size = new System.Drawing.Size(213, 21);
+            this.lActiveList.Size = new System.Drawing.Size(237, 23);
             this.lActiveList.TabIndex = 2;
             this.lActiveList.Text = "Active Shaders";
             // 
             // bEditor
             // 
-            this.bEditor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bEditor.Location = new System.Drawing.Point(4, 8);
+            this.bEditor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.bEditor.Location = new System.Drawing.Point(0, 8);
             this.bEditor.Name = "bEditor";
-            this.bEditor.Size = new System.Drawing.Size(75, 23);
+            this.bEditor.Size = new System.Drawing.Size(79, 23);
             this.bEditor.TabIndex = 0;
             this.bEditor.Text = "Editor";
             this.bEditor.UseVisualStyleBackColor = true;
@@ -223,10 +233,10 @@ namespace MGEgui {
             this.lShaderUsage.AutoSize = true;
             this.tableLayoutPanelAdv.SetColumnSpan(this.lShaderUsage, 2);
             this.lShaderUsage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lShaderUsage.Location = new System.Drawing.Point(11, 372);
+            this.lShaderUsage.Location = new System.Drawing.Point(9, 371);
             this.lShaderUsage.Name = "lShaderUsage";
             this.lShaderUsage.Padding = new System.Windows.Forms.Padding(0, 8, 0, 8);
-            this.lShaderUsage.Size = new System.Drawing.Size(298, 30);
+            this.lShaderUsage.Size = new System.Drawing.Size(322, 31);
             this.lShaderUsage.TabIndex = 10;
             this.lShaderUsage.Text = "Double-click to add or remove shaders from the active list.\r\n";
             // 
@@ -246,14 +256,14 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.Controls.Add(this.panelActiveListActions, 1, 3);
             this.tableLayoutPanelAdv.Location = new System.Drawing.Point(304, 0);
             this.tableLayoutPanelAdv.Name = "tableLayoutPanelAdv";
-            this.tableLayoutPanelAdv.Padding = new System.Windows.Forms.Padding(8);
+            this.tableLayoutPanelAdv.Padding = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.tableLayoutPanelAdv.RowCount = 5;
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanelAdv.Size = new System.Drawing.Size(320, 410);
+            this.tableLayoutPanelAdv.Size = new System.Drawing.Size(340, 410);
             this.tableLayoutPanelAdv.TabIndex = 23;
             // 
             // panelActions
@@ -261,9 +271,9 @@ namespace MGEgui {
             this.panelActions.AutoSize = true;
             this.panelActions.Controls.Add(this.bEditor);
             this.panelActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelActions.Location = new System.Drawing.Point(230, 24);
+            this.panelActions.Location = new System.Drawing.Point(252, 26);
             this.panelActions.Name = "panelActions";
-            this.panelActions.Size = new System.Drawing.Size(79, 192);
+            this.panelActions.Size = new System.Drawing.Size(79, 189);
             this.panelActions.TabIndex = 11;
             // 
             // panelActiveListActions
@@ -273,9 +283,9 @@ namespace MGEgui {
             this.panelActiveListActions.Controls.Add(this.bMoveDown);
             this.panelActiveListActions.Controls.Add(this.bClear);
             this.panelActiveListActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelActiveListActions.Location = new System.Drawing.Point(230, 243);
+            this.panelActiveListActions.Location = new System.Drawing.Point(252, 244);
             this.panelActiveListActions.Name = "panelActiveListActions";
-            this.panelActiveListActions.Size = new System.Drawing.Size(79, 126);
+            this.panelActiveListActions.Size = new System.Drawing.Size(79, 124);
             this.panelActiveListActions.TabIndex = 12;
             // 
             // cmbPresets
@@ -291,7 +301,7 @@ namespace MGEgui {
                                     "Custom"});
             this.cmbPresets.Location = new System.Drawing.Point(118, 39);
             this.cmbPresets.Name = "cmbPresets";
-            this.cmbPresets.Size = new System.Drawing.Size(125, 21);
+            this.cmbPresets.Size = new System.Drawing.Size(125, 23);
             this.cmbPresets.TabIndex = 2;
             this.cmbPresets.SelectedIndexChanged += new System.EventHandler(this.cmbPresets_Changed);
             // 
@@ -300,18 +310,21 @@ namespace MGEgui {
             this.lShaderOptions.AutoSize = true;
             this.lShaderOptions.Location = new System.Drawing.Point(12, 8);
             this.lShaderOptions.Name = "lShaderOptions";
-            this.lShaderOptions.Size = new System.Drawing.Size(78, 13);
+            this.lShaderOptions.Size = new System.Drawing.Size(86, 15);
             this.lShaderOptions.TabIndex = 0;
             this.lShaderOptions.Text = "Shader options";
             // 
             // lPresets
             // 
-            this.lPresets.Location = new System.Drawing.Point(12, 42);
+            this.lPresets.AutoSize = true;
+            this.lPresets.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lPresets.Location = new System.Drawing.Point(20, 0);
+            this.lPresets.Margin = new System.Windows.Forms.Padding(0);
             this.lPresets.Name = "lPresets";
-            this.lPresets.Size = new System.Drawing.Size(100, 13);
+            this.lPresets.Size = new System.Drawing.Size(80, 23);
             this.lPresets.TabIndex = 1;
             this.lPresets.Text = "Quality preset";
-            this.lPresets.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lPresets.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmbHDR
             // 
@@ -322,7 +335,7 @@ namespace MGEgui {
                                     "On"});
             this.cmbHDR.Location = new System.Drawing.Point(168, 99);
             this.cmbHDR.Name = "cmbHDR";
-            this.cmbHDR.Size = new System.Drawing.Size(110, 21);
+            this.cmbHDR.Size = new System.Drawing.Size(110, 23);
             this.cmbHDR.TabIndex = 4;
             this.cmbHDR.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
@@ -336,7 +349,7 @@ namespace MGEgui {
                                     "High quality"});
             this.cmbSSAO.Location = new System.Drawing.Point(168, 152);
             this.cmbSSAO.Name = "cmbSSAO";
-            this.cmbSSAO.Size = new System.Drawing.Size(110, 21);
+            this.cmbSSAO.Size = new System.Drawing.Size(110, 23);
             this.cmbSSAO.TabIndex = 9;
             this.cmbSSAO.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
@@ -350,7 +363,7 @@ namespace MGEgui {
                                     "Soft"});
             this.cmbBloom.Location = new System.Drawing.Point(168, 179);
             this.cmbBloom.Name = "cmbBloom";
-            this.cmbBloom.Size = new System.Drawing.Size(110, 21);
+            this.cmbBloom.Size = new System.Drawing.Size(110, 23);
             this.cmbBloom.TabIndex = 11;
             this.cmbBloom.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
@@ -363,7 +376,7 @@ namespace MGEgui {
                                     "On"});
             this.cmbSunshafts.Location = new System.Drawing.Point(168, 206);
             this.cmbSunshafts.Name = "cmbSunshafts";
-            this.cmbSunshafts.Size = new System.Drawing.Size(110, 21);
+            this.cmbSunshafts.Size = new System.Drawing.Size(110, 23);
             this.cmbSunshafts.TabIndex = 13;
             this.cmbSunshafts.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
@@ -376,7 +389,7 @@ namespace MGEgui {
                                     "On"});
             this.cmbDoF.Location = new System.Drawing.Point(168, 233);
             this.cmbDoF.Name = "cmbDoF";
-            this.cmbDoF.Size = new System.Drawing.Size(110, 21);
+            this.cmbDoF.Size = new System.Drawing.Size(110, 23);
             this.cmbDoF.TabIndex = 15;
             this.cmbDoF.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
@@ -389,63 +402,81 @@ namespace MGEgui {
                                     "On"});
             this.cmbWaterSunshafts.Location = new System.Drawing.Point(168, 260);
             this.cmbWaterSunshafts.Name = "cmbWaterSunshafts";
-            this.cmbWaterSunshafts.Size = new System.Drawing.Size(110, 21);
+            this.cmbWaterSunshafts.Size = new System.Drawing.Size(110, 23);
             this.cmbWaterSunshafts.TabIndex = 17;
             this.cmbWaterSunshafts.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // lSSAO
             // 
-            this.lSSAO.Location = new System.Drawing.Point(12, 155);
+            this.lSSAO.AutoSize = true;
+            this.lSSAO.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lSSAO.Location = new System.Drawing.Point(114, 54);
+            this.lSSAO.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lSSAO.Name = "lSSAO";
-            this.lSSAO.Size = new System.Drawing.Size(150, 13);
+            this.lSSAO.Size = new System.Drawing.Size(36, 23);
             this.lSSAO.TabIndex = 8;
             this.lSSAO.Text = "SSAO";
-            this.lSSAO.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lSSAO.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lBloom
             // 
-            this.lBloom.Location = new System.Drawing.Point(12, 182);
+            this.lBloom.AutoSize = true;
+            this.lBloom.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lBloom.Location = new System.Drawing.Point(108, 81);
+            this.lBloom.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lBloom.Name = "lBloom";
-            this.lBloom.Size = new System.Drawing.Size(150, 13);
+            this.lBloom.Size = new System.Drawing.Size(42, 23);
             this.lBloom.TabIndex = 10;
             this.lBloom.Text = "Bloom";
-            this.lBloom.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lBloom.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lDoF
             // 
-            this.lDoF.Location = new System.Drawing.Point(12, 236);
+            this.lDoF.AutoSize = true;
+            this.lDoF.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDoF.Location = new System.Drawing.Point(69, 135);
+            this.lDoF.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lDoF.Name = "lDoF";
-            this.lDoF.Size = new System.Drawing.Size(150, 13);
+            this.lDoF.Size = new System.Drawing.Size(81, 23);
             this.lDoF.TabIndex = 14;
             this.lDoF.Text = "Depth of Field";
-            this.lDoF.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lDoF.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lWaterSunshafts
             // 
-            this.lWaterSunshafts.Location = new System.Drawing.Point(12, 263);
+            this.lWaterSunshafts.AutoSize = true;
+            this.lWaterSunshafts.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lWaterSunshafts.Location = new System.Drawing.Point(28, 162);
+            this.lWaterSunshafts.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lWaterSunshafts.Name = "lWaterSunshafts";
-            this.lWaterSunshafts.Size = new System.Drawing.Size(150, 13);
+            this.lWaterSunshafts.Size = new System.Drawing.Size(122, 23);
             this.lWaterSunshafts.TabIndex = 16;
             this.lWaterSunshafts.Text = "Underwater Sunshafts";
-            this.lWaterSunshafts.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lWaterSunshafts.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lSunshafts
             // 
-            this.lSunshafts.Location = new System.Drawing.Point(12, 209);
+            this.lSunshafts.AutoSize = true;
+            this.lSunshafts.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lSunshafts.Location = new System.Drawing.Point(92, 108);
+            this.lSunshafts.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lSunshafts.Name = "lSunshafts";
-            this.lSunshafts.Size = new System.Drawing.Size(150, 13);
+            this.lSunshafts.Size = new System.Drawing.Size(58, 23);
             this.lSunshafts.TabIndex = 12;
             this.lSunshafts.Text = "Sunshafts";
-            this.lSunshafts.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lSunshafts.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lHDR
             // 
-            this.lHDR.Location = new System.Drawing.Point(12, 102);
+            this.lHDR.AutoSize = true;
+            this.lHDR.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lHDR.Location = new System.Drawing.Point(119, 0);
+            this.lHDR.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lHDR.Name = "lHDR";
-            this.lHDR.Size = new System.Drawing.Size(150, 13);
+            this.lHDR.Size = new System.Drawing.Size(31, 23);
             this.lHDR.TabIndex = 3;
             this.lHDR.Text = "HDR";
-            this.lHDR.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lHDR.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmbInteriorCaustics
             // 
@@ -456,18 +487,21 @@ namespace MGEgui {
                                     "On"});
             this.cmbInteriorCaustics.Location = new System.Drawing.Point(168, 287);
             this.cmbInteriorCaustics.Name = "cmbInteriorCaustics";
-            this.cmbInteriorCaustics.Size = new System.Drawing.Size(110, 21);
+            this.cmbInteriorCaustics.Size = new System.Drawing.Size(110, 23);
             this.cmbInteriorCaustics.TabIndex = 19;
             this.cmbInteriorCaustics.SelectedIndexChanged += new System.EventHandler(this.onOptionUpdate);
             // 
             // lInteriorCaustics
             // 
-            this.lInteriorCaustics.Location = new System.Drawing.Point(12, 290);
+            this.lInteriorCaustics.AutoSize = true;
+            this.lInteriorCaustics.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lInteriorCaustics.Location = new System.Drawing.Point(24, 189);
+            this.lInteriorCaustics.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lInteriorCaustics.Name = "lInteriorCaustics";
-            this.lInteriorCaustics.Size = new System.Drawing.Size(150, 13);
+            this.lInteriorCaustics.Size = new System.Drawing.Size(126, 23);
             this.lInteriorCaustics.TabIndex = 18;
             this.lInteriorCaustics.Text = "Interior Water Caustics";
-            this.lInteriorCaustics.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lInteriorCaustics.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // bAdvancedMode
             // 
@@ -499,7 +533,7 @@ namespace MGEgui {
                                     0,
                                     131072});
             this.udHDRTime.Name = "udHDRTime";
-            this.udHDRTime.Size = new System.Drawing.Size(70, 20);
+            this.udHDRTime.Size = new System.Drawing.Size(70, 23);
             this.udHDRTime.TabIndex = 6;
             this.udHDRTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udHDRTime.Value = new decimal(new int[] {
@@ -510,41 +544,78 @@ namespace MGEgui {
             // 
             // lHDRTime
             // 
-            this.lHDRTime.Location = new System.Drawing.Point(12, 128);
+            this.lHDRTime.AutoSize = true;
+            this.lHDRTime.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lHDRTime.Location = new System.Drawing.Point(23, 27);
+            this.lHDRTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.lHDRTime.Name = "lHDRTime";
-            this.lHDRTime.Size = new System.Drawing.Size(150, 13);
+            this.lHDRTime.Size = new System.Drawing.Size(127, 23);
             this.lHDRTime.TabIndex = 5;
             this.lHDRTime.Text = "Exposure reaction time";
-            this.lHDRTime.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lHDRTime.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lHDRTime2
             // 
             this.lHDRTime2.AutoSize = true;
             this.lHDRTime2.Location = new System.Drawing.Point(244, 128);
             this.lHDRTime2.Name = "lHDRTime2";
-            this.lHDRTime2.Size = new System.Drawing.Size(24, 13);
+            this.lHDRTime2.Size = new System.Drawing.Size(24, 15);
             this.lHDRTime2.TabIndex = 7;
             this.lHDRTime2.Text = "sec";
+            // 
+            // tableRightAlign1
+            // 
+            this.tableRightAlign1.ColumnCount = 1;
+            this.tableRightAlign1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableRightAlign1.Controls.Add(this.lPresets, 0, 0);
+            this.tableRightAlign1.Location = new System.Drawing.Point(12, 39);
+            this.tableRightAlign1.Name = "tableRightAlign1";
+            this.tableRightAlign1.RowCount = 1;
+            this.tableRightAlign1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableRightAlign1.Size = new System.Drawing.Size(100, 23);
+            this.tableRightAlign1.TabIndex = 24;
+            // 
+            // tableRightAlign2
+            // 
+            this.tableRightAlign2.ColumnCount = 1;
+            this.tableRightAlign2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableRightAlign2.Controls.Add(this.lInteriorCaustics, 0, 7);
+            this.tableRightAlign2.Controls.Add(this.lWaterSunshafts, 0, 6);
+            this.tableRightAlign2.Controls.Add(this.lDoF, 0, 5);
+            this.tableRightAlign2.Controls.Add(this.lHDRTime, 0, 1);
+            this.tableRightAlign2.Controls.Add(this.lSunshafts, 0, 4);
+            this.tableRightAlign2.Controls.Add(this.lBloom, 0, 3);
+            this.tableRightAlign2.Controls.Add(this.lSSAO, 0, 2);
+            this.tableRightAlign2.Controls.Add(this.lHDR, 0, 0);
+            this.tableRightAlign2.Location = new System.Drawing.Point(12, 99);
+            this.tableRightAlign2.Name = "tableRightAlign2";
+            this.tableRightAlign2.RowCount = 8;
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableRightAlign2.Size = new System.Drawing.Size(150, 211);
+            this.tableRightAlign2.TabIndex = 25;
             // 
             // ShaderActive
             // 
             this.AcceptButton = this.bSave;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(624, 411);
+            this.ClientSize = new System.Drawing.Size(644, 411);
+            this.Controls.Add(this.tableRightAlign2);
+            this.Controls.Add(this.tableRightAlign1);
             this.Controls.Add(this.lHDRTime2);
-            this.Controls.Add(this.lHDRTime);
             this.Controls.Add(this.udHDRTime);
             this.Controls.Add(this.bAdvancedMode);
             this.Controls.Add(this.bSave);
             this.Controls.Add(this.bCancel);
-            this.Controls.Add(this.lInteriorCaustics);
             this.Controls.Add(this.cmbInteriorCaustics);
-            this.Controls.Add(this.lHDR);
-            this.Controls.Add(this.lSunshafts);
-            this.Controls.Add(this.lWaterSunshafts);
-            this.Controls.Add(this.lDoF);
-            this.Controls.Add(this.lBloom);
-            this.Controls.Add(this.lSSAO);
             this.Controls.Add(this.cmbWaterSunshafts);
             this.Controls.Add(this.cmbDoF);
             this.Controls.Add(this.cmbSunshafts);
@@ -554,11 +625,12 @@ namespace MGEgui {
             this.Controls.Add(this.cmbPresets);
             this.Controls.Add(this.lShaderOptions);
             this.Controls.Add(this.tableLayoutPanelAdv);
-            this.Controls.Add(this.lPresets);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(305, 400);
+            this.MaximumSize = new System.Drawing.Size(650, 440);
+            this.MinimumSize = new System.Drawing.Size(305, 440);
             this.Name = "ShaderActive";
             this.Text = "Set active shaders";
             this.tableLayoutPanelAdv.ResumeLayout(false);
@@ -566,9 +638,15 @@ namespace MGEgui {
             this.panelActions.ResumeLayout(false);
             this.panelActiveListActions.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.udHDRTime)).EndInit();
+            this.tableRightAlign1.ResumeLayout(false);
+            this.tableRightAlign1.PerformLayout();
+            this.tableRightAlign2.ResumeLayout(false);
+            this.tableRightAlign2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.TableLayoutPanel tableRightAlign2;
+        private System.Windows.Forms.TableLayoutPanel tableRightAlign1;
         public System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Label lHDRTime2;
         private System.Windows.Forms.Label lHDRTime;
@@ -638,7 +716,7 @@ namespace MGEgui {
         }
         
         private void bAdvancedMode_Click(object sender, EventArgs e) {
-            int newWidth = (this.Size.Width == this.MinimumSize.Width) ? 630 : this.MinimumSize.Width;
+            int newWidth = (this.Size.Width == this.MinimumSize.Width) ? this.MaximumSize.Width : this.MinimumSize.Width;
             this.Size = new System.Drawing.Size(newWidth, this.Size.Height);
         }
         

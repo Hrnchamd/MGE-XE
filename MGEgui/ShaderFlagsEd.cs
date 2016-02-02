@@ -49,9 +49,9 @@ namespace MGEgui {
             // 
             this.cbSFNotSunVis.AutoSize = true;
             this.cbSFNotSunVis.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSFNotSunVis.Location = new System.Drawing.Point(3, 141);
+            this.cbSFNotSunVis.Location = new System.Drawing.Point(3, 153);
             this.cbSFNotSunVis.Name = "cbSFNotSunVis";
-            this.cbSFNotSunVis.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotSunVis.Size = new System.Drawing.Size(359, 19);
             this.cbSFNotSunVis.TabIndex = 13;
             this.cbSFNotSunVis.Text = "Disabled when sun is not visible (i.e. sun opacity is zero)";
             this.cbSFNotSunVis.UseVisualStyleBackColor = false;
@@ -60,9 +60,9 @@ namespace MGEgui {
             // 
             this.cbSFSunVis.AutoSize = true;
             this.cbSFSunVis.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSFSunVis.Location = new System.Drawing.Point(3, 118);
+            this.cbSFSunVis.Location = new System.Drawing.Point(3, 128);
             this.cbSFSunVis.Name = "cbSFSunVis";
-            this.cbSFSunVis.Size = new System.Drawing.Size(349, 17);
+            this.cbSFSunVis.Size = new System.Drawing.Size(359, 19);
             this.cbSFSunVis.TabIndex = 12;
             this.cbSFSunVis.Text = "Disabled when sun is visible";
             this.cbSFSunVis.UseVisualStyleBackColor = false;
@@ -71,9 +71,9 @@ namespace MGEgui {
             // 
             this.cbSFNotAboveWater.AutoSize = true;
             this.cbSFNotAboveWater.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSFNotAboveWater.Location = new System.Drawing.Point(3, 95);
+            this.cbSFNotAboveWater.Location = new System.Drawing.Point(3, 103);
             this.cbSFNotAboveWater.Name = "cbSFNotAboveWater";
-            this.cbSFNotAboveWater.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotAboveWater.Size = new System.Drawing.Size(359, 19);
             this.cbSFNotAboveWater.TabIndex = 11;
             this.cbSFNotAboveWater.Text = "Disabled when above water";
             this.cbSFNotAboveWater.UseVisualStyleBackColor = false;
@@ -82,9 +82,9 @@ namespace MGEgui {
             // 
             this.cbSFNotUnderwater.AutoSize = true;
             this.cbSFNotUnderwater.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSFNotUnderwater.Location = new System.Drawing.Point(3, 72);
+            this.cbSFNotUnderwater.Location = new System.Drawing.Point(3, 78);
             this.cbSFNotUnderwater.Name = "cbSFNotUnderwater";
-            this.cbSFNotUnderwater.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotUnderwater.Size = new System.Drawing.Size(359, 19);
             this.cbSFNotUnderwater.TabIndex = 10;
             this.cbSFNotUnderwater.Text = "Disabled when underwater";
             this.cbSFNotUnderwater.UseVisualStyleBackColor = false;
@@ -93,9 +93,9 @@ namespace MGEgui {
             // 
             this.cbSFNotIntExt.AutoSize = true;
             this.cbSFNotIntExt.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSFNotIntExt.Location = new System.Drawing.Point(3, 49);
+            this.cbSFNotIntExt.Location = new System.Drawing.Point(3, 53);
             this.cbSFNotIntExt.Name = "cbSFNotIntExt";
-            this.cbSFNotIntExt.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotIntExt.Size = new System.Drawing.Size(359, 19);
             this.cbSFNotIntExt.TabIndex = 9;
             this.cbSFNotIntExt.Text = "Disabled in interiors acting like exteriors (like Mournhold)";
             this.cbSFNotIntExt.UseVisualStyleBackColor = false;
@@ -104,9 +104,9 @@ namespace MGEgui {
             // 
             this.cbSFNotExt.AutoSize = true;
             this.cbSFNotExt.Dock = System.Windows.Forms.DockStyle.Top;
-            this.cbSFNotExt.Location = new System.Drawing.Point(3, 26);
+            this.cbSFNotExt.Location = new System.Drawing.Point(3, 28);
             this.cbSFNotExt.Name = "cbSFNotExt";
-            this.cbSFNotExt.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotExt.Size = new System.Drawing.Size(359, 19);
             this.cbSFNotExt.TabIndex = 8;
             this.cbSFNotExt.Text = "Disabled in exteriors";
             this.cbSFNotExt.UseVisualStyleBackColor = false;
@@ -117,14 +117,14 @@ namespace MGEgui {
             this.cbSFNotInt.Dock = System.Windows.Forms.DockStyle.Top;
             this.cbSFNotInt.Location = new System.Drawing.Point(3, 3);
             this.cbSFNotInt.Name = "cbSFNotInt";
-            this.cbSFNotInt.Size = new System.Drawing.Size(349, 17);
+            this.cbSFNotInt.Size = new System.Drawing.Size(359, 19);
             this.cbSFNotInt.TabIndex = 7;
             this.cbSFNotInt.Text = "Disabled in interiors";
             this.cbSFNotInt.UseVisualStyleBackColor = false;
             // 
             // bOK
             // 
-            this.bOK.Location = new System.Drawing.Point(211, 206);
+            this.bOK.Location = new System.Drawing.Point(221, 216);
             this.bOK.Name = "bOK";
             this.bOK.Size = new System.Drawing.Size(75, 23);
             this.bOK.TabIndex = 0;
@@ -134,7 +134,7 @@ namespace MGEgui {
             // 
             // bCancel
             // 
-            this.bCancel.Location = new System.Drawing.Point(292, 206);
+            this.bCancel.Location = new System.Drawing.Point(302, 216);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(75, 23);
             this.bCancel.TabIndex = 1;
@@ -163,22 +163,23 @@ namespace MGEgui {
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(355, 188);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(365, 188);
             this.tableLayoutPanel1.TabIndex = 14;
             // 
             // ShaderFlagsEd
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(379, 241);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(389, 251);
             this.ControlBox = false;
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.bCancel);
             this.Controls.Add(this.bOK);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-            this.MaximumSize = new System.Drawing.Size(385, 270);
-            this.MinimumSize = new System.Drawing.Size(385, 270);
+            this.MaximumSize = new System.Drawing.Size(395, 280);
+            this.MinimumSize = new System.Drawing.Size(395, 280);
             this.Name = "ShaderFlagsEd";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

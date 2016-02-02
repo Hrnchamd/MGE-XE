@@ -30,136 +30,139 @@ namespace MGEgui {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-        	this.components = new System.ComponentModel.Container();
-        	System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(RenderWindow));
-        	this.cbShader = new System.Windows.Forms.CheckBox();
-        	this.fpsLabel = new System.Windows.Forms.Label();
-        	this.fpsTimer = new System.Windows.Forms.Timer(this.components);
-        	this.RenderPanel = new System.Windows.Forms.Panel();
-        	this.bBenchmark = new System.Windows.Forms.Button();
-        	this.cmbCycles = new System.Windows.Forms.ComboBox();
-        	this.DudMenu = new System.Windows.Forms.ContextMenu();
-        	this.var_HDR = new System.Windows.Forms.NumericUpDown();
-        	this.hdrLabel = new System.Windows.Forms.Label();
-        	((System.ComponentModel.ISupportInitialize)(this.var_HDR)).BeginInit();
-        	this.SuspendLayout();
-        	// 
-        	// cbShader
-        	// 
-        	this.cbShader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-        	this.cbShader.Checked = true;
-        	this.cbShader.CheckState = System.Windows.Forms.CheckState.Checked;
-        	this.cbShader.Location = new System.Drawing.Point(12, 560);
-        	this.cbShader.Name = "cbShader";
-        	this.cbShader.Size = new System.Drawing.Size(100, 17);
-        	this.cbShader.TabIndex = 0;
-        	this.cbShader.Text = "Enable shader";
-        	this.cbShader.CheckedChanged += new System.EventHandler(this.cbShader_CheckedChanged);
-        	// 
-        	// fpsLabel
-        	// 
-        	this.fpsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-        	this.fpsLabel.AutoSize = true;
-        	this.fpsLabel.Location = new System.Drawing.Point(121, 562);
-        	this.fpsLabel.Name = "fpsLabel";
-        	this.fpsLabel.Size = new System.Drawing.Size(39, 13);
-        	this.fpsLabel.TabIndex = 0;
-        	this.fpsLabel.Text = "FPS: 0";
-        	// 
-        	// fpsTimer
-        	// 
-        	this.fpsTimer.Enabled = true;
-        	this.fpsTimer.Interval = 1000;
-        	this.fpsTimer.Tick += new System.EventHandler(this.fpsTimer_Tick);
-        	// 
-        	// RenderPanel
-        	// 
-        	this.RenderPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-        	        	        	| System.Windows.Forms.AnchorStyles.Left) 
-        	        	        	| System.Windows.Forms.AnchorStyles.Right)));
-        	this.RenderPanel.Location = new System.Drawing.Point(12, 12);
-        	this.RenderPanel.Name = "RenderPanel";
-        	this.RenderPanel.Size = new System.Drawing.Size(960, 541);
-        	this.RenderPanel.TabIndex = 0;
-        	// 
-        	// bBenchmark
-        	// 
-        	this.bBenchmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-        	this.bBenchmark.Location = new System.Drawing.Point(897, 557);
-        	this.bBenchmark.Name = "bBenchmark";
-        	this.bBenchmark.Size = new System.Drawing.Size(75, 23);
-        	this.bBenchmark.TabIndex = 2;
-        	this.bBenchmark.Text = "Benchmark";
-        	this.bBenchmark.Click += new System.EventHandler(this.bBenchmark_Click);
-        	// 
-        	// cmbCycles
-        	// 
-        	this.cmbCycles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-        	this.cmbCycles.ContextMenu = this.DudMenu;
-        	this.cmbCycles.Items.AddRange(new object[] {
-        	        	        	"50 frames",
-        	        	        	"100 frames",
-        	        	        	"500 frames",
-        	        	        	"1000 frames"});
-        	this.cmbCycles.Location = new System.Drawing.Point(802, 558);
-        	this.cmbCycles.Name = "cmbCycles";
-        	this.cmbCycles.Size = new System.Drawing.Size(89, 21);
-        	this.cmbCycles.TabIndex = 1;
-        	this.cmbCycles.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbCycles_KeyPress);
-        	// 
-        	// var_HDR
-        	// 
-        	this.var_HDR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-        	this.var_HDR.DecimalPlaces = 2;
-        	this.var_HDR.Increment = new decimal(new int[] {
-        	        	        	5,
-        	        	        	0,
-        	        	        	0,
-        	        	        	131072});
-        	this.var_HDR.Location = new System.Drawing.Point(237, 558);
-        	this.var_HDR.Maximum = new decimal(new int[] {
-        	        	        	1,
-        	        	        	0,
-        	        	        	0,
-        	        	        	0});
-        	this.var_HDR.Name = "var_HDR";
-        	this.var_HDR.Size = new System.Drawing.Size(82, 20);
-        	this.var_HDR.TabIndex = 3;
-        	this.var_HDR.Value = new decimal(new int[] {
-        	        	        	2,
-        	        	        	0,
-        	        	        	0,
-        	        	        	65536});
-        	// 
-        	// hdrLabel
-        	// 
-        	this.hdrLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-        	this.hdrLabel.AutoSize = true;
-        	this.hdrLabel.Location = new System.Drawing.Point(197, 562);
-        	this.hdrLabel.Name = "hdrLabel";
-        	this.hdrLabel.Size = new System.Drawing.Size(34, 13);
-        	this.hdrLabel.TabIndex = 4;
-        	this.hdrLabel.Text = "HDR:";
-        	// 
-        	// RenderWindow
-        	// 
+            this.components = new System.ComponentModel.Container();
+            this.cbShader = new System.Windows.Forms.CheckBox();
+            this.fpsLabel = new System.Windows.Forms.Label();
+            this.fpsTimer = new System.Windows.Forms.Timer(this.components);
+            this.RenderPanel = new System.Windows.Forms.Panel();
+            this.bBenchmark = new System.Windows.Forms.Button();
+            this.cmbCycles = new System.Windows.Forms.ComboBox();
+            this.DudMenu = new System.Windows.Forms.ContextMenu();
+            this.var_HDR = new System.Windows.Forms.NumericUpDown();
+            this.hdrLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.var_HDR)).BeginInit();
+            this.SuspendLayout();
+            // 
+            // cbShader
+            // 
+            this.cbShader.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.cbShader.AutoSize = true;
+            this.cbShader.Checked = true;
+            this.cbShader.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbShader.Location = new System.Drawing.Point(12, 559);
+            this.cbShader.Name = "cbShader";
+            this.cbShader.Size = new System.Drawing.Size(99, 19);
+            this.cbShader.TabIndex = 0;
+            this.cbShader.Text = "Enable shader";
+            this.cbShader.CheckedChanged += new System.EventHandler(this.cbShader_CheckedChanged);
+            // 
+            // fpsLabel
+            // 
+            this.fpsLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.fpsLabel.AutoSize = true;
+            this.fpsLabel.Location = new System.Drawing.Point(159, 560);
+            this.fpsLabel.Name = "fpsLabel";
+            this.fpsLabel.Size = new System.Drawing.Size(38, 15);
+            this.fpsLabel.TabIndex = 0;
+            this.fpsLabel.Text = "FPS: 0";
+            // 
+            // fpsTimer
+            // 
+            this.fpsTimer.Enabled = true;
+            this.fpsTimer.Interval = 1000;
+            this.fpsTimer.Tick += new System.EventHandler(this.fpsTimer_Tick);
+            // 
+            // RenderPanel
+            // 
+            this.RenderPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.RenderPanel.Location = new System.Drawing.Point(12, 12);
+            this.RenderPanel.Name = "RenderPanel";
+            this.RenderPanel.Size = new System.Drawing.Size(960, 541);
+            this.RenderPanel.TabIndex = 0;
+            // 
+            // bBenchmark
+            // 
+            this.bBenchmark.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bBenchmark.Location = new System.Drawing.Point(862, 556);
+            this.bBenchmark.Name = "bBenchmark";
+            this.bBenchmark.Size = new System.Drawing.Size(110, 25);
+            this.bBenchmark.TabIndex = 2;
+            this.bBenchmark.Text = "Benchmark";
+            this.bBenchmark.Click += new System.EventHandler(this.bBenchmark_Click);
+            // 
+            // cmbCycles
+            // 
+            this.cmbCycles.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbCycles.ContextMenu = this.DudMenu;
+            this.cmbCycles.Items.AddRange(new object[] {
+                                    "50 frames",
+                                    "100 frames",
+                                    "500 frames",
+                                    "1000 frames"});
+            this.cmbCycles.Location = new System.Drawing.Point(763, 557);
+            this.cmbCycles.Name = "cmbCycles";
+            this.cmbCycles.Size = new System.Drawing.Size(89, 23);
+            this.cmbCycles.TabIndex = 1;
+            this.cmbCycles.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbCycles_KeyPress);
+            // 
+            // var_HDR
+            // 
+            this.var_HDR.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.var_HDR.DecimalPlaces = 2;
+            this.var_HDR.Increment = new decimal(new int[] {
+                                    5,
+                                    0,
+                                    0,
+                                    131072});
+            this.var_HDR.Location = new System.Drawing.Point(297, 557);
+            this.var_HDR.Maximum = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    0});
+            this.var_HDR.Name = "var_HDR";
+            this.var_HDR.Size = new System.Drawing.Size(82, 23);
+            this.var_HDR.TabIndex = 3;
+            this.var_HDR.Value = new decimal(new int[] {
+                                    2,
+                                    0,
+                                    0,
+                                    65536});
+            // 
+            // hdrLabel
+            // 
+            this.hdrLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.hdrLabel.AutoSize = true;
+            this.hdrLabel.Location = new System.Drawing.Point(257, 560);
+            this.hdrLabel.Name = "hdrLabel";
+            this.hdrLabel.Size = new System.Drawing.Size(34, 15);
+            this.hdrLabel.TabIndex = 4;
+            this.hdrLabel.Text = "HDR:";
+            // 
+            // RenderWindow
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(986, 583);
+            this.Controls.Add(this.hdrLabel);
+            this.Controls.Add(this.var_HDR);
+            this.Controls.Add(this.RenderPanel);
+            this.Controls.Add(this.cmbCycles);
+            this.Controls.Add(this.fpsLabel);
+            this.Controls.Add(this.bBenchmark);
+            this.Controls.Add(this.cbShader);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-        	this.ClientSize = new System.Drawing.Size(986, 583);
-        	this.Controls.Add(this.hdrLabel);
-        	this.Controls.Add(this.var_HDR);
-        	this.Controls.Add(this.RenderPanel);
-        	this.Controls.Add(this.cmbCycles);
-        	this.Controls.Add(this.fpsLabel);
-        	this.Controls.Add(this.bBenchmark);
-        	this.Controls.Add(this.cbShader);
-        	this.MinimumSize = new System.Drawing.Size(480, 320);
-        	this.Name = "RenderWindow";
-        	this.Text = "Preview Window";
-        	this.Closing += new System.ComponentModel.CancelEventHandler(this.RenderWindow_FormClosing);
-        	this.Shown += new System.EventHandler(this.RenderWindow_Shown);
-        	((System.ComponentModel.ISupportInitialize)(this.var_HDR)).EndInit();
-        	this.ResumeLayout(false);
-        	this.PerformLayout();
+            this.MinimumSize = new System.Drawing.Size(480, 320);
+            this.Name = "RenderWindow";
+            this.Text = "Preview Window";
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.RenderWindow_FormClosing);
+            this.Shown += new System.EventHandler(this.RenderWindow_Shown);
+            ((System.ComponentModel.ISupportInitialize)(this.var_HDR)).EndInit();
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         private CheckBox cbShader;

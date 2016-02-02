@@ -121,6 +121,7 @@
             // 
             // gbSun
             // 
+            this.gbSun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gbSun.BackColor = System.Drawing.Color.Transparent;
             this.gbSun.Controls.Add(this.udBlizzardSun);
             this.gbSun.Controls.Add(this.udSnowSun);
@@ -142,9 +143,9 @@
             this.gbSun.Controls.Add(this.lBlight1);
             this.gbSun.Controls.Add(this.lSnow1);
             this.gbSun.Controls.Add(this.lBlizzard1);
-            this.gbSun.Location = new System.Drawing.Point(82, 3);
+            this.gbSun.Location = new System.Drawing.Point(116, 8);
             this.gbSun.Name = "gbSun";
-            this.gbSun.Size = new System.Drawing.Size(190, 301);
+            this.gbSun.Size = new System.Drawing.Size(180, 355);
             this.gbSun.TabIndex = 3;
             this.gbSun.TabStop = false;
             this.gbSun.Text = "Sun brightness multiplier";
@@ -157,14 +158,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udBlizzardSun.Location = new System.Drawing.Point(30, 273);
+            this.udBlizzardSun.Location = new System.Drawing.Point(30, 325);
             this.udBlizzardSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udBlizzardSun.Name = "udBlizzardSun";
-            this.udBlizzardSun.Size = new System.Drawing.Size(56, 20);
+            this.udBlizzardSun.Size = new System.Drawing.Size(72, 23);
             this.udBlizzardSun.TabIndex = 18;
             this.udBlizzardSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udBlizzardSun.Value = new decimal(new int[] {
@@ -181,14 +182,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udSnowSun.Location = new System.Drawing.Point(30, 245);
+            this.udSnowSun.Location = new System.Drawing.Point(30, 293);
             this.udSnowSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udSnowSun.Name = "udSnowSun";
-            this.udSnowSun.Size = new System.Drawing.Size(56, 20);
+            this.udSnowSun.Size = new System.Drawing.Size(72, 23);
             this.udSnowSun.TabIndex = 16;
             this.udSnowSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udSnowSun.Value = new decimal(new int[] {
@@ -205,14 +206,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udBlightSun.Location = new System.Drawing.Point(30, 217);
+            this.udBlightSun.Location = new System.Drawing.Point(30, 261);
             this.udBlightSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udBlightSun.Name = "udBlightSun";
-            this.udBlightSun.Size = new System.Drawing.Size(56, 20);
+            this.udBlightSun.Size = new System.Drawing.Size(72, 23);
             this.udBlightSun.TabIndex = 14;
             this.udBlightSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udBlightSun.Value = new decimal(new int[] {
@@ -229,14 +230,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udAshSun.Location = new System.Drawing.Point(30, 189);
+            this.udAshSun.Location = new System.Drawing.Point(30, 229);
             this.udAshSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udAshSun.Name = "udAshSun";
-            this.udAshSun.Size = new System.Drawing.Size(56, 20);
+            this.udAshSun.Size = new System.Drawing.Size(72, 23);
             this.udAshSun.TabIndex = 12;
             this.udAshSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udAshSun.Value = new decimal(new int[] {
@@ -253,14 +254,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udThunderSun.Location = new System.Drawing.Point(30, 161);
+            this.udThunderSun.Location = new System.Drawing.Point(30, 197);
             this.udThunderSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udThunderSun.Name = "udThunderSun";
-            this.udThunderSun.Size = new System.Drawing.Size(56, 20);
+            this.udThunderSun.Size = new System.Drawing.Size(72, 23);
             this.udThunderSun.TabIndex = 10;
             this.udThunderSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udThunderSun.Value = new decimal(new int[] {
@@ -277,14 +278,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udRainSun.Location = new System.Drawing.Point(30, 133);
+            this.udRainSun.Location = new System.Drawing.Point(30, 165);
             this.udRainSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udRainSun.Name = "udRainSun";
-            this.udRainSun.Size = new System.Drawing.Size(56, 20);
+            this.udRainSun.Size = new System.Drawing.Size(72, 23);
             this.udRainSun.TabIndex = 8;
             this.udRainSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udRainSun.Value = new decimal(new int[] {
@@ -301,14 +302,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udOvercastSun.Location = new System.Drawing.Point(30, 105);
+            this.udOvercastSun.Location = new System.Drawing.Point(30, 133);
             this.udOvercastSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udOvercastSun.Name = "udOvercastSun";
-            this.udOvercastSun.Size = new System.Drawing.Size(56, 20);
+            this.udOvercastSun.Size = new System.Drawing.Size(72, 23);
             this.udOvercastSun.TabIndex = 6;
             this.udOvercastSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udOvercastSun.Value = new decimal(new int[] {
@@ -325,14 +326,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udFoggySun.Location = new System.Drawing.Point(30, 77);
+            this.udFoggySun.Location = new System.Drawing.Point(30, 101);
             this.udFoggySun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udFoggySun.Name = "udFoggySun";
-            this.udFoggySun.Size = new System.Drawing.Size(56, 20);
+            this.udFoggySun.Size = new System.Drawing.Size(72, 23);
             this.udFoggySun.TabIndex = 4;
             this.udFoggySun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udFoggySun.Value = new decimal(new int[] {
@@ -349,14 +350,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udCloudySun.Location = new System.Drawing.Point(30, 49);
+            this.udCloudySun.Location = new System.Drawing.Point(30, 69);
             this.udCloudySun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udCloudySun.Name = "udCloudySun";
-            this.udCloudySun.Size = new System.Drawing.Size(56, 20);
+            this.udCloudySun.Size = new System.Drawing.Size(72, 23);
             this.udCloudySun.TabIndex = 2;
             this.udCloudySun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udCloudySun.Value = new decimal(new int[] {
@@ -373,14 +374,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udClearSun.Location = new System.Drawing.Point(30, 21);
+            this.udClearSun.Location = new System.Drawing.Point(30, 37);
             this.udClearSun.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udClearSun.Name = "udClearSun";
-            this.udClearSun.Size = new System.Drawing.Size(56, 20);
+            this.udClearSun.Size = new System.Drawing.Size(72, 23);
             this.udClearSun.TabIndex = 0;
             this.udClearSun.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udClearSun.Value = new decimal(new int[] {
@@ -392,85 +393,86 @@
             // lClear1
             // 
             this.lClear1.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.lClear1.Location = new System.Drawing.Point(1, 19);
+            this.lClear1.Location = new System.Drawing.Point(1, 33);
             this.lClear1.Name = "lClear1";
-            this.lClear1.Size = new System.Drawing.Size(188, 26);
+            this.lClear1.Size = new System.Drawing.Size(178, 30);
             this.lClear1.TabIndex = 0;
             // 
             // lCloudy1
             // 
             this.lCloudy1.BackColor = System.Drawing.Color.LightBlue;
-            this.lCloudy1.Location = new System.Drawing.Point(1, 47);
+            this.lCloudy1.Location = new System.Drawing.Point(1, 65);
             this.lCloudy1.Name = "lCloudy1";
-            this.lCloudy1.Size = new System.Drawing.Size(188, 26);
+            this.lCloudy1.Size = new System.Drawing.Size(178, 30);
             this.lCloudy1.TabIndex = 0;
             // 
             // lFoggy1
             // 
-            this.lFoggy1.BackColor = System.Drawing.Color.GhostWhite;
-            this.lFoggy1.Location = new System.Drawing.Point(1, 75);
+            this.lFoggy1.BackColor = System.Drawing.Color.Gainsboro;
+            this.lFoggy1.Location = new System.Drawing.Point(1, 97);
             this.lFoggy1.Name = "lFoggy1";
-            this.lFoggy1.Size = new System.Drawing.Size(188, 26);
+            this.lFoggy1.Size = new System.Drawing.Size(178, 30);
             this.lFoggy1.TabIndex = 0;
             // 
             // lOvercast1
             // 
             this.lOvercast1.BackColor = System.Drawing.Color.Silver;
-            this.lOvercast1.Location = new System.Drawing.Point(1, 103);
+            this.lOvercast1.Location = new System.Drawing.Point(1, 129);
             this.lOvercast1.Name = "lOvercast1";
-            this.lOvercast1.Size = new System.Drawing.Size(188, 26);
+            this.lOvercast1.Size = new System.Drawing.Size(178, 30);
             this.lOvercast1.TabIndex = 0;
             // 
             // lRain1
             // 
             this.lRain1.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.lRain1.Location = new System.Drawing.Point(1, 131);
+            this.lRain1.Location = new System.Drawing.Point(1, 161);
             this.lRain1.Name = "lRain1";
-            this.lRain1.Size = new System.Drawing.Size(188, 26);
+            this.lRain1.Size = new System.Drawing.Size(178, 30);
             this.lRain1.TabIndex = 0;
             // 
             // lThunder1
             // 
             this.lThunder1.BackColor = System.Drawing.Color.LightSlateGray;
-            this.lThunder1.Location = new System.Drawing.Point(1, 159);
+            this.lThunder1.Location = new System.Drawing.Point(1, 193);
             this.lThunder1.Name = "lThunder1";
-            this.lThunder1.Size = new System.Drawing.Size(188, 26);
+            this.lThunder1.Size = new System.Drawing.Size(178, 30);
             this.lThunder1.TabIndex = 0;
             // 
             // lAsh1
             // 
             this.lAsh1.BackColor = System.Drawing.Color.Tan;
-            this.lAsh1.Location = new System.Drawing.Point(1, 187);
+            this.lAsh1.Location = new System.Drawing.Point(1, 225);
             this.lAsh1.Name = "lAsh1";
-            this.lAsh1.Size = new System.Drawing.Size(188, 26);
+            this.lAsh1.Size = new System.Drawing.Size(178, 30);
             this.lAsh1.TabIndex = 0;
             // 
             // lBlight1
             // 
             this.lBlight1.BackColor = System.Drawing.Color.IndianRed;
-            this.lBlight1.Location = new System.Drawing.Point(1, 215);
+            this.lBlight1.Location = new System.Drawing.Point(1, 257);
             this.lBlight1.Name = "lBlight1";
-            this.lBlight1.Size = new System.Drawing.Size(188, 26);
+            this.lBlight1.Size = new System.Drawing.Size(178, 30);
             this.lBlight1.TabIndex = 0;
             // 
             // lSnow1
             // 
             this.lSnow1.BackColor = System.Drawing.Color.Snow;
-            this.lSnow1.Location = new System.Drawing.Point(1, 243);
+            this.lSnow1.Location = new System.Drawing.Point(1, 289);
             this.lSnow1.Name = "lSnow1";
-            this.lSnow1.Size = new System.Drawing.Size(188, 26);
+            this.lSnow1.Size = new System.Drawing.Size(178, 30);
             this.lSnow1.TabIndex = 0;
             // 
             // lBlizzard1
             // 
             this.lBlizzard1.BackColor = System.Drawing.Color.Lavender;
-            this.lBlizzard1.Location = new System.Drawing.Point(1, 271);
+            this.lBlizzard1.Location = new System.Drawing.Point(1, 321);
             this.lBlizzard1.Name = "lBlizzard1";
-            this.lBlizzard1.Size = new System.Drawing.Size(188, 26);
+            this.lBlizzard1.Size = new System.Drawing.Size(178, 30);
             this.lBlizzard1.TabIndex = 0;
             // 
             // gbAmbient
             // 
+            this.gbAmbient.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gbAmbient.BackColor = System.Drawing.Color.Transparent;
             this.gbAmbient.Controls.Add(this.udBlizzardAmb);
             this.gbAmbient.Controls.Add(this.udSnowAmb);
@@ -492,9 +494,9 @@
             this.gbAmbient.Controls.Add(this.lBlight3);
             this.gbAmbient.Controls.Add(this.lSnow3);
             this.gbAmbient.Controls.Add(this.lBlizzard3);
-            this.gbAmbient.Location = new System.Drawing.Point(278, 3);
+            this.gbAmbient.Location = new System.Drawing.Point(302, 8);
             this.gbAmbient.Name = "gbAmbient";
-            this.gbAmbient.Size = new System.Drawing.Size(190, 301);
+            this.gbAmbient.Size = new System.Drawing.Size(180, 355);
             this.gbAmbient.TabIndex = 4;
             this.gbAmbient.TabStop = false;
             this.gbAmbient.Text = "Ambient brightness multiplier";
@@ -507,14 +509,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udBlizzardAmb.Location = new System.Drawing.Point(26, 273);
+            this.udBlizzardAmb.Location = new System.Drawing.Point(26, 325);
             this.udBlizzardAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udBlizzardAmb.Name = "udBlizzardAmb";
-            this.udBlizzardAmb.Size = new System.Drawing.Size(56, 20);
+            this.udBlizzardAmb.Size = new System.Drawing.Size(72, 23);
             this.udBlizzardAmb.TabIndex = 18;
             this.udBlizzardAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udBlizzardAmb.Value = new decimal(new int[] {
@@ -531,14 +533,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udSnowAmb.Location = new System.Drawing.Point(26, 245);
+            this.udSnowAmb.Location = new System.Drawing.Point(26, 293);
             this.udSnowAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udSnowAmb.Name = "udSnowAmb";
-            this.udSnowAmb.Size = new System.Drawing.Size(56, 20);
+            this.udSnowAmb.Size = new System.Drawing.Size(72, 23);
             this.udSnowAmb.TabIndex = 16;
             this.udSnowAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udSnowAmb.Value = new decimal(new int[] {
@@ -555,14 +557,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udBlightAmb.Location = new System.Drawing.Point(26, 217);
+            this.udBlightAmb.Location = new System.Drawing.Point(26, 261);
             this.udBlightAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udBlightAmb.Name = "udBlightAmb";
-            this.udBlightAmb.Size = new System.Drawing.Size(56, 20);
+            this.udBlightAmb.Size = new System.Drawing.Size(72, 23);
             this.udBlightAmb.TabIndex = 14;
             this.udBlightAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udBlightAmb.Value = new decimal(new int[] {
@@ -579,14 +581,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udAshAmb.Location = new System.Drawing.Point(26, 189);
+            this.udAshAmb.Location = new System.Drawing.Point(26, 229);
             this.udAshAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udAshAmb.Name = "udAshAmb";
-            this.udAshAmb.Size = new System.Drawing.Size(56, 20);
+            this.udAshAmb.Size = new System.Drawing.Size(72, 23);
             this.udAshAmb.TabIndex = 12;
             this.udAshAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udAshAmb.Value = new decimal(new int[] {
@@ -603,14 +605,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udThunderAmb.Location = new System.Drawing.Point(26, 161);
+            this.udThunderAmb.Location = new System.Drawing.Point(26, 197);
             this.udThunderAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udThunderAmb.Name = "udThunderAmb";
-            this.udThunderAmb.Size = new System.Drawing.Size(56, 20);
+            this.udThunderAmb.Size = new System.Drawing.Size(72, 23);
             this.udThunderAmb.TabIndex = 10;
             this.udThunderAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udThunderAmb.Value = new decimal(new int[] {
@@ -627,14 +629,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udRainAmb.Location = new System.Drawing.Point(26, 133);
+            this.udRainAmb.Location = new System.Drawing.Point(26, 165);
             this.udRainAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udRainAmb.Name = "udRainAmb";
-            this.udRainAmb.Size = new System.Drawing.Size(56, 20);
+            this.udRainAmb.Size = new System.Drawing.Size(72, 23);
             this.udRainAmb.TabIndex = 8;
             this.udRainAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udRainAmb.Value = new decimal(new int[] {
@@ -651,14 +653,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udOvercastAmb.Location = new System.Drawing.Point(26, 105);
+            this.udOvercastAmb.Location = new System.Drawing.Point(26, 133);
             this.udOvercastAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udOvercastAmb.Name = "udOvercastAmb";
-            this.udOvercastAmb.Size = new System.Drawing.Size(56, 20);
+            this.udOvercastAmb.Size = new System.Drawing.Size(72, 23);
             this.udOvercastAmb.TabIndex = 6;
             this.udOvercastAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udOvercastAmb.Value = new decimal(new int[] {
@@ -675,14 +677,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udFoggyAmb.Location = new System.Drawing.Point(26, 77);
+            this.udFoggyAmb.Location = new System.Drawing.Point(26, 101);
             this.udFoggyAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udFoggyAmb.Name = "udFoggyAmb";
-            this.udFoggyAmb.Size = new System.Drawing.Size(56, 20);
+            this.udFoggyAmb.Size = new System.Drawing.Size(72, 23);
             this.udFoggyAmb.TabIndex = 4;
             this.udFoggyAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udFoggyAmb.Value = new decimal(new int[] {
@@ -699,14 +701,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udCloudyAmb.Location = new System.Drawing.Point(26, 49);
+            this.udCloudyAmb.Location = new System.Drawing.Point(26, 69);
             this.udCloudyAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udCloudyAmb.Name = "udCloudyAmb";
-            this.udCloudyAmb.Size = new System.Drawing.Size(56, 20);
+            this.udCloudyAmb.Size = new System.Drawing.Size(72, 23);
             this.udCloudyAmb.TabIndex = 2;
             this.udCloudyAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udCloudyAmb.Value = new decimal(new int[] {
@@ -723,14 +725,14 @@
                                     0,
                                     0,
                                     131072});
-            this.udClearAmb.Location = new System.Drawing.Point(26, 21);
+            this.udClearAmb.Location = new System.Drawing.Point(26, 37);
             this.udClearAmb.Maximum = new decimal(new int[] {
                                     10,
                                     0,
                                     0,
                                     0});
             this.udClearAmb.Name = "udClearAmb";
-            this.udClearAmb.Size = new System.Drawing.Size(56, 20);
+            this.udClearAmb.Size = new System.Drawing.Size(72, 23);
             this.udClearAmb.TabIndex = 0;
             this.udClearAmb.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udClearAmb.Value = new decimal(new int[] {
@@ -742,90 +744,90 @@
             // lClear3
             // 
             this.lClear3.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.lClear3.Location = new System.Drawing.Point(1, 19);
+            this.lClear3.Location = new System.Drawing.Point(1, 33);
             this.lClear3.Name = "lClear3";
-            this.lClear3.Size = new System.Drawing.Size(178, 26);
+            this.lClear3.Size = new System.Drawing.Size(178, 30);
             this.lClear3.TabIndex = 0;
             // 
             // lCloudy3
             // 
             this.lCloudy3.BackColor = System.Drawing.Color.LightBlue;
-            this.lCloudy3.Location = new System.Drawing.Point(1, 47);
+            this.lCloudy3.Location = new System.Drawing.Point(1, 65);
             this.lCloudy3.Name = "lCloudy3";
-            this.lCloudy3.Size = new System.Drawing.Size(178, 26);
+            this.lCloudy3.Size = new System.Drawing.Size(178, 30);
             this.lCloudy3.TabIndex = 0;
             // 
             // lFoggy3
             // 
-            this.lFoggy3.BackColor = System.Drawing.Color.GhostWhite;
-            this.lFoggy3.Location = new System.Drawing.Point(1, 75);
+            this.lFoggy3.BackColor = System.Drawing.Color.Gainsboro;
+            this.lFoggy3.Location = new System.Drawing.Point(1, 97);
             this.lFoggy3.Name = "lFoggy3";
-            this.lFoggy3.Size = new System.Drawing.Size(178, 26);
+            this.lFoggy3.Size = new System.Drawing.Size(178, 30);
             this.lFoggy3.TabIndex = 0;
             // 
             // lOvercast3
             // 
             this.lOvercast3.BackColor = System.Drawing.Color.Silver;
-            this.lOvercast3.Location = new System.Drawing.Point(1, 103);
+            this.lOvercast3.Location = new System.Drawing.Point(1, 129);
             this.lOvercast3.Name = "lOvercast3";
-            this.lOvercast3.Size = new System.Drawing.Size(178, 26);
+            this.lOvercast3.Size = new System.Drawing.Size(178, 30);
             this.lOvercast3.TabIndex = 0;
             // 
             // lRain3
             // 
             this.lRain3.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.lRain3.Location = new System.Drawing.Point(1, 131);
+            this.lRain3.Location = new System.Drawing.Point(1, 161);
             this.lRain3.Name = "lRain3";
-            this.lRain3.Size = new System.Drawing.Size(178, 26);
+            this.lRain3.Size = new System.Drawing.Size(178, 30);
             this.lRain3.TabIndex = 0;
             // 
             // lThunder3
             // 
             this.lThunder3.BackColor = System.Drawing.Color.LightSlateGray;
-            this.lThunder3.Location = new System.Drawing.Point(1, 159);
+            this.lThunder3.Location = new System.Drawing.Point(1, 193);
             this.lThunder3.Name = "lThunder3";
-            this.lThunder3.Size = new System.Drawing.Size(178, 26);
+            this.lThunder3.Size = new System.Drawing.Size(178, 30);
             this.lThunder3.TabIndex = 0;
             // 
             // lAsh3
             // 
             this.lAsh3.BackColor = System.Drawing.Color.Tan;
-            this.lAsh3.Location = new System.Drawing.Point(1, 187);
+            this.lAsh3.Location = new System.Drawing.Point(1, 225);
             this.lAsh3.Name = "lAsh3";
-            this.lAsh3.Size = new System.Drawing.Size(178, 26);
+            this.lAsh3.Size = new System.Drawing.Size(178, 30);
             this.lAsh3.TabIndex = 0;
             // 
             // lBlight3
             // 
             this.lBlight3.BackColor = System.Drawing.Color.IndianRed;
-            this.lBlight3.Location = new System.Drawing.Point(1, 215);
+            this.lBlight3.Location = new System.Drawing.Point(1, 257);
             this.lBlight3.Name = "lBlight3";
-            this.lBlight3.Size = new System.Drawing.Size(178, 26);
+            this.lBlight3.Size = new System.Drawing.Size(178, 30);
             this.lBlight3.TabIndex = 0;
             // 
             // lSnow3
             // 
             this.lSnow3.BackColor = System.Drawing.Color.Snow;
-            this.lSnow3.Location = new System.Drawing.Point(1, 243);
+            this.lSnow3.Location = new System.Drawing.Point(1, 289);
             this.lSnow3.Name = "lSnow3";
-            this.lSnow3.Size = new System.Drawing.Size(178, 26);
+            this.lSnow3.Size = new System.Drawing.Size(178, 30);
             this.lSnow3.TabIndex = 0;
             // 
             // lBlizzard3
             // 
             this.lBlizzard3.BackColor = System.Drawing.Color.Lavender;
-            this.lBlizzard3.Location = new System.Drawing.Point(1, 271);
+            this.lBlizzard3.Location = new System.Drawing.Point(1, 321);
             this.lBlizzard3.Name = "lBlizzard3";
-            this.lBlizzard3.Size = new System.Drawing.Size(178, 26);
+            this.lBlizzard3.Size = new System.Drawing.Size(178, 30);
             this.lBlizzard3.TabIndex = 0;
             // 
             // lClear
             // 
             this.lClear.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.lClear.ForeColor = System.Drawing.Color.Black;
-            this.lClear.Location = new System.Drawing.Point(2, 22);
+            this.lClear.Location = new System.Drawing.Point(2, 41);
             this.lClear.Name = "lClear";
-            this.lClear.Size = new System.Drawing.Size(80, 26);
+            this.lClear.Size = new System.Drawing.Size(114, 30);
             this.lClear.TabIndex = 0;
             this.lClear.Text = "Clear";
             this.lClear.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -834,20 +836,20 @@
             // 
             this.lCloudy.BackColor = System.Drawing.Color.LightBlue;
             this.lCloudy.ForeColor = System.Drawing.Color.Black;
-            this.lCloudy.Location = new System.Drawing.Point(2, 50);
+            this.lCloudy.Location = new System.Drawing.Point(2, 73);
             this.lCloudy.Name = "lCloudy";
-            this.lCloudy.Size = new System.Drawing.Size(80, 26);
+            this.lCloudy.Size = new System.Drawing.Size(114, 30);
             this.lCloudy.TabIndex = 0;
             this.lCloudy.Text = "Cloudy";
             this.lCloudy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lFoggy
             // 
-            this.lFoggy.BackColor = System.Drawing.Color.GhostWhite;
+            this.lFoggy.BackColor = System.Drawing.Color.Gainsboro;
             this.lFoggy.ForeColor = System.Drawing.Color.Black;
-            this.lFoggy.Location = new System.Drawing.Point(2, 78);
+            this.lFoggy.Location = new System.Drawing.Point(2, 105);
             this.lFoggy.Name = "lFoggy";
-            this.lFoggy.Size = new System.Drawing.Size(80, 26);
+            this.lFoggy.Size = new System.Drawing.Size(114, 30);
             this.lFoggy.TabIndex = 0;
             this.lFoggy.Text = "Foggy";
             this.lFoggy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -856,9 +858,9 @@
             // 
             this.lOvercast.BackColor = System.Drawing.Color.Silver;
             this.lOvercast.ForeColor = System.Drawing.Color.Black;
-            this.lOvercast.Location = new System.Drawing.Point(2, 106);
+            this.lOvercast.Location = new System.Drawing.Point(2, 137);
             this.lOvercast.Name = "lOvercast";
-            this.lOvercast.Size = new System.Drawing.Size(80, 26);
+            this.lOvercast.Size = new System.Drawing.Size(114, 30);
             this.lOvercast.TabIndex = 0;
             this.lOvercast.Text = "Overcast";
             this.lOvercast.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -867,9 +869,9 @@
             // 
             this.lRain.BackColor = System.Drawing.Color.LightSteelBlue;
             this.lRain.ForeColor = System.Drawing.Color.Black;
-            this.lRain.Location = new System.Drawing.Point(2, 134);
+            this.lRain.Location = new System.Drawing.Point(2, 169);
             this.lRain.Name = "lRain";
-            this.lRain.Size = new System.Drawing.Size(80, 26);
+            this.lRain.Size = new System.Drawing.Size(114, 30);
             this.lRain.TabIndex = 0;
             this.lRain.Text = "Rain";
             this.lRain.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -878,9 +880,9 @@
             // 
             this.lThunder.BackColor = System.Drawing.Color.LightSlateGray;
             this.lThunder.ForeColor = System.Drawing.Color.White;
-            this.lThunder.Location = new System.Drawing.Point(2, 162);
+            this.lThunder.Location = new System.Drawing.Point(2, 201);
             this.lThunder.Name = "lThunder";
-            this.lThunder.Size = new System.Drawing.Size(80, 26);
+            this.lThunder.Size = new System.Drawing.Size(114, 30);
             this.lThunder.TabIndex = 0;
             this.lThunder.Text = "Thunderstorm";
             this.lThunder.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -889,9 +891,9 @@
             // 
             this.lAsh.BackColor = System.Drawing.Color.Tan;
             this.lAsh.ForeColor = System.Drawing.Color.Black;
-            this.lAsh.Location = new System.Drawing.Point(2, 190);
+            this.lAsh.Location = new System.Drawing.Point(2, 233);
             this.lAsh.Name = "lAsh";
-            this.lAsh.Size = new System.Drawing.Size(80, 26);
+            this.lAsh.Size = new System.Drawing.Size(114, 30);
             this.lAsh.TabIndex = 0;
             this.lAsh.Text = "Ashstorm";
             this.lAsh.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -900,9 +902,9 @@
             // 
             this.lBlight.BackColor = System.Drawing.Color.IndianRed;
             this.lBlight.ForeColor = System.Drawing.Color.White;
-            this.lBlight.Location = new System.Drawing.Point(2, 218);
+            this.lBlight.Location = new System.Drawing.Point(2, 265);
             this.lBlight.Name = "lBlight";
-            this.lBlight.Size = new System.Drawing.Size(80, 26);
+            this.lBlight.Size = new System.Drawing.Size(114, 30);
             this.lBlight.TabIndex = 0;
             this.lBlight.Text = "Blight";
             this.lBlight.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -911,9 +913,9 @@
             // 
             this.lSnow.BackColor = System.Drawing.Color.Snow;
             this.lSnow.ForeColor = System.Drawing.Color.Black;
-            this.lSnow.Location = new System.Drawing.Point(2, 246);
+            this.lSnow.Location = new System.Drawing.Point(2, 297);
             this.lSnow.Name = "lSnow";
-            this.lSnow.Size = new System.Drawing.Size(80, 26);
+            this.lSnow.Size = new System.Drawing.Size(114, 30);
             this.lSnow.TabIndex = 0;
             this.lSnow.Text = "Snow";
             this.lSnow.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -922,16 +924,17 @@
             // 
             this.lBlizzard.BackColor = System.Drawing.Color.Lavender;
             this.lBlizzard.ForeColor = System.Drawing.Color.Black;
-            this.lBlizzard.Location = new System.Drawing.Point(2, 274);
+            this.lBlizzard.Location = new System.Drawing.Point(2, 329);
             this.lBlizzard.Name = "lBlizzard";
-            this.lBlizzard.Size = new System.Drawing.Size(80, 26);
+            this.lBlizzard.Size = new System.Drawing.Size(114, 30);
             this.lBlizzard.TabIndex = 0;
             this.lBlizzard.Text = "Blizzard";
             this.lBlizzard.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // bReset
             // 
-            this.bReset.Location = new System.Drawing.Point(82, 310);
+            this.bReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bReset.Location = new System.Drawing.Point(86, 374);
             this.bReset.Name = "bReset";
             this.bReset.Size = new System.Drawing.Size(112, 23);
             this.bReset.TabIndex = 2;
@@ -941,8 +944,9 @@
             // 
             // bCancel
             // 
+            this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(219, 310);
+            this.bCancel.Location = new System.Drawing.Point(360, 374);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(112, 23);
             this.bCancel.TabIndex = 1;
@@ -951,7 +955,8 @@
             // 
             // bSave
             // 
-            this.bSave.Location = new System.Drawing.Point(356, 310);
+            this.bSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bSave.Location = new System.Drawing.Point(223, 374);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(112, 23);
             this.bSave.TabIndex = 0;
@@ -961,82 +966,92 @@
             // 
             // lClear2
             // 
+            this.lClear2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lClear2.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.lClear2.Location = new System.Drawing.Point(272, 22);
+            this.lClear2.Location = new System.Drawing.Point(296, 41);
             this.lClear2.Name = "lClear2";
-            this.lClear2.Size = new System.Drawing.Size(6, 26);
+            this.lClear2.Size = new System.Drawing.Size(6, 30);
             this.lClear2.TabIndex = 0;
             // 
             // lCloudy2
             // 
+            this.lCloudy2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lCloudy2.BackColor = System.Drawing.Color.LightBlue;
-            this.lCloudy2.Location = new System.Drawing.Point(272, 50);
+            this.lCloudy2.Location = new System.Drawing.Point(296, 73);
             this.lCloudy2.Name = "lCloudy2";
-            this.lCloudy2.Size = new System.Drawing.Size(6, 26);
+            this.lCloudy2.Size = new System.Drawing.Size(6, 30);
             this.lCloudy2.TabIndex = 0;
             // 
             // lFoggy2
             // 
-            this.lFoggy2.BackColor = System.Drawing.Color.GhostWhite;
-            this.lFoggy2.Location = new System.Drawing.Point(272, 78);
+            this.lFoggy2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lFoggy2.BackColor = System.Drawing.Color.Gainsboro;
+            this.lFoggy2.Location = new System.Drawing.Point(296, 105);
             this.lFoggy2.Name = "lFoggy2";
-            this.lFoggy2.Size = new System.Drawing.Size(6, 26);
+            this.lFoggy2.Size = new System.Drawing.Size(6, 30);
             this.lFoggy2.TabIndex = 0;
             // 
             // lOvercast2
             // 
+            this.lOvercast2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lOvercast2.BackColor = System.Drawing.Color.Silver;
-            this.lOvercast2.Location = new System.Drawing.Point(272, 106);
+            this.lOvercast2.Location = new System.Drawing.Point(296, 137);
             this.lOvercast2.Name = "lOvercast2";
-            this.lOvercast2.Size = new System.Drawing.Size(6, 26);
+            this.lOvercast2.Size = new System.Drawing.Size(6, 30);
             this.lOvercast2.TabIndex = 0;
             // 
             // lRain2
             // 
+            this.lRain2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lRain2.BackColor = System.Drawing.Color.LightSteelBlue;
-            this.lRain2.Location = new System.Drawing.Point(272, 134);
+            this.lRain2.Location = new System.Drawing.Point(296, 169);
             this.lRain2.Name = "lRain2";
-            this.lRain2.Size = new System.Drawing.Size(6, 26);
+            this.lRain2.Size = new System.Drawing.Size(6, 30);
             this.lRain2.TabIndex = 0;
             // 
             // lThunder2
             // 
+            this.lThunder2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lThunder2.BackColor = System.Drawing.Color.LightSlateGray;
-            this.lThunder2.Location = new System.Drawing.Point(272, 162);
+            this.lThunder2.Location = new System.Drawing.Point(296, 201);
             this.lThunder2.Name = "lThunder2";
-            this.lThunder2.Size = new System.Drawing.Size(6, 26);
+            this.lThunder2.Size = new System.Drawing.Size(6, 30);
             this.lThunder2.TabIndex = 0;
             // 
             // lAsh2
             // 
+            this.lAsh2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lAsh2.BackColor = System.Drawing.Color.Tan;
-            this.lAsh2.Location = new System.Drawing.Point(272, 190);
+            this.lAsh2.Location = new System.Drawing.Point(296, 233);
             this.lAsh2.Name = "lAsh2";
-            this.lAsh2.Size = new System.Drawing.Size(6, 26);
+            this.lAsh2.Size = new System.Drawing.Size(6, 30);
             this.lAsh2.TabIndex = 0;
             // 
             // lBlight2
             // 
+            this.lBlight2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlight2.BackColor = System.Drawing.Color.IndianRed;
-            this.lBlight2.Location = new System.Drawing.Point(272, 218);
+            this.lBlight2.Location = new System.Drawing.Point(296, 265);
             this.lBlight2.Name = "lBlight2";
-            this.lBlight2.Size = new System.Drawing.Size(6, 26);
+            this.lBlight2.Size = new System.Drawing.Size(6, 30);
             this.lBlight2.TabIndex = 0;
             // 
             // lSnow2
             // 
+            this.lSnow2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lSnow2.BackColor = System.Drawing.Color.Snow;
-            this.lSnow2.Location = new System.Drawing.Point(272, 246);
+            this.lSnow2.Location = new System.Drawing.Point(296, 297);
             this.lSnow2.Name = "lSnow2";
-            this.lSnow2.Size = new System.Drawing.Size(6, 26);
+            this.lSnow2.Size = new System.Drawing.Size(6, 30);
             this.lSnow2.TabIndex = 0;
             // 
             // lBlizzard2
             // 
+            this.lBlizzard2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlizzard2.BackColor = System.Drawing.Color.Lavender;
-            this.lBlizzard2.Location = new System.Drawing.Point(272, 274);
+            this.lBlizzard2.Location = new System.Drawing.Point(296, 329);
             this.lBlizzard2.Name = "lBlizzard2";
-            this.lBlizzard2.Size = new System.Drawing.Size(6, 26);
+            this.lBlizzard2.Size = new System.Drawing.Size(6, 30);
             this.lBlizzard2.TabIndex = 0;
             // 
             // toolTip
@@ -1047,9 +1062,11 @@
             // 
             // LightingForm
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(480, 345);
+            this.ClientSize = new System.Drawing.Size(484, 409);
             this.Controls.Add(this.lBlizzard2);
             this.Controls.Add(this.lSnow2);
             this.Controls.Add(this.lBlight2);
@@ -1075,6 +1092,7 @@
             this.Controls.Add(this.lClear);
             this.Controls.Add(this.gbAmbient);
             this.Controls.Add(this.gbSun);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;

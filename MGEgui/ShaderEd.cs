@@ -78,7 +78,7 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbTechnique.DetectUrls = false;
-            this.rtbTechnique.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.rtbTechnique.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rtbTechnique.Location = new System.Drawing.Point(12, 82);
             this.rtbTechnique.Name = "rtbTechnique";
             this.rtbTechnique.Size = new System.Drawing.Size(628, 397);
@@ -194,7 +194,7 @@ namespace MGEgui {
             // bShaderNew
             // 
             this.bShaderNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bShaderNew.Image = global::MGEgui.Properties.Resources._new;
+            this.bShaderNew.Image = ((System.Drawing.Image)(resources.GetObject("bShaderNew.Image")));
             this.bShaderNew.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderNew.Margin = new System.Windows.Forms.Padding(0);
@@ -206,7 +206,7 @@ namespace MGEgui {
             // bShaderOpen
             // 
             this.bShaderOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bShaderOpen.Image = global::MGEgui.Properties.Resources.open;
+            this.bShaderOpen.Image = ((System.Drawing.Image)(resources.GetObject("bShaderOpen.Image")));
             this.bShaderOpen.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderOpen.Margin = new System.Windows.Forms.Padding(0);
@@ -218,7 +218,7 @@ namespace MGEgui {
             // bShaderSave
             // 
             this.bShaderSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bShaderSave.Image = global::MGEgui.Properties.Resources.save;
+            this.bShaderSave.Image = ((System.Drawing.Image)(resources.GetObject("bShaderSave.Image")));
             this.bShaderSave.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderSave.Margin = new System.Windows.Forms.Padding(0);
@@ -230,7 +230,7 @@ namespace MGEgui {
             // bShaderSaveAs
             // 
             this.bShaderSaveAs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.bShaderSaveAs.Image = global::MGEgui.Properties.Resources.saveas;
+            this.bShaderSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("bShaderSaveAs.Image")));
             this.bShaderSaveAs.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderSaveAs.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderSaveAs.Margin = new System.Windows.Forms.Padding(0);
@@ -279,7 +279,7 @@ namespace MGEgui {
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = global::MGEgui.Properties.Resources._new;
+            this.newToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("newToolStripMenuItem.Image")));
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
@@ -289,7 +289,7 @@ namespace MGEgui {
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Image = global::MGEgui.Properties.Resources.open;
+            this.openToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("openToolStripMenuItem.Image")));
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -304,7 +304,7 @@ namespace MGEgui {
             // 
             // saveToolStripMenuItem
             // 
-            this.saveToolStripMenuItem.Image = global::MGEgui.Properties.Resources.save;
+            this.saveToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveToolStripMenuItem.Image")));
             this.saveToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
             this.saveToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
@@ -314,7 +314,7 @@ namespace MGEgui {
             // 
             // saveAsToolStripMenuItem
             // 
-            this.saveAsToolStripMenuItem.Image = global::MGEgui.Properties.Resources.saveas;
+            this.saveAsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveAsToolStripMenuItem.Image")));
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
             this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
                                     | System.Windows.Forms.Keys.S)));
@@ -415,6 +415,8 @@ namespace MGEgui {
             // 
             // ShaderEditorForm
             // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(652, 573);
             this.Controls.Add(this.bShaderFlags);
             this.Controls.Add(this.FileToolStrip);
@@ -426,6 +428,7 @@ namespace MGEgui {
             this.Controls.Add(this.tbMessage);
             this.Controls.Add(this.bValidate);
             this.Controls.Add(this.rtbTechnique);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MainMenuStrip = this.MenuStrip;
             this.MinimumSize = new System.Drawing.Size(520, 440);

@@ -29,32 +29,33 @@ namespace MGEgui
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.rtbLog = new System.Windows.Forms.RichTextBox();
-			this.SuspendLayout();
-			// 
-			// rtbLog
-			// 
-			this.rtbLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-									| System.Windows.Forms.AnchorStyles.Left) 
-									| System.Windows.Forms.AnchorStyles.Right)));
-			this.rtbLog.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.rtbLog.Location = new System.Drawing.Point(12, 12);
-			this.rtbLog.Name = "rtbLog";
-			this.rtbLog.ReadOnly = true;
-			this.rtbLog.Size = new System.Drawing.Size(760, 537);
-			this.rtbLog.TabIndex = 0;
-			this.rtbLog.Text = "";
-			// 
-			// LogViewerForm
-			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(784, 561);
-			this.Controls.Add(this.rtbLog);
-			this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-			this.Name = "LogViewerForm";
-			this.Text = "Log Viewer";
-			this.ResumeLayout(false);
+		    this.rtbLog = new System.Windows.Forms.RichTextBox();
+		    this.SuspendLayout();
+		    // 
+		    // rtbLog
+		    // 
+		    this.rtbLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+		    		    		    | System.Windows.Forms.AnchorStyles.Left) 
+		    		    		    | System.Windows.Forms.AnchorStyles.Right)));
+		    this.rtbLog.Font = new System.Drawing.Font("Consolas", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+		    this.rtbLog.Location = new System.Drawing.Point(12, 12);
+		    this.rtbLog.Name = "rtbLog";
+		    this.rtbLog.ReadOnly = true;
+		    this.rtbLog.Size = new System.Drawing.Size(760, 537);
+		    this.rtbLog.TabIndex = 0;
+		    this.rtbLog.Text = "";
+		    // 
+		    // LogViewerForm
+		    // 
+		    this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+		    this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+		    this.ClientSize = new System.Drawing.Size(784, 561);
+		    this.Controls.Add(this.rtbLog);
+		    this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+		    this.Icon = global::MGEgui.Properties.Resources.AppIcon;
+		    this.Name = "LogViewerForm";
+		    this.Text = "Log Viewer";
+		    this.ResumeLayout(false);
 		}
 		private System.Windows.Forms.RichTextBox rtbLog;
 	}

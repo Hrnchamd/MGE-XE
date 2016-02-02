@@ -33,43 +33,50 @@ namespace MGEgui {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-        	this.bCancel = new System.Windows.Forms.Button();
-        	this.bClear = new System.Windows.Forms.Button();
-        	this.SuspendLayout();
-        	// 
-        	// bCancel
-        	// 
-        	this.bCancel.Location = new System.Drawing.Point(12, 12);
-        	this.bCancel.Name = "bCancel";
-        	this.bCancel.Size = new System.Drawing.Size(60, 23);
-        	this.bCancel.TabIndex = 0;
-        	this.bCancel.Text = "Cancel";
-        	this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
-        	// 
-        	// bClear
-        	// 
-        	this.bClear.Location = new System.Drawing.Point(78, 12);
-        	this.bClear.Name = "bClear";
-        	this.bClear.Size = new System.Drawing.Size(60, 23);
-        	this.bClear.TabIndex = 1;
-        	this.bClear.Text = "Clear";
-        	this.bClear.Click += new System.EventHandler(this.bClear_Click);
-        	// 
-        	// RemapDialog
-        	// 
-        	this.ClientSize = new System.Drawing.Size(154, 47);
-        	this.ControlBox = false;
-        	this.Controls.Add(this.bClear);
-        	this.Controls.Add(this.bCancel);
-        	this.MaximizeBox = false;
-        	this.MinimizeBox = false;
-        	this.Name = "RemapDialog";
-        	this.ShowInTaskbar = false;
-        	this.Text = "Please hit a key";
-        	this.TopMost = true;
-        	this.Load += new System.EventHandler(this.RemapDialog_Load);
-        	this.Closing += new System.ComponentModel.CancelEventHandler(this.RemapDialog_FormClosing);
-        	this.ResumeLayout(false);
+            this.bCancel = new System.Windows.Forms.Button();
+            this.bClear = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // bCancel
+            // 
+            this.bCancel.AutoSize = true;
+            this.bCancel.Location = new System.Drawing.Point(12, 12);
+            this.bCancel.Name = "bCancel";
+            this.bCancel.Size = new System.Drawing.Size(96, 25);
+            this.bCancel.TabIndex = 0;
+            this.bCancel.Text = "Cancel";
+            this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
+            // 
+            // bClear
+            // 
+            this.bClear.AutoSize = true;
+            this.bClear.Location = new System.Drawing.Point(116, 12);
+            this.bClear.Name = "bClear";
+            this.bClear.Size = new System.Drawing.Size(96, 25);
+            this.bClear.TabIndex = 1;
+            this.bClear.Text = "Clear";
+            this.bClear.Click += new System.EventHandler(this.bClear_Click);
+            // 
+            // RemapDialog
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(224, 47);
+            this.ControlBox = false;
+            this.Controls.Add(this.bClear);
+            this.Controls.Add(this.bCancel);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = global::MGEgui.Properties.Resources.AppIcon;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "RemapDialog";
+            this.ShowInTaskbar = false;
+            this.Text = "Please hit a key";
+            this.TopMost = true;
+            this.Closing += new System.ComponentModel.CancelEventHandler(this.RemapDialog_FormClosing);
+            this.Load += new System.EventHandler(this.RemapDialog_Load);
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         #endregion

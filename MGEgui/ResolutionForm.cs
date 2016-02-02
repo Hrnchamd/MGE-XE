@@ -52,61 +52,63 @@ namespace MGEgui {
             this.cmbRes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRes.Location = new System.Drawing.Point(12, 12);
             this.cmbRes.Name = "cmbRes";
-            this.cmbRes.Size = new System.Drawing.Size(104, 21);
+            this.cmbRes.Size = new System.Drawing.Size(104, 23);
             this.cmbRes.TabIndex = 0;
             this.cmbRes.SelectedIndexChanged += new System.EventHandler(this.cmbRes_SelectedIndexChanged);
             this.cmbRes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.cmbRes_KeyPress);
             // 
             // tbWidth
             // 
-            this.tbWidth.Location = new System.Drawing.Point(46, 54);
+            this.tbWidth.Location = new System.Drawing.Point(46, 48);
             this.tbWidth.Name = "tbWidth";
-            this.tbWidth.Size = new System.Drawing.Size(70, 20);
+            this.tbWidth.Size = new System.Drawing.Size(70, 23);
             this.tbWidth.TabIndex = 1;
             this.tbWidth.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // tbHeight
             // 
-            this.tbHeight.Location = new System.Drawing.Point(46, 80);
+            this.tbHeight.Location = new System.Drawing.Point(46, 74);
             this.tbHeight.Name = "tbHeight";
-            this.tbHeight.Size = new System.Drawing.Size(70, 20);
+            this.tbHeight.Size = new System.Drawing.Size(70, 23);
             this.tbHeight.TabIndex = 2;
             this.tbHeight.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // lScrWdth
             // 
             this.lScrWdth.AutoSize = true;
-            this.lScrWdth.Location = new System.Drawing.Point(122, 57);
+            this.lScrWdth.Location = new System.Drawing.Point(122, 51);
             this.lScrWdth.Name = "lScrWdth";
-            this.lScrWdth.Size = new System.Drawing.Size(72, 13);
+            this.lScrWdth.Size = new System.Drawing.Size(77, 15);
             this.lScrWdth.TabIndex = 0;
             this.lScrWdth.Text = "Screen Width";
             // 
             // lScrHght
             // 
             this.lScrHght.AutoSize = true;
-            this.lScrHght.Location = new System.Drawing.Point(122, 83);
+            this.lScrHght.Location = new System.Drawing.Point(122, 77);
             this.lScrHght.Name = "lScrHght";
-            this.lScrHght.Size = new System.Drawing.Size(75, 13);
+            this.lScrHght.Size = new System.Drawing.Size(81, 15);
             this.lScrHght.TabIndex = 0;
             this.lScrHght.Text = "Screen Height";
             // 
             // lArbRes
             // 
-            this.lArbRes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lArbRes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lArbRes.AutoSize = true;
-            this.lArbRes.Location = new System.Drawing.Point(12, 121);
+            this.lArbRes.Location = new System.Drawing.Point(12, 108);
+            this.lArbRes.MaximumSize = new System.Drawing.Size(370, 0);
             this.lArbRes.Name = "lArbRes";
-            this.lArbRes.Size = new System.Drawing.Size(267, 13);
+            this.lArbRes.Size = new System.Drawing.Size(304, 15);
             this.lArbRes.TabIndex = 0;
             this.lArbRes.Text = "Arbitrary resolutions can only be set in windowed mode.";
             // 
             // bCancel
             // 
-            this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bCancel.Location = new System.Drawing.Point(12, 145);
+            this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bCancel.Location = new System.Drawing.Point(297, 151);
             this.bCancel.Name = "bCancel";
-            this.bCancel.Size = new System.Drawing.Size(75, 23);
+            this.bCancel.Size = new System.Drawing.Size(85, 23);
             this.bCancel.TabIndex = 3;
             this.bCancel.Text = "Cancel";
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
@@ -114,9 +116,9 @@ namespace MGEgui {
             // bOK
             // 
             this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bOK.Location = new System.Drawing.Point(301, 145);
+            this.bOK.Location = new System.Drawing.Point(206, 151);
             this.bOK.Name = "bOK";
-            this.bOK.Size = new System.Drawing.Size(75, 23);
+            this.bOK.Size = new System.Drawing.Size(85, 23);
             this.bOK.TabIndex = 4;
             this.bOK.Text = "OK";
             this.bOK.Click += new System.EventHandler(this.bOK_Click);
@@ -126,7 +128,7 @@ namespace MGEgui {
             this.lResolution.AutoSize = true;
             this.lResolution.Location = new System.Drawing.Point(122, 15);
             this.lResolution.Name = "lResolution";
-            this.lResolution.Size = new System.Drawing.Size(57, 13);
+            this.lResolution.Size = new System.Drawing.Size(63, 15);
             this.lResolution.TabIndex = 5;
             this.lResolution.Text = "Resolution";
             // 
@@ -135,7 +137,7 @@ namespace MGEgui {
             this.cmbRefreshRate.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbRefreshRate.Location = new System.Drawing.Point(221, 12);
             this.cmbRefreshRate.Name = "cmbRefreshRate";
-            this.cmbRefreshRate.Size = new System.Drawing.Size(70, 21);
+            this.cmbRefreshRate.Size = new System.Drawing.Size(70, 23);
             this.cmbRefreshRate.TabIndex = 6;
             // 
             // lRefreshRate
@@ -143,14 +145,16 @@ namespace MGEgui {
             this.lRefreshRate.AutoSize = true;
             this.lRefreshRate.Location = new System.Drawing.Point(297, 15);
             this.lRefreshRate.Name = "lRefreshRate";
-            this.lRefreshRate.Size = new System.Drawing.Size(65, 13);
+            this.lRefreshRate.Size = new System.Drawing.Size(69, 15);
             this.lRefreshRate.TabIndex = 7;
             this.lRefreshRate.Text = "Refresh rate";
             this.lRefreshRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // ResolutionForm
             // 
-            this.ClientSize = new System.Drawing.Size(394, 180);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(394, 186);
             this.Controls.Add(this.lRefreshRate);
             this.Controls.Add(this.cmbRefreshRate);
             this.Controls.Add(this.lResolution);
@@ -162,6 +166,7 @@ namespace MGEgui {
             this.Controls.Add(this.tbHeight);
             this.Controls.Add(this.tbWidth);
             this.Controls.Add(this.cmbRes);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;

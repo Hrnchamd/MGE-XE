@@ -195,6 +195,9 @@
       <DependentUpon>KeyRemapper.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="LightingForm.resx">
+      <DependentUpon>LightingForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MacroEditor.resx">
       <DependentUpon>MacroEditor.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -219,6 +222,9 @@
     <EmbeddedResource Include="ResolutionForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ResolutionForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ShaderActive.resx">
+      <DependentUpon>ShaderActive.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="ShaderEd.resx">
       <DependentUpon>ShaderEd.cs</DependentUpon>
