@@ -1,4 +1,4 @@
-﻿[## Language ##]
+[## Language ##]
 Name = Polski (Polish)
 Translator = Minamir
 
@@ -426,7 +426,7 @@ FogOffs = "Tutaj możesz ustawić procent głębi mgły która zostanie przemies
 
 
 
-;;; Weather options
+;;; XE lighting options
 [LightingForm.Text]
 LightingForm = "Ustawienia oświetlenia typu per-pixel"
 gbSun = "Mnożnik jasności słońca"
@@ -554,7 +554,7 @@ lStatMinSize = "Minimalna wielkość obiektów stat."
 lStatGrassDensity = "Procent gęstości trawy"
 lStatSimplifyMeshes = "Detale siatki"
 lStatSkipMipLevels = "Poziomy mipmap do pominięcia"
-lStatSkipMipDesc = "Pominięcie poziomów mipmap redukuje\nwymagany VRAM w grze"
+lStatSkipMipDesc = "Pominięcie poziomów mipmap redukuje wymagany VRAM w grze"
 cmbStatSimplifyMeshes = "Pełn.;90%;75%;50%;25%"
 cbStatActivators = "Dołącz aktywatory"
 cbStatIncludeMisc = "Dołącz rozmaite obiekty"
@@ -578,12 +578,11 @@ bFinish = "Zakończ"
 RunSetupForm = "Wybierz metodę generowania danych"
 bAutoSetup = "Automatyczne ustawienie wszystkiego"
 bRun = "Uruchom powyższe kroki używając zapisanych / domyślnych ustawień"
-bSetup = "Ponownie uruchom generowanie odległego terenu >>>"
+bSetup = "Ponownie uruchom generowanie odległego terenu..."
 cbTex = "Utwórz tekstury odległego terenu"
 cbMesh = "Utwórz modele odległego terenu"
 cbMeshAuto = "Użyj automatycznie obliczonej jakości siatki świata"
 cbStat = "Utwórz odległe obiekty statyczne"
-lOr = "lub"
 cbDebug = "DEBUGOWANIE"
 
 [DirectoriesForm.Text]
@@ -744,11 +743,11 @@ bOK = "OK"
 bCancel = "Anuluj"
 cbSFNotInt = "Wyłączone we wnętrzach"
 cbSFNotExt = "Wyłączone w obszarach otwartych"
-cbSFNotIntExt = "Wyłączone we wnętrzach udających obszary otwarte (jak Tw. Smutku)"
+cbSFNotIntExt = "Wyłączone we wnętrzach udających obszary otwarte\n(jak Tw. Smutku)"
 cbSFNotUnderwater = "Wyłączone pod wodą"
 cbSFNotAboveWater = "Wyłączone nad wodą"
 cbSFSunVis = "Wyłączone kiedy słońce jest widoczne"
-cbSFNotSunVis = "Wyłączone kiedy słońce jest niewidoczne (tzn. widoczność słońca to zero)"
+cbSFNotSunVis = "Wyłączone kiedy słońce jest niewidoczne\n(tzn. widoczność słońca to zero)"
 
 [RenderWindow.Text]
 RenderWindow = "Okno podglądu"

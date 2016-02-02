@@ -1,4 +1,4 @@
-﻿[## Language ##]
+[## Language ##]
 Name = Français (French)
 Translator = Papill6n, Mordicus
 
@@ -393,6 +393,27 @@ FogOffs = "Vous pouvez régler ici le pourcentage de profondeur du brouillard qu
 
 
 
+;;; Weather options
+[LightingForm.Text]
+;LightingForm = "Per-pixel Lighting Settings"
+;gbSun = "Sun brightness multiplier"
+;gbAmbient = "Ambient brightness multiplier"
+lClear = "Clair"
+lCloudy = "Nuageux"
+lFoggy = "Brumeux"
+lOvercast = "Couvert"
+lRain = "Pluvieux"
+lThunder = "Orage"
+lAsh = "Tempête de cendres"
+lBlight = "Tempête de fléau"
+lSnow = "Neigeux"
+lBlizzard = "Tempête de neige"
+bCancel = "Annuler"
+bReset = "Réinitialiser"
+bSave = "Enregistrer"
+
+
+
 ;;; Distant land wizard
 [DistantLandForm.Strings]
 NoWarnings = "Pas d'avertissements"
@@ -493,7 +514,7 @@ lStatMinSize = "Taille mininum des statiques"
 lStatGrassDensity = "Pourcentage de la densité de l'herbe"
 lStatSimplifyMeshes = "Niveau de détail des meshes"
 lStatSkipMipLevels = "Niveaux des mipmaps à ignorer"
-lStatSkipMipDesc = "Ignorer des niveaux de mipmaps\nréduit la VRAM requise dans le jeu"
+lStatSkipMipDesc = "Ignorer des niveaux de mipmaps réduit la VRAM requise dans le jeu"
 cmbStatSimplifyMeshes = "Complet;90%;75%;50%;25%"
 cbStatActivators = "Inclure les activateurs"
 cbStatIncludeMisc = "Inclure les objets divers"
@@ -517,12 +538,11 @@ bFinish = "Terminé"
 RunSetupForm = "Choisir la méthode de création"
 bAutoSetup = "Tout régler automatiquement"
 bRun = "Lancer étapes ci-dessus via param. défaut/sauvés"
-bSetup = "Configurer la création des paysages distants >>>"
+bSetup = "Configurer la création des paysages distants..."
 cbTex = "Créer les textures des terrains distants"
 cbMesh = "Créer les meshes des terrains distants"
 cbMeshAuto = "Autocalculer le niveau de détail du paysage"
 cbStat = "Créer les statiques distants"
-lOr = "ou"
 cbDebug = "DÉBOGAGE"
 
 [DirectoriesForm.Text]

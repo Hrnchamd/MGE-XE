@@ -1,4 +1,4 @@
-﻿[## Language ##]
+[## Language ##]
 Name = English (default)
 
 
@@ -425,7 +425,7 @@ FogOffs = "Here you can set percent of fog depth that will be moved behind playe
 
 
 
-;;; Weather options
+;;; XE lighting options
 [LightingForm.Text]
 LightingForm = "Per-pixel Lighting Settings"
 gbSun = "Sun brightness multiplier"
@@ -553,7 +553,7 @@ lStatMinSize = "Minimum static size"
 lStatGrassDensity = "% grass density"
 lStatSimplifyMeshes = "Mesh detail level"
 lStatSkipMipLevels = "Distant texture reduction"
-lStatSkipMipDesc = "Reducing distant texture detail\ncan improve performance."
+lStatSkipMipDesc = "Reducing distant texture detail can improve performance."
 cmbStatSimplifyMeshes = "Full;90%;75%;50%;25%"
 cmbStatSkipMipLevels = "None;1/2;1/4;1/8"
 cbStatActivators = "Include activators"
@@ -590,16 +590,18 @@ ExportOverrideList = "Creates a static override file for all game objects that m
 
 ;;; Distant land dialogs
 [RunSetupForm.Text]
-RunSetupForm = "Choose data creation method"
+RunSetupForm = "Distant Land Generation"
 bAutoSetup = "Automatic setup everything"
 bRun = "Run above steps using saved / default settings"
-bSetup = "Re-run Distant Land Configuration Setup >>>"
+bSetup = "Distant Land configuration setup..."
 cbTex = "Create distant land textures"
 cbMesh = "Create distant land meshes"
 cbMeshAuto = "Use auto-calculated world mesh details"
 cbStat = "Create distant statics"
-lOr = "or"
 cbDebug = "DEBUG"
+lSetupAuto = "Automatic setup"
+lSetupUpdate = "Update existing distant land"
+lSetupCustom = "Customize setup"
 
 [DirectoriesForm.Text]
 DirectoriesForm = "Plugin directories"
@@ -633,6 +635,7 @@ cbTriggerEnabled = "Trigger enabled"
 cbMacroType = "Unused;Console1;Console2;Hammer1;Hammer2;Unhammer;AHammer1;AHammer2;AUnhammer;Press1;Press2;Unpress;Start Trigger;End Trigger;Function"
 lCommandLength = "Command length"
 lCommandDesc = "Command description"
+lKeyAction = "Key input type"
 lMacroFunction = "Function"
 lMacroType = "Macro type"
 lTriggerDelay = "Trigger delay"
