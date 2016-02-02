@@ -33,7 +33,6 @@ namespace MGEgui {
             this.OpenFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
-            this.cbDLSkyRefl = new System.Windows.Forms.CheckBox();
             this.tpInput = new System.Windows.Forms.TabPage();
             this.gbMWLighting = new System.Windows.Forms.GroupBox();
             this.bMWLightingReset = new System.Windows.Forms.Button();
@@ -83,7 +82,8 @@ namespace MGEgui {
             this.cmbSShotFormat = new System.Windows.Forms.ComboBox();
             this.tpGlobal = new System.Windows.Forms.TabPage();
             this.gbSShot = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.tableAlignSSFormat = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutScreenshots = new System.Windows.Forms.TableLayoutPanel();
             this.lSShotDir = new System.Windows.Forms.Label();
             this.lSShotName = new System.Windows.Forms.Label();
             this.tbSShotName = new System.Windows.Forms.TextBox();
@@ -106,6 +106,8 @@ namespace MGEgui {
             this.udFOV = new System.Windows.Forms.NumericUpDown();
             this.lFOV = new System.Windows.Forms.Label();
             this.gbDisplay = new System.Windows.Forms.GroupBox();
+            this.tableAlignResolution = new System.Windows.Forms.TableLayoutPanel();
+            this.lResolution = new System.Windows.Forms.Label();
             this.cbBorderless = new System.Windows.Forms.CheckBox();
             this.tbRefreshRate = new System.Windows.Forms.TextBox();
             this.tableLayoutDisplay = new System.Windows.Forms.TableLayoutPanel();
@@ -119,7 +121,6 @@ namespace MGEgui {
             this.bSelectResolution = new System.Windows.Forms.Button();
             this.cbWindowed = new System.Windows.Forms.CheckBox();
             this.tbResolution = new System.Windows.Forms.TextBox();
-            this.lResolution = new System.Windows.Forms.Label();
             this.lAspect = new System.Windows.Forms.Label();
             this.lRefreshRate = new System.Windows.Forms.Label();
             this.tabControl = new System.Windows.Forms.TabControl();
@@ -127,59 +128,65 @@ namespace MGEgui {
             this.bDistantLandWizard = new System.Windows.Forms.Button();
             this.cbDLDistantLand = new System.Windows.Forms.CheckBox();
             this.gbDistantLand = new System.Windows.Forms.GroupBox();
+            this.tableLayoutDL = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutDLLeft = new System.Windows.Forms.TableLayoutPanel();
             this.gbXEFeatures = new System.Windows.Forms.GroupBox();
             this.cbPerPixelLighting = new System.Windows.Forms.CheckBox();
-            this.cbDLSunShadows = new System.Windows.Forms.CheckBox();
             this.bMWLightSettings = new System.Windows.Forms.Button();
-            this.pDLStatics = new System.Windows.Forms.Panel();
-            this.cbDLDistantStatics = new System.Windows.Forms.CheckBox();
-            this.gbDLStatics = new System.Windows.Forms.GroupBox();
-            this.udDLDistVeryFar = new System.Windows.Forms.NumericUpDown();
-            this.udDLDistFar = new System.Windows.Forms.NumericUpDown();
-            this.udDLDistNear = new System.Windows.Forms.NumericUpDown();
-            this.udDLSizeVeryFar = new System.Windows.Forms.NumericUpDown();
-            this.udDLSizeFar = new System.Windows.Forms.NumericUpDown();
-            this.tbDLNearSize = new System.Windows.Forms.TextBox();
-            this.lDLVeryFar = new System.Windows.Forms.Label();
-            this.lDLFar = new System.Windows.Forms.Label();
-            this.lDLNear = new System.Windows.Forms.Label();
-            this.lDLMinSize = new System.Windows.Forms.Label();
-            this.lDLEndDist = new System.Windows.Forms.Label();
-            this.cbDLAutoDist = new System.Windows.Forms.CheckBox();
-            this.gbDLAutoDist = new System.Windows.Forms.GroupBox();
-            this.rbDLAutoByAFogEnd = new System.Windows.Forms.RadioButton();
-            this.rbDLAutoByDrawDist = new System.Windows.Forms.RadioButton();
+            this.cbDLSunShadows = new System.Windows.Forms.CheckBox();
+            this.gbDLDrawDist = new System.Windows.Forms.GroupBox();
+            this.lDLDrawDist = new System.Windows.Forms.Label();
+            this.udDLDrawDist = new System.Windows.Forms.NumericUpDown();
             this.gbDLWater = new System.Windows.Forms.GroupBox();
-            this.cbDLDynRipples = new System.Windows.Forms.CheckBox();
             this.gbDLWtrCaust = new System.Windows.Forms.GroupBox();
             this.lDLWtrCaust = new System.Windows.Forms.Label();
             this.udDLWtrCaust = new System.Windows.Forms.NumericUpDown();
             this.gbDLWtrWave = new System.Windows.Forms.GroupBox();
+            this.cbDLDynRipples = new System.Windows.Forms.CheckBox();
             this.lDLWtrWave = new System.Windows.Forms.Label();
             this.udDLWtrWave = new System.Windows.Forms.NumericUpDown();
             this.gbDLWtrRefl = new System.Windows.Forms.GroupBox();
+            this.cbDLSkyRefl = new System.Windows.Forms.CheckBox();
             this.cbDLReflLand = new System.Windows.Forms.CheckBox();
             this.cbDLReflBlur = new System.Windows.Forms.CheckBox();
             this.cbDLReflNStatics = new System.Windows.Forms.CheckBox();
             this.cbDLReflInterior = new System.Windows.Forms.CheckBox();
+            this.tableLayoutDLRight = new System.Windows.Forms.TableLayoutPanel();
+            this.gbDLAutoDist = new System.Windows.Forms.GroupBox();
+            this.rbDLAutoByAFogEnd = new System.Windows.Forms.RadioButton();
+            this.rbDLAutoByDrawDist = new System.Windows.Forms.RadioButton();
+            this.cbDLAutoDist = new System.Windows.Forms.CheckBox();
+            this.pDLStatics = new System.Windows.Forms.Panel();
+            this.cbDLDistantStatics = new System.Windows.Forms.CheckBox();
+            this.gbDLStatics = new System.Windows.Forms.GroupBox();
+            this.tableAlignDLStatics = new System.Windows.Forms.TableLayoutPanel();
+            this.lDLNear = new System.Windows.Forms.Label();
+            this.udDLDistNear = new System.Windows.Forms.NumericUpDown();
+            this.udDLDistVeryFar = new System.Windows.Forms.NumericUpDown();
+            this.tbDLNearSize = new System.Windows.Forms.TextBox();
+            this.lDLFar = new System.Windows.Forms.Label();
+            this.lDLVeryFar = new System.Windows.Forms.Label();
+            this.udDLSizeVeryFar = new System.Windows.Forms.NumericUpDown();
+            this.udDLSizeFar = new System.Windows.Forms.NumericUpDown();
+            this.udDLDistFar = new System.Windows.Forms.NumericUpDown();
+            this.lDLMinSize = new System.Windows.Forms.Label();
+            this.lDLEndDist = new System.Windows.Forms.Label();
             this.bDLWthr = new System.Windows.Forms.Button();
-            this.gbDLDrawDist = new System.Windows.Forms.GroupBox();
-            this.lDLDrawDist = new System.Windows.Forms.Label();
-            this.udDLDrawDist = new System.Windows.Forms.NumericUpDown();
             this.gbDLFog = new System.Windows.Forms.GroupBox();
-            this.cbDLScattering = new System.Windows.Forms.CheckBox();
-            this.lDLFogExpMul = new System.Windows.Forms.Label();
-            this.udDLFogExpMul = new System.Windows.Forms.NumericUpDown();
-            this.lDLFogI = new System.Windows.Forms.Label();
-            this.udDLFogIEnd = new System.Windows.Forms.NumericUpDown();
-            this.udDLFogIStart = new System.Windows.Forms.NumericUpDown();
-            this.udDLFogBEnd = new System.Windows.Forms.NumericUpDown();
-            this.cbDLFogExp = new System.Windows.Forms.CheckBox();
-            this.udDLFogBStart = new System.Windows.Forms.NumericUpDown();
-            this.udDLFogAEnd = new System.Windows.Forms.NumericUpDown();
+            this.tableAlignDLFog = new System.Windows.Forms.TableLayoutPanel();
             this.udDLFogAStart = new System.Windows.Forms.NumericUpDown();
+            this.udDLFogAEnd = new System.Windows.Forms.NumericUpDown();
+            this.udDLFogExpMul = new System.Windows.Forms.NumericUpDown();
+            this.lDLFogExpMul = new System.Windows.Forms.Label();
+            this.udDLFogBStart = new System.Windows.Forms.NumericUpDown();
+            this.udDLFogBEnd = new System.Windows.Forms.NumericUpDown();
+            this.lDLFogI = new System.Windows.Forms.Label();
+            this.udDLFogIStart = new System.Windows.Forms.NumericUpDown();
+            this.udDLFogIEnd = new System.Windows.Forms.NumericUpDown();
             this.lDLFogB = new System.Windows.Forms.Label();
             this.lDLFogA = new System.Windows.Forms.Label();
+            this.cbDLScattering = new System.Windows.Forms.CheckBox();
+            this.cbDLFogExp = new System.Windows.Forms.CheckBox();
             this.lDLFogStart = new System.Windows.Forms.Label();
             this.lDLFogEnd = new System.Windows.Forms.Label();
             this.tpConfig = new System.Windows.Forms.TabPage();
@@ -223,42 +230,49 @@ namespace MGEgui {
             this.gbInputOpts.SuspendLayout();
             this.tpGlobal.SuspendLayout();
             this.gbSShot.SuspendLayout();
-            this.tableLayoutPanel1.SuspendLayout();
+            this.tableAlignSSFormat.SuspendLayout();
+            this.tableLayoutScreenshots.SuspendLayout();
             this.gbScene.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udLOD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).BeginInit();
             this.gbDisplay.SuspendLayout();
+            this.tableAlignResolution.SuspendLayout();
             this.tableLayoutDisplay.SuspendLayout();
             this.tabControl.SuspendLayout();
             this.tpDL.SuspendLayout();
             this.gbDistantLand.SuspendLayout();
+            this.tableLayoutDL.SuspendLayout();
+            this.tableLayoutDLLeft.SuspendLayout();
             this.gbXEFeatures.SuspendLayout();
-            this.pDLStatics.SuspendLayout();
-            this.gbDLStatics.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDistVeryFar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDistFar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDistNear)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeVeryFar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeFar)).BeginInit();
-            this.gbDLAutoDist.SuspendLayout();
+            this.gbDLDrawDist.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDrawDist)).BeginInit();
             this.gbDLWater.SuspendLayout();
             this.gbDLWtrCaust.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udDLWtrCaust)).BeginInit();
             this.gbDLWtrWave.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udDLWtrWave)).BeginInit();
             this.gbDLWtrRefl.SuspendLayout();
-            this.gbDLDrawDist.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDrawDist)).BeginInit();
+            this.tableLayoutDLRight.SuspendLayout();
+            this.gbDLAutoDist.SuspendLayout();
+            this.pDLStatics.SuspendLayout();
+            this.gbDLStatics.SuspendLayout();
+            this.tableAlignDLStatics.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDistNear)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDistVeryFar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeVeryFar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeFar)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDistFar)).BeginInit();
             this.gbDLFog.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogExpMul)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIEnd)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIStart)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBEnd)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBStart)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogAEnd)).BeginInit();
+            this.tableAlignDLFog.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udDLFogAStart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogAEnd)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogExpMul)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBStart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBEnd)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIStart)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIEnd)).BeginInit();
             this.tpConfig.SuspendLayout();
             this.gbErrorReporting.SuspendLayout();
             this.gbMainUI.SuspendLayout();
@@ -289,16 +303,6 @@ namespace MGEgui {
             this.toolTip.InitialDelay = 500;
             this.toolTip.ReshowDelay = 100;
             // 
-            // cbDLSkyRefl
-            // 
-            this.cbDLSkyRefl.AutoSize = true;
-            this.cbDLSkyRefl.Location = new System.Drawing.Point(11, 19);
-            this.cbDLSkyRefl.Name = "cbDLSkyRefl";
-            this.cbDLSkyRefl.Size = new System.Drawing.Size(44, 17);
-            this.cbDLSkyRefl.TabIndex = 0;
-            this.cbDLSkyRefl.Text = "S&ky";
-            this.cbDLSkyRefl.UseVisualStyleBackColor = true;
-            // 
             // tpInput
             // 
             this.tpInput.Controls.Add(this.gbMWLighting);
@@ -307,9 +311,9 @@ namespace MGEgui {
             this.tpInput.Controls.Add(this.pCam3rdPrsn);
             this.tpInput.Controls.Add(this.gbInputTools);
             this.tpInput.Controls.Add(this.gbInputOpts);
-            this.tpInput.Location = new System.Drawing.Point(4, 22);
+            this.tpInput.Location = new System.Drawing.Point(4, 24);
             this.tpInput.Name = "tpInput";
-            this.tpInput.Size = new System.Drawing.Size(578, 419);
+            this.tpInput.Size = new System.Drawing.Size(616, 473);
             this.tpInput.TabIndex = 3;
             this.tpInput.Text = "In-Game";
             this.tpInput.ToolTipText = "Options affecting Morrowind during gameplay, including a macro editor and key rem" +
@@ -326,18 +330,19 @@ namespace MGEgui {
             this.gbMWLighting.Controls.Add(this.udLightingConst);
             this.gbMWLighting.Controls.Add(this.udLightingLinear);
             this.gbMWLighting.Controls.Add(this.udLightingQuad);
-            this.gbMWLighting.Location = new System.Drawing.Point(304, 129);
+            this.gbMWLighting.Location = new System.Drawing.Point(290, 129);
             this.gbMWLighting.Name = "gbMWLighting";
-            this.gbMWLighting.Size = new System.Drawing.Size(266, 72);
+            this.gbMWLighting.Size = new System.Drawing.Size(318, 72);
             this.gbMWLighting.TabIndex = 10;
             this.gbMWLighting.TabStop = false;
             this.gbMWLighting.Text = "Dynamic lighting coefficients";
             // 
             // bMWLightingReset
             // 
-            this.bMWLightingReset.Location = new System.Drawing.Point(203, 0);
+            this.bMWLightingReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMWLightingReset.Location = new System.Drawing.Point(256, 0);
             this.bMWLightingReset.Name = "bMWLightingReset";
-            this.bMWLightingReset.Size = new System.Drawing.Size(56, 20);
+            this.bMWLightingReset.Size = new System.Drawing.Size(56, 22);
             this.bMWLightingReset.TabIndex = 6;
             this.bMWLightingReset.Text = "Reset";
             this.bMWLightingReset.UseVisualStyleBackColor = true;
@@ -348,7 +353,7 @@ namespace MGEgui {
             this.lLightingConst.AutoSize = true;
             this.lLightingConst.Location = new System.Drawing.Point(182, 21);
             this.lLightingConst.Name = "lLightingConst";
-            this.lLightingConst.Size = new System.Drawing.Size(49, 13);
+            this.lLightingConst.Size = new System.Drawing.Size(55, 15);
             this.lLightingConst.TabIndex = 5;
             this.lLightingConst.Text = "Constant";
             // 
@@ -357,7 +362,7 @@ namespace MGEgui {
             this.lLightingLin.AutoSize = true;
             this.lLightingLin.Location = new System.Drawing.Point(97, 21);
             this.lLightingLin.Name = "lLightingLin";
-            this.lLightingLin.Size = new System.Drawing.Size(36, 13);
+            this.lLightingLin.Size = new System.Drawing.Size(39, 15);
             this.lLightingLin.TabIndex = 4;
             this.lLightingLin.Text = "Linear";
             // 
@@ -366,7 +371,7 @@ namespace MGEgui {
             this.lLightingQuad.AutoSize = true;
             this.lLightingQuad.Location = new System.Drawing.Point(12, 21);
             this.lLightingQuad.Name = "lLightingQuad";
-            this.lLightingQuad.Size = new System.Drawing.Size(53, 13);
+            this.lLightingQuad.Size = new System.Drawing.Size(59, 15);
             this.lLightingQuad.TabIndex = 3;
             this.lLightingQuad.Text = "Quadratic";
             // 
@@ -380,7 +385,7 @@ namespace MGEgui {
                                     65536});
             this.udLightingConst.Location = new System.Drawing.Point(184, 39);
             this.udLightingConst.Name = "udLightingConst";
-            this.udLightingConst.Size = new System.Drawing.Size(64, 20);
+            this.udLightingConst.Size = new System.Drawing.Size(64, 23);
             this.udLightingConst.TabIndex = 2;
             // 
             // udLightingLinear
@@ -393,7 +398,7 @@ namespace MGEgui {
                                     65536});
             this.udLightingLinear.Location = new System.Drawing.Point(99, 39);
             this.udLightingLinear.Name = "udLightingLinear";
-            this.udLightingLinear.Size = new System.Drawing.Size(64, 20);
+            this.udLightingLinear.Size = new System.Drawing.Size(64, 23);
             this.udLightingLinear.TabIndex = 1;
             this.udLightingLinear.Value = new decimal(new int[] {
                                     3,
@@ -411,7 +416,7 @@ namespace MGEgui {
                                     65536});
             this.udLightingQuad.Location = new System.Drawing.Point(14, 39);
             this.udLightingQuad.Name = "udLightingQuad";
-            this.udLightingQuad.Size = new System.Drawing.Size(64, 20);
+            this.udLightingQuad.Size = new System.Drawing.Size(64, 23);
             this.udLightingQuad.TabIndex = 0;
             // 
             // gbMWGeneral
@@ -429,7 +434,7 @@ namespace MGEgui {
             this.gbMWGeneral.Controls.Add(this.cbSubtitles);
             this.gbMWGeneral.Location = new System.Drawing.Point(8, 204);
             this.gbMWGeneral.Name = "gbMWGeneral";
-            this.gbMWGeneral.Size = new System.Drawing.Size(562, 144);
+            this.gbMWGeneral.Size = new System.Drawing.Size(600, 158);
             this.gbMWGeneral.TabIndex = 9;
             this.gbMWGeneral.TabStop = false;
             this.gbMWGeneral.Text = "Morrowind.ini settings";
@@ -437,9 +442,9 @@ namespace MGEgui {
             // lScreenshotStatus
             // 
             this.lScreenshotStatus.AutoSize = true;
-            this.lScreenshotStatus.Location = new System.Drawing.Point(13, 114);
+            this.lScreenshotStatus.Location = new System.Drawing.Point(13, 118);
             this.lScreenshotStatus.Name = "lScreenshotStatus";
-            this.lScreenshotStatus.Size = new System.Drawing.Size(456, 13);
+            this.lScreenshotStatus.Size = new System.Drawing.Size(500, 15);
             this.lScreenshotStatus.TabIndex = 9;
             this.lScreenshotStatus.Text = "Screenshots can be taken with the PrintScreen key. MGE will compress and save the" +
             "m for you.";
@@ -448,9 +453,9 @@ namespace MGEgui {
             // 
             this.cbScreenshots.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbScreenshots.AutoSize = true;
-            this.cbScreenshots.Location = new System.Drawing.Point(281, 21);
+            this.cbScreenshots.Location = new System.Drawing.Point(300, 21);
             this.cbScreenshots.Name = "cbScreenshots";
-            this.cbScreenshots.Size = new System.Drawing.Size(111, 17);
+            this.cbScreenshots.Size = new System.Drawing.Size(121, 19);
             this.cbScreenshots.TabIndex = 0;
             this.cbScreenshots.Text = "Allow screenshots";
             // 
@@ -460,9 +465,9 @@ namespace MGEgui {
             this.cbHitFader.AutoSize = true;
             this.cbHitFader.Checked = true;
             this.cbHitFader.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbHitFader.Location = new System.Drawing.Point(281, 90);
+            this.cbHitFader.Location = new System.Drawing.Point(300, 90);
             this.cbHitFader.Name = "cbHitFader";
-            this.cbHitFader.Size = new System.Drawing.Size(66, 17);
+            this.cbHitFader.Size = new System.Drawing.Size(72, 19);
             this.cbHitFader.TabIndex = 8;
             this.cbHitFader.Text = "Hit fader";
             // 
@@ -470,9 +475,9 @@ namespace MGEgui {
             // 
             this.cbAudio.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbAudio.AutoSize = true;
-            this.cbAudio.Location = new System.Drawing.Point(281, 67);
+            this.cbAudio.Location = new System.Drawing.Point(300, 67);
             this.cbAudio.Name = "cbAudio";
-            this.cbAudio.Size = new System.Drawing.Size(90, 17);
+            this.cbAudio.Size = new System.Drawing.Size(97, 19);
             this.cbAudio.TabIndex = 7;
             this.cbAudio.Text = "Disable audio";
             // 
@@ -481,7 +486,7 @@ namespace MGEgui {
             this.cbHQShadows.AutoSize = true;
             this.cbHQShadows.Location = new System.Drawing.Point(13, 44);
             this.cbHQShadows.Name = "cbHQShadows";
-            this.cbHQShadows.Size = new System.Drawing.Size(186, 17);
+            this.cbHQShadows.Size = new System.Drawing.Size(208, 19);
             this.cbHQShadows.TabIndex = 1;
             this.cbHQShadows.Text = "High detail actor shadows [buggy]";
             // 
@@ -490,7 +495,7 @@ namespace MGEgui {
             this.cbShowFPS.AutoSize = true;
             this.cbShowFPS.Location = new System.Drawing.Point(13, 90);
             this.cbShowFPS.Name = "cbShowFPS";
-            this.cbShowFPS.Size = new System.Drawing.Size(76, 17);
+            this.cbShowFPS.Size = new System.Drawing.Size(77, 19);
             this.cbShowFPS.TabIndex = 2;
             this.cbShowFPS.Text = "Show FPS";
             // 
@@ -500,9 +505,9 @@ namespace MGEgui {
             this.cbThreadLoad.AutoSize = true;
             this.cbThreadLoad.Checked = true;
             this.cbThreadLoad.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbThreadLoad.Location = new System.Drawing.Point(281, 44);
+            this.cbThreadLoad.Location = new System.Drawing.Point(300, 44);
             this.cbThreadLoad.Name = "cbThreadLoad";
-            this.cbThreadLoad.Size = new System.Drawing.Size(97, 17);
+            this.cbThreadLoad.Size = new System.Drawing.Size(106, 19);
             this.cbThreadLoad.TabIndex = 6;
             this.cbThreadLoad.Text = "Thread loading";
             // 
@@ -511,7 +516,7 @@ namespace MGEgui {
             this.cbYesToAll.AutoSize = true;
             this.cbYesToAll.Location = new System.Drawing.Point(13, 21);
             this.cbYesToAll.Name = "cbYesToAll";
-            this.cbYesToAll.Size = new System.Drawing.Size(147, 17);
+            this.cbYesToAll.Size = new System.Drawing.Size(164, 19);
             this.cbYesToAll.TabIndex = 5;
             this.cbYesToAll.Text = "Allow yes to all load errors";
             // 
@@ -520,7 +525,7 @@ namespace MGEgui {
             this.cbSubtitles.AutoSize = true;
             this.cbSubtitles.Location = new System.Drawing.Point(13, 67);
             this.cbSubtitles.Name = "cbSubtitles";
-            this.cbSubtitles.Size = new System.Drawing.Size(94, 17);
+            this.cbSubtitles.Size = new System.Drawing.Size(102, 19);
             this.cbSubtitles.TabIndex = 3;
             this.cbSubtitles.Text = "Show subtitles";
             // 
@@ -534,9 +539,9 @@ namespace MGEgui {
             this.gbMsgs.Controls.Add(this.lMsgsTime);
             this.gbMsgs.Controls.Add(this.lMsgsLanguage);
             this.gbMsgs.Controls.Add(this.lMsgsTimeUnit);
-            this.gbMsgs.Location = new System.Drawing.Point(8, 352);
+            this.gbMsgs.Location = new System.Drawing.Point(8, 368);
             this.gbMsgs.Name = "gbMsgs";
-            this.gbMsgs.Size = new System.Drawing.Size(562, 60);
+            this.gbMsgs.Size = new System.Drawing.Size(600, 64);
             this.gbMsgs.TabIndex = 8;
             this.gbMsgs.TabStop = false;
             this.gbMsgs.Text = "MGE status messages";
@@ -544,9 +549,9 @@ namespace MGEgui {
             // cbDisplayMessages
             // 
             this.cbDisplayMessages.AutoSize = true;
-            this.cbDisplayMessages.Location = new System.Drawing.Point(18, 27);
+            this.cbDisplayMessages.Location = new System.Drawing.Point(13, 30);
             this.cbDisplayMessages.Name = "cbDisplayMessages";
-            this.cbDisplayMessages.Size = new System.Drawing.Size(110, 17);
+            this.cbDisplayMessages.Size = new System.Drawing.Size(118, 19);
             this.cbDisplayMessages.TabIndex = 11;
             this.cbDisplayMessages.Text = "Display messages";
             // 
@@ -558,7 +563,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
-            this.udMsgsTime.Location = new System.Drawing.Point(452, 32);
+            this.udMsgsTime.Location = new System.Drawing.Point(403, 34);
             this.udMsgsTime.Maximum = new decimal(new int[] {
                                     50000,
                                     0,
@@ -570,7 +575,7 @@ namespace MGEgui {
                                     0,
                                     0});
             this.udMsgsTime.Name = "udMsgsTime";
-            this.udMsgsTime.Size = new System.Drawing.Size(56, 20);
+            this.udMsgsTime.Size = new System.Drawing.Size(56, 23);
             this.udMsgsTime.TabIndex = 1;
             this.udMsgsTime.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udMsgsTime.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
@@ -587,9 +592,9 @@ namespace MGEgui {
             this.cmbMsgsLocale.FormattingEnabled = true;
             this.cmbMsgsLocale.Items.AddRange(new object[] {
                                     "English (default)"});
-            this.cmbMsgsLocale.Location = new System.Drawing.Point(281, 31);
+            this.cmbMsgsLocale.Location = new System.Drawing.Point(200, 34);
             this.cmbMsgsLocale.Name = "cmbMsgsLocale";
-            this.cmbMsgsLocale.Size = new System.Drawing.Size(128, 21);
+            this.cmbMsgsLocale.Size = new System.Drawing.Size(128, 23);
             this.cmbMsgsLocale.Sorted = true;
             this.cmbMsgsLocale.TabIndex = 0;
             this.cmbMsgsLocale.Text = "English (default)";
@@ -598,9 +603,9 @@ namespace MGEgui {
             // 
             this.lMsgsTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lMsgsTime.AutoSize = true;
-            this.lMsgsTime.Location = new System.Drawing.Point(449, 16);
+            this.lMsgsTime.Location = new System.Drawing.Point(403, 16);
             this.lMsgsTime.Name = "lMsgsTime";
-            this.lMsgsTime.Size = new System.Drawing.Size(45, 13);
+            this.lMsgsTime.Size = new System.Drawing.Size(52, 15);
             this.lMsgsTime.TabIndex = 0;
             this.lMsgsTime.Text = "Timeout";
             // 
@@ -609,9 +614,9 @@ namespace MGEgui {
             this.lMsgsLanguage.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lMsgsLanguage.AutoSize = true;
             this.lMsgsLanguage.Enabled = false;
-            this.lMsgsLanguage.Location = new System.Drawing.Point(279, 15);
+            this.lMsgsLanguage.Location = new System.Drawing.Point(200, 16);
             this.lMsgsLanguage.Name = "lMsgsLanguage";
-            this.lMsgsLanguage.Size = new System.Drawing.Size(110, 13);
+            this.lMsgsLanguage.Size = new System.Drawing.Size(122, 15);
             this.lMsgsLanguage.TabIndex = 0;
             this.lMsgsLanguage.Text = "Language localization";
             // 
@@ -619,9 +624,9 @@ namespace MGEgui {
             // 
             this.lMsgsTimeUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lMsgsTimeUnit.AutoSize = true;
-            this.lMsgsTimeUnit.Location = new System.Drawing.Point(509, 34);
+            this.lMsgsTimeUnit.Location = new System.Drawing.Point(464, 36);
             this.lMsgsTimeUnit.Name = "lMsgsTimeUnit";
-            this.lMsgsTimeUnit.Size = new System.Drawing.Size(20, 13);
+            this.lMsgsTimeUnit.Size = new System.Drawing.Size(23, 15);
             this.lMsgsTimeUnit.TabIndex = 0;
             this.lMsgsTimeUnit.Text = "ms";
             // 
@@ -631,16 +636,17 @@ namespace MGEgui {
             this.pCam3rdPrsn.Controls.Add(this.gbCam3rdPrsn);
             this.pCam3rdPrsn.Location = new System.Drawing.Point(8, 129);
             this.pCam3rdPrsn.Name = "pCam3rdPrsn";
-            this.pCam3rdPrsn.Size = new System.Drawing.Size(250, 72);
+            this.pCam3rdPrsn.Size = new System.Drawing.Size(276, 72);
             this.pCam3rdPrsn.TabIndex = 7;
             this.pCam3rdPrsn.TabStop = true;
             // 
             // cbCam3rdPrsn
             // 
             this.cbCam3rdPrsn.AutoSize = true;
+            this.cbCam3rdPrsn.BackColor = System.Drawing.SystemColors.Window;
             this.cbCam3rdPrsn.Location = new System.Drawing.Point(8, -1);
             this.cbCam3rdPrsn.Name = "cbCam3rdPrsn";
-            this.cbCam3rdPrsn.Size = new System.Drawing.Size(165, 17);
+            this.cbCam3rdPrsn.Size = new System.Drawing.Size(183, 19);
             this.cbCam3rdPrsn.TabIndex = 0;
             this.cbCam3rdPrsn.Text = "Customize 3rd person camera";
             this.cbCam3rdPrsn.UseVisualStyleBackColor = false;
@@ -658,7 +664,7 @@ namespace MGEgui {
             this.gbCam3rdPrsn.Enabled = false;
             this.gbCam3rdPrsn.Location = new System.Drawing.Point(0, 0);
             this.gbCam3rdPrsn.Name = "gbCam3rdPrsn";
-            this.gbCam3rdPrsn.Size = new System.Drawing.Size(250, 72);
+            this.gbCam3rdPrsn.Size = new System.Drawing.Size(276, 72);
             this.gbCam3rdPrsn.TabIndex = 1;
             this.gbCam3rdPrsn.TabStop = false;
             // 
@@ -677,7 +683,7 @@ namespace MGEgui {
                                     0,
                                     -2147483648});
             this.udCam3rdZ.Name = "udCam3rdZ";
-            this.udCam3rdZ.Size = new System.Drawing.Size(60, 20);
+            this.udCam3rdZ.Size = new System.Drawing.Size(60, 23);
             this.udCam3rdZ.TabIndex = 2;
             this.udCam3rdZ.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udCam3rdZ.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
@@ -702,7 +708,7 @@ namespace MGEgui {
                                     0,
                                     -2147483648});
             this.udCam3rdY.Name = "udCam3rdY";
-            this.udCam3rdY.Size = new System.Drawing.Size(60, 20);
+            this.udCam3rdY.Size = new System.Drawing.Size(60, 23);
             this.udCam3rdY.TabIndex = 1;
             this.udCam3rdY.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udCam3rdY.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
@@ -727,7 +733,7 @@ namespace MGEgui {
                                     0,
                                     -2147483648});
             this.udCam3rdX.Name = "udCam3rdX";
-            this.udCam3rdX.Size = new System.Drawing.Size(60, 20);
+            this.udCam3rdX.Size = new System.Drawing.Size(60, 23);
             this.udCam3rdX.TabIndex = 0;
             this.udCam3rdX.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udCam3rdX.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
@@ -737,7 +743,7 @@ namespace MGEgui {
             this.lCam3rdX.AutoSize = true;
             this.lCam3rdX.Location = new System.Drawing.Point(11, 21);
             this.lCam3rdX.Name = "lCam3rdX";
-            this.lCam3rdX.Size = new System.Drawing.Size(43, 13);
+            this.lCam3rdX.Size = new System.Drawing.Size(47, 15);
             this.lCam3rdX.TabIndex = 3;
             this.lCam3rdX.Text = "X offset";
             // 
@@ -746,7 +752,7 @@ namespace MGEgui {
             this.lCam3rdY.AutoSize = true;
             this.lCam3rdY.Location = new System.Drawing.Point(89, 21);
             this.lCam3rdY.Name = "lCam3rdY";
-            this.lCam3rdY.Size = new System.Drawing.Size(43, 13);
+            this.lCam3rdY.Size = new System.Drawing.Size(47, 15);
             this.lCam3rdY.TabIndex = 4;
             this.lCam3rdY.Text = "Y offset";
             // 
@@ -755,7 +761,7 @@ namespace MGEgui {
             this.lCam3rdZ.AutoSize = true;
             this.lCam3rdZ.Location = new System.Drawing.Point(167, 21);
             this.lCam3rdZ.Name = "lCam3rdZ";
-            this.lCam3rdZ.Size = new System.Drawing.Size(43, 13);
+            this.lCam3rdZ.Size = new System.Drawing.Size(47, 15);
             this.lCam3rdZ.TabIndex = 5;
             this.lCam3rdZ.Text = "Z offset";
             // 
@@ -764,9 +770,9 @@ namespace MGEgui {
             this.gbInputTools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gbInputTools.Controls.Add(this.bMacroEd);
             this.gbInputTools.Controls.Add(this.bRemapper);
-            this.gbInputTools.Location = new System.Drawing.Point(403, 3);
+            this.gbInputTools.Location = new System.Drawing.Point(424, 3);
             this.gbInputTools.Name = "gbInputTools";
-            this.gbInputTools.Size = new System.Drawing.Size(167, 119);
+            this.gbInputTools.Size = new System.Drawing.Size(184, 119);
             this.gbInputTools.TabIndex = 1;
             this.gbInputTools.TabStop = false;
             this.gbInputTools.Text = "Input tools";
@@ -775,9 +781,10 @@ namespace MGEgui {
             // 
             this.bMacroEd.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMacroEd.AutoSize = true;
             this.bMacroEd.Location = new System.Drawing.Point(6, 19);
             this.bMacroEd.Name = "bMacroEd";
-            this.bMacroEd.Size = new System.Drawing.Size(155, 35);
+            this.bMacroEd.Size = new System.Drawing.Size(172, 33);
             this.bMacroEd.TabIndex = 0;
             this.bMacroEd.Text = "Macro editor";
             this.bMacroEd.Click += new System.EventHandler(this.bMacroEd_Click);
@@ -786,9 +793,10 @@ namespace MGEgui {
             // 
             this.bRemapper.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.bRemapper.AutoSize = true;
             this.bRemapper.Location = new System.Drawing.Point(6, 60);
             this.bRemapper.Name = "bRemapper";
-            this.bRemapper.Size = new System.Drawing.Size(155, 35);
+            this.bRemapper.Size = new System.Drawing.Size(172, 33);
             this.bRemapper.TabIndex = 1;
             this.bRemapper.Text = "Key remapper";
             this.bRemapper.Click += new System.EventHandler(this.bRemapper_Click);
@@ -805,7 +813,7 @@ namespace MGEgui {
             this.gbInputOpts.Controls.Add(this.cbAltCombat);
             this.gbInputOpts.Location = new System.Drawing.Point(8, 3);
             this.gbInputOpts.Name = "gbInputOpts";
-            this.gbInputOpts.Size = new System.Drawing.Size(389, 119);
+            this.gbInputOpts.Size = new System.Drawing.Size(410, 119);
             this.gbInputOpts.TabIndex = 0;
             this.gbInputOpts.TabStop = false;
             this.gbInputOpts.Text = "Options";
@@ -815,9 +823,9 @@ namespace MGEgui {
             this.cbMenuCaching.AutoSize = true;
             this.cbMenuCaching.Checked = true;
             this.cbMenuCaching.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbMenuCaching.Location = new System.Drawing.Point(178, 88);
+            this.cbMenuCaching.Location = new System.Drawing.Point(182, 88);
             this.cbMenuCaching.Name = "cbMenuCaching";
-            this.cbMenuCaching.Size = new System.Drawing.Size(152, 17);
+            this.cbMenuCaching.Size = new System.Drawing.Size(164, 19);
             this.cbMenuCaching.TabIndex = 11;
             this.cbMenuCaching.Text = "Responsive menu caching";
             this.cbMenuCaching.UseVisualStyleBackColor = true;
@@ -825,9 +833,9 @@ namespace MGEgui {
             // cbAutoCrosshair
             // 
             this.cbAutoCrosshair.AutoSize = true;
-            this.cbAutoCrosshair.Location = new System.Drawing.Point(178, 65);
+            this.cbAutoCrosshair.Location = new System.Drawing.Point(182, 65);
             this.cbAutoCrosshair.Name = "cbAutoCrosshair";
-            this.cbAutoCrosshair.Size = new System.Drawing.Size(113, 17);
+            this.cbAutoCrosshair.Size = new System.Drawing.Size(125, 19);
             this.cbAutoCrosshair.TabIndex = 10;
             this.cbAutoCrosshair.Text = "Crosshair autohide";
             this.cbAutoCrosshair.UseVisualStyleBackColor = true;
@@ -837,7 +845,7 @@ namespace MGEgui {
             this.cbDisableMGE.AutoSize = true;
             this.cbDisableMGE.Location = new System.Drawing.Point(11, 19);
             this.cbDisableMGE.Name = "cbDisableMGE";
-            this.cbDisableMGE.Size = new System.Drawing.Size(128, 17);
+            this.cbDisableMGE.Size = new System.Drawing.Size(138, 19);
             this.cbDisableMGE.TabIndex = 9;
             this.cbDisableMGE.Text = "Disable MGE in game";
             this.cbDisableMGE.UseVisualStyleBackColor = true;
@@ -848,7 +856,7 @@ namespace MGEgui {
             this.cbDisableMWSE.AutoSize = true;
             this.cbDisableMWSE.Location = new System.Drawing.Point(11, 42);
             this.cbDisableMWSE.Name = "cbDisableMWSE";
-            this.cbDisableMWSE.Size = new System.Drawing.Size(135, 17);
+            this.cbDisableMWSE.Size = new System.Drawing.Size(144, 19);
             this.cbDisableMWSE.TabIndex = 8;
             this.cbDisableMWSE.Text = "Disable internal MWSE";
             // 
@@ -857,43 +865,45 @@ namespace MGEgui {
             this.cbSkipMovie.AutoSize = true;
             this.cbSkipMovie.Checked = true;
             this.cbSkipMovie.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbSkipMovie.Location = new System.Drawing.Point(178, 19);
+            this.cbSkipMovie.Location = new System.Drawing.Point(182, 19);
             this.cbSkipMovie.Name = "cbSkipMovie";
-            this.cbSkipMovie.Size = new System.Drawing.Size(119, 17);
+            this.cbSkipMovie.Size = new System.Drawing.Size(131, 19);
             this.cbSkipMovie.TabIndex = 0;
             this.cbSkipMovie.Text = "Skip opening movie";
             // 
             // cbAltCombat
             // 
             this.cbAltCombat.AutoSize = true;
-            this.cbAltCombat.Location = new System.Drawing.Point(178, 42);
+            this.cbAltCombat.Location = new System.Drawing.Point(182, 42);
             this.cbAltCombat.Name = "cbAltCombat";
-            this.cbAltCombat.Size = new System.Drawing.Size(154, 17);
+            this.cbAltCombat.Size = new System.Drawing.Size(173, 19);
             this.cbAltCombat.TabIndex = 2;
             this.cbAltCombat.Text = "Alternative combat controls";
             // 
             // lSShotFormat
             // 
-            this.lSShotFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lSShotFormat.Location = new System.Drawing.Point(405, 24);
+            this.lSShotFormat.AutoSize = true;
+            this.lSShotFormat.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lSShotFormat.Location = new System.Drawing.Point(45, 0);
+            this.lSShotFormat.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lSShotFormat.Name = "lSShotFormat";
-            this.lSShotFormat.Size = new System.Drawing.Size(86, 17);
+            this.lSShotFormat.Size = new System.Drawing.Size(45, 27);
             this.lSShotFormat.TabIndex = 0;
             this.lSShotFormat.Text = "Format";
-            this.lSShotFormat.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lSShotFormat.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cmbSShotFormat
             // 
-            this.cmbSShotFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbSShotFormat.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbSShotFormat.Items.AddRange(new object[] {
                                     "BMP",
                                     "JPEG",
                                     "DDS",
                                     "PNG",
                                     "TGA"});
-            this.cmbSShotFormat.Location = new System.Drawing.Point(497, 21);
+            this.cmbSShotFormat.Location = new System.Drawing.Point(96, 3);
             this.cmbSShotFormat.Name = "cmbSShotFormat";
-            this.cmbSShotFormat.Size = new System.Drawing.Size(56, 21);
+            this.cmbSShotFormat.Size = new System.Drawing.Size(56, 23);
             this.cmbSShotFormat.TabIndex = 1;
             this.cmbSShotFormat.Text = "PNG";
             // 
@@ -902,9 +912,9 @@ namespace MGEgui {
             this.tpGlobal.Controls.Add(this.gbSShot);
             this.tpGlobal.Controls.Add(this.gbScene);
             this.tpGlobal.Controls.Add(this.gbDisplay);
-            this.tpGlobal.Location = new System.Drawing.Point(4, 22);
+            this.tpGlobal.Location = new System.Drawing.Point(4, 24);
             this.tpGlobal.Name = "tpGlobal";
-            this.tpGlobal.Size = new System.Drawing.Size(578, 419);
+            this.tpGlobal.Size = new System.Drawing.Size(616, 473);
             this.tpGlobal.TabIndex = 1;
             this.tpGlobal.Text = "Graphics";
             this.tpGlobal.ToolTipText = "Contains graphics settings like screen size, \nrefresh rate, anti-aliasing, and sh" +
@@ -915,47 +925,62 @@ namespace MGEgui {
             // 
             this.gbSShot.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbSShot.Controls.Add(this.tableLayoutPanel1);
+            this.gbSShot.Controls.Add(this.tableAlignSSFormat);
+            this.gbSShot.Controls.Add(this.tableLayoutScreenshots);
             this.gbSShot.Controls.Add(this.bSShotDirClear);
             this.gbSShot.Controls.Add(this.bSShotDirBrowse);
-            this.gbSShot.Controls.Add(this.cmbSShotFormat);
-            this.gbSShot.Controls.Add(this.lSShotFormat);
             this.gbSShot.Location = new System.Drawing.Point(8, 295);
             this.gbSShot.Name = "gbSShot";
-            this.gbSShot.Size = new System.Drawing.Size(562, 89);
+            this.gbSShot.Size = new System.Drawing.Size(600, 89);
             this.gbSShot.TabIndex = 2;
             this.gbSShot.TabStop = false;
             this.gbSShot.Text = "Screenshots";
             // 
-            // tableLayoutPanel1
+            // tableAlignSSFormat
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tableAlignSSFormat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableAlignSSFormat.AutoSize = true;
+            this.tableAlignSSFormat.ColumnCount = 2;
+            this.tableAlignSSFormat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableAlignSSFormat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableAlignSSFormat.Controls.Add(this.cmbSShotFormat, 1, 0);
+            this.tableAlignSSFormat.Controls.Add(this.lSShotFormat, 0, 0);
+            this.tableAlignSSFormat.Location = new System.Drawing.Point(437, 18);
+            this.tableAlignSSFormat.Name = "tableAlignSSFormat";
+            this.tableAlignSSFormat.RowCount = 1;
+            this.tableAlignSSFormat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableAlignSSFormat.Size = new System.Drawing.Size(155, 29);
+            this.tableAlignSSFormat.TabIndex = 7;
+            // 
+            // tableLayoutScreenshots
+            // 
+            this.tableLayoutScreenshots.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.ColumnCount = 2;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel1.Controls.Add(this.lSShotDir, 0, 2);
-            this.tableLayoutPanel1.Controls.Add(this.lSShotName, 0, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tbSShotName, 1, 0);
-            this.tableLayoutPanel1.Controls.Add(this.tbSShotDir, 1, 2);
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(6, 18);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 3;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(390, 58);
-            this.tableLayoutPanel1.TabIndex = 6;
+            this.tableLayoutScreenshots.AutoSize = true;
+            this.tableLayoutScreenshots.ColumnCount = 2;
+            this.tableLayoutScreenshots.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutScreenshots.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutScreenshots.Controls.Add(this.lSShotDir, 0, 2);
+            this.tableLayoutScreenshots.Controls.Add(this.lSShotName, 0, 0);
+            this.tableLayoutScreenshots.Controls.Add(this.tbSShotName, 1, 0);
+            this.tableLayoutScreenshots.Controls.Add(this.tbSShotDir, 1, 2);
+            this.tableLayoutScreenshots.Location = new System.Drawing.Point(6, 18);
+            this.tableLayoutScreenshots.Name = "tableLayoutScreenshots";
+            this.tableLayoutScreenshots.RowCount = 3;
+            this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
+            this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutScreenshots.Size = new System.Drawing.Size(428, 62);
+            this.tableLayoutScreenshots.TabIndex = 6;
             // 
             // lSShotDir
             // 
             this.lSShotDir.AutoSize = true;
             this.lSShotDir.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lSShotDir.Location = new System.Drawing.Point(3, 30);
+            this.lSShotDir.Location = new System.Drawing.Point(3, 33);
             this.lSShotDir.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lSShotDir.Name = "lSShotDir";
-            this.lSShotDir.Size = new System.Drawing.Size(82, 26);
+            this.lSShotDir.Size = new System.Drawing.Size(95, 27);
             this.lSShotDir.TabIndex = 0;
             this.lSShotDir.Text = "Output directory";
             this.lSShotDir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -964,10 +989,10 @@ namespace MGEgui {
             // 
             this.lSShotName.AutoSize = true;
             this.lSShotName.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lSShotName.Location = new System.Drawing.Point(5, 0);
+            this.lSShotName.Location = new System.Drawing.Point(8, 0);
             this.lSShotName.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lSShotName.Name = "lSShotName";
-            this.lSShotName.Size = new System.Drawing.Size(80, 24);
+            this.lSShotName.Size = new System.Drawing.Size(90, 27);
             this.lSShotName.TabIndex = 0;
             this.lSShotName.Text = "File name prefix";
             this.lSShotName.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -976,9 +1001,9 @@ namespace MGEgui {
             // 
             this.tbSShotName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSShotName.Location = new System.Drawing.Point(91, 3);
+            this.tbSShotName.Location = new System.Drawing.Point(104, 3);
             this.tbSShotName.Name = "tbSShotName";
-            this.tbSShotName.Size = new System.Drawing.Size(296, 20);
+            this.tbSShotName.Size = new System.Drawing.Size(321, 23);
             this.tbSShotName.TabIndex = 0;
             this.tbSShotName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.fileNameFilter_KeyPress);
             // 
@@ -986,10 +1011,10 @@ namespace MGEgui {
             // 
             this.tbSShotDir.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSShotDir.Location = new System.Drawing.Point(91, 33);
+            this.tbSShotDir.Location = new System.Drawing.Point(104, 36);
             this.tbSShotDir.Name = "tbSShotDir";
             this.tbSShotDir.ReadOnly = true;
-            this.tbSShotDir.Size = new System.Drawing.Size(296, 20);
+            this.tbSShotDir.Size = new System.Drawing.Size(321, 23);
             this.tbSShotDir.TabIndex = 3;
             this.tbSShotDir.Text = "- Morrowind folder -";
             this.tbSShotDir.TextAlignChanged += new System.EventHandler(this.tbSSDir_TextAlignChanged);
@@ -997,9 +1022,9 @@ namespace MGEgui {
             // bSShotDirClear
             // 
             this.bSShotDirClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSShotDirClear.Location = new System.Drawing.Point(483, 51);
+            this.bSShotDirClear.Location = new System.Drawing.Point(521, 53);
             this.bSShotDirClear.Name = "bSShotDirClear";
-            this.bSShotDirClear.Size = new System.Drawing.Size(70, 22);
+            this.bSShotDirClear.Size = new System.Drawing.Size(70, 23);
             this.bSShotDirClear.TabIndex = 5;
             this.bSShotDirClear.Text = "Clear";
             this.bSShotDirClear.UseVisualStyleBackColor = true;
@@ -1008,9 +1033,9 @@ namespace MGEgui {
             // bSShotDirBrowse
             // 
             this.bSShotDirBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSShotDirBrowse.Location = new System.Drawing.Point(405, 51);
+            this.bSShotDirBrowse.Location = new System.Drawing.Point(443, 53);
             this.bSShotDirBrowse.Name = "bSShotDirBrowse";
-            this.bSShotDirBrowse.Size = new System.Drawing.Size(70, 22);
+            this.bSShotDirBrowse.Size = new System.Drawing.Size(70, 23);
             this.bSShotDirBrowse.TabIndex = 4;
             this.bSShotDirBrowse.Text = "Browse";
             this.bSShotDirBrowse.UseVisualStyleBackColor = true;
@@ -1036,7 +1061,7 @@ namespace MGEgui {
             this.gbScene.Controls.Add(this.lFOV);
             this.gbScene.Location = new System.Drawing.Point(8, 142);
             this.gbScene.Name = "gbScene";
-            this.gbScene.Size = new System.Drawing.Size(562, 147);
+            this.gbScene.Size = new System.Drawing.Size(600, 147);
             this.gbScene.TabIndex = 1;
             this.gbScene.TabStop = false;
             this.gbScene.Text = "Renderer";
@@ -1061,7 +1086,7 @@ namespace MGEgui {
                                     0,
                                     65536});
             this.udUIScale.Name = "udUIScale";
-            this.udUIScale.Size = new System.Drawing.Size(55, 20);
+            this.udUIScale.Size = new System.Drawing.Size(55, 23);
             this.udUIScale.TabIndex = 23;
             this.udUIScale.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udUIScale.Value = new decimal(new int[] {
@@ -1075,16 +1100,16 @@ namespace MGEgui {
             this.lUIScale.AutoSize = true;
             this.lUIScale.Location = new System.Drawing.Point(73, 104);
             this.lUIScale.Name = "lUIScale";
-            this.lUIScale.Size = new System.Drawing.Size(84, 13);
+            this.lUIScale.Size = new System.Drawing.Size(92, 15);
             this.lUIScale.TabIndex = 22;
             this.lUIScale.Text = "Menu UI scaling";
             // 
             // bAutoFOV
             // 
             this.bAutoFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bAutoFOV.Location = new System.Drawing.Point(289, 24);
+            this.bAutoFOV.Location = new System.Drawing.Point(308, 24);
             this.bAutoFOV.Name = "bAutoFOV";
-            this.bAutoFOV.Size = new System.Drawing.Size(72, 20);
+            this.bAutoFOV.Size = new System.Drawing.Size(72, 23);
             this.bAutoFOV.TabIndex = 20;
             this.bAutoFOV.Text = "Auto FOV";
             this.bAutoFOV.UseVisualStyleBackColor = true;
@@ -1094,16 +1119,16 @@ namespace MGEgui {
             // 
             this.lFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFPSLimit.AutoSize = true;
-            this.lFPSLimit.Location = new System.Drawing.Point(437, 52);
+            this.lFPSLimit.Location = new System.Drawing.Point(456, 52);
             this.lFPSLimit.Name = "lFPSLimit";
-            this.lFPSLimit.Size = new System.Drawing.Size(56, 13);
+            this.lFPSLimit.Size = new System.Drawing.Size(63, 15);
             this.lFPSLimit.TabIndex = 19;
             this.lFPSLimit.Text = "FPS limiter";
             // 
             // udFPSLimit
             // 
             this.udFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.udFPSLimit.Location = new System.Drawing.Point(367, 50);
+            this.udFPSLimit.Location = new System.Drawing.Point(386, 50);
             this.udFPSLimit.Maximum = new decimal(new int[] {
                                     144,
                                     0,
@@ -1115,7 +1140,7 @@ namespace MGEgui {
                                     0,
                                     0});
             this.udFPSLimit.Name = "udFPSLimit";
-            this.udFPSLimit.Size = new System.Drawing.Size(64, 20);
+            this.udFPSLimit.Size = new System.Drawing.Size(64, 23);
             this.udFPSLimit.TabIndex = 18;
             this.udFPSLimit.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udFPSLimit.Value = new decimal(new int[] {
@@ -1126,7 +1151,9 @@ namespace MGEgui {
             // 
             // bShaderEd
             // 
-            this.bShaderEd.Location = new System.Drawing.Point(135, 22);
+            this.bShaderEd.AutoSize = true;
+            this.bShaderEd.Location = new System.Drawing.Point(152, 22);
+            this.bShaderEd.MinimumSize = new System.Drawing.Size(124, 25);
             this.bShaderEd.Name = "bShaderEd";
             this.bShaderEd.Size = new System.Drawing.Size(124, 25);
             this.bShaderEd.TabIndex = 17;
@@ -1140,9 +1167,9 @@ namespace MGEgui {
                                     "Depth pixel (Fast)",
                                     "Depth vertex",
                                     "Range vertex (Best)"});
-            this.cmbFogMode.Location = new System.Drawing.Point(289, 76);
+            this.cmbFogMode.Location = new System.Drawing.Point(294, 76);
             this.cmbFogMode.Name = "cmbFogMode";
-            this.cmbFogMode.Size = new System.Drawing.Size(142, 21);
+            this.cmbFogMode.Size = new System.Drawing.Size(154, 23);
             this.cmbFogMode.TabIndex = 13;
             this.cmbFogMode.Text = "Depth pixel (Fast)";
             this.cmbFogMode.SelectedIndexChanged += new System.EventHandler(this.cmbFogMode_SelectedIndexChanged);
@@ -1151,9 +1178,9 @@ namespace MGEgui {
             // 
             this.lFogMode.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFogMode.AutoSize = true;
-            this.lFogMode.Location = new System.Drawing.Point(437, 79);
+            this.lFogMode.Location = new System.Drawing.Point(456, 79);
             this.lFogMode.Name = "lFogMode";
-            this.lFogMode.Size = new System.Drawing.Size(54, 13);
+            this.lFogMode.Size = new System.Drawing.Size(61, 15);
             this.lFogMode.TabIndex = 12;
             this.lFogMode.Text = "Fog mode";
             // 
@@ -1161,9 +1188,9 @@ namespace MGEgui {
             // 
             this.lLOD.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lLOD.AutoSize = true;
-            this.lLOD.Location = new System.Drawing.Point(437, 105);
+            this.lLOD.Location = new System.Drawing.Point(456, 105);
             this.lLOD.Name = "lLOD";
-            this.lLOD.Size = new System.Drawing.Size(91, 13);
+            this.lLOD.Size = new System.Drawing.Size(102, 15);
             this.lLOD.TabIndex = 9;
             this.lLOD.Text = "Mipmap LOD bias";
             // 
@@ -1176,7 +1203,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udLOD.Location = new System.Drawing.Point(367, 103);
+            this.udLOD.Location = new System.Drawing.Point(386, 103);
             this.udLOD.Maximum = new decimal(new int[] {
                                     2,
                                     0,
@@ -1188,7 +1215,7 @@ namespace MGEgui {
                                     0,
                                     -2147483648});
             this.udLOD.Name = "udLOD";
-            this.udLOD.Size = new System.Drawing.Size(64, 20);
+            this.udLOD.Size = new System.Drawing.Size(64, 23);
             this.udLOD.TabIndex = 11;
             this.udLOD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
@@ -1197,7 +1224,7 @@ namespace MGEgui {
             this.cbHWShader.AutoSize = true;
             this.cbHWShader.Location = new System.Drawing.Point(12, 27);
             this.cbHWShader.Name = "cbHWShader";
-            this.cbHWShader.Size = new System.Drawing.Size(99, 17);
+            this.cbHWShader.Size = new System.Drawing.Size(104, 19);
             this.cbHWShader.TabIndex = 14;
             this.cbHWShader.Text = "Enable shaders";
             // 
@@ -1206,7 +1233,7 @@ namespace MGEgui {
             this.cbFPSCounter.AutoSize = true;
             this.cbFPSCounter.Location = new System.Drawing.Point(12, 63);
             this.cbFPSCounter.Name = "cbFPSCounter";
-            this.cbFPSCounter.Size = new System.Drawing.Size(83, 17);
+            this.cbFPSCounter.Size = new System.Drawing.Size(86, 19);
             this.cbFPSCounter.TabIndex = 5;
             this.cbFPSCounter.Text = "Display FPS";
             // 
@@ -1219,7 +1246,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
-            this.udFOV.Location = new System.Drawing.Point(367, 24);
+            this.udFOV.Location = new System.Drawing.Point(386, 24);
             this.udFOV.Maximum = new decimal(new int[] {
                                     150,
                                     0,
@@ -1231,7 +1258,7 @@ namespace MGEgui {
                                     0,
                                     0});
             this.udFOV.Name = "udFOV";
-            this.udFOV.Size = new System.Drawing.Size(64, 20);
+            this.udFOV.Size = new System.Drawing.Size(64, 23);
             this.udFOV.TabIndex = 4;
             this.udFOV.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udFOV.Value = new decimal(new int[] {
@@ -1244,9 +1271,9 @@ namespace MGEgui {
             // 
             this.lFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFOV.AutoSize = true;
-            this.lFOV.Location = new System.Drawing.Point(437, 26);
+            this.lFOV.Location = new System.Drawing.Point(456, 26);
             this.lFOV.Name = "lFOV";
-            this.lFOV.Size = new System.Drawing.Size(56, 13);
+            this.lFOV.Size = new System.Drawing.Size(60, 15);
             this.lFOV.TabIndex = 3;
             this.lFOV.Text = "Horz. FOV";
             // 
@@ -1254,6 +1281,7 @@ namespace MGEgui {
             // 
             this.gbDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDisplay.Controls.Add(this.tableAlignResolution);
             this.gbDisplay.Controls.Add(this.cbBorderless);
             this.gbDisplay.Controls.Add(this.tbRefreshRate);
             this.gbDisplay.Controls.Add(this.tableLayoutDisplay);
@@ -1261,33 +1289,56 @@ namespace MGEgui {
             this.gbDisplay.Controls.Add(this.bSelectResolution);
             this.gbDisplay.Controls.Add(this.cbWindowed);
             this.gbDisplay.Controls.Add(this.tbResolution);
-            this.gbDisplay.Controls.Add(this.lResolution);
             this.gbDisplay.Controls.Add(this.lAspect);
             this.gbDisplay.Controls.Add(this.lRefreshRate);
             this.gbDisplay.Location = new System.Drawing.Point(8, 3);
             this.gbDisplay.Name = "gbDisplay";
-            this.gbDisplay.Size = new System.Drawing.Size(562, 133);
+            this.gbDisplay.Size = new System.Drawing.Size(600, 133);
             this.gbDisplay.TabIndex = 0;
             this.gbDisplay.TabStop = false;
             this.gbDisplay.Text = "Display";
+            // 
+            // tableAlignResolution
+            // 
+            this.tableAlignResolution.ColumnCount = 1;
+            this.tableAlignResolution.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableAlignResolution.Controls.Add(this.lResolution, 0, 0);
+            this.tableAlignResolution.Location = new System.Drawing.Point(4, 22);
+            this.tableAlignResolution.Name = "tableAlignResolution";
+            this.tableAlignResolution.RowCount = 1;
+            this.tableAlignResolution.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tableAlignResolution.Size = new System.Drawing.Size(96, 23);
+            this.tableAlignResolution.TabIndex = 8;
+            // 
+            // lResolution
+            // 
+            this.lResolution.AutoSize = true;
+            this.lResolution.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lResolution.Location = new System.Drawing.Point(33, 0);
+            this.lResolution.Margin = new System.Windows.Forms.Padding(0);
+            this.lResolution.Name = "lResolution";
+            this.lResolution.Size = new System.Drawing.Size(63, 23);
+            this.lResolution.TabIndex = 0;
+            this.lResolution.Text = "Resolution";
+            this.lResolution.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // cbBorderless
             // 
             this.cbBorderless.AutoSize = true;
             this.cbBorderless.Enabled = false;
-            this.cbBorderless.Location = new System.Drawing.Point(386, 53);
+            this.cbBorderless.Location = new System.Drawing.Point(404, 53);
             this.cbBorderless.Name = "cbBorderless";
-            this.cbBorderless.Size = new System.Drawing.Size(114, 17);
+            this.cbBorderless.Size = new System.Drawing.Size(125, 19);
             this.cbBorderless.TabIndex = 7;
             this.cbBorderless.Text = "Borderless window";
             this.cbBorderless.UseVisualStyleBackColor = true;
             // 
             // tbRefreshRate
             // 
-            this.tbRefreshRate.Location = new System.Drawing.Point(182, 51);
+            this.tbRefreshRate.Location = new System.Drawing.Point(192, 51);
             this.tbRefreshRate.Name = "tbRefreshRate";
             this.tbRefreshRate.ReadOnly = true;
-            this.tbRefreshRate.Size = new System.Drawing.Size(52, 20);
+            this.tbRefreshRate.Size = new System.Drawing.Size(52, 23);
             this.tbRefreshRate.TabIndex = 6;
             this.tbRefreshRate.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -1313,7 +1364,7 @@ namespace MGEgui {
             this.tableLayoutDisplay.Name = "tableLayoutDisplay";
             this.tableLayoutDisplay.RowCount = 1;
             this.tableLayoutDisplay.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutDisplay.Size = new System.Drawing.Size(543, 27);
+            this.tableLayoutDisplay.Size = new System.Drawing.Size(581, 29);
             this.tableLayoutDisplay.TabIndex = 0;
             // 
             // cmbAntiAlias
@@ -1327,7 +1378,7 @@ namespace MGEgui {
                                     "16x"});
             this.cmbAntiAlias.Location = new System.Drawing.Point(3, 3);
             this.cmbAntiAlias.Name = "cmbAntiAlias";
-            this.cmbAntiAlias.Size = new System.Drawing.Size(64, 21);
+            this.cmbAntiAlias.Size = new System.Drawing.Size(64, 23);
             this.cmbAntiAlias.TabIndex = 0;
             this.cmbAntiAlias.Text = "Off";
             this.cmbAntiAlias.SelectedIndexChanged += new System.EventHandler(this.cmbAlias_SelectedIndexChanged);
@@ -1335,14 +1386,14 @@ namespace MGEgui {
             // 
             // lAntiAlias
             // 
-            this.lAntiAlias.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lAntiAlias.AutoSize = true;
-            this.lAntiAlias.Location = new System.Drawing.Point(73, 6);
-            this.lAntiAlias.Margin = new System.Windows.Forms.Padding(3, 0, 3, 1);
+            this.lAntiAlias.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lAntiAlias.Location = new System.Drawing.Point(73, 0);
             this.lAntiAlias.Name = "lAntiAlias";
-            this.lAntiAlias.Size = new System.Drawing.Size(60, 13);
+            this.lAntiAlias.Size = new System.Drawing.Size(69, 29);
             this.lAntiAlias.TabIndex = 0;
             this.lAntiAlias.Text = "Antialiasing";
+            this.lAntiAlias.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // cmbVWait
             // 
@@ -1353,9 +1404,9 @@ namespace MGEgui {
                                     "x2",
                                     "x3",
                                     "x4"});
-            this.cmbVWait.Location = new System.Drawing.Point(364, 3);
+            this.cmbVWait.Location = new System.Drawing.Point(391, 3);
             this.cmbVWait.Name = "cmbVWait";
-            this.cmbVWait.Size = new System.Drawing.Size(80, 21);
+            this.cmbVWait.Size = new System.Drawing.Size(80, 23);
             this.cmbVWait.TabIndex = 2;
             this.cmbVWait.Text = "Off";
             this.cmbVWait.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKey);
@@ -1369,49 +1420,49 @@ namespace MGEgui {
                                     "4x",
                                     "8x",
                                     "16x"});
-            this.cmbAnisoLevel.Location = new System.Drawing.Point(168, 3);
+            this.cmbAnisoLevel.Location = new System.Drawing.Point(179, 3);
             this.cmbAnisoLevel.Name = "cmbAnisoLevel";
-            this.cmbAnisoLevel.Size = new System.Drawing.Size(64, 21);
+            this.cmbAnisoLevel.Size = new System.Drawing.Size(64, 23);
             this.cmbAnisoLevel.TabIndex = 10;
             this.cmbAnisoLevel.Text = "Off";
             this.cmbAnisoLevel.SelectedIndexChanged += new System.EventHandler(this.cmbAnsiLevel_SelectedIndexChanged);
             // 
             // lAnisoLevel
             // 
-            this.lAnisoLevel.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lAnisoLevel.AutoSize = true;
-            this.lAnisoLevel.Location = new System.Drawing.Point(238, 6);
-            this.lAnisoLevel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 1);
+            this.lAnisoLevel.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lAnisoLevel.Location = new System.Drawing.Point(249, 0);
             this.lAnisoLevel.Name = "lAnisoLevel";
-            this.lAnisoLevel.Size = new System.Drawing.Size(95, 13);
+            this.lAnisoLevel.Size = new System.Drawing.Size(112, 29);
             this.lAnisoLevel.TabIndex = 8;
             this.lAnisoLevel.Text = "Anisotropic filtering";
+            this.lAnisoLevel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lVWait
             // 
-            this.lVWait.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lVWait.AutoSize = true;
-            this.lVWait.Location = new System.Drawing.Point(450, 6);
-            this.lVWait.Margin = new System.Windows.Forms.Padding(3, 0, 3, 1);
+            this.lVWait.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lVWait.Location = new System.Drawing.Point(477, 0);
             this.lVWait.Name = "lVWait";
-            this.lVWait.Size = new System.Drawing.Size(38, 13);
+            this.lVWait.Size = new System.Drawing.Size(39, 29);
             this.lVWait.TabIndex = 0;
             this.lVWait.Text = "VSync";
+            this.lVWait.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tbAspect
             // 
-            this.tbAspect.Location = new System.Drawing.Point(182, 22);
+            this.tbAspect.Location = new System.Drawing.Point(192, 22);
             this.tbAspect.Name = "tbAspect";
             this.tbAspect.ReadOnly = true;
-            this.tbAspect.Size = new System.Drawing.Size(52, 20);
+            this.tbAspect.Size = new System.Drawing.Size(52, 23);
             this.tbAspect.TabIndex = 2;
             this.tbAspect.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // bSelectResolution
             // 
-            this.bSelectResolution.Location = new System.Drawing.Point(10, 48);
+            this.bSelectResolution.Location = new System.Drawing.Point(9, 50);
             this.bSelectResolution.Name = "bSelectResolution";
-            this.bSelectResolution.Size = new System.Drawing.Size(166, 25);
+            this.bSelectResolution.Size = new System.Drawing.Size(178, 25);
             this.bSelectResolution.TabIndex = 1;
             this.bSelectResolution.Text = "Select screen resolution";
             this.bSelectResolution.Click += new System.EventHandler(this.bSelectResolution_Click);
@@ -1419,37 +1470,28 @@ namespace MGEgui {
             // cbWindowed
             // 
             this.cbWindowed.AutoSize = true;
-            this.cbWindowed.Location = new System.Drawing.Point(386, 25);
+            this.cbWindowed.Location = new System.Drawing.Point(404, 25);
             this.cbWindowed.Name = "cbWindowed";
-            this.cbWindowed.Size = new System.Drawing.Size(106, 17);
+            this.cbWindowed.Size = new System.Drawing.Size(117, 19);
             this.cbWindowed.TabIndex = 3;
             this.cbWindowed.Text = "Windowed mode";
             this.cbWindowed.CheckedChanged += new System.EventHandler(this.cbWindowed_CheckedChanged);
             // 
             // tbResolution
             // 
-            this.tbResolution.Location = new System.Drawing.Point(96, 22);
+            this.tbResolution.Location = new System.Drawing.Point(106, 22);
             this.tbResolution.Name = "tbResolution";
             this.tbResolution.ReadOnly = true;
-            this.tbResolution.Size = new System.Drawing.Size(80, 20);
+            this.tbResolution.Size = new System.Drawing.Size(80, 23);
             this.tbResolution.TabIndex = 0;
             this.tbResolution.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            // 
-            // lResolution
-            // 
-            this.lResolution.Location = new System.Drawing.Point(10, 21);
-            this.lResolution.Name = "lResolution";
-            this.lResolution.Size = new System.Drawing.Size(83, 21);
-            this.lResolution.TabIndex = 0;
-            this.lResolution.Text = "Resolution";
-            this.lResolution.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lAspect
             // 
             this.lAspect.AutoSize = true;
-            this.lAspect.Location = new System.Drawing.Point(240, 25);
+            this.lAspect.Location = new System.Drawing.Point(250, 25);
             this.lAspect.Name = "lAspect";
-            this.lAspect.Size = new System.Drawing.Size(63, 13);
+            this.lAspect.Size = new System.Drawing.Size(70, 15);
             this.lAspect.TabIndex = 0;
             this.lAspect.Text = "Aspect ratio";
             this.lAspect.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1457,9 +1499,9 @@ namespace MGEgui {
             // lRefreshRate
             // 
             this.lRefreshRate.AutoSize = true;
-            this.lRefreshRate.Location = new System.Drawing.Point(240, 54);
+            this.lRefreshRate.Location = new System.Drawing.Point(250, 54);
             this.lRefreshRate.Name = "lRefreshRate";
-            this.lRefreshRate.Size = new System.Drawing.Size(65, 13);
+            this.lRefreshRate.Size = new System.Drawing.Size(69, 15);
             this.lRefreshRate.TabIndex = 0;
             this.lRefreshRate.Text = "Refresh rate";
             this.lRefreshRate.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1476,7 +1518,7 @@ namespace MGEgui {
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.ShowToolTips = true;
-            this.tabControl.Size = new System.Drawing.Size(586, 445);
+            this.tabControl.Size = new System.Drawing.Size(624, 501);
             this.tabControl.TabIndex = 0;
             // 
             // tpDL
@@ -1484,9 +1526,9 @@ namespace MGEgui {
             this.tpDL.Controls.Add(this.bDistantLandWizard);
             this.tpDL.Controls.Add(this.cbDLDistantLand);
             this.tpDL.Controls.Add(this.gbDistantLand);
-            this.tpDL.Location = new System.Drawing.Point(4, 22);
+            this.tpDL.Location = new System.Drawing.Point(4, 24);
             this.tpDL.Name = "tpDL";
-            this.tpDL.Size = new System.Drawing.Size(578, 419);
+            this.tpDL.Size = new System.Drawing.Size(616, 473);
             this.tpDL.TabIndex = 7;
             this.tpDL.Text = "Distant Land";
             this.tpDL.ToolTipText = "This tab controls whether and how distant land,\ndistant statics, animated grass, " +
@@ -1496,10 +1538,9 @@ namespace MGEgui {
             // 
             // bDistantLandWizard
             // 
-            this.bDistantLandWizard.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bDistantLandWizard.Location = new System.Drawing.Point(158, 26);
+            this.bDistantLandWizard.Location = new System.Drawing.Point(136, 42);
             this.bDistantLandWizard.Name = "bDistantLandWizard";
-            this.bDistantLandWizard.Size = new System.Drawing.Size(129, 42);
+            this.bDistantLandWizard.Size = new System.Drawing.Size(134, 44);
             this.bDistantLandWizard.TabIndex = 10;
             this.bDistantLandWizard.Text = "Distant land generator wizard";
             this.bDistantLandWizard.Click += new System.EventHandler(this.bDistantLandWizard_Click);
@@ -1509,7 +1550,7 @@ namespace MGEgui {
             this.cbDLDistantLand.AutoSize = true;
             this.cbDLDistantLand.Location = new System.Drawing.Point(16, 3);
             this.cbDLDistantLand.Name = "cbDLDistantLand";
-            this.cbDLDistantLand.Size = new System.Drawing.Size(108, 17);
+            this.cbDLDistantLand.Size = new System.Drawing.Size(114, 19);
             this.cbDLDistantLand.TabIndex = 0;
             this.cbDLDistantLand.Text = "Use Distant &Land";
             this.cbDLDistantLand.UseVisualStyleBackColor = true;
@@ -1520,30 +1561,56 @@ namespace MGEgui {
             this.gbDistantLand.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                                     | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.gbDistantLand.Controls.Add(this.gbXEFeatures);
-            this.gbDistantLand.Controls.Add(this.bMWLightSettings);
-            this.gbDistantLand.Controls.Add(this.pDLStatics);
-            this.gbDistantLand.Controls.Add(this.cbDLAutoDist);
-            this.gbDistantLand.Controls.Add(this.gbDLAutoDist);
-            this.gbDistantLand.Controls.Add(this.gbDLWater);
-            this.gbDistantLand.Controls.Add(this.bDLWthr);
-            this.gbDistantLand.Controls.Add(this.gbDLDrawDist);
-            this.gbDistantLand.Controls.Add(this.gbDLFog);
+            this.gbDistantLand.Controls.Add(this.tableLayoutDL);
             this.gbDistantLand.Enabled = false;
             this.gbDistantLand.Location = new System.Drawing.Point(8, 3);
             this.gbDistantLand.Name = "gbDistantLand";
-            this.gbDistantLand.Size = new System.Drawing.Size(562, 408);
+            this.gbDistantLand.Size = new System.Drawing.Size(600, 472);
             this.gbDistantLand.TabIndex = 1;
             this.gbDistantLand.TabStop = false;
             // 
+            // tableLayoutDL
+            // 
+            this.tableLayoutDL.ColumnCount = 2;
+            this.tableLayoutDL.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 47.5F));
+            this.tableLayoutDL.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 52.5F));
+            this.tableLayoutDL.Controls.Add(this.tableLayoutDLLeft, 0, 0);
+            this.tableLayoutDL.Controls.Add(this.tableLayoutDLRight, 1, 0);
+            this.tableLayoutDL.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutDL.Location = new System.Drawing.Point(3, 19);
+            this.tableLayoutDL.Name = "tableLayoutDL";
+            this.tableLayoutDL.RowCount = 1;
+            this.tableLayoutDL.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutDL.Size = new System.Drawing.Size(594, 450);
+            this.tableLayoutDL.TabIndex = 12;
+            // 
+            // tableLayoutDLLeft
+            // 
+            this.tableLayoutDLLeft.ColumnCount = 1;
+            this.tableLayoutDLLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutDLLeft.Controls.Add(this.gbXEFeatures, 0, 2);
+            this.tableLayoutDLLeft.Controls.Add(this.gbDLDrawDist, 0, 0);
+            this.tableLayoutDLLeft.Controls.Add(this.gbDLWater, 0, 1);
+            this.tableLayoutDLLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutDLLeft.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutDLLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutDLLeft.Name = "tableLayoutDLLeft";
+            this.tableLayoutDLLeft.RowCount = 3;
+            this.tableLayoutDLLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutDLLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutDLLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutDLLeft.Size = new System.Drawing.Size(282, 450);
+            this.tableLayoutDLLeft.TabIndex = 0;
+            // 
             // gbXEFeatures
             // 
-            this.gbXEFeatures.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.gbXEFeatures.Controls.Add(this.cbPerPixelLighting);
+            this.gbXEFeatures.Controls.Add(this.bMWLightSettings);
             this.gbXEFeatures.Controls.Add(this.cbDLSunShadows);
-            this.gbXEFeatures.Location = new System.Drawing.Point(288, 331);
+            this.gbXEFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbXEFeatures.Location = new System.Drawing.Point(3, 349);
             this.gbXEFeatures.Name = "gbXEFeatures";
-            this.gbXEFeatures.Size = new System.Drawing.Size(262, 72);
+            this.gbXEFeatures.Size = new System.Drawing.Size(276, 98);
             this.gbXEFeatures.TabIndex = 11;
             this.gbXEFeatures.TabStop = false;
             this.gbXEFeatures.Text = "XE";
@@ -1553,315 +1620,94 @@ namespace MGEgui {
             this.cbPerPixelLighting.AutoSize = true;
             this.cbPerPixelLighting.Location = new System.Drawing.Point(18, 43);
             this.cbPerPixelLighting.Name = "cbPerPixelLighting";
-            this.cbPerPixelLighting.Size = new System.Drawing.Size(137, 17);
+            this.cbPerPixelLighting.Size = new System.Drawing.Size(154, 19);
             this.cbPerPixelLighting.TabIndex = 1;
             this.cbPerPixelLighting.Text = "Per-pixel lighting shader";
             this.cbPerPixelLighting.UseVisualStyleBackColor = true;
             this.cbPerPixelLighting.CheckedChanged += new System.EventHandler(this.cbPerPixelLighting_CheckedChanged);
+            // 
+            // bMWLightSettings
+            // 
+            this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.bMWLightSettings.Location = new System.Drawing.Point(54, 68);
+            this.bMWLightSettings.Name = "bMWLightSettings";
+            this.bMWLightSettings.Size = new System.Drawing.Size(160, 25);
+            this.bMWLightSettings.TabIndex = 10;
+            this.bMWLightSettings.Text = "Light Settings...";
+            this.bMWLightSettings.UseVisualStyleBackColor = true;
+            this.bMWLightSettings.Click += new System.EventHandler(this.bMWLightSettings_Click);
             // 
             // cbDLSunShadows
             // 
             this.cbDLSunShadows.AutoSize = true;
             this.cbDLSunShadows.Location = new System.Drawing.Point(18, 19);
             this.cbDLSunShadows.Name = "cbDLSunShadows";
-            this.cbDLSunShadows.Size = new System.Drawing.Size(137, 17);
+            this.cbDLSunShadows.Size = new System.Drawing.Size(150, 19);
             this.cbDLSunShadows.TabIndex = 0;
             this.cbDLSunShadows.Text = "Dynamic solar shadows";
             this.cbDLSunShadows.UseVisualStyleBackColor = true;
             // 
-            // bMWLightSettings
+            // gbDLDrawDist
             // 
-            this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bMWLightSettings.Location = new System.Drawing.Point(150, 378);
-            this.bMWLightSettings.Name = "bMWLightSettings";
-            this.bMWLightSettings.Size = new System.Drawing.Size(128, 25);
-            this.bMWLightSettings.TabIndex = 10;
-            this.bMWLightSettings.Text = "Light Settings...";
-            this.bMWLightSettings.UseVisualStyleBackColor = true;
-            this.bMWLightSettings.Click += new System.EventHandler(this.bMWLightSettings_Click);
+            this.gbDLDrawDist.Controls.Add(this.lDLDrawDist);
+            this.gbDLDrawDist.Controls.Add(this.udDLDrawDist);
+            this.gbDLDrawDist.Dock = System.Windows.Forms.DockStyle.Top;
+            this.gbDLDrawDist.Location = new System.Drawing.Point(3, 3);
+            this.gbDLDrawDist.Name = "gbDLDrawDist";
+            this.gbDLDrawDist.Size = new System.Drawing.Size(276, 70);
+            this.gbDLDrawDist.TabIndex = 0;
+            this.gbDLDrawDist.TabStop = false;
+            this.gbDLDrawDist.Text = "&Draw Distance";
             // 
-            // pDLStatics
+            // lDLDrawDist
             // 
-            this.pDLStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.pDLStatics.Controls.Add(this.cbDLDistantStatics);
-            this.pDLStatics.Controls.Add(this.gbDLStatics);
-            this.pDLStatics.Location = new System.Drawing.Point(15, 69);
-            this.pDLStatics.Name = "pDLStatics";
-            this.pDLStatics.Size = new System.Drawing.Size(262, 114);
-            this.pDLStatics.TabIndex = 5;
-            this.pDLStatics.TabStop = true;
+            this.lDLDrawDist.AutoSize = true;
+            this.lDLDrawDist.Location = new System.Drawing.Point(62, 24);
+            this.lDLDrawDist.Name = "lDLDrawDist";
+            this.lDLDrawDist.Size = new System.Drawing.Size(30, 15);
+            this.lDLDrawDist.TabIndex = 0;
+            this.lDLDrawDist.Text = "cells";
+            this.lDLDrawDist.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // cbDLDistantStatics
+            // udDLDrawDist
             // 
-            this.cbDLDistantStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.cbDLDistantStatics.AutoSize = true;
-            this.cbDLDistantStatics.Location = new System.Drawing.Point(8, 0);
-            this.cbDLDistantStatics.Name = "cbDLDistantStatics";
-            this.cbDLDistantStatics.Size = new System.Drawing.Size(116, 17);
-            this.cbDLDistantStatics.TabIndex = 0;
-            this.cbDLDistantStatics.Text = "Use Distant &Statics";
-            this.cbDLDistantStatics.UseVisualStyleBackColor = true;
-            this.cbDLDistantStatics.CheckedChanged += new System.EventHandler(this.cbDistantStatics_CheckedChanged);
-            // 
-            // gbDLStatics
-            // 
-            this.gbDLStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.gbDLStatics.Controls.Add(this.udDLDistVeryFar);
-            this.gbDLStatics.Controls.Add(this.udDLDistFar);
-            this.gbDLStatics.Controls.Add(this.udDLDistNear);
-            this.gbDLStatics.Controls.Add(this.udDLSizeVeryFar);
-            this.gbDLStatics.Controls.Add(this.udDLSizeFar);
-            this.gbDLStatics.Controls.Add(this.tbDLNearSize);
-            this.gbDLStatics.Controls.Add(this.lDLVeryFar);
-            this.gbDLStatics.Controls.Add(this.lDLFar);
-            this.gbDLStatics.Controls.Add(this.lDLNear);
-            this.gbDLStatics.Controls.Add(this.lDLMinSize);
-            this.gbDLStatics.Controls.Add(this.lDLEndDist);
-            this.gbDLStatics.Enabled = false;
-            this.gbDLStatics.Location = new System.Drawing.Point(0, 0);
-            this.gbDLStatics.Name = "gbDLStatics";
-            this.gbDLStatics.Size = new System.Drawing.Size(262, 114);
-            this.gbDLStatics.TabIndex = 1;
-            this.gbDLStatics.TabStop = false;
-            // 
-            // udDLDistVeryFar
-            // 
-            this.udDLDistVeryFar.DecimalPlaces = 1;
-            this.udDLDistVeryFar.Location = new System.Drawing.Point(196, 78);
-            this.udDLDistVeryFar.Maximum = new decimal(new int[] {
-                                    300,
+            this.udDLDrawDist.DecimalPlaces = 1;
+            this.udDLDrawDist.Location = new System.Drawing.Point(6, 22);
+            this.udDLDrawDist.Maximum = new decimal(new int[] {
+                                    250,
                                     0,
                                     0,
                                     0});
-            this.udDLDistVeryFar.Name = "udDLDistVeryFar";
-            this.udDLDistVeryFar.Size = new System.Drawing.Size(50, 20);
-            this.udDLDistVeryFar.TabIndex = 5;
-            this.udDLDistVeryFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLDistVeryFar.Value = new decimal(new int[] {
+            this.udDLDrawDist.Minimum = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLDrawDist.Name = "udDLDrawDist";
+            this.udDLDrawDist.Size = new System.Drawing.Size(50, 23);
+            this.udDLDrawDist.TabIndex = 0;
+            this.udDLDrawDist.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLDrawDist.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
+            this.udDLDrawDist.Value = new decimal(new int[] {
                                     5,
                                     0,
                                     0,
                                     0});
-            this.udDLDistVeryFar.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
-            // 
-            // udDLDistFar
-            // 
-            this.udDLDistFar.DecimalPlaces = 1;
-            this.udDLDistFar.Location = new System.Drawing.Point(196, 54);
-            this.udDLDistFar.Maximum = new decimal(new int[] {
-                                    2999,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLDistFar.Name = "udDLDistFar";
-            this.udDLDistFar.Size = new System.Drawing.Size(50, 20);
-            this.udDLDistFar.TabIndex = 3;
-            this.udDLDistFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLDistFar.Value = new decimal(new int[] {
-                                    4,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLDistFar.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
-            // 
-            // udDLDistNear
-            // 
-            this.udDLDistNear.DecimalPlaces = 1;
-            this.udDLDistNear.Location = new System.Drawing.Point(196, 30);
-            this.udDLDistNear.Maximum = new decimal(new int[] {
-                                    2998,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLDistNear.Name = "udDLDistNear";
-            this.udDLDistNear.Size = new System.Drawing.Size(50, 20);
-            this.udDLDistNear.TabIndex = 1;
-            this.udDLDistNear.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLDistNear.Value = new decimal(new int[] {
-                                    2,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLDistNear.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
-            // 
-            // udDLSizeVeryFar
-            // 
-            this.udDLSizeVeryFar.Increment = new decimal(new int[] {
-                                    10,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLSizeVeryFar.Location = new System.Drawing.Point(138, 78);
-            this.udDLSizeVeryFar.Maximum = new decimal(new int[] {
-                                    9999,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLSizeVeryFar.Name = "udDLSizeVeryFar";
-            this.udDLSizeVeryFar.Size = new System.Drawing.Size(50, 20);
-            this.udDLSizeVeryFar.TabIndex = 4;
-            this.udDLSizeVeryFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLSizeVeryFar.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
-            this.udDLSizeVeryFar.Value = new decimal(new int[] {
-                                    800,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLSizeVeryFar.ValueChanged += new System.EventHandler(this.ValidateDistances);
-            // 
-            // udDLSizeFar
-            // 
-            this.udDLSizeFar.Increment = new decimal(new int[] {
-                                    10,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLSizeFar.Location = new System.Drawing.Point(138, 54);
-            this.udDLSizeFar.Maximum = new decimal(new int[] {
-                                    9999,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLSizeFar.Name = "udDLSizeFar";
-            this.udDLSizeFar.Size = new System.Drawing.Size(50, 20);
-            this.udDLSizeFar.TabIndex = 2;
-            this.udDLSizeFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLSizeFar.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
-            this.udDLSizeFar.Value = new decimal(new int[] {
-                                    600,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLSizeFar.ValueChanged += new System.EventHandler(this.ValidateDistances);
-            // 
-            // tbDLNearSize
-            // 
-            this.tbDLNearSize.Location = new System.Drawing.Point(138, 30);
-            this.tbDLNearSize.MaxLength = 3;
-            this.tbDLNearSize.Name = "tbDLNearSize";
-            this.tbDLNearSize.ReadOnly = true;
-            this.tbDLNearSize.Size = new System.Drawing.Size(50, 20);
-            this.tbDLNearSize.TabIndex = 0;
-            this.tbDLNearSize.Text = "400";
-            this.tbDLNearSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            // 
-            // lDLVeryFar
-            // 
-            this.lDLVeryFar.Location = new System.Drawing.Point(34, 78);
-            this.lDLVeryFar.Name = "lDLVeryFar";
-            this.lDLVeryFar.Size = new System.Drawing.Size(102, 19);
-            this.lDLVeryFar.TabIndex = 0;
-            this.lDLVeryFar.Text = "Very Far";
-            this.lDLVeryFar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lDLFar
-            // 
-            this.lDLFar.Location = new System.Drawing.Point(34, 54);
-            this.lDLFar.Name = "lDLFar";
-            this.lDLFar.Size = new System.Drawing.Size(102, 19);
-            this.lDLFar.TabIndex = 0;
-            this.lDLFar.Text = "Far";
-            this.lDLFar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lDLNear
-            // 
-            this.lDLNear.Location = new System.Drawing.Point(34, 30);
-            this.lDLNear.Name = "lDLNear";
-            this.lDLNear.Size = new System.Drawing.Size(102, 19);
-            this.lDLNear.TabIndex = 0;
-            this.lDLNear.Text = "Near";
-            this.lDLNear.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // lDLMinSize
-            // 
-            this.lDLMinSize.AutoSize = true;
-            this.lDLMinSize.Location = new System.Drawing.Point(135, 16);
-            this.lDLMinSize.Name = "lDLMinSize";
-            this.lDLMinSize.Size = new System.Drawing.Size(47, 13);
-            this.lDLMinSize.TabIndex = 0;
-            this.lDLMinSize.Text = "Min Size";
-            // 
-            // lDLEndDist
-            // 
-            this.lDLEndDist.AutoSize = true;
-            this.lDLEndDist.Location = new System.Drawing.Point(193, 16);
-            this.lDLEndDist.Name = "lDLEndDist";
-            this.lDLEndDist.Size = new System.Drawing.Size(47, 13);
-            this.lDLEndDist.TabIndex = 0;
-            this.lDLEndDist.Text = "End Dist";
-            // 
-            // cbDLAutoDist
-            // 
-            this.cbDLAutoDist.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.cbDLAutoDist.AutoSize = true;
-            this.cbDLAutoDist.Location = new System.Drawing.Point(306, 19);
-            this.cbDLAutoDist.Name = "cbDLAutoDist";
-            this.cbDLAutoDist.Size = new System.Drawing.Size(140, 17);
-            this.cbDLAutoDist.TabIndex = 2;
-            this.cbDLAutoDist.Text = "&Auto set other distances";
-            this.cbDLAutoDist.CheckedChanged += new System.EventHandler(this.cbAutoSetDistances_CheckedChanged);
-            // 
-            // gbDLAutoDist
-            // 
-            this.gbDLAutoDist.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.gbDLAutoDist.Controls.Add(this.rbDLAutoByAFogEnd);
-            this.gbDLAutoDist.Controls.Add(this.rbDLAutoByDrawDist);
-            this.gbDLAutoDist.Enabled = false;
-            this.gbDLAutoDist.Location = new System.Drawing.Point(288, 19);
-            this.gbDLAutoDist.Name = "gbDLAutoDist";
-            this.gbDLAutoDist.Size = new System.Drawing.Size(262, 71);
-            this.gbDLAutoDist.TabIndex = 3;
-            this.gbDLAutoDist.TabStop = false;
-            // 
-            // rbDLAutoByAFogEnd
-            // 
-            this.rbDLAutoByAFogEnd.AutoSize = true;
-            this.rbDLAutoByAFogEnd.Location = new System.Drawing.Point(18, 45);
-            this.rbDLAutoByAFogEnd.Name = "rbDLAutoByAFogEnd";
-            this.rbDLAutoByAFogEnd.Size = new System.Drawing.Size(146, 17);
-            this.rbDLAutoByAFogEnd.TabIndex = 1;
-            this.rbDLAutoByAFogEnd.TabStop = true;
-            this.rbDLAutoByAFogEnd.Text = "By Above Water Fo&g End";
-            this.rbDLAutoByAFogEnd.UseVisualStyleBackColor = true;
-            this.rbDLAutoByAFogEnd.CheckedChanged += new System.EventHandler(this.rbDLAutoDist_CheckedChanged);
-            // 
-            // rbDLAutoByDrawDist
-            // 
-            this.rbDLAutoByDrawDist.AutoSize = true;
-            this.rbDLAutoByDrawDist.Checked = true;
-            this.rbDLAutoByDrawDist.Location = new System.Drawing.Point(18, 22);
-            this.rbDLAutoByDrawDist.Name = "rbDLAutoByDrawDist";
-            this.rbDLAutoByDrawDist.Size = new System.Drawing.Size(110, 17);
-            this.rbDLAutoByDrawDist.TabIndex = 0;
-            this.rbDLAutoByDrawDist.TabStop = true;
-            this.rbDLAutoByDrawDist.Text = "By D&raw Distance";
-            this.rbDLAutoByDrawDist.UseVisualStyleBackColor = true;
-            this.rbDLAutoByDrawDist.CheckedChanged += new System.EventHandler(this.rbDLAutoDist_CheckedChanged);
+            this.udDLDrawDist.ValueChanged += new System.EventHandler(this.udDLDrawDist_ValueChanged);
             // 
             // gbDLWater
             // 
-            this.gbDLWater.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.gbDLWater.Controls.Add(this.cbDLDynRipples);
+            this.gbDLWater.AutoSize = true;
             this.gbDLWater.Controls.Add(this.gbDLWtrCaust);
             this.gbDLWater.Controls.Add(this.gbDLWtrWave);
             this.gbDLWater.Controls.Add(this.gbDLWtrRefl);
-            this.gbDLWater.Location = new System.Drawing.Point(288, 96);
+            this.gbDLWater.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbDLWater.Location = new System.Drawing.Point(3, 79);
             this.gbDLWater.Name = "gbDLWater";
-            this.gbDLWater.Size = new System.Drawing.Size(262, 229);
+            this.gbDLWater.Size = new System.Drawing.Size(276, 264);
             this.gbDLWater.TabIndex = 9;
             this.gbDLWater.TabStop = false;
             this.gbDLWater.Text = "&Water";
-            // 
-            // cbDLDynRipples
-            // 
-            this.cbDLDynRipples.AutoSize = true;
-            this.cbDLDynRipples.Location = new System.Drawing.Point(13, 113);
-            this.cbDLDynRipples.Name = "cbDLDynRipples";
-            this.cbDLDynRipples.Size = new System.Drawing.Size(100, 17);
-            this.cbDLDynRipples.TabIndex = 1;
-            this.cbDLDynRipples.Text = "D&ynamic ripples";
-            this.cbDLDynRipples.UseVisualStyleBackColor = true;
-            this.cbDLDynRipples.CheckedChanged += new System.EventHandler(this.cbDLDynRipples_CheckedChanged);
             // 
             // gbDLWtrCaust
             // 
@@ -1869,9 +1715,9 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.gbDLWtrCaust.Controls.Add(this.lDLWtrCaust);
             this.gbDLWtrCaust.Controls.Add(this.udDLWtrCaust);
-            this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 170);
+            this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 178);
             this.gbDLWtrCaust.Name = "gbDLWtrCaust";
-            this.gbDLWtrCaust.Size = new System.Drawing.Size(250, 50);
+            this.gbDLWtrCaust.Size = new System.Drawing.Size(264, 56);
             this.gbDLWtrCaust.TabIndex = 4;
             this.gbDLWtrCaust.TabStop = false;
             this.gbDLWtrCaust.Text = "&Caustics [underwater refracted lighting]";
@@ -1879,9 +1725,9 @@ namespace MGEgui {
             // lDLWtrCaust
             // 
             this.lDLWtrCaust.AutoSize = true;
-            this.lDLWtrCaust.Location = new System.Drawing.Point(59, 24);
+            this.lDLWtrCaust.Location = new System.Drawing.Point(59, 26);
             this.lDLWtrCaust.Name = "lDLWtrCaust";
-            this.lDLWtrCaust.Size = new System.Drawing.Size(66, 13);
+            this.lDLWtrCaust.Size = new System.Drawing.Size(75, 15);
             this.lDLWtrCaust.TabIndex = 0;
             this.lDLWtrCaust.Text = "% brightness";
             this.lDLWtrCaust.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1893,9 +1739,9 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
-            this.udDLWtrCaust.Location = new System.Drawing.Point(11, 22);
+            this.udDLWtrCaust.Location = new System.Drawing.Point(11, 24);
             this.udDLWtrCaust.Name = "udDLWtrCaust";
-            this.udDLWtrCaust.Size = new System.Drawing.Size(42, 20);
+            this.udDLWtrCaust.Size = new System.Drawing.Size(42, 23);
             this.udDLWtrCaust.TabIndex = 0;
             this.udDLWtrCaust.Tag = "";
             this.udDLWtrCaust.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
@@ -1910,35 +1756,48 @@ namespace MGEgui {
             // 
             this.gbDLWtrWave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDLWtrWave.Controls.Add(this.cbDLDynRipples);
             this.gbDLWtrWave.Controls.Add(this.lDLWtrWave);
             this.gbDLWtrWave.Controls.Add(this.udDLWtrWave);
             this.gbDLWtrWave.Enabled = false;
-            this.gbDLWtrWave.Location = new System.Drawing.Point(6, 114);
+            this.gbDLWtrWave.Location = new System.Drawing.Point(6, 116);
             this.gbDLWtrWave.Name = "gbDLWtrWave";
-            this.gbDLWtrWave.Size = new System.Drawing.Size(250, 50);
+            this.gbDLWtrWave.Size = new System.Drawing.Size(264, 56);
             this.gbDLWtrWave.TabIndex = 3;
             this.gbDLWtrWave.TabStop = false;
+            // 
+            // cbDLDynRipples
+            // 
+            this.cbDLDynRipples.AutoSize = true;
+            this.cbDLDynRipples.BackColor = System.Drawing.SystemColors.Window;
+            this.cbDLDynRipples.Location = new System.Drawing.Point(8, 0);
+            this.cbDLDynRipples.Name = "cbDLDynRipples";
+            this.cbDLDynRipples.Size = new System.Drawing.Size(111, 19);
+            this.cbDLDynRipples.TabIndex = 1;
+            this.cbDLDynRipples.Text = "D&ynamic ripples";
+            this.cbDLDynRipples.UseVisualStyleBackColor = true;
+            this.cbDLDynRipples.CheckedChanged += new System.EventHandler(this.cbDLDynRipples_CheckedChanged);
             // 
             // lDLWtrWave
             // 
             this.lDLWtrWave.AutoSize = true;
-            this.lDLWtrWave.Location = new System.Drawing.Point(59, 24);
+            this.lDLWtrWave.Location = new System.Drawing.Point(59, 26);
             this.lDLWtrWave.Name = "lDLWtrWave";
-            this.lDLWtrWave.Size = new System.Drawing.Size(84, 13);
+            this.lDLWtrWave.Size = new System.Drawing.Size(92, 15);
             this.lDLWtrWave.TabIndex = 1;
             this.lDLWtrWave.Text = "Height of wa&ves";
             this.lDLWtrWave.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // udDLWtrWave
             // 
-            this.udDLWtrWave.Location = new System.Drawing.Point(11, 22);
+            this.udDLWtrWave.Location = new System.Drawing.Point(11, 24);
             this.udDLWtrWave.Maximum = new decimal(new int[] {
                                     250,
                                     0,
                                     0,
                                     0});
             this.udDLWtrWave.Name = "udDLWtrWave";
-            this.udDLWtrWave.Size = new System.Drawing.Size(42, 20);
+            this.udDLWtrWave.Size = new System.Drawing.Size(42, 23);
             this.udDLWtrWave.TabIndex = 0;
             this.udDLWtrWave.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udDLWtrWave.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
@@ -1954,17 +1813,27 @@ namespace MGEgui {
             this.gbDLWtrRefl.Controls.Add(this.cbDLReflInterior);
             this.gbDLWtrRefl.Location = new System.Drawing.Point(6, 19);
             this.gbDLWtrRefl.Name = "gbDLWtrRefl";
-            this.gbDLWtrRefl.Size = new System.Drawing.Size(250, 89);
+            this.gbDLWtrRefl.Size = new System.Drawing.Size(264, 92);
             this.gbDLWtrRefl.TabIndex = 0;
             this.gbDLWtrRefl.TabStop = false;
             this.gbDLWtrRefl.Text = "Reflections";
+            // 
+            // cbDLSkyRefl
+            // 
+            this.cbDLSkyRefl.AutoSize = true;
+            this.cbDLSkyRefl.Location = new System.Drawing.Point(11, 19);
+            this.cbDLSkyRefl.Name = "cbDLSkyRefl";
+            this.cbDLSkyRefl.Size = new System.Drawing.Size(44, 19);
+            this.cbDLSkyRefl.TabIndex = 0;
+            this.cbDLSkyRefl.Text = "S&ky";
+            this.cbDLSkyRefl.UseVisualStyleBackColor = true;
             // 
             // cbDLReflLand
             // 
             this.cbDLReflLand.AutoSize = true;
             this.cbDLReflLand.Location = new System.Drawing.Point(11, 42);
             this.cbDLReflLand.Name = "cbDLReflLand";
-            this.cbDLReflLand.Size = new System.Drawing.Size(79, 17);
+            this.cbDLReflLand.Size = new System.Drawing.Size(82, 19);
             this.cbDLReflLand.TabIndex = 2;
             this.cbDLReflLand.Text = "Landsca&pe";
             this.cbDLReflLand.UseVisualStyleBackColor = true;
@@ -1975,7 +1844,7 @@ namespace MGEgui {
             this.cbDLReflBlur.AutoSize = true;
             this.cbDLReflBlur.Location = new System.Drawing.Point(11, 65);
             this.cbDLReflBlur.Name = "cbDLReflBlur";
-            this.cbDLReflBlur.Size = new System.Drawing.Size(95, 17);
+            this.cbDLReflBlur.Size = new System.Drawing.Size(105, 19);
             this.cbDLReflBlur.TabIndex = 4;
             this.cbDLReflBlur.Text = "&Blur reflections";
             this.cbDLReflBlur.UseVisualStyleBackColor = true;
@@ -1984,9 +1853,9 @@ namespace MGEgui {
             // 
             this.cbDLReflNStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbDLReflNStatics.AutoSize = true;
-            this.cbDLReflNStatics.Location = new System.Drawing.Point(128, 19);
+            this.cbDLReflNStatics.Location = new System.Drawing.Point(136, 19);
             this.cbDLReflNStatics.Name = "cbDLReflNStatics";
-            this.cbDLReflNStatics.Size = new System.Drawing.Size(95, 17);
+            this.cbDLReflNStatics.Size = new System.Drawing.Size(101, 19);
             this.cbDLReflNStatics.TabIndex = 1;
             this.cbDLReflNStatics.Text = "&Nearby Statics";
             this.cbDLReflNStatics.UseVisualStyleBackColor = true;
@@ -1996,298 +1865,428 @@ namespace MGEgui {
             this.cbDLReflInterior.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbDLReflInterior.AutoSize = true;
             this.cbDLReflInterior.Enabled = false;
-            this.cbDLReflInterior.Location = new System.Drawing.Point(128, 42);
+            this.cbDLReflInterior.Location = new System.Drawing.Point(136, 42);
             this.cbDLReflInterior.Name = "cbDLReflInterior";
-            this.cbDLReflInterior.Size = new System.Drawing.Size(63, 17);
+            this.cbDLReflInterior.Size = new System.Drawing.Size(69, 19);
             this.cbDLReflInterior.TabIndex = 3;
             this.cbDLReflInterior.Text = "&Interiors";
             this.cbDLReflInterior.UseVisualStyleBackColor = true;
             // 
+            // tableLayoutDLRight
+            // 
+            this.tableLayoutDLRight.ColumnCount = 1;
+            this.tableLayoutDLRight.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutDLRight.Controls.Add(this.gbDLAutoDist, 0, 0);
+            this.tableLayoutDLRight.Controls.Add(this.pDLStatics, 0, 1);
+            this.tableLayoutDLRight.Controls.Add(this.bDLWthr, 0, 3);
+            this.tableLayoutDLRight.Controls.Add(this.gbDLFog, 0, 2);
+            this.tableLayoutDLRight.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutDLRight.Location = new System.Drawing.Point(282, 0);
+            this.tableLayoutDLRight.Margin = new System.Windows.Forms.Padding(0);
+            this.tableLayoutDLRight.Name = "tableLayoutDLRight";
+            this.tableLayoutDLRight.RowCount = 4;
+            this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutDLRight.Size = new System.Drawing.Size(312, 450);
+            this.tableLayoutDLRight.TabIndex = 1;
+            // 
+            // gbDLAutoDist
+            // 
+            this.gbDLAutoDist.Controls.Add(this.rbDLAutoByAFogEnd);
+            this.gbDLAutoDist.Controls.Add(this.rbDLAutoByDrawDist);
+            this.gbDLAutoDist.Controls.Add(this.cbDLAutoDist);
+            this.gbDLAutoDist.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbDLAutoDist.Location = new System.Drawing.Point(3, 3);
+            this.gbDLAutoDist.Name = "gbDLAutoDist";
+            this.gbDLAutoDist.Size = new System.Drawing.Size(306, 76);
+            this.gbDLAutoDist.TabIndex = 13;
+            this.gbDLAutoDist.TabStop = false;
+            // 
+            // rbDLAutoByAFogEnd
+            // 
+            this.rbDLAutoByAFogEnd.AutoSize = true;
+            this.rbDLAutoByAFogEnd.Location = new System.Drawing.Point(18, 48);
+            this.rbDLAutoByAFogEnd.Name = "rbDLAutoByAFogEnd";
+            this.rbDLAutoByAFogEnd.Size = new System.Drawing.Size(155, 19);
+            this.rbDLAutoByAFogEnd.TabIndex = 1;
+            this.rbDLAutoByAFogEnd.TabStop = true;
+            this.rbDLAutoByAFogEnd.Text = "By Above Water Fo&g End";
+            this.rbDLAutoByAFogEnd.UseVisualStyleBackColor = true;
+            this.rbDLAutoByAFogEnd.CheckedChanged += new System.EventHandler(this.rbDLAutoDist_CheckedChanged);
+            // 
+            // rbDLAutoByDrawDist
+            // 
+            this.rbDLAutoByDrawDist.AutoSize = true;
+            this.rbDLAutoByDrawDist.Checked = true;
+            this.rbDLAutoByDrawDist.Location = new System.Drawing.Point(18, 24);
+            this.rbDLAutoByDrawDist.Name = "rbDLAutoByDrawDist";
+            this.rbDLAutoByDrawDist.Size = new System.Drawing.Size(116, 19);
+            this.rbDLAutoByDrawDist.TabIndex = 0;
+            this.rbDLAutoByDrawDist.TabStop = true;
+            this.rbDLAutoByDrawDist.Text = "By D&raw Distance";
+            this.rbDLAutoByDrawDist.UseVisualStyleBackColor = true;
+            this.rbDLAutoByDrawDist.CheckedChanged += new System.EventHandler(this.rbDLAutoDist_CheckedChanged);
+            // 
+            // cbDLAutoDist
+            // 
+            this.cbDLAutoDist.AutoSize = true;
+            this.cbDLAutoDist.BackColor = System.Drawing.SystemColors.Window;
+            this.cbDLAutoDist.Location = new System.Drawing.Point(8, 0);
+            this.cbDLAutoDist.Name = "cbDLAutoDist";
+            this.cbDLAutoDist.Size = new System.Drawing.Size(153, 19);
+            this.cbDLAutoDist.TabIndex = 2;
+            this.cbDLAutoDist.Text = "&Auto set other distances";
+            this.cbDLAutoDist.UseVisualStyleBackColor = false;
+            this.cbDLAutoDist.CheckedChanged += new System.EventHandler(this.cbAutoSetDistances_CheckedChanged);
+            // 
+            // pDLStatics
+            // 
+            this.pDLStatics.Controls.Add(this.cbDLDistantStatics);
+            this.pDLStatics.Controls.Add(this.gbDLStatics);
+            this.pDLStatics.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pDLStatics.Location = new System.Drawing.Point(3, 85);
+            this.pDLStatics.Name = "pDLStatics";
+            this.pDLStatics.Size = new System.Drawing.Size(306, 114);
+            this.pDLStatics.TabIndex = 5;
+            this.pDLStatics.TabStop = true;
+            // 
+            // cbDLDistantStatics
+            // 
+            this.cbDLDistantStatics.AutoSize = true;
+            this.cbDLDistantStatics.BackColor = System.Drawing.SystemColors.Window;
+            this.cbDLDistantStatics.Location = new System.Drawing.Point(8, 0);
+            this.cbDLDistantStatics.Name = "cbDLDistantStatics";
+            this.cbDLDistantStatics.Size = new System.Drawing.Size(122, 19);
+            this.cbDLDistantStatics.TabIndex = 0;
+            this.cbDLDistantStatics.Text = "Use Distant &Statics";
+            this.cbDLDistantStatics.UseVisualStyleBackColor = false;
+            this.cbDLDistantStatics.CheckedChanged += new System.EventHandler(this.cbDistantStatics_CheckedChanged);
+            // 
+            // gbDLStatics
+            // 
+            this.gbDLStatics.Controls.Add(this.tableAlignDLStatics);
+            this.gbDLStatics.Controls.Add(this.lDLMinSize);
+            this.gbDLStatics.Controls.Add(this.lDLEndDist);
+            this.gbDLStatics.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbDLStatics.Enabled = false;
+            this.gbDLStatics.Location = new System.Drawing.Point(0, 0);
+            this.gbDLStatics.Name = "gbDLStatics";
+            this.gbDLStatics.Size = new System.Drawing.Size(306, 114);
+            this.gbDLStatics.TabIndex = 1;
+            this.gbDLStatics.TabStop = false;
+            // 
+            // tableAlignDLStatics
+            // 
+            this.tableAlignDLStatics.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableAlignDLStatics.ColumnCount = 4;
+            this.tableAlignDLStatics.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableAlignDLStatics.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableAlignDLStatics.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableAlignDLStatics.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableAlignDLStatics.Controls.Add(this.lDLNear, 0, 0);
+            this.tableAlignDLStatics.Controls.Add(this.udDLDistNear, 3, 0);
+            this.tableAlignDLStatics.Controls.Add(this.udDLDistVeryFar, 3, 4);
+            this.tableAlignDLStatics.Controls.Add(this.tbDLNearSize, 1, 0);
+            this.tableAlignDLStatics.Controls.Add(this.lDLFar, 0, 2);
+            this.tableAlignDLStatics.Controls.Add(this.lDLVeryFar, 0, 4);
+            this.tableAlignDLStatics.Controls.Add(this.udDLSizeVeryFar, 1, 4);
+            this.tableAlignDLStatics.Controls.Add(this.udDLSizeFar, 1, 2);
+            this.tableAlignDLStatics.Controls.Add(this.udDLDistFar, 3, 2);
+            this.tableAlignDLStatics.Location = new System.Drawing.Point(8, 35);
+            this.tableAlignDLStatics.Name = "tableAlignDLStatics";
+            this.tableAlignDLStatics.RowCount = 5;
+            this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
+            this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
+            this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLStatics.Size = new System.Drawing.Size(284, 73);
+            this.tableAlignDLStatics.TabIndex = 6;
+            // 
+            // lDLNear
+            // 
+            this.lDLNear.AutoSize = true;
+            this.lDLNear.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLNear.Location = new System.Drawing.Point(139, 0);
+            this.lDLNear.Name = "lDLNear";
+            this.lDLNear.Size = new System.Drawing.Size(32, 23);
+            this.lDLNear.TabIndex = 0;
+            this.lDLNear.Text = "Near";
+            this.lDLNear.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // udDLDistNear
+            // 
+            this.udDLDistNear.DecimalPlaces = 1;
+            this.udDLDistNear.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLDistNear.Location = new System.Drawing.Point(234, 0);
+            this.udDLDistNear.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLDistNear.Maximum = new decimal(new int[] {
+                                    2998,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLDistNear.Name = "udDLDistNear";
+            this.udDLDistNear.Size = new System.Drawing.Size(50, 23);
+            this.udDLDistNear.TabIndex = 1;
+            this.udDLDistNear.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLDistNear.Value = new decimal(new int[] {
+                                    2,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLDistNear.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            // 
+            // udDLDistVeryFar
+            // 
+            this.udDLDistVeryFar.DecimalPlaces = 1;
+            this.udDLDistVeryFar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLDistVeryFar.Location = new System.Drawing.Point(234, 50);
+            this.udDLDistVeryFar.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLDistVeryFar.Maximum = new decimal(new int[] {
+                                    300,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLDistVeryFar.Name = "udDLDistVeryFar";
+            this.udDLDistVeryFar.Size = new System.Drawing.Size(50, 23);
+            this.udDLDistVeryFar.TabIndex = 5;
+            this.udDLDistVeryFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLDistVeryFar.Value = new decimal(new int[] {
+                                    5,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLDistVeryFar.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            // 
+            // tbDLNearSize
+            // 
+            this.tbDLNearSize.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbDLNearSize.Location = new System.Drawing.Point(174, 0);
+            this.tbDLNearSize.Margin = new System.Windows.Forms.Padding(0);
+            this.tbDLNearSize.MaxLength = 3;
+            this.tbDLNearSize.Name = "tbDLNearSize";
+            this.tbDLNearSize.ReadOnly = true;
+            this.tbDLNearSize.Size = new System.Drawing.Size(50, 23);
+            this.tbDLNearSize.TabIndex = 0;
+            this.tbDLNearSize.Text = "400";
+            this.tbDLNearSize.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // lDLFar
+            // 
+            this.lDLFar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLFar.Location = new System.Drawing.Point(16, 25);
+            this.lDLFar.Name = "lDLFar";
+            this.lDLFar.Size = new System.Drawing.Size(155, 23);
+            this.lDLFar.TabIndex = 0;
+            this.lDLFar.Text = "Far";
+            this.lDLFar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lDLVeryFar
+            // 
+            this.lDLVeryFar.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLVeryFar.Location = new System.Drawing.Point(16, 50);
+            this.lDLVeryFar.Name = "lDLVeryFar";
+            this.lDLVeryFar.Size = new System.Drawing.Size(155, 23);
+            this.lDLVeryFar.TabIndex = 0;
+            this.lDLVeryFar.Text = "Very Far";
+            this.lDLVeryFar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // udDLSizeVeryFar
+            // 
+            this.udDLSizeVeryFar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLSizeVeryFar.Increment = new decimal(new int[] {
+                                    10,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLSizeVeryFar.Location = new System.Drawing.Point(174, 50);
+            this.udDLSizeVeryFar.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLSizeVeryFar.Maximum = new decimal(new int[] {
+                                    9999,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLSizeVeryFar.Name = "udDLSizeVeryFar";
+            this.udDLSizeVeryFar.Size = new System.Drawing.Size(50, 23);
+            this.udDLSizeVeryFar.TabIndex = 4;
+            this.udDLSizeVeryFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLSizeVeryFar.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
+            this.udDLSizeVeryFar.Value = new decimal(new int[] {
+                                    800,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLSizeVeryFar.ValueChanged += new System.EventHandler(this.ValidateDistances);
+            // 
+            // udDLSizeFar
+            // 
+            this.udDLSizeFar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLSizeFar.Increment = new decimal(new int[] {
+                                    10,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLSizeFar.Location = new System.Drawing.Point(174, 25);
+            this.udDLSizeFar.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLSizeFar.Maximum = new decimal(new int[] {
+                                    9999,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLSizeFar.Name = "udDLSizeFar";
+            this.udDLSizeFar.Size = new System.Drawing.Size(50, 23);
+            this.udDLSizeFar.TabIndex = 2;
+            this.udDLSizeFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLSizeFar.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
+            this.udDLSizeFar.Value = new decimal(new int[] {
+                                    600,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLSizeFar.ValueChanged += new System.EventHandler(this.ValidateDistances);
+            // 
+            // udDLDistFar
+            // 
+            this.udDLDistFar.DecimalPlaces = 1;
+            this.udDLDistFar.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLDistFar.Location = new System.Drawing.Point(234, 25);
+            this.udDLDistFar.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLDistFar.Maximum = new decimal(new int[] {
+                                    2999,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLDistFar.Name = "udDLDistFar";
+            this.udDLDistFar.Size = new System.Drawing.Size(50, 23);
+            this.udDLDistFar.TabIndex = 3;
+            this.udDLDistFar.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLDistFar.Value = new decimal(new int[] {
+                                    4,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLDistFar.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            // 
+            // lDLMinSize
+            // 
+            this.lDLMinSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lDLMinSize.AutoSize = true;
+            this.lDLMinSize.Location = new System.Drawing.Point(179, 18);
+            this.lDLMinSize.Name = "lDLMinSize";
+            this.lDLMinSize.Size = new System.Drawing.Size(51, 15);
+            this.lDLMinSize.TabIndex = 0;
+            this.lDLMinSize.Text = "Min Size";
+            // 
+            // lDLEndDist
+            // 
+            this.lDLEndDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lDLEndDist.AutoSize = true;
+            this.lDLEndDist.Location = new System.Drawing.Point(239, 18);
+            this.lDLEndDist.Name = "lDLEndDist";
+            this.lDLEndDist.Size = new System.Drawing.Size(50, 15);
+            this.lDLEndDist.TabIndex = 0;
+            this.lDLEndDist.Text = "End Dist";
+            // 
             // bDLWthr
             // 
             this.bDLWthr.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bDLWthr.Location = new System.Drawing.Point(15, 378);
+            this.bDLWthr.Location = new System.Drawing.Point(76, 422);
             this.bDLWthr.Name = "bDLWthr";
-            this.bDLWthr.Size = new System.Drawing.Size(128, 25);
+            this.bDLWthr.Size = new System.Drawing.Size(160, 25);
             this.bDLWthr.TabIndex = 8;
             this.bDLWthr.Text = "Weat&her Settings...";
             this.bDLWthr.UseVisualStyleBackColor = true;
             this.bDLWthr.Click += new System.EventHandler(this.bDLWthr_Click);
             // 
-            // gbDLDrawDist
-            // 
-            this.gbDLDrawDist.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.gbDLDrawDist.Controls.Add(this.lDLDrawDist);
-            this.gbDLDrawDist.Controls.Add(this.udDLDrawDist);
-            this.gbDLDrawDist.Location = new System.Drawing.Point(15, 19);
-            this.gbDLDrawDist.Name = "gbDLDrawDist";
-            this.gbDLDrawDist.Size = new System.Drawing.Size(130, 44);
-            this.gbDLDrawDist.TabIndex = 0;
-            this.gbDLDrawDist.TabStop = false;
-            this.gbDLDrawDist.Text = "&Draw Distance";
-            // 
-            // lDLDrawDist
-            // 
-            this.lDLDrawDist.Location = new System.Drawing.Point(58, 15);
-            this.lDLDrawDist.Name = "lDLDrawDist";
-            this.lDLDrawDist.Size = new System.Drawing.Size(61, 19);
-            this.lDLDrawDist.TabIndex = 0;
-            this.lDLDrawDist.Text = "cells";
-            this.lDLDrawDist.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // udDLDrawDist
-            // 
-            this.udDLDrawDist.DecimalPlaces = 1;
-            this.udDLDrawDist.Location = new System.Drawing.Point(6, 15);
-            this.udDLDrawDist.Maximum = new decimal(new int[] {
-                                    250,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLDrawDist.Minimum = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLDrawDist.Name = "udDLDrawDist";
-            this.udDLDrawDist.Size = new System.Drawing.Size(50, 20);
-            this.udDLDrawDist.TabIndex = 0;
-            this.udDLDrawDist.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLDrawDist.UpDownAlign = System.Windows.Forms.LeftRightAlignment.Left;
-            this.udDLDrawDist.Value = new decimal(new int[] {
-                                    5,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLDrawDist.ValueChanged += new System.EventHandler(this.udDLDrawDist_ValueChanged);
-            // 
             // gbDLFog
             // 
-            this.gbDLFog.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.gbDLFog.Controls.Add(this.tableAlignDLFog);
             this.gbDLFog.Controls.Add(this.cbDLScattering);
-            this.gbDLFog.Controls.Add(this.lDLFogExpMul);
-            this.gbDLFog.Controls.Add(this.udDLFogExpMul);
-            this.gbDLFog.Controls.Add(this.lDLFogI);
-            this.gbDLFog.Controls.Add(this.udDLFogIEnd);
-            this.gbDLFog.Controls.Add(this.udDLFogIStart);
-            this.gbDLFog.Controls.Add(this.udDLFogBEnd);
             this.gbDLFog.Controls.Add(this.cbDLFogExp);
-            this.gbDLFog.Controls.Add(this.udDLFogBStart);
-            this.gbDLFog.Controls.Add(this.udDLFogAEnd);
-            this.gbDLFog.Controls.Add(this.udDLFogAStart);
-            this.gbDLFog.Controls.Add(this.lDLFogB);
-            this.gbDLFog.Controls.Add(this.lDLFogA);
             this.gbDLFog.Controls.Add(this.lDLFogStart);
             this.gbDLFog.Controls.Add(this.lDLFogEnd);
-            this.gbDLFog.Location = new System.Drawing.Point(15, 189);
+            this.gbDLFog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.gbDLFog.Location = new System.Drawing.Point(3, 205);
             this.gbDLFog.Name = "gbDLFog";
-            this.gbDLFog.Size = new System.Drawing.Size(262, 183);
+            this.gbDLFog.Size = new System.Drawing.Size(306, 211);
             this.gbDLFog.TabIndex = 6;
             this.gbDLFog.TabStop = false;
             this.gbDLFog.Text = "&Fog";
             // 
-            // cbDLScattering
+            // tableAlignDLFog
             // 
-            this.cbDLScattering.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbDLScattering.AutoSize = true;
-            this.cbDLScattering.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDLScattering.Enabled = false;
-            this.cbDLScattering.Location = new System.Drawing.Point(11, 153);
-            this.cbDLScattering.Name = "cbDLScattering";
-            this.cbDLScattering.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.cbDLScattering.Size = new System.Drawing.Size(237, 17);
-            this.cbDLScattering.TabIndex = 9;
-            this.cbDLScattering.Text = "High quality atmosphere && distance &colouring";
-            this.cbDLScattering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDLScattering.UseVisualStyleBackColor = true;
+            this.tableAlignDLFog.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableAlignDLFog.ColumnCount = 4;
+            this.tableAlignDLFog.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableAlignDLFog.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableAlignDLFog.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 10F));
+            this.tableAlignDLFog.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableAlignDLFog.Controls.Add(this.udDLFogAStart, 1, 0);
+            this.tableAlignDLFog.Controls.Add(this.udDLFogAEnd, 3, 0);
+            this.tableAlignDLFog.Controls.Add(this.udDLFogExpMul, 3, 6);
+            this.tableAlignDLFog.Controls.Add(this.lDLFogExpMul, 0, 6);
+            this.tableAlignDLFog.Controls.Add(this.udDLFogBStart, 1, 2);
+            this.tableAlignDLFog.Controls.Add(this.udDLFogBEnd, 3, 2);
+            this.tableAlignDLFog.Controls.Add(this.lDLFogI, 0, 4);
+            this.tableAlignDLFog.Controls.Add(this.udDLFogIStart, 1, 4);
+            this.tableAlignDLFog.Controls.Add(this.udDLFogIEnd, 3, 4);
+            this.tableAlignDLFog.Controls.Add(this.lDLFogB, 0, 2);
+            this.tableAlignDLFog.Controls.Add(this.lDLFogA, 0, 0);
+            this.tableAlignDLFog.Location = new System.Drawing.Point(8, 30);
+            this.tableAlignDLFog.Name = "tableAlignDLFog";
+            this.tableAlignDLFog.RowCount = 7;
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
+            this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
+            this.tableAlignDLFog.Size = new System.Drawing.Size(284, 100);
+            this.tableAlignDLFog.TabIndex = 10;
             // 
-            // lDLFogExpMul
+            // udDLFogAStart
             // 
-            this.lDLFogExpMul.Enabled = false;
-            this.lDLFogExpMul.Location = new System.Drawing.Point(19, 126);
-            this.lDLFogExpMul.Name = "lDLFogExpMul";
-            this.lDLFogExpMul.Size = new System.Drawing.Size(173, 19);
-            this.lDLFogExpMul.TabIndex = 8;
-            this.lDLFogExpMul.Text = "Exponential distance multiplier";
-            this.lDLFogExpMul.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // udDLFogExpMul
-            // 
-            this.udDLFogExpMul.DecimalPlaces = 1;
-            this.udDLFogExpMul.Enabled = false;
-            this.udDLFogExpMul.Increment = new decimal(new int[] {
+            this.udDLFogAStart.DecimalPlaces = 1;
+            this.udDLFogAStart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLFogAStart.Increment = new decimal(new int[] {
                                     1,
                                     0,
                                     0,
                                     65536});
-            this.udDLFogExpMul.Location = new System.Drawing.Point(198, 127);
-            this.udDLFogExpMul.Maximum = new decimal(new int[] {
-                                    5,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLFogExpMul.Minimum = new decimal(new int[] {
-                                    25,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogExpMul.Name = "udDLFogExpMul";
-            this.udDLFogExpMul.Size = new System.Drawing.Size(50, 20);
-            this.udDLFogExpMul.TabIndex = 7;
-            this.udDLFogExpMul.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLFogExpMul.Value = new decimal(new int[] {
-                                    4,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLFogExpMul.ValueChanged += new System.EventHandler(this.udDLFogExpMul_ValueChanged);
-            // 
-            // lDLFogI
-            // 
-            this.lDLFogI.Location = new System.Drawing.Point(22, 78);
-            this.lDLFogI.Name = "lDLFogI";
-            this.lDLFogI.Size = new System.Drawing.Size(116, 19);
-            this.lDLFogI.TabIndex = 0;
-            this.lDLFogI.Text = "Distant Interiors Fog";
-            this.lDLFogI.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // udDLFogIEnd
-            // 
-            this.udDLFogIEnd.DecimalPlaces = 2;
-            this.udDLFogIEnd.Increment = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogIEnd.Location = new System.Drawing.Point(198, 78);
-            this.udDLFogIEnd.Maximum = new decimal(new int[] {
-                                    10,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLFogIEnd.Minimum = new decimal(new int[] {
-                                    10,
-                                    0,
-                                    0,
-                                    131072});
-            this.udDLFogIEnd.Name = "udDLFogIEnd";
-            this.udDLFogIEnd.Size = new System.Drawing.Size(50, 20);
-            this.udDLFogIEnd.TabIndex = 5;
-            this.udDLFogIEnd.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLFogIEnd.Value = new decimal(new int[] {
-                                    20,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogIEnd.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
-            // 
-            // udDLFogIStart
-            // 
-            this.udDLFogIStart.DecimalPlaces = 2;
-            this.udDLFogIStart.Increment = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogIStart.Location = new System.Drawing.Point(140, 78);
-            this.udDLFogIStart.Maximum = new decimal(new int[] {
-                                    990,
-                                    0,
-                                    0,
-                                    131072});
-            this.udDLFogIStart.Minimum = new decimal(new int[] {
-                                    90,
-                                    0,
-                                    0,
-                                    -2147352576});
-            this.udDLFogIStart.Name = "udDLFogIStart";
-            this.udDLFogIStart.Size = new System.Drawing.Size(50, 20);
-            this.udDLFogIStart.TabIndex = 4;
-            this.udDLFogIStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLFogIStart.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
-            // 
-            // udDLFogBEnd
-            // 
-            this.udDLFogBEnd.DecimalPlaces = 1;
-            this.udDLFogBEnd.Increment = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogBEnd.Location = new System.Drawing.Point(198, 54);
-            this.udDLFogBEnd.Maximum = new decimal(new int[] {
-                                    300,
-                                    0,
-                                    0,
-                                    0});
-            this.udDLFogBEnd.Minimum = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogBEnd.Name = "udDLFogBEnd";
-            this.udDLFogBEnd.Size = new System.Drawing.Size(50, 20);
-            this.udDLFogBEnd.TabIndex = 3;
-            this.udDLFogBEnd.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLFogBEnd.Value = new decimal(new int[] {
-                                    3,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogBEnd.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
-            // 
-            // cbDLFogExp
-            // 
-            this.cbDLFogExp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cbDLFogExp.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDLFogExp.Location = new System.Drawing.Point(22, 104);
-            this.cbDLFogExp.Name = "cbDLFogExp";
-            this.cbDLFogExp.Size = new System.Drawing.Size(226, 18);
-            this.cbDLFogExp.TabIndex = 6;
-            this.cbDLFogExp.Text = "Use high quality (e&xponential) fog";
-            this.cbDLFogExp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDLFogExp.UseVisualStyleBackColor = true;
-            this.cbDLFogExp.CheckedChanged += new System.EventHandler(this.cbDLFogExp_CheckedChanged);
-            // 
-            // udDLFogBStart
-            // 
-            this.udDLFogBStart.DecimalPlaces = 1;
-            this.udDLFogBStart.Increment = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    65536});
-            this.udDLFogBStart.Location = new System.Drawing.Point(140, 54);
-            this.udDLFogBStart.Maximum = new decimal(new int[] {
+            this.udDLFogAStart.Location = new System.Drawing.Point(174, 0);
+            this.udDLFogAStart.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLFogAStart.Maximum = new decimal(new int[] {
                                     2999,
                                     0,
                                     0,
                                     65536});
-            this.udDLFogBStart.Minimum = new decimal(new int[] {
-                                    999,
+            this.udDLFogAStart.Name = "udDLFogAStart";
+            this.udDLFogAStart.Size = new System.Drawing.Size(50, 23);
+            this.udDLFogAStart.TabIndex = 0;
+            this.udDLFogAStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLFogAStart.Value = new decimal(new int[] {
+                                    2,
                                     0,
                                     0,
-                                    -2147418112});
-            this.udDLFogBStart.Name = "udDLFogBStart";
-            this.udDLFogBStart.Size = new System.Drawing.Size(50, 20);
-            this.udDLFogBStart.TabIndex = 2;
-            this.udDLFogBStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLFogBStart.Value = new decimal(new int[] {
-                                    5,
-                                    0,
-                                    0,
-                                    -2147418112});
-            this.udDLFogBStart.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+                                    0});
+            this.udDLFogAStart.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
             // 
             // udDLFogAEnd
             // 
             this.udDLFogAEnd.DecimalPlaces = 1;
+            this.udDLFogAEnd.Dock = System.Windows.Forms.DockStyle.Fill;
             this.udDLFogAEnd.Increment = new decimal(new int[] {
                                     1,
                                     0,
                                     0,
                                     65536});
-            this.udDLFogAEnd.Location = new System.Drawing.Point(198, 30);
+            this.udDLFogAEnd.Location = new System.Drawing.Point(234, 0);
+            this.udDLFogAEnd.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogAEnd.Maximum = new decimal(new int[] {
                                     300,
                                     0,
@@ -2299,7 +2298,7 @@ namespace MGEgui {
                                     0,
                                     65536});
             this.udDLFogAEnd.Name = "udDLFogAEnd";
-            this.udDLFogAEnd.Size = new System.Drawing.Size(50, 20);
+            this.udDLFogAEnd.Size = new System.Drawing.Size(50, 23);
             this.udDLFogAEnd.TabIndex = 1;
             this.udDLFogAEnd.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.udDLFogAEnd.Value = new decimal(new int[] {
@@ -2309,64 +2308,255 @@ namespace MGEgui {
                                     0});
             this.udDLFogAEnd.ValueChanged += new System.EventHandler(this.udDLFogAEnd_ValueChanged);
             // 
-            // udDLFogAStart
+            // udDLFogExpMul
             // 
-            this.udDLFogAStart.DecimalPlaces = 1;
-            this.udDLFogAStart.Increment = new decimal(new int[] {
+            this.udDLFogExpMul.DecimalPlaces = 1;
+            this.udDLFogExpMul.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLFogExpMul.Enabled = false;
+            this.udDLFogExpMul.Increment = new decimal(new int[] {
                                     1,
                                     0,
                                     0,
                                     65536});
-            this.udDLFogAStart.Location = new System.Drawing.Point(140, 30);
-            this.udDLFogAStart.Maximum = new decimal(new int[] {
+            this.udDLFogExpMul.Location = new System.Drawing.Point(234, 77);
+            this.udDLFogExpMul.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLFogExpMul.Maximum = new decimal(new int[] {
+                                    5,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLFogExpMul.Minimum = new decimal(new int[] {
+                                    25,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogExpMul.Name = "udDLFogExpMul";
+            this.udDLFogExpMul.Size = new System.Drawing.Size(50, 23);
+            this.udDLFogExpMul.TabIndex = 7;
+            this.udDLFogExpMul.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLFogExpMul.Value = new decimal(new int[] {
+                                    4,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLFogExpMul.ValueChanged += new System.EventHandler(this.udDLFogExpMul_ValueChanged);
+            // 
+            // lDLFogExpMul
+            // 
+            this.lDLFogExpMul.AutoSize = true;
+            this.tableAlignDLFog.SetColumnSpan(this.lDLFogExpMul, 3);
+            this.lDLFogExpMul.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLFogExpMul.Enabled = false;
+            this.lDLFogExpMul.Location = new System.Drawing.Point(62, 77);
+            this.lDLFogExpMul.Name = "lDLFogExpMul";
+            this.lDLFogExpMul.Size = new System.Drawing.Size(169, 23);
+            this.lDLFogExpMul.TabIndex = 8;
+            this.lDLFogExpMul.Text = "Exponential distance multiplier";
+            this.lDLFogExpMul.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // udDLFogBStart
+            // 
+            this.udDLFogBStart.DecimalPlaces = 1;
+            this.udDLFogBStart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLFogBStart.Increment = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogBStart.Location = new System.Drawing.Point(174, 25);
+            this.udDLFogBStart.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLFogBStart.Maximum = new decimal(new int[] {
                                     2999,
                                     0,
                                     0,
                                     65536});
-            this.udDLFogAStart.Name = "udDLFogAStart";
-            this.udDLFogAStart.Size = new System.Drawing.Size(50, 20);
-            this.udDLFogAStart.TabIndex = 0;
-            this.udDLFogAStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.udDLFogAStart.Value = new decimal(new int[] {
-                                    2,
+            this.udDLFogBStart.Minimum = new decimal(new int[] {
+                                    999,
+                                    0,
+                                    0,
+                                    -2147418112});
+            this.udDLFogBStart.Name = "udDLFogBStart";
+            this.udDLFogBStart.Size = new System.Drawing.Size(50, 23);
+            this.udDLFogBStart.TabIndex = 2;
+            this.udDLFogBStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLFogBStart.Value = new decimal(new int[] {
+                                    5,
+                                    0,
+                                    0,
+                                    -2147418112});
+            this.udDLFogBStart.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            // 
+            // udDLFogBEnd
+            // 
+            this.udDLFogBEnd.DecimalPlaces = 1;
+            this.udDLFogBEnd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLFogBEnd.Increment = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogBEnd.Location = new System.Drawing.Point(234, 25);
+            this.udDLFogBEnd.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLFogBEnd.Maximum = new decimal(new int[] {
+                                    300,
                                     0,
                                     0,
                                     0});
-            this.udDLFogAStart.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            this.udDLFogBEnd.Minimum = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogBEnd.Name = "udDLFogBEnd";
+            this.udDLFogBEnd.Size = new System.Drawing.Size(50, 23);
+            this.udDLFogBEnd.TabIndex = 3;
+            this.udDLFogBEnd.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLFogBEnd.Value = new decimal(new int[] {
+                                    3,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogBEnd.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            // 
+            // lDLFogI
+            // 
+            this.lDLFogI.AutoSize = true;
+            this.lDLFogI.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLFogI.Location = new System.Drawing.Point(58, 50);
+            this.lDLFogI.Name = "lDLFogI";
+            this.lDLFogI.Size = new System.Drawing.Size(113, 23);
+            this.lDLFogI.TabIndex = 0;
+            this.lDLFogI.Text = "Distant Interiors Fog";
+            this.lDLFogI.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // udDLFogIStart
+            // 
+            this.udDLFogIStart.DecimalPlaces = 2;
+            this.udDLFogIStart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLFogIStart.Increment = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogIStart.Location = new System.Drawing.Point(174, 50);
+            this.udDLFogIStart.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLFogIStart.Maximum = new decimal(new int[] {
+                                    990,
+                                    0,
+                                    0,
+                                    131072});
+            this.udDLFogIStart.Minimum = new decimal(new int[] {
+                                    90,
+                                    0,
+                                    0,
+                                    -2147352576});
+            this.udDLFogIStart.Name = "udDLFogIStart";
+            this.udDLFogIStart.Size = new System.Drawing.Size(50, 23);
+            this.udDLFogIStart.TabIndex = 4;
+            this.udDLFogIStart.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLFogIStart.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
+            // 
+            // udDLFogIEnd
+            // 
+            this.udDLFogIEnd.DecimalPlaces = 2;
+            this.udDLFogIEnd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.udDLFogIEnd.Increment = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogIEnd.Location = new System.Drawing.Point(234, 50);
+            this.udDLFogIEnd.Margin = new System.Windows.Forms.Padding(0);
+            this.udDLFogIEnd.Maximum = new decimal(new int[] {
+                                    10,
+                                    0,
+                                    0,
+                                    0});
+            this.udDLFogIEnd.Minimum = new decimal(new int[] {
+                                    10,
+                                    0,
+                                    0,
+                                    131072});
+            this.udDLFogIEnd.Name = "udDLFogIEnd";
+            this.udDLFogIEnd.Size = new System.Drawing.Size(50, 23);
+            this.udDLFogIEnd.TabIndex = 5;
+            this.udDLFogIEnd.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.udDLFogIEnd.Value = new decimal(new int[] {
+                                    20,
+                                    0,
+                                    0,
+                                    65536});
+            this.udDLFogIEnd.ValueChanged += new System.EventHandler(this.ValidateDLSettings);
             // 
             // lDLFogB
             // 
-            this.lDLFogB.Location = new System.Drawing.Point(20, 54);
+            this.lDLFogB.AutoSize = true;
+            this.lDLFogB.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLFogB.Location = new System.Drawing.Point(75, 25);
             this.lDLFogB.Name = "lDLFogB";
-            this.lDLFogB.Size = new System.Drawing.Size(118, 19);
+            this.lDLFogB.Size = new System.Drawing.Size(96, 23);
             this.lDLFogB.TabIndex = 0;
             this.lDLFogB.Text = "Below Water Fog";
             this.lDLFogB.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lDLFogA
             // 
-            this.lDLFogA.Location = new System.Drawing.Point(22, 30);
+            this.lDLFogA.AutoSize = true;
+            this.lDLFogA.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lDLFogA.Location = new System.Drawing.Point(73, 0);
             this.lDLFogA.Name = "lDLFogA";
-            this.lDLFogA.Size = new System.Drawing.Size(116, 19);
+            this.lDLFogA.Size = new System.Drawing.Size(98, 23);
             this.lDLFogA.TabIndex = 0;
             this.lDLFogA.Text = "Above Water Fog";
             this.lDLFogA.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // cbDLScattering
+            // 
+            this.cbDLScattering.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbDLScattering.AutoSize = true;
+            this.cbDLScattering.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDLScattering.Enabled = false;
+            this.cbDLScattering.Location = new System.Drawing.Point(21, 167);
+            this.cbDLScattering.Name = "cbDLScattering";
+            this.cbDLScattering.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.cbDLScattering.Size = new System.Drawing.Size(271, 19);
+            this.cbDLScattering.TabIndex = 9;
+            this.cbDLScattering.Text = "High quality atmosphere && distance &colouring";
+            this.cbDLScattering.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDLScattering.UseVisualStyleBackColor = true;
+            // 
+            // cbDLFogExp
+            // 
+            this.cbDLFogExp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbDLFogExp.AutoSize = true;
+            this.cbDLFogExp.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDLFogExp.Location = new System.Drawing.Point(88, 141);
+            this.cbDLFogExp.Name = "cbDLFogExp";
+            this.cbDLFogExp.Size = new System.Drawing.Size(204, 19);
+            this.cbDLFogExp.TabIndex = 6;
+            this.cbDLFogExp.Text = "Use high quality (e&xponential) fog";
+            this.cbDLFogExp.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.cbDLFogExp.UseVisualStyleBackColor = true;
+            this.cbDLFogExp.CheckedChanged += new System.EventHandler(this.cbDLFogExp_CheckedChanged);
+            // 
             // lDLFogStart
             // 
+            this.lDLFogStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lDLFogStart.AutoSize = true;
-            this.lDLFogStart.Location = new System.Drawing.Point(137, 16);
+            this.lDLFogStart.Location = new System.Drawing.Point(179, 13);
             this.lDLFogStart.Name = "lDLFogStart";
-            this.lDLFogStart.Size = new System.Drawing.Size(29, 13);
+            this.lDLFogStart.Size = new System.Drawing.Size(31, 15);
             this.lDLFogStart.TabIndex = 0;
             this.lDLFogStart.Text = "Start";
             // 
             // lDLFogEnd
             // 
+            this.lDLFogEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lDLFogEnd.AutoSize = true;
-            this.lDLFogEnd.Location = new System.Drawing.Point(195, 16);
+            this.lDLFogEnd.Location = new System.Drawing.Point(239, 13);
+            this.lDLFogEnd.Margin = new System.Windows.Forms.Padding(0);
             this.lDLFogEnd.Name = "lDLFogEnd";
-            this.lDLFogEnd.Size = new System.Drawing.Size(26, 13);
+            this.lDLFogEnd.Size = new System.Drawing.Size(27, 15);
             this.lDLFogEnd.TabIndex = 0;
             this.lDLFogEnd.Text = "End";
             // 
@@ -2376,9 +2566,9 @@ namespace MGEgui {
             this.tpConfig.Controls.Add(this.gbMainUI);
             this.tpConfig.Controls.Add(this.gbMainInfo);
             this.tpConfig.Controls.Add(this.gbMainSettings);
-            this.tpConfig.Location = new System.Drawing.Point(4, 22);
+            this.tpConfig.Location = new System.Drawing.Point(4, 24);
             this.tpConfig.Name = "tpConfig";
-            this.tpConfig.Size = new System.Drawing.Size(578, 419);
+            this.tpConfig.Size = new System.Drawing.Size(616, 473);
             this.tpConfig.TabIndex = 0;
             this.tpConfig.Text = "Config";
             this.tpConfig.ToolTipText = "Load/save all MGE settings.";
@@ -2390,17 +2580,17 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.gbErrorReporting.Controls.Add(this.bReportingShowDLWizardLog);
             this.gbErrorReporting.Controls.Add(this.bReportingShowLog);
-            this.gbErrorReporting.Location = new System.Drawing.Point(8, 160);
+            this.gbErrorReporting.Location = new System.Drawing.Point(8, 323);
             this.gbErrorReporting.Name = "gbErrorReporting";
-            this.gbErrorReporting.Size = new System.Drawing.Size(562, 54);
+            this.gbErrorReporting.Size = new System.Drawing.Size(600, 60);
             this.gbErrorReporting.TabIndex = 3;
             this.gbErrorReporting.TabStop = false;
             this.gbErrorReporting.Text = "Error reporting";
             // 
             // bReportingShowDLWizardLog
             // 
-            this.bReportingShowDLWizardLog.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.bReportingShowDLWizardLog.Location = new System.Drawing.Point(201, 23);
+            this.bReportingShowDLWizardLog.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.bReportingShowDLWizardLog.Location = new System.Drawing.Point(220, 22);
             this.bReportingShowDLWizardLog.Name = "bReportingShowDLWizardLog";
             this.bReportingShowDLWizardLog.Size = new System.Drawing.Size(160, 25);
             this.bReportingShowDLWizardLog.TabIndex = 1;
@@ -2410,8 +2600,7 @@ namespace MGEgui {
             // 
             // bReportingShowLog
             // 
-            this.bReportingShowLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bReportingShowLog.Location = new System.Drawing.Point(6, 23);
+            this.bReportingShowLog.Location = new System.Drawing.Point(6, 22);
             this.bReportingShowLog.Name = "bReportingShowLog";
             this.bReportingShowLog.Size = new System.Drawing.Size(156, 25);
             this.bReportingShowLog.TabIndex = 0;
@@ -2421,35 +2610,37 @@ namespace MGEgui {
             // 
             // gbMainUI
             // 
-            this.gbMainUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.gbMainUI.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.gbMainUI.Controls.Add(this.pLanguage);
             this.gbMainUI.Controls.Add(this.cmbTipReadSpd);
             this.gbMainUI.Controls.Add(this.lTipReadSpd);
             this.gbMainUI.Controls.Add(this.lTipRSpdUnit);
-            this.gbMainUI.Location = new System.Drawing.Point(8, 335);
+            this.gbMainUI.Location = new System.Drawing.Point(8, 69);
             this.gbMainUI.Name = "gbMainUI";
-            this.gbMainUI.Size = new System.Drawing.Size(562, 76);
+            this.gbMainUI.Size = new System.Drawing.Size(600, 80);
             this.gbMainUI.TabIndex = 2;
             this.gbMainUI.TabStop = false;
             this.gbMainUI.Text = "User Interface";
             // 
             // pLanguage
             // 
+            this.pLanguage.AutoSize = true;
             this.pLanguage.Controls.Add(this.cmbUILanguage);
             this.pLanguage.Controls.Add(this.cbUILangAuto);
             this.pLanguage.Controls.Add(this.lUILanguage);
             this.pLanguage.Location = new System.Drawing.Point(8, 25);
             this.pLanguage.Name = "pLanguage";
-            this.pLanguage.Size = new System.Drawing.Size(156, 37);
+            this.pLanguage.Size = new System.Drawing.Size(210, 42);
             this.pLanguage.TabIndex = 0;
             // 
             // cmbUILanguage
             // 
+            this.cmbUILanguage.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.cmbUILanguage.FormattingEnabled = true;
-            this.cmbUILanguage.Location = new System.Drawing.Point(0, 16);
+            this.cmbUILanguage.Location = new System.Drawing.Point(0, 19);
             this.cmbUILanguage.Name = "cmbUILanguage";
-            this.cmbUILanguage.Size = new System.Drawing.Size(156, 21);
+            this.cmbUILanguage.Size = new System.Drawing.Size(210, 23);
             this.cmbUILanguage.TabIndex = 1;
             this.cmbUILanguage.SelectedIndexChanged += new System.EventHandler(this.cmbUILanguage_SelectedIndexChanged);
             this.cmbUILanguage.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKey);
@@ -2459,9 +2650,9 @@ namespace MGEgui {
             this.cbUILangAuto.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbUILangAuto.AutoSize = true;
             this.cbUILangAuto.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbUILangAuto.Location = new System.Drawing.Point(78, -1);
+            this.cbUILangAuto.Location = new System.Drawing.Point(125, -1);
             this.cbUILangAuto.Name = "cbUILangAuto";
-            this.cbUILangAuto.Size = new System.Drawing.Size(78, 17);
+            this.cbUILangAuto.Size = new System.Drawing.Size(85, 19);
             this.cbUILangAuto.TabIndex = 0;
             this.cbUILangAuto.Text = "Autodetect";
             this.cbUILangAuto.UseVisualStyleBackColor = true;
@@ -2472,13 +2663,13 @@ namespace MGEgui {
             this.lUILanguage.AutoSize = true;
             this.lUILanguage.Location = new System.Drawing.Point(-2, 0);
             this.lUILanguage.Name = "lUILanguage";
-            this.lUILanguage.Size = new System.Drawing.Size(55, 13);
+            this.lUILanguage.Size = new System.Drawing.Size(59, 15);
             this.lUILanguage.TabIndex = 0;
             this.lUILanguage.Text = "Language";
             // 
             // cmbTipReadSpd
             // 
-            this.cmbTipReadSpd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbTipReadSpd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cmbTipReadSpd.FormattingEnabled = true;
             this.cmbTipReadSpd.Items.AddRange(new object[] {
                                     "5",
@@ -2497,9 +2688,9 @@ namespace MGEgui {
                                     "50",
                                     "60",
                                     "70"});
-            this.cmbTipReadSpd.Location = new System.Drawing.Point(398, 41);
+            this.cmbTipReadSpd.Location = new System.Drawing.Point(308, 44);
             this.cmbTipReadSpd.Name = "cmbTipReadSpd";
-            this.cmbTipReadSpd.Size = new System.Drawing.Size(48, 21);
+            this.cmbTipReadSpd.Size = new System.Drawing.Size(48, 23);
             this.cmbTipReadSpd.TabIndex = 2;
             this.cmbTipReadSpd.Text = "15";
             this.cmbTipReadSpd.SelectedIndexChanged += new System.EventHandler(this.cmbMainTipReadSpd_SelectedIndexChanged);
@@ -2507,21 +2698,21 @@ namespace MGEgui {
             // 
             // lTipReadSpd
             // 
-            this.lTipReadSpd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lTipReadSpd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lTipReadSpd.AutoSize = true;
-            this.lTipReadSpd.Location = new System.Drawing.Point(395, 25);
+            this.lTipReadSpd.Location = new System.Drawing.Point(308, 26);
             this.lTipReadSpd.Name = "lTipReadSpd";
-            this.lTipReadSpd.Size = new System.Drawing.Size(109, 13);
+            this.lTipReadSpd.Size = new System.Drawing.Size(122, 15);
             this.lTipReadSpd.TabIndex = 0;
             this.lTipReadSpd.Text = "Tooltip reading speed";
             // 
             // lTipRSpdUnit
             // 
-            this.lTipRSpdUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lTipRSpdUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lTipRSpdUnit.AutoSize = true;
-            this.lTipRSpdUnit.Location = new System.Drawing.Point(449, 44);
+            this.lTipRSpdUnit.Location = new System.Drawing.Point(362, 47);
             this.lTipRSpdUnit.Name = "lTipRSpdUnit";
-            this.lTipRSpdUnit.Size = new System.Drawing.Size(58, 13);
+            this.lTipRSpdUnit.Size = new System.Drawing.Size(60, 15);
             this.lTipRSpdUnit.TabIndex = 0;
             this.lTipRSpdUnit.Text = "chars/sec.";
             // 
@@ -2534,14 +2725,13 @@ namespace MGEgui {
             this.gbMainInfo.Controls.Add(this.bAbout);
             this.gbMainInfo.Location = new System.Drawing.Point(8, 3);
             this.gbMainInfo.Name = "gbMainInfo";
-            this.gbMainInfo.Size = new System.Drawing.Size(562, 54);
+            this.gbMainInfo.Size = new System.Drawing.Size(600, 60);
             this.gbMainInfo.TabIndex = 0;
             this.gbMainInfo.TabStop = false;
             this.gbMainInfo.Text = "Information";
             // 
             // bViewCaps
             // 
-            this.bViewCaps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bViewCaps.Location = new System.Drawing.Point(6, 22);
             this.bViewCaps.Name = "bViewCaps";
             this.bViewCaps.Size = new System.Drawing.Size(160, 25);
@@ -2551,8 +2741,8 @@ namespace MGEgui {
             // 
             // bHelp
             // 
-            this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bHelp.Location = new System.Drawing.Point(396, 22);
+            this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.bHelp.Location = new System.Drawing.Point(434, 22);
             this.bHelp.Name = "bHelp";
             this.bHelp.Size = new System.Drawing.Size(160, 25);
             this.bHelp.TabIndex = 1;
@@ -2561,8 +2751,8 @@ namespace MGEgui {
             // 
             // bAbout
             // 
-            this.bAbout.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.bAbout.Location = new System.Drawing.Point(201, 22);
+            this.bAbout.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.bAbout.Location = new System.Drawing.Point(220, 22);
             this.bAbout.Name = "bAbout";
             this.bAbout.Size = new System.Drawing.Size(160, 25);
             this.bAbout.TabIndex = 2;
@@ -2577,9 +2767,9 @@ namespace MGEgui {
             this.gbMainSettings.Controls.Add(this.bImport);
             this.gbMainSettings.Controls.Add(this.bExport);
             this.gbMainSettings.Controls.Add(this.cbClearINI);
-            this.gbMainSettings.Location = new System.Drawing.Point(8, 72);
+            this.gbMainSettings.Location = new System.Drawing.Point(8, 389);
             this.gbMainSettings.Name = "gbMainSettings";
-            this.gbMainSettings.Size = new System.Drawing.Size(562, 72);
+            this.gbMainSettings.Size = new System.Drawing.Size(600, 76);
             this.gbMainSettings.TabIndex = 1;
             this.gbMainSettings.TabStop = false;
             this.gbMainSettings.Text = "Settings";
@@ -2598,7 +2788,7 @@ namespace MGEgui {
             // 
             this.bImport.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.bImport.Enabled = false;
-            this.bImport.Location = new System.Drawing.Point(201, 40);
+            this.bImport.Location = new System.Drawing.Point(220, 40);
             this.bImport.Name = "bImport";
             this.bImport.Size = new System.Drawing.Size(160, 25);
             this.bImport.TabIndex = 3;
@@ -2610,7 +2800,7 @@ namespace MGEgui {
             // 
             this.bExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bExport.Enabled = false;
-            this.bExport.Location = new System.Drawing.Point(396, 40);
+            this.bExport.Location = new System.Drawing.Point(434, 40);
             this.bExport.Name = "bExport";
             this.bExport.Size = new System.Drawing.Size(160, 25);
             this.bExport.TabIndex = 4;
@@ -2622,9 +2812,9 @@ namespace MGEgui {
             // 
             this.cbClearINI.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbClearINI.AutoSize = true;
-            this.cbClearINI.Location = new System.Drawing.Point(8, 20);
+            this.cbClearINI.Location = new System.Drawing.Point(8, 18);
             this.cbClearINI.Name = "cbClearINI";
-            this.cbClearINI.Size = new System.Drawing.Size(121, 17);
+            this.cbClearINI.Size = new System.Drawing.Size(130, 19);
             this.cbClearINI.TabIndex = 0;
             this.cbClearINI.Text = "Clear saved settings";
             this.cbClearINI.UseVisualStyleBackColor = true;
@@ -2632,9 +2822,9 @@ namespace MGEgui {
             // tpInstructions
             // 
             this.tpInstructions.Controls.Add(this.lInstructions);
-            this.tpInstructions.Location = new System.Drawing.Point(4, 22);
+            this.tpInstructions.Location = new System.Drawing.Point(4, 24);
             this.tpInstructions.Name = "tpInstructions";
-            this.tpInstructions.Size = new System.Drawing.Size(578, 419);
+            this.tpInstructions.Size = new System.Drawing.Size(616, 473);
             this.tpInstructions.TabIndex = 8;
             this.tpInstructions.Text = "Instructions";
             this.tpInstructions.ToolTipText = "A guide to setting up MGE XE.";
@@ -2647,7 +2837,7 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lInstructions.Location = new System.Drawing.Point(12, 12);
             this.lInstructions.Name = "lInstructions";
-            this.lInstructions.Size = new System.Drawing.Size(554, 404);
+            this.lInstructions.Size = new System.Drawing.Size(592, 470);
             this.lInstructions.TabIndex = 0;
             this.lInstructions.Text = resources.GetString("lInstructions.Text");
             // 
@@ -2657,11 +2847,14 @@ namespace MGEgui {
             // 
             // MainForm
             // 
-            this.ClientSize = new System.Drawing.Size(586, 445);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.ClientSize = new System.Drawing.Size(624, 501);
             this.Controls.Add(this.tabControl);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(600, 478);
+            this.MinimumSize = new System.Drawing.Size(640, 540);
             this.Name = "MainForm";
             this.Text = "     ";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.MainForm_FormClosing);
@@ -2684,13 +2877,16 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udCam3rdY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udCam3rdX)).EndInit();
             this.gbInputTools.ResumeLayout(false);
+            this.gbInputTools.PerformLayout();
             this.gbInputOpts.ResumeLayout(false);
             this.gbInputOpts.PerformLayout();
             this.tpGlobal.ResumeLayout(false);
             this.gbSShot.ResumeLayout(false);
             this.gbSShot.PerformLayout();
-            this.tableLayoutPanel1.ResumeLayout(false);
-            this.tableLayoutPanel1.PerformLayout();
+            this.tableAlignSSFormat.ResumeLayout(false);
+            this.tableAlignSSFormat.PerformLayout();
+            this.tableLayoutScreenshots.ResumeLayout(false);
+            this.tableLayoutScreenshots.PerformLayout();
             this.gbScene.ResumeLayout(false);
             this.gbScene.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).EndInit();
@@ -2699,28 +2895,23 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).EndInit();
             this.gbDisplay.ResumeLayout(false);
             this.gbDisplay.PerformLayout();
+            this.tableAlignResolution.ResumeLayout(false);
+            this.tableAlignResolution.PerformLayout();
             this.tableLayoutDisplay.ResumeLayout(false);
             this.tableLayoutDisplay.PerformLayout();
             this.tabControl.ResumeLayout(false);
             this.tpDL.ResumeLayout(false);
             this.tpDL.PerformLayout();
             this.gbDistantLand.ResumeLayout(false);
-            this.gbDistantLand.PerformLayout();
+            this.tableLayoutDL.ResumeLayout(false);
+            this.tableLayoutDLLeft.ResumeLayout(false);
+            this.tableLayoutDLLeft.PerformLayout();
             this.gbXEFeatures.ResumeLayout(false);
             this.gbXEFeatures.PerformLayout();
-            this.pDLStatics.ResumeLayout(false);
-            this.pDLStatics.PerformLayout();
-            this.gbDLStatics.ResumeLayout(false);
-            this.gbDLStatics.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDistVeryFar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDistFar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDistNear)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeVeryFar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeFar)).EndInit();
-            this.gbDLAutoDist.ResumeLayout(false);
-            this.gbDLAutoDist.PerformLayout();
+            this.gbDLDrawDist.ResumeLayout(false);
+            this.gbDLDrawDist.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDrawDist)).EndInit();
             this.gbDLWater.ResumeLayout(false);
-            this.gbDLWater.PerformLayout();
             this.gbDLWtrCaust.ResumeLayout(false);
             this.gbDLWtrCaust.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udDLWtrCaust)).EndInit();
@@ -2729,17 +2920,31 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udDLWtrWave)).EndInit();
             this.gbDLWtrRefl.ResumeLayout(false);
             this.gbDLWtrRefl.PerformLayout();
-            this.gbDLDrawDist.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.udDLDrawDist)).EndInit();
+            this.tableLayoutDLRight.ResumeLayout(false);
+            this.gbDLAutoDist.ResumeLayout(false);
+            this.gbDLAutoDist.PerformLayout();
+            this.pDLStatics.ResumeLayout(false);
+            this.pDLStatics.PerformLayout();
+            this.gbDLStatics.ResumeLayout(false);
+            this.gbDLStatics.PerformLayout();
+            this.tableAlignDLStatics.ResumeLayout(false);
+            this.tableAlignDLStatics.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDistNear)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDistVeryFar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeVeryFar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLSizeFar)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLDistFar)).EndInit();
             this.gbDLFog.ResumeLayout(false);
             this.gbDLFog.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogExpMul)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIEnd)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIStart)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBEnd)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBStart)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udDLFogAEnd)).EndInit();
+            this.tableAlignDLFog.ResumeLayout(false);
+            this.tableAlignDLFog.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udDLFogAStart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogAEnd)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogExpMul)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBStart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogBEnd)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIStart)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.udDLFogIEnd)).EndInit();
             this.tpConfig.ResumeLayout(false);
             this.gbErrorReporting.ResumeLayout(false);
             this.gbMainUI.ResumeLayout(false);
@@ -2752,6 +2957,14 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.TableLayoutPanel tableAlignSSFormat;
+        private System.Windows.Forms.TableLayoutPanel tableAlignDLFog;
+        private System.Windows.Forms.TableLayoutPanel tableAlignDLStatics;
+        private System.Windows.Forms.TableLayoutPanel tableAlignResolution;
+        public System.Windows.Forms.GroupBox gbDLAutoDist;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutDLRight;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutDLLeft;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutDL;
         private System.Windows.Forms.Label lUIScale;
         private System.Windows.Forms.NumericUpDown udUIScale;
         private System.Windows.Forms.CheckBox cbBorderless;
@@ -2765,7 +2978,7 @@ namespace MGEgui {
         private System.Windows.Forms.Button bMWLightSettings;
         public System.Windows.Forms.CheckBox cbDLReflInterior;
         private System.Windows.Forms.TableLayoutPanel tableLayoutDisplay;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutScreenshots;
         private System.Windows.Forms.Button bMWLightingReset;
         private System.Windows.Forms.Label lInstructions;
         private System.Windows.Forms.TabPage tpInstructions;
@@ -2895,7 +3108,7 @@ namespace MGEgui {
         private CheckBox cbDisableMGE;
         private GroupBox gbInputOpts;
         private GroupBox gbInputTools;
-        private GroupBox gbDLWater;
+        public System.Windows.Forms.GroupBox gbDLWater;
         private CheckBox cbDLReflBlur;
         private GroupBox gbDLWtrCaust;
         public NumericUpDown udDLWtrCaust;
@@ -2906,7 +3119,6 @@ namespace MGEgui {
         public NumericUpDown udDLFogExpMul;
         public Label lDLFogExpMul;
         public CheckBox cbDLFogExp;
-        private GroupBox gbDLAutoDist;
         private RadioButton rbDLAutoByAFogEnd;
         private RadioButton rbDLAutoByDrawDist;
         private GroupBox gbMainUI;
