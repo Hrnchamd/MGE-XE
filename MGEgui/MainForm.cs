@@ -1410,7 +1410,7 @@ namespace MGEgui {
             udDLFogAEnd.Enabled = !status || !rbDLAutoByDrawDist.Checked;
             udDLFogBStart.Enabled = !status;
             udDLFogBEnd.Enabled = !status;
-            lDLFogI.Enabled = udDLFogIStart.Enabled = udDLFogIEnd.Enabled = !status && cbDLDistantStatics.Checked;
+            udDLFogIStart.Enabled = udDLFogIEnd.Enabled = !status && cbDLDistantStatics.Checked;
             udDLDistNear.Enabled = !status;
             udDLDistFar.Enabled = !status;
             udDLDistVeryFar.Enabled = !status;
