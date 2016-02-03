@@ -125,9 +125,9 @@ namespace MGEgui {
             // 
             this.bMoveUp.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.bMoveUp.Location = new System.Drawing.Point(0, 9);
+            this.bMoveUp.Location = new System.Drawing.Point(0, 5);
             this.bMoveUp.Name = "bMoveUp";
-            this.bMoveUp.Size = new System.Drawing.Size(79, 23);
+            this.bMoveUp.Size = new System.Drawing.Size(79, 25);
             this.bMoveUp.TabIndex = 0;
             this.bMoveUp.Text = "Move up";
             this.bMoveUp.Click += new System.EventHandler(this.bMoveUp_Click);
@@ -135,20 +135,22 @@ namespace MGEgui {
             // lbSelected
             // 
             this.lbSelected.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbSelected.IntegralHeight = false;
             this.lbSelected.ItemHeight = 15;
-            this.lbSelected.Location = new System.Drawing.Point(9, 244);
+            this.lbSelected.Location = new System.Drawing.Point(9, 227);
             this.lbSelected.Name = "lbSelected";
-            this.lbSelected.Size = new System.Drawing.Size(237, 124);
+            this.lbSelected.Size = new System.Drawing.Size(237, 140);
             this.lbSelected.TabIndex = 3;
             this.lbSelected.DoubleClick += new System.EventHandler(this.lbSelected_DoubleClick);
             // 
             // lbAvailable
             // 
             this.lbAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbAvailable.IntegralHeight = false;
             this.lbAvailable.ItemHeight = 15;
             this.lbAvailable.Location = new System.Drawing.Point(9, 26);
             this.lbAvailable.Name = "lbAvailable";
-            this.lbAvailable.Size = new System.Drawing.Size(237, 189);
+            this.lbAvailable.Size = new System.Drawing.Size(237, 172);
             this.lbAvailable.TabIndex = 1;
             this.lbAvailable.DoubleClick += new System.EventHandler(this.lbAvailable_DoubleClick);
             // 
@@ -156,9 +158,9 @@ namespace MGEgui {
             // 
             this.bMoveDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.bMoveDown.Location = new System.Drawing.Point(0, 38);
+            this.bMoveDown.Location = new System.Drawing.Point(0, 36);
             this.bMoveDown.Name = "bMoveDown";
-            this.bMoveDown.Size = new System.Drawing.Size(79, 23);
+            this.bMoveDown.Size = new System.Drawing.Size(79, 25);
             this.bMoveDown.TabIndex = 1;
             this.bMoveDown.Text = "Move down";
             this.bMoveDown.Click += new System.EventHandler(this.bMoveDown_Click);
@@ -166,9 +168,9 @@ namespace MGEgui {
             // bSave
             // 
             this.bSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bSave.Location = new System.Drawing.Point(92, 376);
+            this.bSave.Location = new System.Drawing.Point(92, 374);
             this.bSave.Name = "bSave";
-            this.bSave.Size = new System.Drawing.Size(90, 23);
+            this.bSave.Size = new System.Drawing.Size(90, 25);
             this.bSave.TabIndex = 21;
             this.bSave.Text = "Save";
             this.bSave.Click += new System.EventHandler(this.bSave_Click);
@@ -177,9 +179,9 @@ namespace MGEgui {
             // 
             this.bClear.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
-            this.bClear.Location = new System.Drawing.Point(0, 85);
+            this.bClear.Location = new System.Drawing.Point(0, 108);
             this.bClear.Name = "bClear";
-            this.bClear.Size = new System.Drawing.Size(79, 23);
+            this.bClear.Size = new System.Drawing.Size(79, 25);
             this.bClear.TabIndex = 2;
             this.bClear.Text = "Clear";
             this.bClear.Click += new System.EventHandler(this.bClear_Click);
@@ -188,9 +190,9 @@ namespace MGEgui {
             // 
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(188, 376);
+            this.bCancel.Location = new System.Drawing.Point(188, 374);
             this.bCancel.Name = "bCancel";
-            this.bCancel.Size = new System.Drawing.Size(90, 23);
+            this.bCancel.Size = new System.Drawing.Size(90, 25);
             this.bCancel.TabIndex = 22;
             this.bCancel.Text = "Cancel";
             this.bCancel.Click += new System.EventHandler(this.bCancel_Click);
@@ -209,7 +211,7 @@ namespace MGEgui {
             this.lActiveList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lActiveList.AutoSize = true;
-            this.lActiveList.Location = new System.Drawing.Point(9, 218);
+            this.lActiveList.Location = new System.Drawing.Point(9, 201);
             this.lActiveList.Name = "lActiveList";
             this.lActiveList.Padding = new System.Windows.Forms.Padding(0, 8, 0, 0);
             this.lActiveList.Size = new System.Drawing.Size(237, 23);
@@ -222,7 +224,7 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.bEditor.Location = new System.Drawing.Point(0, 8);
             this.bEditor.Name = "bEditor";
-            this.bEditor.Size = new System.Drawing.Size(79, 23);
+            this.bEditor.Size = new System.Drawing.Size(79, 25);
             this.bEditor.TabIndex = 0;
             this.bEditor.Text = "Editor";
             this.bEditor.UseVisualStyleBackColor = true;
@@ -233,10 +235,10 @@ namespace MGEgui {
             this.lShaderUsage.AutoSize = true;
             this.tableLayoutPanelAdv.SetColumnSpan(this.lShaderUsage, 2);
             this.lShaderUsage.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lShaderUsage.Location = new System.Drawing.Point(9, 371);
+            this.lShaderUsage.Location = new System.Drawing.Point(9, 370);
             this.lShaderUsage.Name = "lShaderUsage";
             this.lShaderUsage.Padding = new System.Windows.Forms.Padding(0, 8, 0, 8);
-            this.lShaderUsage.Size = new System.Drawing.Size(322, 31);
+            this.lShaderUsage.Size = new System.Drawing.Size(322, 32);
             this.lShaderUsage.TabIndex = 10;
             this.lShaderUsage.Text = "Double-click to add or remove shaders from the active list.\r\n";
             // 
@@ -259,9 +261,9 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.Padding = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.tableLayoutPanelAdv.RowCount = 5;
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 60F));
+            this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 55F));
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 40F));
+            this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45F));
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelAdv.Size = new System.Drawing.Size(340, 410);
             this.tableLayoutPanelAdv.TabIndex = 23;
@@ -273,7 +275,7 @@ namespace MGEgui {
             this.panelActions.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelActions.Location = new System.Drawing.Point(252, 26);
             this.panelActions.Name = "panelActions";
-            this.panelActions.Size = new System.Drawing.Size(79, 189);
+            this.panelActions.Size = new System.Drawing.Size(79, 172);
             this.panelActions.TabIndex = 11;
             // 
             // panelActiveListActions
@@ -283,9 +285,9 @@ namespace MGEgui {
             this.panelActiveListActions.Controls.Add(this.bMoveDown);
             this.panelActiveListActions.Controls.Add(this.bClear);
             this.panelActiveListActions.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelActiveListActions.Location = new System.Drawing.Point(252, 244);
+            this.panelActiveListActions.Location = new System.Drawing.Point(252, 227);
             this.panelActiveListActions.Name = "panelActiveListActions";
-            this.panelActiveListActions.Size = new System.Drawing.Size(79, 124);
+            this.panelActiveListActions.Size = new System.Drawing.Size(79, 140);
             this.panelActiveListActions.TabIndex = 12;
             // 
             // cmbPresets
@@ -507,7 +509,7 @@ namespace MGEgui {
             // 
             this.bAdvancedMode.Location = new System.Drawing.Point(183, 330);
             this.bAdvancedMode.Name = "bAdvancedMode";
-            this.bAdvancedMode.Size = new System.Drawing.Size(95, 23);
+            this.bAdvancedMode.Size = new System.Drawing.Size(95, 25);
             this.bAdvancedMode.TabIndex = 20;
             this.bAdvancedMode.Text = "Modding >>>";
             this.bAdvancedMode.UseVisualStyleBackColor = true;
@@ -629,7 +631,7 @@ namespace MGEgui {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(650, 440);
+            this.MaximumSize = new System.Drawing.Size(650, 1000);
             this.MinimumSize = new System.Drawing.Size(305, 440);
             this.Name = "ShaderActive";
             this.Text = "Set active shaders";

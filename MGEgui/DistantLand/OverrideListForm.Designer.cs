@@ -36,20 +36,21 @@
             this.bCancel = new System.Windows.Forms.Button();
             this.bSave = new System.Windows.Forms.Button();
             this.openStaticListDialog = new System.Windows.Forms.OpenFileDialog();
+            this.panelDPIScalingLimiter = new System.Windows.Forms.Panel();
+            this.panelDPIScalingLimiter.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbOverrideList
             // 
-            this.lbOverrideList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbOverrideList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbOverrideList.FormattingEnabled = true;
             this.lbOverrideList.HorizontalScrollbar = true;
             this.lbOverrideList.IntegralHeight = false;
             this.lbOverrideList.ItemHeight = 15;
-            this.lbOverrideList.Location = new System.Drawing.Point(12, 12);
+            this.lbOverrideList.Location = new System.Drawing.Point(0, 0);
+            this.lbOverrideList.Margin = new System.Windows.Forms.Padding(0);
             this.lbOverrideList.Name = "lbOverrideList";
-            this.lbOverrideList.Size = new System.Drawing.Size(410, 211);
+            this.lbOverrideList.Size = new System.Drawing.Size(410, 212);
             this.lbOverrideList.TabIndex = 0;
             // 
             // bClear
@@ -119,7 +120,7 @@
             this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bCancel.AutoSize = true;
             this.bCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.bCancel.Location = new System.Drawing.Point(428, 167);
+            this.bCancel.Location = new System.Drawing.Point(428, 168);
             this.bCancel.Name = "bCancel";
             this.bCancel.Size = new System.Drawing.Size(119, 25);
             this.bCancel.TabIndex = 6;
@@ -130,7 +131,7 @@
             // 
             this.bSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.bSave.AutoSize = true;
-            this.bSave.Location = new System.Drawing.Point(428, 198);
+            this.bSave.Location = new System.Drawing.Point(428, 199);
             this.bSave.Name = "bSave";
             this.bSave.Size = new System.Drawing.Size(119, 25);
             this.bSave.TabIndex = 7;
@@ -145,14 +146,25 @@
             this.openStaticListDialog.Multiselect = true;
             this.openStaticListDialog.RestoreDirectory = true;
             // 
+            // panelDPIScalingLimiter
+            // 
+            this.panelDPIScalingLimiter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelDPIScalingLimiter.Controls.Add(this.lbOverrideList);
+            this.panelDPIScalingLimiter.Location = new System.Drawing.Point(12, 12);
+            this.panelDPIScalingLimiter.Name = "panelDPIScalingLimiter";
+            this.panelDPIScalingLimiter.Size = new System.Drawing.Size(410, 212);
+            this.panelDPIScalingLimiter.TabIndex = 8;
+            // 
             // OverrideListForm
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(559, 235);
-            this.Controls.Add(this.lbOverrideList);
+            this.ClientSize = new System.Drawing.Size(559, 236);
+            this.Controls.Add(this.panelDPIScalingLimiter);
             this.Controls.Add(this.bClear);
             this.Controls.Add(this.bAdd);
             this.Controls.Add(this.bRemove);
@@ -162,14 +174,16 @@
             this.Controls.Add(this.bSave);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-            this.MinimumSize = new System.Drawing.Size(480, 250);
+            this.MinimumSize = new System.Drawing.Size(480, 275);
             this.Name = "OverrideListForm";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Selected Static Override Lists";
+            this.panelDPIScalingLimiter.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.Panel panelDPIScalingLimiter;
 
         #endregion
 

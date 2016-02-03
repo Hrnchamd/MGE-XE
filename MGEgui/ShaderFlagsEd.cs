@@ -48,7 +48,7 @@ namespace MGEgui {
             // cbSFNotSunVis
             // 
             this.cbSFNotSunVis.AutoSize = true;
-            this.cbSFNotSunVis.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotSunVis.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFNotSunVis.Location = new System.Drawing.Point(3, 153);
             this.cbSFNotSunVis.Name = "cbSFNotSunVis";
             this.cbSFNotSunVis.Size = new System.Drawing.Size(359, 19);
@@ -59,7 +59,7 @@ namespace MGEgui {
             // cbSFSunVis
             // 
             this.cbSFSunVis.AutoSize = true;
-            this.cbSFSunVis.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFSunVis.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFSunVis.Location = new System.Drawing.Point(3, 128);
             this.cbSFSunVis.Name = "cbSFSunVis";
             this.cbSFSunVis.Size = new System.Drawing.Size(359, 19);
@@ -70,7 +70,7 @@ namespace MGEgui {
             // cbSFNotAboveWater
             // 
             this.cbSFNotAboveWater.AutoSize = true;
-            this.cbSFNotAboveWater.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotAboveWater.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFNotAboveWater.Location = new System.Drawing.Point(3, 103);
             this.cbSFNotAboveWater.Name = "cbSFNotAboveWater";
             this.cbSFNotAboveWater.Size = new System.Drawing.Size(359, 19);
@@ -81,7 +81,7 @@ namespace MGEgui {
             // cbSFNotUnderwater
             // 
             this.cbSFNotUnderwater.AutoSize = true;
-            this.cbSFNotUnderwater.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotUnderwater.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFNotUnderwater.Location = new System.Drawing.Point(3, 78);
             this.cbSFNotUnderwater.Name = "cbSFNotUnderwater";
             this.cbSFNotUnderwater.Size = new System.Drawing.Size(359, 19);
@@ -92,7 +92,7 @@ namespace MGEgui {
             // cbSFNotIntExt
             // 
             this.cbSFNotIntExt.AutoSize = true;
-            this.cbSFNotIntExt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotIntExt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFNotIntExt.Location = new System.Drawing.Point(3, 53);
             this.cbSFNotIntExt.Name = "cbSFNotIntExt";
             this.cbSFNotIntExt.Size = new System.Drawing.Size(359, 19);
@@ -103,7 +103,7 @@ namespace MGEgui {
             // cbSFNotExt
             // 
             this.cbSFNotExt.AutoSize = true;
-            this.cbSFNotExt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotExt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFNotExt.Location = new System.Drawing.Point(3, 28);
             this.cbSFNotExt.Name = "cbSFNotExt";
             this.cbSFNotExt.Size = new System.Drawing.Size(359, 19);
@@ -114,7 +114,7 @@ namespace MGEgui {
             // cbSFNotInt
             // 
             this.cbSFNotInt.AutoSize = true;
-            this.cbSFNotInt.Dock = System.Windows.Forms.DockStyle.Top;
+            this.cbSFNotInt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cbSFNotInt.Location = new System.Drawing.Point(3, 3);
             this.cbSFNotInt.Name = "cbSFNotInt";
             this.cbSFNotInt.Size = new System.Drawing.Size(359, 19);
@@ -124,9 +124,11 @@ namespace MGEgui {
             // 
             // bOK
             // 
-            this.bOK.Location = new System.Drawing.Point(221, 216);
+            this.bOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bOK.AutoSize = true;
+            this.bOK.Location = new System.Drawing.Point(201, 229);
             this.bOK.Name = "bOK";
-            this.bOK.Size = new System.Drawing.Size(75, 23);
+            this.bOK.Size = new System.Drawing.Size(85, 25);
             this.bOK.TabIndex = 0;
             this.bOK.Text = "OK";
             this.bOK.UseVisualStyleBackColor = true;
@@ -134,9 +136,11 @@ namespace MGEgui {
             // 
             // bCancel
             // 
-            this.bCancel.Location = new System.Drawing.Point(302, 216);
+            this.bCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bCancel.AutoSize = true;
+            this.bCancel.Location = new System.Drawing.Point(292, 229);
             this.bCancel.Name = "bCancel";
-            this.bCancel.Size = new System.Drawing.Size(75, 23);
+            this.bCancel.Size = new System.Drawing.Size(85, 25);
             this.bCancel.TabIndex = 1;
             this.bCancel.Text = "Cancel";
             this.bCancel.UseVisualStyleBackColor = true;
@@ -144,8 +148,9 @@ namespace MGEgui {
             // 
             // tableLayoutPanel1
             // 
+            this.tableLayoutPanel1.AutoSize = true;
             this.tableLayoutPanel1.ColumnCount = 1;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.cbSFNotInt, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.cbSFNotExt, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.cbSFNotIntExt, 0, 2);
@@ -155,7 +160,7 @@ namespace MGEgui {
             this.tableLayoutPanel1.Controls.Add(this.cbSFNotAboveWater, 0, 4);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 12);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.RowCount = 7;
+            this.tableLayoutPanel1.RowCount = 8;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -163,30 +168,30 @@ namespace MGEgui {
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(365, 188);
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(365, 175);
             this.tableLayoutPanel1.TabIndex = 14;
             // 
             // ShaderFlagsEd
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(389, 251);
-            this.ControlBox = false;
+            this.ClientSize = new System.Drawing.Size(389, 266);
             this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.bCancel);
             this.Controls.Add(this.bOK);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
-            this.MaximumSize = new System.Drawing.Size(395, 280);
-            this.MinimumSize = new System.Drawing.Size(395, 280);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "ShaderFlagsEd";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Shader flags";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
         }
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 

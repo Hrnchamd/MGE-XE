@@ -1169,7 +1169,7 @@ namespace MGEgui {
                                     "Range vertex (Best)"});
             this.cmbFogMode.Location = new System.Drawing.Point(294, 76);
             this.cmbFogMode.Name = "cmbFogMode";
-            this.cmbFogMode.Size = new System.Drawing.Size(154, 23);
+            this.cmbFogMode.Size = new System.Drawing.Size(156, 23);
             this.cmbFogMode.TabIndex = 13;
             this.cmbFogMode.Text = "Depth pixel (Fast)";
             this.cmbFogMode.SelectedIndexChanged += new System.EventHandler(this.cmbFogMode_SelectedIndexChanged);

@@ -67,21 +67,26 @@ namespace MGEgui {
             this.pasteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
             this.selectAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.FileToolStrip.SuspendLayout();
             this.MenuStrip.SuspendLayout();
+            this.tableLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            this.flowLayoutPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // rtbTechnique
             // 
             this.rtbTechnique.AcceptsTab = true;
-            this.rtbTechnique.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.rtbTechnique.DetectUrls = false;
+            this.rtbTechnique.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtbTechnique.Font = new System.Drawing.Font("Courier New", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rtbTechnique.Location = new System.Drawing.Point(12, 82);
+            this.rtbTechnique.Location = new System.Drawing.Point(0, 31);
+            this.rtbTechnique.Margin = new System.Windows.Forms.Padding(0, 6, 0, 6);
             this.rtbTechnique.Name = "rtbTechnique";
-            this.rtbTechnique.Size = new System.Drawing.Size(628, 397);
+            this.rtbTechnique.Size = new System.Drawing.Size(640, 377);
             this.rtbTechnique.TabIndex = 5;
             this.rtbTechnique.Text = "";
             this.rtbTechnique.WordWrap = false;
@@ -90,23 +95,25 @@ namespace MGEgui {
             // 
             // tbMessage
             // 
-            this.tbMessage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.tbMessage.BackColor = System.Drawing.Color.White;
-            this.tbMessage.Location = new System.Drawing.Point(12, 485);
+            this.tbMessage.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tbMessage.Location = new System.Drawing.Point(0, 414);
+            this.tbMessage.Margin = new System.Windows.Forms.Padding(0);
             this.tbMessage.Multiline = true;
             this.tbMessage.Name = "tbMessage";
             this.tbMessage.ReadOnly = true;
             this.tbMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.tbMessage.Size = new System.Drawing.Size(628, 47);
+            this.tbMessage.Size = new System.Drawing.Size(640, 50);
             this.tbMessage.TabIndex = 6;
             // 
             // bValidate
             // 
             this.bValidate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bValidate.Location = new System.Drawing.Point(12, 538);
+            this.bValidate.AutoSize = true;
+            this.bValidate.Location = new System.Drawing.Point(0, 0);
+            this.bValidate.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.bValidate.Name = "bValidate";
-            this.bValidate.Size = new System.Drawing.Size(80, 23);
+            this.bValidate.Size = new System.Drawing.Size(80, 25);
             this.bValidate.TabIndex = 7;
             this.bValidate.Text = "Validate";
             this.bValidate.Click += new System.EventHandler(this.bValidate_Click);
@@ -114,9 +121,11 @@ namespace MGEgui {
             // bPreview
             // 
             this.bPreview.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bPreview.Location = new System.Drawing.Point(98, 538);
+            this.bPreview.AutoSize = true;
+            this.bPreview.Location = new System.Drawing.Point(83, 0);
+            this.bPreview.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.bPreview.Name = "bPreview";
-            this.bPreview.Size = new System.Drawing.Size(80, 23);
+            this.bPreview.Size = new System.Drawing.Size(80, 25);
             this.bPreview.TabIndex = 8;
             this.bPreview.Text = "Preview";
             this.bPreview.Click += new System.EventHandler(this.bPreview_Click);
@@ -132,10 +141,11 @@ namespace MGEgui {
             // bSetImage
             // 
             this.bSetImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSetImage.Location = new System.Drawing.Point(410, 538);
-            this.bSetImage.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.bSetImage.AutoSize = true;
+            this.bSetImage.Location = new System.Drawing.Point(46, 0);
+            this.bSetImage.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.bSetImage.Name = "bSetImage";
-            this.bSetImage.Size = new System.Drawing.Size(115, 23);
+            this.bSetImage.Size = new System.Drawing.Size(125, 25);
             this.bSetImage.TabIndex = 10;
             this.bSetImage.Text = "Set <thisframe>";
             this.bSetImage.Click += new System.EventHandler(this.bSetImage_Click);
@@ -143,9 +153,11 @@ namespace MGEgui {
             // bPreviewChain
             // 
             this.bPreviewChain.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.bPreviewChain.Location = new System.Drawing.Point(184, 538);
+            this.bPreviewChain.AutoSize = true;
+            this.bPreviewChain.Location = new System.Drawing.Point(166, 0);
+            this.bPreviewChain.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
             this.bPreviewChain.Name = "bPreviewChain";
-            this.bPreviewChain.Size = new System.Drawing.Size(134, 23);
+            this.bPreviewChain.Size = new System.Drawing.Size(134, 25);
             this.bPreviewChain.TabIndex = 4;
             this.bPreviewChain.Text = "Preview active chain";
             this.bPreviewChain.Click += new System.EventHandler(this.bPreviewChain_Click);
@@ -153,10 +165,11 @@ namespace MGEgui {
             // bSetDepthImage
             // 
             this.bSetDepthImage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSetDepthImage.Location = new System.Drawing.Point(525, 538);
-            this.bSetDepthImage.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
+            this.bSetDepthImage.AutoSize = true;
+            this.bSetDepthImage.Location = new System.Drawing.Point(174, 0);
+            this.bSetDepthImage.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.bSetDepthImage.Name = "bSetDepthImage";
-            this.bSetDepthImage.Size = new System.Drawing.Size(115, 23);
+            this.bSetDepthImage.Size = new System.Drawing.Size(125, 25);
             this.bSetDepthImage.TabIndex = 12;
             this.bSetDepthImage.Text = "Set <depthframe>";
             this.bSetDepthImage.Click += new System.EventHandler(this.bSetDepthImage_click);
@@ -178,7 +191,7 @@ namespace MGEgui {
             // FileToolStrip
             // 
             this.FileToolStrip.CanOverflow = false;
-            this.FileToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.FileToolStrip.ImageScalingSize = new System.Drawing.Size(22, 22);
             this.FileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
                                     this.bShaderNew,
                                     this.bShaderOpen,
@@ -188,14 +201,13 @@ namespace MGEgui {
             this.FileToolStrip.Location = new System.Drawing.Point(0, 24);
             this.FileToolStrip.Name = "FileToolStrip";
             this.FileToolStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.FileToolStrip.Size = new System.Drawing.Size(652, 26);
+            this.FileToolStrip.Size = new System.Drawing.Size(664, 26);
             this.FileToolStrip.TabIndex = 0;
             // 
             // bShaderNew
             // 
             this.bShaderNew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bShaderNew.Image = ((System.Drawing.Image)(resources.GetObject("bShaderNew.Image")));
-            this.bShaderNew.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderNew.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderNew.Margin = new System.Windows.Forms.Padding(0);
             this.bShaderNew.Name = "bShaderNew";
@@ -207,7 +219,6 @@ namespace MGEgui {
             // 
             this.bShaderOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bShaderOpen.Image = ((System.Drawing.Image)(resources.GetObject("bShaderOpen.Image")));
-            this.bShaderOpen.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderOpen.Margin = new System.Windows.Forms.Padding(0);
             this.bShaderOpen.Name = "bShaderOpen";
@@ -219,7 +230,6 @@ namespace MGEgui {
             // 
             this.bShaderSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bShaderSave.Image = ((System.Drawing.Image)(resources.GetObject("bShaderSave.Image")));
-            this.bShaderSave.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderSave.Margin = new System.Windows.Forms.Padding(0);
             this.bShaderSave.Name = "bShaderSave";
@@ -231,7 +241,6 @@ namespace MGEgui {
             // 
             this.bShaderSaveAs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.bShaderSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("bShaderSaveAs.Image")));
-            this.bShaderSaveAs.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
             this.bShaderSaveAs.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.bShaderSaveAs.Margin = new System.Windows.Forms.Padding(0);
             this.bShaderSaveAs.Name = "bShaderSaveAs";
@@ -241,10 +250,12 @@ namespace MGEgui {
             // 
             // bShaderFlags
             // 
-            this.bShaderFlags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bShaderFlags.Location = new System.Drawing.Point(500, 53);
+            this.bShaderFlags.AutoSize = true;
+            this.bShaderFlags.Dock = System.Windows.Forms.DockStyle.Right;
+            this.bShaderFlags.Location = new System.Drawing.Point(497, 0);
+            this.bShaderFlags.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.bShaderFlags.Name = "bShaderFlags";
-            this.bShaderFlags.Size = new System.Drawing.Size(140, 23);
+            this.bShaderFlags.Size = new System.Drawing.Size(140, 25);
             this.bShaderFlags.TabIndex = 13;
             this.bShaderFlags.Text = "Edit shader flags";
             this.bShaderFlags.Click += new System.EventHandler(this.bShaderFlags_Click);
@@ -259,7 +270,7 @@ namespace MGEgui {
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Padding = new System.Windows.Forms.Padding(0);
             this.MenuStrip.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            this.MenuStrip.Size = new System.Drawing.Size(652, 24);
+            this.MenuStrip.Size = new System.Drawing.Size(664, 24);
             this.MenuStrip.TabIndex = 15;
             this.MenuStrip.Text = "MenuStrip";
             // 
@@ -413,21 +424,61 @@ namespace MGEgui {
             this.selectAllToolStripMenuItem.Text = "Select &All";
             this.selectAllToolStripMenuItem.Click += new System.EventHandler(this.selectAllToolStripMenuItem_Click);
             // 
+            // tableLayoutPanel1
+            // 
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.ColumnCount = 1;
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.Controls.Add(this.tbMessage, 0, 2);
+            this.tableLayoutPanel1.Controls.Add(this.bShaderFlags, 0, 0);
+            this.tableLayoutPanel1.Controls.Add(this.rtbTechnique, 0, 1);
+            this.tableLayoutPanel1.Location = new System.Drawing.Point(12, 53);
+            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
+            this.tableLayoutPanel1.RowCount = 3;
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F));
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(640, 464);
+            this.tableLayoutPanel1.TabIndex = 16;
+            // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.Controls.Add(this.bValidate);
+            this.flowLayoutPanel1.Controls.Add(this.bPreview);
+            this.flowLayoutPanel1.Controls.Add(this.bPreviewChain);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(12, 524);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(335, 25);
+            this.flowLayoutPanel1.TabIndex = 17;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // flowLayoutPanel2
+            // 
+            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel2.Controls.Add(this.bSetDepthImage);
+            this.flowLayoutPanel2.Controls.Add(this.bSetImage);
+            this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
+            this.flowLayoutPanel2.Location = new System.Drawing.Point(353, 524);
+            this.flowLayoutPanel2.Name = "flowLayoutPanel2";
+            this.flowLayoutPanel2.Size = new System.Drawing.Size(299, 25);
+            this.flowLayoutPanel2.TabIndex = 18;
+            this.flowLayoutPanel2.WrapContents = false;
+            // 
             // ShaderEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(652, 573);
-            this.Controls.Add(this.bShaderFlags);
+            this.ClientSize = new System.Drawing.Size(664, 561);
+            this.Controls.Add(this.flowLayoutPanel2);
+            this.Controls.Add(this.flowLayoutPanel1);
+            this.Controls.Add(this.tableLayoutPanel1);
             this.Controls.Add(this.FileToolStrip);
             this.Controls.Add(this.MenuStrip);
-            this.Controls.Add(this.bSetDepthImage);
-            this.Controls.Add(this.bPreviewChain);
-            this.Controls.Add(this.bSetImage);
-            this.Controls.Add(this.bPreview);
-            this.Controls.Add(this.tbMessage);
-            this.Controls.Add(this.bValidate);
-            this.Controls.Add(this.rtbTechnique);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MainMenuStrip = this.MenuStrip;
@@ -440,9 +491,18 @@ namespace MGEgui {
             this.FileToolStrip.PerformLayout();
             this.MenuStrip.ResumeLayout(false);
             this.MenuStrip.PerformLayout();
+            this.tableLayoutPanel1.ResumeLayout(false);
+            this.tableLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            this.flowLayoutPanel1.PerformLayout();
+            this.flowLayoutPanel2.ResumeLayout(false);
+            this.flowLayoutPanel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
 
         #endregion
 
@@ -494,6 +554,17 @@ namespace MGEgui {
             InitializeComponent();
             Statics.Localizations.Apply(this);
             Statics.Localizations.ApplyDialogs(this, new string[] { "OpenImage", "OpenShader", "SaveShader" });
+            
+            // High DPI aware resizing of 22x22 icons
+            using (var g = this.CreateGraphics()) {
+                double scale = Math.Max(g.DpiX, g.DpiY) / 96.0;
+                int measure = (int)(22 * scale);
+                this.FileToolStrip.ImageScalingSize = new System.Drawing.Size(measure, measure);
+                this.FileToolStrip.AutoSize = false;
+                this.FileToolStrip.PerformLayout();
+                this.FileToolStrip.AutoSize = true;
+                this.FileToolStrip.PerformLayout();
+            }
             
             this.OpenImage.InitialDirectory = Statics.runDir + @"\mge3";
             this.OpenShader.InitialDirectory = this.SaveShader.InitialDirectory = Statics.runDir + @"\" + Statics.pathShaders;

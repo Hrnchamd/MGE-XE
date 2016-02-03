@@ -36,6 +36,8 @@
             this.lbDirectories = new System.Windows.Forms.ListBox();
             this.lDirectories = new System.Windows.Forms.Label();
             this.folderAdd = new System.Windows.Forms.FolderBrowserDialog();
+            this.panelDPIScalingLimiter = new System.Windows.Forms.Panel();
+            this.panelDPIScalingLimiter.SuspendLayout();
             this.SuspendLayout();
             // 
             // bClear
@@ -95,14 +97,13 @@
             // 
             // lbDirectories
             // 
-            this.lbDirectories.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbDirectories.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbDirectories.FormattingEnabled = true;
             this.lbDirectories.HorizontalScrollbar = true;
             this.lbDirectories.IntegralHeight = false;
             this.lbDirectories.ItemHeight = 15;
-            this.lbDirectories.Location = new System.Drawing.Point(12, 25);
+            this.lbDirectories.Location = new System.Drawing.Point(0, 0);
+            this.lbDirectories.Margin = new System.Windows.Forms.Padding(0);
             this.lbDirectories.Name = "lbDirectories";
             this.lbDirectories.Size = new System.Drawing.Size(398, 174);
             this.lbDirectories.Sorted = true;
@@ -123,14 +124,25 @@
             this.folderAdd.RootFolder = System.Environment.SpecialFolder.MyComputer;
             this.folderAdd.ShowNewFolderButton = false;
             // 
+            // panelDPIScalingLimiter
+            // 
+            this.panelDPIScalingLimiter.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelDPIScalingLimiter.Controls.Add(this.lbDirectories);
+            this.panelDPIScalingLimiter.Location = new System.Drawing.Point(12, 25);
+            this.panelDPIScalingLimiter.Name = "panelDPIScalingLimiter";
+            this.panelDPIScalingLimiter.Size = new System.Drawing.Size(398, 174);
+            this.panelDPIScalingLimiter.TabIndex = 6;
+            // 
             // DirectoriesForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.bCancel;
             this.ClientSize = new System.Drawing.Size(541, 211);
+            this.Controls.Add(this.panelDPIScalingLimiter);
             this.Controls.Add(this.lDirectories);
-            this.Controls.Add(this.lbDirectories);
             this.Controls.Add(this.bSave);
             this.Controls.Add(this.bCancel);
             this.Controls.Add(this.bRemove);
@@ -143,9 +155,11 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Plugin Directories";
+            this.panelDPIScalingLimiter.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
         }
+        private System.Windows.Forms.Panel panelDPIScalingLimiter;
 
         #endregion
 
