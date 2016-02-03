@@ -13,6 +13,7 @@ extern void * CreateD3DWrapper(UINT);
 extern void * CreateInputWrapper(void *);
 
 static FARPROC getProc1(const char *lib, const char *funcname);
+static void setDPIScalingAware();
 
 static const char *welcomeMessage = XE_VERSION_STRING;
 static bool isMW;
@@ -31,6 +32,8 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
     {
         LOG::open("mgeXE.log");
         LOG::logline(welcomeMessage);
+
+        setDPIScalingAware();
 
         if(!Configuration.LoadSettings())
         {
@@ -122,4 +125,14 @@ FARPROC getProc1(const char *lib, const char *funcname)
         return NULL;
 
     return GetProcAddress(dll, funcname);
+}
+
+void setDPIScalingAware()
+{
+    // Prevent DPI scaling from affecting chosen window size
+    typedef BOOL (WINAPI * dpiProc)();
+    dpiProc SetProcessDPIAware = (dpiProc)getProc1("user32.dll", "SetProcessDPIAware");
+
+    if(SetProcessDPIAware)
+        SetProcessDPIAware();
 }
