@@ -367,12 +367,12 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
-    float *sky = mwBridge->CellHasWeather() ?  (float*)mwBridge->CurSkyColVector() : (float*)&horizonCol;
+    const RGBVECTOR *skyCol = mwBridge->CellHasWeather() ?  mwBridge->getCurrentWeatherSkyCol() : &horizonCol;
     effect->SetFloat(ehFogStart, fogS);
     effect->SetFloat(ehFogRange, fogE);
     effect->SetFloat(ehFogNearStart, fogNearStart);
     effect->SetFloat(ehFogNearRange, fogNearEnd);
-    effect->SetFloatArray(ehSkyCol, sky, 3);
+    effect->SetFloatArray(ehSkyCol, *skyCol, 3);
     effect->SetFloatArray(ehFogCol1, nearfogCol, 3);
     effect->SetFloatArray(ehFogCol2, horizonCol, 3);
     effect->SetFloat(ehNearViewRange, nearViewRange);
@@ -524,15 +524,14 @@ void DistantLand::adjustFog()
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
-    // This is a read of the unadjusted colour
-    RGBVECTOR c = *mwBridge->CurFogColVector();
-
     if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
     {
-        RGBVECTOR c0(c), c1(c);
+        // Read unadjusted colour, as the scenegraph fog colour may not be updated during menu transitions
+        RGBVECTOR c0 = *mwBridge->getCurrentWeatherFogCol();
+        RGBVECTOR c1 = c0;
 
         // Simplified version of scattering from the shader
-        const RGBVECTOR *skyCol = mwBridge->CurSkyColVector();
+        const RGBVECTOR *skyCol = mwBridge->getCurrentWeatherSkyCol();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
         const float sunaltitude = powf(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
@@ -588,8 +587,8 @@ void DistantLand::adjustFog()
     }
     else
     {
-        // Save colour for matching near fog in shaders
-        nearfogCol = c;
+        // Save current fog colour for matching near fog in shaders
+        nearfogCol = RGBVECTOR(mwBridge->getScenegraphFogCol());
     }
 }
 

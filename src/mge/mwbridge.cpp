@@ -427,18 +427,27 @@ float MWBridge::GetWeatherRatio()
 
 //-----------------------------------------------------------------------------
 
-RGBVECTOR* MWBridge::CurSkyColVector()
+const RGBVECTOR * MWBridge::getCurrentWeatherSkyCol()
 {
     assert(m_loaded);
-    return (RGBVECTOR*)eCurSkyCol;
+    return (RGBVECTOR *)eCurSkyCol;
 }
 
 //-----------------------------------------------------------------------------
 
-RGBVECTOR* MWBridge::CurFogColVector()
+const RGBVECTOR * MWBridge::getCurrentWeatherFogCol()
 {
     assert(m_loaded);
-    return (RGBVECTOR*)eCurFogCol;
+    return (RGBVECTOR *)eCurFogCol;
+}
+
+//-----------------------------------------------------------------------------
+
+DWORD MWBridge::getScenegraphFogCol()
+{
+    DWORD addr = read_dword(eEnviro) + 0x9c;
+    addr = read_dword(addr) + 0x1c;
+    return read_dword(addr);
 }
 
 //-----------------------------------------------------------------------------

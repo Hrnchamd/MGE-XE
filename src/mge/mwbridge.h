@@ -44,11 +44,12 @@ public:
     DWORD GetCurrentWeather();
     DWORD GetNextWeather();
     float GetWeatherRatio();
-    RGBVECTOR* CurSkyColVector();
-    RGBVECTOR* CurFogColVector();
+    const RGBVECTOR * getCurrentWeatherSkyCol();
+    const RGBVECTOR * getCurrentWeatherFogCol();
+    DWORD getScenegraphFogCol();
     void setScenegraphFogCol(DWORD c);
     bool CellHasWeather();
-    float* GetWindVector();
+    float * GetWindVector();
     DWORD GetWthrStruct(int wthr);
     int GetWthrString(int wthr, int offset, char str[]);
     void SetWthrString(int wthr, int offset, char str[]);
