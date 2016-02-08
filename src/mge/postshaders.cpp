@@ -24,6 +24,7 @@ const DWORD fvfBlend = D3DFVF_XYZW | D3DFVF_TEX2;
 
 IDirect3DDevice9 *PostShaders::device;
 std::vector<MGEShader> PostShaders::shaders;
+std::vector<D3DXMACRO> PostShaders::features;
 IDirect3DTexture9 *PostShaders::texLastShader;
 IDirect3DSurface9 *PostShaders::surfaceLastShader;
 SurfaceDoubleBuffer PostShaders::doublebuffer;
@@ -57,7 +58,6 @@ static const D3DXMACRO macroTerminator = { 0, 0 };
 bool PostShaders::initShaderChain()
 {
     char path[MAX_PATH];
-    std::vector<D3DXMACRO> features;
 
     // Set shader defines corresponding to required features
     if(Configuration.MGEFlags & EXP_FOG)
@@ -66,18 +66,27 @@ bool PostShaders::initShaderChain()
 
     for(const char *p = Configuration.ShaderChain; *p;  p += strlen(p) + 1)
     {
+        WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
         MGEShader shader;
         ID3DXBuffer *errors;
 
         std::snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", p);
+        if(!GetFileAttributesEx(path, GetFileExInfoStandard, &fileAttrs))
+        {
+            LOG::logline("!! Post shader %s missing", path);
+            continue;
+        }
+
         HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &shader.effect, &errors);
 
         if(hr == D3D_OK)
         {
             if(checkShaderVersion(&shader))
             {
-                shader.name = std::string(p);
+                shader.name = p;
+                shader.timestamp = fileAttrs.ftLastWriteTime.dwLowDateTime;
                 shader.enabled = true;
+
                 initShader(&shader);
                 loadShaderDependencies(&shader);
                 shaders.push_back(shader);
@@ -85,6 +94,7 @@ bool PostShaders::initShaderChain()
             }
             else
             {
+                shader.effect->Release();
                 LOG::logline("## Post shader %s is not version compatible, not loaded", path);
             }
         }
@@ -109,6 +119,53 @@ bool PostShaders::initShaderChain()
     }
 
     return true;
+}
+
+// updateShaderChain
+// Reloads shaders that have changed
+bool PostShaders::updateShaderChain()
+{
+    char path[MAX_PATH];
+    bool updated = false;
+
+    for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
+    {
+        WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
+        ID3DXEffect *effect;
+        ID3DXBuffer *errors;
+
+        std::snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", s->name.c_str());
+        if(!GetFileAttributesEx(path, GetFileExInfoStandard, &fileAttrs))
+            continue;
+
+        if(s->timestamp != fileAttrs.ftLastWriteTime.dwLowDateTime)
+        {
+            HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &effect, &errors);
+
+            if(hr == D3D_OK)
+            {
+                s->effect->Release();
+                s->effect = effect;
+                s->timestamp = fileAttrs.ftLastWriteTime.dwLowDateTime;
+
+                initShader(&*s);
+                loadShaderDependencies(&*s);
+                LOG::logline("-- Post shader %s reloaded", path);
+                updated = true;
+            }
+            else
+            {
+                LOG::logline("!! Post shader %s failed to load/compile", path);
+                if(errors)
+                {
+                    LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
+                    errors->Release();
+                }
+            }
+        }
+    }
+
+    return updated;
 }
 
 // checkShaderVersion

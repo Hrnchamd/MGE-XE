@@ -7,6 +7,7 @@
 #include "mwbridge.h"
 #include "statusoverlay.h"
 #include "distantland.h"
+#include "postshaders.h"
 #include "mmefunctiondefs.h"
 
 
@@ -114,6 +115,7 @@ void MacroFunctions::ToggleBlending() {
 }
 
 void MacroFunctions::ToggleShaders() {
+    PostShaders::updateShaderChain();
     Configuration.MGEFlags ^= USE_HW_SHADER;
     displayFlag(USE_HW_SHADER, "Shaders enabled", "Shaders disabled");
 }

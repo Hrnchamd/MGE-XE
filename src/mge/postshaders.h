@@ -12,9 +12,10 @@ enum EffectVariableID {
 
 struct MGEShader
 {
-    ID3DXEffect* effect;
+    ID3DXEffect *effect;
     bool enabled;
     int disableFlags;
+    DWORD timestamp;
     std::string name;
     D3DXHANDLE ehVars[32];
 
@@ -32,6 +33,7 @@ class PostShaders
 {
     static IDirect3DDevice9 *device;
     static std::vector<MGEShader> shaders;
+    static std::vector<D3DXMACRO> features;
     static IDirect3DTexture9 *texLastShader;
     static IDirect3DSurface9 *surfaceLastShader;
     static SurfaceDoubleBuffer doublebuffer;
@@ -43,6 +45,7 @@ class PostShaders
 public:
     static bool init(IDirect3DDevice9 *realDevice);
     static bool initShaderChain();
+    static bool updateShaderChain();
     static bool checkShaderVersion(MGEShader *shader);
     static void initShader(MGEShader *shader);
     static void loadShaderDependencies(MGEShader *shader);
