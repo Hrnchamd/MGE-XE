@@ -34,7 +34,7 @@ namespace MGEgui.DistantLand {
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabPlugs = new System.Windows.Forms.TabPage();
             this.tableLayoutPlugins = new System.Windows.Forms.TableLayoutPanel();
-            this.clbPlugsModList = new System.Windows.Forms.CheckedListBox();
+            this.clbPlugsModList = new MGEgui.DistantLand.BetterCheckedListBox();
             this.lInstructions = new System.Windows.Forms.Label();
             this.lPlugsModList = new System.Windows.Forms.Label();
             this.bPlugsFromINI = new System.Windows.Forms.Button();
@@ -1026,7 +1026,7 @@ namespace MGEgui.DistantLand {
         private System.Windows.Forms.TabPage tabStat;
         private System.Windows.Forms.TabPage tabFinish;
         private System.Windows.Forms.Label lPlugsModList;
-        private System.Windows.Forms.CheckedListBox clbPlugsModList;
+        private MGEgui.DistantLand.BetterCheckedListBox clbPlugsModList;
         private System.Windows.Forms.Button bPlugsFromINI;
         private System.Windows.Forms.Button bPlugsAll;
         private System.Windows.Forms.Button bPlugsClear;

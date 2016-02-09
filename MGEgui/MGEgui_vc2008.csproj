@@ -101,6 +101,7 @@
   <ItemGroup>
     <Compile Include="DirectX\DistantLandTextures.cs" />
     <Compile Include="DirectX\DXMain.cs" />
+    <Compile Include="DistantLand\BetterCheckedListBox.cs" />
     <Compile Include="LightingForm.cs" />
     <Compile Include="LightingForm.Designer.cs">
       <DependentUpon>LightingForm.cs</DependentUpon>
