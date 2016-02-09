@@ -32,9 +32,13 @@ namespace MGEgui.DistantLand {
 
         private void bAdd_Click(object sender, EventArgs e) {
             if (folderAdd.ShowDialog() != DialogResult.OK) return;
-            string s = folderAdd.SelectedPath.ToLower(new CultureInfo("en-US", false));
-            if (lbDirectories.Items.IndexOf(s) != -1 || s.CompareTo(datafiles) == 0) return;
-            lbDirectories.Items.Add(s);
+            string s = folderAdd.SelectedPath.ToLower(Statics.Culture);
+            if (s.CompareTo(datafiles) == 0) return;
+            foreach(string d in lbDirectories.Items) {
+                if (s == d.ToLower(Statics.Culture))
+                    return;
+            }
+            lbDirectories.Items.Add(folderAdd.SelectedPath);
         }
 
         private void bRemove_Click(object sender, EventArgs e) {

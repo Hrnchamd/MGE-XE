@@ -290,14 +290,18 @@ namespace MGEgui.DistantLand {
                 iniFile.initialize();
                 iniFile.save();
             }
-            pluginDirs = new List<string>(iniFile.getSectList(iniDLWizardPlugDirs));
-            pluginDirs.Sort();
-            string dir2 = "";
-            foreach (string s in pluginDirs) {
-                string dir1 = s.ToLower(Statics.Culture);
-                if (dir1 == dir2) pluginDirs.Remove(s);
-                dir2 = dir1;
+
+            pluginDirs = new List<string>();
+            List<string> pluginDirsTmp = new List<string>(iniFile.getSectList(iniDLWizardPlugDirs));
+            pluginDirsTmp.Sort();
+            string lastDir = "";
+            foreach(string s in pluginDirsTmp) {
+                string casefoldDir = s.ToLower(Statics.Culture);
+                if(casefoldDir != lastDir)
+                    pluginDirs.Add(s);
+                lastDir = casefoldDir;
             }
+
             pluginList = new MWPlugins(Statics.fn_datafiles, pluginDirs);
             switch ((int)iniFile.getKeyValue("PlugSort")) {
                 case 0: rbPlugsName.Checked = true; break;
@@ -307,6 +311,7 @@ namespace MGEgui.DistantLand {
             pluginsSort(null, null);
             preselectedPlugins = iniFile.getSectList(iniDLWizardPlugs);
             SelectPlugins(preselectedPlugins);
+
             cmbTexWorldResolution.SelectedIndex = (int)iniFile.getKeyValue("TexRes");
             cmbTexWorldNormalRes.SelectedIndex = (int)iniFile.getKeyValue("NormRes");
             cbTexTwoStep.Checked = (iniFile.getKeyValue("Tex2Step") == 1);
@@ -1294,13 +1299,8 @@ namespace MGEgui.DistantLand {
                 foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, false));
                 List<string> removeDirs = new List<string>();
                 foreach (string dirName in Dirs) {
-                    dir = new DirectoryInfo(dirName);
-                    if (dir.Exists) {
-                        files = dir.GetFiles("*.esm");
-                        foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, true));
-                        files = dir.GetFiles("*.esp");
-                        foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, false));
-                    } else removeDirs.Add(dirName);
+                    if(!addPluginsFromDir(dirName))
+                        removeDirs.Add(dirName);
                 }
                 foreach (string dirName in removeDirs) dirs.Remove(dirName);
             }
@@ -1313,19 +1313,29 @@ namespace MGEgui.DistantLand {
                 }
                 List<string> removeDirs = new List<string>();
                 foreach (string dirName in dirs) if (Dirs.IndexOf(dirName) == -1) {
-                    DirectoryInfo dir = new DirectoryInfo(dirName);
-                    if (dir.Exists) {
-                        FileInfo[] files = dir.GetFiles("*.esm");
-                        foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, true));
-                        files = dir.GetFiles("*.esp");
-                        foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + dirName, new MWPlugin(file, dirName, false));
-                    } else removeDirs.Add(dirName);
+                    if(!addPluginsFromDir(dirName))
+                        removeDirs.Add(dirName);
                 }
                 foreach (string dirName in removeDirs) dirs.Remove(dirName);
                 Dirs.Clear();
                 Dirs.AddRange(dirs);
             }
 
+            private bool addPluginsFromDir(string srcDir) {
+                DirectoryInfo dir = new DirectoryInfo(srcDir);
+                string casefoldDir = srcDir.ToLower(Statics.Culture);
+                if (dir.Exists) {
+                    FileInfo[] files = dir.GetFiles("*.esm");
+                    foreach (FileInfo file in files)
+                        Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + casefoldDir, new MWPlugin(file, srcDir, true));
+                    files = dir.GetFiles("*.esp");
+                    foreach (FileInfo file in files)
+                        Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + casefoldDir, new MWPlugin(file, srcDir, false));
+                    return true;
+                }
+                return false;
+            }
+ 
             public KeyValuePair<string, MWPlugin>[] ByName {
                 get {
                     List<KeyValuePair<string, MWPlugin>> temp = new List<KeyValuePair<string, MWPlugin>>(Plugins);
@@ -1434,7 +1444,8 @@ namespace MGEgui.DistantLand {
         }
 
         private void clbPlugsModList_ItemCheck(object sender, System.Windows.Forms.ItemCheckEventArgs e) {
-            pluginList.Plugins[clbPlugsModList.Items[e.Index].ToString().ToLower(Statics.Culture)].Checked = e.NewValue;
+            string s = clbPlugsModList.Items[e.Index].ToString();
+            pluginList.Plugins[s.ToLower(Statics.Culture)].Checked = e.NewValue;
         }
 
         private void bPlugsClear_Click(object sender, EventArgs e) {
