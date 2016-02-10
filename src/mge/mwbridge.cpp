@@ -1204,3 +1204,35 @@ DWORD MWBridge::getKeybindCode(DWORD action)
     DWORD addr = read_dword(eMaster1 + 0x4c) + 0x1b3c;
     return read_dword(addr + 16*action);
 }
+
+//-----------------------------------------------------------------------------
+
+// getPlayerName - Returns the player's name, or null if not loaded
+const char * MWBridge::getPlayerName()
+{
+    DWORD macp = getPlayerMACP();
+    if(macp == 0) return 0;
+
+    // Get name from base NPC
+    DWORD npcClone = read_dword(macp + 0x560);
+    DWORD npcBase = read_dword(npcClone + 0x6c);
+    return reinterpret_cast<const char *>(read_dword(npcBase + 0x70));
+}
+
+//-----------------------------------------------------------------------------
+
+// getGameHour - Returns the value of the script global GameHour
+float MWBridge::getGameHour()
+{
+    DWORD gvar = read_dword(eMaster1 + 0xa8);
+    return read_float(gvar + 0x34);
+}
+
+//-----------------------------------------------------------------------------
+
+// geDaysPassed - Returns the value of the script global DaysPassed
+int MWBridge::getDaysPassed()
+{
+    DWORD gvar = read_dword(eMaster1 + 0xb8);
+    return int(read_float(gvar + 0x34));
+}

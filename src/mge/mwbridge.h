@@ -111,8 +111,11 @@ public:
     void setUIScale(float scale);
     void patchUIConfigure(void (_stdcall *newfunc)());
 
-    void *getGMSTPointer(DWORD id);
+    void * getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
+    const char * getPlayerName();
+    float getGameHour();
+    int getDaysPassed();
 
     MWBridge();
 

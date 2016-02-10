@@ -1,6 +1,6 @@
 
 #include <cstdio>
-#include <sys/stat.h>
+#include <cstring>
 #include "proxydx/d3d8header.h"
 
 #include "configuration.h"
@@ -12,7 +12,16 @@
 
 
 
-static void SaveScreenshot(IDirect3DSurface9 *surface);
+enum SuffixFormatting
+{
+    SuffixFormatting_Timestamp = 0,
+    SuffixFormatting_Ordinal,
+    SuffixFormatting_NameOrdinal,
+    SuffixFormatting_NameGameTimeOrdinal
+};
+
+static void saveScreenshot(IDirect3DSurface9 *surface);
+static int nextScreenshotOrdinal(const char *path);
 
 
 void MacroFunctions::TakeScreenshot()
@@ -26,50 +35,101 @@ void MacroFunctions::TakeScreenshot()
     {
         // Save screen including UI
         IDirect3DSurface9 *surface = DistantLand::captureScreen();
-        SaveScreenshot(surface);
+        saveScreenshot(surface);
         if(surface) surface->Release();
     }
     else
     {
         // Request distant land to save screen without UI
-        DistantLand::requestCaptureNoUI(&SaveScreenshot);
+        DistantLand::requestCaptureNoUI(&saveScreenshot);
     }
 }
 
-static void SaveScreenshot(IDirect3DSurface9 *surface)
+static void saveScreenshot(IDirect3DSurface9 *surface)
 {
     const char * strImageExtensions[] = { ".bmp", ".jpg", ".dds", ".png", ".tga" };
     const D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
 
     char filename[MAX_PATH], path[MAX_PATH];
+    const char *dir = ".";
     int str_sz;
-    bool usedir = false;
-    struct _stat unusedstat;
-    SYSTEMTIME t;
 
     if(!surface) { StatusOverlay::setStatus("Screenshot failed - Surface error"); return; }
 
     // Set up path
-    GetLocalTime(&t);
-    std::snprintf(filename, sizeof(filename), "%s %04d-%02d-%02d %02d.%02d.%02d.%03d",
-                  Configuration.SSName, t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
-
     if(strlen(Configuration.SSDir) > 0)
     {
-        usedir = true;
-
-        if(_stat(Configuration.SSDir, &unusedstat) == -1 && !CreateDirectory(Configuration.SSDir, NULL))
-            usedir = false;
+        if(GetFileAttributes(Configuration.SSDir) != INVALID_FILE_ATTRIBUTES)
+            dir = Configuration.SSDir;
+        else if(CreateDirectory(Configuration.SSDir, NULL))
+            dir = Configuration.SSDir;
     }
 
-    if(usedir)
-        str_sz = std::snprintf(path, sizeof(path), "%s\\%s%s", Configuration.SSDir, filename, strImageExtensions[Configuration.SSFormat]);
-    else
-        str_sz = std::snprintf(path, sizeof(path), "%s%s", filename, strImageExtensions[Configuration.SSFormat]);
+    // Append trailing space to name, if not blank
+    str_sz = std::strlen(Configuration.SSName);
+    if(str_sz > 0 && Configuration.SSName[str_sz - 1] != ' ' && (str_sz + 2) <= sizeof(Configuration.SSName))
+        std::strcpy(Configuration.SSName + str_sz, " ");
 
-    if(str_sz >= sizeof(filename))
+    // Construct name + suffix
+    switch(Configuration.SSSuffix)
+    {
+    case SuffixFormatting_Timestamp:
+    default:
+        {
+            SYSTEMTIME t;
+            GetLocalTime(&t);
+            std::snprintf(filename, sizeof(filename), "%s%04d-%02d-%02d %02d.%02d.%02d.%03d",
+                          Configuration.SSName, t.wYear, t.wMonth, t.wDay, t.wHour, t.wMinute, t.wSecond, t.wMilliseconds);
+        }
+        break;
+    case SuffixFormatting_Ordinal:
+        {
+            int nextOrdinal = nextScreenshotOrdinal(dir);
+            std::snprintf(filename, sizeof(filename), "%s%04d", Configuration.SSName, nextOrdinal);
+            ++nextOrdinal;
+        }
+        break;
+    case SuffixFormatting_NameOrdinal:
+        {
+            DECLARE_MWBRIDGE
+            int nextOrdinal = nextScreenshotOrdinal(dir);
+            const char *name = mwBridge->getPlayerName();
+            if(!name) name = "Menu";
+
+            std::snprintf(filename, sizeof(filename), "%s%s %04d", Configuration.SSName, name, nextOrdinal);
+            ++nextOrdinal;
+        }
+        break;
+    case SuffixFormatting_NameGameTimeOrdinal:
+        {
+            DECLARE_MWBRIDGE
+            int nextOrdinal = nextScreenshotOrdinal(dir);
+            const char *name = mwBridge->getPlayerName();
+            const char *dayLocalized = *(const char **)mwBridge->getGMSTPointer(0x1e1);
+            if(!name) name = "Menu";
+
+            float gametime = mwBridge->getGameHour();
+            int day = mwBridge->getDaysPassed();
+            int hour = int(gametime), minute = int(60.0 * gametime) % 60;
+
+            std::snprintf(filename, sizeof(filename), "%s%s, %s %d, %02d.%02d %04d",
+                          Configuration.SSName, name, dayLocalized, day, hour, minute, nextOrdinal);
+        }
+        break;
+    }
+
+    str_sz = std::snprintf(path, sizeof(path), "%s\\%s%s", dir, filename, strImageExtensions[Configuration.SSFormat]);
+    if(str_sz >= sizeof(path))
     {
         StatusOverlay::setStatus("Screenshot failed - Path too long");
+        return;
+    }
+
+    // Check for overwrite
+    if(GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES)
+    {
+        std::snprintf(path, sizeof(path), "Screenshot failed - %s already exists", filename);
+        StatusOverlay::setStatus(path);
         return;
     }
 
@@ -84,6 +144,37 @@ static void SaveScreenshot(IDirect3DSurface9 *surface)
         std::snprintf(filename, sizeof(filename), "Screenshot failed - D3DX Error %lx", hr);
         StatusOverlay::setStatus(filename);
     }
+}
+
+static int nextScreenshotOrdinal(const char *path)
+{
+    static int nextOrdinal = -1;
+    char findPattern[MAX_PATH];
+    WIN32_FIND_DATA findData;
+
+    if(nextOrdinal > 0)
+        return ++nextOrdinal;
+
+    nextOrdinal = 0;
+    std::snprintf(findPattern, sizeof(findPattern), "%s\\*", path);
+
+    HANDLE h = FindFirstFile(findPattern, &findData);
+    if(h != INVALID_HANDLE_VALUE)
+    {
+        do
+        {
+            if(findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+                continue;
+
+            const char *lastSpace = std::strrchr(findData.cFileName, ' ');
+            if(lastSpace && std::isdigit(lastSpace[1]))
+                nextOrdinal = std::max(nextOrdinal, std::atoi(lastSpace + 1));
+        } while(FindNextFile(h, &findData));
+
+        FindClose(h);
+    }
+
+    return ++nextOrdinal;
 }
 
 static void displayFlag(DWORD flag, const char *en, const char *ds)

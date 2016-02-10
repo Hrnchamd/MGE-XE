@@ -92,6 +92,7 @@ struct ConfigurationStruct
     float ScreenFOV;
     BYTE FogMode;
     BYTE SSFormat;
+    BYTE SSSuffix;
     char SSDir[208];
     char SSName[32];
     float HDRReactionSpeed;

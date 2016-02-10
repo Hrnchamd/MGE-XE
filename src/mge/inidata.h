@@ -101,6 +101,14 @@ const tdictent dictentSSFormat [] = {
 };
 const tdictionary dictSSFormat = {countof(dictentSSFormat), dictentSSFormat};
 
+const tdictent dictentSSSuffix [] = {
+    {"Timestamp", 0},
+    {"Ordinal", 1},
+    {"Character Name, Ordinal", 2},
+    {"Character Name, Game Time, Ordinal", 3}
+};
+const tdictionary dictSSSuffix = {countof(dictentSSSuffix), dictentSSSuffix};
+
 
 
 const iniSetting iniSettings[] = {
@@ -144,6 +152,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},
     {&Configuration.SSDir, t_string, sizeof(Configuration.SSDir), siniRendState, "Screenshot Output Directory", "", NULL, 0, 0, 0},
     {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "Morrowind", NULL, 0, 0, 0},
+    {&Configuration.SSSuffix, t_uint8, 1, siniRendState, "Screenshot Name Suffix", "Timestamp", &dictSSSuffix, DICTONLY, 0, 0},
     {&Configuration.StatusTimeout, t_int32, 1, siniRendState, "MGE Messages Timeout", "2000", NULL, MINMAX, 1000, 10000},
     {&Configuration.Force3rdPerson, t_bool, 1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
     {&Configuration.Offset3rdPerson.x, t_float, 1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},

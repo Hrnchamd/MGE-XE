@@ -25,6 +25,7 @@ namespace MGEgui {
             cmbAnisoLevel.ContextMenu = DudMenu;
             cmbFogMode.ContextMenu = DudMenu;
             cmbVWait.ContextMenu = DudMenu;
+            cmbSShotSuffix.ContextMenu = DudMenu;
             cmbSShotFormat.ContextMenu = DudMenu;
             cmbTipReadSpd.ContextMenu = DudMenu;
             cmbMsgsLocale.ContextMenu = DudMenu;
@@ -87,6 +88,7 @@ namespace MGEgui {
             { "UIScale", new string [] { "udUIScale", "lUIScale" } },
             { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
             { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
+            { "SShotSuffix", new string [] { "cmbSShotSuffix", "lSShotSuffix" } },
             { "SShotDir", new string [] { "lSShotDir", "tbSShotDir" } },
             { "SShotDirBrowse", new string [] { "bSShotDirBrowse" } },
             { "SShotDirClear", new string [] { "bSShotDirClear" } },
@@ -247,6 +249,13 @@ namespace MGEgui {
             {"TGA", 4}
         };
 
+        private static Dictionary<string, double> ssSuffixDict = new Dictionary<string, double> {
+            {"Timestamp", 0},
+            {"Ordinal", 1},
+            {"Character Name, Ordinal", 2},
+            {"Character Name, Game Time, Ordinal", 3}
+        };
+
         private static Dictionary<string, double> anisoLevelDict = new Dictionary<string, double> {
             {"Off", 0},
             {"2x", 1},
@@ -319,6 +328,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
         private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef ("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 0.5, 5, 3);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
+        private static INIFile.INIVariableDef iniSSSuffix = new INIFile.INIVariableDef ("SSSuffix", siniRendState, "Screenshot Name Suffix", INIFile.INIVariableType.Dictionary, "Timestamp", ssSuffixDict);
         private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "Morrowind");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef ("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
         // In-game
@@ -372,7 +382,7 @@ namespace MGEgui {
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
-            iniUIScale, iniSSFormat, iniSSName, iniSSDir,
+            iniUIScale, iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniCam3rdCustom,
             iniCam3rdX, iniCam3rdY, iniCam3rdZ,
@@ -425,6 +435,7 @@ namespace MGEgui {
             cbHWShader.Checked = (iniFile.getKeyValue ("HWShader") == 1);
             udUIScale.Value = (decimal)iniFile.getKeyValue ("UIScale");
             cmbSShotFormat.SelectedIndex = (int)iniFile.getKeyValue ("SSFormat");
+            cmbSShotSuffix.SelectedIndex = (int)iniFile.getKeyValue ("SSSuffix");
             tbSShotDir.Text = iniFile.getKeyString ("SSDir");
             if (tbSShotDir.Text.Length == 0) bSSDirClear_Click (null, null);
             tbSShotName.Text = iniFile.getKeyString ("SSName");
@@ -495,6 +506,7 @@ namespace MGEgui {
             iniFile.setKey ("HWShader", cbHWShader.Checked);
             iniFile.setKey ("UIScale", (double)udUIScale.Value);
             iniFile.setKey ("SSFormat", cmbSShotFormat.SelectedIndex);
+            iniFile.setKey ("SSSuffix", cmbSShotSuffix.SelectedIndex);
             if (tbSShotDir.TextAlign == HorizontalAlignment.Left) iniFile.setKey ("SSDir", tbSShotDir.Text);
             else iniFile.setKey ("SSDir", "");
             iniFile.setKey ("SSName", tbSShotName.Text.TrimEnd());
