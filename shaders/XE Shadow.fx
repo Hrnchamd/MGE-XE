@@ -10,6 +10,10 @@
 //------------------------------------------------------------
 // Texture atlas
 
+// Clip space margin of 4 texels, to prevent bleeding from the filter kernel + adjacent textures
+static float3 atlasMargin = float3(1-4*shadowRcpRes, 1-4*shadowRcpRes, 1);
+
+// Shadow UV to shadow atlas UV
 float4 mapShadowToAtlas(float2 t, int layer)
 {
     // Result is intended for use with tex2Dlod
@@ -33,13 +37,13 @@ float shadowDeltaZ(float4 shadow0pos, float4 shadow1pos)
 {
     float dz = 1e-6;
     
-    [branch] if(all(saturate(1 - abs(shadow0pos.xyz))))
+    [branch] if(all(saturate(atlasMargin - abs(shadow0pos.xyz))))
     {
         // Layer 0, inner
         float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow0pos.xy;
         dz = tex2Dlod(sampDepth, mapShadowToAtlas(shadowUV, 0)).r / ESM_scale - shadow0pos.z;
     }
-    else if(all(saturate(1 - abs(shadow1pos.xyz))))
+    else if(all(saturate(atlasMargin - abs(shadow1pos.xyz))))
     {
         // Layer 1
         float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow1pos.xy;
