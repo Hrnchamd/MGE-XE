@@ -15,7 +15,8 @@ enum RenderPassID
     PASS_BLENDMGE,
     PASS_DEBUGSHADOW,
     PASS_PLAYERWAVE,
-    PASS_WAVESTEP
+    PASS_WAVESTEP,
+    PASS_WORKAROUND
 };
 
 enum RenderShadowMapID

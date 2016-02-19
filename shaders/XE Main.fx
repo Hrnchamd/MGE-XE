@@ -331,6 +331,19 @@ float4 SkyPS (SkyVertOut IN, float2 vpos : VPOS) : COLOR0
     return c;
 }
 
+//------------------------------------------------------------
+// Minimal shader for clip plane bug workaround
+
+float4 NullVS (float4 pos : POSITION) : POSITION
+{
+    return float4(0, 0, 0, 1);
+}
+
+float4 NullPS () : COLOR0
+{
+    return float4(0, 0, 0, 1);
+}
+
 //-----------------------------------------------------------------------------
 
 Technique T0 {
@@ -555,6 +568,15 @@ Technique T0 {
 
         VertexShader = compile vs_3_0 WaveVS ();
         PixelShader = compile ps_3_0 WaveStepPS ();
+    }
+    //------------------------------------------------------------
+    // Used for a clip plane bug workaround
+    Pass P12 {
+        ZEnable = false;
+        ZWriteEnable = false;
+
+        VertexShader = compile vs_3_0 NullVS ();
+        PixelShader = compile ps_3_0 NullPS ();
     }
     //------------------------------------------------------------
 }

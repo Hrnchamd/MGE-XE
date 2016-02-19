@@ -47,9 +47,24 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     D3DXMatrixTranspose(&clipMat, &clipMat);
     D3DXPlaneTransform(&plane, &plane, &clipMat);
 
+    if(visDistant.size() == 0)
+    {
+        // Workaround for a Direct3D bug with clipping planes, where SetClipPlane
+        // has no effect on the shader pipeline if the last rendered draw call was using
+        // the fixed function pipeline. This is usually covered by distant statics, but
+        // not in compact interiors where all distant statics may be culled.
+        // Provoking a DrawPrimitive with shader here makes the following SetClipPlane work.
+        effect->BeginPass(PASS_WORKAROUND);
+        device->SetVertexDeclaration(WaterDecl);
+        device->SetStreamSource(0, vbFullFrame, 0, 12);
+        device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+        effect->EndPass();
+    }
+
     device->SetClipPlane(0, plane);
     device->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
 
+    // Rendering
     if(mwBridge->IsExterior() && (Configuration.MGEFlags & REFLECTIVE_WATER))
     {
         // Draw land reflection, with opposite culling
