@@ -51,18 +51,23 @@ static void saveScreenshot(IDirect3DSurface9 *surface)
     const D3DXIMAGE_FILEFORMAT formats[] = { D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
 
     char filename[MAX_PATH], path[MAX_PATH];
-    const char *dir = ".";
+    const char *dir = "./screenshots";
     int str_sz;
 
     if(!surface) { StatusOverlay::setStatus("Screenshot failed - Surface error"); return; }
 
     // Set up path
     if(strlen(Configuration.SSDir) > 0)
+        dir = Configuration.SSDir;
+
+    if(GetFileAttributes(dir) == INVALID_FILE_ATTRIBUTES)
     {
-        if(GetFileAttributes(Configuration.SSDir) != INVALID_FILE_ATTRIBUTES)
-            dir = Configuration.SSDir;
-        else if(CreateDirectory(Configuration.SSDir, NULL))
-            dir = Configuration.SSDir;
+        if(!CreateDirectory(dir, NULL))
+        {
+            std::snprintf(path, sizeof(path), "Screenshot failed - Cannot create directory %s", dir);
+            StatusOverlay::setStatus(path);;
+            return;
+        }
     }
 
     // Append trailing space to name, if not blank

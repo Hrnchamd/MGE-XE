@@ -210,7 +210,7 @@ rbDLAutoByAFogEnd = "By Above Water Fo&g End"
 rbDLAutoByDrawDist = "By D&raw Distance"
 
 ;;;;   text boxes   ;;;;
-tbSShotDir = "- Morrowind folder -"
+tbSShotDir = "- Morrowind/screenshots folder -"
 
 ;;;;   tab pages   ;;;;
 tpGlobal = "Graphics"

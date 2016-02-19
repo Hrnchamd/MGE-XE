@@ -208,7 +208,7 @@ rbDLAutoByAFogEnd = "Według końca &mgły nad wodą"
 rbDLAutoByDrawDist = "Według &zasięgu rysowania"
 
 ;;;;   text boxes   ;;;;
-tbSShotDir = "- folder Morrowinda -"
+tbSShotDir = "- folder Morrowind/screenshots -"
 
 ;;;;   tab pages   ;;;;
 tpGlobal = "Grafika"

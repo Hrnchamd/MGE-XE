@@ -207,7 +207,7 @@ rbDLAutoByAFogEnd = "via la fin du &brouillard hors de l'eau"
 rbDLAutoByDrawDist = "via le paramètre '&Distance d'affichage'"
 
 ;;;;   text boxes   ;;;;
-tbSShotDir = "- Dossier de Morrowind -"
+tbSShotDir = "- Dossier de Morrowind/screenshots -"
 
 ;;;;   tab pages   ;;;;
 tpGlobal = "Graphismes"

@@ -204,7 +204,7 @@ rbDLAutoByAFogEnd = "По конечной границе тумана"
 rbDLAutoByDrawDist = "По дальности области прорисовки"
 
 ;;;;   text boxes   ;;;;
-tbSShotDir = "- Каталог Morrowind -"
+tbSShotDir = "- Каталог Morrowind/screenshots -"
 
 ;;;;   tab pages   ;;;;
 tpGlobal = "Графика"
