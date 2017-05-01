@@ -32,7 +32,7 @@ namespace MGEgui {
         private static string[] presetUltra = new [] { effectSSAO[1], effectInteriorCaustics[0], effectWaterSunshafts[0], effectSunshafts[0], effectBloom[1], effectHDR[0] };
         
         public static string iniShaderChain = "Shader Chain";
-        public static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef("HDRTime", "Misc", "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
+        public static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef("HDRTime", "Render State", "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
         public static INIFile.INIVariableDef[] iniShaderDefault = {
             INIFile.iniDefEmpty, iniHDRTime
         };

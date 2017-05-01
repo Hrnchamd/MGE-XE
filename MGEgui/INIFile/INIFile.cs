@@ -701,7 +701,6 @@ namespace MGEgui.INI {
             string iKey = key.ToLower(Statics.Culture);
             int firstIndex = sections.IndexOf(iSection);
             int lastIndex = sections.LastIndexOf(iSection);
-            int index = keys.IndexOf(iKey);
             INILine.setSection = section;
             INILine tmp = new INILine(key + "=");
             tmp.defVal = vd.defValue;
@@ -730,18 +729,21 @@ namespace MGEgui.INI {
                 iniContent.Add(new INILine("[" + section + "]"));
                 iniContent.Add(tmp);
                 iniContent.Add(new INILine(""));
-            } else if (index >= firstIndex && index <= lastIndex) {
-                if (!saveDef && isDef && comments[index] == "") iniContent.RemoveAt(index);
-                else if (useString && iniContent[index].value == sValue || !useString && iniContent[index].dValue == dValue) return;
-                else if (useString) iniContent[index].sValue = sValue;
-                else iniContent[index].dValue = dValue;
             } else {
-                if (!saveDef && isDef) return;
-                INILine line = iniContent[lastIndex++];
-                if (line.entry != "" || line.comment != "") {
-                    iniContent.Insert(lastIndex, new INILine(""));
-                    iniContent.Insert(lastIndex, tmp);
-                } else iniContent.Insert(lastIndex - 1, tmp);
+                int index = keys.IndexOf(iKey, firstIndex, lastIndex - firstIndex);
+                if (index >= firstIndex && index <= lastIndex) {
+                    if (!saveDef && isDef && comments[index] == "") iniContent.RemoveAt(index);
+                    else if (useString && iniContent[index].value == sValue || !useString && iniContent[index].dValue == dValue) return;
+                    else if (useString) iniContent[index].sValue = sValue;
+                    else iniContent[index].dValue = dValue;
+                } else {
+                    if (!saveDef && isDef) return;
+                    INILine line = iniContent[lastIndex++];
+                    if (line.entry != "" || line.comment != "") {
+                        iniContent.Insert(lastIndex, new INILine(""));
+                        iniContent.Insert(lastIndex, tmp);
+                    } else iniContent.Insert(lastIndex - 1, tmp);
+                }
             }
             modified = true;
         }
@@ -778,8 +780,8 @@ namespace MGEgui.INI {
                 }
             }
             while (firstIndex <= lastIndex) iniContent.RemoveAt(lastIndex--);
-            iniContent.Insert(firstIndex, new INILine(""));
             INILine.setSection = section;
+            iniContent.Insert(firstIndex, new INILine(""));
             while (tabCount >= tabIndex) {
                 iniContent.Insert(firstIndex, new INILine(tab[tabCount--]));
             }

@@ -113,12 +113,11 @@ const tdictionary dictSSSuffix = {countof(dictentSSSuffix), dictentSSSuffix};
 
 const iniSetting iniSettings[] = {
     // Generic flags
-    {&Configuration.MGEFlags, t_bit, FPS_COUNTER_BIT, siniRendState, "MGE FPS Counter", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, DISPLAY_MESSAGES_BIT, siniRendState, "MGE Messages", True, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, MGE_DISABLED_BIT, siniMisc, "MGE Disabled", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, MWSE_DISABLED_BIT, siniMisc, "Internal MWSE Disabled", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, SKIP_INTRO_BIT, siniMisc, "Skip Intro Movies", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, FPS_COUNTER_BIT, siniRendState, "MGE FPS Counter", False, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, DISPLAY_MESSAGES_BIT, siniRendState, "MGE Messages", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_MENU_CACHING_BIT, siniMisc, "Use Menu Background Caching", True, &dictBool, DICTONLY, 0, 0},
 
     // Distant Land flags
@@ -147,7 +146,8 @@ const iniSetting iniSettings[] = {
     {&Configuration.ScreenFOV, t_float, 1, siniRendState, "Horizontal Screen FOV", "75", NULL, MINMAX, 5, 150},
     {&Configuration.FogMode, t_uint8, 1, siniRendState, "Fog Mode", "Depth pixel", &dictFogMode, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.HDRReactionSpeed, t_float, 1, siniMisc, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
+    {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.HDRReactionSpeed, t_float, 1, siniRendState, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
 
     // Generic variables
     {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},

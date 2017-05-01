@@ -309,7 +309,7 @@ namespace MGEgui {
         #region mge_ini_variable_definitions
         // Config
         private static INIFile.INIVariableDef iniVersion = new INIFile.INIVariableDef ("Version", siniMain, "Version", INIFile.INIVariableType.String, Statics.versionString);
-        private static INIFile.INIVariableDef iniIipSpeed = new INIFile.INIVariableDef ("IipSpeed", siniMain, "Tooltip Reading Speed", INIFile.INIVariableType.Dictionary, "15cps", tipSpeedDict);
+        private static INIFile.INIVariableDef iniTipSpeed = new INIFile.INIVariableDef ("TipSpeed", siniMain, "Tooltip Reading Speed", INIFile.INIVariableType.Dictionary, "15cps", tipSpeedDict);
         public static INIFile.INIVariableDef iniLanguage = new INIFile.INIVariableDef ("Language", siniMain, "GUI Language", INIFile.INIVariableType.String, "English (default)");
         public static INIFile.INIVariableDef iniAutoLang = new INIFile.INIVariableDef ("AutoLang", siniMain, "Language Autodetection", INIFile.INIBoolType.Text, "True");
         // Graphics
@@ -325,6 +325,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniMessages = new INIFile.INIVariableDef ("Messages", siniRendState, "MGE Messages", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
         private static INIFile.INIVariableDef iniHWShader = new INIFile.INIVariableDef ("HWShader", siniRendState, "Hardware Shader", INIFile.INIBoolType.OnOff, "Off");
+        private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniRendState, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
         private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef ("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 0.5, 5, 3);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
@@ -332,9 +333,8 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef ("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "Morrowind");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef ("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
         // In-game
-        private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
-        private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniMisc, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
         private static INIFile.INIVariableDef iniDisableMGE = new INIFile.INIVariableDef ("DisableMGE", siniMisc, "MGE Disabled", INIFile.INIBoolType.Text, "False");
+        private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniSkipIntro = new INIFile.INIVariableDef ("SkipIntro", siniMisc, "Skip Intro Movies", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniCam3rdCustom = new INIFile.INIVariableDef ("Cam3rdCustom", siniMisc, "Customize 3rd Person Camera", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniCam3rdX = new INIFile.INIVariableDef ("Cam3rdX", siniMisc, "Initial 3rd Person Camera X", INIFile.INIVariableType.Single, "0", -125, 125, 1);
@@ -378,7 +378,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef [] iniSettings = {
             INIFile.iniDefEmpty,
             // Main
-            iniVersion, iniIipSpeed, iniLanguage, iniAutoLang,
+            iniVersion, iniTipSpeed, iniLanguage, iniAutoLang,
             // Graphics
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
             iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
@@ -419,7 +419,7 @@ namespace MGEgui {
             }
             loading = true;
             // Config
-            cmbTipReadSpd.SelectedIndex = (int)iniFile.getKeyValue ("IipSpeed");
+            cmbTipReadSpd.SelectedIndex = (int)iniFile.getKeyValue ("TipSpeed");
             // Graphics
             cmbAntiAlias.SelectedIndex = (int)iniFile.getKeyValue ("AntiAlias");
             cmbVWait.SelectedIndex = (int)iniFile.getKeyValue ("VWait");
@@ -489,7 +489,7 @@ namespace MGEgui {
             INIFile iniFile = new INIFile (Statics.iniFileName, iniSettings, true);
             // Config
             iniFile.setKey ("Version", Statics.versionString);
-            iniFile.setKey ("IipSpeed", cmbTipReadSpd.SelectedIndex);
+            iniFile.setKey ("TipSpeed", cmbTipReadSpd.SelectedIndex);
             iniFile.setKey ("Language", cmbUILanguage.Text);
             iniFile.setKey ("AutoLang", cbUILangAuto.Checked);
             iniFile.setKey ("DisableMGE", cbDisableMGE.Checked);
