@@ -1,6 +1,6 @@
 
-#define MAXMACROS 266
-#define MAXTRIGGERS 4
+const size_t MAXMACROS = 256 + 10;
+const size_t MAXTRIGGERS = 4;
 
 class MacroFunctions
 {
@@ -108,22 +108,22 @@ enum GraphicsFuncs {
     GF_MoveRight3PC = 51,
     GF_MoveDown3PC = 52,
     GF_MoveUp3PC = 53,
-    GRAPHICSFUNCS                   // Handy way of getting the number of elements in an enum
+    GRAPHICSFUNCS          // Handy way of getting the number of elements in an enum
 };
 
 struct FD_Console {
-    BYTE Length;                    // The size of the string
-    BYTE KeyCodes[MAXMACROS];       // A list of keycodes (This can be a byte because there's never more than 256)
-    BYTE KeyStates[MAXMACROS];      // A list of keystates
+    BYTE Length;                        // The size of the string
+    BYTE KeyCodes[MAXMACROS];  // A list of keycodes (This can be a byte because there's never more than 256)
+    BYTE KeyStates[MAXMACROS]; // A list of keystates
 };
 struct FD_Press {
-    BYTE KeyStates[MAXMACROS];      // Includes mouse buttons
+    BYTE KeyStates[MAXMACROS]; // Includes mouse buttons
 };
 struct FD_Timer {
-    BYTE TimerID;                   // The timer to activate/deactivate
+    BYTE TimerID;                       // The timer to activate/deactivate
 };
 struct FD_Graphics {
-    BYTE function;                  // The GraphicsFunc to call
+    BYTE function;                      // The GraphicsFunc to call
 };
 
 struct sFakeKey {

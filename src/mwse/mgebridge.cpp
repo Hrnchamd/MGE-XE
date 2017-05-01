@@ -7,6 +7,7 @@
 #include "funczoom.h"
 #include "funcweather.h"
 #include "funcshader.h"
+#include "funcinput.h"
 
 
 struct TES3MACHINE;
@@ -109,6 +110,16 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x371c, new mwseNIDChangeHUDTexture(*vm));
     MWSEAddInstruction(0x371d, new mwseNIDChangeHUDEffect(*vm));
     MWSEAddInstruction(0x371e, new mwseNIDFreeHUD(*vm));
+
+    MWSEAddInstruction(0x3733, new mwseTapKey(*vm));
+    MWSEAddInstruction(0x3734, new mwsePushKey(*vm));
+    MWSEAddInstruction(0x3735, new mwseReleaseKey(*vm));
+    MWSEAddInstruction(0x3736, new mwseHammerKey(*vm));
+    MWSEAddInstruction(0x3737, new mwseUnhammerKey(*vm));
+    MWSEAddInstruction(0x3738, new mwseAHammerKey(*vm));
+    MWSEAddInstruction(0x3739, new mwseAUnhammerKey(*vm));
+    MWSEAddInstruction(0x373a, new mwseDisallowKey(*vm));
+    MWSEAddInstruction(0x373b, new mwseAllowKey(*vm));
 
     MWSEAddInstruction(0x376d, new mwseEnableZoom(*vm));
     MWSEAddInstruction(0x376e, new mwseDisableZoom(*vm));

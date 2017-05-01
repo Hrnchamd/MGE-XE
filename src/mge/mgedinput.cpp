@@ -26,6 +26,8 @@ BYTE LastBytes[MAXMACROS];     //Stores which keys were pressed last GetData cal
 BYTE FakeStates[MAXMACROS];    //Stores which keys are currently permenently down
 BYTE HammerStates[MAXMACROS];  //Stores which keys are currently being hammered
 BYTE AHammerStates[MAXMACROS]; //Stores the keys that are currently being ahammered
+BYTE TapStates[MAXMACROS];     //Stores the keys that need to be tapped next frame
+BYTE DisallowMask[MAXMACROS];  //Stores mask of which keys are disallowed
 DIDEVICEOBJECTDATA FakeBuffer[256]; //Stores the list of fake keypresses to send to console
 DWORD FakeBufferStart;      //The index of the next character to write from FakeBuffer[]
 DWORD FakeBufferEnd;        //The index of the last character contained in FakeBuffer[]
@@ -101,10 +103,8 @@ void * CreateInputWrapper(void *real)
     FinishedFake = false;      // true to shut down the console
     CloseConsole = false;      // true to shut the console after performing a command
 
-    ZeroStruct(RemappedKeys);
     ZeroStruct(LastBytes);
-    ZeroStruct(FakeStates);
-    ZeroStruct(FakeBuffer);
+    memset(DisallowMask, 0xff, sizeof(DisallowMask));
 
     for(int i = 0; i != MAXTRIGGERS; ++i)
         TriggerFireTimes[i] = GetTickCount() + Triggers[i].TimeInterval;
@@ -163,18 +163,39 @@ void * CreateInputWrapper(void *real)
     return new MGEProxyDirectInput((IDirectInput8A*)real);
 }
 
-
-void FakeKeyPress(BYTE key, BYTE data)
+void MGEProxyDirectInput::changeKeyBehavior(DWORD key, MGEProxyDirectInput::KeyBehavior kb, bool on)
 {
-    FakeBuffer[FakeBufferEnd].dwOfs = key;
-    FakeBuffer[FakeBufferEnd].dwData = data;
-    ++FakeBufferEnd;
+    if(key >= MAXMACROS)
+        return;
+
+    switch(kb)
+    {
+        case MGEProxyDirectInput::TAP:
+            TapStates[key] = on ? 0x80 : 0;
+            break;
+        case MGEProxyDirectInput::PUSH:
+            FakeStates[key] = on ? 0x80 : 0;
+            break;
+        case MGEProxyDirectInput::HAMMER:
+            HammerStates[key] = on ? 0x80 : 0;
+            break;
+        case MGEProxyDirectInput::AHAMMER:
+            AHammerStates[key] = on ? 0x80 : 0;
+            break;
+        case MGEProxyDirectInput::DISALLOW:
+            DisallowMask[key] = on ? 0 : 0xff;
+            break;
+    }
 }
 
-void FakeString(BYTE chars[], BYTE data[], BYTE length)
+static void FakeString(BYTE chars[], BYTE data[], BYTE length)
 {
     for(int i = 0; i != length; ++i)
-        FakeKeyPress(chars[i], data[i]);
+    {
+        FakeBuffer[FakeBufferEnd].dwOfs = chars[i];
+        FakeBuffer[FakeBufferEnd].dwData = data[i];
+        ++FakeBufferEnd;
+    }
 }
 
 
@@ -236,31 +257,21 @@ public:
         CopyMemory(&bytes[256], &MouseOut, 10);
 
         // Get any extra key presses
-        if(GlobalHammer = !GlobalHammer)
+        GlobalHammer = !GlobalHammer;
+        const BYTE *hammer = GlobalHammer ? HammerStates : AHammerStates;
+
+        for(DWORD byte = 0; byte < 256; byte++)
         {
-            for(DWORD byte = 0; byte < 256; byte++)
-            {
-                bytes[byte] |= FakeStates[byte];
-                bytes[byte] |= HammerStates[byte];
-            }
-            for(DWORD byte = 256; byte < MAXMACROS - 2; byte++)
-            {
-                bytes[byte] |= FakeStates[byte];
-                bytes[byte] |= HammerStates[byte];
-            }
+            bytes[byte] |= FakeStates[byte];
+            bytes[byte] |= hammer[byte];
+            bytes[byte] &= DisallowMask[byte];
+            bytes[byte] |= TapStates[byte];
+            TapStates[byte] = 0;
         }
-        else
+        for(DWORD byte = 256; byte < MAXMACROS; byte++)
         {
-            for(DWORD byte = 0; byte < 256; byte++)
-            {
-                bytes[byte] |= FakeStates[byte];
-                bytes[byte] |= AHammerStates[byte];
-            }
-            for(DWORD byte = 256; byte < MAXMACROS - 2; byte++)
-            {
-                bytes[byte] |= FakeStates[byte];
-                bytes[byte] |= AHammerStates[byte];
-            }
+            bytes[byte] |= FakeStates[byte];
+            bytes[byte] |= hammer[byte];
         }
 
         if(SkipIntro)
@@ -482,6 +493,9 @@ public:
         {
             MouseOut[i] = mouseState->rgbButtons[i];
             mouseState->rgbButtons[i] |= MouseIn[i];
+            mouseState->rgbButtons[i] &= DisallowMask[i+256];
+            mouseState->rgbButtons[i] |= TapStates[i+256];
+            TapStates[i+256] = 0;
         }
 
         return DI_OK;
