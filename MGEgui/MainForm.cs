@@ -335,6 +335,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniMisc, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
         private static INIFile.INIVariableDef iniDisableMGE = new INIFile.INIVariableDef ("DisableMGE", siniMisc, "MGE Disabled", INIFile.INIBoolType.Text, "False");
+        private static INIFile.INIVariableDef iniSkipIntro = new INIFile.INIVariableDef ("SkipIntro", siniMisc, "Skip Intro Movies", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniCam3rdCustom = new INIFile.INIVariableDef ("Cam3rdCustom", siniMisc, "Customize 3rd Person Camera", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniCam3rdX = new INIFile.INIVariableDef ("Cam3rdX", siniMisc, "Initial 3rd Person Camera X", INIFile.INIVariableType.Single, "0", -125, 125, 1);
         private static INIFile.INIVariableDef iniCam3rdY = new INIFile.INIVariableDef ("Cam3rdY", siniMisc, "Initial 3rd Person Camera Y", INIFile.INIVariableType.Single, "-160", -2500, -25, 1);
@@ -384,8 +385,8 @@ namespace MGEgui {
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
             iniUIScale, iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
-            iniDisableMGE, iniDisableMWSE, iniCam3rdCustom,
-            iniCam3rdX, iniCam3rdY, iniCam3rdZ,
+            iniDisableMGE, iniDisableMWSE, iniSkipIntro,
+            iniCam3rdCustom, iniCam3rdX, iniCam3rdY, iniCam3rdZ,
             iniAutoCrosshair, iniMenuCaching,
             iniMessages, iniMsgTime,
             // Distant Land
@@ -442,6 +443,7 @@ namespace MGEgui {
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue ("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue ("DisableMWSE") == 1);
+            cbSkipMovie.Checked = (iniFile.getKeyValue ("SkipIntro") == 1);
             cbCam3rdPrsn.Checked = (iniFile.getKeyValue ("Cam3rdCustom") == 1);
             udCam3rdX.Value = (decimal)iniFile.getKeyValue ("Cam3rdX");
             udCam3rdY.Value = (decimal)iniFile.getKeyValue ("Cam3rdY");
@@ -512,6 +514,7 @@ namespace MGEgui {
             iniFile.setKey ("SSName", tbSShotName.Text.TrimEnd());
             // In-game
             iniFile.setKey ("DisableMWSE", cbDisableMWSE.Checked);
+            iniFile.setKey ("SkipIntro", cbSkipMovie.Checked);
             iniFile.setKey ("Cam3rdCustom", cbCam3rdPrsn.Checked);
             iniFile.setKey ("Cam3rdX", (double)udCam3rdX.Value);
             iniFile.setKey ("Cam3rdY", (double)udCam3rdY.Value);
@@ -645,7 +648,7 @@ namespace MGEgui {
             version = br.ReadByte ();
             if (version < 39) throw new Exception (strings ["InpTooOld"]);
             if (version > Statics.SaveVersion) throw new Exception (strings ["InpTooNew"]);
-            cbSkipMovie.Checked = br.ReadBoolean ();
+            br.ReadBoolean(); // was skip movie
             br.ReadBoolean(); // was disable console
             cbAltCombat.Checked = br.ReadBoolean ();
             try { UnserializeMacroSaves (); } catch {
@@ -762,7 +765,7 @@ namespace MGEgui {
             fs.Close ();
             BinaryWriter bw = new BinaryWriter (File.Open (Statics.fn_didata, FileMode.Create));
             bw.Write (Statics.SaveVersion);
-            bw.Write (cbSkipMovie.Checked);
+            bw.Write(false); // was skip movie
             bw.Write(false); // was disable console
             bw.Write (cbAltCombat.Checked);
             for (int i = 0; i < Statics.MACROS; i++) {

@@ -1089,6 +1089,22 @@ void MWBridge::disableSunglare()
 
 //-----------------------------------------------------------------------------
 
+// disableIntroMovies - Skips playing both intro movies
+void MWBridge::disableIntroMovies()
+{
+    DWORD addr = 0x418ef0;
+    BYTE patch[] = { 0xeb, 0x16 };
+
+    VirtualMemWriteAccessor vw0((void*)addr, 2);
+    memcpy((void *)addr, patch, sizeof(patch));
+
+    addr = 0x5fc8f7;
+    VirtualMemWriteAccessor vw1((void*)addr, 2);
+    memcpy((void *)addr, patch, sizeof(patch));
+}
+
+//-----------------------------------------------------------------------------
+
 // isIntroDone - Tests if both intro movies are finished, and main menu is about to display
 bool MWBridge::isIntroDone()
 {

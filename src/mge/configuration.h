@@ -34,8 +34,8 @@
 #define USE_HDR                 MASK(USE_HDR_BIT)
 #define FPS_HOLD_BIT            13
 #define FPS_HOLD                MASK(FPS_HOLD_BIT)
-#define BIND_AI_TO_VIEW_BIT     14
-#define BIND_AI_TO_VIEW         MASK(BIND_AI_TO_VIEW_BIT)
+#define SKIP_INTRO_BIT          14
+#define SKIP_INTRO              MASK(SKIP_INTRO_BIT)
 #define CPU_IDLE_BIT            15
 #define CPU_IDLE                MASK(CPU_IDLE_BIT)
 #define SHADER_DEPTH_BIT        16

@@ -4,14 +4,20 @@
 #include "mge/mwbridge.h"
 
 
+// Disable intro movies on initialization as the logo appears before game init
+void MWInitPatch::disableIntroMovies()
+{
+    DECLARE_MWBRIDGE
+    mwBridge->disableIntroMovies();
+}
 
-// Override UI scaling call: set new UI scaling and mouse bounds
+
+// Override UI scaling callback: set new UI scaling and mouse bounds
 static void _stdcall onUIScaleInit()
 {
     DECLARE_MWBRIDGE
     mwBridge->setUIScale(Configuration.UIScale);
 }
-
 
 void MWInitPatch::patchUIScale()
 {

@@ -105,6 +105,7 @@ public:
     void markMoonNodes(float k);
     void disableScreenshotFunc();
     void disableSunglare();
+    void disableIntroMovies();
     bool isIntroDone();
     bool isLoadingSplash();
     void redirectMenuBackground(void (_stdcall *func)(int));

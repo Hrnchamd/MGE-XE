@@ -118,6 +118,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, MGE_DISABLED_BIT, siniMisc, "MGE Disabled", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, MWSE_DISABLED_BIT, siniMisc, "Internal MWSE Disabled", False, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, SKIP_INTRO_BIT, siniMisc, "Skip Intro Movies", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_MENU_CACHING_BIT, siniMisc, "Use Menu Background Caching", True, &dictBool, DICTONLY, 0, 0},
 
     // Distant Land flags

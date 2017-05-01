@@ -67,6 +67,9 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
                 LOG::logline("MWSE dll failed to load");
             }
         }
+
+        if(Configuration.MGEFlags & SKIP_INTRO)
+            MWInitPatch::disableIntroMovies();
     }
 
     return true;

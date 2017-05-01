@@ -47,7 +47,6 @@ static struct {
 const int altSensitivity = 18;      // How many pixels the mouse must move to register an attack
 const int maxGap = 15;              // If the difference between x and y movement is greater than this, don't use a hacking attack
 
-static bool SkipIntro;
 static bool GlobalHammer;
 static bool UseAltCombatWrapper;
 
@@ -70,7 +69,9 @@ void * CreateInputWrapper(void *real)
 
         if(version == MGE_SAVE_VERSION)
         {
-            bool DisableConsole;    // no longer supported, used for file format compatibility
+            // No longer supported, used for file format compatibility
+            bool SkipIntro;
+            bool DisableConsole;
 
             ReadFile(keyfile, &SkipIntro, 1, &unused, NULL);
             ReadFile(keyfile, &DisableConsole, 1, &unused, NULL);
@@ -270,13 +271,7 @@ public:
             bytes[byte] |= hammer[byte];
         }
 
-        if(SkipIntro)
-        {
-            // Push escape to skip the intro
-            if(GlobalHammer)
-                bytes[0x01] = 0x80;
-        }
-        else if(FinishedFake)
+        if(FinishedFake)
         {
             // Close the console after faking a command (If using console 1 style)
             FinishedFake = false;
@@ -413,16 +408,7 @@ public:
     HRESULT _stdcall GetDeviceData(DWORD a, DIDEVICEOBJECTDATA *b, DWORD *c, DWORD d)
     {
         // This only gets called for keyboards
-        if(*c == 1 && SkipIntro)
-        {
-            // Skip the second intro (Beats me why it wants buffered data)
-            SkipIntro = false;
-            FakeBuffer[0].dwOfs = 0x01;
-            FakeBuffer[0].dwData = 0x80;
-            *b = FakeBuffer[0];
-            return DI_OK;
-        }
-        else if(*c == 1 && FakeBufferEnd > FakeBufferStart)
+        if(*c == 1 && FakeBufferEnd > FakeBufferStart)
         {
             // Inject a fake keypress
             *b = FakeBuffer[FakeBufferStart++];
