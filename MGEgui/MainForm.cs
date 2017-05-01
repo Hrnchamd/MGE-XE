@@ -423,7 +423,7 @@ namespace MGEgui {
             cmbAntiAlias.SelectedIndex = (int)iniFile.getKeyValue ("AntiAlias");
             cmbVWait.SelectedIndex = (int)iniFile.getKeyValue ("VWait");
             tbRefreshRate.Text = iniFile.getKeyValue ("Refresh").ToString();
-            if(tbRefreshRate.Text == "0") tbRefreshRate.Text = "Default";
+            if(tbRefreshRate.Text == "0") tbRefreshRate.Text = Statics.strings["Default"];
             cbBorderless.Checked = (iniFile.getKeyValue ("Borderless") == 1);
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue ("AnisoLvl");
             udLOD.Value = (decimal)iniFile.getKeyValue ("LODBias");
@@ -1024,7 +1024,7 @@ namespace MGEgui {
             
             if (ResolutionForm.ShowDialog (out p, out refresh, cbWindowed.Checked)) {
                 tbResolution.Text = p.X.ToString () + " x " + p.Y.ToString ();
-                tbRefreshRate.Text = (refresh == 0) ? "Default" : refresh.ToString();
+                tbRefreshRate.Text = (refresh == 0) ? Statics.strings["Default"] : refresh.ToString();
                 CalcAspectRatio (p.X, p.Y);
             }
         }
