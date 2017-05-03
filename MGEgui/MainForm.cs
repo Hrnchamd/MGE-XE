@@ -568,82 +568,6 @@ namespace MGEgui {
             return ((decimal)value < target.Minimum ? target.Minimum : ((decimal)value > target.Maximum ? target.Maximum : (decimal)value));
         }
 
-        private void ImportGraphicsSaveFile () {
-            BinaryReader br;
-            br = new BinaryReader (File.OpenRead (Statics.fn_settings));
-            byte version = br.ReadByte ();
-            if (version < 41) throw new Exception (strings ["SetTooOld"]);
-            if (version > Statics.SaveVersion) throw new Exception (strings ["SetTooNew"]);
-            int i;
-            loading = true;
-            switch (i = br.ReadByte ()) {
-                case 0: cmbAntiAlias.SelectedIndex = 0; break;
-                default: cmbAntiAlias.SelectedIndex = (int)Math.Log(i - 1, 2); break;
-            }
-            switch (br.ReadByte ()) {
-                case 3: cmbVWait.SelectedIndex = 0; break;
-                case 1: cmbVWait.SelectedIndex = 1; break;
-                case 2: cmbVWait.SelectedIndex = 2; break;
-                case 4: cmbVWait.SelectedIndex = 3; break;
-                case 8: cmbVWait.SelectedIndex = 4; break;
-                default: cmbVWait.SelectedIndex = 5; break;
-            }
-            switch (i = br.ReadByte ()) {
-                case 0: tbRefreshRate.Text = "Default"; break;
-                default: tbRefreshRate.Text = i.ToString(); break;
-            }
-            cbFPSCounter.Checked = br.ReadBoolean ();
-            cbDisplayMessages.Checked = br.ReadBoolean ();
-            cmbSShotFormat.SelectedIndex = br.ReadByte ();
-            switch (br.ReadByte ()) {
-                case 1: cmbAnisoLevel.SelectedIndex = 0; break;
-                case 2: cmbAnisoLevel.SelectedIndex = 1; break;
-                case 4: cmbAnisoLevel.SelectedIndex = 2; break;
-                case 8: cmbAnisoLevel.SelectedIndex = 3; break;
-                case 16: cmbAnisoLevel.SelectedIndex = 4; break;
-            }
-            udLOD.Value = udValue (udLOD, br.ReadSByte ());
-            cmbFogMode.SelectedIndex = br.ReadByte ();
-            br.ReadByte ();  //Fog pixel mode
-            br.ReadByte ();  //Fog vertex mode
-            br.ReadByte ();  //Ranged fog
-            cbHWShader.Checked = br.ReadBoolean ();
-            cbDLDistantLand.Checked = br.ReadBoolean ();
-            cbDLDistantStatics.Checked = br.ReadBoolean ();
-            if (version >= 43) br.ReadByte ();
-            if (version >= 42) {
-                cbDLReflLand.Checked = br.ReadBoolean ();
-                cbDLReflNStatics.Checked = br.ReadBoolean ();
-                bool cbDLReflFStatics = br.ReadBoolean ();
-            }
-            br.ReadBoolean (); // Used to be SM3 water
-            udDLDistNear.Value = udValue (udDLDistNear, br.ReadByte ());
-            udDLFogAEnd.Value = udValue (udDLFogAEnd, br.ReadByte ());
-            if (version >= 44) {
-                udDLFogAStart.Value = udValue (udDLFogAStart, br.ReadByte ());
-                udDLFogBStart.Value = udValue (udDLFogBStart, br.ReadByte ());
-                udDLFogBEnd.Value = udValue (udDLFogBEnd, br.ReadByte ());
-                udDLDrawDist.Value = udValue (udDLDrawDist, br.ReadByte ());
-                udDLDistFar.Value = udValue (udDLDistFar, br.ReadByte ());
-                udDLDistVeryFar.Value = udValue (udDLDistVeryFar, br.ReadByte ());
-                udDLSizeFar.Value = udValue (udDLSizeFar, br.ReadByte () * 10);
-                udDLSizeVeryFar.Value = udValue (udDLSizeVeryFar, br.ReadByte () * 10);
-                cbDLAutoDist.Checked = br.ReadBoolean ();
-            }
-            if (version >= 46) {
-                tbDLNearSize.Text = (br.ReadByte () * 10).ToString ();
-            }
-            if (version >= 47) {
-                br.ReadByte (); // Distant blur
-            }
-            loading = false;
-            br.Close ();
-            SaveGraphicsSettings ();
-            if (File.Exists (Statics.fn_oldsettings)) File.Delete (Statics.fn_oldsettings);
-            File.Move (Statics.fn_settings, Statics.fn_oldsettings);
-            MessageBox.Show (strings ["OldSetImp"], Statics.strings ["Message"], MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
         private void LoadInputSaveFile () {
             byte version;
             if (!File.Exists (Statics.fn_didata)) return;
@@ -718,6 +642,16 @@ namespace MGEgui {
             if (version < Statics.SaveVersion) {
                 MessageBox.Show (strings ["OldInpImp"], Statics.strings ["Message"]);
             }
+        }
+
+        private void UnserializeMacroSaves () {
+            FileStream fs;
+            fs = File.OpenRead (Statics.fn_macro);
+            Statics.Macros = (Macro [])Statics.formatter.Deserialize (fs);
+            fs.Close ();
+            fs = File.OpenRead (Statics.fn_triger);
+            Statics.Triggers = (Trigger [])Statics.formatter.Deserialize (fs);
+            fs.Close ();
         }
 
         private void LoadInputSettings () {
@@ -804,16 +738,6 @@ namespace MGEgui {
             }
         }
         
-        private void UnserializeMacroSaves () {
-            FileStream fs;
-            fs = File.OpenRead (Statics.fn_macro);
-            Statics.Macros = (Macro [])Statics.formatter.Deserialize (fs);
-            fs.Close ();
-            fs = File.OpenRead (Statics.fn_triger);
-            Statics.Triggers = (Trigger [])Statics.formatter.Deserialize (fs);
-            fs.Close ();
-        }
-
         private void SaveMWINI () {
             INIFile mwini = new INIFile (Statics.fn_mwini, mwSettings, System.Text.Encoding.Default, true);
             
@@ -941,19 +865,13 @@ namespace MGEgui {
             LoadGraphicsSettings(false);
             LoadMWINI();
 
-            if (File.Exists (Statics.fn_settings) && MessageBox.Show (strings ["ImpOldSet"], strings ["ImportSet"], MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                try {
-                    ImportGraphicsSaveFile ();
-                } catch (Exception ex) {
-                    loading = false;
-                    MessageBox.Show (String.Format (strings ["ErrImpSet"], ex.Message), Statics.strings ["Error"]);
-                }
-            }
             if (File.Exists (Statics.fn_didata)) {
-                // Convert older macro and remap settings
+                // Convert 0.9.x macro and remap settings
                 try {
                     LoadInputSaveFile ();
                     File.Delete(Statics.fn_didata);
+                    File.Delete(Statics.fn_macro);
+                    File.Delete(Statics.fn_triger);
 
                     if (File.Exists (Statics.fn_remap)) {
                         FileStream fs = File.OpenRead (Statics.fn_remap);
@@ -1065,9 +983,6 @@ namespace MGEgui {
                 len = br.ReadInt32 ();
                 if (len > 0) {
                     b = br.ReadBytes (len);
-                    fs = File.Open (Statics.fn_settings, FileMode.Create);
-                    fs.Write (b, 0, len);
-                    fs.Close ();
                 }
                 len = br.ReadInt32 ();
                 b = br.ReadBytes (len);

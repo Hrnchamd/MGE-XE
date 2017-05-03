@@ -169,8 +169,6 @@ namespace MGEgui {
         public const string fn_mwini = "Morrowind.ini";
         public const string fn_runtimelog = "mgeXE.log";
         public const string iniFileName = "MGE3/MGE.ini";
-        public const string fn_settings = "MGE3/settings";
-        public const string fn_oldsettings = "MGE3/old-settings";
         public const string fn_didata = "MGE3/DInput.data";
         public const string fn_macro = "MGE3/Macros.sav";
         public const string fn_triger = "MGE3/Triggers.sav";
