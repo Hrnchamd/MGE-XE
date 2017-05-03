@@ -336,6 +336,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniDisableMGE = new INIFile.INIVariableDef ("DisableMGE", siniMisc, "MGE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef ("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniSkipIntro = new INIFile.INIVariableDef ("SkipIntro", siniMisc, "Skip Intro Movies", INIFile.INIBoolType.Text, "True");
+        private static INIFile.INIVariableDef iniAltCombat = new INIFile.INIVariableDef ("AltCombat", siniMisc, "Daggerfall Combat Controls", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniCam3rdCustom = new INIFile.INIVariableDef ("Cam3rdCustom", siniMisc, "Customize 3rd Person Camera", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniCam3rdX = new INIFile.INIVariableDef ("Cam3rdX", siniMisc, "Initial 3rd Person Camera X", INIFile.INIVariableType.Single, "0", -125, 125, 1);
         private static INIFile.INIVariableDef iniCam3rdY = new INIFile.INIVariableDef ("Cam3rdY", siniMisc, "Initial 3rd Person Camera Y", INIFile.INIVariableType.Single, "-160", -2500, -25, 1);
@@ -385,7 +386,7 @@ namespace MGEgui {
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
             iniUIScale, iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
-            iniDisableMGE, iniDisableMWSE, iniSkipIntro,
+            iniDisableMGE, iniDisableMWSE, iniSkipIntro, iniAltCombat,
             iniCam3rdCustom, iniCam3rdX, iniCam3rdY, iniCam3rdZ,
             iniAutoCrosshair, iniMenuCaching,
             iniMessages, iniMsgTime,
@@ -444,6 +445,7 @@ namespace MGEgui {
             cbDisableMGE.Checked = (iniFile.getKeyValue ("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue ("DisableMWSE") == 1);
             cbSkipMovie.Checked = (iniFile.getKeyValue ("SkipIntro") == 1);
+            cbAltCombat.Checked = (iniFile.getKeyValue ("AltCombat") == 1);
             cbCam3rdPrsn.Checked = (iniFile.getKeyValue ("Cam3rdCustom") == 1);
             udCam3rdX.Value = (decimal)iniFile.getKeyValue ("Cam3rdX");
             udCam3rdY.Value = (decimal)iniFile.getKeyValue ("Cam3rdY");
@@ -515,6 +517,7 @@ namespace MGEgui {
             // In-game
             iniFile.setKey ("DisableMWSE", cbDisableMWSE.Checked);
             iniFile.setKey ("SkipIntro", cbSkipMovie.Checked);
+            iniFile.setKey ("AltCombat", cbAltCombat.Checked);
             iniFile.setKey ("Cam3rdCustom", cbCam3rdPrsn.Checked);
             iniFile.setKey ("Cam3rdX", (double)udCam3rdX.Value);
             iniFile.setKey ("Cam3rdY", (double)udCam3rdY.Value);
@@ -717,6 +720,90 @@ namespace MGEgui {
             }
         }
 
+        private void LoadInputSettings () {
+            INIFile iniFile = new INIFile(Statics.iniFileName, iniSettings, true);
+
+            for (int i = 0; i < Statics.MACROS; ++i) {
+                Statics.Macros[i] = new Macro();
+            }
+            for (int i = 0; i < Statics.TRIGGERS; ++i) {
+                Statics.Triggers[i] = new Trigger();
+            }
+            for (int i = 0; i < Statics.Remapper.Length; ++i) {
+                Statics.Remapper[i] = 0;
+            }
+            
+            var macroDesc = iniFile.getSectionKeys("MacrosDesc");
+            foreach (var entry in iniFile.getSectionKeys("Macros")) {
+                int i;
+                if (!(entry.Key.StartsWith("M") && int.TryParse(entry.Key.Substring(1), out i)))
+                    continue;
+
+                Macro m = Statics.Macros[i];
+                string[] values = entry.Value.Split(',');
+                
+                try {
+                    m.Type = (MacroType)Enum.Parse(typeof(MacroType), values[0], true);
+                }
+                catch (ArgumentException) { continue; }
+
+                switch (m.Type) {
+                    case MacroType.Console1:
+                    case MacroType.Console2:
+                        m.Console.Length = 0;
+                        for (int j = 1; j < values.Length; j += 2, m.Console.Length++) {
+                            m.Console.KeyCodes[m.Console.Length].Code = byte.Parse(values[j]);
+                            m.Console.KeyCodes[m.Console.Length].Down = bool.Parse(values[j+1]);
+                        }
+                        macroDesc.TryGetValue(entry.Key, out m.Console.Description);
+                        if (m.Console.Description == null) m.Console.Description = "";
+                        break;
+                    case MacroType.Press1:
+                    case MacroType.Press2:
+                    case MacroType.Unpress:
+                    case MacroType.Hammer1:
+                    case MacroType.Hammer2:
+                    case MacroType.Unhammer:
+                    case MacroType.AHammer1:
+                    case MacroType.AHammer2:
+                    case MacroType.AUnhammer:
+                        for (int j = 1; j < values.Length; ++j) {
+                            m.Press.KeyStates[int.Parse(values[j])] = true;
+                        }
+                        break;
+                    case MacroType.BeginTimer:
+                    case MacroType.EndTimer:
+                        m.Timer.TimerID = byte.Parse(values[1]);
+                        break;
+                    case MacroType.Graphics:
+                        m.Graphics.function = byte.Parse(values[1]);
+                        break;
+                }
+            }
+
+            foreach (var entry in iniFile.getSectionKeys("InputTriggers")) {
+                int i;
+                if (entry.Key.StartsWith("T") && int.TryParse(entry.Key.Substring(1), out i)) {
+                    Trigger t = Statics.Triggers[i];
+                    string[] values = entry.Value.Split(',');
+                    
+                    t.Active = bool.Parse(values[0]);
+                    t.TimeInterval = uint.Parse(values[1]);
+                    
+                    for (int j = 2; j < values.Length; ++j) {
+                        t.data.KeyStates[int.Parse(values[j])] = true;
+                    }
+                }
+            }
+
+            foreach (var entry in iniFile.getSectionKeys("InputRemap")) {
+                int i;
+                if (entry.Key.StartsWith("R") && int.TryParse(entry.Key.Substring(1), out i)) {
+                    Statics.Remapper[i] = byte.Parse(entry.Value);
+                }
+            }
+        }
+        
         private void UnserializeMacroSaves () {
             FileStream fs;
             fs = File.OpenRead (Statics.fn_macro);
@@ -750,36 +837,22 @@ namespace MGEgui {
             mwini.save ();
         }
 
-        private void SaveSettings () {
-            SaveMWINI ();
-            SaveGraphicsSettings ();
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            //XX Input - see input.h for layout of save file XX
-            //XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-            FileStream fs;
-            fs = File.Open (Statics.fn_macro, FileMode.Create);
-            Statics.formatter.Serialize (fs, Statics.Macros);
-            fs.Close ();
-            fs = File.Open (Statics.fn_triger, FileMode.Create);
-            Statics.formatter.Serialize (fs, Statics.Triggers);
-            fs.Close ();
-            BinaryWriter bw = new BinaryWriter (File.Open (Statics.fn_didata, FileMode.Create));
-            bw.Write (Statics.SaveVersion);
-            bw.Write(false); // was skip movie
-            bw.Write(false); // was disable console
-            bw.Write (cbAltCombat.Checked);
-            for (int i = 0; i < Statics.MACROS; i++) {
-                bw.Write ((byte)Statics.Macros [i].Type);
-                switch (Statics.Macros [i].Type) {
+        private void SaveInputSettings() {
+            INIFile iniFile = new INIFile(Statics.iniFileName, iniSettings, true);
+
+            List<string> text = new List<string>();
+            List<string> macroDesc = new List<string>();
+            for (int i = 0; i < Statics.MACROS; ++i) {
+                Macro m = Statics.Macros[i];
+                string s = string.Format("M{0}={1}", i, m.Type);
+                switch (m.Type)
+                {
                     case MacroType.Console1:
                     case MacroType.Console2:
-                        bw.Write (Statics.Macros [i].Console.Length);
-                        for (int j = 0; j < Statics.MACROS; j++) {
-                            bw.Write (Statics.Macros [i].Console.KeyCodes [j].Code);
-                        }
-                        for (int j = 0; j < Statics.MACROS; j++) {
-                            bw.Write ((byte)(Convert.ToByte (Statics.Macros [i].Console.KeyCodes [j].Down) * 0x80));
-                        }
+                        if (m.Console.Description.Length > 0)
+                            macroDesc.Add(string.Format("{0}={1}", i, m.Console.Description));
+                        for (int j = 0; j < m.Console.Length; ++j)
+                            s += string.Format(",{0},{1}", m.Console.KeyCodes[j].Code, m.Console.KeyCodes[j].Down);
                         break;
                     case MacroType.Press1:
                     case MacroType.Press2:
@@ -790,56 +863,55 @@ namespace MGEgui {
                     case MacroType.AHammer1:
                     case MacroType.AHammer2:
                     case MacroType.AUnhammer:
-                        for (int j = 0; j < Statics.MACROS; j++) {
-                            bw.Write ((byte)(Convert.ToByte (Statics.Macros [i].Press.KeyStates [j]) * 0x80));
-                        }
-                        for (int j = 0; j < Statics.MACROS + 1; j++) {
-                            bw.Write ((byte)0);
+                        for (int j = 0; j < Statics.MACROS; ++j) {
+                            if (m.Press.KeyStates[j])
+                                s += string.Format(",{0}", j);
                         }
                         break;
                     case MacroType.BeginTimer:
                     case MacroType.EndTimer:
-                        bw.Write ((byte)Statics.Macros [i].Timer.TimerID);
-                        for (int j = 0; j < Statics.MACROS * 2; j++) {
-                            bw.Write ((byte)0);
-                        }
+                        s += string.Format(",{0}", m.Timer.TimerID);
                         break;
                     case MacroType.Graphics:
-                        bw.Write ((byte)Statics.Macros [i].Graphics.function);
-                        for (int j = 0; j < Statics.MACROS * 2; j++) {
-                            bw.Write ((byte)0);
-                        }
+                        s += string.Format(",{0}", m.Graphics.function);
                         break;
                     default:
-                        for (int j = 0; j < Statics.MACROS * 2 + 1; j++) {
-                            bw.Write ((byte)0);
-                        }
-                        break;
+                        continue;
                 }
+                text.Add(s);
             }
+            iniFile.setSectOrderedList("Macros", text.ToArray());
+            iniFile.setSectOrderedList("MacrosDesc", macroDesc.ToArray());
+
+            text.Clear();
             for (int i = 0; i < Statics.TRIGGERS; i++) {
-                bw.Write (Statics.Triggers [i].TimeInterval * 1000);
-                bw.Write (Statics.Triggers [i].Active);
+                Trigger t = Statics.Triggers[i];
+                string s = "";
+
                 for (int j = 0; j < Statics.MACROS; j++) {
-                    bw.Write ((byte)(Convert.ToByte (Statics.Triggers [i].data.KeyStates [j]) * 0x80));
+                    if (t.data.KeyStates[j])
+                        s += string.Format(",{0}", j);
                 }
-                bw.Write ((byte)0);  //Needed for memory alignment reasons
-            }
-            bw.Close ();
-            bool CreateRemap = false;
-            for (int i = 0; i < 256; i++) {
-                if (Statics.Remapper [i] != 0) {
-                    CreateRemap = true;
-                    break;
+                if (s.Length > 0) {
+                    text.Add(string.Format("T{0}={1},{2}{3}", i, t.Active, t.TimeInterval, s));
                 }
             }
-            if (CreateRemap) {
-                bw = new BinaryWriter (File.Open (Statics.fn_remap, FileMode.Create));
-                bw.Write (Statics.Remapper);
-                bw.Close ();
-            } else {
-                File.Delete (Statics.fn_remap);
+            iniFile.setSectOrderedList("InputTriggers", text.ToArray());
+
+            text.Clear();
+            for (int i = 0; i < Statics.Remapper.Length; i++) {
+                if (Statics.Remapper[i] != 0)
+                    text.Add(string.Format("R{0}={1}", i, Statics.Remapper[i]));
             }
+            iniFile.setSectOrderedList("InputRemap", text.ToArray());
+
+            iniFile.save();
+        }
+        
+        private void SaveSettings () {
+            SaveMWINI ();
+            SaveGraphicsSettings ();
+            SaveInputSettings();
         }
 
         private void LoadSettings () {
@@ -877,16 +949,30 @@ namespace MGEgui {
                     MessageBox.Show (String.Format (strings ["ErrImpSet"], ex.Message), Statics.strings ["Error"]);
                 }
             }
-            if (File.Exists (Statics.fn_didata)) try {
+            if (File.Exists (Statics.fn_didata)) {
+                // Convert older macro and remap settings
+                try {
                     LoadInputSaveFile ();
+                    File.Delete(Statics.fn_didata);
+
+                    if (File.Exists (Statics.fn_remap)) {
+                        FileStream fs = File.OpenRead (Statics.fn_remap);
+                        fs.Read (Statics.Remapper, 0, 256);
+                        fs.Close ();
+                        File.Delete(Statics.fn_remap);
+                    }
                 } catch (Exception ex) {
                     loading = false;
                     MessageBox.Show (String.Format (strings ["ErrLdInp"], ex.Message), Statics.strings ["Error"]);
                 }
-            if (File.Exists (Statics.fn_remap)) {
-                FileStream fs = File.OpenRead (Statics.fn_remap);
-                fs.Read (Statics.Remapper, 0, 256);
-                fs.Close ();
+            }
+            else {
+                try {
+                    LoadInputSettings();
+                } catch (Exception ex) {
+                    loading = false;
+                    MessageBox.Show (String.Format (strings ["ErrLdInp"], ex.Message), Statics.strings ["Error"]);
+                }
             }
             if (File.Exists (Statics.fn_dlver) && File.Exists (Statics.fn_usagedata)) {
                 byte [] bytes = File.ReadAllBytes (Statics.fn_dlver);
