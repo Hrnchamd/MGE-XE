@@ -66,7 +66,7 @@ namespace MGEgui {
         };
 
         private void LoadSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniWeatherSettings);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings);
             foreach (Control ctl in this.Controls["gbSun"].Controls) {
                 if (ctl.Name.Substring(0, 2) != "ud") continue;
                 NumericUpDown ud = (NumericUpDown)ctl;
@@ -97,7 +97,7 @@ namespace MGEgui {
         }
     
         private void bSave_Click(object sender, EventArgs e) {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniWeatherSettings, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings, true);
             iniFile.initialize();
             
             foreach (Control ctl in this.Controls["gbSun"].Controls) {

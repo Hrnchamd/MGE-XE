@@ -696,11 +696,10 @@ namespace MGEgui {
                 if(s.EndsWith(".fx")) lbAvailable.Items.Add(Path.GetFileNameWithoutExtension(s));
             }
             
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniShaderDefault, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniShaderDefault, true);
             udHDRTime.Value = (decimal)iniFile.getKeyValue("HDRTime");
-                
-            List<string> shaderList = new List<string>(iniFile.getSectList(iniShaderChain));
-            foreach (string s in shaderList) {
+            
+            foreach (string s in iniFile.getSectList(iniShaderChain)) {
 				if (File.Exists(Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx")) {
 	                lbSelected.Items.Add(s);
             	}
@@ -803,7 +802,7 @@ namespace MGEgui {
         }
 
         private void bSave_Click(object sender,EventArgs e) {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniShaderDefault, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniShaderDefault, true);
             
             iniFile.setKey("HDRTime", (double)udHDRTime.Value);
             iniFile.setSectOrderedList(iniShaderChain, lbSelected.Items.OfType<string>().ToArray());

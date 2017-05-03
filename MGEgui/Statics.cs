@@ -168,7 +168,7 @@ namespace MGEgui {
         public const string fn_nul = "NUL";
         public const string fn_mwini = "Morrowind.ini";
         public const string fn_runtimelog = "mgeXE.log";
-        public const string iniFileName = "MGE3/MGE.ini";
+        public const string fn_inifile = "MGE3/MGE.ini";
         public const string fn_didata = "MGE3/DInput.data";
         public const string fn_macro = "MGE3/Macros.sav";
         public const string fn_triger = "MGE3/Triggers.sav";
@@ -263,7 +263,7 @@ namespace MGEgui {
             string language = "English (default)";
             bool autoLanguage = true;
             try {
-                INIFile MGEini = new INIFile (iniFileName, new INIFile.INIVariableDef [] { INIFile.iniDefEmpty, MainForm.iniLanguage, MainForm.iniAutoLang });
+                INIFile MGEini = new INIFile (fn_inifile, new INIFile.INIVariableDef [] { INIFile.iniDefEmpty, MainForm.iniLanguage, MainForm.iniAutoLang });
                 language = MGEini.getKeyString ("Language");
                 autoLanguage = (MGEini.getKeyValue ("AutoLang") == 1);
             } catch { }

@@ -411,9 +411,9 @@ namespace MGEgui {
         }
 
         private void LoadGraphicsSettings (bool reset, bool save) {
-            INIFile iniFile = new INIFile (reset ? Statics.fn_nul : Statics.iniFileName, iniSettings, true);
+            INIFile iniFile = new INIFile (reset ? Statics.fn_nul : Statics.fn_inifile, iniSettings, true);
             if (reset)
-                iniFile.fileName = Statics.iniFileName;
+                iniFile.fileName = Statics.fn_inifile;
             if (save) {
                 iniFile.initialize ();
                 iniFile.save ();
@@ -488,7 +488,7 @@ namespace MGEgui {
         }
 
         private void SaveGraphicsSettings () {
-            INIFile iniFile = new INIFile (Statics.iniFileName, iniSettings, true);
+            INIFile iniFile = new INIFile (Statics.fn_inifile, iniSettings, true);
             // Config
             iniFile.setKey ("Version", Statics.versionString);
             iniFile.setKey ("TipSpeed", cmbTipReadSpd.SelectedIndex);
@@ -655,7 +655,7 @@ namespace MGEgui {
         }
 
         private void LoadInputSettings () {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniSettings, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
 
             for (int i = 0; i < Statics.MACROS; ++i) {
                 Statics.Macros[i] = new Macro();
@@ -762,7 +762,7 @@ namespace MGEgui {
         }
 
         private void SaveInputSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniSettings, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
 
             List<string> text = new List<string>();
             List<string> macroDesc = new List<string>();
@@ -961,7 +961,7 @@ namespace MGEgui {
                 b = File.ReadAllBytes (Statics.fn_mwini);
                 bw.Write (b.Length);
                 bw.Write (b);
-                b = File.ReadAllBytes (Statics.iniFileName);
+                b = File.ReadAllBytes (Statics.fn_inifile);
                 bw.Write (b.Length);
                 bw.Write (b);
                 bw.Close ();
@@ -1001,7 +1001,7 @@ namespace MGEgui {
                 if (br.BaseStream.Position < eof) {
                     len = br.ReadInt32 ();
                     b = br.ReadBytes (len);
-                    fs = File.Open (Statics.iniFileName, FileMode.Create);
+                    fs = File.Open (Statics.fn_inifile, FileMode.Create);
                     fs.Write (b, 0, len);
                     fs.Close ();
                 }
@@ -1308,7 +1308,7 @@ namespace MGEgui {
             DialogResult res = MessageBox.Show (String.Format (strings ["AskReset"], (delete ? strings ["ResetSaved"] : "")), strings ["ResetAsk"], MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
             if (res == DialogResult.Yes) {
                 LoadGraphicsSettings (true, delete);
-                INIFile iniFile = new INIFile (Statics.iniFileName, DLWeatherForm.iniWeatherSettings, true);
+                INIFile iniFile = new INIFile (Statics.fn_inifile, DLWeatherForm.iniWeatherSettings, true);
                 iniFile.reinitialize ();
                 iniFile.save ();
                 cbSkipMovie.Checked = true;

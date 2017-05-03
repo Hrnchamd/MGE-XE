@@ -211,9 +211,8 @@ namespace MGEgui.DirectX {
             string sp = Setup(framepath, depthpath);
             if(sp != null) return sp;
 
-            INIFile iniFile = new INIFile(Statics.iniFileName, ShaderActive.iniShaderDefault, true);
-            List<string> shaderList = new List<string>(iniFile.getSectList(ShaderActive.iniShaderChain));
-            foreach (string s in shaderList) {
+            INIFile iniFile = new INIFile(Statics.fn_inifile, ShaderActive.iniShaderDefault, true);
+            foreach (string s in iniFile.getSectList(ShaderActive.iniShaderChain)) {
                 string path = Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx";
                 Effect effect;
 

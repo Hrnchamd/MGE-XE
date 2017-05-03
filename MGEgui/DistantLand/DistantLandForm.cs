@@ -284,7 +284,7 @@ namespace MGEgui.DistantLand {
         
         // loading all settings
         private void LoadSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniDLWizardVars, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniDLWizardVars, true);
             configure = !iniFile.hasSection(iniDLWizardSets);
             if (configure) {
                 iniFile.initialize();
@@ -332,7 +332,7 @@ namespace MGEgui.DistantLand {
 
         // saving settings after plugin selection
         private void SavePlugsSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniPlugsTab, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniPlugsTab, true);
             double temp;
             if (rbPlugsName.Checked) temp = 0;
             else if (rbPlugsType.Checked) temp = 1;
@@ -348,7 +348,7 @@ namespace MGEgui.DistantLand {
 
         // saving settings after land texture creation
         private void SaveTexSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniTexTab, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniTexTab, true);
             iniFile.setKey("TexRes", cmbTexWorldResolution.SelectedIndex);
             iniFile.setKey("NormRes", cmbTexWorldNormalRes.SelectedIndex);
             iniFile.setKey("Tex2Step", cbTexTwoStep.Checked);
@@ -357,14 +357,14 @@ namespace MGEgui.DistantLand {
 
         // saving settings after land mesh creation
         private void SaveMeshSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniMeshTab, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniMeshTab, true);
             iniFile.setKey("WorldMesh", (cmbMeshWorldDetail_auto ? -1 : (double)cmbMeshWorldDetail.SelectedIndex));
             iniFile.save();
         }
 
         // saving settings after statics creation
         private void SaveStatSettings() {
-            INIFile iniFile = new INIFile(Statics.iniFileName, iniStatTab, true);
+            INIFile iniFile = new INIFile(Statics.fn_inifile, iniStatTab, true);
             iniFile.setKey("MinStat", (double)udStatMinSize.Value);
             iniFile.setKey("GrassDens", (double)udStatGrassDensity.Value);
             iniFile.setKey("StatMesh", cmbStatSimplifyMeshes.SelectedIndex);
