@@ -52,8 +52,9 @@ namespace MGEgui.DirectX {
         public static void GetDeviceCaps() {
             //Device.IsUsingEventHandlers=false;
 
-            adapter=(int)Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Bethesda Softworks\Morrowind", "Adapter", 0);
-            if(d3d.AdapterCount <= adapter) throw new ApplicationException("Morrowind is set up to use an adapter which could not be found on your system");
+            object value = Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Bethesda Softworks\Morrowind", "Adapter", 0);
+            adapter = (value != null) ? (int)value : 0;
+            if(d3d.AdapterCount <= adapter) throw new ApplicationException("Morrowind is set up to use a graphics card which could not be found on your system.");
 
             for(int i=2;i<=16;i++) {
                 if(d3d.CheckDeviceMultisampleType(adapter, DeviceType.Hardware, Format.X8R8G8B8, false, (MultisampleType)i))
@@ -105,10 +106,13 @@ namespace MGEgui.DirectX {
         }
 
         public static void CloseDevice() {
-            BackBuffer=null;
-            if(device!=null) {
+            if (BackBuffer != null) {
+                BackBuffer.Dispose();
+                BackBuffer = null;
+            }
+            if(device != null) {
                 device.Dispose();
-                device=null;
+                device = null;
             }
         }
 

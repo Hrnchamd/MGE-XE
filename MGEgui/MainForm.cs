@@ -848,6 +848,7 @@ namespace MGEgui {
                 // If Morrowind hasn't run yet, no keys exist
                 key.SetValue("Screen Width", 640);
                 key.SetValue("Screen Height", 480);
+                key.SetValue("Refresh Rate", 0);
                 key.SetValue("Fullscreen", new byte[] { (byte)1 });
                 width = 640;
                 height = 480;

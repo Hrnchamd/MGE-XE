@@ -302,11 +302,6 @@ namespace MGEgui {
             }
 
             runDir = System.Windows.Forms.Application.StartupPath;
-            //check if MW registry keys exist
-            if (Registry.LocalMachine.OpenSubKey (reg_mw) == null) {
-                MessageBox.Show (strings ["MWRegistry"], strings ["Error"]);
-                return;
-            }
 
             //Create some structures
             for (int i = 0; i < MACROS; i++) {
