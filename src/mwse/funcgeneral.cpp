@@ -4,6 +4,7 @@
 #include "funchud.h"
 #include "support/log.h"
 #include "mge/mgeversion.h"
+#include "mge/distantland.h"
 #include "mge/userhud.h"
 
 
@@ -67,4 +68,16 @@ bool mwseGetScreenHeight::execute(mwseInstruction *_this)
 {
     VMREGTYPE ret = MGEhud::getScreenHeight();
     return _this->vmPush(ret);
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetEyeVec)
+
+// GetEyeVec -> returns <float x, float y, float z>
+bool mwseGetEyeVec::execute(mwseInstruction *_this)
+{
+    _this->vmPush(DistantLand::eyeVec.z);
+    _this->vmPush(DistantLand::eyeVec.y);
+    _this->vmPush(DistantLand::eyeVec.x);
+    return true;
 }

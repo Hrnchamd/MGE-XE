@@ -8,6 +8,8 @@
 #include "funcweather.h"
 #include "funcshader.h"
 #include "funcinput.h"
+#include "funcstat.h"
+#include "funcmwui.h"
 
 
 struct TES3MACHINE;
@@ -74,6 +76,12 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     // New script functions
     MWSEAddInstruction(0x3a00, new mwseGetGS(*vm));
     MWSEAddInstruction(0x3a01, new mwseSetGS(*vm));
+    MWSEAddInstruction(0x3a02, new mwseGetBaseHealth(*vm));
+    MWSEAddInstruction(0x3a03, new mwseGetBaseMagicka(*vm));
+    MWSEAddInstruction(0x3a04, new mwseGetBaseFatigue(*vm));
+
+    MWSEAddInstruction(0x3a10, new mwseUIShow(*vm));
+    MWSEAddInstruction(0x3a11, new mwseUIHide(*vm));
 
     MWSEAddInstruction(0x3a80, new mwseSetSkyColour(*vm));
     MWSEAddInstruction(0x3a81, new mwseSetFogColour(*vm));
@@ -88,6 +96,7 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x3703, new mwseGetVersion(*vm));
     MWSEAddInstruction(0x3704, new mwseGetScreenWidth(*vm));
     MWSEAddInstruction(0x3705, new mwseGetScreenHeight(*vm));
+    MWSEAddInstruction(0x3707, new mwseGetEyeVec(*vm));
 
     MWSEAddInstruction(0x370a, new mwseWipeHUDElements(*vm));
     MWSEAddInstruction(0x370b, new mwseWithHUD(*vm));
