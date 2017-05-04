@@ -118,13 +118,18 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
     // Decompress normal
     float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
     normal = instancedMul(normal, IN.world0, IN.world1, IN.world2);
+
+    // Lighting for two-sided rendering, no emissive
+    float lambert = dot(normal.xyz, -SunVec) * -sign(dot(eyevec, normal.xyz));
+    // Backscatter through thin cover
+    if(lambert < 0)
+        lambert *= -0.3;
     
-    // Lighting (with backface culling turned off, grass shading requires tweak factors)
-    float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb; // + emissive; (some grass has it for no reason producing overbrightness)
-    OUT.colour.rgb = 0.8 * light;    // vertex colour is also unreliable
+    // Ignoring vertex colour due to problem with some grass mods
+    OUT.colour.rgb = SunCol * lambert + SunAmb;
 
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
-    OUT.colour.a = shadowSunEstimate(0.5);
+    OUT.colour.a = shadowSunEstimate(lambert);
 
     // Find position in light space, output light depth
     OUT.shadow0pos = mul(worldpos, shadowviewproj[0]);
