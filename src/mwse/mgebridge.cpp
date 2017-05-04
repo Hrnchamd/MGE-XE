@@ -10,6 +10,7 @@
 #include "funcinput.h"
 #include "funcstat.h"
 #include "funcmwui.h"
+#include "funcphysics.h"
 
 
 struct TES3MACHINE;
@@ -150,4 +151,10 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x3ab2, new mwseSetShaderFloat(*vm));
     MWSEAddInstruction(0x3ab3, new mwseSetShaderLong(*vm));
     MWSEAddInstruction(0x3ab4, new mwseSetShaderVector(*vm));
+
+    MWSEAddInstruction(0x3ae0, new mwseRayTest(*vm));
+    MWSEAddInstruction(0x3ae4, new mwseRayHitPosition(*vm));
+    MWSEAddInstruction(0x3ae5, new mwseRayHitNormal(*vm));
+    MWSEAddInstruction(0x3ae6, new mwseRayHitRef(*vm));
+    MWSEAddInstruction(0x3ae7, new mwseModelBounds(*vm));
 }
