@@ -1,6 +1,6 @@
 
 #include <algorithm>
-#include "funczoom.h"
+#include "funccamera.h"
 #include "mge/configuration.h"
 
 

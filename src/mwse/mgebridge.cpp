@@ -4,7 +4,7 @@
 #include "funcgeneral.h"
 #include "funcgmst.h"
 #include "funchud.h"
-#include "funczoom.h"
+#include "funccamera.h"
 #include "funcweather.h"
 #include "funcshader.h"
 #include "funcinput.h"
