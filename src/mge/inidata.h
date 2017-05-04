@@ -15,7 +15,11 @@ const char *sections[] = {
     "Distant Land",
     "Distant Land Weather",
     "Shader Chain",
-    "Per Pixel Lighting"
+    "Per Pixel Lighting",
+    "Macros",
+    "MacrosDesc",
+    "InputTriggers",
+    "InputRemap"
 };
 
 const char *siniGlobGraph = sections[0];
@@ -26,6 +30,9 @@ const char *siniDL = sections[4];
 const char *siniDLWeather = sections[5];
 const char *siniShaders = sections[6];
 const char *siniPPLighting = sections[7];
+const char *siniMacros = sections[8];
+const char *siniTriggers = sections[10];
+const char *siniRemap = sections[11];
 
 const tdictent dictentBool [] = {
     {False, 0},
@@ -235,7 +242,13 @@ const iniSetting iniSettings[] = {
     {&Configuration.Lighting.SunMult[8], t_float, 1, siniPPLighting, "Snow Sun Brightness", "1", NULL, MINMAX, 0, 10},
     {&Configuration.Lighting.AmbMult[8], t_float, 1, siniPPLighting, "Snow Ambient Brightness", "1", NULL, MINMAX, 0, 10},
     {&Configuration.Lighting.SunMult[9], t_float, 1, siniPPLighting, "Blizzard Sun Brightness", "1", NULL, MINMAX, 0, 10},
-    {&Configuration.Lighting.AmbMult[9], t_float, 1, siniPPLighting, "Blizzard Ambient Brightness", "1", NULL, MINMAX, 0, 10}
+    {&Configuration.Lighting.AmbMult[9], t_float, 1, siniPPLighting, "Blizzard Ambient Brightness", "1", NULL, MINMAX, 0, 10},
+
+    // Input
+    {&Configuration.Input.AltCombat, t_bool, 1, siniMisc, "Daggerfall Combat Controls", "False", &dictBool, DICTONLY, 0, 0},
+    {&Configuration.Input.Macros, t_set, sizeof(Configuration.Input.Macros), siniMacros, NULL, NULL, NULL, 0, 0, 0},
+    {&Configuration.Input.Triggers, t_set, sizeof(Configuration.Input.Triggers), siniTriggers, NULL, NULL, NULL, 0, 0, 0},
+    {&Configuration.Input.Remap, t_set, sizeof(Configuration.Input.Remap), siniRemap, NULL, NULL, NULL, 0, 0, 0}
 };
 
 #endif /* _INIDATA_H_ */

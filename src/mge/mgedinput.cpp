@@ -1,4 +1,6 @@
 
+#include <cstdlib>
+#include <cstring>
 #include "support/log.h"
 #include "mgedinput.h"
 #include "configuration.h"
@@ -48,49 +50,18 @@ const int altSensitivity = 18;      // How many pixels the mouse must move to re
 const int maxGap = 15;              // If the difference between x and y movement is greater than this, don't use a hacking attack
 
 static bool GlobalHammer;
-static bool UseAltCombatWrapper;
 
 
 
+static void loadInputSettings();
 static void stub() {}
 
 void * CreateInputWrapper(void *real)
 {
     LOG::logline(">> CreateInputWrapper");
 
-    // Load macros and triggers
-    DWORD unused;
-    HANDLE keyfile = CreateFileA("MGE3\\DInput.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
-
-    if(keyfile != INVALID_HANDLE_VALUE)
-    {
-        BYTE version;
-        ReadFile(keyfile, &version, 1, &unused, NULL);
-
-        if(version == MGE_SAVE_VERSION)
-        {
-            // No longer supported, used for file format compatibility
-            bool SkipIntro;
-            bool DisableConsole;
-
-            ReadFile(keyfile, &SkipIntro, 1, &unused, NULL);
-            ReadFile(keyfile, &DisableConsole, 1, &unused, NULL);
-            ReadFile(keyfile, &UseAltCombatWrapper, 1, &unused, NULL);
-            ReadFile(keyfile, &FakeKeys, sizeof(FakeKeys), &unused, NULL);
-            ReadFile(keyfile, &Triggers, sizeof(Triggers), &unused, NULL);
-        }
-        else
-        {
-            LOG::logline("MGE\\dinput.data appears to be out of date.\n"
-                     "You need to run MGEXEgui at least once to update the save files.");
-        }
-        CloseHandle(keyfile);
-    }
-    else
-    {
-        LOG::logline("Could not open MGE\\dinput.data for reading.\n"
-                 "You need to run MGEXEgui at least once to create the save files.");
-    }
+    // Read macros and triggers
+    loadInputSettings();
 
     // Initial state
     GlobalHammer = true;       // Used to hammer keys (alternates between up/down)
@@ -153,7 +124,7 @@ void * CreateInputWrapper(void *real)
     FakeFuncs[GF_MoveUp3PC] = MacroFunctions::MoveUp3PCam;
 
     // Force screenshots from PrintScreen
-    FakeKeys[0xb7].type = FKT_Graphics;
+    FakeKeys[0xb7].type = MT_Graphics;
     FakeKeys[0xb7].Graphics.function = GF_Screenshot;
 
     LOG::logline("<< CreateInputWrapper");
@@ -294,12 +265,12 @@ public:
             // Process each key for keypresses
             for(DWORD key = 0; key < MGEINPUT_MAXMACROS; key++)
             {
-                if(FakeKeys[key].type != FKT_Unused && (bytes[key] & 0x80))
+                if(FakeKeys[key].type != MT_Unused && (bytes[key] & 0x80))
                 {
                     BYTE last = LastBytes[key] & 0x80;
                     switch(FakeKeys[key].type)
                     {
-                    case FKT_Console1:
+                    case MT_Console1:
                         if(!last)
                         {
                             bytes[0x29] = 0x80;
@@ -307,85 +278,85 @@ public:
                             CloseConsole = true;
                         }
                         break;
-                    case FKT_Console2:
+                    case MT_Console2:
                         if(!last)
                         {
                             FakeString(FakeKeys[key].Console.KeyCodes, FakeKeys[key].Console.KeyStates, FakeKeys[key].Console.Length);
                             CloseConsole = false;
                         }
                         break;
-                    case FKT_Hammer1:
+                    case MT_Hammer1:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte] && GlobalHammer)
                                 bytes[byte] = 0x80;
                         }
                         break;
-                    case FKT_Hammer2:
+                    case MT_Hammer2:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 HammerStates[byte] = 0x80;
                         }
                         break;
-                    case FKT_Unhammer:
+                    case MT_Unhammer:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 HammerStates[byte] = 0x00;
                         }
                         break;
-                    case FKT_AHammer1:
+                    case MT_AHammer1:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte] && !GlobalHammer)
                                 bytes[byte] = 0x80;
                         }
                         break;
-                    case FKT_AHammer2:
+                    case MT_AHammer2:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 AHammerStates[byte] = 0x80;
                         }
                         break;
-                    case FKT_AUnhammer:
+                    case MT_AUnhammer:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 AHammerStates[byte] = 0x00;
                         }
                         break;
-                    case FKT_Press1:
+                    case MT_Press1:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 bytes[byte] = 0x80;
                         }
                         break;
-                    case FKT_Press2:
+                    case MT_Press2:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 FakeStates[byte] = 0x80;
                         }
                         break;
-                    case FKT_Unpress:
+                    case MT_Unpress:
                         for(DWORD byte = 0; byte < MGEINPUT_MAXMACROS; byte++)
                         {
                             if(FakeKeys[key].Press.KeyStates[byte])
                                 FakeStates[byte] = 0x00;
                         }
                         break;
-                    case FKT_BeginTimer:
+                    case MT_BeginTimer:
                         if(!last)
                             Triggers[FakeKeys[key].Timer.TimerID].Active = true;
                         break;
-                    case FKT_EndTimer:
+                    case MT_EndTimer:
                         if(!last)
                             Triggers[FakeKeys[key].Timer.TimerID].Active = false;
                        break;
-                    case FKT_Graphics:
+                    case MT_Graphics:
                         // Activate on keydown only, except for certain functions which should repeat
                         if((!last)||(FakeKeys[key].Graphics.function == GF_IncreaseZoom ||
                                      FakeKeys[key].Graphics.function == GF_DecreaseZoom ||
@@ -627,26 +598,21 @@ IDirectInputDevice8 * MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8
 {
     if(g == GUID_SysKeyboard)
     {
-        if(UseAltCombatWrapper)
+        if(Configuration.Input.AltCombat)
             device = new MGEProxyKeyboardAltCombat(device);
         else
             device = new MGEProxyKeyboard(device);
         LOG::logline("-- Proxy Keyboard OK");
 
-        HANDLE RemapperFile = CreateFileA("MGE3\\Remap.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
-        if(RemapperFile != INVALID_HANDLE_VALUE)
+        if(Configuration.Input.Remap[0] != 0)
         {
-            DWORD read;
-            ReadFile(RemapperFile, &RemappedKeys, sizeof(RemappedKeys), &read, NULL);
-            CloseHandle(RemapperFile);
-
             device = new RemapWrapper(device);
             LOG::logline("-- Remapped keyboard");
         }
     }
     else if(g == GUID_SysMouse)
     {
-        if(UseAltCombatWrapper)
+        if(Configuration.Input.AltCombat)
             device = new MGEProxyMouseAltCombat(device);
         else
             device = new MGEProxyMouse(device);
@@ -654,4 +620,136 @@ IDirectInputDevice8 * MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8
     }
 
     return device;
+}
+
+
+// Input config parser
+
+static bool entryParse(char *text, char prefix, size_t *key, const char **values, size_t *value_count)
+{
+    // Split line into <key>=<values>
+    char *sep = std::strchr(text, '=');
+    if(sep == NULL || *text != prefix)
+        return false;
+
+    // In-place convert comma-separated list into null-terminated strings
+    size_t c = 0;
+    for(char *v = sep + 1; v; ++c)
+    {
+        v = std::strchr(v, ',');
+        if(v)
+            *v++ = 0;
+    }
+
+    *key = std::atoi(text + 1);
+    *values = sep + 1;
+    *value_count = c;
+    return true;
+}
+
+
+static const char * entryNextValue(const char *s)
+{
+    return s + strlen(s) + 1;
+}
+
+static void loadInputSettings()
+{
+    size_t seek;
+    for(char *line = Configuration.Input.Macros; *line; line += seek)
+    {
+        size_t key, value_count;
+        const char *values;
+        seek = strlen(line) + 1;
+
+        if(!entryParse(line, 'M', &key, &values, &value_count))
+            continue;
+        if(value_count < 2 || key >= MGEINPUT_MAXMACROS)
+            continue;
+
+        sFakeKey *macro = &FakeKeys[key];
+        for(const MacroTypeLabel *x = macroTypeLabels; x->label; ++x)
+        {
+            if(std::strcmp(values, x->label) == 0)
+            {
+                macro->type = x->type;
+                break;
+            }
+        }
+
+        switch(macro->type)
+        {
+        case MT_Console1:
+        case MT_Console2:
+            macro->Console.Length = 0;
+            for(size_t i = 2; i < value_count; i += 2, ++macro->Console.Length)
+            {
+                values = entryNextValue(values);
+                macro->Console.KeyCodes[macro->Console.Length] = std::atoi(values);
+                values = entryNextValue(values);
+                macro->Console.KeyStates[macro->Console.Length] = (std::strcmp(values, "True") == 0) ? 0x80 : 0;
+            }
+            break;
+        case MT_Press1:
+        case MT_Press2:
+        case MT_Unpress:
+        case MT_Hammer1:
+        case MT_Hammer2:
+        case MT_Unhammer:
+        case MT_AHammer1:
+        case MT_AHammer2:
+        case MT_AUnhammer:
+            for(size_t i = 1; i < value_count; ++i)
+            {
+                values = entryNextValue(values);
+                macro->Press.KeyStates[std::atoi(values)] = 0x80;
+            }
+            break;
+        case MT_BeginTimer:
+        case MT_EndTimer:
+            macro->Timer.TimerID = std::atoi(entryNextValue(values));
+            break;
+        case MT_Graphics:
+            macro->Graphics.function = std::atoi(entryNextValue(values));
+            break;
+        }
+    }
+
+    for(char *line = Configuration.Input.Triggers; *line; line += seek)
+    {
+        size_t key, value_count;
+        const char *values;
+        seek = strlen(line) + 1;
+
+        if(!entryParse(line, 'T', &key, &values, &value_count))
+            continue;
+        if(value_count < 2 || key >= MGEINPUT_MAXTRIGGERS)
+            continue;
+
+        sFakeTrigger *trigger = &Triggers[key];
+
+        trigger->Active = (std::strcmp(values, "True") == 0);
+        values = entryNextValue(values);
+        trigger->TimeInterval = 1000 * std::atoi(values);
+
+        for(size_t i = 2; i < value_count; ++i)
+        {
+            values = entryNextValue(values);
+            trigger->Data.KeyStates[std::atoi(values)] = 0x80;
+        }
+    }
+
+    for(char *line = Configuration.Input.Remap; *line; line += seek)
+    {
+        size_t key, value_count;
+        const char *values;
+        seek = strlen(line) + 1;
+
+        if(!entryParse(line, 'R', &key, &values, &value_count))
+            continue;
+        if(value_count != 1 || key >= 256)
+            continue;
+
+        RemappedKeys[key] = std::atoi(values);
+    }
 }

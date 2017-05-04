@@ -47,26 +47,48 @@ public:
 
 
 
-enum FakeKeyType {
-    FKT_Unused = 0,                 // This key isn't assigned to anything
+enum MacroType {
+    MT_Unused = 0,                 // This key isn't assigned to anything
     //FD_Console
-    FKT_Console1 = 1,               // Enter console command, exit console
-    FKT_Console2 = 2,               // Don't open or close console
+    MT_Console1 = 1,               // Enter console command, exit console
+    MT_Console2 = 2,               // Don't open or close console
     //FD_Press
-    FKT_Hammer1 = 3,                // Hammer a key while pressed
-    FKT_Hammer2 = 4,                // Start hammering a key
-    FKT_Unhammer = 5,               // Stop hammering a key
-    FKT_AHammer1 = 6,               // Does the same as hammer, but hits it in alternate frames
-    FKT_AHammer2 = 7,
-    FKT_AUnhammer = 8,
-    FKT_Press1 = 9,                 // Other keys pressed while this is pressed
-    FKT_Press2 = 10,                // Press keys when this is pressed, but dont depress
-    FKT_Unpress = 11,               // Depress any pressed keys
+    MT_Hammer1 = 3,                // Hammer a key while pressed
+    MT_Hammer2 = 4,                // Start hammering a key
+    MT_Unhammer = 5,               // Stop hammering a key
+    MT_AHammer1 = 6,               // Does the same as hammer, but hits it in alternate frames
+    MT_AHammer2 = 7,
+    MT_AUnhammer = 8,
+    MT_Press1 = 9,                 // Other keys pressed while this is pressed
+    MT_Press2 = 10,                // Press keys when this is pressed, but dont depress
+    MT_Unpress = 11,               // Depress any pressed keys
     //FD_Timer
-    FKT_BeginTimer = 12,            // Start a timer trigger
-    FKT_EndTimer = 13,              // End a timer trigger
+    MT_BeginTimer = 12,            // Start a timer trigger
+    MT_EndTimer = 13,              // End a timer trigger
     //FD_Graphics
-    FKT_Graphics = 14               // Perform a graphics function
+    MT_Graphics = 14               // Perform a graphics function
+};
+
+const struct MacroTypeLabel {
+    const char *label;
+    MacroType type;
+} macroTypeLabels[] =
+{
+    "Console1", MT_Console1,
+    "Console2", MT_Console2,
+    "Hammer1", MT_Hammer1,
+    "Hammer2", MT_Hammer2,
+    "Unhammer", MT_Unhammer,
+    "AHammer1", MT_AHammer1,
+    "AHammer2", MT_AHammer2,
+    "AUnhammer", MT_AUnhammer,
+    "Press1", MT_Press1,
+    "Press2", MT_Press2,
+    "Unpress", MT_Unpress,
+    "BeginTimer", MT_BeginTimer,
+    "EndTimer", MT_EndTimer,
+    "Graphics", MT_Graphics,
+    0, MT_Unused                    // Sentinel value
 };
 
 enum GraphicsFuncs {
@@ -140,5 +162,4 @@ struct sFakeTrigger {
     DWORD TimeInterval;
     BYTE Active;
     FD_Press Data;
-    BYTE Unused;                    // Need this extra byte to avoid packing issues
 };

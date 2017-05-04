@@ -40,7 +40,7 @@ struct tdictionary {
 struct iniSetting {
     void* variable;
     vtype type;
-    int bit_size;
+    size_t bit_size;
     const char* section;
     const char* key;
     const char* defval;

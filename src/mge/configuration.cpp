@@ -3,6 +3,7 @@
 #pragma setlocale("C")
 
 #include <stdlib.h>
+#include <algorithm>
 #include "support/winheader.h"
 
 #include "configuration.h"
@@ -71,8 +72,9 @@ bool ConfigurationStruct::LoadSettings () {
         if (set.type == t_string)
             utf8cpyToA_s ((char*)set.variable, set.bit_size, (char*)(&buffer));
         else if (set.type == t_set) {
-            GetPrivateProfileSection(set.section, buffer, countof(buffer), mgeini);
-            memcpy(set.variable, buffer, set.bit_size);
+            size_t sz = std::min(set.bit_size, countof(buffer));
+            GetPrivateProfileSection(set.section, buffer, sz, mgeini);
+            memcpy(set.variable, buffer, sz);
         }
         else {
             double temp = getSettingValue (buffer, set);

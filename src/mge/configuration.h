@@ -138,6 +138,14 @@ struct ConfigurationStruct
         float AmbMult[10];
     } Lighting;
 
+    struct
+    {
+        bool AltCombat;
+        char Macros[4096];
+        char Triggers[4096];
+        char Remap[4096];
+    } Input;
+
     char ShaderChain[512];
 
     bool LoadSettings();
