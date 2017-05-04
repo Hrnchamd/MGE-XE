@@ -40,7 +40,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomIn)
 // ZoomIn
 bool mwseZoomIn::execute(mwseInstruction *_this)
 {
-    Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + 0.0625f, 40.0f);
+    Configuration.CameraEffects.zoom = std::min(Configuration.CameraEffects.zoom + 0.0625f, 40.0f);
     return true;
 }
 
@@ -50,7 +50,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseZoomOut)
 // ZoomOut
 bool mwseZoomOut::execute(mwseInstruction *_this)
 {
-    Configuration.Zoom.zoom = std::max(1.0f, Configuration.Zoom.zoom - 0.0625f);
+    Configuration.CameraEffects.zoom = std::max(1.0f, Configuration.CameraEffects.zoom - 0.0625f);
     return true;
 }
 
@@ -63,7 +63,7 @@ bool mwseZoomInBy::execute(mwseInstruction *_this)
     VMFLOAT x;
     if(!_this->vmPop(&x)) return false;
 
-    Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom + x, 8.0f);
+    Configuration.CameraEffects.zoom = std::min(Configuration.CameraEffects.zoom + x, 8.0f);
     return true;
 }
 
@@ -76,7 +76,7 @@ bool mwseZoomOutBy::execute(mwseInstruction *_this)
     VMFLOAT x;
     if(!_this->vmPop(&x)) return false;
 
-    Configuration.Zoom.zoom = std::max(1.0f, Configuration.Zoom.zoom - x);
+    Configuration.CameraEffects.zoom = std::max(1.0f, Configuration.CameraEffects.zoom - x);
     return true;
 }
 
@@ -89,7 +89,7 @@ bool mwseSetZoom::execute(mwseInstruction *_this)
     VMFLOAT x;
     if(!_this->vmPop(&x)) return false;
 
-    Configuration.Zoom.zoom = std::max(1.0f, x);
+    Configuration.CameraEffects.zoom = std::max(1.0f, x);
     return true;
 }
 
@@ -102,8 +102,8 @@ bool mwseZoom::execute(mwseInstruction *_this)
     VMFLOAT x;
     if(!_this->vmPop(&x)) return false;
 
-    Configuration.Zoom.rateTarget = x;
-    Configuration.Zoom.rate = (x < 0) ? x : 0;
+    Configuration.CameraEffects.zoomRateTarget = x;
+    Configuration.CameraEffects.zoomRate = (x < 0) ? x : 0;
     return true;
 }
 
@@ -113,8 +113,8 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseStopZoom)
 // StopZoom
 bool mwseStopZoom::execute(mwseInstruction *_this)
 {
-    Configuration.Zoom.rateTarget = 0;
-    Configuration.Zoom.rate = 0;
+    Configuration.CameraEffects.zoomRateTarget = 0;
+    Configuration.CameraEffects.zoomRate = 0;
     return true;
 }
 
@@ -124,7 +124,54 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetZoom)
 // GetZoom -> returns <float scale>
 bool mwseGetZoom::execute(mwseInstruction *_this)
 {
-
-    return _this->vmPush((VMFLOAT)Configuration.Zoom.zoom);
+    return _this->vmPush((VMFLOAT)Configuration.CameraEffects.zoom);
 }
 
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseEnableCameraShake)
+
+// EnableCameraShake
+bool mwseEnableCameraShake::execute(mwseInstruction *_this)
+{
+    Configuration.CameraEffects.shake = true;
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseDisableCameraShake)
+
+// DisableCameraShake
+bool mwseDisableCameraShake::execute(mwseInstruction *_this)
+{
+    Configuration.CameraEffects.shake = false;
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetCameraShakeMagnitude)
+
+// SetCameraShakeMagnitude <float>
+bool mwseSetCameraShakeMagnitude::execute(mwseInstruction *_this)
+{
+    _this->vmPop(&Configuration.CameraEffects.shakeMagnitude);
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseCameraShakeAccel)
+
+// CameraShakeAccel <float>
+bool mwseCameraShakeAccel::execute(mwseInstruction *_this)
+{
+    _this->vmPop(&Configuration.CameraEffects.shakeAccel);
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseStopCameraShakeAccel)
+
+// StopCameraShakeAccel
+bool mwseStopCameraShakeAccel::execute(mwseInstruction *_this)
+{
+    Configuration.CameraEffects.shakeAccel = 0;
+}

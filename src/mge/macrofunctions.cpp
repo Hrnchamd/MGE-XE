@@ -260,18 +260,18 @@ void MacroFunctions::ToggleZoom() {
 
 void MacroFunctions::ResetEnableZoom() {
     Configuration.MGEFlags |= ZOOM_ASPECT;
-    Configuration.Zoom.zoom = 1.0;
+    Configuration.CameraEffects.zoom = 1.0;
     StatusOverlay::setStatus("Zoom reset");
 }
 
 void MacroFunctions::IncreaseZoom() {
     Configuration.MGEFlags |= ZOOM_ASPECT;
-    Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom * 1.0078125, 40.0);
+    Configuration.CameraEffects.zoom = std::min(Configuration.CameraEffects.zoom * 1.0078125, 40.0);
 }
 
 void MacroFunctions::DecreaseZoom() {
     Configuration.MGEFlags |= ZOOM_ASPECT;
-    Configuration.Zoom.zoom = std::max(1.0, Configuration.Zoom.zoom / 1.0078125);
+    Configuration.CameraEffects.zoom = std::max(1.0, Configuration.CameraEffects.zoom / 1.0078125);
 }
 
 void MacroFunctions::ToggleCrosshair() {

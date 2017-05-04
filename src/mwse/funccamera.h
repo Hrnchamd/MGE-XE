@@ -99,3 +99,48 @@ struct mwseGetZoom : public mwseInstruction
 private:
     static vtable_t vtable;
 };
+
+struct mwseEnableCameraShake : public mwseInstruction
+{
+    mwseEnableCameraShake(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseDisableCameraShake : public mwseInstruction
+{
+    mwseDisableCameraShake(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseSetCameraShakeMagnitude : public mwseInstruction
+{
+    mwseSetCameraShakeMagnitude(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseCameraShakeAccel : public mwseInstruction
+{
+    mwseCameraShakeAccel(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseStopCameraShakeAccel : public mwseInstruction
+{
+    mwseStopCameraShakeAccel(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};

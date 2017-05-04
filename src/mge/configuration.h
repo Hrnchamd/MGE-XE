@@ -104,8 +104,10 @@ struct ConfigurationStruct
 
     struct
     {
-        float zoom, rate, rateTarget;
-    } Zoom;
+        float zoom, zoomRate, zoomRateTarget;
+        bool shake;
+        float shakeMagnitude, shakeAccel;
+    } CameraEffects;
 
     struct
     {

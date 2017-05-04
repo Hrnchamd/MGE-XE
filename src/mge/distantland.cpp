@@ -665,7 +665,7 @@ void DistantLand::updatePostShader(MGEShader *shader)
     shader->SetTexture(EV_watertexture, texWater);
 
     // View position
-    float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.Zoom.zoom : 1.0;
+    float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.CameraEffects.zoom : 1.0;
     shader->SetMatrix(EV_mview, &mwView);
     shader->SetMatrix(EV_mproj, &mwProj);
     shader->SetFloatArray(EV_eyevec, eyeVec, 3);

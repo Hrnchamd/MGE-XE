@@ -19,6 +19,7 @@ static bool isWaterMaterial, waterDrawn;
 
 static bool zoomSensSaved;
 static float zoomSensX, zoomSensY;
+static D3DXMATRIX camShakeMatrix;
 static float crosshairTimeout;
 
 static RenderedState rs;
@@ -43,10 +44,11 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d) : ProxyDev
     isHUDready = false;
     isMainView = isStencilScene = stage0Complete = isFrameComplete = isHUDComplete = false;
     isWaterMaterial = waterDrawn = false;
+    D3DXMatrixIdentity(&camShakeMatrix);
 
-    Configuration.Zoom.zoom = 1.0;
-    Configuration.Zoom.rate = 0;
-    Configuration.Zoom.rateTarget = 0;
+    Configuration.CameraEffects.zoom = 1.0;
+    Configuration.CameraEffects.zoomRate = 0;
+    Configuration.CameraEffects.zoomRateTarget = 0;
 
     // Initialize state recorder to D3D defaults
     memset(&rs, 0, sizeof(rs));
@@ -120,16 +122,16 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
                 mwBridge->SetCrosshairEnabled(t < crosshairTimeout);
         }
 
-        if(Configuration.Zoom.rateTarget != 0 && !mwBridge->IsMenu())
+        if(Configuration.CameraEffects.zoomRateTarget != 0 && !mwBridge->IsMenu())
         {
             // Update zoom controller
-            Configuration.Zoom.rate += 0.25 * Configuration.Zoom.rateTarget * mwBridge->frameTime();
-            if(Configuration.Zoom.rate / Configuration.Zoom.rateTarget > 1.0)
-                Configuration.Zoom.rate = Configuration.Zoom.rateTarget;
+            Configuration.CameraEffects.zoomRate += 0.25 * Configuration.CameraEffects.zoomRateTarget * mwBridge->frameTime();
+            if(Configuration.CameraEffects.zoomRate / Configuration.CameraEffects.zoomRateTarget > 1.0)
+                Configuration.CameraEffects.zoomRate = Configuration.CameraEffects.zoomRateTarget;
 
-            Configuration.Zoom.zoom += Configuration.Zoom.rate * mwBridge->frameTime();
-            Configuration.Zoom.zoom = std::max(1.0f, Configuration.Zoom.zoom);
-            Configuration.Zoom.zoom = std::min(Configuration.Zoom.zoom, 8.0f);
+            Configuration.CameraEffects.zoom += Configuration.CameraEffects.zoomRate * mwBridge->frameTime();
+            Configuration.CameraEffects.zoom = std::max(1.0f, Configuration.CameraEffects.zoom);
+            Configuration.CameraEffects.zoom = std::min(Configuration.CameraEffects.zoom, 8.0f);
         }
 
         float *mwSens = mwBridge->getMouseSensitivityYX();
@@ -142,8 +144,8 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
                 zoomSensX = mwSens[1];
                 zoomSensSaved = true;
             }
-            mwSens[0] = zoomSensY / Configuration.Zoom.zoom;
-            mwSens[1] = zoomSensX / Configuration.Zoom.zoom;
+            mwSens[0] = zoomSensY / Configuration.CameraEffects.zoom;
+            mwSens[1] = zoomSensX / Configuration.CameraEffects.zoom;
         }
         else if(zoomSensSaved)
         {
@@ -151,6 +153,14 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
             mwSens[0] = zoomSensY;
             mwSens[1] = zoomSensX;
             zoomSensSaved = false;
+        }
+
+        if(Configuration.CameraEffects.shake)
+        {
+            // Update screen shake controller
+            Configuration.CameraEffects.shakeMagnitude += Configuration.CameraEffects.shakeAccel * mwBridge->frameTime();
+            Configuration.CameraEffects.shakeMagnitude = std::max(0.0f, std::min(100.0f, Configuration.CameraEffects.shakeMagnitude));
+            camShakeMatrix._41 = Configuration.CameraEffects.shakeMagnitude * sin(0.001f*GetTickCount());
         }
 
         // Main menu background video
@@ -324,6 +334,15 @@ HRESULT _stdcall MGEProxyDevice::SetTransform(D3DTRANSFORMSTATETYPE a, const D3D
         {
             // Check for UI view
             isMainView = !detectMenu(b);
+
+            if(isMainView && Configuration.CameraEffects.shake)
+            {
+                D3DXMATRIX view = *b;
+                view._41 += camShakeMatrix._41;
+                view._42 += camShakeMatrix._42;
+                view._43 += camShakeMatrix._43;
+                return ProxyDevice::SetTransform(a, &view);
+            }
         }
         else if(a == D3DTS_PROJECTION)
         {
@@ -335,8 +354,8 @@ HRESULT _stdcall MGEProxyDevice::SetTransform(D3DTRANSFORMSTATETYPE a, const D3D
 
                 if(Configuration.MGEFlags & ZOOM_ASPECT)
                 {
-                    proj._11 *= Configuration.Zoom.zoom;
-                    proj._22 *= Configuration.Zoom.zoom;
+                    proj._11 *= Configuration.CameraEffects.zoom;
+                    proj._22 *= Configuration.CameraEffects.zoom;
                 }
 
                 return ProxyDevice::SetTransform(a, &proj);
