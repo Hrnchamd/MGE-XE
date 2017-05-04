@@ -2340,6 +2340,39 @@ function
 	Param2 = Long
 	Opcode = 0x3a01
 end
+function
+	Name = XGetBaseHealth
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3a02
+end
+function
+	Name = XGetBaseMagicka
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3a03
+end
+function
+	Name = XGetBaseFatigue
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3a04
+end
+
+function
+	Name = MGEUIShow
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Opcode = 0x3a10
+end
+function
+	Name = MGEUIHide
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long
+	Opcode = 0x3a11
+end
 
 function
 	Name = XSetWeatherSky
@@ -2451,4 +2484,66 @@ function
 	Param5 = Float
 	Param6 = Float
 	Opcode = 0x3ab4
+end
+function
+	Name = MGENIDSetHUDEffectLong
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3ac0
+end
+function
+	Name = MGENIDSetHUDEffectFloat
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Opcode = 0x3ac1
+end
+function
+	Name = MGENIDSetHUDEffectVec
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Param5 = Float
+	Opcode = 0x3ac2
+end
+
+function
+	Name = XRayTest
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3ae0
+end
+function
+	Name = XRayHitPosition
+	Options = MWSE
+	Return = Float | Many
+	Opcode = 0x3ae4
+end
+function
+	Name = XRayHitNormal
+	Options = MWSE
+	Return = Float | Many
+	Opcode = 0x3ae5
+end
+function
+	Name = XRayHitRef
+	Options = MWSE
+	Return = Ref
+	Opcode = 0x3ae6
+end
+
+function
+	Name = XModelBounds
+	Options = MWSE
+	Return = Float | Many
+	Opcode = 0x3ae7
 end
