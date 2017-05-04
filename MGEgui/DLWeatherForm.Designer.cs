@@ -1175,6 +1175,9 @@
             // 
             // lClear
             // 
+            this.lClear.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lClear.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.lClear.ForeColor = System.Drawing.Color.Black;
             this.lClear.Location = new System.Drawing.Point(2, 41);
@@ -1186,6 +1189,9 @@
             // 
             // lCloudy
             // 
+            this.lCloudy.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lCloudy.BackColor = System.Drawing.Color.LightBlue;
             this.lCloudy.ForeColor = System.Drawing.Color.Black;
             this.lCloudy.Location = new System.Drawing.Point(2, 73);
@@ -1197,6 +1203,9 @@
             // 
             // lFoggy
             // 
+            this.lFoggy.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lFoggy.BackColor = System.Drawing.Color.Gainsboro;
             this.lFoggy.ForeColor = System.Drawing.Color.Black;
             this.lFoggy.Location = new System.Drawing.Point(2, 105);
@@ -1208,6 +1217,9 @@
             // 
             // lOvercast
             // 
+            this.lOvercast.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lOvercast.BackColor = System.Drawing.Color.Silver;
             this.lOvercast.ForeColor = System.Drawing.Color.Black;
             this.lOvercast.Location = new System.Drawing.Point(2, 137);
@@ -1219,6 +1231,9 @@
             // 
             // lRain
             // 
+            this.lRain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lRain.BackColor = System.Drawing.Color.LightSteelBlue;
             this.lRain.ForeColor = System.Drawing.Color.Black;
             this.lRain.Location = new System.Drawing.Point(2, 169);
@@ -1230,6 +1245,9 @@
             // 
             // lThunder
             // 
+            this.lThunder.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lThunder.BackColor = System.Drawing.Color.LightSlateGray;
             this.lThunder.ForeColor = System.Drawing.Color.White;
             this.lThunder.Location = new System.Drawing.Point(2, 201);
@@ -1241,6 +1259,9 @@
             // 
             // lAsh
             // 
+            this.lAsh.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lAsh.BackColor = System.Drawing.Color.Tan;
             this.lAsh.ForeColor = System.Drawing.Color.Black;
             this.lAsh.Location = new System.Drawing.Point(2, 233);
@@ -1252,6 +1273,9 @@
             // 
             // lBlight
             // 
+            this.lBlight.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlight.BackColor = System.Drawing.Color.IndianRed;
             this.lBlight.ForeColor = System.Drawing.Color.White;
             this.lBlight.Location = new System.Drawing.Point(2, 265);
@@ -1263,6 +1287,9 @@
             // 
             // lSnow
             // 
+            this.lSnow.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lSnow.BackColor = System.Drawing.Color.Snow;
             this.lSnow.ForeColor = System.Drawing.Color.Black;
             this.lSnow.Location = new System.Drawing.Point(2, 297);
@@ -1274,6 +1301,9 @@
             // 
             // lBlizzard
             // 
+            this.lBlizzard.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlizzard.BackColor = System.Drawing.Color.Lavender;
             this.lBlizzard.ForeColor = System.Drawing.Color.Black;
             this.lBlizzard.Location = new System.Drawing.Point(2, 329);
@@ -1318,7 +1348,8 @@
             // 
             // lClear2
             // 
-            this.lClear2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lClear2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lClear2.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.lClear2.Location = new System.Drawing.Point(256, 41);
             this.lClear2.Name = "lClear2";
@@ -1327,7 +1358,8 @@
             // 
             // lCloudy2
             // 
-            this.lCloudy2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lCloudy2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lCloudy2.BackColor = System.Drawing.Color.LightBlue;
             this.lCloudy2.Location = new System.Drawing.Point(256, 73);
             this.lCloudy2.Name = "lCloudy2";
@@ -1336,7 +1368,8 @@
             // 
             // lFoggy2
             // 
-            this.lFoggy2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lFoggy2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lFoggy2.BackColor = System.Drawing.Color.Gainsboro;
             this.lFoggy2.Location = new System.Drawing.Point(256, 105);
             this.lFoggy2.Name = "lFoggy2";
@@ -1345,7 +1378,8 @@
             // 
             // lOvercast2
             // 
-            this.lOvercast2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lOvercast2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lOvercast2.BackColor = System.Drawing.Color.Silver;
             this.lOvercast2.Location = new System.Drawing.Point(256, 137);
             this.lOvercast2.Name = "lOvercast2";
@@ -1354,7 +1388,8 @@
             // 
             // lRain2
             // 
-            this.lRain2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lRain2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lRain2.BackColor = System.Drawing.Color.LightSteelBlue;
             this.lRain2.Location = new System.Drawing.Point(256, 169);
             this.lRain2.Name = "lRain2";
@@ -1363,7 +1398,8 @@
             // 
             // lThunder2
             // 
-            this.lThunder2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lThunder2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lThunder2.BackColor = System.Drawing.Color.LightSlateGray;
             this.lThunder2.Location = new System.Drawing.Point(256, 201);
             this.lThunder2.Name = "lThunder2";
@@ -1372,7 +1408,8 @@
             // 
             // lAsh2
             // 
-            this.lAsh2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lAsh2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lAsh2.BackColor = System.Drawing.Color.Tan;
             this.lAsh2.Location = new System.Drawing.Point(256, 233);
             this.lAsh2.Name = "lAsh2";
@@ -1381,7 +1418,8 @@
             // 
             // lBlight2
             // 
-            this.lBlight2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lBlight2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlight2.BackColor = System.Drawing.Color.IndianRed;
             this.lBlight2.Location = new System.Drawing.Point(256, 265);
             this.lBlight2.Name = "lBlight2";
@@ -1390,7 +1428,8 @@
             // 
             // lSnow2
             // 
-            this.lSnow2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lSnow2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lSnow2.BackColor = System.Drawing.Color.Snow;
             this.lSnow2.Location = new System.Drawing.Point(256, 297);
             this.lSnow2.Name = "lSnow2";
@@ -1399,7 +1438,8 @@
             // 
             // lBlizzard2
             // 
-            this.lBlizzard2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lBlizzard2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlizzard2.BackColor = System.Drawing.Color.Lavender;
             this.lBlizzard2.Location = new System.Drawing.Point(256, 329);
             this.lBlizzard2.Name = "lBlizzard2";
@@ -1789,7 +1829,8 @@
             // 
             // lClear4
             // 
-            this.lClear4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lClear4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lClear4.BackColor = System.Drawing.Color.DeepSkyBlue;
             this.lClear4.Location = new System.Drawing.Point(402, 41);
             this.lClear4.Name = "lClear4";
@@ -1798,7 +1839,8 @@
             // 
             // lCloudy4
             // 
-            this.lCloudy4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lCloudy4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lCloudy4.BackColor = System.Drawing.Color.LightBlue;
             this.lCloudy4.Location = new System.Drawing.Point(402, 73);
             this.lCloudy4.Name = "lCloudy4";
@@ -1807,7 +1849,8 @@
             // 
             // lFoggy4
             // 
-            this.lFoggy4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lFoggy4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lFoggy4.BackColor = System.Drawing.Color.Gainsboro;
             this.lFoggy4.Location = new System.Drawing.Point(402, 105);
             this.lFoggy4.Name = "lFoggy4";
@@ -1816,7 +1859,8 @@
             // 
             // lOvercast4
             // 
-            this.lOvercast4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lOvercast4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lOvercast4.BackColor = System.Drawing.Color.Silver;
             this.lOvercast4.Location = new System.Drawing.Point(402, 137);
             this.lOvercast4.Name = "lOvercast4";
@@ -1825,7 +1869,8 @@
             // 
             // lRain4
             // 
-            this.lRain4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lRain4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lRain4.BackColor = System.Drawing.Color.LightSteelBlue;
             this.lRain4.Location = new System.Drawing.Point(402, 169);
             this.lRain4.Name = "lRain4";
@@ -1834,7 +1879,8 @@
             // 
             // lThunder4
             // 
-            this.lThunder4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lThunder4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lThunder4.BackColor = System.Drawing.Color.LightSlateGray;
             this.lThunder4.Location = new System.Drawing.Point(402, 201);
             this.lThunder4.Name = "lThunder4";
@@ -1843,7 +1889,8 @@
             // 
             // lAsh4
             // 
-            this.lAsh4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lAsh4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lAsh4.BackColor = System.Drawing.Color.Tan;
             this.lAsh4.Location = new System.Drawing.Point(402, 233);
             this.lAsh4.Name = "lAsh4";
@@ -1852,7 +1899,8 @@
             // 
             // lBlight4
             // 
-            this.lBlight4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lBlight4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlight4.BackColor = System.Drawing.Color.IndianRed;
             this.lBlight4.Location = new System.Drawing.Point(402, 265);
             this.lBlight4.Name = "lBlight4";
@@ -1861,7 +1909,8 @@
             // 
             // lSnow4
             // 
-            this.lSnow4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lSnow4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lSnow4.BackColor = System.Drawing.Color.Snow;
             this.lSnow4.Location = new System.Drawing.Point(402, 297);
             this.lSnow4.Name = "lSnow4";
@@ -1870,7 +1919,8 @@
             // 
             // lBlizzard4
             // 
-            this.lBlizzard4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lBlizzard4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
             this.lBlizzard4.BackColor = System.Drawing.Color.Lavender;
             this.lBlizzard4.Location = new System.Drawing.Point(402, 329);
             this.lBlizzard4.Name = "lBlizzard4";
