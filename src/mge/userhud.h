@@ -43,6 +43,9 @@ public:
     static void setPosition(hud_id hud, float x, float y);
     static void setScale(hud_id hud, float xscale, float yscale);
     static void setFullscreen(hud_id hud);
-    static void setTexture(hud_id hud, const char *texture);
-    static void setEffect(hud_id hud, const char *effect);
+    static void setTexture(hud_id hud, const char *texturePath);
+    static void setEffect(hud_id hud, const char *effectPath);
+    static void setEffectInt(hud_id hud, const char *varName, int x);
+    static void setEffectFloat(hud_id hud, const char *varName, float x);
+    static void setEffectVec4(hud_id hud, const char *varName, const float *v);
 };

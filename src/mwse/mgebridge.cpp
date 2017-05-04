@@ -110,6 +110,9 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x371c, new mwseNIDChangeHUDTexture(*vm));
     MWSEAddInstruction(0x371d, new mwseNIDChangeHUDEffect(*vm));
     MWSEAddInstruction(0x371e, new mwseNIDFreeHUD(*vm));
+    MWSEAddInstruction(0x3ac0, new mwseNIDSetHUDEffectLong(*vm));
+    MWSEAddInstruction(0x3ac1, new mwseNIDSetHUDEffectFloat(*vm));
+    MWSEAddInstruction(0x3ac2, new mwseNIDSetHUDEffectVec(*vm));
 
     MWSEAddInstruction(0x3733, new mwseTapKey(*vm));
     MWSEAddInstruction(0x3734, new mwsePushKey(*vm));

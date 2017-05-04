@@ -97,6 +97,7 @@ void MGEhud::draw()
     device->SetFVF(fvfHUD);
     device->SetStreamSource(0, vbHUD, 0, 32);
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
+    device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
     for(i = element_names.begin(); i != element_names.end(); ++i)
     {
@@ -275,14 +276,14 @@ void MGEhud::setFullscreen(hud_id hud)
     e->yscale = vp.Height / e->h;
 }
 
-void MGEhud::setTexture(hud_id hud, const char *texture)
+void MGEhud::setTexture(hud_id hud, const char *texturePath)
 {
     Element *e = &elements[hud];
 
     if(e->texture)
         e->texture->Release();
 
-    IDirect3DTexture9 *tex = BSALoadTexture(device, texture);
+    IDirect3DTexture9 *tex = BSALoadTexture(device, texturePath);
 
     if(tex)
     {
@@ -296,17 +297,17 @@ void MGEhud::setTexture(hud_id hud, const char *texture)
         // As the BSA cache cannot reload a texture after it is released, (it returns a pointer to the released texture)
         // we have to add a loose reference to keep the texture in memory and avoid a crash
         tex->AddRef();
-        e->textureFilename = texture;
+        e->textureFilename = texturePath;
     }
     else
     {
-        LOG::logline("LoadHUDTexture : Cannot load texture %s", texture);
+        LOG::logline("LoadHUDTexture : Cannot load texture %s", texturePath);
         e->texture = 0;
         e->textureFilename.clear();
     }
 }
 
-void MGEhud::setEffect(hud_id hud, const char *effect)
+void MGEhud::setEffect(hud_id hud, const char *effectPath)
 {
     Element *e = &elements[hud];
     char path[MAX_PATH];
@@ -320,15 +321,15 @@ void MGEhud::setEffect(hud_id hud, const char *effect)
     e->effectFilename.clear();
 
     // Load new effect if string is not empty
-    if(*effect)
+    if(*effectPath)
     {
-        std::snprintf(path, sizeof(path), "Data Files\\shaders\\%s.fx", effect);
+        std::snprintf(path, sizeof(path), "Data Files\\shaders\\%s.fx", effectPath);
         HRESULT hr = D3DXCreateEffectFromFile(device, path, 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &e->effect, &errors);
 
         if(hr == D3D_OK)
         {
             LOG::logline("-- HUD shader %s loaded", path);
-            e->effectFilename = effect;
+            e->effectFilename = effectPath;
         }
         else
         {
@@ -341,5 +342,41 @@ void MGEhud::setEffect(hud_id hud, const char *effect)
                 errors->Release();
             }
         }
+    }
+}
+
+void MGEhud::setEffectInt(hud_id hud, const char *varName, int x)
+{
+    ID3DXEffect *effect = elements[hud].effect;
+
+    if(effect)
+    {
+        D3DXHANDLE ehVar = effect->GetParameterByName(0, varName);
+        if(ehVar)
+            effect->SetInt(ehVar, x);
+    }
+}
+
+void MGEhud::setEffectFloat(hud_id hud, const char *varName, float x)
+{
+    ID3DXEffect *effect = elements[hud].effect;
+
+    if(effect)
+    {
+        D3DXHANDLE ehVar = effect->GetParameterByName(0, varName);
+        if(ehVar)
+            effect->SetFloat(ehVar, x);
+    }
+}
+
+void MGEhud::setEffectVec4(hud_id hud, const char *varName, const float *v)
+{
+    ID3DXEffect *effect = elements[hud].effect;
+
+    if(effect)
+    {
+        D3DXHANDLE ehVar = effect->GetParameterByName(0, varName);
+        if(ehVar)
+            effect->SetFloatArray(ehVar, v, 4);
     }
 }

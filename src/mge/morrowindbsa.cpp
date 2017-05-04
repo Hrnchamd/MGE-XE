@@ -158,7 +158,8 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char *fi
     std::snprintf(pathbuf, sizeof(pathbuf), "Data Files\\distantland\\statics\\%s", filename);
     if(GetFileAttributes(pathbuf) != INVALID_FILE_ATTRIBUTES)
     {
-        HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
+        HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, D3DX_FROM_FILE, D3DX_FROM_FILE, D3DX_FROM_FILE, 0, D3DFMT_UNKNOWN,
+                                                 D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
         if(hr == D3D_OK)
         {
             BSALoadedTextures[hash.LValue] = tex;
@@ -170,7 +171,8 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char *fi
     std::snprintf(pathbuf, sizeof(pathbuf), "Data Files\\%s", filename);
     if(GetFileAttributes(pathbuf) != INVALID_FILE_ATTRIBUTES)
     {
-        HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
+        HRESULT hr = D3DXCreateTextureFromFileEx(dev, pathbuf, D3DX_FROM_FILE, D3DX_FROM_FILE, D3DX_FROM_FILE, 0, D3DFMT_UNKNOWN,
+                                                 D3DPOOL_DEFAULT, D3DX_FILTER_NONE, D3DX_FILTER_NONE, 0, 0, 0, &tex);
         if(hr == D3D_OK)
         {
             BSALoadedTextures[hash.LValue] = tex;
@@ -182,8 +184,8 @@ static IDirect3DTexture9 * BSALoadTexture2(IDirect3DDevice9 *dev, const char *fi
     EntryData ed = BSAGetEntry(hash);
     if(ed.ptr)
     {
-        D3DXCreateTextureFromFileInMemoryEx(dev, ed.ptr, ed.size, 0,0,0,0, D3DFMT_UNKNOWN,
-                    D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0,0,0, &tex);
+        D3DXCreateTextureFromFileInMemoryEx(dev, ed.ptr, ed.size, D3DX_FROM_FILE, D3DX_FROM_FILE, D3DX_FROM_FILE, 0, D3DFMT_UNKNOWN,
+                                            D3DPOOL_MANAGED, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &tex);
 
         // Cache even if the texture load failed
         BSALoadedTextures[hash.LValue] = tex;

@@ -239,6 +239,10 @@ HRESULT _stdcall MGEProxyDevice::BeginScene()
             if(DistantLand::ready && sceneCount > 0 && !isFrameComplete)
                 DistantLand::postProcess();
 
+            // Render user HUD before Morrowind HUD
+            if(isHUDready && !isHUDComplete)
+                MGEhud::draw();
+
             isFrameComplete = true;
         }
     }
@@ -290,9 +294,6 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
 
     if(isFrameComplete && isHUDready && !isHUDComplete)
     {
-        // Render user hud
-        MGEhud::draw();
-
         // Render status overlay
         StatusOverlay::setFPS(calcFPS());
         StatusOverlay::show(realDevice);

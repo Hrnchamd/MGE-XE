@@ -333,3 +333,57 @@ bool mwseNIDFreeHUD::execute(mwseInstruction *_this)
 
     return true;
 }
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDSetHUDEffectLong)
+
+bool mwseNIDSetHUDEffectLong::execute(mwseInstruction *_this)
+{
+    const char *varName;
+    VMLONG x;
+
+    varName = _this->vmPopString();
+    if(!varName) return false;
+    if(!_this->vmPop(&x)) return false;
+
+    if(currentHUD != MGEhud::invalid_hud_id)
+        MGEhud::setEffectInt(currentHUD, varName, x);
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDSetHUDEffectFloat)
+
+bool mwseNIDSetHUDEffectFloat::execute(mwseInstruction *_this)
+{
+    const char *varName;
+    VMFLOAT x;
+
+    varName = _this->vmPopString();
+    if(!varName) return false;
+    if(!_this->vmPop(&x)) return false;
+
+    if(currentHUD != MGEhud::invalid_hud_id)
+        MGEhud::setEffectFloat(currentHUD, varName, x);
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDSetHUDEffectVec)
+
+bool mwseNIDSetHUDEffectVec::execute(mwseInstruction *_this)
+{
+    const char *varName;
+    VMFLOAT v[4];
+
+    varName = _this->vmPopString();
+    if(!varName) return false;
+    if(!_this->vmPop(&v[0])) return false;
+    if(!_this->vmPop(&v[1])) return false;
+    if(!_this->vmPop(&v[2])) return false;
+    if(!_this->vmPop(&v[3])) return false;
+
+    if(currentHUD != MGEhud::invalid_hud_id)
+        MGEhud::setEffectVec4(currentHUD, varName, v);
+    return true;
+}

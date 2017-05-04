@@ -170,3 +170,27 @@ struct mwseNIDFreeHUD : public mwseInstruction
 private:
     static vtable_t vtable;
 };
+
+struct mwseNIDSetHUDEffectLong : public mwseInstruction
+{
+    mwseNIDSetHUDEffectLong(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+private:
+    static vtable_t vtable;
+};
+
+struct mwseNIDSetHUDEffectFloat : public mwseInstruction
+{
+    mwseNIDSetHUDEffectFloat(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+private:
+    static vtable_t vtable;
+};
+
+struct mwseNIDSetHUDEffectVec : public mwseInstruction
+{
+    mwseNIDSetHUDEffectVec(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __fastcall bool execute(mwseInstruction *_this);
+private:
+    static vtable_t vtable;
+};

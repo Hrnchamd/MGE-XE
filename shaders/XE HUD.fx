@@ -8,7 +8,7 @@ sampler s0 = sampler_state { texture = <tex>; minfilter = point; magfilter = poi
 
 float4 hud(float2 t : TEXCOORD) : COLOR0
 {
-    return tex2D(s0, t);
+    return tex2Dlod(s0, float4(t, 0, 0));
 }
 
 technique T
