@@ -774,7 +774,7 @@ namespace MGEgui {
                     case MacroType.Console1:
                     case MacroType.Console2:
                         if (m.Console.Description.Length > 0)
-                            macroDesc.Add(string.Format("{0}={1}", i, m.Console.Description));
+                            macroDesc.Add(string.Format("M{0}={1}", i, m.Console.Description));
                         for (int j = 0; j < m.Console.Length; ++j)
                             s += string.Format(",{0},{1}", m.Console.KeyCodes[j].Code, m.Console.KeyCodes[j].Down);
                         break;
