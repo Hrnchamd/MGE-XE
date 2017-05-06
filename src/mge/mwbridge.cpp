@@ -390,11 +390,10 @@ void MWBridge::DisableMusic()
     write_float(eMusicVol, 0.01f);
     write_float(eMusicVol - 0x08, 0.01f);
 
-    // uses properties of fastcall to put vm in ecx
-    typedef void (__fastcall *mmVolumeProc)(DWORD, int, float);
-    mmVolumeProc mvp = (mmVolumeProc)eMusicVolFunc;
+    typedef void (__thiscall *mmVolumeProc)(DWORD, float);
+    const mmVolumeProc mvp = (mmVolumeProc)eMusicVolFunc;
 
-    mvp(eMusicVol - 0x294, 0, 0.01f);
+    mvp(eMusicVol - 0x294, 0.01f);
 }
 
 //-----------------------------------------------------------------------------
@@ -1154,19 +1153,17 @@ void MWBridge::setUIScale(float scale)
     write_dword(addr + 0x7c, h);
 
     // Call UI configuration method to update scaling
-    // uses properties of fastcall to put object in ecx
-    typedef void (__fastcall *uiproc1)(DWORD, int, DWORD);
-    uiproc1 ui_configureUIScale = (uiproc1)0x40f2a0;
+    typedef void (__thiscall *uiproc1)(DWORD, DWORD);
+    const uiproc1 ui_configureUIScale = (uiproc1)0x40f2a0;
 
-    ui_configureUIScale(addr, 0, w);
+    ui_configureUIScale(addr, w);
 
     // Call UI configuration method to update mouse bounds
-    // uses properties of fastcall to put object in ecx
-    typedef void (__fastcall *uiproc2)(DWORD, int, int, int, int, int);
-    uiproc2 ui_configureUIMouseArea = (uiproc2)0x408740;
+    typedef void (__thiscall *uiproc2)(DWORD, int, int, int, int);
+    const uiproc2 ui_configureUIMouseArea = (uiproc2)0x408740;
 
     int w_half = (w+1) / 2, h_half = (h+1) / 2;
-    ui_configureUIMouseArea(read_dword(addr + 0x50), 0, -w_half, -h_half, w_half, h_half);
+    ui_configureUIMouseArea(read_dword(addr + 0x50), -w_half, -h_half, w_half, h_half);
 
     // Patch raycast system to use UI viewport size instead of D3D viewport size
     addr = 0x6f5157;
