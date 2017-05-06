@@ -4,7 +4,7 @@
 struct mwseWipeAll : public mwseInstruction
 {
     mwseWipeAll(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -12,7 +12,7 @@ private:
 struct mwseOutputDebugString : public mwseInstruction
 {
     mwseOutputDebugString(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -20,7 +20,7 @@ private:
 struct mwseOutputVersionString : public mwseInstruction
 {
     mwseOutputVersionString(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -28,7 +28,7 @@ private:
 struct mwseGetVersion : public mwseInstruction
 {
     mwseGetVersion(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -36,7 +36,7 @@ private:
 struct mwseGetScreenWidth : public mwseInstruction
 {
     mwseGetScreenWidth(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -44,7 +44,7 @@ private:
 struct mwseGetScreenHeight : public mwseInstruction
 {
     mwseGetScreenHeight(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -52,7 +52,7 @@ private:
 struct mwseGetEyeVec : public mwseInstruction
 {
     mwseGetEyeVec(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };

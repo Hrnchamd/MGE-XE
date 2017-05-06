@@ -3,25 +3,13 @@
 #include "funcstat.h"
 
 
-static const BYTE * getRefrActor()
-{
-    void *refr = *reinterpret_cast<void**>(0x7cebec);
-    if(!refr)
-        return 0;
-
-    typedef const BYTE * (__thiscall *resolveActor_t)(void *);
-    resolveActor_t resolveActor = (resolveActor_t)0x4e5750;
-    return resolveActor(refr);
-}
-
-
 MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetBaseHealth)
 
 // GetBaseHealth -> returns <float>
 bool mwseGetBaseHealth::execute(mwseInstruction *_this)
 {
     VMFLOAT ret = 0;
-    const BYTE *actor = getRefrActor();
+    const BYTE *actor = reinterpret_cast<const BYTE*>(vmGetTargetActor());
 
     if(actor)
         ret = *reinterpret_cast<const float *>(actor + 0x2b8);
@@ -36,7 +24,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetBaseMagicka)
 bool mwseGetBaseMagicka::execute(mwseInstruction *_this)
 {
     VMFLOAT ret = 0;
-    const BYTE *actor = getRefrActor();
+    const BYTE *actor = reinterpret_cast<const BYTE*>(vmGetTargetActor());
 
     if(actor)
         ret = *reinterpret_cast<const float *>(actor + 0x2c4);
@@ -51,7 +39,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetBaseFatigue)
 bool mwseGetBaseFatigue::execute(mwseInstruction *_this)
 {
     VMFLOAT ret = 0;
-    const BYTE *actor = getRefrActor();
+   const BYTE *actor = reinterpret_cast<const BYTE*>(vmGetTargetActor());
 
     if(actor)
         ret = *reinterpret_cast<const float *>(actor + 0x2dc);

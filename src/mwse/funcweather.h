@@ -4,7 +4,7 @@
 struct mwseSetSkyColour : public mwseInstruction
 {
     mwseSetSkyColour(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 
 private:
     static vtable_t vtable;
@@ -13,7 +13,7 @@ private:
 struct mwseSetFogColour : public mwseInstruction
 {
     mwseSetFogColour(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 
 private:
     static vtable_t vtable;
@@ -22,7 +22,7 @@ private:
 struct mwseSetAmbientColour : public mwseInstruction
 {
     mwseSetAmbientColour(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 
 private:
     static vtable_t vtable;
@@ -31,7 +31,7 @@ private:
 struct mwseSetSunColour : public mwseInstruction
 {
     mwseSetSunColour(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 
 private:
     static vtable_t vtable;
@@ -40,7 +40,7 @@ private:
 struct mwseSetSunriseSunset : public mwseInstruction
 {
     mwseSetSunriseSunset(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 
 private:
     static vtable_t vtable;
@@ -49,7 +49,7 @@ private:
 struct mwseSetScattering : public mwseInstruction
 {
     mwseSetScattering(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 
 private:
     static vtable_t vtable;

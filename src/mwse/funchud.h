@@ -6,7 +6,7 @@ void resetMWSEHud();
 struct mwseWipeHUDElements : public mwseInstruction
 {
     mwseWipeHUDElements(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -14,7 +14,7 @@ private:
 struct mwseWithHUD : public mwseInstruction
 {
     mwseWithHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -22,7 +22,7 @@ private:
 struct mwseCancelWithHUD : public mwseInstruction
 {
     mwseCancelWithHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -30,7 +30,7 @@ private:
 struct mwseLoadHUD : public mwseInstruction
 {
     mwseLoadHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -38,7 +38,7 @@ private:
 struct mwsePositionHUD : public mwseInstruction
 {
     mwsePositionHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -46,7 +46,7 @@ private:
 struct mwseScaleHUD : public mwseInstruction
 {
     mwseScaleHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -54,7 +54,7 @@ private:
 struct mwseFullscreenHUD : public mwseInstruction
 {
     mwseFullscreenHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -62,7 +62,7 @@ private:
 struct mwseEnableHUD : public mwseInstruction
 {
     mwseEnableHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -70,7 +70,7 @@ private:
 struct mwseDisableHUD : public mwseInstruction
 {
     mwseDisableHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -78,7 +78,7 @@ private:
 struct mwseChangeHUDTexture : public mwseInstruction
 {
     mwseChangeHUDTexture(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -86,7 +86,7 @@ private:
 struct mwseChangeHUDEffect : public mwseInstruction
 {
     mwseChangeHUDEffect(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -94,7 +94,7 @@ private:
 struct mwseFreeHUD : public mwseInstruction
 {
     mwseFreeHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -102,7 +102,7 @@ private:
 struct mwseNIDLoadHUD : public mwseInstruction
 {
     mwseNIDLoadHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -110,7 +110,7 @@ private:
 struct mwseNIDPositionHUD : public mwseInstruction
 {
     mwseNIDPositionHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -118,7 +118,7 @@ private:
 struct mwseNIDScaleHUD : public mwseInstruction
 {
     mwseNIDScaleHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -126,7 +126,7 @@ private:
 struct mwseNIDFullscreenHUD : public mwseInstruction
 {
     mwseNIDFullscreenHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -134,7 +134,7 @@ private:
 struct mwseNIDEnableHUD : public mwseInstruction
 {
     mwseNIDEnableHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -142,7 +142,7 @@ private:
 struct mwseNIDDisableHUD : public mwseInstruction
 {
     mwseNIDDisableHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -150,7 +150,7 @@ private:
 struct mwseNIDChangeHUDTexture : public mwseInstruction
 {
     mwseNIDChangeHUDTexture(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -158,7 +158,7 @@ private:
 struct mwseNIDChangeHUDEffect : public mwseInstruction
 {
     mwseNIDChangeHUDEffect(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -166,7 +166,7 @@ private:
 struct mwseNIDFreeHUD : public mwseInstruction
 {
     mwseNIDFreeHUD(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -174,7 +174,7 @@ private:
 struct mwseNIDSetHUDEffectLong : public mwseInstruction
 {
     mwseNIDSetHUDEffectLong(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -182,7 +182,7 @@ private:
 struct mwseNIDSetHUDEffectFloat : public mwseInstruction
 {
     mwseNIDSetHUDEffectFloat(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -190,7 +190,7 @@ private:
 struct mwseNIDSetHUDEffectVec : public mwseInstruction
 {
     mwseNIDSetHUDEffectVec(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };

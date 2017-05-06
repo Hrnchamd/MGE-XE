@@ -16,7 +16,7 @@
 struct TES3MACHINE;
 typedef TES3MACHINE * (*MWSEGetVM_t)();
 typedef bool (*MWSEAddInstruction_t)(OPCODE, mwseInstruction*);
-typedef bool (__fastcall *addInstruction_t)(TES3MACHINE*, int, OPCODE, mwseInstruction*);
+typedef bool (__thiscall *addInstruction_t)(TES3MACHINE*, OPCODE, mwseInstruction*);
 
 static TES3MACHINE *vm;
 static addInstruction_t memberAddInstr;
@@ -25,8 +25,7 @@ static addInstruction_t memberAddInstr;
 // Perform MSVC thiscall vm->AddInstruction(op, instr) (MWSE 0.9.4a specific)
 static bool MWSE94aAddInstruction(OPCODE op, mwseInstruction *instr)
 {
-    // uses properties of fastcall to put vm in ecx
-    return memberAddInstr(vm, 0, op, instr);
+    return memberAddInstr(vm, op, instr);
 }
 
 // Bug: MWSE dynamically creates patch functions using memory allocated on the heap,

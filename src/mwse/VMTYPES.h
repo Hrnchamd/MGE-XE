@@ -19,3 +19,22 @@ typedef DWORD VMFLAGSTYPE;  // how many flags do you need?
 #define VMBYTE_MAX (1<<8)
 #define VMSHORT_MAX (1<<16)
 #define VMLONG_MAX (1ui64<<32)
+
+struct MWReference
+{
+    const void *vtbl;
+    char tag[4];
+    unsigned int flags;
+    void *sourceMod;
+    void *visual;
+    void *cellList;
+    MWReference *lastCloneRefr;
+    MWReference *nextListRefr;
+    MWReference *prevListRefr;
+    void *unknown;
+    void *baseEntity;
+    float orientation[3];
+    float position[3];
+    void *extraData;
+    unsigned int sourceID, targetID;
+};

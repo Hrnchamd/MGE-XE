@@ -4,7 +4,7 @@
 struct mwseSetShaderLong : public mwseInstruction
 {
     mwseSetShaderLong(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -12,7 +12,7 @@ private:
 struct mwseSetShaderFloat : public mwseInstruction
 {
     mwseSetShaderFloat(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -20,7 +20,7 @@ private:
 struct mwseSetShaderVector : public mwseInstruction
 {
     mwseSetShaderVector(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -28,7 +28,7 @@ private:
 struct mwseEnableShader : public mwseInstruction
 {
     mwseEnableShader(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
@@ -36,7 +36,7 @@ private:
 struct mwseDisableShader : public mwseInstruction
 {
     mwseDisableShader(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __fastcall bool execute(mwseInstruction *_this);
+    static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;
 };
