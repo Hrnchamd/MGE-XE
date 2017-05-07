@@ -46,3 +46,14 @@ bool mwseGetBaseFatigue::execute(mwseInstruction *_this)
 
     return _this->vmPush(ret);
 }
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetDeleted)
+
+// GetDeleted -> returns <long>
+bool mwseGetDeleted::execute(mwseInstruction *_this)
+{
+    MWReference *refr = vmGetTargetRef();
+    VMREGTYPE ret = (refr->flags & 0x20) != 0;
+    return _this->vmPush(ret);
+}

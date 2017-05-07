@@ -79,6 +79,7 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x3a02, new mwseGetBaseHealth(*vm));
     MWSEAddInstruction(0x3a03, new mwseGetBaseMagicka(*vm));
     MWSEAddInstruction(0x3a04, new mwseGetBaseFatigue(*vm));
+    MWSEAddInstruction(0x3a05, new mwseGetDeleted(*vm));
 
     MWSEAddInstruction(0x3a10, new mwseUIShow(*vm));
     MWSEAddInstruction(0x3a11, new mwseUIHide(*vm));
