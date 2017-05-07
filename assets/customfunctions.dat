@@ -2516,7 +2516,7 @@ end
 function
 	Name = XRayTest
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
-	Return = Float
+	Return = Float | Long | Many
 	Param1 = Float
 	Param2 = Float
 	Param3 = Float
@@ -2545,5 +2545,14 @@ function
 	Name = XModelBounds
 	Options = MWSE
 	Return = Float | Many
-	Opcode = 0x3ae7
+	Opcode = 0x3ae8
+end
+function
+	Name = XTransformVec
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float | Many
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3ae9
 end

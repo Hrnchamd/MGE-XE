@@ -25,7 +25,10 @@ struct Node
     float *pLocalRotate;
     float localTranslate[3];
     float localScale;
-    char various[0x5c];
+    float worldRotate[9];
+    float worldTranslate[3];
+    float worldScale;
+    char various[0x28];
     void *skinInstance;
 };
 
@@ -84,15 +87,16 @@ const findNodeReference_t findNodeReference = (findNodeReference_t)0x4c3c40;
 
 MWSEINSTRUCTION_DECLARE_VTABLE(mwseRayTest)
 
-// [ref] RayTest <float dir.x> <float dir.y> <float dir.z> -> <float hit_t>
+// [ref] RayTest <float dir.x> <float dir.y> <float dir.z> -> <long hit> <float hit_t>
 bool mwseRayTest::execute(mwseInstruction *_this)
 {
     D3DXVECTOR3 dir;
-    VMFLOAT hit_t = -1.0f;
+    VMFLOAT hit_t = FLT_MAX;
+    VMREGTYPE hit = 0;
 
-    if(!_this->vmPop(&dir[0])) return false;
-    if(!_this->vmPop(&dir[1])) return false;
-    if(!_this->vmPop(&dir[2])) return false;
+    if(!_this->vmPop(&dir.x)) return false;
+    if(!_this->vmPop(&dir.y)) return false;
+    if(!_this->vmPop(&dir.z)) return false;
 
     MWReference *refr = vmGetTargetRef();
     if(refr)
@@ -115,6 +119,7 @@ bool mwseRayTest::execute(mwseInstruction *_this)
             // Copy hit data to return later
             lastHit = *pick->pickResults.data[0];
             hit_t = lastHit.distance * inv_length;
+            hit = 1;
             /*LOG::logline("      -> from=%.0f,%.0f,%.0f to=%.0f,%.0f,%.0f normal=%.3f,%.3f,%.3f t=%.3f dist=%.1f",
                          pos[0], pos[1], pos[2],
                          lastHit.intersect[0], lastHit.intersect[1], lastHit.intersect[2],
@@ -154,6 +159,7 @@ bool mwseRayTest::execute(mwseInstruction *_this)
     }
 
     _this->vmPush(hit_t);
+    _this->vmPush(hit);
     return true;
 }
 
@@ -214,5 +220,32 @@ bool mwseModelBounds::execute(mwseInstruction *_this)
         for(size_t i = 0; i < 6; ++i)
             _this->vmPush(VMFLOAT(0));
     }
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseTransformVec)
+
+// [ref] TransformVec <float v.x> <float v.y> <float v.z> -> <float v.x> <float v.y> <float v.z>
+// Transform a vector by the reference's local transform
+bool mwseTransformVec::execute(mwseInstruction *_this)
+{
+    MWReference *refr = vmGetTargetRef();
+    Node *node = reinterpret_cast<Node *>(refr->visual);
+    D3DXVECTOR3 v, t;
+
+    if(!_this->vmPop(&v.x)) return false;
+    if(!_this->vmPop(&v.y)) return false;
+    if(!_this->vmPop(&v.z)) return false;
+
+    const float *m = node->pLocalRotate;
+    D3DXVec3Scale(&v, &v, node->localScale);
+    t.x = m[0]*v.x + m[1]*v.y + m[2]*v.z + node->localTranslate[0];
+    t.y = m[3]*v.x + m[4]*v.y + m[5]*v.z + node->localTranslate[1];
+    t.z = m[6]*v.x + m[7]*v.y + m[8]*v.z + node->localTranslate[2];
+
+    _this->vmPush(t.z);
+    _this->vmPush(t.y);
+    _this->vmPush(t.x);
     return true;
 }
