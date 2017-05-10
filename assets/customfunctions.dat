@@ -52,7 +52,7 @@
 #				Ref				Reference value is accepted (same as long)
 #				String			String value is accepted
 #				XYZ				Special values of 'X', 'Y' or 'Z', such as in SetPos
-#				Effect			Magic effect 
+#				Effect			Magic effect
 #				Reset			Reset value (for AI packages)
 #				Animation		An animation value
 #				OptStart		Only used in AIWander
@@ -152,7 +152,7 @@ function
 	Param1 = Long | String
 	Opcode = 0x3c22
 end
-function 
+function
 	Name = XDrop
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
@@ -160,7 +160,7 @@ function
 	Param2 = Long
 	Opcode = 0x3f0d
 end
-function 
+function
 	Name = XEquip
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
@@ -717,7 +717,7 @@ function
 	Return = None
 	Opcode = 0x123
 end
-function 
+function
 	Name = StopCellTest
 	Options = MWE
 	Return = None
@@ -818,7 +818,7 @@ function
 	Options = MWE
 	Return = None
 	Opcode = 0x11C
-end 
+end
 function
 	Name = ToggleWater
 	Options = MWE
@@ -879,6 +879,7 @@ function
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
 	Param1 = Long | String
+	Param2 = Long | String
 	Opcode = 0x3f12
 end
 function
@@ -951,6 +952,733 @@ function
 	Param1 = Long | String
 	Param2 = Long | String
 	Opcode = 0x3e68
+end
+
+# New MWSE-WIP functions
+function
+	Name = XGetBaseAcrobatics
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3901
+end
+
+function
+	Name = XGetBaseAlchemy
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3902
+end
+
+function
+	Name = XGetBaseAlteration
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3903
+end
+
+function
+	Name = XGetBaseArmorer
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3904
+end
+
+function
+	Name = XGetBaseAthletics
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3905
+end
+
+function
+	Name = XGetBaseAxe
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3906
+end
+
+function
+	Name = XGetBaseBlock
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3907
+end
+
+function
+	Name = XGetBaseBluntWeapon
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3908
+end
+
+function
+	Name = XGetBaseConjuration
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3909
+end
+
+function
+	Name = XGetBaseDestruction
+	Options = MWSE
+	Return = Float
+	Opcode = 0x390a
+end
+
+function
+	Name = XGetBaseEnchant
+	Options = MWSE
+	Return = Float
+	Opcode = 0x390b
+end
+
+function
+	Name = XGetBaseHandToHand
+	Options = MWSE
+	Return = Float
+	Opcode = 0x390c
+end
+
+function
+	Name = XGetBaseHeavyArmor
+	Options = MWSE
+	Return = Float
+	Opcode = 0x390d
+end
+
+function
+	Name = XGetBaseIllusion
+	Options = MWSE
+	Return = Float
+	Opcode = 0x390e
+end
+
+function
+	Name = XGetBaseLightArmor
+	Options = MWSE
+	Return = Float
+	Opcode = 0x390f
+end
+
+function
+	Name = XGetBaseLongBlade
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3910
+end
+
+function
+	Name = XGetBaseMarksman
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3911
+end
+
+function
+	Name = XGetBaseMediumArmor
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3912
+end
+
+function
+	Name = XGetBaseMercantile
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3913
+end
+
+function
+	Name = XGetBaseMysticism
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3914
+end
+
+function
+	Name = XGetBaseRestoration
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3915
+end
+
+function
+	Name = XGetBaseSecurity
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3916
+end
+
+function
+	Name = XGetBaseShortBlade
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3917
+end
+
+function
+	Name = XGetBaseSneak
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3918
+end
+
+function
+	Name = XGetBaseSpear
+	Options = MWSE
+	Return = Float
+	Opcode = 0x3919
+end
+
+function
+	Name = XGetBaseSpeechcraft
+	Options = MWSE
+	Return = Float
+	Opcode = 0x391a
+end
+
+function
+	Name = XGetBaseUnarmored
+	Options = MWSE
+	Return = Float
+	Opcode = 0x391b
+end
+
+function
+	Name = XGetProgressLevel
+	Options = MWSE
+	Return = Long
+	Opcode = 0x391c
+end
+
+function
+	Name = XGetLockLevel
+	Options = MWSE | ShortVar
+	Return = Short
+	Opcode = 0x391d
+end
+
+function
+	Name = XSetProgressLevel
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x391e
+end
+
+function
+	Name = XGetTrap
+	Options = MWSE
+	Return = Many
+	Opcode = 0x391f
+end
+
+function
+	Name = XSetTrap
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long | String
+	Opcode = 0x3920
+end
+
+function
+	Name = XExplodeSpell
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3921
+end
+
+function
+	Name = XFloatsToLong
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x3922
+end
+
+function
+	Name = XLongToFloats
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Many
+	Param1 = Long
+	Opcode = 0x3923
+end
+
+function
+	Name = XGetSpellInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long | String
+	Opcode = 0x3924
+end
+
+function
+	Name = XGetSpellEffectInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long | String
+	Param2 = Short
+	Opcode = 0x3925
+end
+
+function
+	Name = XSpellList
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long
+	Opcode = 0x3926
+end
+
+function
+	Name = XGetSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long | String
+	Opcode = 0x3927
+end
+
+function
+	Name = XGetEnchant
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Opcode = 0x3928
+end
+
+function
+	Name = XGetEnchantInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long | String
+	Opcode = 0x3929
+end
+
+function
+	Name = XGetEnchantEffectInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long | String
+	Param2 = Short
+	Opcode = 0x392a
+end
+
+function
+	Name = XGetClass
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Many
+	Param1 = Long
+	Param2 = Long
+	Param3 = Long
+	Opcode = 0x392b
+end
+
+function
+	Name = XGetProgressSkill
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Many
+	Param1 = Short | Long
+	Opcode = 0x392c
+end
+
+function
+	Name = XSetProgressSkill
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Short
+	Param1 = Short | Long
+	Param2 = Float
+	Param3 = Short | Long
+	Opcode = 0x392d
+end
+
+function
+	Name = XModProgressSkill
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Short
+	Param1 = Short | Long
+	Param2 = Float
+	Param3 = Short | Long
+	Opcode = 0x392e
+end
+
+function
+	Name = XGetBaseSkill
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Param1 = Short | Long
+	Opcode = 0x392f
+end
+
+function
+	Name = XModProgressLevel
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3930
+end
+
+function
+	Name = XCreateArray
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Opcode = 0x3931
+end
+
+function
+	Name = XGetArrayValue
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3932
+end
+
+function
+	Name = XSetArrayValue
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short
+	Param1 = Long
+	Param2 = Long
+	Param3 = Long
+	Opcode = 0x3933
+end
+
+function
+	Name = XGetOwnerInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Opcode = 0x3934
+end
+
+function
+	Name = XPow
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x383A
+end
+
+function
+	Name = XShift
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3935
+end
+
+function
+	Name = XBitAnd
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3936
+end
+
+function
+	Name = XBitOr
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3937
+end
+
+function
+	Name = XBitXor
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3938
+end
+
+function
+	Name = XBitNot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3939
+end
+
+function
+	Name = XAnd
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x393A
+end
+
+function
+	Name = XOr
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x393B
+end
+
+function
+	Name = XXor
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x393C
+end
+
+function
+	Name = XNot
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x393D
+end
+
+function
+	Name = xGetGlobal
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long | String
+	Opcode = 0x393E
+end
+
+function
+	Name = xSetGlobal
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Param2 = Float
+	Opcode = 0x393F
+end
+
+function
+	Name = xGetMagic
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Opcode = 0x3940
+end
+
+function
+	Name = xSetSpellInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Long
+	Param4 = Long
+	Param5 = Long
+	Param6 = Long
+	Return = Long
+	Opcode = 0x3941
+end
+
+function
+	Name = xSetEffectInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Param2 = Long | String
+	Param3 = Long
+	Param4 = Long
+	Param5 = Long
+	Param6 = Long
+	Param7 = Long
+	Param8 = Long
+	Param9 = Long
+	Param10 = Long
+	Return = Long
+	Opcode = 0x3942
+end
+
+function
+	Name = XGetEffectInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long
+	Param2 = Long | String
+	Param3 = Long
+	Opcode = 0x3943
+end
+
+function
+	Name = XSetEnchantInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Param2 = Long
+	Param3 = Long
+	Param4 = Long
+	Param5 = Long
+	Opcode = 0x3944
+end
+
+function
+	Name = XDeleteEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long | String
+	Param3 = Long
+	Opcode = 0x3945
+end
+
+function
+	Name = xAddEffect
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Param2 = Long | String
+	Param3 = Long
+	Param4 = Long
+	Param5 = Long
+	Param6 = Long
+	Param7 = Long
+	Param8 = Long
+	Param9 = Long
+	Return = Long
+	Opcode = 0x3946
+end
+
+function
+	Name = xGetBaseEffectInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Return = Many
+	Opcode = 0x3947
+end
+
+function
+	Name = xSetBaseEffectInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Param2 = Long
+	Param3 = Float
+	Param4 = Long
+	Return = Long
+	Opcode = 0x3948
+end
+
+function
+	Name = xCreateSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Param2 = Long
+	Return = Long
+	Opcode = 0x3949
+end
+
+function
+	Name = xDeleteSpell
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Return = Long
+	Opcode = 0x394A
+end
+
+function
+	Name = xGetSkillInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Return = Many
+	Opcode = 0x394B
+end
+
+function
+	Name = xSetSkillInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Param2 = Long
+	Param3 = Long
+	Param4 = Float
+	Param5 = Float
+	Param6 = Float
+	Param7 = Float
+	Return = Long
+	Opcode = 0x394C
+end
+
+function
+	Name = xGetGSString
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Return = Long
+	Opcode = 0x394D
+end
+
+function
+	Name = xSetGSString
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Long
+	Param2 = Long
+	Return = Long
+	Opcode = 0x394E
+end
+
+function
+	Name = xSetLevel
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Param1 = Short
+	Return = None
+	Opcode = 0x394F
+end
+
+function
+	Name = XGetSkill
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Param1 = Short | Long
+	Opcode = 0x3950
+end
+
+function
+	Name = XGetBaseAttribute
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Param1 = Short | Long
+	Opcode = 0x3951
+end
+
+function
+	Name = XGetAttribute
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Param1 = Short | Long
+	Opcode = 0x3952
+end
+
+function
+	Name = XModAttribute
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Short | Long
+	Param2 = Float
+	Opcode = 0x3953
+end
+
+function
+	Name = XGetMaxHealth
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Opcode = 0x3954
+end
+
+function
+	Name = XRandomLong
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3955
+end
+
+function
+	Name = XRandomFloat
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x3956
 end
 
 
