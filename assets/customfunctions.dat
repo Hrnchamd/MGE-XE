@@ -3257,6 +3257,18 @@ function
 	Opcode = 0x3ae0
 end
 function
+	Name = XRayTestFrom
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float | Long | Many
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Param4 = Float
+	Param5 = Float
+	Param6 = Float
+	Opcode = 0x3ae1
+end
+function
 	Name = XRayHitPosition
 	Options = MWSE
 	Return = Float | Many
@@ -3289,4 +3301,19 @@ function
 	Param2 = Float
 	Param3 = Float
 	Opcode = 0x3ae9
+end
+function
+	Name = XIsAirborne
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3aea
+end
+function
+	Name = XSetAirVelocity
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Float
+	Param2 = Float
+	Param3 = Float
+	Opcode = 0x3aeb
 end

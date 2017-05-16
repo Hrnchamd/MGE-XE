@@ -9,6 +9,14 @@ private:
     static vtable_t vtable;
 };
 
+struct mwseRayTestFrom : public mwseInstruction
+{
+    mwseRayTestFrom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+private:
+    static vtable_t vtable;
+};
+
 struct mwseRayHitPosition : public mwseInstruction
 {
     mwseRayHitPosition(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
@@ -44,6 +52,22 @@ private:
 struct mwseTransformVec : public mwseInstruction
 {
     mwseTransformVec(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+private:
+    static vtable_t vtable;
+};
+
+struct mwseIsAirborne : public mwseInstruction
+{
+    mwseIsAirborne(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+private:
+    static vtable_t vtable;
+};
+
+struct mwseSetAirVelocity : public mwseInstruction
+{
+    mwseSetAirVelocity(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
     static __thiscall bool execute(mwseInstruction *_this);
 private:
     static vtable_t vtable;

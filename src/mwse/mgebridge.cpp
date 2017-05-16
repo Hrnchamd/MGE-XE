@@ -159,9 +159,12 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x3ab4, new mwseSetShaderVector(*vm));
 
     MWSEAddInstruction(0x3ae0, new mwseRayTest(*vm));
+    MWSEAddInstruction(0x3ae1, new mwseRayTestFrom(*vm));
     MWSEAddInstruction(0x3ae4, new mwseRayHitPosition(*vm));
     MWSEAddInstruction(0x3ae5, new mwseRayHitNormal(*vm));
     MWSEAddInstruction(0x3ae6, new mwseRayHitRef(*vm));
     MWSEAddInstruction(0x3ae8, new mwseModelBounds(*vm));
     MWSEAddInstruction(0x3ae9, new mwseTransformVec(*vm));
+    MWSEAddInstruction(0x3aea, new mwseIsAirborne(*vm));
+    MWSEAddInstruction(0x3aeb, new mwseSetAirVelocity(*vm));
 }

@@ -76,7 +76,7 @@ static Pick *pick = reinterpret_cast<Pick*>(0x7d12e8);
 static Pick::Record lastHit;
 const void *vtbl_TriShape = reinterpret_cast<void*>(0x7508b0);
 
-typedef bool (__thiscall *pickObjects_t)(Pick *, float *, float *, bool, float);
+typedef bool (__thiscall *pickObjects_t)(Pick *, const float *, const float *, bool, float);
 typedef void (__thiscall *pickClearResults_t)(Pick *);
 typedef MWReference * (__cdecl *findNodeReference_t)(Node *);
 const pickObjects_t pickObjects = (pickObjects_t)0x6f3050;
@@ -85,36 +85,29 @@ const findNodeReference_t findNodeReference = (findNodeReference_t)0x4c3c40;
 
 
 
-MWSEINSTRUCTION_DECLARE_VTABLE(mwseRayTest)
-
-// [ref] RayTest <float dir.x> <float dir.y> <float dir.z> -> <long hit> <float hit_t>
-bool mwseRayTest::execute(mwseInstruction *_this)
+static bool invokeRayTest(mwseInstruction *_this, const D3DXVECTOR3 *pos, const D3DXVECTOR3 *dir)
 {
-    D3DXVECTOR3 dir;
     VMFLOAT hit_t = FLT_MAX;
     VMREGTYPE hit = 0;
 
-    if(!_this->vmPop(&dir.x)) return false;
-    if(!_this->vmPop(&dir.y)) return false;
-    if(!_this->vmPop(&dir.z)) return false;
-
-    MWReference *refr = vmGetTargetRef();
+    MWReference *refr = mwseInstruction::vmGetTargetRef();
     if(refr)
     {
         Node *node = reinterpret_cast<Node *>(refr->visual);
         // Hide reference's NiNode to avoid self-collision
-        if(node)
+        if(node && (node->flags & 1) == 0)
             node->flags ^= 1;
+        else
+            node = 0;
 
         // Root of scene to test
         void *spWorldRoot = *reinterpret_cast<void**>(reinterpret_cast<BYTE*>(*pWorldController) + 0x9c);
         pick->spRoot = spWorldRoot;
 
-        float *pos = refr->position;
-        float inv_length = 1.0 / D3DXVec3Length(&dir);
+        float inv_length = 1.0 / D3DXVec3Length(dir);
         D3DXVECTOR3 dir_norm;
-        D3DXVec3Scale(&dir_norm, &dir, inv_length);
-        if(pickObjects(pick, pos, dir_norm, false, 0.0f))
+        D3DXVec3Scale(&dir_norm, dir, inv_length);
+        if(pickObjects(pick, *pos, dir_norm, false, 0.0f))
         {
             // Copy hit data to return later
             lastHit = *pick->pickResults.data[0];
@@ -133,9 +126,9 @@ bool mwseRayTest::execute(mwseInstruction *_this)
                 MWReference *refrHit = findNodeReference(lastHit.spObject);
                 float *origin = refrHit ? refrHit->position : lastHit.spObject->boundOrigin;
 
-                lastHit.intersect[0] = pos[0] + hit_t * dir[0];
-                lastHit.intersect[1] = pos[1] + hit_t * dir[1];
-                lastHit.intersect[2] = pos[2] + hit_t * dir[2];
+                lastHit.intersect[0] = pos->x + hit_t * dir->x;
+                lastHit.intersect[1] = pos->y + hit_t * dir->y;
+                lastHit.intersect[2] = pos->z + hit_t * dir->z;
 
                 // Use cylindrical bounds to calculate normal
                 D3DXVECTOR3 radial;
@@ -161,6 +154,46 @@ bool mwseRayTest::execute(mwseInstruction *_this)
     _this->vmPush(hit_t);
     _this->vmPush(hit);
     return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseRayTest)
+
+// [ref] RayTest <float dir.x> <float dir.y> <float dir.z> -> <long hit> <float hit_t>
+bool mwseRayTest::execute(mwseInstruction *_this)
+{
+    D3DXVECTOR3 pos, dir;
+
+    if(!_this->vmPop(&dir.x)) return false;
+    if(!_this->vmPop(&dir.y)) return false;
+    if(!_this->vmPop(&dir.z)) return false;
+
+    MWReference *refr = mwseInstruction::vmGetTargetRef();
+    if(refr)
+    {
+        pos = D3DXVECTOR3(refr->position);
+        return invokeRayTest(_this, &pos, &dir);
+    }
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseRayTestFrom)
+
+// [ref] RayTestFrom <float pos.x> <float pos.y> <float pos.z> <float dir.x> <float dir.y> <float dir.z> -> <long hit> <float hit_t>
+bool mwseRayTestFrom::execute(mwseInstruction *_this)
+{
+    D3DXVECTOR3 pos, dir;
+
+    if(!_this->vmPop(&pos.x)) return false;
+    if(!_this->vmPop(&pos.y)) return false;
+    if(!_this->vmPop(&pos.z)) return false;
+    if(!_this->vmPop(&dir.x)) return false;
+    if(!_this->vmPop(&dir.y)) return false;
+    if(!_this->vmPop(&dir.z)) return false;
+
+    return invokeRayTest(_this, &pos, &dir);
 }
 
 
@@ -247,5 +280,38 @@ bool mwseTransformVec::execute(mwseInstruction *_this)
     _this->vmPush(t.z);
     _this->vmPush(t.y);
     _this->vmPush(t.x);
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseIsAirborne)
+
+// [ref] IsAirborne -> <long>
+bool mwseIsAirborne::execute(mwseInstruction *_this)
+{
+    void *actor = vmGetTargetActor();
+    VMREGTYPE ret = 0;
+
+    if(actor)
+        ret = (reinterpret_cast<BYTE*>(actor)[0x10] & 0x10) != 0;
+
+    return _this->vmPush(ret);
+}
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetAirVelocity)
+
+// [ref] SetAirVelocity <float v.x> <float v.y> <float v.z>
+bool mwseSetAirVelocity::execute(mwseInstruction *_this)
+{
+    void *actor = vmGetTargetActor();
+    D3DXVECTOR3 v;
+
+    if(!_this->vmPop(&v.x)) return false;
+    if(!_this->vmPop(&v.y)) return false;
+    if(!_this->vmPop(&v.z)) return false;
+
+    if(actor)
+        *reinterpret_cast<D3DXVECTOR3*>(reinterpret_cast<BYTE*>(actor) + 0x3c) = v;
+
     return true;
 }
