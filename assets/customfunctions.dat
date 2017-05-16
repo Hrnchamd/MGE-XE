@@ -3092,6 +3092,25 @@ function
 	Return = Long
 	Opcode = 0x3a05
 end
+function
+	Name = XIsScripted
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3a06
+end
+function
+	Name = XLastActorHit
+	Options = MWSE
+	Return = Long | Ref
+	Opcode = 0x3a07
+end
+function
+	Name = XSetEntityName
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3a08
+end
 
 function
 	Name = MGEUIShow

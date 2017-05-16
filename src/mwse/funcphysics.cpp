@@ -4,18 +4,16 @@
 #include "support/log.h"
 
 
-struct MWEntity
+struct MWEntity : MWRecord
 {
-    const void *vtbl;
-    char tag[4];
-    char other[0x20];
+    char other[0x18];
     const float *bounds;
     const char *name;
 };
 
 struct Node
 {
-    const void *vtbl;
+    const void **vtbl;
     char stuff[0x10];
     unsigned short flags;
     unsigned short pad;
@@ -48,7 +46,7 @@ struct Pick
     };
     struct Results
     {
-        void *vtbl;
+        void **vtbl;
         Record **data;
         size_t storageCount;
         size_t endIndex;
