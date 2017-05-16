@@ -1,6 +1,6 @@
 
 #include "mge/mwbridge.h"
-#include "funcstat.h"
+#include "funcentity.h"
 
 
 static MWRecord * findEntity(const char *id)

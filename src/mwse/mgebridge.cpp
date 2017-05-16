@@ -8,7 +8,7 @@
 #include "funcweather.h"
 #include "funcshader.h"
 #include "funcinput.h"
-#include "funcstat.h"
+#include "funcentity.h"
 #include "funcmwui.h"
 #include "funcphysics.h"
 
