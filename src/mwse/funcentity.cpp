@@ -130,10 +130,6 @@ bool mwseSetEntityName::execute(mwseInstruction *_this)
     setName_t setName = reinterpret_cast<setName_t>(entity->vtbl[0x43]);
     setName(entity, name);
 
-    // Set entity modified flag so that the name is saved
-    // Has a side effect of locking in the entity data from the current load order
-    entity->flags |= 2;
-
     return true;
 }
 
