@@ -27,6 +27,7 @@ namespace MGEgui.DistantLand {
             statusWarnings.Text = strings["NoWarnings"]; 
             statusWarnings.Enabled = false;
             allWarnings = new List<string>();
+            lastFileProcessed = "";
             lTexDesc.Text += DXMain.mCaps.MaxTexSize.ToString();
             DXMain.CreateDevice(this);
             LTEX.ReleaseCache();
@@ -55,7 +56,7 @@ namespace MGEgui.DistantLand {
         private static void DumpError(Exception ex) {
             string str = ex.ToString();
             while ((ex = ex.InnerException) != null) str += Environment.NewLine + Environment.NewLine + str.ToString();
-            File.WriteAllText(Statics.fn_dlcrash, str);
+            File.WriteAllText(Statics.fn_dllog, str);
         }
 
         private static string ReadString(BinaryReader br) {
@@ -88,6 +89,7 @@ namespace MGEgui.DistantLand {
         private string[] files;
         private List<string> warnings;
         private List<string> allWarnings;
+        private string lastFileProcessed;
 
         //Keeps track of map extents in terms of cells
         private int MapSize = 0;
@@ -390,7 +392,7 @@ namespace MGEgui.DistantLand {
         private void workerFInitBSAs(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show(strings["LoadBSAError"] + "\n" + e.Error.Message);
+                MessageBox.Show(strings["LoadBSAError"] + "\n\n" + e.Error.ToString());
                 ChangingPage = true;
                 Close();
                 return;
@@ -423,9 +425,10 @@ namespace MGEgui.DistantLand {
             }
             CellCount = 0;
             int progress = 0;
-            List<string> errors = new List<string>();
+            List<string> warnings = new List<string>();
             foreach (string file in files) {
                 if (DEBUG) allWarnings.Add("Loading plugin: " + file);
+                lastFileProcessed = file;
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 List<LTEX> Textures = new List<LTEX>();
                 //Add the default texture first, because all vtex id's are +1 compared to the ltex ids
@@ -527,7 +530,11 @@ namespace MGEgui.DistantLand {
                         try {
                             tex.LoadTexture();
                         } catch (Exception ex) {
-                            errors.Add("Texture '" + tex.FilePath + "' in plugin '" + file + "' failed to load (" + ex.Message + ")");
+                            // Log texture errors, except for known errors in morrowind.esm
+                            FileInfo fi = new FileInfo(file);
+                            if (fi.Name.ToLower() != "morrowind.esm") {
+                                warnings.Add("Texture '" + tex.FilePath + "' in plugin '" + file + "' failed to load (" + ex.Message + ")");
+                            }
                             tex.tex = DefaultTex.tex;
                         }
                         Textures.Add(tex);
@@ -541,12 +548,13 @@ namespace MGEgui.DistantLand {
                 Textures.Sort(new LTEXSorter());
                 backgroundWorker.ReportProgress(++progress);
             }
+            if (warnings.Count > 0) e.Result = warnings;
         }
 
         private void workerFLoadPlugins(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show(strings["LoadLandError"] + "\n" + e.Error.Message);
+                MessageBox.Show(strings["LoadLandError"] + "\n<" + lastFileProcessed + ">\n\n" + e.Error.ToString());
                 ChangingPage = true;
                 Close();
                 return;
@@ -629,7 +637,7 @@ namespace MGEgui.DistantLand {
         void workerFCreateTextures(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show(strings["LandTextureError"] + "\n" + e.Error.Message);
+                MessageBox.Show(strings["LandTextureError"] + "\n\n" + e.Error.ToString());
                 ChangingPage = true;
                 Close();
                 return;
@@ -677,7 +685,7 @@ namespace MGEgui.DistantLand {
                 LTEX.ReleaseCache();
                 if (e.Error != null) {
                     DumpError(e.Error);
-                    MessageBox.Show(strings["LandMeshError"] + "\n" + e.Error.Message);
+                    MessageBox.Show(strings["LandMeshError"] + "\n\n" + e.Error.ToString());
                     ChangingPage = true;
                     Close();
                     return;
@@ -743,7 +751,7 @@ namespace MGEgui.DistantLand {
                 if (DEBUG) allWarnings.Add("Loading override: " + overrideList);
                 StreamReader sr = null;
                 try { sr = new StreamReader(File.OpenRead(overrideList)); }
-                catch { warnings.Add("Error: Could not import statics list '" + overrideList + "'"); }
+                catch { warnings.Add("Error: Could not import statics override list '" + overrideList + "'"); }
                 if (sr != null) {
                     int index; string section = ""; string line; string escape;
                     while (!sr.EndOfStream) switch (section) {
@@ -865,7 +873,12 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 if (DEBUG) allWarnings.Add("Parsing for statics definitions: " + file);
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
-                ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList);
+                try {
+                    ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList);
+                }
+                catch (Exception ex) {
+                    warnings.Add("Parse statics failed on " + file + "\n\n" + ex.ToString());
+                }
                 br.Close();
             }
             backgroundWorker.ReportProgress(1, strings["StaticsGenerate1"]);
@@ -877,7 +890,7 @@ namespace MGEgui.DistantLand {
                 try {
                     ParseFileForCells(br, fi.Name, IgnoreList, CellList);
                 } catch (Exception ex) {
-                    warnings.Add("Non-fatal error in ParseFileForCells(\"" + file + "\"): " + ex.Message);
+                    warnings.Add("ParseFileForCells(\"" + file + "\") failed\n\n" + ex.ToString());
                 }
                 br.Close();
             }
@@ -1033,7 +1046,7 @@ namespace MGEgui.DistantLand {
             if (e != null) {
                 if (e.Error != null) {
                     DumpError(e.Error);
-                    MessageBox.Show(strings["StaticsError"] + "\n" + e.Error.Message);
+                    MessageBox.Show(strings["StaticsError"] + "\n\n" + e.Error.ToString());
                     ChangingPage = true;
                     Close();
                     return;
@@ -1115,6 +1128,7 @@ namespace MGEgui.DistantLand {
             UsedStaticsList.Clear();
             StaticMap.Clear();
             foreach (string file in files) {
+                lastFileProcessed = file;
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 ParseFileForStatics(br, null, args.activators, args.misc, null);
                 br.Close();
@@ -1203,7 +1217,7 @@ namespace MGEgui.DistantLand {
         void workerFExportStatics(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
             if (e.Error != null) {
                 DumpError(e.Error);
-                MessageBox.Show(strings["ExportListError"] + "\n" + e.Error.Message);
+                MessageBox.Show(strings["ExportListError"] + "\n<" + lastFileProcessed + ">\n\n" + e.Error.ToString());
             }
             statusProgress.Value = 0;
             statusProgress.Style = ProgressBarStyle.Continuous;

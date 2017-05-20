@@ -175,7 +175,6 @@ namespace MGEgui {
         public const string fn_remap = "MGE3/remap.data";
         public const string fn_dldefaultoverride = "MGE3/MGE XE Default Statics Classifiers.ovr";
         public const string fn_dllog = "MGE3/DistantLand.log";
-        public const string fn_dlcrash = "MGE3/distant-land-crash-dump.txt";
         public const string fn_datafiles = "Data files";
         public const string fn_dl = "Data files/distantland";
         public const string fn_dlver = "Data files/distantland/version";
