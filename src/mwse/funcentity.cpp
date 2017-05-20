@@ -1,6 +1,7 @@
 
 #include "mge/mwbridge.h"
 #include "funcentity.h"
+#include <cstdio>
 
 
 static MWRecord * findEntity(const char *id)
@@ -125,10 +126,36 @@ bool mwseSetEntityName::execute(mwseInstruction *_this)
         entity = *reinterpret_cast<MWRecord**>(reinterpret_cast<BYTE*>(entity) + 0x6c);
     }
 
-    // Call <vtbl + 0x10c> Entity::setName(const char *)
-    typedef void (__thiscall *setName_t)(MWRecord *, const char *);
-    setName_t setName = reinterpret_cast<setName_t>(entity->vtbl[0x43]);
-    setName(entity, name);
+    // Although all entities have a setName virtual function, a few do not implement it.
+    // This switch covers the extra cases.
+    size_t nameOffset = 0;
+    switch(entity->tagCode)
+    {
+    case MWTag_Apparatus:
+        nameOffset = 0x64;
+        break;
+    case MWTag_Door:
+        nameOffset = 0x34;
+        break;
+    case MWTag_Ingredient:
+    case MWTag_Lockpick:
+    case MWTag_Probe:
+    case MWTag_RepairItem:
+        nameOffset = 0x44;
+        break;
+    }
+
+    if(nameOffset)
+    {
+        std::snprintf(reinterpret_cast<char*>(entity) + nameOffset, 32, "%s", name);
+    }
+    else
+    {
+        // Call <vtbl + 0x10c> Entity::setName(const char *)
+        typedef void (__thiscall *setName_t)(MWRecord *, const char *);
+        setName_t setName = reinterpret_cast<setName_t>(entity->vtbl[0x43]);
+        setName(entity, name);
+    }
 
     return true;
 }

@@ -20,20 +20,44 @@ typedef DWORD VMFLAGSTYPE;  // how many flags do you need?
 #define VMSHORT_MAX (1<<16)
 #define VMLONG_MAX (1ui64<<32)
 
+enum MWRecordTag
+{
+    MWTag_Activator = 0x49544341,
+    MWTag_Apparatus = 0x41505041,
+    MWTag_Armor = 0x4f4d5241,
+    MWTag_BodyPart = 0x59444f42,
+    MWTag_Book = 0x4b4f4f42,
+    MWTag_Clothing = 0x544f4c43,
+    MWTag_Container = 0x544e4f43,
+    MWTag_Door = 0x524f4f44,
+    MWTag_Ingredient = 0x52474e49,
+    MWTag_Light = 0x4847494c,
+    MWTag_Lockpick = 0x4b434f4c,
+    MWTag_MiscItem = 0x4353494d,
+    MWTag_Probe = 0x424f5250,
+    MWTag_RepairItem = 0x41504552,
+    MWTag_Static = 0x54415453,
+    MWTag_Weapon = 0x50414557,
+    MWTag_NPC = 0x5f43504e,
+    MWTag_Creature = 0x41455243,
+    MWTag_LevelledCreature = 0x4356454c,
+    MWTag_Spell = 0x4c455053,
+    MWTag_Enchantment = 0x48434e45,
+    MWTag_Potion = 0x48434c41,
+    MWTag_LevelledItem = 0x4956454c,
+    MWTag_Ammo = 0x4f4d4d41
+};
+
 struct MWRecord
 {
     const void **vtbl;
-    char tag[4];
+    union { char tag[4]; unsigned int tagCode; };
     unsigned int flags;
     void *sourceMod;
 };
 
-struct MWReference
+struct MWReference : MWRecord
 {
-    const void **vtbl;
-    char tag[4];
-    unsigned int flags;
-    void *sourceMod;
     void *visual;
     void *cellList;
     MWReference *lastCloneRefr;
