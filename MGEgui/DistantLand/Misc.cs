@@ -1,4 +1,5 @@
 using System;
+using StringBuilder = System.Text.StringBuilder;
 using MGEgui.DirectX;
 
 namespace MGEgui.DistantLand {
@@ -61,7 +62,7 @@ namespace MGEgui.DistantLand {
         public int xpos=-999;
         public int ypos=-999;
 
-        public System.Collections.Generic.List<LTEX> Textures;
+        public System.Collections.Generic.Dictionary<int, LTEX> Textures;
 
         public LAND() {
             for(int y=0;y<65;y++) {
@@ -73,10 +74,80 @@ namespace MGEgui.DistantLand {
             }
         }
     }
+    
+    class RecordReader {
+        private System.IO.BinaryReader reader;
+        private string tag, sub_tag;
+        private uint record_size, subrecord_size;
+        private long next_record, next_subrecord;
 
-    class LTEXSorter : System.Collections.Generic.IComparer<LTEX> {
-        public int Compare(LTEX a, LTEX b) {
-			return a.index.CompareTo(b.index);
+        public string Tag {
+            get { return tag; }
+        }
+        public string SubTag {
+            get { return sub_tag; }
+        }
+        public uint SubrecordSize {
+            get { return subrecord_size; }
+        }
+        
+        public RecordReader(System.IO.BinaryReader br) {
+            reader = br;
+            next_record = 0;
+            next_subrecord = 0;
+        }
+        
+        public bool NextRecord() {
+            if (next_record >= reader.BaseStream.Length)
+                return false;
+            
+            reader.BaseStream.Position = next_record;
+            tag = ReadTag();
+            record_size = reader.ReadUInt32();
+            reader.BaseStream.Position += 8;
+            next_record = reader.BaseStream.Position + record_size;
+            next_subrecord = reader.BaseStream.Position;
+            return true;
+        }
+        
+        public bool NextSubrecord() {
+            if (next_subrecord >= next_record)
+                return false;
+            
+            reader.BaseStream.Position = next_subrecord;
+            sub_tag = ReadTag();
+            subrecord_size = reader.ReadUInt32();
+            next_subrecord = reader.BaseStream.Position + subrecord_size;
+            return true;
+        }
+
+        public string ReadCString() {
+            StringBuilder cstr = new StringBuilder();
+            while (true) {
+                char c = reader.ReadChar();
+                if (c == '\0')
+                    break;
+                else
+                    cstr.Append(c);
+            }
+            return cstr.ToString();
+        }
+
+        public string ReadSubrecordString() {
+            StringBuilder cstr = new StringBuilder();
+            uint s = subrecord_size;
+            while (s-- != 0) {
+                char c = reader.ReadChar();
+                if (c == '\0')
+                    break;
+                else
+                    cstr.Append(c);
+            }
+            return cstr.ToString();
+        }
+
+        private string ReadTag() {
+            return new string(reader.ReadChars(4));
         }
     }
 }

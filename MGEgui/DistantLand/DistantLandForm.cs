@@ -1,4 +1,5 @@
 using System;
+using StringBuilder = System.Text.StringBuilder;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
@@ -57,28 +58,6 @@ namespace MGEgui.DistantLand {
             string str = ex.ToString();
             while ((ex = ex.InnerException) != null) str += Environment.NewLine + Environment.NewLine + str.ToString();
             File.WriteAllText(Statics.fn_dllog, str);
-        }
-
-        private static string ReadString(BinaryReader br) {
-            return new string(br.ReadChars(4));
-        }
-
-        private static string ReadCString(BinaryReader br) {
-            List<char> chars = new List<char>();
-            while (true) {
-                char c = br.ReadChar();
-                if (c == '\0') return new string(chars.ToArray());
-                else chars.Add(c);
-            }
-        }
-
-        private static string ReadCString(BinaryReader br, int max) {
-            List<char> chars = new List<char>();
-            while (true) {
-                char c = br.ReadChar();
-                if (max-- == 0 || c == '\0') return new string(chars.ToArray());
-                else chars.Add(c);
-            }
         }
 
         /* Common properties */
@@ -150,8 +129,12 @@ namespace MGEgui.DistantLand {
         }
 
         static public LTEX GetTex(int cellx, int celly, int texx, int texy) {
-            if (map[cellx, celly] != null) return map[cellx, celly].Textures[map[cellx, celly].Tex[texx, texy]];
-            else return DefaultTex;
+            LTEX t = DefaultTex;
+            var c = map[cellx, celly];
+            if (c != null) {
+                t = c.Textures[c.Tex[texx, texy]];
+            }
+            return t;
         }
 
         /* Configuration properties */
@@ -430,25 +413,17 @@ namespace MGEgui.DistantLand {
                 if (DEBUG) allWarnings.Add("Loading plugin: " + file);
                 lastFileProcessed = file;
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
-                List<LTEX> Textures = new List<LTEX>();
-                //Add the default texture first, because all vtex id's are +1 compared to the ltex ids
-                Textures.Add(DefaultTex);
-                string s = "";
-                while (br.BaseStream.Position < br.BaseStream.Length) {
-                    s = ReadString(br);
-                    if (s == "LAND") {
-                        int size = br.ReadInt32();
-                        int read = 0;
-                        br.BaseStream.Position += 8;
+                RecordReader rr = new RecordReader(br);
+                Dictionary<int, LTEX> Textures = new Dictionary<int, LTEX>();
+                Textures.Add(0, DefaultTex);
+                while (rr.NextRecord()) {
+                    if (rr.Tag == "LAND") {
                         LAND land = new LAND();
                         land.Textures = Textures;
                         int lx = -999;
                         int ly = -999;
-                        while (read < size) {
-                            s = ReadString(br);
-                            int size2 = br.ReadInt32();
-                            read += size2 + 8;
-                            switch (s) {
+                        while (rr.NextSubrecord()) {
+                            switch (rr.SubTag) {
                                 case "INTV":
                                     lx = br.ReadInt32();
                                     ly = br.ReadInt32();
@@ -468,7 +443,6 @@ namespace MGEgui.DistantLand {
                                             if (pos < VeryLow) VeryLow = pos;
                                         }
                                     }
-                                    br.BaseStream.Seek(3, SeekOrigin.Current);
                                     break;
                                 case "VNML":
                                     for (int y = 0; y < 65; y++) {
@@ -499,9 +473,6 @@ namespace MGEgui.DistantLand {
                                         }
                                     }
                                     break;
-                                default:
-                                    br.BaseStream.Position += size2;
-                                    break;
                             }
                         }
                         if (lx != -999 && ly != -999) {
@@ -515,18 +486,16 @@ namespace MGEgui.DistantLand {
                             if (map[lx, ly] == null) CellCount++;
                             map[lx, ly] = land;
                         }
-                    } else if (s == "LTEX") {
-                        //TODO: Fix!
-                        //Presumably, not all LTEX's have the subrecords in an identical order
+                    } else if (rr.Tag == "LTEX") {
                         LTEX tex = new LTEX();
-                        int size = br.ReadInt32();
-                        long pos = br.BaseStream.Position + 8;
-                        br.BaseStream.Position += 16;
-                        ReadCString(br);
-                        br.BaseStream.Position += 8;
-                        tex.index = br.ReadInt32() + 1;
-                        br.BaseStream.Position += 8;
-                        tex.FilePath = ReadCString(br).ToLower(Statics.Culture);
+                        while (rr.NextSubrecord()) {
+                            if (rr.SubTag == "INTV") {
+                                tex.index = br.ReadInt32() + 1;
+                            }
+                            else if (rr.SubTag == "DATA") {
+                                tex.FilePath = rr.ReadCString().ToLower(Statics.Culture);
+                            }
+                        }
                         try {
                             tex.LoadTexture();
                         } catch (Exception ex) {
@@ -537,15 +506,10 @@ namespace MGEgui.DistantLand {
                             }
                             tex.tex = DefaultTex.tex;
                         }
-                        Textures.Add(tex);
-                        br.BaseStream.Position = pos + size;
-                    } else {
-                        int size = br.ReadInt32();
-                        br.BaseStream.Position += size + 8;
+                        Textures.Add(tex.index, tex);
                     }
                 }
                 br.Close();
-                Textures.Sort(new LTEXSorter());
                 backgroundWorker.ReportProgress(++progress);
             }
             if (warnings.Count > 0) e.Result = warnings;
@@ -2009,30 +1973,20 @@ namespace MGEgui.DistantLand {
         /* Statics tab methods */
 
         private void ParseFileForDisableScripts(BinaryReader br, Dictionary<string, staticOverride> OverrideList) {
-            string s = "";
-            while (br.BaseStream.Position < br.BaseStream.Length) {
-                s = ReadString(br);
-                int size = br.ReadInt32();
-                br.BaseStream.Position += 8;
-                if (s == "SCPT") {
-                    int read = 0;
+            RecordReader rr = new RecordReader(br);
+            while (rr.NextRecord()) {
+                if (rr.Tag == "SCPT") {
                     string text = null;
                     string name = null;
-                    while (read < size) {
-                        s = ReadString(br);
-                        int size2 = br.ReadInt32();
-                        read += size2 + 8;
-                        long next_pos = br.BaseStream.Position + size2;
-                        switch (s) {
+                    while (rr.NextSubrecord()) {
+                        switch (rr.SubTag) {
                             case "SCHD":
-                                name = ReadCString(br).ToLower(Statics.Culture);
+                                name = rr.ReadCString().ToLower(Statics.Culture);
                                 break;
                             case "SCTX":
-                                text = s = new string(br.ReadChars(size2));
-                                text = text.ToLower(Statics.Culture);
+                                text = new string(br.ReadChars((int)rr.SubrecordSize)).ToLower(Statics.Culture);
                                 break;
                         }
-                        br.BaseStream.Position = next_pos;
                     }
                     if (name != null && text != null) {
                         if (name == "ghostfencescript") {
@@ -2040,7 +1994,7 @@ namespace MGEgui.DistantLand {
                         }
                         if (text.Contains("disable")) DisableScripts[name] = true;
                     }
-                } else br.BaseStream.Position += size;
+                }
             }
         }
 
@@ -2050,37 +2004,27 @@ namespace MGEgui.DistantLand {
             //Look for any scripts that might be disabling activators
             if (activators) {
                 ParseFileForDisableScripts(br, OverrideList);
-                //Rest file position
+                //Reset file position
                 br.BaseStream.Position = 0;
             }
-            string s = "";
-            while (br.BaseStream.Position < br.BaseStream.Length) {
-                s = ReadString(br);
-                int size = br.ReadInt32();
-                br.BaseStream.Position += 8;
-                if (s == "STAT" || s == "ACTI" || s == "DOOR" || s == "CONT" || s == "LIGH") {
-                    int read = 0;
-                    bool activator = s == "ACTI";
-                    bool misc = s == "DOOR" || s == "CONT" || s == "LIGH";
+            RecordReader rr = new RecordReader(br);
+            while (rr.NextRecord()) {
+                if (rr.Tag == "STAT" || rr.Tag == "ACTI" || rr.Tag == "DOOR" || rr.Tag == "CONT" || rr.Tag == "LIGH") {
+                    bool activator = rr.Tag == "ACTI";
+                    bool misc = rr.Tag == "DOOR" || rr.Tag == "CONT" || rr.Tag == "LIGH";
                     string name = null;
                     string model = null;
                     string script = null;
-                    while (read < size) {
-                        s = ReadString(br);
-                        int size2 = br.ReadInt32();
-                        read += size2 + 8;
-                        switch (s) {
+                    while (rr.NextSubrecord()) {
+                        switch (rr.SubTag) {
                             case "NAME":
-                                name = ReadCString(br).ToLower(Statics.Culture);
+                                name = rr.ReadCString().ToLower(Statics.Culture);
                                 break;
                             case "MODL":
-                                model = ReadCString(br).ToLower(Statics.Culture);
+                                model = rr.ReadCString().ToLower(Statics.Culture);
                                 break;
                             case "SCRI":
-                                script = ReadCString(br).ToLower(Statics.Culture);
-                                break;
-                            default:
-                                br.BaseStream.Position += size2;
+                                script = rr.ReadCString().ToLower(Statics.Culture);
                                 break;
                         }
                     }
@@ -2133,7 +2077,7 @@ namespace MGEgui.DistantLand {
                             }
                         }
                     }
-                } else br.BaseStream.Position += size;
+                }
             }
             if (DEBUG) allWarnings.Add("Static definitions: " + DEBUG_statics + "; Ignored definitions: " + DEBUG_ignored);
         }
@@ -2146,25 +2090,15 @@ namespace MGEgui.DistantLand {
             int DEBUG_added = 0;
             int DEBUG_moved = 0;
             int DEBUG_deleted = 0;
-            while (br.BaseStream.Position < br.BaseStream.Length) {
-                string s = ReadString(br);
-                int size = br.ReadInt32();
-                br.BaseStream.Position += 8;
-                switch (s) {
+            RecordReader rr = new RecordReader(br);
+            while (rr.NextRecord()) {
+                switch (rr.Tag) {
                     case "TES3":
-                        int read = 0;
-                        while (read < size) {
-                            s = ReadString(br);
-                            int size2 = br.ReadInt32();
-                            read += size2 + 8;
-                            long pos = br.BaseStream.Position;
-                            switch (s) {
-                                case "MAST":
-                                    Masters.Add(ReadCString(br, size2).ToLower(Statics.Culture));
-                                    if (DEBUG) allWarnings.Add("MASTER[" + (Masters.Count - 1) + "]=" + Masters[Masters.Count-1]);
-                                    break;
+                        while (rr.NextSubrecord()) {
+                            if (rr.SubTag == "MAST") {
+                                Masters.Add(rr.ReadSubrecordString().ToLower(Statics.Culture));
+                                if (DEBUG) allWarnings.Add("MASTER[" + (Masters.Count - 1) + "]=" + Masters[Masters.Count-1]);
                             }
-                            br.BaseStream.Position = pos + size2;
                         }
                         break;
                     case "CELL":
@@ -2181,23 +2115,22 @@ namespace MGEgui.DistantLand {
                         int CellX = 0;
                         int CellY = 0;
                         StaticReference sr = new StaticReference();
-                        read = 0;
-                        while (read < size) {
-                            s = ReadString(br);
-                            int size2 = br.ReadInt32();
-                            read += size2 + 8;
-                            long pos = br.BaseStream.Position;
-                            switch (s) {
+                        while (rr.NextSubrecord()) {
+                            switch (rr.SubTag) {
                                 case "DATA":
                                     if (!InReference) {
                                         if (ReadData) break;
                                         uint flags = br.ReadUInt32();
-                                        if ((flags & 0x01) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) IsValidCell = true;
+                                        if ((flags & 0x01) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) {
+                                            IsValidCell = true;
+                                        }
                                         if ((flags & 0x01) != 0) {
                                             Interior = true;
                                             if (CellList.ContainsKey(CellName.ToLower(Statics.Culture))) IsValidCell = CellList[CellName.ToLower(Statics.Culture)];
                                         }
-                                        else Interior = false;
+                                        else {
+                                            Interior = false;
+                                        }
                                         CellX = br.ReadInt32();
                                         CellY = br.ReadInt32();
                                         ReadData = true;
@@ -2245,8 +2178,8 @@ namespace MGEgui.DistantLand {
                                     ReferenceDeleted = true;
                                     break;
                                 case "NAME":
-                                    if (InReference) sr.name = ReadCString(br, size2).ToLower(Statics.Culture);
-                                    else CellName = ReadCString(br, size2);
+                                    if (InReference) sr.name = rr.ReadSubrecordString().ToLower(Statics.Culture);
+                                    else CellName = rr.ReadSubrecordString();
                                     break;
                                 case "XSCL":
                                     if (!InReference) break;
@@ -2254,7 +2187,6 @@ namespace MGEgui.DistantLand {
                                     ReferenceHasScale = true;
                                     break;
                             }
-                            br.BaseStream.Position = pos + size2;
                         }
                         if (InReference) {
                             if (!ReferenceHasScale) sr.scale = 1;
@@ -2277,60 +2209,45 @@ namespace MGEgui.DistantLand {
                             }
                         }
                         break;
-                    default:
-                        br.BaseStream.Position += size;
-                        break;
                 }
             }
             if (DEBUG) allWarnings.Add("Scanning summary for: " + PluginName + " : " + DEBUG_cells + " cells : " + DEBUG_refs + " refs : " + DEBUG_added + " added : " + DEBUG_moved + " moved : " + DEBUG_deleted + " deleted");
         }
 
         private void ParseFileForCells2(BinaryReader br) {
-            string s = "";
-            while (br.BaseStream.Position < br.BaseStream.Length) {
-                s = ReadString(br);
-                int size = br.ReadInt32();
-                br.BaseStream.Position += 8;
-                if (s == "CELL") {
+            RecordReader rr = new RecordReader(br);
+            while (rr.NextRecord()) {
+                if (rr.Tag == "CELL") {
                     bool IsValidCell = false;
                     bool InReference = false;
                     bool ReadData = false;
-                    int read = 0;
-                    long end = br.BaseStream.Position + size;
-                    while (read < size) {
-                        s = ReadString(br);
-                        int size2 = br.ReadInt32();
-                        read += size2 + 8;
-                        switch (s) {
+                    while (rr.NextSubrecord()) {
+                        switch (rr.SubTag) {
                             case "DATA":
                                 if (!InReference && !ReadData) {
                                     uint flags = br.ReadUInt32();
-                                    if ((flags & 0x1) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) IsValidCell = true;
-                                    else {
-                                        read = size;
-                                        br.BaseStream.Position = end;
-                                        break;
-                                    }
-                                    br.BaseStream.Position += 8;
                                     ReadData = true;
-                                    break;
-                                } else goto default;
+                                    if ((flags & 0x1) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) {
+                                        IsValidCell = true;
+                                    }
+                                }
+                                break;
                             case "FRMR":
-                                if (!IsValidCell) goto default;
-                                br.ReadInt32();
-                                InReference = true;
+                                if (IsValidCell) {
+                                    InReference = true;
+                                }
                                 break;
                             case "NAME":
-                                if (!InReference) goto default;
-                                string sname = ReadCString(br).ToLower(Statics.Culture);
-                                if (StaticsList.ContainsKey(sname)) StaticMap[sname] = 1;
-                                break;
-                            default:
-                                br.BaseStream.Position += size2;
+                                if (InReference) {
+                                    string sname = rr.ReadCString().ToLower(Statics.Culture);
+                                    if (StaticsList.ContainsKey(sname)) StaticMap[sname] = 1;
+                                }
                                 break;
                         }
+                        if (ReadData && !IsValidCell)
+                            break;
                     }
-                } else br.BaseStream.Position += size;
+                }
             }
         }
 
@@ -2348,29 +2265,32 @@ namespace MGEgui.DistantLand {
         /* Finish tab methods */
 
         private void setFinishDesc(int stage) {
-            lFinishDesc.Text = "";
-            string spc = "   ";
-            string mark = "» ";
+            const string spc = "   ";
+            const string mark = "» ";
+            StringBuilder text = new StringBuilder();
             
             if (SetupFlags["ChkLandTex"])
-                lFinishDesc.Text += (stage == 1 ? mark : spc) + (stage > 1 ? strings["SummaryStage1Complete"] : strings["SummaryStage1Working"]) + "\r\n";
+                text.AppendLine((stage == 1 ? mark : spc) + (stage > 1 ? strings["SummaryStage1Complete"] : strings["SummaryStage1Working"]));
             else
-                lFinishDesc.Text += (stage == 1 ? mark : spc) + strings["SummaryStage1Skip"] + "\r\n";
+                text.AppendLine((stage == 1 ? mark : spc) + strings["SummaryStage1Skip"]);
             
             if (SetupFlags["ChkLandMesh"])
-                lFinishDesc.Text += (stage == 2 ? mark : spc) + (stage > 2 ? strings["SummaryStage2Complete"] : strings["SummaryStage2Working"]) + "\r\n";
+                text.AppendLine((stage == 2 ? mark : spc) + (stage > 2 ? strings["SummaryStage2Complete"] : strings["SummaryStage2Working"]));
             else
-                lFinishDesc.Text += (stage == 2 ? mark : spc) + strings["SummaryStage2Skip"] + "\r\n";
+                text.AppendLine((stage == 2 ? mark : spc) + strings["SummaryStage2Skip"]);
             
             if (SetupFlags["ChkStatics"])
-                lFinishDesc.Text += (stage == 3 ? mark : spc) + (stage > 3 ? strings["SummaryStage3Complete"] : strings["SummaryStage3Working"]) + "\r\n";
+                text.AppendLine((stage == 3 ? mark : spc) + (stage > 3 ? strings["SummaryStage3Complete"] : strings["SummaryStage3Working"]));
             else
-                lFinishDesc.Text += (stage == 3 ? mark : spc) + strings["SummaryStage3Skip"] + "\r\n";
+                text.AppendLine((stage == 3 ? mark : spc) + strings["SummaryStage3Skip"]);
             
             if (SetupFlags["ChkStatics"])
-                lFinishDesc.Text += (stage == 4 ? mark : spc) + (stage > 4 ? strings["SummaryStage4Complete"] : strings["SummaryStage4Working"]) + "\r\n";
+                text.AppendLine((stage == 4 ? mark : spc) + (stage > 4 ? strings["SummaryStage4Complete"] : strings["SummaryStage4Working"]));
             else
-                lFinishDesc.Text += (stage == 4 ? mark : spc) + strings["SummaryStage4Skip"] + "\r\n";
+                text.AppendLine((stage == 4 ? mark : spc) + strings["SummaryStage4Skip"]);
+            
+            Action update = () => lFinishDesc.Text = text.ToString();
+            lFinishDesc.BeginInvoke(update);
         }
 
         void cmbTexWorldResolution_SelectedIndexChanged(object sender, EventArgs e) {
