@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE niflotoxml>
+<niflotoxml version="0.6.0.0">
+
+	<version>1.0</version>
+	<version>1.2.4b</version>
+	<version>2.0.0.0b</version>
+	
+
+	<compound name="action">
+		<add name="Action Name" type="string" ver2="16909312" />
+		<add name="Action File Name" type="string" />
+		<add name="Unknown Int 1" type="int" />
+		<add name="Num Events" type="int" />
+		<add name="Events?" type="events?" arr1="Num Events" />
+		<add name="Unknown Int 2" type="int" />
+	</compound>
+	<compound name="event string">
+		<add name="Unknown Int" type="int" />
+		<add name="Event" type="string" />
+	</compound>
+	<compound name="events?">
+		<add name="Id" type="int" />
+		<add name="Type" type="int" />
+		<add name="Unknown Float" type="float" cond="Type != 5" />
+		<add name="Unknown Count" type="int" cond="Type != 5" />
+		<add name="Event Strings" type="event string" arr1="Unknown Count" cond="Type != 5" />
+		<add name="Unknown Int 3" type="int" cond="Type != 5" />
+	</compound>
+	<compound name="kfm">
+		<add name="Header String" type="headerstring" />
+		<add name="Unknown Byte" type="byte" ver1="33554432" />
+		<add name="NIF File Name" type="string" ver1="16909312" />
+		<add name="Master" type="string" ver1="16909312" />
+		<add name="Unknown Int 1" type="int" ver1="16909312" />
+		<add name="Unknown Int 2" type="int" ver1="16909312" />
+		<add name="Unknown Float 1" type="float" ver1="16909312" />
+		<add name="Unknown Float 2" type="float" ver1="16909312" />
+		<add name="Num Actions" type="int" ver1="16909312" />
+		<add name="Unknown Int 3" type="int" ver1="16909312" />
+		<add name="Actions" type="action" arr1="Num Actions" ver1="16909312" />
+	</compound>
+
+</niflotoxml>
+

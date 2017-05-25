@@ -1,0 +1,633 @@
+==Version 0.2==
+
+ * Made NiSkinData and the bone nodes it references aware of each other so they
+   can be properly destroyed.
+ * Added BlocksInMemory() function to verify that all blocks are now dying when
+   the root block dies.
+ * Made the bone influence flag automatic.
+ * Changed NiNode Print() function to asString() as it should have been and
+   moved it to the cpp file.
+ * Added a readout of a list of skin data blocks that are connected to each
+   NiNode for testing.
+ * Fixed other functions that were still Print() instead of asString()
+ * Finished up NiSkinData block.
+ * Automated NiSkinInstance Skeleton Root attribute and AController Target Node
+   attribute.  All back references should now be automatic.
+ * Fixed bug in Bounding Box attribute Write() function
+ * Added Write() Function for NiKeyFrameData, NiTextKeyExtraData, and
+   NiStringExtraData
+ * Added AExtraData class with a proper index attribute.  ExtraData blocks will
+   now be part of the tree as they should have been.
+ * Added IKeyframeData interface.
+ * Fixed a bug that was causing multiple copies of the same block to be written
+   by WriteNifTree()
+ * Fixed a bug that was causing the Skeleton Root in NiSkinInstance to be
+   calculated incorrectly.
+ * Added QueryKeyframeData() function.
+ * Finished support for NiTextKeyExtraData.
+ * Added Write() function for NiMoprhData
+ * Finished NiMorphData interface and functions.
+ * Added template directives for new key templates to pyniflib.i.
+
+==Version 0.2.1==
+
+ * Changed Float3, Matrix33, and Matrix44 from C arrays to structures that
+   mimic C arrays ensure accessibility from scripting languages.
+ * Made Get() functions for Matrix33, Matrix44, and Float3 return a value
+   instead of a reference.
+ * Fixed broken SWIG wrapper; still needs some more fixing...
+ * Added Makefile for building the python wrapper on linux/cygwin
+ * Some fixes to the SWIG wrapper file.
+ * Removed the idea of getting attributes by index, instead returning a vector
+   of attributes.
+ * Changed Set(float, float, float) to Set(Float3&) in IAttr and relevant
+   descendent classes.
+ * Added a Set(float, float, float) function to the Float3 struct to allow
+   setting all values in one call.
+ * Changed IBlock::GetAttrList() to GetAttrs() to be more consistent with other
+   functions.
+ * Made some changes to help Niflib work better with GCC.
+ * All the cpp files now seem to compile in GCC.
+ * Added list<blk_ref> template to SWIG file.
+ * Capitalized interface ID constants.
+ * Added support for [] operator to attr_ref in Python.
+ * Added Python support for [] to Matrix33, Matrix44, and Float3
+ * Added __setitem__ operators to blk_ref for Python.
+ * Un-commented attr_ref operator=(blk_ref) function.
+ * Changed MatrixRowN types to FloatN, merging MatrixRow3 and Float3.
+ * Added Matrix22 and Float2 types.
+ * Changed bump mapping members  in Texture struct to use Matrix22.
+ * Changed members in BoundingBox struct to use Vector3 and Matrix33 types.
+
+==Version 0.3==
+
+ * updated Makefile to compile the complete library
+ * fixed small error in NiStringExtraData asString() function
+ * Began work on multiple version support.
+ * Added NiParticleSystemController block and started on particlegroup
+   attribute.
+ * Changed the type name of some attributes to match DocSys database.
+ * Changed IndexAttr to LinkAttr for consistency.  Type name is now "link."
+ * Fixed inheritance of light blocks - didn't notice they didn't work since no
+   official file seems to use them.
+ * Finished basic version support - still need to implement new block reading
+   scheme for version 5 and up.
+ * Updated all basic blocks with correctly versioned attributes from DocSys
+   database.
+ * Updated all data blocks except for NiSkinPartition and NiControllerSequence
+   to react correctly to known version differences up to 10.1.0.0.
+ * All blocks but the above now have both a Read and a Write function.
+ * Sped up CreateBlock and AddAttr functions.
+ * Implemented the new header scheme for reading.
+ * Fixed up the new header scheme for reading.  All 10.0.1.0 files can now be
+   read as long as they don't contain unsupported block types.
+ * Updated the WriteNifTree function to write the correct version string and
+   hex number for the version requested.  Still doesn't support the new header
+   layout.
+ * Made a few fixes as I updated the Maya importer to the changes.
+ * NiSkinPartition and NiLODNode are now read fully and can be examined by
+   calling the asString function or written back out to a file unchanged.
+ * NiTriStripsData has been given a public interface, ITriStripsData, so that
+   the triangle strips it contains can be extracted.
+ * added autoconf/automake files + small changes to make things GCC compatible
+   again
+ * libtool fix in automake for compilation of shared libraries under Cygwin
+ * Fixed GCC compilation issues.
+ * Decided to start putting generated files on CVS.
+ * automake small improvement (now only builds the python wrapper independent
+   of additional library files)
+ * Removed py_wrap.cpp and added a simple windows compilation script for use
+   with the MS Visual C++ Toolkit.
+ * Fixed bug in Matrix33.Set(...)
+ * Matrix22.Set(...) bugfix
+ * Python wrapper fixes & improvements.
+ * Python wrapper exception support fix.
+ * More Python wrapper fixes and upgrades.
+ * Fixed AShapeData::SetVertexCount to allow for zero normals and/or colors.
+ * Removed some other recent changes.
+ * Suppressed all the warnings except one.
+ * Changed attr_nodeancestor to attr_controllertarget and fixed it so it
+   recognizes any controllable block, not just nodes.
+ * Made all struct types consistent with proper constructors.
+ * Cleaned up the attributes a bit, inheriting some from others so that code
+   isn't duplicated and special arguments are no longer needed to create any
+   type of attribute.
+ * "Name" is an attribute again; special functions to set it have been
+   removed.
+ * Synced supported blocks to the DocSys, adopting the new position of the
+   AParticleModifier block.
+ * SetTriangles() bugfix and added range checking on vertex & triangle counts.
+ * Fix writing NIF header + small fix in AShapeData
+ * Python SWIG support for strings in structure members
+ * Starting to write code for exporting x*.kf and x*.nif files. (unfinished)
+ * Fixed a bug in TargetControllerAttr.
+ * Added IsController function.
+ * Added ParentAttr for use in the AParticleModifier block.
+ * Minor fixes for the Python wrapper. Initial try to write XKf and XNif
+   files.
+ * Rewrote children of AKeyedData using NifStream function, and added public
+   interfaces for them.
+ * Added some const qualifiers.
+ * Fixed NiTextKeyExtraData read & write.
+ * Finished code that creates XNif & XKf files; fixed bug in
+   AttrControllerTarget.
+ * Fixed a bug I introduced yesterday.
+ * Killed a zombie.
+ * Added const correctness; fixed a few GCC compilation problems.
+ * Fixed a few bugs I introduced because I forgot to add a few consts. :oops:
+ * Added a function to calculate an X-aligned bone matrix from the bone vector
+   and the bone roll, which is convenient to have for the Blender exporter.
+ * Attempted to fix NiSkinData to be const friendly.
+ * Fixed a bug that was introduced in the reference bone reference tracking.
+ * Bone matrix calculation function (Blender helper function) fixed.
+ * Removed BoneToMatrix44 helper functions. (They will be implemented in
+   Python in the Blender exporter.)
+ * Fixed a little bug I introduced earlier. :oops:
+ * Corrected default state of node flags.
+ * Added SCons support for building niflib.
+ * Corrected skeleton root calculation.
+ * Fixed error that caused an invalid number to be written in the unknown 4
+   floats within NiSkinData.  Now simply write 4 zeros.
+ * Re-implemented NiMorphData with NifStream function, fixing a bug in its
+   Write function at the same time.
+ * Changed several of the attributes of NiPixelData to attributes in
+   preparation for creating an interface for it.
+ * Fixed a bug in AExtraData for version 10.0.1.0+
+ * Started adding Doxygen format documentation comments to niflib.h.
+ * Renamed Color structure to Color4.
+ * More documentation comments added.
+ * Renamed TextureSource to TexSource and Texture to TexDesc.
+ * Fixed overall transformation in NiSkinData.
+ * Added more documentation.
+ * Renamed INode functions dealing with bind position so that each function
+   clearly expresses the type of matrix its dealing with - local or world.
+ * Removed the GNU buildsystem; SCons supersedes it.
+ 
+==Version 0.4==
+
+ * Deleted redundant autoconf macro file.
+ * Zombie killed.
+ * Improved compiler flags for windows build.
+ * fixed key type in NiMorphData
+ * Started work on 10.x compatibility.
+ * Added GetMorphKeyType, and SetMorphKeyType to IMorphData interface.
+ * Supported new header formats for version 5.0.0.1 to version 20.0.0.4 in
+   WriteNifTree function.
+ * Updated texsource and texdesc attributes to the latest DocSys info.
+ * Finished updating all existing blocks to the latest DocSys info.
+ * Added NiBoolData and APSysData blocks.
+ * Fixed new attr_bool and attr_unk292bytes attributes so that they can be
+   used by blocks.
+ * added -fPIC to cppflags to resolve amd64 compilation issue under linux
+ * fixed GCC compilation issue
+ * removed linux library prefix for the python wrapper
+ * Made internal cross-reference system more general.
+ * Implemented NiControllerSequence block and interface.
+ * Implemented NiBoneLODController.  Problems with writing connected NiSkinData
+   blocks, however.
+ * Some internal changes.
+ * Fixed destructor of NiControllerSequence to remove itself as the parent of
+   blocks it points to if it is destroyed.
+ * Implemented NiLookAtInterpolator.
+ * Several fixes to blocks that didn't have arrays expanded in the DocSys.
+ * DocSys is now fully implemented, so all versions 4.x and 10.x files that
+   it supports are now supported.
+ * Fixed one warning in GCC.
+ * Implemented GetLinks() functions for NiBoneLODController and
+   NiControllerSequence blocks so that their internal links will be followed
+   when writing files.
+ * scons example program compilation (see comments in SConstruct)
+ * Merged NiKeyframeData and NiTransformData under AKeyframeData.
+ * Implemented most of the IPixelData interface.
+ * adding cygwin support
+ * Attempted to implement IPixelData and IPalette interfaces.  Yet to be
+   thoroughly tested.
+ * Debugged and tested IPixelData functions.
+ * Fixed a bug that was causing a Segmentation Fault when Nif files that
+   had NiSourceTexture blocks were read by code compiled with GCC.
+ * updated python wrapper interface
+ * niftexture workaround
+ * CPPFLAGS fix in compile examples.
+ * Removed two more memset calls just in case.
+ * fixed NiPixelData bugs
+ * fixed GCC warnings, fixed NIF footer
+ * Fixed a few more bugs in IPixelData.
+
+==Version 0.5==
+
+ * Niflib can now operate on most or all files from the following games:
+   Oblivion, Civilization IV, Zoo Tycoon 2, Dark Ages of Camelot,
+   and Morrowind
+ * Cloning support for both single NIF classes and entire NIF trees.
+ * Major API redesign featuring:
+   - Type-aware smart pointers instead of a single generic blk_ref.
+   - Direct access to functions of all classes instead of interfaces.
+   - Ability to test whether one class is derived from another and do dynamic
+     and static casting between compatible types.
+   - No more attributes, values are accessed directly with functions in the
+     classes that hold them instead.
+   - Math structures now feature operations such as matrix inverse, as well
+     as operators such as multiplying matrices and vertices.
+   - Much faster operation overall due to hard-coded read and write functions
+     generated from the XML and no sting look-ups when accessing attributes.
+   - New skin API which makes skin morphed vertices availiable and makes
+     moving the mesh to the bind position optional.
+   - All symbols are now enclosed in the Niflib namespace
+   - Most old interfaces transitioned directly to new equivalents to reduce
+     code re-writing when upgrading from previous versions.
+     
+==Version 0.5.4==
+
+ * Added a != operator to Vector3.
+ * Initialized TexCoord values to 0.0f.
+ * Added Visibility flag functions to NiAVObject.cpp
+ * Fixed NiTexturingProperty::SetTexture to set the internal hasXTexture
+   variables correctly.
+ * Fix DAoC bug with kob_m_head01.nif
+ * Cycle type is now set correctly on controllers created or modified by
+   MergeNifTrees function.
+ * Changed default for new controllers to 12; Active/Clamped.  Should get
+   cycle type from NiControllerSequence.
+ * Add a default value for the new controller so that its active.
+ * Update niflib with bspline interpolation abilities
+ * Change mergeniftrees to default phase to 0.0f instead of 1.0f as its a
+   better default value.
+ * Determined that there are references to NiBSplineData and
+   NiBSplineBasisData in all NiBSplineInterpolator derived classes.
+   Consolidated the various references from the derived classes to the
+   NiBSplineInterpolator class in the XML and in Niflib.
+ * We can't have functions on compounds as all files for them are generated.  Removed CalcNumTriangles so Niflib programs will link.
+ * Applied latest XML changes.
+ * Split some things that were previously part of NIF_IO.h into their own
+   files to make SWIG wrapping work better.
+ * Made the MergeNifTree function set the start time, stop time, and
+   frequency of the controller it attaches an interpolator to.
+ * Made the MergeNifTree function create a controller of the right type and
+   attach it to the specified node if one does not already exist.
+ * Fixed an include statement to be relative.
+ * Add extra targets getter/setter for multitargeter controller.  Probably
+   need to fix GetRefs() at some point get return weak pointer references as
+   well as strong ones.
+ * Fix Math so that it decomposes rotations back to stored rotation and not
+   the inverse.  Fix Scale so that it returns the correct value rather than
+   x+y + (z/3).
+ * Add helper methods for useful flags for importing data in avobject and
+   controller sequence.
+ * Suppressed most SWIG warnings.
+ * Tried to implement MergeNifTrees for KF files with a NiControllerSequence
+   root.  Untested.
+ * Minor change to Python wrapper file.
+ 
+==Version 0.5.6==
+
+ * Added code to ensure that bones have their flag set properly, even if they
+   are not so in the original NIF file.
+ * Added SendNifTreeToBindPos function to set a whole file to the bind
+   position.
+ * NiTriStripsData::GetTriangles no longer returns triangles that have
+   matching vertices and, thus, no surface area.
+ * Added a SetBoneWeights function to NiTriBasedGeom which automatically
+   calculates the correct bone center and radius.
+ * The NiSkinData::SetBoneWeights function now requires the radius and center
+   as arguments.
+ * Removed lingering cout statements except those within debug defines.
+ * NiNode flags now default to 8 for "Not a skin influence."
+ * The code I added to make NiTriBasedGeom select the correct skeleton root
+   was wrong and has been re-written and tested.  It now seems to select the
+   same skeleton root as real NIF files.
+ * The NiTriBasedGeomData::SetUVSetCount function now sets the hasUVs bool
+   value correctly.
+ * Fixed some skin related bugs in ComplexShape::Split.
+ * Created a new ComplexShape class which can currently be used to
+   automatically split the sort of complicated mesh that contains
+   per-point-per-face attributes into NiTriShape classes.  Should support
+   skinning as well, but has not been tested.
+ * Added TexCoord == operator.
+ * Changed type of Triangle members to unsigned short.
+ * Color4 now defaults to all zeros.
+ * NiAVObject::AddProperty now takes a const argument.
+ * Fixed exception in NiTexturingProperty to throw a runtime_error instead of
+   a string.
+ * NiTriBasedGeom::BindSkin should now automatically finds the skeleton root
+   by itself.  The skeleton_root argument has been removed.
+   
+==Version 0.6.0==
+
+ * Fixed ComplexShape::Merge and ComplexShape::Split to properly take new uvSet
+   member of TexDesc into account.
+ * Cleared up all Doxygen and SWIG warnings.
+ * Replaced _WRITE, _READ, _STRING, AND _FIXLINKS defines with the
+   corresponding internal function call.
+ * Replaced STANDARD_INTERNAL_FUNCTIONS with the internal function signatures.
+ * Made my Doxygen config file use relative paths and added it to SVN so
+   everyone can generate the same documentation for themselves.
+ * Added missing NifInfo arguments to ReadNifList calls.
+ * Several fixes to XML and Niflib to enable all my files from Freedom Force
+   (except with NiClodData), Oblivion, CivIV, Morrowind, Zoo Tycoon 2, and
+   DAoC to load in Niflib and NifSkope. Includes the two strange Oblivion files with version 3.3.0.13 and version
+   10.0.1.2.
+ * Fixed the array bug by reversing the template arguments and re-doing the
+   declarations in the Python script.
+ * Added support for sub version 4 headers, object storage, and link method.
+   Some objects like NiNodes already read correctly.
+ * Renamed the following functions:
+   CheckNifHeader -> GetNifVersion
+   GetVersion -> ParseVersionString
+   IsVersionSupported -> IsSupportedVersion
+ * Added new function, FormatVersionString, to format integer version numbers
+   as a "#.#.#.#" string.
+ * Changed GetNifVersion so it no longer returns VER_UNSUPPORTED.  It now
+   always returns the actual version value, if possible, which can be passed
+   to IsSupportedVersion if desired.
+ * GetNifVersion now supports version numbers lower than 4.
+ * Added versions 4.0.0.0 and 10.1.0.106 to version constants and
+   IsSupportedVersion function.
+ * Fix iterator problem with skin partition.
+ * Changed WriteNifTree, and WriteFileGroup functions to take NifInfo
+   structures instead of version and user_version arguments.
+ * Changed ReadNifList and ReadNifTree to optionally fill a passed in NifInfo
+   structure with information from the header of the NIF file they read.
+ * Fixed some tabs that were done with spaces instead of actual tab characters.
+ * Added * dot product and ^ cross product aliases.
+ * Removed unused vars from UpdateTangentSpace().
+ * Made UpdateTangentSpace set the name of newly created NiBinaryExtraData
+   objects.
+ * Added option to ComplexShape::Split to request the generation of tangent
+   space.
+ * Fixed NiSkinData overall offset transform calculation.
+ * Added an exception and some extra checks to
+   NiTriBasedGeomData::UpdateTangentSpace.  Also made minor style changes.
+ * Fixed warning created by changing NiStencilProperty's enabled value to a
+   byte.
+ * Added UpdateTangentSpace() to NiTriBasedGeom class.
+ * Rewrote large chunks of WriteFileGroup related routines.
+ * Added a WriteNifTree which allows for multiple roots (not exposed
+   publically)
+ * Added option to BindSkin to scene instead of skeleton root.
+ * Fixed bug in RemoveController
+ * Added helpers to NiControllerManager for sequence management
+ * Propegated user_version in routines which take a version
+ * Add more rigorous recursive block reordering for Oblivion collision objects.
+ * Add NiClod and NiClodData.
+ * Add NifSkope base partitioning algorithm
+ * Add ability to use TriStripper instead of NvStripper for tristripdata
+ * Changed XML Name of NiLODNode's data ref.
+ * Updated method names to use 'LOD'.
+ * Really put the skin calculations back the way they were this time.  Helps,
+   but the hands of better bodies meshes still end up in the wrong place.
+ * Added transform parameter to ComplexShape::Split because changing the
+   transforms after the fact ruins the skin binds.
+ * Fixed missing includes in enum files to work without PCH.
+ * Added missing NvTriStripper files back into solution.
+ * Created accessors for LOD type nodes.
+ * Fixed the relative include paths and tried to update solution, but havn't
+   got the precompiled header working right.
+ * Removed gen and obj folder and added lib folder.
+ * Restructured folder hierarchy.  Now with separate include, src, and lib
+   folders.
+ * Reverted a previous change to the skin calculations which turned out to be
+   incorrect.
+ * Forgot to include NiLODData.cpp in project file.
+ * Included missing implementation of Weight methods.
+ * Fix issues with NiControllerSequence in niflib.
+ * StringOffset now defaults to -1
+ * Search in StringPalette now finds exact matches rather than partial matches.
+ * Reuse same StringPalette for Controller and all child blocks
+ * Convert bspline controller offsets from ushort to uint
+ * fix bug in nicontrollersequence with string palette
+ * Add LOD Bone Controller handler
+ * Added a max_bones_per_partition parameter to ComplexShape::Split and
+   NiTriBasedGeom::GenHardwareSkinInfo in anticipation of Tazpn adding that
+   capability.
+ * Modify so that niflib compiles as it points to the correct enum file.
+ * Changed around XML enum support a bit.
+ * Remove enum value maps and update comments in generated files.
+ * Update niflib with Enumerations generated from nif.xml.
+ * Fixed problems I created in nif.xml
+ * Some simple updates to Niflib documentation.
+ * Updated ComplexShape::Split to optionally support stripification and skin
+   partition generation.
+ * Altered exception message for NiTriBasedGeomData::SetTriangles
+ * Casting functions now check for NULL as of last commit.
+ * First pass at strippifier in niflib.
+ * Adding some helpers on to access priority on controllers.
+ * Changed the order of file includes so that ControllerLink vectors would be
+   recognized by Swig.
+ * Added some end lines to make Swig 1.3.29 work.
+ * Fix issues with writing out KF files related to footer
+ * Add support for changing the priority on NiSequenceControllers
+ * Added Key templates to Python wrapper.
+ * Renamed CreateBlock to CreateObject and made it clear that it is not
+   necessary for the user to call this function unless s/he is working through
+   Python.
+ * Removed BlocksInMemory function.  Call NiObject::NumObjectsInMemory instead.
+ * Implemented GetScale and SetScale functions of bhkNiTriStripsShape to fix
+   linker errors when compiling Python wrapper.
+ * Initial changes for skin partition access.  Needs more work around
+   protecting the user from inconsistencies.
+ * Update bounding sphere info. on skin so not unknown anymore
+ * Fixed Matrix44 != operator
+ * Added bounding box related functions to NiAVObject.
+ * Hopefully fixed the skin calculations.  Results in skin files that always
+   seem to look correct in Morrowind but do not always look correct in
+   NifSkope.
+ * Merged in changes required by 3ds Max Exporter as I try to remove the
+   cloned copy of niflib completely from svn.
+ * Added Merge function to ComplexShape.
+ * Added != operator to Matrix44.
+ * Added IsSplitMeshProxy function to NiNode.
+ * Fixed some include problems.
+ 
+ ==Version 0.6.2==
+ 
+ * Improved support for Freedom Force games thanks to Symon.
+ * Change NodeGroup to use pointers instead of Refs.
+ * NiGeometry::BindSkin now throws an exception if one of the passed in bone
+   references is NULL.
+ * NiNode::IsSplitMeshProxy now returns false if it is a skin influence.
+ * NiTriShapeData::GetTriangles now only returns valid triangles.
+ * Fixed a bug in ComplexShape::Merge that occurred when a shape had no UV set,
+   but, for some reason, had a texture referencing UV set zero.
+ * Added NiGeometry::NormalizeSkinWeights function to ensure all skin weights
+   add up to 1.0 on export.
+ * ComplexShape::Split now cuts out weights below 0.1 and normalizes the
+   result.
+ * Fixed a bug which could cause NiSkinInstance to try to call a function on a
+   NiNode that was in the midst of destruction.
+ * Added NiGeometry::ApplySkinOffset function to clear nodes between skins and
+   the skeleton root.
+ * Added some new object types for NIF version 3.1, but most files still can't
+   be opened.
+ * Fixed object auto-destruct.  Niflib is now destroying objects properly and
+   reporting the right number of Objects from NiObject::NumObjectsInMemory.
+ * Generated array code now prints 20 items per 2D array in total when verbose
+   is off.
+ * Fixed duplicated Read call.  All FFvt3R demo files can now be read by
+   Niflib.
+ * Added NiGeometry::ApplyTransforms function to automatically zero out the
+   transforms of a mesh and apply them to its vertices.
+ * Added NiGeometryData::Transform function to apply an arbitrary transform
+   to all vertices and normals of a mesh (used by above).
+ * Added NiNode::PropagateTransform function to apply a NiNode's local
+   transform to its children and then zero it out.
+ * Fixed NiTriShapeData to properly set numTriangles when SetTriangles is
+   called.
+ * Removed "set root to scene root" option from NiGeometry::BindSkin.
+ * Replaced GetSkinInfluencedVertices function with GetSkinDeformation
+   function which takes in references to two vectors and fills them with the
+   skin deformed vertices and normals
+ * Added constructor to Matrix44 to convert from Matrix33.
+ * Change default to little endian instead of big endian.
+ * Added NiClodSkinInstance and fixed NiClodData.  Niflib can now open all
+   Freedom Force demo NIF files.
+ * Corrected Shape/particle hierarchy by adding NiGeometry and NiGeometryData.
+ 
+ ==Version 0.7==
+ 
+ * Removed predefines from Doxyfile since they are no longer needed with the
+   new Python generation method.
+ * Disabled Whole Program Optimization in project settings.  This makes a full
+   recompile take longer, but makes compiling after small changes to a few
+   files much much faster.
+ * Niflib is now using a new XML update method.  This means:
+   - There are no longer any defines, things like inheritance class name, NIF
+     attribute variables, and default constructor code are all visible without
+     looking at another file.
+   - All non-custom parts of the Object files are now totally identical and in
+     the same order, so it will be easier to compare them.
+   - NiObjects are now completely self-contained.  To remove them from Niflib,
+     you have only to exclude their CPP file from the build.  To add new ones,
+     you only have to include their new CPP file.
+   - Making a change to a NiObject implementation file only causes that one
+     file to be re-compiled, which is generally much quicker than before since
+     the large obj_define and obj_impl files do not have to be parsed or
+     compiled.
+   - There are no longer any "Internal" versions of the Read, Write, asString,
+     FixLinks, or GetRefs functions.  Now there is just one function for each
+     of these with pre and post custom code areas (except for GetRefs which I
+     didn't think needed it.)
+   - Updates to the hierarchy in the XML should now be almost completely
+     automatic.  All that should be necessary to make an update is to add any
+     new NiObject CPP files to the build.
+   - Changes to the generated parts of the NiObject files can now be made at
+     any time, and immediately applied to all NiObjects without editing each
+     existing one.
+ * Moved FixLink template file from obj_impl.cpp to its own file.
+ * Moving array template to nif_basic_types so that NIF_IO won't need to be
+   exposed.
+ * Removed erroneous bhkMeshShape object.
+ * Added support in the version parsing functions for versions such as "3.03"
+   which were being parsed as "3.3.0.0" before.  These will now be parsed as
+   "3.0.3.0."
+ * All Bridge Commander demo NIF files other than those that contain voxel 3D
+   textures can now be read.
+ * All DAoC demo NIF files except those of version 2.3 and those that do not
+   appear to store NIF data can now be read.
+ * Updated user's guide.
+ * Added functions to NiImage and NiTextureProperty to allow texture name to be
+   manipulated in <= 3.1 files.
+ * Updated ComplexShape to take the above objects into account when deciding
+   whether to include UV coordinates.
+ * Fixed one more bug that allows 3.3.0.13 files to work again.
+ * Added 10.0.1.2 to the list of "supported" versions.
+ * Added version 3.1 to list of "supported" versions.
+ * Fixed several bugs that were preventing support for old 3.1 and below files
+   from working.  Many of these can now be loaded.
+ * Updated Niflib to the latest XML which adds support for:  bhkMeshShape,
+   NiMultiTextureProperty, NiRawImageData, NiRollController, NiSequence,
+   NiBinaryVoxelExtraData, NiBinaryVoxelData, NiPSysCollider, NiBone,
+   NiPSysSphericalCollider, BSWindModifier, NiTriShapeSkinController objects,
+   and possibly more.  This also significantly improves the class hierarchy.
+ * Objects now have a Create methods and register themselves in the global
+   object map with pre-main initialization, making obj_factories.cpp obsolete.
+ * Re-exposed TYPE constants and marked them NIFLIB_API, making the TypeConst
+   function obsolete.  You now must use NiObject::TYPE instead of
+   NiObject::TypeConst() again.
+ * Re-exposed IDENTITY constants and marked then NIFLIB_API.  Now you must use
+   MatrixXX::IDENTITY instead of MatrixXX::Identity() again.
+ * Changed the default linkage to DLL.  You now have to define
+   NIFLIB_STATIC_LINK if you want to use static linking instead of having to
+   define USE_NIFLIB_DLL if you want to use the DLL.
+ * Added a new Debug - DLL configuration.
+ * Static configurations now create either niflib_static.lib or
+   niflib_static_debug.lib, while DLL configurations create niflib_dll.lib and
+   niflib_dll_debug.lib along with niflib.dll and niflib_debug.dll.
+ * Added ClearHardareSkinInfo function to NiTriBasedGeom so that
+   SetSkinPartition functions could be made NIFLIB_HIDDEN.
+ * Removed access to unknown data in NiPSysEmitterCtlrData.
+ * Some function and enum name changes in NiAlphaProperty and
+   NiStencilProperty to be more consistent with OpenGL and the rest of Niflib.
+ * Removed access to unknown parameters in NiSourceTexture and merged file name
+   access functions.
+ * Removed redundant Get/SetHidden functions from NiAVObject, use
+   Get/SetVisibility instead.
+ * Renamed Get/SetCollision to Get/SetCollisionMode in NiAVObject.
+ * Made sure all classes fell into 3 namespaces:  Niflib, triangle_stripper,
+   and NvTriStrip.
+ * Removed some functions from NiObject that did nothing.
+ * Moved structures contained within the ComplexShape class outside of it so
+   they're easier to reference.
+ * Moved ListAncestors and FindCommonAncestor helper functions from inside of
+   NiGeometry to public interface.
+ * Added IsAnimated function to NiObjectNET.
+ * Implemented experimental endian support which means that Niflib may be able
+   to work on PowrePC Macs and other big-endian CPUs, however support is not
+   complete.  Theoretically it should be possible to read a big-endian file on
+   a little-endian system, but it is not possible to do the opposite, or to
+   create a little-endian file due to issues with the header needing to switch
+   endian types int he middle of the generated code and always read the bytes
+   that make up the NIF version in the same order.
+ * DLL files built with the MSVC project will now appear in the niflib/bin
+   folder instead of the common ../bin folder.  This should make it easier to
+   find the files if only the niflib folder is checked out.
+ * Added warning comments to generated files advising the user not to edit them
+   manually.
+ * Changed NiNode AddChild function to keep NiTriBasedGeom-derived objects at
+   the top of the list.  Fixes issue with Oblivion flattened skin file
+   hierarchies where the NiTriBasedGeom skin was appearing after the NiNode
+   bones that it used in the child list of their mutual parent.
+ * Project file now properly uses "Multithreaded DLL" runtime library for
+   "Release - DLL" configuration.
+ * Removed old SWIG-related code as SWIG will no longer be suppoted.
+ * Fixed GetIDString virtual function missmatch that was causing the name not
+   to show up when the function was called from a NiObjectRef.
+ * Removed precompiled header file stuff from project files that is no longer
+   used.
+ * Fixed Niflib DLL compile.  All public functions should now be marked with
+   either NIFLIB_API or NIFLIB_HIDDEN.  May have missed a few here or there
+   but they should be noticed eventually.
+ * All public functions are now documented with Doxygen comments.
+ * Changed all occurrences of uint and ushort to unsigned int and unsigned
+   short.
+ * Fixed many GCC compile problems.  Niflib should compile in GCC now:
+   - Replaced array template with a simpler one that works with GCC.
+   - Replaced "unsigned" with "unsigned int"  GCC doesn't like this.
+   - Changed C++ style unsigned int casts so GCC will be able to understand
+     them.
+   - Properly capitalized include file names in niflib.cpp.
+ * Changed as many functions as possible to take pointer arguments instead of
+   Ref template arguments.
+ * Prevented the link map from being copied unnecessarily, improving
+   performance and memory usage.
+   
+==Version 0.7.2==
+
+ * Added some internal template functions for extracting flags and fields from
+   bitfields to NIF_IO.h.
+ * Finished new MatTexCollection helper class which makes it possible to
+   manipulate material properties and texture objects with the same classes
+   regardless of the intended NIF version.
+ * Implemented write for files of version < 3.3.0.13, so now old files can be
+   both read and written.
+ * Made some minor formatting improvements through alteration in the XML Python
+   script.
+ * Pre-main initialization of objects was causing problems with both static and
+   DLL linking of the library.  I fixed the DLL issues, but statically linking
+   the library caused none of the objects to register themselves, so I went
+   back to using a single function that registers all objects the first time
+   ReadNifTree is called.  This fixes the issues with crashing and missing
+   objects.
+ * Moved Object Registration/Creation functionality into new ObjectRegistry
+   class.  This allows users of the library to register new NIF object or
+   overwrite exiting ones without recompiling the library.
+ * Restored some missing function implementations.
