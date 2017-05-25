@@ -7,15 +7,10 @@ namespace Niflib {
         this->VertexCount    = vertCount;
         this->TriangleCount = faceCount;
 
-        //Verts=std::vector<DXVertex>(vertCount);
-        //Verts.resize(vertCount);
         Verts.clear();
         Verts.reserve(vertCount);
-        //for(DWORD i=0;i<vertCount;i++) Verts.push_back(verts[i]);
         for(DWORD i=0;i<vertCount;i++) Verts.push_back(verts[i]);
 
-        //Faces=std::vector<Triangle>(faceCount);
-        //Faces.resize(faceCount);
         Faces.clear();
         Faces.reserve(faceCount);
         for(DWORD i=0;i<faceCount;i++) Faces.push_back(*(Triangle*)&faces[i*3]);
@@ -395,7 +390,8 @@ namespace Niflib {
             // recompute the vertex' normal
             this->vertices[i]->ComputeNormal();
 
-            new_Verts.push_back(this->vertices[i]->Vert);        }
+            new_Verts.push_back(this->vertices[i]->Vert);
+        }
 
         for(unsigned int i = 0; i < this->triangles.size(); i++)
         {
@@ -407,9 +403,17 @@ namespace Niflib {
             new_Faces.push_back(face);
         }
 
+        // Free vertices and faces
+        for(size_t i = 0; i < this->triangles.size(); i++)
+            delete this->triangles[i];
+        for(size_t i = 0; i < this->vertices.size(); i++)
+            delete this->vertices[i];
+        this->triangles.clear();
+        this->vertices.clear();
+
         // store the return value, the number of vertices left
         int result = (int)new_Verts.size();
-        if(result==0||new_Faces.size()==0||new_Verts.size()==VertexCount) return 0;
+        if(result==0 || new_Faces.size()==0 || new_Verts.size()==VertexCount) return 0;
 
         // set the new mesh data
         *newFaceCount=new_Faces.size();
