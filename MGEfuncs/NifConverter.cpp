@@ -30,8 +30,6 @@
 //Vertex Cache Optimizer
 #include <tootlelib.h>
 
-//ofstream log_file( "C:\\mge_convert_log.txt" );
-
 using namespace Niflib;
 
 #define SAFERELEASEP(a) { if(a) { delete[] a; } a=0; }
@@ -281,8 +279,6 @@ struct ExportedNode {
 
         if(simplify<1&&faces>8) {
 
-            //ShrinkMesh();
-
             if(!old) {
 
                 ProgMesh pmesh(verts, faces, vBuffer, iBuffer);
@@ -291,11 +287,6 @@ struct ExportedNode {
                 DXVertex* newVerts;
                 WORD* newFaces;
 
-                if(stride!=sizeof(DXVertex)) {
-                    int iii=sizeof(DXVertex);
-                }
-
-                int debugVerts=verts;
                 if(pmesh.DoProgressiveMesh(simplify, (DWORD*)&verts, (DWORD*)&faces, &newVerts, &newFaces)>0) {
                     delete[] iBuffer;
                     delete[] vBuffer;
@@ -888,62 +879,6 @@ public:
     }
 };
 
-int _stdcall GetVertSize() {
-    return (int)sizeof(DXVertex);
-}
-
-int _stdcall GetCompressedVertSize() {
-    return (int)sizeof(DXCompressedVertex);
-}
-
-int _stdcall GetLandVertSize() {
-    return (int)sizeof(DXCompressedLandVertex);
-}
-
-float _stdcall ProcessNif(char* data, int datasize, float simplify, float cutoff, BYTE static_type, BYTE old) {
-
-    //Load the NIF data into our DirectX-friendly format
-    ExportedNif nif;
-    if (! nif.LoadNifFromStream(data, datasize) ) {
-        //log_file << "LoadNifFromStream failed." << endl;
-        return -1;
-    }
-
-    //Calculate the bounds of the NIF to determine whether it exceeds our cutoff value
-    nif.CalcBounds();
-
-    if( static_type == STATIC_AUTO && nif.radius < cutoff ) {
-        //log_file << "Radius was below cutoff value." << endl;
-        return -2;
-    }
-
-    //Buildings are treated as if they are twice their actual size.
-    if( static_type == STATIC_BUILDING && nif.radius * 2.0f < cutoff ) {
-        //log_file << "Radius was below cutoff value." << endl;
-        return -2;
-    }
-
-    if(!staticFile) {
-        return nif.radius;
-    }
-
-    //Optimize NIF and calculate node bounds
-
-    nif.Optimize(16, simplify, old!=0);
-    nif.CalcNodeBounds();
-
-    //Determine whether this will be a near or far distant static based on size
-    nif.static_type = static_type;
-
-    //Save NIF to new format
-    if (!nif.Save() ) {
-        //log_file << "NIF Save failed." << endl;
-        return -3;
-    }
-
-    return nif.radius;
-}
-
 struct LargeTriangle {
     unsigned int v1; /*!< The index of the first vertex. */
     unsigned int v2; /*!< The index of the second vertex. */
@@ -1143,7 +1078,7 @@ public:
 class HeightFieldSampler {
 public:
     HeightFieldSampler( float * d, size_t dh, size_t dw, float t, float l, float b, float r ) :
-        data(d), data_height(dh), data_width(dw), top(t), left(l), bottom(b), right(r) {}
+        top(t), left(l), bottom(b), right(r), data(d), data_height(dh), data_width(dw) {}
     ~HeightFieldSampler() {}
 
     TexCoord SampleTexCoord( float x, float y ) {
@@ -1172,7 +1107,7 @@ public:
 
         float y_interp = 1.0f;
         if ( high_y - low_y == 1 ) {
-            float y_interp = data_y - (float)low_y;
+            y_interp = data_y - (float)low_y;
         }
 
         //horizontal
@@ -1209,15 +1144,15 @@ public:
     }
     ~SplitTriangle() {}
 
-    Vector3 GetHypoCenter() {
+    Vector3 GetHypoCenter() const {
         return (right + left) / 2.0f;
     }
 
-    SplitTriangle LeftSplit( const Vector3 & new_vert ) {
+    SplitTriangle LeftSplit( const Vector3 & new_vert ) const {
         return SplitTriangle( right, top, new_vert );
     }
 
-    SplitTriangle RightSplit( const Vector3 & new_vert ) {
+    SplitTriangle RightSplit( const Vector3 & new_vert ) const {
         return SplitTriangle( top, left, new_vert );
     }
 };
@@ -1265,7 +1200,7 @@ public:
 
     ~RoamVarianceNode() {}
 
-    void CalculateVariance( HeightFieldSampler * sampler, SplitTriangle & tri, size_t depth ) {
+    void CalculateVariance( HeightFieldSampler * sampler, const SplitTriangle & tri, size_t depth ) {
         //On the downward pass, calculate the variance as the difference in height between the
         //average of left and right, and the the real height value as given by the sampler
         Vector3 avg = tri.GetHypoCenter();
@@ -1275,7 +1210,7 @@ public:
 
         //Give extra weight to the split if it causes the vertex to switch from being above the water to being below the water or vice versa
         //Water level is zero
-        if ( (avg.z > 0.0f && samp_height < 0.0f) || samp_height > 0.0f && avg.z < 0.0f ) {
+        if ( (avg.z > 0.0f && samp_height < 0.0f) || (samp_height > 0.0f && avg.z < 0.0f) ) {
             variance *= 4.0f;
         }
 
@@ -1462,7 +1397,7 @@ public:
         right_child->Tesselate( v_tri->right_child, max_variance );
     }
 
-    void GatherTriangles( HeightFieldSampler * sampler, SplitTriangle & s_tri, vector<RenderTriangle> & triangles  ) {
+    void GatherTriangles( HeightFieldSampler * sampler, const SplitTriangle & s_tri, vector<RenderTriangle> & triangles  ) {
 
         Vector3 hc = s_tri.GetHypoCenter();
         hc.z = sampler->SampleHeight( hc.x, hc.y );
@@ -1506,6 +1441,7 @@ public:
         x = rh.x;
         y = rh.y;
         z = rh.z;
+        return *this;
     }
 
     Vector3 AsVec3() {
@@ -1750,7 +1686,7 @@ public:
     //}
 };
 
-void TessellateLandscape( char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float top, float left, float bottom, float right, float error_tolerance ) {
+extern "C" void TessellateLandscape( char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float top, float left, float bottom, float right, float error_tolerance ) {
 
     //Create sampler
     HeightFieldSampler sampler( height_data, data_height, data_width, top, left, bottom, right );
@@ -1837,11 +1773,68 @@ void TessellateLandscape( char* file_path, float* height_data, unsigned int data
 }
 
 
-void _stdcall BeginStaticCreation(IDirect3DDevice9* _device, char* outpath) {
+extern "C" int __stdcall GetVertSize() {
+    return (int)sizeof(DXVertex);
+}
+
+extern "C" int __stdcall GetCompressedVertSize() {
+    return (int)sizeof(DXCompressedVertex);
+}
+
+extern "C" int __stdcall GetLandVertSize() {
+    return (int)sizeof(DXCompressedLandVertex);
+}
+
+extern "C" float __stdcall ProcessNif(char* data, int datasize, float simplify, float cutoff, BYTE static_type, BYTE old) {
+
+    //Load the NIF data into our DirectX-friendly format
+    ExportedNif nif;
+    if (! nif.LoadNifFromStream(data, datasize) ) {
+        //log_file << "LoadNifFromStream failed." << endl;
+        return -1;
+    }
+
+    //Calculate the bounds of the NIF to determine whether it exceeds our cutoff value
+    nif.CalcBounds();
+
+    if( static_type == STATIC_AUTO && nif.radius < cutoff ) {
+        //log_file << "Radius was below cutoff value." << endl;
+        return -2;
+    }
+
+    //Buildings are treated as if they are twice their actual size.
+    if( static_type == STATIC_BUILDING && nif.radius * 2.0f < cutoff ) {
+        //log_file << "Radius was below cutoff value." << endl;
+        return -2;
+    }
+
+    if(!staticFile) {
+        return nif.radius;
+    }
+
+    //Optimize NIF and calculate node bounds
+
+    nif.Optimize(16, simplify, old!=0);
+    nif.CalcNodeBounds();
+
+    //Determine whether this will be a near or far distant static based on size
+    nif.static_type = static_type;
+
+    //Save NIF to new format
+    if (!nif.Save() ) {
+        //log_file << "NIF Save failed." << endl;
+        return -3;
+    }
+
+    return nif.radius;
+}
+
+extern "C" void __stdcall BeginStaticCreation(IDirect3DDevice9* _device, char* outpath) {
     device=_device;
     if(outpath) staticFile=CreateFileA(outpath, FILE_GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
     else staticFile=0;
 }
-void _stdcall EndStaticCreation() {
+
+extern "C" void __stdcall EndStaticCreation() {
     CloseHandle(staticFile);
 }
