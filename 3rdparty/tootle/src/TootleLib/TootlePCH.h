@@ -13,8 +13,7 @@
     #endif
 #endif
 
-#ifdef _LINUX
-    #define __cdecl
+#ifdef __GNUC__
     #define _isnan(x) isnan(x)
     #define _finite(x) finite(x)
 #endif

@@ -79,7 +79,7 @@ public:
 	 * \return A string in the form:  address(type), or adress(type) {name}
 	 */
 	NIFLIB_API virtual string GetIDString() const;
-	
+
 	/*!
 	 * Returns the total number of reference-counted objects of any kind that have been allocated by Niflib for any reason.  This is for debugging or informational purpouses.  Mostly usful for tracking down memory leaks.
 	 * \return The total number of reference-counted objects that have been allocated.
@@ -129,7 +129,7 @@ template <class T> Ref<const T> StaticCast (const NiObject * object) {
 	return (const T*)object;
 }
 
-template <class T> Ref<T> DynamicCast( NiObject * object ) {
+template <class T> Ref<T> DynamicCast( RefObject * object ) {
 	if ( object && object->IsDerivedType(T::TYPE) ) {
 		return (T*)object;
 	} else {
@@ -137,7 +137,7 @@ template <class T> Ref<T> DynamicCast( NiObject * object ) {
 	}
 }
 
-template <class T> Ref<const T> DynamicCast( const NiObject * object ) {
+template <class T> Ref<const T> DynamicCast( const RefObject * object ) {
 	if ( object && object->IsDerivedType(T::TYPE) ) {
 		return (const T*)object;
 	} else {

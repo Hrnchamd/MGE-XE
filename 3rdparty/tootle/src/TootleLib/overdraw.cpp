@@ -13,7 +13,7 @@
     #include "gdiwm.h"
 #endif
 
-#include "TootleRaytracer.h"
+#include "RayTracer/TootleRaytracer.h"
 
 //=================================================================================================================================
 //

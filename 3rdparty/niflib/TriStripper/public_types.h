@@ -11,6 +11,7 @@
 #define TRI_STRIPPER_HEADER_GUARD_PUBLIC_TYPES_H
 
 #include <vector>
+#include <cstddef>
 
 
 
@@ -18,7 +19,7 @@
 namespace triangle_stripper
 {
 
-	typedef size_t index;
+	typedef std::size_t index;
 	typedef std::vector<index> indices;
 
 	enum primitive_type

@@ -10,7 +10,7 @@
 #include <iostream>
 #include <math.h>
 
-#ifdef _LINUX
+#ifdef __GNUC__
     class SSEVec4
 #else
     class __declspec(align(16)) SSEVec4
@@ -21,7 +21,7 @@ public:
     union
     {
         __m128 vec128;
-#ifdef _LINUX
+#ifdef __GNUC__
         float f32[4];
 #endif
     };
@@ -42,7 +42,7 @@ public:
     inline operator const __m128() const { return vec128; };
 
     // indexing
-#ifdef _LINUX
+#ifdef __GNUC__
     inline const float& operator[](int i) const { return f32[i]; };
     inline float& operator[](int i) { return f32[i]; };
 #else
@@ -128,7 +128,7 @@ inline float SSEVec3Dot(const SSEVec4& a, const SSEVec4& b)
 
 inline SSEVec4 SSEVecQuickRCP(const SSEVec4& v) { return SSEVec4(_mm_rcp_ps(v.vec128)); };
 
-// RCP with newton-raphson iteration.  
+// RCP with newton-raphson iteration.
 inline SSEVec4 SSEVecRCP(const SSEVec4& a)
 {
     __m128 Ra0 = _mm_rcp_ps(a.vec128);

@@ -50,11 +50,7 @@ void* aligned_malloc(size_t bytes, size_t alignment)
         // alignment is not of power of 2, round it to the next power of 2.
         alignment = GetNextPowerOfTwo(alignment);
 
-#if defined(_MSC_VER) && _MSC_VER < 1900
 		fprintf (stderr, "aligned_malloc: rounding the alignment to %Iu\n", alignment);
-#else
-		fprintf (stderr, "aligned_malloc: rounding the alignment to %zu\n", alignment);
-#endif
     }
 
     // request memory larger than the input request size to

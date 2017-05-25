@@ -7,13 +7,13 @@
 // define this to make the raytracer dump out debugging images
 //#define DEBUG_IMAGES
 
-#include "TootlePCH.h"
-#include "JRTCommon.h"
+#include "../TootlePCH.h"
+#include "JRT/JRTCommon.h"
 #include "TootleRaytracer.h"
-#include "JRTCore.h"
-#include "JRTMesh.h"
-#include "JRTOrthoCamera.h"
-#include "JRTBoundingBox.h"
+#include "JRT/JRTCore.h"
+#include "JRT/JRTMesh.h"
+#include "JRT/JRTOrthoCamera.h"
+#include "JRT/JRTBoundingBox.h"
 
 #ifdef DEBUG_IMAGES
     #include "JRTPPMImage.h"

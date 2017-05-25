@@ -12,7 +12,7 @@
 
 void error_output(const char* fmt, ...);
 
-#ifdef _LINUX
+#ifdef __GNUC__
 #define warnf(args)
 #define errorf(args)
 #define assertf(cond, args)
@@ -40,7 +40,7 @@ void error_output(const char* fmt, ...);
 #endif
 
 #ifndef ERROR_NDEBUG
-#ifdef _LINUX
+#ifdef __GNUC__
 #define debugf(args)
 #else
 #define debugf(args) do { \

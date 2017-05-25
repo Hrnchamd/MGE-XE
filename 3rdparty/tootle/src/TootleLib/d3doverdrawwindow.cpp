@@ -297,8 +297,8 @@ void
 D3DOverdrawWindow::
 DrawComplement(int iClusterA, int iClusterB)
 {
-    int a = min(iClusterA, iClusterB);
-    int b = max(iClusterA, iClusterB);
+    int a = std::min(iClusterA, iClusterB);
+    int b = std::max(iClusterA, iClusterB);
 
     if (!m_VB || !m_VD | !m_IB) { return; }
 
@@ -508,7 +508,7 @@ NormalizedLoop(float& fOverdraw, float& fOverdrawMax)
 
             if (numberOfPixelsDrawnPix > 0)
             {
-                fOverdrawMax = max(fOverdrawMax, numberOfPixelsDrawn / (float)numberOfPixelsDrawnPix);
+                fOverdrawMax = std::max(fOverdrawMax, numberOfPixelsDrawn / (float)numberOfPixelsDrawnPix);
             }
         }
     }
@@ -809,10 +809,10 @@ CheckIsect(int iClusterA, int iClusterB)
                                       m_vClusterDiag[iClusterA][2] / 2.f * k);
                 D3DXVec3Transform(&vTransA, (D3DXVECTOR3*)&v[0], &mWorldView);
                 vTransA /= vTransA.w;
-                xminA = min(xminA, vTransA.x);
-                yminA = min(yminA, vTransA.y);
-                xmaxA = max(xmaxA, vTransA.x);
-                ymaxA = max(ymaxA, vTransA.y);
+                xminA = std::min(xminA, vTransA.x);
+                yminA = std::min(yminA, vTransA.y);
+                xmaxA = std::max(xmaxA, vTransA.x);
+                ymaxA = std::max(ymaxA, vTransA.y);
 
                 v = m_vClusterCenter[iClusterB]
                     + Vector3(m_vClusterDiag[iClusterB][0] / 2.f * i,
@@ -820,10 +820,10 @@ CheckIsect(int iClusterA, int iClusterB)
                               m_vClusterDiag[iClusterB][2] / 2.f * k);
                 D3DXVec3Transform(&vTransB, (D3DXVECTOR3*)&v[0], &mWorldView);
                 vTransB /= vTransB.w;
-                xminB = min(xminB, vTransB.x);
-                yminB = min(yminB, vTransB.y);
-                xmaxB = max(xmaxB, vTransB.x);
-                ymaxB = max(ymaxB, vTransB.y);
+                xminB = std::min(xminB, vTransB.x);
+                yminB = std::min(yminB, vTransB.y);
+                xmaxB = std::max(xmaxB, vTransB.x);
+                ymaxB = std::max(ymaxB, vTransB.y);
             }
 
     if (xminA > xmaxB || xminB > xmaxA || yminA > ymaxB || yminB > ymaxA)

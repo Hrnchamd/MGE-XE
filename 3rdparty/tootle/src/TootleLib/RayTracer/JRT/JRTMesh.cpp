@@ -3,7 +3,7 @@
 /// \author AMD Developer Tools Team
 /// \file
 ****************************************************************************************/
-#include "TootlePCH.h"
+#include "../TootlePCH.h"
 #include "JRTCommon.h"
 #include "JRTMesh.h"
 #include "JRTBoundingBox.h"
@@ -52,7 +52,7 @@ JRTMesh* JRTMesh::CreateMesh(const Vec3f* pPositions,
         pMesh->m_Triangles[i].m_pV1 = reinterpret_cast<const float*> (&pMesh->m_Positions[ pIndices[0] ]);
         pMesh->m_Triangles[i].m_pV2 = reinterpret_cast<const float*> (&pMesh->m_Positions[ pIndices[1] ]);
         pMesh->m_Triangles[i].m_pV3 = reinterpret_cast<const float*> (&pMesh->m_Positions[ pIndices[2] ]);
-        
+
         pIndices += 3;
     }
 

@@ -29,10 +29,10 @@ int heap_create(p_heap *H, t_heap_key max) {
     *H = h = (p_heap) malloc(sizeof(t_heap));
     assert(h);
     if (!h) return 0;
-    h->max = max; 
+    h->max = max;
     h->bottom = 0;
     /* heap indices are 1-based */
-    h->node = (p_heap_node) malloc(sizeof(t_heap_node) * (max+1)); 
+    h->node = (p_heap_node) malloc(sizeof(t_heap_node) * (max+1));
     h->position = (t_heap_key *) malloc(sizeof(t_heap_key) * (max+1));
     assert(h->node && h->position);
     if (!h->node || !h->position) {
@@ -99,14 +99,14 @@ int heap_remove(p_heap *H, t_heap_key key) {
     where = h->position[key];
     assert(where > 0);
     assert(where <= h->bottom);
-    if (where != h->bottom) { 
+    if (where != h->bottom) {
         heap_swap(h, where, h->bottom);
         h->bottom--;
-        /* only one of these is needed 
-        * running both doesn't matter, because the one that is not needed 
+        /* only one of these is needed
+        * running both doesn't matter, because the one that is not needed
         * won't change anything. */
-        heap_bubbledown(h, where); 
-        heap_bubbleup(h, where); 
+        heap_bubbledown(h, where);
+        heap_bubbleup(h, where);
     } else h->bottom--;
     h->position[key] = 0;
     return 1;
@@ -129,7 +129,7 @@ int heap_update(p_heap *H, t_heap_key key, t_heap_cost cost) {
     assert(where > 0);
     assert(where <= h->bottom);
     h->node[where].cost = cost;
-    heap_bubbleup(h, where); 
+    heap_bubbleup(h, where);
     heap_bubbledown(h, where);
     return 1;
 }
@@ -145,24 +145,24 @@ void heap_dump(p_heap h) {
     t_heap_key i;
     printf("h->node: ");
     for (i = 1; i <= h->bottom; i++) {
-        printf("%d %d (%d), ", (int) h->node[i].key, 
+        printf("%d %d (%d), ", (int) h->node[i].key,
             h->node[i].cost, (int) h->position[h->node[i].key]);
     }
     printf("\n");
 }
 
-static void heap_swap(p_heap h, t_heap_key i, t_heap_key j) { 
+static void heap_swap(p_heap h, t_heap_key i, t_heap_key j) {
     t_heap_node temp;
     assert(i > 0 && i <= h->bottom);
     assert(j > 0 && j <= h->bottom);
-    assert(h->position[h->node[i].key] == i && 
+    assert(h->position[h->node[i].key] == i &&
             h->position[h->node[j].key] == j);
     /* exchange values */
-    temp = h->node[i]; 
-    h->node[i] = h->node[j]; 
-    h->node[j] = temp; 
+    temp = h->node[i];
+    h->node[i] = h->node[j];
+    h->node[j] = temp;
     /* update positions */
-    h->position[h->node[i].key] = i; 
+    h->position[h->node[i].key] = i;
     h->position[h->node[j].key] = j;
 }
 
@@ -198,15 +198,15 @@ loop:
 #define SIZE (1024*64*4)
 
 int main(void) {
-    /* first test: 
+    /* first test:
      * sort n numbers inserted backwards and check costs with keys */
-    p_heap h; 
+    p_heap h;
     t_heap_key i, k;
     t_heap_cost c;
     int r;
     r = heap_create(&h, SIZE);
     assert(r);
-    assert(h); 
+    assert(h);
     fprintf(stderr, "sorting: ");
     for (i = 0; i < SIZE; i++) {
         r = heap_insert(&h, SIZE-i-1, (t_heap_cost) (SIZE-i-1));
@@ -214,15 +214,15 @@ int main(void) {
     }
     for (i = 0; i < SIZE; i++) {
         assert(heap_size(&h) == SIZE-i);
-        k = heap_pop(&h, &c); 
+        k = heap_pop(&h, &c);
         assert(c == (t_heap_cost) k);
         assert(i == k);
     }
     assert(heap_size(&h) == 0);
-    r = heap_destroy(&h); 
+    r = heap_destroy(&h);
     assert(r);
     fprintf(stderr, "ok\n");
-    /* second test: 
+    /* second test:
      * sort n numbers after removing every seventh */
     fprintf(stderr, "removal: ");
     r = heap_create(&h, SIZE);
@@ -241,22 +241,22 @@ int main(void) {
     }
     for (i = 0; i < SIZE; i++) {
         if (i % 7) {
-            k = heap_gettop(&h, &c); 
+            k = heap_gettop(&h, &c);
             heap_pop(&h, NULL);
             assert(c == (t_heap_cost) k);
             assert(i == k);
         }
     }
     assert(heap_size(&h) == 0);
-    r = heap_destroy(&h); 
+    r = heap_destroy(&h);
     assert(r);
     fprintf(stderr, "ok\n");
-    /* third test: 
+    /* third test:
      * sort n numbers after modifying all of them */
     fprintf(stderr, "update: ");
     r = heap_create(&h, SIZE);
     assert(r);
-    assert(h); 
+    assert(h);
     for (i = 0; i < SIZE; i++) {
         r = heap_insert(&h, i, (t_heap_cost) i);
         assert(r);
@@ -273,7 +273,7 @@ int main(void) {
     for (i = 0; i < SIZE; i++) {
         k = heap_pop(&h, &c);
         assert(i == c);
-        if (k < SIZE/2) assert(c - SIZE/2 == (t_heap_cost) k); 
+        if (k < SIZE/2) assert(c - SIZE/2 == (t_heap_cost) k);
         else assert(c + SIZE/2 == (t_heap_cost) k);
     }
     assert(heap_size(&h) == 0);

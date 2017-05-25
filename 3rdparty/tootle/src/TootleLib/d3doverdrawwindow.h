@@ -11,8 +11,9 @@
 #include "d3dwindow.h"
 #include "soup.h"
 #include "feedback.h"
+#include <mm_malloc.h>
 
-__declspec(align(16)) class D3DOverdrawWindow: public D3DWindow
+class D3DOverdrawWindow : public D3DWindow
 {
 public:
     typedef D3DWindow Superclass;

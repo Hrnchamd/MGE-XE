@@ -3,8 +3,8 @@
 /// \author AMD Developer Tools Team
 /// \file
 ****************************************************************************************/
-#include "TootlePCH.h"
-#include "JRTCommon.h"
+#include "../TootlePCH.h"
+#include "../JRT/JRTCommon.h"
 #include "JMLFuncs.h"
 
 #include <assert.h>

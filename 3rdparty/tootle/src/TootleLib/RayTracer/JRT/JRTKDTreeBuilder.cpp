@@ -3,7 +3,7 @@
 /// \author AMD Developer Tools Team
 /// \file
 ****************************************************************************************/
-#include "TootlePCH.h"
+#include "../TootlePCH.h"
 #include "JRTCommon.h"
 #include "JRTKDTreeBuilder.h"
 #include "JRTKDTree.h"
