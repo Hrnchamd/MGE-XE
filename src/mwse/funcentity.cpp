@@ -4,6 +4,11 @@
 #include <cstdio>
 
 
+struct Node
+{
+    const void **vtbl;
+};
+
 static MWRecord * findEntity(const char *id)
 {
     typedef MWRecord * (__thiscall *findMWEntity_t)(void *, const char *);
@@ -191,4 +196,37 @@ bool mwseSetOwner::execute(mwseInstruction *_this)
     }
 
     return _this->vmPush(ret);
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseModelSwitchNode)
+
+// Set the active index of an NiSwitchNode
+// [ref] mwseModelSwitchNode <string node_name> <long switch_index>
+bool mwseModelSwitchNode::execute(mwseInstruction *_this)
+{
+    VMREGTYPE index = -1;
+    MWReference *refr = vmGetTargetRef();
+    const char *node_name = _this->vmPopString();
+    if(!node_name) return false;
+    if(!_this->vmPop(&index)) return false;
+
+    if(refr->visual)
+    {
+        Node *node = reinterpret_cast<Node*>(refr->visual);
+
+        // Call <vtbl + 0x5c> Node * AVObject::findChildNode(const char *)
+        typedef Node * (__thiscall *findChildNode_t)(const Node *, const char *);
+        const findChildNode_t findChildNode = reinterpret_cast<findChildNode_t>(node->vtbl[0x17]);
+        Node *child = findChildNode(node, node_name);
+
+        // Check if child is an NiSwitchNode
+        if(child && child->vtbl == reinterpret_cast<void**>(0x750080))
+        {
+            int *switch_index = reinterpret_cast<int*>(reinterpret_cast<BYTE*>(child) + 0xb0);
+            *switch_index = index;
+        }
+    }
+
+    return true;
 }

@@ -3111,6 +3111,14 @@ function
 	Param1 = Long | String
 	Opcode = 0x3a08
 end
+function
+	Name = XModelSwitch
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x3a09
+end
 
 function
 	Name = MGEUIShow

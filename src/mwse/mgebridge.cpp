@@ -84,6 +84,7 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x3a07, new mwseLastActorHit(*vm));
     MWSEAddInstruction(0x3a08, new mwseSetEntityName(*vm));
     MWSEAddInstruction(0x3f11, new mwseSetOwner(*vm));
+    MWSEAddInstruction(0x3a09, new mwseModelSwitchNode(*vm));
 
     MWSEAddInstruction(0x3a10, new mwseUIShow(*vm));
     MWSEAddInstruction(0x3a11, new mwseUIHide(*vm));
