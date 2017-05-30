@@ -54,3 +54,30 @@ struct mwseSetScattering : public mwseInstruction
 private:
     static vtable_t vtable;
 };
+
+struct mwseSetWeatherGlare : public mwseInstruction
+{
+    mwseSetWeatherGlare(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseSetWeatherCloudSpeed : public mwseInstruction
+{
+    mwseSetWeatherCloudSpeed(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseSetWeatherWindSpeed : public mwseInstruction
+{
+    mwseSetWeatherWindSpeed(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};

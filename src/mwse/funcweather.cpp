@@ -17,6 +17,10 @@ struct MWWeather
     RGBfloat fogCol[4];
     RGBfloat skyCol[4];
     RGBfloat sunCol[4];
+    RGBfloat sunsetDiscCol;
+
+    int unk1[7];
+    float cloudSpeed, windSpeed;
 };
 
 
@@ -159,5 +163,62 @@ bool mwseSetScattering::execute(mwseInstruction *_this)
 
     RGBVECTOR outscatter(outscatter_r, outscatter_g, outscatter_b), inscatter(inscatter_r, inscatter_g, inscatter_b);
     DistantLand::setScattering(outscatter, inscatter);
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetWeatherGlare)
+
+// SetWeatherGlare <byte weatherID> <float glare>
+bool mwseSetWeatherGlare::execute(mwseInstruction *_this)
+{
+    VMREGTYPE weather_id;
+    VMFLOAT x;
+
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&x)) return false;
+
+    DECLARE_MWBRIDGE
+    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    w->glareView = x;
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetWeatherCloudSpeed)
+
+// SetWeatherCloudSpeed <byte weatherID> <float speed>
+bool mwseSetWeatherCloudSpeed::execute(mwseInstruction *_this)
+{
+    VMREGTYPE weather_id;
+    VMFLOAT x;
+
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&x)) return false;
+
+    DECLARE_MWBRIDGE
+    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    w->cloudSpeed = x;
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetWeatherWindSpeed)
+
+// SetWeatherWindSpeed <byte weatherID> <float speed>
+bool mwseSetWeatherWindSpeed::execute(mwseInstruction *_this)
+{
+    VMREGTYPE weather_id;
+    VMFLOAT x;
+
+    if(!_this->vmPop(&weather_id)) return false;
+    if(!_this->vmPop(&x)) return false;
+
+    DECLARE_MWBRIDGE
+    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    w->windSpeed = x;
+
     return true;
 }

@@ -3201,6 +3201,30 @@ function
     Param6 = Float
 	Opcode = 0x3a85
 end
+function
+	Name = XSetWeatherGlare
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Short
+    Param2 = Float
+	Opcode = 0x3a86
+end
+function
+	Name = XSetWeatherCloudSpeed
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Short
+    Param2 = Float
+	Opcode = 0x3a87
+end
+function
+	Name = XSetWeatherWindSpeed
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Short
+    Param2 = Float
+	Opcode = 0x3a88
+end
 
 function
 	Name = MGEEnableShader
