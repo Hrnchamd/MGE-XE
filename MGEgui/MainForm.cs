@@ -871,8 +871,12 @@ namespace MGEgui {
                 try {
                     LoadInputSaveFile ();
                     File.Delete(Statics.fn_didata);
-                    File.Delete(Statics.fn_macro);
-                    File.Delete(Statics.fn_triger);
+                    if (File.Exists (Statics.fn_macro)) {
+                        File.Delete(Statics.fn_macro);
+                    }
+                    if (File.Exists (Statics.fn_triger)) {
+                        File.Delete(Statics.fn_triger);
+                    }
 
                     if (File.Exists (Statics.fn_remap)) {
                         FileStream fs = File.OpenRead (Statics.fn_remap);
