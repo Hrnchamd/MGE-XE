@@ -175,3 +175,66 @@ bool mwseStopCameraShakeAccel::execute(mwseInstruction *_this)
 {
     Configuration.CameraEffects.shakeAccel = 0;
 }
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseRotateScreenBy)
+
+// RotateScreenBy <float rads>
+bool mwseRotateScreenBy::execute(mwseInstruction *_this)
+{
+    VMFLOAT x;
+    if(!_this->vmPop(&x)) return false;
+
+    Configuration.CameraEffects.rotateUpdate = true;
+    Configuration.CameraEffects.rotation += x;
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetScreenRotation)
+
+// SetScreenRotation <float rads>
+bool mwseSetScreenRotation::execute(mwseInstruction *_this)
+{
+    VMFLOAT x;
+    if(!_this->vmPop(&x)) return false;
+
+    Configuration.CameraEffects.rotateUpdate = true;
+    Configuration.CameraEffects.rotation = x;
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseScreenSpin)
+
+// ScreenSpin
+bool mwseScreenSpin::execute(mwseInstruction *_this)
+{
+    VMFLOAT x;
+    if(!_this->vmPop(&x)) return false;
+
+    Configuration.CameraEffects.rotateUpdate = true;
+    Configuration.CameraEffects.rotationRate = x;
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseStopScreenSpin)
+
+// StopScreenSpin
+bool mwseStopScreenSpin::execute(mwseInstruction *_this)
+{
+    Configuration.CameraEffects.rotateUpdate = true;
+    Configuration.CameraEffects.rotationRate = 0;
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetScreenRotation)
+
+// GetScreenRotation -> <float rads>
+bool mwseGetScreenRotation::execute(mwseInstruction *_this)
+{
+    VMFLOAT x = Configuration.CameraEffects.rotation;
+    return _this->vmPush(x);
+}

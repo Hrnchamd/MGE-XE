@@ -144,3 +144,48 @@ struct mwseStopCameraShakeAccel : public mwseInstruction
 private:
     static vtable_t vtable;
 };
+
+struct mwseRotateScreenBy : public mwseInstruction
+{
+    mwseRotateScreenBy(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseSetScreenRotation : public mwseInstruction
+{
+    mwseSetScreenRotation(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseScreenSpin : public mwseInstruction
+{
+    mwseScreenSpin(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseStopScreenSpin : public mwseInstruction
+{
+    mwseStopScreenSpin(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};
+
+struct mwseGetScreenRotation : public mwseInstruction
+{
+    mwseGetScreenRotation(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
+    static __thiscall bool execute(mwseInstruction *_this);
+
+private:
+    static vtable_t vtable;
+};

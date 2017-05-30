@@ -19,7 +19,7 @@ static bool isWaterMaterial, waterDrawn;
 
 static bool zoomSensSaved;
 static float zoomSensX, zoomSensY;
-static D3DXMATRIX camShakeMatrix;
+static D3DXMATRIX camEffectsMatrix;
 static float crosshairTimeout;
 
 static RenderedState rs;
@@ -44,7 +44,7 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d) : ProxyDev
     isHUDready = false;
     isMainView = isStencilScene = stage0Complete = isFrameComplete = isHUDComplete = false;
     isWaterMaterial = waterDrawn = false;
-    D3DXMatrixIdentity(&camShakeMatrix);
+    D3DXMatrixIdentity(&camEffectsMatrix);
 
     Configuration.CameraEffects.zoom = 1.0;
     Configuration.CameraEffects.zoomRate = 0;
@@ -155,12 +155,19 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
             zoomSensSaved = false;
         }
 
+        if(Configuration.CameraEffects.rotateUpdate)
+        {
+            Configuration.CameraEffects.rotation += Configuration.CameraEffects.rotationRate * mwBridge->frameTime();
+            D3DXMatrixRotationZ(&camEffectsMatrix, Configuration.CameraEffects.rotation);
+            if(Configuration.CameraEffects.rotationRate == 0)
+                Configuration.CameraEffects.rotateUpdate = false;
+        }
         if(Configuration.CameraEffects.shake)
         {
             // Update screen shake controller
             Configuration.CameraEffects.shakeMagnitude += Configuration.CameraEffects.shakeAccel * mwBridge->frameTime();
             Configuration.CameraEffects.shakeMagnitude = std::max(0.0f, std::min(100.0f, Configuration.CameraEffects.shakeMagnitude));
-            camShakeMatrix._41 = Configuration.CameraEffects.shakeMagnitude * sin(0.001f*GetTickCount());
+            camEffectsMatrix._41 = Configuration.CameraEffects.shakeMagnitude * sin(0.001f*GetTickCount());
         }
 
         // Main menu background video
@@ -335,12 +342,10 @@ HRESULT _stdcall MGEProxyDevice::SetTransform(D3DTRANSFORMSTATETYPE a, const D3D
             // Check for UI view
             isMainView = !detectMenu(b);
 
-            if(isMainView && Configuration.CameraEffects.shake)
+            if(isMainView)
             {
                 D3DXMATRIX view = *b;
-                view._41 += camShakeMatrix._41;
-                view._42 += camShakeMatrix._42;
-                view._43 += camShakeMatrix._43;
+                view *= camEffectsMatrix;
                 return ProxyDevice::SetTransform(a, &view);
             }
         }

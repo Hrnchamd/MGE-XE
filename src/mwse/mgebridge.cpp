@@ -144,6 +144,11 @@ void MWSE_MGEPlugin::init(HMODULE dll)
     MWSEAddInstruction(0x3758, new mwseSetCameraShakeMagnitude(*vm));
     MWSEAddInstruction(0x3759, new mwseCameraShakeAccel(*vm));
     MWSEAddInstruction(0x375a, new mwseStopCameraShakeAccel(*vm));
+    MWSEAddInstruction(0x3768, new mwseRotateScreenBy(*vm));
+    MWSEAddInstruction(0x3769, new mwseSetScreenRotation(*vm));
+    MWSEAddInstruction(0x376a, new mwseScreenSpin(*vm));
+    MWSEAddInstruction(0x376b, new mwseStopScreenSpin(*vm));
+    MWSEAddInstruction(0x376c, new mwseGetScreenRotation(*vm));
 
     MWSEAddInstruction(0x376d, new mwseEnableZoom(*vm));
     MWSEAddInstruction(0x376e, new mwseDisableZoom(*vm));
