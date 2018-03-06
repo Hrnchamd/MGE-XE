@@ -923,7 +923,7 @@ namespace MGEgui {
 
         private void bHelp_Click (object sender, EventArgs e) {
             try {
-                System.Diagnostics.Process p = System.Diagnostics.Process.Start (@"http://forums.bethsoft.com/forum/12-morrowind-mods/");
+                System.Diagnostics.Process p = System.Diagnostics.Process.Start (@"https://bethesda.net/community/category/106/mods");
                 p.Close ();
             } catch { }
         }
@@ -949,69 +949,26 @@ namespace MGEgui {
         }
 
         private void bExport_Click (object sender, EventArgs e) {
-            if (SaveFileDialog.ShowDialog () == DialogResult.OK) {
-                BinaryWriter bw = new BinaryWriter (File.Open (SaveFileDialog.FileName, FileMode.Create));
-                SaveSettings ();
-                byte [] b;
-                b = File.ReadAllBytes (Statics.fn_didata);
-                bw.Write (b.Length);
-                bw.Write (b);
-                bw.Write (0); // used to be 'MGE3/settings' file
-                b = File.ReadAllBytes (Statics.fn_macro);
-                bw.Write (b.Length);
-                bw.Write (b);
-                b = File.ReadAllBytes (Statics.fn_triger);
-                bw.Write (b.Length);
-                bw.Write (b);
-                b = File.ReadAllBytes (Statics.fn_mwini);
-                bw.Write (b.Length);
-                bw.Write (b);
-                b = File.ReadAllBytes (Statics.fn_inifile);
-                bw.Write (b.Length);
-                bw.Write (b);
-                bw.Close ();
+            if (SaveFileDialog.ShowDialog() == DialogResult.OK) {
+                SaveSettings();
+                try {
+                    File.Copy(Statics.fn_inifile, SaveFileDialog.FileName, true);
+                }
+                catch(Exception ex) {
+                    MessageBox.Show("Error when exporting config:\n\n" + ex.ToString());
+                }
             }
         }
 
         private void bImport_Click (object sender, EventArgs e) {
-            if (OpenFileDialog.ShowDialog () == DialogResult.OK) {
-                BinaryReader br = new BinaryReader (File.OpenRead (OpenFileDialog.FileName));
-                FileStream fs;
-                byte [] b;
-                long eof = br.BaseStream.Length;
-                int len;
-                len = br.ReadInt32 ();
-                b = br.ReadBytes (len);
-                fs = File.Open (Statics.fn_didata, FileMode.Create);
-                fs.Write (b, 0, len);
-                fs.Close ();
-                len = br.ReadInt32 ();
-                if (len > 0) {
-                    b = br.ReadBytes (len);
+            if (OpenFileDialog.ShowDialog() == DialogResult.OK) {
+                try {
+                    File.Copy(SaveFileDialog.FileName, Statics.fn_inifile, true);
+                    LoadSettings();
                 }
-                len = br.ReadInt32 ();
-                b = br.ReadBytes (len);
-                fs = File.Open (Statics.fn_macro, FileMode.Create);
-                fs.Write (b, 0, len);
-                fs.Close ();
-                len = br.ReadInt32 ();
-                b = br.ReadBytes (len);
-                fs = File.Open (Statics.fn_triger, FileMode.Create);
-                fs.Write (b, 0, len);
-                fs.Close ();
-                if (br.BaseStream.Position < eof) {
-                    len = br.ReadInt32 ();
-                    b = br.ReadBytes (len);
+                catch(Exception ex) {
+                    MessageBox.Show("Error when importing config:\n\n" + ex.ToString());
                 }
-                if (br.BaseStream.Position < eof) {
-                    len = br.ReadInt32 ();
-                    b = br.ReadBytes (len);
-                    fs = File.Open (Statics.fn_inifile, FileMode.Create);
-                    fs.Write (b, 0, len);
-                    fs.Close ();
-                }
-                br.Close ();
-                LoadSettings ();
             }
         }
 
