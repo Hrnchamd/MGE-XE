@@ -10,13 +10,16 @@ namespace MGEgui.DirectX {
         private static readonly TexCache texCache=new TexCache();
 
         public static void ReleaseCache() {
-            foreach(Texture t in texCache.Values) { try { if(!t.Disposed) t.Dispose(); } catch { } }
+            foreach(Texture t in texCache.Values) {
+                try { if(!t.Disposed) t.Dispose(); }
+                catch { }
+            }
             texCache.Clear();
         }
 
         private string filePath;
         public string FilePath {
-            set { filePath=value.ToLower(); }
+            set { filePath = value.ToLower(); }
             get { return filePath; }
         }
         public int index;
@@ -24,19 +27,42 @@ namespace MGEgui.DirectX {
 
         public void LoadTexture() {
             if(texCache.ContainsKey(filePath)) {
-                tex=texCache[filePath];
+                tex = texCache[filePath];
             } else {
                 try {
-                    byte[] data=MGEgui.DistantLand.BSA.GetTexture(filePath);
+                    byte[] data = MGEgui.DistantLand.BSA.GetTexture(filePath);
+
+                    // Work around a loading issue with TGA headers
+                    // When ColorMapType == no_palette && ImageType == truecolor, set word ColorMapLength to 0
                     if (data.Length>6 && data[1] == 0 && (data[2] == 2 || data[2] == 10)) {
                         data[5] = data[6] = 0;
                     }
-                    tex=Texture.FromStream(DXMain.device, new System.IO.MemoryStream(data), 0, 0, 0, Usage.None, Format.Unknown, Pool.Managed, Filter.Triangle|Filter.Dither, Filter.Box|Filter.Srgb, 0);
-                    //tex.GenerateMipSubLevels();
-                    //TextureLoader.FilterTexture(tex, 0, Filter.Box);
-                    texCache[filePath]=tex;
+                    
+                    // Scale down widest texture dimension to 256 to conserve memory
+                    ImageInformation imginf = ImageInformation.FromMemory(data);
+                    Filter dxf = Filter.Box|Filter.Srgb;
+                    int maximal = Math.Max(imginf.Width, imginf.Height);
+                    int skiplevels = 0, w = 0, h = 0;
+                    while (maximal > 256) {
+                        maximal /= 2;
+                        skiplevels += 1;
+                    }
+                    
+                    if (skiplevels < imginf.MipLevels) {
+                        // Skip loading mips larger than 256 pixels
+                        // Filter bits 27-31 specify the number of mip levels to be skipped
+                        dxf = (Filter)((skiplevels << 26) | (int)dxf);
+                    }
+                    else {
+                        // Rescale base level to fit inside 256 pixels
+                        w = imginf.Width >> skiplevels;
+                        h = imginf.Height >> skiplevels;
+                    }
+
+                    tex = Texture.FromMemory(DXMain.device, data, w, h, 0, Usage.None, Format.Unknown, Pool.Managed, Filter.Triangle|Filter.Dither, dxf, 0);
+                    texCache[filePath] = tex;
                 } catch {
-                    tex=null;
+                    tex = null;
                     throw;
                 }
             }
@@ -66,40 +92,40 @@ namespace MGEgui.DirectX {
                 + "Continuing may result in texture glitches in game.\n"
                 + "Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) == DialogResult.Yes) return false;
             }
-            if (data.Length>6 && data[1] == 0 && (data[2] == 2 || data[2] == 10)) {
+            // Work around a loading issue with TGA headers
+            // When ColorMapType == no_palette && ImageType == truecolor, set word ColorMapLength to 0
+            if (data.Length > 6 && data[1] == 0 && (data[2] == 2 || data[2] == 10)) {
                 data[5] = data[6] = 0;
             }
 
             path = System.IO.Path.ChangeExtension(path, ".dds");
-            SurfaceDescription sd;
+            ImageInformation imginfo;
             Format format;
             
             try {
-                Texture t = Texture.FromMemory(DXMain.device, data, 0, 0, 0, Usage.None, Format.Unknown, Pool.Scratch, Filter.Triangle|Filter.Dither, Filter.Triangle|Filter.Srgb, 0);
-                sd = t.GetLevelDescription(0);
-                t.Dispose();
+                imginfo = ImageInformation.FromMemory(data);
             }
             catch (SlimDXException) { return false; }
 
-            int newWidth = sd.Width / div, newHeight = sd.Height / div;
+            int newWidth = imginfo.Width / div, newHeight = imginfo.Height / div;
             if(newWidth < 4 || newHeight < 4) { return true; }
             
-            if(sd.Format == Format.Dxt1)
-                format = isDXT1a(sd, data) ? Format.Dxt3 : Format.Dxt1;
-            else if(sd.Format == Format.Dxt3 || sd.Format == Format.Dxt5)
-                format = sd.Format;
-            else if(sd.Format == Format.X8R8G8B8)
+            if(imginfo.Format == Format.Dxt1)
+                format = isDXT1a(imginfo, data) ? Format.Dxt3 : Format.Dxt1;
+            else if(imginfo.Format == Format.Dxt3 || imginfo.Format == Format.Dxt5)
+                format = imginfo.Format;
+            else if(imginfo.Format == Format.X8R8G8B8)
                 format = Format.Dxt1;
             else
                 format = Format.Dxt3;
 
-            if(div > 1 || format != sd.Format)
+            if(div > 1 || format != imginfo.Format)
             {
+                Texture t = null;
                 System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(System.IO.Path.Combine(@"data files\distantland\statics\textures\", path)));
                 
                 try {
-                    Texture t;
-                    if(format == sd.Format) {
+                    if(format == imginfo.Format) {
                         // Load reduced size texture
                         t = Texture.FromMemory(DXMain.device, data, newWidth, newHeight, 0, Usage.None, format, Pool.Scratch, Filter.Triangle|Filter.Dither, Filter.Triangle, 0);
                     }
@@ -123,15 +149,20 @@ namespace MGEgui.DirectX {
                     Texture.ToFile(t, System.IO.Path.Combine(@"data files\distantland\statics\textures\", path), ImageFileFormat.Dds);
                     t.Dispose();
                 }
-                catch (SlimDXException) { return false; }
+                catch (SlimDXException) {
+                    if(t != null) {
+                        t.Dispose();
+                    }
+                    return false;
+                }
             }
 
             return true;
         }
         
-        private bool isDXT1a(SurfaceDescription sd, byte[] data)
+        private bool isDXT1a(ImageInformation imginfo, byte[] data)
         {
-            int blocks = (sd.Width * sd.Height) >> 4;
+            int blocks = (imginfo.Width * imginfo.Height) >> 4;
             
             for(int i = 0; i != blocks; ++i) {
                 int k = 128 + 8*i;
