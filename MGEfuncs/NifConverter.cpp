@@ -13,6 +13,7 @@
 #include "obj/NiTriBasedGeomData.h"
 #include "obj/NiBinaryExtraData.h"
 #include "obj/NiTriStripsData.h"
+#include "obj/RootCollisionNode.h"
 
 #include <assert.h>
 #include <fstream>
@@ -613,11 +614,13 @@ private:
             SubsetNodes->push_back(niGeom);
         } else {
             //Check if this object derives from NiNode and, thus, may have children
+            //Ignore RootCollisionNodes
             NiNodeRef niNode = DynamicCast<NiNode>( rootObj );
-            if(niNode) {
+            RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>( rootObj );
+            if(niNode && !collision) {
                 //Call this function for any children
                 vector<NiAVObjectRef> children = niNode->GetChildren();
-                for(unsigned int i = 0; i < children.size(); i++) {
+                for(size_t i = 0; i < children.size(); i++) {
                     SearchShapes( children[i], SubsetNodes );
                 }
             }
