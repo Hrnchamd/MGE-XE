@@ -133,6 +133,7 @@ namespace MGEgui {
             this.tableLayoutDL = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutDLLeft = new System.Windows.Forms.TableLayoutPanel();
             this.gbXEFeatures = new System.Windows.Forms.GroupBox();
+            this.cmbPerPixelLightFlags = new System.Windows.Forms.ComboBox();
             this.cbPerPixelLighting = new System.Windows.Forms.CheckBox();
             this.bMWLightSettings = new System.Windows.Forms.Button();
             this.cbDLSunShadows = new System.Windows.Forms.CheckBox();
@@ -1639,16 +1640,30 @@ namespace MGEgui {
             // 
             // gbXEFeatures
             // 
+            this.gbXEFeatures.Controls.Add(this.cmbPerPixelLightFlags);
             this.gbXEFeatures.Controls.Add(this.cbPerPixelLighting);
             this.gbXEFeatures.Controls.Add(this.bMWLightSettings);
             this.gbXEFeatures.Controls.Add(this.cbDLSunShadows);
             this.gbXEFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbXEFeatures.Location = new System.Drawing.Point(3, 344);
+            this.gbXEFeatures.Location = new System.Drawing.Point(3, 314);
             this.gbXEFeatures.Name = "gbXEFeatures";
-            this.gbXEFeatures.Size = new System.Drawing.Size(283, 98);
+            this.gbXEFeatures.Size = new System.Drawing.Size(283, 128);
             this.gbXEFeatures.TabIndex = 11;
             this.gbXEFeatures.TabStop = false;
             this.gbXEFeatures.Text = "XE";
+            // 
+            // cmbPerPixelLightFlags
+            // 
+            this.cmbPerPixelLightFlags.Enabled = false;
+            this.cmbPerPixelLightFlags.FormattingEnabled = true;
+            this.cmbPerPixelLightFlags.Items.AddRange(new object[] {
+                                    "always on",
+                                    "interiors only"});
+            this.cmbPerPixelLightFlags.Location = new System.Drawing.Point(45, 68);
+            this.cmbPerPixelLightFlags.Name = "cmbPerPixelLightFlags";
+            this.cmbPerPixelLightFlags.Size = new System.Drawing.Size(160, 23);
+            this.cmbPerPixelLightFlags.TabIndex = 11;
+            this.cmbPerPixelLightFlags.Text = "always on";
             // 
             // cbPerPixelLighting
             // 
@@ -1663,8 +1678,8 @@ namespace MGEgui {
             // 
             // bMWLightSettings
             // 
-            this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bMWLightSettings.Location = new System.Drawing.Point(57, 68);
+            this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.bMWLightSettings.Location = new System.Drawing.Point(60, 97);
             this.bMWLightSettings.Name = "bMWLightSettings";
             this.bMWLightSettings.Size = new System.Drawing.Size(160, 25);
             this.bMWLightSettings.TabIndex = 10;
@@ -1689,7 +1704,7 @@ namespace MGEgui {
             this.gbDLDrawDist.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbDLDrawDist.Location = new System.Drawing.Point(3, 3);
             this.gbDLDrawDist.Name = "gbDLDrawDist";
-            this.gbDLDrawDist.Size = new System.Drawing.Size(283, 70);
+            this.gbDLDrawDist.Size = new System.Drawing.Size(283, 64);
             this.gbDLDrawDist.TabIndex = 0;
             this.gbDLDrawDist.TabStop = false;
             this.gbDLDrawDist.Text = "&Draw Distance";
@@ -1738,9 +1753,9 @@ namespace MGEgui {
             this.gbDLWater.Controls.Add(this.gbDLWtrWave);
             this.gbDLWater.Controls.Add(this.gbDLWtrRefl);
             this.gbDLWater.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbDLWater.Location = new System.Drawing.Point(3, 79);
+            this.gbDLWater.Location = new System.Drawing.Point(3, 73);
             this.gbDLWater.Name = "gbDLWater";
-            this.gbDLWater.Size = new System.Drawing.Size(283, 259);
+            this.gbDLWater.Size = new System.Drawing.Size(283, 235);
             this.gbDLWater.TabIndex = 9;
             this.gbDLWater.TabStop = false;
             this.gbDLWater.Text = "&Water";
@@ -1762,7 +1777,7 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.gbDLWtrCaust.Controls.Add(this.lDLWtrCaust);
             this.gbDLWtrCaust.Controls.Add(this.udDLWtrCaust);
-            this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 178);
+            this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 170);
             this.gbDLWtrCaust.Name = "gbDLWtrCaust";
             this.gbDLWtrCaust.Size = new System.Drawing.Size(271, 56);
             this.gbDLWtrCaust.TabIndex = 4;
@@ -1806,7 +1821,7 @@ namespace MGEgui {
             this.gbDLWtrWave.Controls.Add(this.lDLWtrWave);
             this.gbDLWtrWave.Controls.Add(this.udDLWtrWave);
             this.gbDLWtrWave.Enabled = false;
-            this.gbDLWtrWave.Location = new System.Drawing.Point(6, 116);
+            this.gbDLWtrWave.Location = new System.Drawing.Point(6, 112);
             this.gbDLWtrWave.Name = "gbDLWtrWave";
             this.gbDLWtrWave.Size = new System.Drawing.Size(271, 56);
             this.gbDLWtrWave.TabIndex = 3;
@@ -1845,7 +1860,7 @@ namespace MGEgui {
             this.gbDLWtrRefl.Controls.Add(this.cbDLReflBlur);
             this.gbDLWtrRefl.Controls.Add(this.cbDLReflNStatics);
             this.gbDLWtrRefl.Controls.Add(this.cbDLReflInterior);
-            this.gbDLWtrRefl.Location = new System.Drawing.Point(6, 19);
+            this.gbDLWtrRefl.Location = new System.Drawing.Point(6, 17);
             this.gbDLWtrRefl.Name = "gbDLWtrRefl";
             this.gbDLWtrRefl.Size = new System.Drawing.Size(271, 92);
             this.gbDLWtrRefl.TabIndex = 0;
@@ -3003,6 +3018,7 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.ComboBox cmbPerPixelLightFlags;
         public System.Windows.Forms.ComboBox cmbSShotSuffix;
         public System.Windows.Forms.Label lSShotSuffix;
         private System.Windows.Forms.Panel pDLAutoDist;

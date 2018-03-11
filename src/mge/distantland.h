@@ -32,6 +32,7 @@ public:
 
     static bool ready;
     static bool isRenderCached;
+    static bool isPPLActive;
     static int numWaterVerts, numWaterTris;
 
     static IDirect3DDevice9 *device;

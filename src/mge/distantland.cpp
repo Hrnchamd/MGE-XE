@@ -32,6 +32,7 @@ void DistantLand::renderStage0()
     // Select distant static set
     selectDistantCell();
     isRenderCached &= (Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu();
+    isPPLActive = (Configuration.MGEFlags & USE_FFESHADER) && !(Configuration.PerPixelLightFlags == 1 && !mwBridge->IntCurCellAddr());
 
     if(!isRenderCached)
     {
@@ -356,7 +357,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehSunPos, sunPos, 3);
     effect->SetFloat(ehSunVis, sunVis);
 
-    if(Configuration.MGEFlags & USE_FFESHADER)
+    if(isPPLActive)
     {
         // Apply light multiplier settings to distant land
         RGBVECTOR s = lightSunMult * sunCol, a = lightAmbMult * totalAmb;
@@ -846,7 +847,7 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
         if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER))
             return false;
     }
-    else if(Configuration.MGEFlags & USE_FFESHADER)
+    else if(isPPLActive)
     {
         // Render Morrowind with replacement shaders
         FixedFunctionShader::renderMorrowind(rs, frs, lightrs);

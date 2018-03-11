@@ -280,6 +280,11 @@ namespace MGEgui {
             {"By Above Water Fog End", 2}
         };
 
+        private static Dictionary<string, double> pplFlagsDict = new Dictionary<string, double> {
+            {"Always", 0},
+            {"Interiors only", 1}
+        };
+
         private static Dictionary<string, double> tipSpeedDict = new Dictionary<string, double> {
             {"5cps", 0},
             {"6.25cps", 1},
@@ -374,6 +379,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniCaustics = new INIFile.INIVariableDef ("Caustics", siniDL, "Water Caustics Intensity", INIFile.INIVariableType.Byte, "50", 0, 100);
         private static INIFile.INIVariableDef iniShadows = new INIFile.INIVariableDef ("SunShadows", siniDL, "Sun Shadows", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniPixelLighting = new INIFile.INIVariableDef ("PPLighting", siniDL, "Per Pixel Shader", INIFile.INIBoolType.OnOff, "Off");
+        private static INIFile.INIVariableDef iniPixelLightingFlags = new INIFile.INIVariableDef ("PPLightingFlags", siniDL, "Per Pixel Shader Flags", INIFile.INIVariableType.Dictionary, "Always", pplFlagsDict);
         #endregion
 
         private static INIFile.INIVariableDef [] iniSettings = {
@@ -399,7 +405,7 @@ namespace MGEgui {
             iniInterBeg, iniInterEnd, iniSkyRefl, iniDynRipples,
             iniDLShader, iniReflBlur, iniExpFog, iniDLExpMul,
             iniScattering, iniWaveHght, iniCaustics,
-            iniShadows, iniPixelLighting
+            iniShadows, iniPixelLighting, iniPixelLightingFlags
         };
 
         private void LoadGraphicsSettings () {
@@ -484,6 +490,7 @@ namespace MGEgui {
             cbDLAutoDist.Checked = (iniFile.getKeyValue ("AutoDist") == 1);
             cbDLSunShadows.Checked = (iniFile.getKeyValue ("SunShadows") == 1);
             cbPerPixelLighting.Checked = (iniFile.getKeyValue ("PPLighting") == 1);
+            cmbPerPixelLightFlags.SelectedIndex = (int)iniFile.getKeyValue ("PPLightingFlags");
             loading = false;
         }
 
@@ -554,6 +561,7 @@ namespace MGEgui {
             iniFile.setKey ("Scatter", cbDLScattering.Checked);
             iniFile.setKey ("SunShadows", cbDLSunShadows.Checked);
             iniFile.setKey ("PPLighting", cbPerPixelLighting.Checked);
+            iniFile.setKey ("PPLightingFlags", cmbPerPixelLightFlags.SelectedIndex);
             iniFile.save ();
             try {
                 RegistryKey key = Registry.LocalMachine.OpenSubKey (Statics.reg_mw, true);
@@ -1493,7 +1501,9 @@ namespace MGEgui {
         }
         
         private void cbPerPixelLighting_CheckedChanged(object sender, EventArgs e) {
+            cmbPerPixelLightFlags.Enabled = cbPerPixelLighting.Enabled;
         	if(loading) return;
+
         	if(cbPerPixelLighting.Checked)
         	{
         		MessageBox.Show(strings["LightOverrideOn"], Statics.strings["Warning"]);

@@ -96,6 +96,7 @@ struct ConfigurationStruct
     char SSDir[208];
     char SSName[32];
     float HDRReactionSpeed;
+    DWORD PerPixelLightFlags;
     int StatusTimeout;
     bool Force3rdPerson;
     struct { float x, y, z; } Offset3rdPerson;
@@ -114,7 +115,6 @@ struct ConfigurationStruct
     struct
     {
         float DrawDist;
-        float ShaderModel;
         float NearStaticEnd;
         float FarStaticEnd;
         float VeryFarStaticEnd;

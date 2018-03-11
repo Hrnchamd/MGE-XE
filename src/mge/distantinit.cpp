@@ -19,6 +19,7 @@ using std::tr1::unordered_map;
 
 bool DistantLand::ready = false;
 bool DistantLand::isRenderCached = false;
+bool DistantLand::isPPLActive = false;
 int DistantLand::numWaterVerts, DistantLand::numWaterTris;
 
 IDirect3DDevice9 *DistantLand::device;

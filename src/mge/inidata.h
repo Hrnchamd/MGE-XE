@@ -116,6 +116,12 @@ const tdictent dictentSSSuffix [] = {
 };
 const tdictionary dictSSSuffix = {countof(dictentSSSuffix), dictentSSSuffix};
 
+const tdictent dictentPPLFlags [] = {
+    {"Always", 0},
+    {"Interiors only", 1}
+};
+const tdictionary dictPPLFlags = {countof(dictentPPLFlags), dictentPPLFlags};
+
 
 
 const iniSetting iniSettings[] = {
@@ -155,6 +161,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.HDRReactionSpeed, t_float, 1, siniRendState, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
+    {&Configuration.PerPixelLightFlags, t_uint32, 1, siniDL, "Per Pixel Shader Flags", "Always", &dictPPLFlags, DICTONLY, 0, 0},
 
     // Generic variables
     {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},

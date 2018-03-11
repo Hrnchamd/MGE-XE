@@ -232,8 +232,21 @@ void MacroFunctions::ToggleGrass() {
 }
 
 void MacroFunctions::ToggleLightingMode() {
-    Configuration.MGEFlags ^= USE_FFESHADER;
-    displayFlag(USE_FFESHADER, "New dynamic lighting", "Standard dynamic lighting");
+    if(Configuration.MGEFlags & USE_FFESHADER) {
+        if(Configuration.PerPixelLightFlags == 0) {
+            Configuration.PerPixelLightFlags = 1;
+            StatusOverlay::setStatus("Per-pixel dynamic lighting - interiors only");
+        }
+        else {
+            Configuration.MGEFlags ^= USE_FFESHADER;
+            StatusOverlay::setStatus("Standard dynamic lighting");
+        }
+    }
+    else {
+        Configuration.MGEFlags ^= USE_FFESHADER;
+        Configuration.PerPixelLightFlags = 0;
+        StatusOverlay::setStatus("Per-pixel dynamic lighting");
+    }
 }
 
 void MacroFunctions::ToggleTransparencyAA() {
