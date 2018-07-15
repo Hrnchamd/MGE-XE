@@ -31,7 +31,6 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../include/obj/NiMultiTargetTransformController.h"
 #include "../include/obj/NiStringExtraData.h"
 #include "../include/obj/NiExtraData.h"
-#include "../include/obj/bhkConstraint.h"
 #include "../include/gen/Header.h"
 #include "../include/gen/Footer.h"
 
@@ -219,7 +218,7 @@ vector<NiObjectRef> ReadNifList( istream & in, list<NiObjectRef> & missing_link_
 		if ( header.version >= VER_20_3_0_3 ) {
 			if (nextobjpos != in.tellg()) {
 				// incorrect positioning seek to expected location
-				in.seekg(nextobjpos);				
+				in.seekg(nextobjpos);
 			}
 			// update next location
 			nextobjpos += header.blockSize[i];
@@ -241,12 +240,12 @@ vector<NiObjectRef> ReadNifList( istream & in, list<NiObjectRef> & missing_link_
 
 		// Starting position of block in stream
 		std::streampos startobjpos = in.tellg();
-	
+
 		//There are two main ways to read objects
 		//One before version 5.0.0.1 and one after
 		if ( header.version >= 0x05000001 ) {
 			//From version 5.0.0.1 to version 10.0.1.106  there is a zero byte at the begining of each object
-			
+
 			if ( header.version <= VER_10_1_0_106 ) {
 				unsigned int checkValue = ReadUInt( in );
 				if ( checkValue != 0 ) {
@@ -389,7 +388,7 @@ vector<NiObjectRef> ReadNifList( istream & in, list<NiObjectRef> & missing_link_
 	if (errStream.tellp() > 0) {
 		throw runtime_error( errStream.str() );
 	}
-	
+
 #ifdef DEBUG_LINK_PHASE
 	cout << "Link Stack:" << endl;
 	list<unsigned int>::iterator it;
@@ -400,7 +399,7 @@ vector<NiObjectRef> ReadNifList( istream & in, list<NiObjectRef> & missing_link_
 	cout << "Fixing Links:"  << endl;
 #endif
 	//--Now that all objects are read, go back and fix the links--//
-	
+
 
 	for ( unsigned int i = 0; i < obj_list.size(); ++i ) {
 #ifdef DEBUG_LINK_PHASE
@@ -492,7 +491,7 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, list<NiObject
 	header.copyright[0].line = "Numerical Design Limited, Chapel Hill, NC 27514";
 	header.copyright[1].line = "Copyright (c) 1996-2000";
 	header.copyright[2].line = "All Rights Reserved";
-	
+
 	// set the header pointer in the stream
 	out << hdrInfo(&header);
 
@@ -556,7 +555,7 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, list<NiObject
 			WriteString( objects[i]->GetType().GetTypeName() , out );
 			//Write pointer number of object
 			WritePtr32( &(*objects[i]), out );
-			
+
 		} else if (version < 0x05000001) {
 			//Write Object Type
 			WriteString( objects[i]->GetType().GetTypeName() , out );
@@ -584,7 +583,7 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, list<NiObject
 						footer.roots.push_back(objects[i]);
 					}
 				}
-			} else { // just assume its correctly passed in 
+			} else { // just assume its correctly passed in
 				footer.numRoots = 1;
 				footer.roots.resize(1);
 				footer.roots[0] = root;
@@ -644,8 +643,7 @@ void WriteNifTree( ostream & out, NiObject * root, const NifInfo & info ) {
 // Determine whether block comes before its parent or not, depending on the block type.
 // return: 'True' if child should come first, 'False' otherwise.
 bool BlockChildBeforeParent( NiObject * root ) {
-	Type *t = (Type*)&(root->GetType());
-	return (t->IsDerivedType(bhkRefObject::TYPE) && !t->IsDerivedType(bhkConstraint::TYPE));
+	return false;
 }
 
 // This is a helper function for write to set up the list of all blocks,
@@ -659,17 +657,6 @@ void EnumerateObjects( NiObject * root, map<Type*,unsigned int> & type_map, map<
 
 	list<NiObjectRef> links = root->GetRefs();
 	Type *t = (Type*)&(root->GetType());
-
-	// special case: add bhkConstraint entities before bhkConstraint
-	// (these are actually links, not refs)
-	if ( t->IsDerivedType(bhkConstraint::TYPE) ) {
-		vector< bhkEntity * > entities = ((bhkConstraint *)root)->GetEntities();
-		for ( vector< bhkEntity * >::iterator it = entities.begin(); it != entities.end(); ++it ) {
-			if ( *it != NULL ) {
-				EnumerateObjects( (NiObject*)(*it), type_map, link_map );
-			}
-		}
-	}
 
 	// Call this function on all links of this object
 	// add children that come before the block
@@ -746,7 +733,7 @@ static std::string CreateFileName(std::string name) {
       retname[pos] = '_';
       off = pos;
    }
-   return retname;   
+   return retname;
 }
 
 //TODO:  This was written by Amorilia.  Figure out how to fix it.
@@ -762,7 +749,7 @@ static void SplitNifTree( NiObject* root_object, NiObjectRef& xnif_root, list<Ni
 		if ( kf_type == KF_MW ) {
 			// Construct the XNif file...
 			xnif_root = CloneNifTree( root_object, info.version, info.userVersion );
-				
+
 			// Now search and locate newer timeframe controllers and convert to keyframecontrollers
 			list<NiObjectRef> mgrs = GetAllObjectsByType( xnif_root, NiControllerManager::TYPE );
 			for ( list<NiObjectRef>::iterator it = mgrs.begin(); it != mgrs.end(); ++it) {
@@ -783,7 +770,7 @@ static void SplitNifTree( NiObject* root_object, NiObjectRef& xnif_root, list<Ni
 			// Create xkf root header.
 			NiSequenceStreamHelperRef xkf_stream_helper = new NiSequenceStreamHelper;
 			xkf_roots.push_back( StaticCast<NiObject>(xkf_stream_helper) );
-					
+
 			// Append NiNodes with a NiKeyFrameController as NiStringExtraData objects.
 			list< pair< NiNodeRef, NiKeyframeControllerRef> > node_controllers;
 
@@ -839,9 +826,9 @@ static void SplitNifTree( NiObject* root_object, NiObjectRef& xnif_root, list<Ni
 					node_controllers.push_back( pair<NiNodeRef,NiKeyframeControllerRef>( node, key_controller ) );
 				}
 			}
-			
+
 			for ( list< pair< NiNodeRef, NiKeyframeControllerRef> >::reverse_iterator it = node_controllers.rbegin(); it != node_controllers.rend(); ++it ) {
-				//Add string data				
+				//Add string data
 				NiStringExtraDataRef nodextra = new NiStringExtraData;
 				nodextra->SetData( it->first->GetName() );
 				xkf_stream_helper->AddExtraData( StaticCast<NiExtraData>(nodextra), info.version );
@@ -922,7 +909,7 @@ void WriteFileGroup( string const & file_name, NiObject * root_object, const Nif
 	string file_name_base = file_name.substr(file_name_slash, file_name.length());
 	unsigned int file_name_dot = (unsigned int)(file_name_base.rfind("."));
 	file_name_base = file_name_base.substr(0, file_name_dot);
-	
+
 	// Deal with the simple case first
 	if ( export_files == EXPORT_NIF )
 		WriteNifTree( file_name_path + file_name_base + ".nif", root_object, info ); // simply export the NIF file!
@@ -959,7 +946,7 @@ void WriteFileGroup( string const & file_name, NiObject * root_object, const Nif
                continue;
             string path = file_name_path + file_name_base + "_" + CreateFileName(seq->GetTargetName()) + "_" + CreateFileName(seq->GetName()) + ".kf";
             WriteNifTree( path, StaticCast<NiObject>(seq), info );
-         }         
+         }
       }
    } else if (kf_type == KF_FFVT3R) {
 
@@ -979,7 +966,7 @@ void WriteFileGroup( string const & file_name, NiObject * root_object, const Nif
                continue;
             string path = file_name_path + file_name_base + "_" + CreateFileName(seq->GetTargetName()) + "_" + CreateFileName(seq->GetName()) + ".kf";
             WriteNifTree( path, StaticCast<NiObject>(seq), info );
-         }         
+         }
       }
    } else
 		throw runtime_error("Not yet implemented.");
@@ -989,7 +976,7 @@ void MapNodeNames( map<string,NiNodeRef> & name_map, NiNode * par ) {
 	//Add the par node to the map, and then call this function for each of its children
 	name_map[par->GetName()] = par;
 
-	
+
 	vector<NiAVObjectRef> links = par->GetChildren();
 	for (vector<NiAVObjectRef>::iterator it = links.begin(); it != links.end(); ++it) {
 		NiNodeRef child_node = DynamicCast<NiNode>(*it);
@@ -1008,7 +995,7 @@ void MergeSceneGraph( map<string,NiNodeRef> & name_map, NiNode * root, NiAVObjec
 
 	if ( name_map.find(name) != name_map.end() ) {
 		//This object already exists in the original file, so continue on to its children, if it is a NiNode
-		
+
 		NiNodeRef par_node = DynamicCast<NiNode>(par);
 		if ( par_node != NULL ) {
 			vector<NiAVObjectRef> children = par_node->GetChildren();
@@ -1029,7 +1016,7 @@ void MergeSceneGraph( map<string,NiNodeRef> & name_map, NiNode * root, NiAVObjec
 	if ( par_par == NULL) {
 		//This object has a new name and no parents.  That means it is the root object.
 		//of a disimilar Nif file.
-			
+
 		//Check whether we have a NiNode ( a node that might have children) or not.
 		NiNodeRef par_node = DynamicCast<NiNode>(par);
 		if ( par_node == NULL ) {
@@ -1201,7 +1188,7 @@ void MergeNifTrees( NiNode * target, NiSequenceStreamHelper * right, unsigned ve
 
 
 bool IsSupportedVersion( unsigned int version ) {
-   switch (version) 
+   switch (version)
    {
       case VER_2_3:
       case VER_3_0:
@@ -1238,13 +1225,13 @@ bool IsSupportedVersion( unsigned int version ) {
 }
 
 unsigned int ParseVersionString(string version) {
-	
+
 	unsigned int outver = 0;
 
 	string::size_type start = 0, len, end;
 	for( int offset = 3; offset >= 0 && start < version.length(); --offset ) {
 		end = version.find_first_of( ".", start );
-		
+
 		if ( end == string::npos ) {
 			if ( offset > 0 ) {
 				//This version has only one period in it.  Take the rest of the numbers one character at a time.
@@ -1255,7 +1242,7 @@ unsigned int ParseVersionString(string version) {
 			}
 		} else {
 			len = end-start;
-			
+
 		}
 
 		int num = 0;
@@ -1289,7 +1276,7 @@ string FormatVersionString(unsigned version) {
 
 	//Put the version parts into an integer array, reversing their order
 	int int_ver[4] = { byte_ver[3], byte_ver[2], byte_ver[1], byte_ver[0] };
-	
+
 	//Format the version string and return it
 	stringstream out;
 
@@ -1373,7 +1360,7 @@ Ref<NiNode> FindCommonAncestor( const vector< Ref<NiAVObject> > & objects ) {
 	//as decendents
 	size_t obj_count = objects.size();
 	vector< list<NiNodeRef> > ancestors( obj_count );
-	
+
 	//Add Ancestors of each object to its corresponding list
 	for ( size_t i = 0; i < obj_count; ++i ) {
 		ancestors[i] = ListAncestors( objects[i] );

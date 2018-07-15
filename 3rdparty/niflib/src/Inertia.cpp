@@ -2,7 +2,6 @@
 All rights reserved.  Please see niflib.h for license. */
 
 #include "../include/Inertia.h"
-#include "../include/nifqhull.h"
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -45,8 +44,8 @@ void Inertia::SetCombineMassProperties(Inertia::fnCombineMassProperties extRouti
 
 
 
-void Inertia::CalcMassPropertiesSphere(float radius, 
-								   float density, bool solid, 
+void Inertia::CalcMassPropertiesSphere(float radius,
+								   float density, bool solid,
 								   float& mass, float& volume, Vector3& center, InertiaMatrix &inertia)
 {
 	if (extCalcMassPropertiesSphereRoutine) {
@@ -68,7 +67,7 @@ void Inertia::CalcMassPropertiesSphere(float radius,
 
 
 
-void Inertia::CalcMassPropertiesBox(Vector3 size, 
+void Inertia::CalcMassPropertiesBox(Vector3 size,
 								float density, bool solid,
 								float& mass, float& volume, Vector3& center, InertiaMatrix &inertia)
 {
@@ -115,20 +114,20 @@ void Inertia::CalcMassPropertiesCylinder(Vector3 startAxis, Vector3 endAxis, flo
 	if (solid)
 	{
 		mass = density * height * float(M_PI) * pow(radius, 2.0f);
-		inertia[0][0] = 
+		inertia[0][0] =
 		inertia[1][1] = mass * (3.0f * pow(radius, 3.0f) + pow(height, 2.0f)) / 12.0f;
 		inertia[2][2] = mass * (pow(radius, 2.0f)) / 2.0f;
 	}
 	else
 	{
 		mass = density * height * float(M_PI) * pow(radius, 2.0f);
-		inertia[0][0] = 
+		inertia[0][0] =
 		inertia[1][1] = mass * (6.0f * pow(radius, 3.0f) + pow(height, 2.0f)) / 12.0f;
 		inertia[2][2] = mass * (pow(radius, 2.0f));
 	}
 }
 
-void Inertia::CalcMassPropertiesCapsule(Vector3 startAxis, Vector3 endAxis, float radius, 
+void Inertia::CalcMassPropertiesCapsule(Vector3 startAxis, Vector3 endAxis, float radius,
 									float density, bool solid,
 									float& mass, float& volume, Vector3& center, InertiaMatrix &inertia)
 {
@@ -173,8 +172,8 @@ void Inertia::CalcMassPropertiesCapsule(Vector3 startAxis, Vector3 endAxis, floa
 // The function is an implementation of the Blow and Binstock algorithm,
 // extended for the case where the polygon is a surface (set parameter
 // solid = False).
-void Inertia::CalcMassPropertiesPolyhedron(const vector<Vector3>& vertices, 
-											 const vector<Triangle>& triangles, 
+void Inertia::CalcMassPropertiesPolyhedron(const vector<Vector3>& vertices,
+											 const vector<Triangle>& triangles,
 											 float density, bool solid,
 											 float& mass, float& volume, Vector3& center, InertiaMatrix &inertia)
 {
@@ -190,7 +189,7 @@ void Inertia::CalcMassPropertiesPolyhedron(const vector<Vector3>& vertices,
 	vector<Triangle> tris;
 	if (triangles.size() == 0)
 	{
-		tris = NifQHull::compute_convex_hull(vertices);
+		//tris = NifQHull::compute_convex_hull(vertices);
 		triBegin = tris.begin();
 		triEnd = tris.end();
 	}
@@ -204,8 +203,8 @@ void Inertia::CalcMassPropertiesPolyhedron(const vector<Vector3>& vertices,
     // (0,0,0),(1,0,0),(0,1,0),(0,0,1)
     // integrate(integrate(integrate(z*z, x=0..1-y-z), y=0..1-z), z=0..1) = 1/120
     // integrate(integrate(integrate(y*z, x=0..1-y-z), y=0..1-z), z=0..1) = 1/60
-    Matrix33 covariance_canonical(	2.0f, 1.0f, 1.0f, 
-									1.0f, 2.0f, 1.0f, 
+    Matrix33 covariance_canonical(	2.0f, 1.0f, 1.0f,
+									1.0f, 2.0f, 1.0f,
 									1.0f, 1.0f, 2.0f );
     vector<Matrix44> covariances;
     vector<float> masses;
@@ -304,7 +303,7 @@ void Inertia::CalcMassPropertiesPolyhedron(const vector<Vector3>& vertices,
 		Matrix33( center[0]*center[0], center[0]*center[1], center[0]*center[2],
 				 center[1]*center[0], center[1]*center[1], center[1]*center[2],
 				 center[2]*center[0], center[2]*center[1], center[2]*center[2]
-				) 
+				)
 		);
 	translate_correction *= mass;
 
@@ -314,18 +313,18 @@ void Inertia::CalcMassPropertiesPolyhedron(const vector<Vector3>& vertices,
 	float trace = total_covariance[0][0] + total_covariance[1][1] + total_covariance[2][2];
 	Matrix44 trace_matrix;
 	trace_matrix[0][0] = trace_matrix[1][1] = trace_matrix[2][2] = trace;
-		
+
 	// correct for given density
     inertia = InertiaMatrix((trace_matrix - total_covariance).GetRotation()) * density;
     mass *= density;
 }
 
-void Inertia::CombineMassProperties( 
-	vector<float> masses, 
-	vector<float> volumes, 
-	vector<Vector3> centers, 
-	vector<InertiaMatrix> inertias, 
-	vector<Matrix44> transforms, 
+void Inertia::CombineMassProperties(
+	vector<float> masses,
+	vector<float> volumes,
+	vector<Vector3> centers,
+	vector<InertiaMatrix> inertias,
+	vector<Matrix44> transforms,
 	float& mass, float& volume, Vector3& center, InertiaMatrix &inertia )
 {
 	if (extCombineMassPropertiesRoutine) {

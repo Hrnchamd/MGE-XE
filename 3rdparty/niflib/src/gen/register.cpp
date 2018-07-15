@@ -15,41 +15,6 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/Ni3dsPathController.h"
 #include "../../include/obj/NiParticleModifier.h"
 #include "../../include/obj/NiPSysCollider.h"
-#include "../../include/obj/bhkRefObject.h"
-#include "../../include/obj/bhkSerializable.h"
-#include "../../include/obj/bhkWorldObject.h"
-#include "../../include/obj/bhkPhantom.h"
-#include "../../include/obj/bhkShapePhantom.h"
-#include "../../include/obj/bhkSimpleShapePhantom.h"
-#include "../../include/obj/bhkEntity.h"
-#include "../../include/obj/bhkRigidBody.h"
-#include "../../include/obj/bhkRigidBodyT.h"
-#include "../../include/obj/bhkConstraint.h"
-#include "../../include/obj/bhkLimitedHingeConstraint.h"
-#include "../../include/obj/bhkMalleableConstraint.h"
-#include "../../include/obj/bhkStiffSpringConstraint.h"
-#include "../../include/obj/bhkRagdollConstraint.h"
-#include "../../include/obj/bhkPrismaticConstraint.h"
-#include "../../include/obj/bhkHingeConstraint.h"
-#include "../../include/obj/bhkBallAndSocketConstraint.h"
-#include "../../include/obj/bhkBallSocketConstraintChain.h"
-#include "../../include/obj/bhkShape.h"
-#include "../../include/obj/bhkTransformShape.h"
-#include "../../include/obj/bhkSphereRepShape.h"
-#include "../../include/obj/bhkConvexShape.h"
-#include "../../include/obj/bhkSphereShape.h"
-#include "../../include/obj/bhkCapsuleShape.h"
-#include "../../include/obj/bhkBoxShape.h"
-#include "../../include/obj/bhkConvexVerticesShape.h"
-#include "../../include/obj/bhkConvexTransformShape.h"
-#include "../../include/obj/bhkMultiSphereShape.h"
-#include "../../include/obj/bhkBvTreeShape.h"
-#include "../../include/obj/bhkMoppBvTreeShape.h"
-#include "../../include/obj/bhkShapeCollection.h"
-#include "../../include/obj/bhkListShape.h"
-#include "../../include/obj/bhkMeshShape.h"
-#include "../../include/obj/bhkPackedNiTriStripsShape.h"
-#include "../../include/obj/bhkNiTriStripsShape.h"
 #include "../../include/obj/NiExtraData.h"
 #include "../../include/obj/NiInterpolator.h"
 #include "../../include/obj/NiKeyBasedInterpolator.h"
@@ -64,11 +29,6 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/NiObjectNET.h"
 #include "../../include/obj/NiCollisionObject.h"
 #include "../../include/obj/NiCollisionData.h"
-#include "../../include/obj/bhkNiCollisionObject.h"
-#include "../../include/obj/bhkCollisionObject.h"
-#include "../../include/obj/bhkBlendCollisionObject.h"
-#include "../../include/obj/bhkPCollisionObject.h"
-#include "../../include/obj/bhkSPCollisionObject.h"
 #include "../../include/obj/NiAVObject.h"
 #include "../../include/obj/NiDynamicEffect.h"
 #include "../../include/obj/NiLight.h"
@@ -116,13 +76,11 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/NiGeometryData.h"
 #include "../../include/obj/AbstractAdditionalGeometryData.h"
 #include "../../include/obj/NiTriBasedGeomData.h"
-#include "../../include/obj/bhkBlendController.h"
 #include "../../include/obj/BSBound.h"
 #include "../../include/obj/BSFurnitureMarker.h"
 #include "../../include/obj/BSParentVelocityModifier.h"
 #include "../../include/obj/BSPSysArrayEmitter.h"
 #include "../../include/obj/BSWindModifier.h"
-#include "../../include/obj/hkPackedNiTriStripsData.h"
 #include "../../include/obj/NiAlphaProperty.h"
 #include "../../include/obj/NiAmbientLight.h"
 #include "../../include/obj/NiParticlesData.h"
@@ -365,10 +323,8 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/BSBlastNode.h"
 #include "../../include/obj/BSDamageStage.h"
 #include "../../include/obj/BSRefractionFirePeriodController.h"
-#include "../../include/obj/bhkConvexListShape.h"
 #include "../../include/obj/BSTreadTransfInterpolator.h"
 #include "../../include/obj/BSAnimNotes.h"
-#include "../../include/obj/bhkLiquidAction.h"
 #include "../../include/obj/BSMultiBoundNode.h"
 #include "../../include/obj/BSMultiBound.h"
 #include "../../include/obj/BSMultiBoundData.h"
@@ -379,11 +335,8 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/NiAdditionalGeometryData.h"
 #include "../../include/obj/BSPackedAdditionalGeometryData.h"
 #include "../../include/obj/BSWArray.h"
-#include "../../include/obj/bhkAabbPhantom.h"
 #include "../../include/obj/BSFrustumFOVController.h"
 #include "../../include/obj/BSDebrisNode.h"
-#include "../../include/obj/bhkBreakableConstraint.h"
-#include "../../include/obj/bhkOrientHingedBodyAction.h"
 #include "../../include/obj/NiDataStream.h"
 #include "../../include/obj/NiRenderObject.h"
 #include "../../include/obj/NiMeshModifier.h"
@@ -436,8 +389,6 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/NiMeshHWInstance.h"
 #include "../../include/obj/NiFurSpringController.h"
 #include "../../include/obj/CStreamableAssetData.h"
-#include "../../include/obj/bhkCompressedMeshShape.h"
-#include "../../include/obj/bhkCompressedMeshShapeData.h"
 #include "../../include/obj/BSInvMarker.h"
 #include "../../include/obj/BSBoneLODExtraData.h"
 #include "../../include/obj/BSBehaviorGraphExtraData.h"
@@ -459,41 +410,6 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "Ni3dsPathController", Ni3dsPathController::Create );
 		ObjectRegistry::RegisterObject( "NiParticleModifier", NiParticleModifier::Create );
 		ObjectRegistry::RegisterObject( "NiPSysCollider", NiPSysCollider::Create );
-		ObjectRegistry::RegisterObject( "bhkRefObject", bhkRefObject::Create );
-		ObjectRegistry::RegisterObject( "bhkSerializable", bhkSerializable::Create );
-		ObjectRegistry::RegisterObject( "bhkWorldObject", bhkWorldObject::Create );
-		ObjectRegistry::RegisterObject( "bhkPhantom", bhkPhantom::Create );
-		ObjectRegistry::RegisterObject( "bhkShapePhantom", bhkShapePhantom::Create );
-		ObjectRegistry::RegisterObject( "bhkSimpleShapePhantom", bhkSimpleShapePhantom::Create );
-		ObjectRegistry::RegisterObject( "bhkEntity", bhkEntity::Create );
-		ObjectRegistry::RegisterObject( "bhkRigidBody", bhkRigidBody::Create );
-		ObjectRegistry::RegisterObject( "bhkRigidBodyT", bhkRigidBodyT::Create );
-		ObjectRegistry::RegisterObject( "bhkConstraint", bhkConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkLimitedHingeConstraint", bhkLimitedHingeConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkMalleableConstraint", bhkMalleableConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkStiffSpringConstraint", bhkStiffSpringConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkRagdollConstraint", bhkRagdollConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkPrismaticConstraint", bhkPrismaticConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkHingeConstraint", bhkHingeConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkBallAndSocketConstraint", bhkBallAndSocketConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkBallSocketConstraintChain", bhkBallSocketConstraintChain::Create );
-		ObjectRegistry::RegisterObject( "bhkShape", bhkShape::Create );
-		ObjectRegistry::RegisterObject( "bhkTransformShape", bhkTransformShape::Create );
-		ObjectRegistry::RegisterObject( "bhkSphereRepShape", bhkSphereRepShape::Create );
-		ObjectRegistry::RegisterObject( "bhkConvexShape", bhkConvexShape::Create );
-		ObjectRegistry::RegisterObject( "bhkSphereShape", bhkSphereShape::Create );
-		ObjectRegistry::RegisterObject( "bhkCapsuleShape", bhkCapsuleShape::Create );
-		ObjectRegistry::RegisterObject( "bhkBoxShape", bhkBoxShape::Create );
-		ObjectRegistry::RegisterObject( "bhkConvexVerticesShape", bhkConvexVerticesShape::Create );
-		ObjectRegistry::RegisterObject( "bhkConvexTransformShape", bhkConvexTransformShape::Create );
-		ObjectRegistry::RegisterObject( "bhkMultiSphereShape", bhkMultiSphereShape::Create );
-		ObjectRegistry::RegisterObject( "bhkBvTreeShape", bhkBvTreeShape::Create );
-		ObjectRegistry::RegisterObject( "bhkMoppBvTreeShape", bhkMoppBvTreeShape::Create );
-		ObjectRegistry::RegisterObject( "bhkShapeCollection", bhkShapeCollection::Create );
-		ObjectRegistry::RegisterObject( "bhkListShape", bhkListShape::Create );
-		ObjectRegistry::RegisterObject( "bhkMeshShape", bhkMeshShape::Create );
-		ObjectRegistry::RegisterObject( "bhkPackedNiTriStripsShape", bhkPackedNiTriStripsShape::Create );
-		ObjectRegistry::RegisterObject( "bhkNiTriStripsShape", bhkNiTriStripsShape::Create );
 		ObjectRegistry::RegisterObject( "NiExtraData", NiExtraData::Create );
 		ObjectRegistry::RegisterObject( "NiInterpolator", NiInterpolator::Create );
 		ObjectRegistry::RegisterObject( "NiKeyBasedInterpolator", NiKeyBasedInterpolator::Create );
@@ -508,11 +424,6 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "NiObjectNET", NiObjectNET::Create );
 		ObjectRegistry::RegisterObject( "NiCollisionObject", NiCollisionObject::Create );
 		ObjectRegistry::RegisterObject( "NiCollisionData", NiCollisionData::Create );
-		ObjectRegistry::RegisterObject( "bhkNiCollisionObject", bhkNiCollisionObject::Create );
-		ObjectRegistry::RegisterObject( "bhkCollisionObject", bhkCollisionObject::Create );
-		ObjectRegistry::RegisterObject( "bhkBlendCollisionObject", bhkBlendCollisionObject::Create );
-		ObjectRegistry::RegisterObject( "bhkPCollisionObject", bhkPCollisionObject::Create );
-		ObjectRegistry::RegisterObject( "bhkSPCollisionObject", bhkSPCollisionObject::Create );
 		ObjectRegistry::RegisterObject( "NiAVObject", NiAVObject::Create );
 		ObjectRegistry::RegisterObject( "NiDynamicEffect", NiDynamicEffect::Create );
 		ObjectRegistry::RegisterObject( "NiLight", NiLight::Create );
@@ -560,13 +471,11 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "NiGeometryData", NiGeometryData::Create );
 		ObjectRegistry::RegisterObject( "AbstractAdditionalGeometryData", AbstractAdditionalGeometryData::Create );
 		ObjectRegistry::RegisterObject( "NiTriBasedGeomData", NiTriBasedGeomData::Create );
-		ObjectRegistry::RegisterObject( "bhkBlendController", bhkBlendController::Create );
 		ObjectRegistry::RegisterObject( "BSBound", BSBound::Create );
 		ObjectRegistry::RegisterObject( "BSFurnitureMarker", BSFurnitureMarker::Create );
 		ObjectRegistry::RegisterObject( "BSParentVelocityModifier", BSParentVelocityModifier::Create );
 		ObjectRegistry::RegisterObject( "BSPSysArrayEmitter", BSPSysArrayEmitter::Create );
 		ObjectRegistry::RegisterObject( "BSWindModifier", BSWindModifier::Create );
-		ObjectRegistry::RegisterObject( "hkPackedNiTriStripsData", hkPackedNiTriStripsData::Create );
 		ObjectRegistry::RegisterObject( "NiAlphaProperty", NiAlphaProperty::Create );
 		ObjectRegistry::RegisterObject( "NiAmbientLight", NiAmbientLight::Create );
 		ObjectRegistry::RegisterObject( "NiParticlesData", NiParticlesData::Create );
@@ -809,10 +718,8 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "BSBlastNode", BSBlastNode::Create );
 		ObjectRegistry::RegisterObject( "BSDamageStage", BSDamageStage::Create );
 		ObjectRegistry::RegisterObject( "BSRefractionFirePeriodController", BSRefractionFirePeriodController::Create );
-		ObjectRegistry::RegisterObject( "bhkConvexListShape", bhkConvexListShape::Create );
 		ObjectRegistry::RegisterObject( "BSTreadTransfInterpolator", BSTreadTransfInterpolator::Create );
 		ObjectRegistry::RegisterObject( "BSAnimNotes", BSAnimNotes::Create );
-		ObjectRegistry::RegisterObject( "bhkLiquidAction", bhkLiquidAction::Create );
 		ObjectRegistry::RegisterObject( "BSMultiBoundNode", BSMultiBoundNode::Create );
 		ObjectRegistry::RegisterObject( "BSMultiBound", BSMultiBound::Create );
 		ObjectRegistry::RegisterObject( "BSMultiBoundData", BSMultiBoundData::Create );
@@ -823,11 +730,8 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "NiAdditionalGeometryData", NiAdditionalGeometryData::Create );
 		ObjectRegistry::RegisterObject( "BSPackedAdditionalGeometryData", BSPackedAdditionalGeometryData::Create );
 		ObjectRegistry::RegisterObject( "BSWArray", BSWArray::Create );
-		ObjectRegistry::RegisterObject( "bhkAabbPhantom", bhkAabbPhantom::Create );
 		ObjectRegistry::RegisterObject( "BSFrustumFOVController", BSFrustumFOVController::Create );
 		ObjectRegistry::RegisterObject( "BSDebrisNode", BSDebrisNode::Create );
-		ObjectRegistry::RegisterObject( "bhkBreakableConstraint", bhkBreakableConstraint::Create );
-		ObjectRegistry::RegisterObject( "bhkOrientHingedBodyAction", bhkOrientHingedBodyAction::Create );
 		ObjectRegistry::RegisterObject( "NiDataStream", NiDataStream::Create );
 		ObjectRegistry::RegisterObject( "NiRenderObject", NiRenderObject::Create );
 		ObjectRegistry::RegisterObject( "NiMeshModifier", NiMeshModifier::Create );
@@ -880,8 +784,6 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "NiMeshHWInstance", NiMeshHWInstance::Create );
 		ObjectRegistry::RegisterObject( "NiFurSpringController", NiFurSpringController::Create );
 		ObjectRegistry::RegisterObject( "CStreamableAssetData", CStreamableAssetData::Create );
-		ObjectRegistry::RegisterObject( "bhkCompressedMeshShape", bhkCompressedMeshShape::Create );
-		ObjectRegistry::RegisterObject( "bhkCompressedMeshShapeData", bhkCompressedMeshShapeData::Create );
 		ObjectRegistry::RegisterObject( "BSInvMarker", BSInvMarker::Create );
 		ObjectRegistry::RegisterObject( "BSBoneLODExtraData", BSBoneLODExtraData::Create );
 		ObjectRegistry::RegisterObject( "BSBehaviorGraphExtraData", BSBehaviorGraphExtraData::Create );

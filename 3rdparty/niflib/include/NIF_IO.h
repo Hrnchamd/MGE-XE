@@ -226,7 +226,7 @@ void NifStream( Key<Quaternion> & key, istream& file, const NifInfo & info, KeyT
 void NifStream( Key<Quaternion> const & key, ostream& file, const NifInfo & info,  KeyType type );
 
 //Key<T>
-template <class T> 
+template <class T>
 void NifStream( Key<T> & key, istream& file, const NifInfo & info, KeyType type ) {
 	key.time = ReadFloat( file );
 
@@ -250,12 +250,12 @@ void NifStream( Key<T> & key, istream& file, const NifInfo & info, KeyType type 
 	}
 }
 
-template <class T> 
+template <class T>
 void NifStream( Key<T> & key, istream & file, const NifInfo & info, int type ) {
 	NifStream( key, file, info, (KeyType)type );
 }
 
-template <class T> 
+template <class T>
 void NifStream( Key<T> const & key, ostream& file, const NifInfo & info, KeyType type ) {
 	WriteFloat( key.time, file );
 
@@ -279,7 +279,7 @@ void NifStream( Key<T> const & key, ostream& file, const NifInfo & info, KeyType
 	}
 }
 
-template <class T> 
+template <class T>
 void NifStream( Key<T> const & key, ostream & file, const NifInfo & info, int type ) {
 	NifStream( key, file, info, (KeyType)type );
 }
@@ -331,7 +331,7 @@ public:
 };
 
 class NifStreamBuf : public std::streambuf {
-	streamsize size; 
+	streamsize size;
 	pos_type pos;
 public:
 	NifStreamBuf () : size(0), pos(0) {}
@@ -341,7 +341,9 @@ private:
     char *pptr( ) const { return NULL; }
     char *epptr( ) const { return NULL; }
     // disable spurious msvc warning about xsgetn
+    #ifdef _MSC_VER
     #pragma warning (disable : 4996)
+    #endif
     virtual streamsize xsgetn( char_type *_Ptr, streamsize _Count ) { return 0; }
     virtual streamsize xsputn(const char_type *_Ptr, streamsize _Count);
 	virtual streampos seekoff(streamoff, ios_base::seekdir, ios_base::openmode = ios_base::in | ios_base::out);
