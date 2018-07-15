@@ -90,7 +90,7 @@ bSShotDirClear = "Clear"
 
 ;;;;   check boxes   ;;;;
 bViewCaps = "Report max AA and AF"
-cbAltCombat = "Alternative combat controls"
+cbAltCombat = "Daggerfall combat controls"
 cbAudio = "Disable audio"
 cbAutoCrosshair = "Crosshair autohide"
 cbCam3rdPrsn = "Customize 3rd person camera"

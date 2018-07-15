@@ -89,7 +89,7 @@ bSShotDirClear = "Effacer"
 
 ;;;;   check boxes   ;;;;
 bViewCaps = "Niveau max d'AA et d'AF"
-cbAltCombat = "Commandes de combat alternatives"
+cbAltCombat = "Cmds. de combat comme Daggerfall"
 cbAudio = "Désactiver le son"
 cbAutoCrosshair = "Masquage auto du curseur"
 cbCam3rdPrsn = "Personnaliser la caméra 3e personne"

@@ -90,7 +90,7 @@ bSShotDirClear = "Wyczyść"
 
 ;;;;   check boxes   ;;;;
 bViewCaps = "Raportuj maksymalne AA i AF"
-cbAltCombat = "Alternatywny tryb walki"
+cbAltCombat = "Sterowanie walki w stylu Daggerfall"
 cbAudio = "Wyłącz dźwięk"
 cbAutoCrosshair = "Autom. ukrywanie celownika"
 cbCam3rdPrsn = "Dostosuj kamerę 3-osobową"
