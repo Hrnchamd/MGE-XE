@@ -16,7 +16,7 @@
 #include "error.h"
 #include "overdraw.h"
 
-#include "tootlelib.h"
+#include "include/tootlelib.h"
 #include "triorder.h"
 #include "viewpoints.h"
 #include "Stripifier.h"
@@ -1066,14 +1066,14 @@ static TootleResult TootleOptimizeOverdrawFastApproximation(const void*         
 //=================================================================================================================================
 void TOOTLE_DLL TootleCleanup()
 {
-    try 
+    try
     {
         // clean up overdraw module
         if (ODIsInitialized ()) {
             ODCleanup ();
         }
     }
-    catch (...) 		
+    catch (...)
     {
     }
 }
@@ -1920,7 +1920,7 @@ TootleResult TOOTLE_DLL TootleOptimizeVertexMemory(const void*         pVB,
                                                    unsigned int*       pnVertexRemapOut)
 {
     AMD_TOOTLE_API_FUNCTION_BEGIN
- 
+
     // sanity checks
     assert(pVB);
     assert(pnIB);

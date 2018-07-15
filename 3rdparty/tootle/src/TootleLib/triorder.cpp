@@ -81,7 +81,7 @@ void FanVertOptimizeOverdrawOnly(float *pfVertexPositionsIn,
 #include <algorithm>
 #include <memory>
 #include <limits>
-#include "tootlelib.h"  // TootleFaceWinding enum
+#include "include/tootlelib.h"  // TootleFaceWinding enum
 #include "triorder.h"   // TOOTLE_NONE
 
 using std::sort;

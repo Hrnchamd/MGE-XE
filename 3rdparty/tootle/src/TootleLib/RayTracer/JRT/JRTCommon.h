@@ -9,7 +9,7 @@
 /// epsilon value used in intersection computations.
 #define JRTEPSILON 0.00001f
 
-#include "../TootlePCH.h"
+#include "../../TootlePCH.h"
 
 #include <iostream>
 

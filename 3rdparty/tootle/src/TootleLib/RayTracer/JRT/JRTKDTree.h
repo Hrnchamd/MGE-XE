@@ -12,7 +12,7 @@
 #include "JRTCore.h"
 
 #ifdef __GNUC__
-    #include "../aligned_malloc.h"
+    #include "../../aligned_malloc.h"
     #define _aligned_malloc aligned_malloc
     #define _aligned_free aligned_free
 #endif
