@@ -26,3 +26,6 @@ LODRange & LODRange::operator=( const LODRange & src ) {
 
 //Destructor
 LODRange::~LODRange() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

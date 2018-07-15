@@ -6,8 +6,8 @@ All rights reserved.  Please see niflib.h for license. */
 //To change this file, alter the niftools/docsys/gen_niflib.py Python script.
 
 #include "../../include/gen/SkinShape.h"
-#include "../../include/obj/NiTriShape.h"
 #include "../../include/obj/NiSkinInstance.h"
+#include "../../include/obj/NiTriBasedGeom.h"
 using namespace Niflib;
 
 //Constructor
@@ -27,3 +27,6 @@ SkinShape & SkinShape::operator=( const SkinShape & src ) {
 
 //Destructor
 SkinShape::~SkinShape() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

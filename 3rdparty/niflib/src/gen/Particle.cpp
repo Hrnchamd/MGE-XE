@@ -30,3 +30,6 @@ Particle & Particle::operator=( const Particle & src ) {
 
 //Destructor
 Particle::~Particle() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

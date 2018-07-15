@@ -25,10 +25,12 @@ struct hkTriangle {
 	NIFLIB_API hkTriangle & operator=( const hkTriangle & src );
 	/*! The triangle. */
 	Triangle triangle;
-	/*! Another short, doesn't look like a vertex index. */
-	unsigned short unknownShort;
+	/*! Additional havok information on how triangles are welded. */
+	unsigned short weldingInfo;
 	/*! This is the triangle's normal. */
 	Vector3 normal;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

@@ -29,6 +29,8 @@ struct TBC {
 	float b;
 	/*! Continuity. */
 	float c;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

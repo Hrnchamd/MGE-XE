@@ -26,3 +26,6 @@ AVObject & AVObject::operator=( const AVObject & src ) {
 
 //Destructor
 AVObject::~AVObject() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

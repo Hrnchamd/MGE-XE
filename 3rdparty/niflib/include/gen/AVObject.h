@@ -29,6 +29,8 @@ struct AVObject {
 	string name;
 	/*! Object reference. */
 	NiAVObject * avObject;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

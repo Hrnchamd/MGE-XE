@@ -26,3 +26,6 @@ OldSkinData & OldSkinData::operator=( const OldSkinData & src ) {
 
 //Destructor
 OldSkinData::~OldSkinData() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

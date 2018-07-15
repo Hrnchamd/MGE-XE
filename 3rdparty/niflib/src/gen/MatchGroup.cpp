@@ -25,3 +25,6 @@ MatchGroup & MatchGroup::operator=( const MatchGroup & src ) {
 
 //Destructor
 MatchGroup::~MatchGroup() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

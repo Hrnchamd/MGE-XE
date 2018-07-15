@@ -11,7 +11,6 @@
 #define TRI_STRIPPER_HEADER_GUARD_PUBLIC_TYPES_H
 
 #include <vector>
-#include <cstddef>
 
 
 

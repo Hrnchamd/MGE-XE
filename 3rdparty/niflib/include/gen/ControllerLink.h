@@ -36,7 +36,7 @@ struct ControllerLink {
 	/*! Copy Operator */
 	NIFLIB_API ControllerLink & operator=( const ControllerLink & src );
 	/*! Name of a controllable object in another NIF file. */
-	string targetName;
+	IndexString targetName;
 	/*! Link to a controller. */
 	Ref<NiTimeController > controller;
 	/*! Link to an interpolator. */
@@ -49,14 +49,14 @@ struct ControllerLink {
 	 * Idle animations tend to have low values for this, and NIF objects that have high
 	 * values tend to correspond with the important parts of the animation.
 	 */
-	byte priority_;
+	byte priority;
 	/*!
 	 * Refers to the NiStringPalette which contains the name of the controlled NIF
 	 * object.
 	 */
 	Ref<NiStringPalette > stringPalette;
 	/*! The name of the animated node. */
-	string nodeName;
+	IndexString nodeName;
 	/*!
 	 * Offset in the string palette where the name of the controlled node (NiNode,
 	 * NiTriShape, ...) starts.
@@ -66,7 +66,7 @@ struct ControllerLink {
 	 * Name of the property (NiMaterialProperty, ...), if this controller controls a
 	 * property.
 	 */
-	string propertyType;
+	IndexString propertyType;
 	/*!
 	 * Offset in the string palette where the property (NiMaterialProperty, ...)
 	 * starts, if this controller controls a property. Otherwise, -1.
@@ -76,7 +76,7 @@ struct ControllerLink {
 	 * Probably the object type name of the controller in the NIF file that is child of
 	 * the controlled object.
 	 */
-	string controllerType;
+	IndexString controllerType;
 	/*!
 	 * Apparently the offset in the string palette of some type of controller related
 	 * to Interpolator (for example, a 'NiTransformInterpolator' will have here a
@@ -89,20 +89,22 @@ struct ControllerLink {
 	 * Some variable string (such as 'SELF_ILLUM', '0-0-TT_TRANSLATE_U', 'tongue_out',
 	 * etc.).
 	 */
-	string variable1;
+	IndexString variable1;
 	/*!
 	 * Offset in the string palette where some variable string starts (such as
 	 * 'SELF_ILLUM', '0-0-TT_TRANSLATE_U', 'tongue_out', etc.). Usually, -1.
 	 */
-	unsigned int variableOffset1;
+	unsigned int variable1Offset;
 	/*! Another variable string, apparently used for particle system controllers. */
-	string variable2;
+	IndexString variable2;
 	/*!
 	 * Offset in the string palette where some variable string starts (so far only
 	 * 'EmitterActive' and 'BirthRate' have been observed in official files, used for
 	 * particle system controllers). Usually, -1.
 	 */
-	unsigned int variableOffset2;
+	unsigned int variable2Offset;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

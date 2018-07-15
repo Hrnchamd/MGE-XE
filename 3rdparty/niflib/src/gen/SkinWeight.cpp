@@ -25,3 +25,6 @@ SkinWeight & SkinWeight::operator=( const SkinWeight & src ) {
 
 //Destructor
 SkinWeight::~SkinWeight() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

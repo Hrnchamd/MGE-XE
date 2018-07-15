@@ -24,10 +24,12 @@ TexSource & TexSource::operator=( const TexSource & src ) {
 	this->fileName = src.fileName;
 	this->unknownLink = src.unknownLink;
 	this->unknownByte = src.unknownByte;
-	this->originalFileName_ = src.originalFileName_;
 	this->pixelData = src.pixelData;
 	return *this;
 };
 
 //Destructor
 TexSource::~TexSource() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

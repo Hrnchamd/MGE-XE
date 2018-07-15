@@ -18,10 +18,12 @@ template <class T >
 struct RotationKeyArray {
 	/*! Number of keys. */
 	mutable unsigned int numKeys;
-	/*! Key type (1, 2, 3, or 4). */
+	/*! Key type (LINEAR_KEY, QUADRATIC_KEY, TBC_KEY, or XYZ_ROTATION_KEY). */
 	KeyType keyType;
 	/*! The rotation keys. */
 	vector<Key<T > > keys;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

@@ -7,8 +7,8 @@ All rights reserved.  Please see niflib.h for license. */
 #include "Ref.h"
 #include "nif_math.h"
 #include "nif_basic_types.h"
+#include "../include/obj/BSDismemberSkinInstance.h"
 #include <vector>
-#include <map>
 
 namespace Niflib {
 
@@ -19,6 +19,7 @@ class NiProperty;
 class NiNode;
 class NiAVObject;
 class NiTriBasedGeom;
+class NiSkinPartition;
 
 /*! Marks empty data indices */
 const unsigned int CS_NO_INDEX = 0xFFFFFFFF;
@@ -171,14 +172,18 @@ public:
 	 * \param stripify Whether or not to generate efficient triangle strips.
 	 * \param tangent_space Whether or not to generate Oblivion tangent space
 	 * information.
-	 * \return A referene to the root NiAVObject that was created.
+	 * \param min_vertex_weight Remove vertex weights bellow a given value
+	 * \param use_dismember_partitions Uses BSDismemberSkinInstance with custom partitions for dismember
+	 * \return A reference to the root NiAVObject that was created.
 	 */
 	NIFLIB_API Ref<NiAVObject> Split( 
 		NiNode * parent,
 		Matrix44 & transform,
 		int max_bones_per_partition = 4,
 		bool stripify = false,
-		bool tangent_space = false
+		bool tangent_space = false,
+		float min_vertex_weight = 0.001f,
+		byte tspace_flags = 0
 	) const;
 
 	/* 
@@ -190,25 +195,6 @@ public:
 	 * \sa NiNode::IsSplitMeshProxy
 	 */
 	NIFLIB_API void Merge( NiAVObject * root );
-
-	/*!
-	 * This removes the smallest weights from the mesh so that it meets maximum bone criteria per vertex and triangle and then re-normalizes the result.
-	 * \param[in] max_bones_per_face The maximum number of bones that can affect any one face.
-	 * \param[in] max_bones_per_vert The maximum number of bones that can affect any one vertex.  
-	 */
-	NIFLIB_API void ReduceSkinWeights( size_t max_bones_per_face = 4, size_t max_bones_per_vert = 4 );
-
-	/*!
-	 * This function normalizes the skin weights so that the influences on each vertex add up to one. 
-	 */
-	NIFLIB_API void NormalizeSkinWeights();
-
-	/*!
-	 * Returns a map which associates an influence index number with the amount of weight that influence has on the given face.
-	 * \param[in] face_index The index of the face to enumerate influences for.
-	 * \return A map which stores the influence indices that affect the face and the amount of total weight they have.
-	 */
-	NIFLIB_API map<size_t, float> EnumerateFaceInfluences( size_t face_index );
 	
 	/* 
 	 * Clears out all the data stored in this ComplexShape
@@ -311,7 +297,33 @@ public:
 	 */
 	NIFLIB_API vector< Ref<NiNode> > GetSkinInfluences() const;
 
+	/*
+	 * Gets the association between the faces in the complex shape and the corresponding body parts
+	 * \return A vector depicting the association
+	 */
+	NIFLIB_API vector<unsigned int> GetDismemberPartitionsFaces() const;
+
+	/*
+	 * Sets the association between the body parts and the faces in the complex shape
+	 * \param[in] The new association meaning that the face at the position of the index corresponds to the body part group given by the value at the position of the index of the face
+	 */
+	NIFLIB_API void SetDismemberPartitionsFaces( const vector<unsigned int>& value );
+
+	/*
+	 * Gets a list of the dismember groups
+	 * \return The list of the dismember groups
+	 */
+	NIFLIB_API vector<BodyPartList> GetDismemberPartitionsBodyParts() const;
+
+	/*
+	 * Gets the association between the faces in the complex shape and the corresponding body parts
+	 * \param[in] A list of the dismember groups;
+	 */
+	NIFLIB_API void SetDismemberPartitionsBodyParts( const vector<BodyPartList>& value);
+
 private:
+	vector<BodyPartList> dismemberPartitionsBodyParts;
+	vector<unsigned int> dismemberPartitionsFaces;
 	vector<WeightedVertex> vertices;
 	vector<Color4> colors;
 	vector<Vector3> normals;

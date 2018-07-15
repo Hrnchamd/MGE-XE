@@ -39,18 +39,26 @@ void Footer::Read( istream& in, list<unsigned int> & link_stack, const NifInfo &
 	};
 }
 
-void Footer::Write( ostream& out, const map<NiObjectRef,unsigned int> & link_map, const NifInfo & info ) const {
+void Footer::Write( ostream& out, const map<NiObjectRef,unsigned int> & link_map, list<NiObject *> & missing_link_stack, const NifInfo & info ) const {
 	numRoots = (unsigned int)(roots.size());
 	if ( info.version >= 0x0303000D ) {
 		NifStream( numRoots, out, info );
 		for (unsigned int i2 = 0; i2 < roots.size(); i2++) {
 			if ( info.version < VER_3_3_0_13 ) {
-				NifStream( (unsigned int)&(*roots[i2]), out, info );
+				WritePtr32( &(*roots[i2]), out );
 			} else {
 				if ( roots[i2] != NULL ) {
-					NifStream( link_map.find( StaticCast<NiObject>(roots[i2]) )->second, out, info );
+					map<NiObjectRef,unsigned int>::const_iterator it = link_map.find( StaticCast<NiObject>(roots[i2]) );
+					if (it != link_map.end()) {
+						NifStream( it->second, out, info );
+						missing_link_stack.push_back( NULL );
+					} else {
+						NifStream( 0xFFFFFFFF, out, info );
+						missing_link_stack.push_back( roots[i2] );
+					}
 				} else {
 					NifStream( 0xFFFFFFFF, out, info );
+					missing_link_stack.push_back( NULL );
 				}
 			}
 		};
@@ -76,3 +84,6 @@ string Footer::asString( bool verbose ) const {
 	};
 	return out.str();
 }
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

@@ -25,3 +25,6 @@ ByteArray & ByteArray::operator=( const ByteArray & src ) {
 
 //Destructor
 ByteArray::~ByteArray() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

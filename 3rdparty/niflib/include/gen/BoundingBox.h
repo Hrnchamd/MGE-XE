@@ -31,6 +31,8 @@ struct BoundingBox {
 	Matrix33 rotation;
 	/*! Radius, per direction. */
 	Vector3 radius;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

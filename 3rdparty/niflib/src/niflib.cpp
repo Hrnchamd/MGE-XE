@@ -28,10 +28,10 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../include/obj/NiTransformInterpolator.h"
 #include "../include/obj/NiTransformController.h"
 #include "../include/obj/NiTransformData.h"
+#include "../include/obj/NiMultiTargetTransformController.h"
 #include "../include/obj/NiStringExtraData.h"
 #include "../include/obj/NiExtraData.h"
-#include "../include/obj/bhkRigidBody.h"
-#include "../include/obj/bhkCollisionObject.h"
+#include "../include/obj/bhkConstraint.h"
 #include "../include/gen/Header.h"
 #include "../include/gen/Footer.h"
 
@@ -42,7 +42,8 @@ bool g_objects_registered = false;
 void RegisterObjects();
 
 //Utility Functions
-void EnumerateObjects( NiObject * root, map<Type*,unsigned int> & type_map, map<NiObjectRef, unsigned int> & link_map, bool reverse = false );
+bool BlockChildBeforeParent( NiObject * root );
+void EnumerateObjects( NiObject * root, map<Type*,unsigned int> & type_map, map<NiObjectRef, unsigned int> & link_map );
 NiObjectRef FindRoot( vector<NiObjectRef> const & objects );
 NiObjectRef GetObjectByType( NiObject * root, const Type & type );
 
@@ -55,9 +56,14 @@ NiObjectRef GetObjectByType( NiObject * root, const Type & type );
  * \param kf_type What type of keyframe tree to write (Morrowind style, DAoC style, ...).
  * \param info A NifInfo structure that contains information such as the version of the NIF file to create.
  */
-static void SplitNifTree( NiObject * root_object, NiObject * xnif_root, list<NiObjectRef> & xkf_roots, Kfm & kfm, int kf_type, const NifInfo & info );
+static void SplitNifTree( NiObject * root_object, NiObjectRef& xnif_root, list<NiObjectRef> & xkf_roots, Kfm & kfm, int kf_type, const NifInfo & info );
 
 //--Function Bodies--//
+
+NiObjectRef ReadNifTree( istream & in, list<NiObjectRef> & missing_link_stack, NifInfo * info ) {
+	vector<NiObjectRef> objects = ReadNifList( in, missing_link_stack, info );
+	return FindRoot( objects );
+}
 
 NiObjectRef ReadNifTree( string const & file_name, NifInfo * info ) {
 	//Read object list
@@ -99,14 +105,6 @@ unsigned int GetNifVersion( string const & file_name ) {
 	//--Open File--//
 	ifstream in( file_name.c_str(), ifstream::binary );
 
-	//Check if file exists
-	if ( in.is_open() == false ) {
-		//File does not exist, throw exception
-		stringstream ss;
-		ss << "A file with the name " << file_name << " does not exist.";
-		throw runtime_error( ss.str() );
-	}
-
 	//--Read Header String--//
 
 	HeaderString header;
@@ -116,25 +114,49 @@ unsigned int GetNifVersion( string const & file_name ) {
 	return info.version;
 }
 
+
+NifInfo ReadHeaderInfo( string const & file_name ) {
+	//--Open File--//
+	ifstream in( file_name.c_str(), ifstream::binary );
+
+	//--Read Header Info--//
+
+	Header nif_header;
+	NifInfo info;
+	info = nif_header.Read(in);
+
+	return info;
+}
+
+
+Header ReadHeader( string const & file_name ) {
+	ifstream in( file_name.c_str(), ifstream::binary );
+
+	//--Read Header Info--//
+
+	Header nif_header;
+	nif_header.Read(in);
+
+	return nif_header;
+}
+
+
+
 vector<NiObjectRef> ReadNifList( string const & file_name, NifInfo * info ) {
 
 	//--Open File--//
 	ifstream in( file_name.c_str(), ifstream::binary );
-
-	//Check if file exists
-	if ( in.is_open() == false ) {
-		//File does not exist, throw exception
-		stringstream ss;
-		ss << "A file with the name " << file_name << " does not exist.";
-		throw runtime_error( ss.str() );
-	}
-
 	vector<NiObjectRef> ret = ReadNifList( in, info );
 	in.close();
 	return ret;
 }
 
 vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
+	list<NiObjectRef> missing_link_stack;
+	return ReadNifList(in, missing_link_stack, info);
+}
+
+vector<NiObjectRef> ReadNifList( istream & in, list<NiObjectRef> & missing_link_stack, NifInfo * info ) {
 
 	//Ensure that objects are registered
 	if ( g_objects_registered == false ) {
@@ -144,6 +166,10 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 
 	//--Read Header--//
 	Header header;
+	hdrInfo hinfo(&header);
+
+	// set the header pointer in the stream
+	in >> hinfo;
 
 	//Create a new NifInfo if one isn't given.
 	bool delete_info = false;
@@ -160,9 +186,9 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 	info->userVersion = header.userVersion;
 	info->userVersion2 = header.userVersion2;
 	info->endian = EndianType(header.endianType);
-	info->creator = header.creator.str;
-	info->exportInfo1 = header.exportInfo1.str;
-	info->exportInfo2 = header.exportInfo2.str;
+	info->creator = header.exportInfo.creator.str;
+	info->exportInfo1 = header.exportInfo.exportInfo1.str;
+	info->exportInfo2 = header.exportInfo.exportInfo2.str;
 
 #ifdef DEBUG_HEADER_FOOTER
 	//Print debug output for header
@@ -181,10 +207,25 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 	string objectType;
 	stringstream errStream;
 
+	std::streampos headerpos = in.tellg();
+	std::streampos nextobjpos = headerpos;
+
 	//Loop through all objects in the file
 	unsigned int i = 0;
 	NiObjectRef new_obj;
 	while (true) {
+
+		// Check if the size information matches in version 20.3 and greater
+		if ( header.version >= VER_20_3_0_3 ) {
+			if (nextobjpos != in.tellg()) {
+				// incorrect positioning seek to expected location
+				in.seekg(nextobjpos);				
+			}
+			// update next location
+			nextobjpos += header.blockSize[i];
+		}
+
+
 		//Check for EOF
 		if (in.eof() ) {
 			errStream << "End of file reached prematurely.  This NIF may be corrupt or improperly supported." << endl;
@@ -197,6 +238,9 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 			}
 			throw runtime_error( errStream.str() );
 		}
+
+		// Starting position of block in stream
+		std::streampos startobjpos = in.tellg();
 	
 		//There are two main ways to read objects
 		//One before version 5.0.0.1 and one after
@@ -263,18 +307,6 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 					break;
 				}
 			}
-
-			if ( (objectType[0] != 'N' || objectType[1] != 'i') && (objectType[0] != 'R' || objectType[1] != 'o') && (objectType[0] != 'A' || objectType[1] != 'v')) {
-				errStream << "Read failue - Bad object position.  Invalid Type Name:  " << objectType << endl;
-				if ( new_obj != NULL ) {
-					errStream << "Last successfuly read object was:  " << endl;
-					errStream << "====[ " << "Object " << i - 1 << " | " << new_obj->GetType().GetTypeName() << " ]====" << endl;
-					errStream << new_obj->asString();
-				} else {
-					errStream << "No objects were read successfully." << endl;
-				}
-				throw runtime_error( errStream.str() );
-			}
 		}
 
 		//Create object of the type that was found
@@ -284,7 +316,7 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 		if ( new_obj == NULL ) {
 			errStream << "Unknown object type encountered during file read:  " << objectType << endl;
 			if ( new_obj != NULL ) {
-				errStream << "Last successfuly read object was:  " << endl;
+				errStream << "Last successfully read object was:  " << endl;
 				errStream << "====[ " << "Object " << i - 1 << " | " << new_obj->GetType().GetTypeName() << " ]====" << endl;
 				errStream << new_obj->asString();
 			} else {
@@ -311,7 +343,25 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 
 		//Add object to list
 		obj_list.push_back(new_obj);
-			
+
+		//Store block number
+		new_obj->internal_block_number = index;
+
+		// Ending position of block in stream
+		std::streampos endobjpos = in.tellg();
+
+		// Check if the size information matches
+		if ( header.version >= VER_20_3_0_3 ) {
+			std::streamsize calcobjsize = endobjpos - startobjpos;
+			unsigned int objsize = header.blockSize[i];
+			if (calcobjsize != objsize) {
+				errStream << "Object size mismatch occurred during file read:" << endl;
+				errStream << "====[ " << "Object " << i << " | " << objectType << " ]====" << endl;
+				errStream << "  Start: " << startobjpos << "  Expected Size: " << objsize << "  Read Size: " << calcobjsize << endl;
+				errStream << endl;
+			}
+		}
+
 #ifdef PRINT_OBJECT_CONTENTS
 		cout << endl << new_obj->asString() << endl;
 #endif
@@ -334,13 +384,12 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 	//Print footer debug output
 	footer.asString();
 #endif
-	
-	//This should fail, and trigger the in.eof() flag
-	ReadByte( in ); 
-	if ( ! in.eof() ) {
-		throw runtime_error("End of file not reached.  This NIF may be corrupt or improperly supported.");
-	}
 
+	// Check for accumulated warnings
+	if (errStream.tellp() > 0) {
+		throw runtime_error( errStream.str() );
+	}
+	
 #ifdef DEBUG_LINK_PHASE
 	cout << "Link Stack:" << endl;
 	list<unsigned int>::iterator it;
@@ -358,7 +407,7 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 		cout << "   " << i << ":  " << obj_list[i] << endl;
 #endif
 		//Fix links & other pre-processing
-		obj_list[i]->FixLinks( objects, link_stack, *info );
+		obj_list[i]->FixLinks( objects, link_stack, missing_link_stack, *info );
 	}
 
 	//delete info if it was dynamically allocated
@@ -366,12 +415,50 @@ vector<NiObjectRef> ReadNifList( istream & in, NifInfo * info ) {
 		delete info;
 	}
 
+	// clear the header pointer in the stream.  Should be in try/catch block
+	hdrInfo hinfo2(NULL);
+	in >> hinfo2;
+
 	//Return completed object list
 	return obj_list;
 }
 
+NiObjectRef _ResolveMissingLinkStackHelper(NiObject *root, NiObject *obj) {
+	// search by name
+	NiNodeRef rootnode = DynamicCast<NiNode>(root);
+	NiNodeRef objnode = DynamicCast<NiNode>(obj);
+	if (rootnode != NULL && objnode != NULL) {
+		if (!(rootnode->GetName().empty()) && rootnode->GetName() == objnode->GetName()) {
+			return StaticCast<NiObject>(rootnode);
+		}
+		list<NiObjectRef> children = root->GetRefs();
+		for (list<NiObjectRef>::iterator child = children.begin(); child != children.end(); ++child) {
+			NiObjectRef result = _ResolveMissingLinkStackHelper(*child, obj);
+			if (result != NULL) {
+				return result;
+			}
+		}
+	}
+	// nothing found
+	return NiObjectRef();
+}
+
+list<NiObjectRef> ResolveMissingLinkStack(
+	NiObject *root,
+	const list<NiObject *> & missing_link_stack)
+{
+	list<NiObjectRef> result;
+	for (list<NiObject *>::const_iterator obj = missing_link_stack.begin(); obj != missing_link_stack.end(); ++obj) {
+		result.push_back(_ResolveMissingLinkStackHelper(root, *obj));
+	}
+	return result;
+}
+
 // Writes a valid Nif File given an ostream, a list to the root objects of a file tree
-void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, const NifInfo & info ) {
+// (missing_link_stack stores a stack of links which are referred to but which
+// are not inside the tree rooted by roots)
+void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, list<NiObject *> & missing_link_stack, const NifInfo & info) {
+
 	//Enumerate all objects in tree
 	map<Type*,unsigned int> type_map;
 	map<NiObjectRef, unsigned int> link_map;
@@ -391,8 +478,7 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, const NifInfo
 		types[it->second] = it->first;
 	}
 
-	unsigned version = info.version;
-	unsigned user_version = info.userVersion;
+        unsigned int version = info.version;
 
 	//--Write Header--//
 	Header header;
@@ -400,24 +486,46 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, const NifInfo
 	header.userVersion = info.userVersion;
 	header.userVersion2 = info.userVersion2;
 	header.endianType = info.endian;
-	header.creator.str = info.creator;
-	header.exportInfo1.str = info.exportInfo1;
-	header.exportInfo2.str = info.exportInfo2;
+	header.exportInfo.creator.str = info.creator;
+	header.exportInfo.exportInfo1.str = info.exportInfo1;
+	header.exportInfo.exportInfo2.str = info.exportInfo2;
 	header.copyright[0].line = "Numerical Design Limited, Chapel Hill, NC 27514";
 	header.copyright[1].line = "Copyright (c) 1996-2000";
 	header.copyright[2].line = "All Rights Reserved";
 	
+	// set the header pointer in the stream
+	out << hdrInfo(&header);
+
 	//Set Type Names
 	header.blockTypes.resize( types.size() );
 	for ( unsigned int i = 0; i < types.size(); ++i ) {
 		header.blockTypes[i] = types[i]->GetTypeName();
-
 	}
 
 	//Set type number of each object
 	header.blockTypeIndex.resize( objects.size() );
 	for ( unsigned int i = 0; i < objects.size(); ++i ) {
 		header.blockTypeIndex[i] = type_map[(Type*)&(objects[i]->GetType())];
+	}
+
+	// Set object sizes and accumulate string types
+	if (version >= VER_20_1_0_3)
+	{
+		// Zero string information
+		header.maxStringLength = 0;
+		header.numStrings = 0;
+		header.strings.clear();
+
+		NifSizeStream ostr;
+		ostr << hdrInfo(&header);
+
+		header.blockSize.resize( objects.size() );
+		for ( unsigned int i = 0; i < objects.size(); ++i ) {
+			ostr.reset();
+			objects[i]->Write( ostr, link_map, missing_link_stack, info );
+			header.blockSize[i] = (unsigned int) ostr.tellp();
+		}
+		header.numStrings = header.strings.size();
 	}
 
 	//Write header to file
@@ -447,17 +555,16 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, const NifInfo
 			//Write Object Type
 			WriteString( objects[i]->GetType().GetTypeName() , out );
 			//Write pointer number of object
-			WriteUInt( (unsigned int)&(*objects[i]), out );
-
+			WritePtr32( &(*objects[i]), out );
 			
 		} else if (version < 0x05000001) {
 			//Write Object Type
 			WriteString( objects[i]->GetType().GetTypeName() , out );
-		} else if (version >= 0x05000001 && version <= VER_10_1_0_0 ) {
+		} else if (version >= 0x05000001 && version <= VER_10_1_0_106 ) {
 			WriteUInt( 0, out );
 		}
 
-		objects[i]->Write( out, link_map, info );
+		objects[i]->Write( out, link_map, missing_link_stack, info );
 	}
 
 	//--Write Footer--//
@@ -483,25 +590,31 @@ void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, const NifInfo
 				footer.roots[0] = root;
 			}
 		} else {
-			footer.numRoots = (unsigned int)roots.size();
+			footer.numRoots = roots.size();
 			footer.roots.insert(footer.roots.end(), roots.begin(), roots.end());
 		}
-		footer.Write( out, link_map, info );
+		footer.Write( out, link_map, missing_link_stack, info );
 	}
+
+	// clear the header pointer in the stream.  Should be in try/catch block
+	out << hdrInfo(NULL);
+}
+
+void WriteNifTree( ostream & out, NiObject *root, list<NiObject *> & missing_link_stack, const NifInfo & info) {
+	list<NiObjectRef> roots;
+	roots.push_back(root);
+	WriteNifTree( out, roots, missing_link_stack, info );
+}
+
+void WriteNifTree( ostream & out, list<NiObjectRef> const & roots, const NifInfo & info) {
+	list<NiObject *> missing_link_stack;
+	WriteNifTree( out, roots, missing_link_stack, info );
 }
 
 // Writes a valid Nif File given a file name, a pointer to the root object of a file tree
 void WriteNifTree( string const & file_name, NiObject * root, const NifInfo & info ) {
    //Open output file
    ofstream out( file_name.c_str(), ofstream::binary );
-
-   	//Check if file exists
-	if ( out.is_open() == false ) {
-		//File does not exist, throw exception
-		stringstream ss;
-		ss << "Could not create file " << file_name << ".  Does the path exist?";
-		throw runtime_error( ss.str() );
-	}
 
    list<NiObjectRef> roots;
    roots.push_back(root);
@@ -528,50 +641,62 @@ void WriteNifTree( ostream & out, NiObject * root, const NifInfo & info ) {
    WriteNifTree( out, roots, info );
 }
 
-void EnumerateObjects( NiObject * root, map<Type*,unsigned int> & type_map, map<NiObjectRef, unsigned int> & link_map, bool reverse ) {
-	//Ensure that this object has not already been visited
+// Determine whether block comes before its parent or not, depending on the block type.
+// return: 'True' if child should come first, 'False' otherwise.
+bool BlockChildBeforeParent( NiObject * root ) {
+	Type *t = (Type*)&(root->GetType());
+	return (t->IsDerivedType(bhkRefObject::TYPE) && !t->IsDerivedType(bhkConstraint::TYPE));
+}
+
+// This is a helper function for write to set up the list of all blocks,
+// the block index map, and the block type map.
+void EnumerateObjects( NiObject * root, map<Type*,unsigned int> & type_map, map<NiObjectRef, unsigned int> & link_map ) {
+	// Ensure that this object has not already been visited
 	if ( link_map.find( root ) != link_map.end() ) {
 		//This object has already been visited.  Return.
 		return;
 	}
 
-	//Add this object type to the map if it isn't there already
-	if ( type_map.find( (Type*)&(root->GetType()) ) == type_map.end() ) {
-		//The type has not yet been registered, so register it
-		size_t n = type_map.size();
-		type_map[ (Type*)&(root->GetType()) ] = (unsigned int)n;
+	list<NiObjectRef> links = root->GetRefs();
+	Type *t = (Type*)&(root->GetType());
+
+	// special case: add bhkConstraint entities before bhkConstraint
+	// (these are actually links, not refs)
+	if ( t->IsDerivedType(bhkConstraint::TYPE) ) {
+		vector< bhkEntity * > entities = ((bhkConstraint *)root)->GetEntities();
+		for ( vector< bhkEntity * >::iterator it = entities.begin(); it != entities.end(); ++it ) {
+			if ( *it != NULL ) {
+				EnumerateObjects( (NiObject*)(*it), type_map, link_map );
+			}
+		}
 	}
 
-   // Oblivion has very rigid requirements about object ordering and the bhkRigidBody 
-   //   must be after its children. Hopefully this can be removed and replaced with 
-   //   a more generic mechanism in the future.
-	Type *t = (Type*)&(root->GetType());
-   if (  reverse
-      || t->IsDerivedType(bhkRigidBody::TYPE) 
-      || t->IsDerivedType(bhkCollisionObject::TYPE)
-      )
-   {
-      reverse = true;
-   }
+	// Call this function on all links of this object
+	// add children that come before the block
+	for ( list<NiObjectRef>::iterator it = links.begin(); it != links.end(); ++it ) {
+		if ( *it != NULL && BlockChildBeforeParent(*it) ) {
+			EnumerateObjects( *it, type_map, link_map );
+		}
+	}
 
-   // If reverse is set then add the link after children otherwise add it before
-   if (!reverse) {
-      size_t n = link_map.size();
-      link_map[root] = (unsigned int)n;
-   }
+	// Add this object type to the map if it isn't there already
+	// TODO: add support for NiDataStreams
+	if ( type_map.find(t) == type_map.end() ) {
+		//The type has not yet been registered, so register it
+		unsigned int n = type_map.size();
+		type_map[t] = n;
+	}
 
-   //Call this function on all links of this object	
-   list<NiObjectRef> links = root->GetRefs();
-   for ( list<NiObjectRef>::iterator it = links.begin(); it != links.end(); ++it ) {
-      if ( *it != NULL ) {
-         EnumerateObjects( *it, type_map, link_map, reverse );
-      }
-   }
+	// add the block
+	unsigned int n = link_map.size();
+	link_map[root] = n;
 
-   if (reverse) {
-      size_t n = link_map.size();
-      link_map[root] = (unsigned int)n;
-   }
+	// add children that come after the block
+	for ( list<NiObjectRef>::iterator it = links.begin(); it != links.end(); ++it ) {
+		if ( *it != NULL && !BlockChildBeforeParent(*it) ) {
+			EnumerateObjects( *it, type_map, link_map );
+		}
+	}
 }
 
 //TODO: Should this be returning an object of a derived type too?
@@ -597,18 +722,14 @@ NiObjectRef GetObjectByType( NiObject * root, const Type & type ) {
 // Returns all in the in the tree of type.
 list<NiObjectRef> GetAllObjectsByType( NiObject * root, const Type & type ) {
 	list<NiObjectRef> result;
-
-	Type t = root->GetType();
 	if ( root->IsSameType(type) ) {
 		result.push_back( root );
 	}
 	list<NiObjectRef> links = root->GetRefs();
 	for (list<NiObjectRef>::iterator it = links.begin(); it != links.end(); ++it ) {
 		// Can no longer guarantee that some objects won't be visited twice.  Oh well.
-		if ( *it != NULL ) {
-			list<NiObjectRef> childresult = GetAllObjectsByType( *it, type );
-			result.merge( childresult );
-		}
+		list<NiObjectRef> childresult = GetAllObjectsByType( *it, type );
+		result.merge( childresult );
 	};
 	return result;
 };
@@ -629,7 +750,7 @@ static std::string CreateFileName(std::string name) {
 }
 
 //TODO:  This was written by Amorilia.  Figure out how to fix it.
-static void SplitNifTree( NiObject * root_object, NiObjectRef & xnif_root, list<NiObjectRef> & xkf_roots, Kfm & kfm, int kf_type, const NifInfo & info ) {
+static void SplitNifTree( NiObject* root_object, NiObjectRef& xnif_root, list<NiObjectRef> & xkf_roots, Kfm & kfm, int kf_type, const NifInfo & info ) {
 	// Do we have animation groups (a NiTextKeyExtraData object)?
 	// If so, create XNif and XKf trees.
 	NiObjectRef txtkey = GetObjectByType( root_object, NiTextKeyExtraData::TYPE );
@@ -640,7 +761,6 @@ static void SplitNifTree( NiObject * root_object, NiObjectRef & xnif_root, list<
 	if ( txtkey_obj != NULL ) {
 		if ( kf_type == KF_MW ) {
 			// Construct the XNif file...
-
 			xnif_root = CloneNifTree( root_object, info.version, info.userVersion );
 				
 			// Now search and locate newer timeframe controllers and convert to keyframecontrollers
@@ -753,8 +873,39 @@ static void SplitNifTree( NiObject * root_object, NiObjectRef & xnif_root, list<
 				for (vector<NiControllerSequenceRef>::iterator itr = seqs.begin(); itr != seqs.end(); ++itr) {
 				   xkf_roots.push_back( StaticCast<NiObject>(*itr) );
 				}
+				mgr->ClearSequences();
 			}
-		} else {
+      } else if (kf_type == KF_FFVT3R) {
+
+         // Construct the Nif file without transform controllers ...
+         xnif_root = CloneNifTree( root_object, info.version, info.userVersion );
+
+         // Delete all NiMultiTargetTransformController
+         list<NiObjectRef> nodes = GetAllObjectsByType( xnif_root, NiMultiTargetTransformController::TYPE );
+         for ( list<NiObjectRef>::iterator it = nodes.begin(); it != nodes.end(); ++it) {
+            if ( NiMultiTargetTransformControllerRef ctrl = DynamicCast<NiMultiTargetTransformController>(*it) ) {
+               if (NiNodeRef target = DynamicCast<NiNode>(ctrl->GetTarget())) {
+                  target->RemoveController(ctrl);
+               }
+            }
+         }
+
+         list<NiObjectRef> mgrs = GetAllObjectsByType( xnif_root, NiControllerManager::TYPE );
+         for ( list<NiObjectRef>::iterator it = mgrs.begin(); it != mgrs.end(); ++it) {
+            NiControllerManagerRef mgr = DynamicCast<NiControllerManager>(*it);
+            if ( mgr == NULL ) {
+               continue;
+            }
+            NiObjectNETRef target = mgr->GetTarget();
+            target->RemoveController( StaticCast<NiTimeController>(mgr) );
+            vector<NiControllerSequenceRef> seqs = mgr->GetControllerSequences();
+            for (vector<NiControllerSequenceRef>::iterator itr = seqs.begin(); itr != seqs.end(); ++itr) {
+               xkf_roots.push_back( StaticCast<NiObject>(*itr) );
+            }
+            mgr->ClearSequences();
+         }
+
+      } else {
 			throw runtime_error("KF splitting for the requested game is not yet implemented.");
 		}
 	} else {
@@ -796,6 +947,26 @@ void WriteFileGroup( string const & file_name, NiObject * root_object, const Nif
       list<NiObjectRef> xkf_roots;
       Kfm kfm; // dummy
 	  SplitNifTree( root_object, xnif_root, xkf_roots, kfm, kf_type, info );
+      if ( export_files == EXPORT_NIF || export_files == EXPORT_NIF_KF || export_files == EXPORT_NIF_KF_MULTI ) {
+         WriteNifTree( file_name_path + file_name_base + ".nif", xnif_root, info );
+      }
+      if ( export_files == EXPORT_NIF_KF || export_files == EXPORT_KF ) {
+         WriteNifTree( file_name_path + file_name_base + ".kf", xkf_roots, info );
+      } else if ( export_files == EXPORT_NIF_KF_MULTI || export_files == EXPORT_KF_MULTI ) {
+         for ( list<NiObjectRef>::iterator it = xkf_roots.begin(); it != xkf_roots.end(); ++it ) {
+            NiControllerSequenceRef seq = DynamicCast<NiControllerSequence>(*it);
+            if (seq == NULL)
+               continue;
+            string path = file_name_path + file_name_base + "_" + CreateFileName(seq->GetTargetName()) + "_" + CreateFileName(seq->GetName()) + ".kf";
+            WriteNifTree( path, StaticCast<NiObject>(seq), info );
+         }         
+      }
+   } else if (kf_type == KF_FFVT3R) {
+
+      NiObjectRef xnif_root;
+      list<NiObjectRef> xkf_roots;
+      Kfm kfm; // dummy
+      SplitNifTree( root_object, xnif_root, xkf_roots, kfm, kf_type, info );
       if ( export_files == EXPORT_NIF || export_files == EXPORT_NIF_KF || export_files == EXPORT_NIF_KF_MULTI ) {
          WriteNifTree( file_name_path + file_name_base + ".nif", xnif_root, info );
       }
@@ -1030,25 +1201,38 @@ void MergeNifTrees( NiNode * target, NiSequenceStreamHelper * right, unsigned ve
 
 
 bool IsSupportedVersion( unsigned int version ) {
-	switch (version) {
-		case VER_3_0:
-		case VER_3_03:
-		case VER_3_1:
-		case VER_3_3_0_13:
-		case VER_4_0_0_0:
-		case VER_4_0_0_2:
-		case VER_4_1_0_12:
-		case VER_4_2_0_2:
-		case VER_4_2_1_0:
-		case VER_4_2_2_0:
-		case VER_10_0_1_0:
-		case VER_10_1_0_0:
-		case VER_10_0_1_2:
-		case VER_10_1_0_106:
-		case VER_10_2_0_0:
-		case VER_20_0_0_4:
-		case VER_20_0_0_5:
-			return true;
+   switch (version) 
+   {
+      case VER_2_3:
+      case VER_3_0:
+      case VER_3_03:
+      case VER_3_1:
+      case VER_3_3_0_13:
+      case VER_4_0_0_0:
+      case VER_4_0_0_2:
+      case VER_4_1_0_12:
+      case VER_4_2_0_2:
+      case VER_4_2_1_0:
+      case VER_4_2_2_0:
+      case VER_10_0_1_0:
+      case VER_10_0_1_2:
+      case VER_10_0_1_3:
+      case VER_10_1_0_0:
+      case VER_10_1_0_101:
+      case VER_10_1_0_106:
+      case VER_10_2_0_0:
+      case VER_10_4_0_1:
+      case VER_20_0_0_4:
+      case VER_20_0_0_5:
+      case VER_20_1_0_3:
+      case VER_20_2_0_7:
+      case VER_20_2_0_8:
+      case VER_20_3_0_1:
+      case VER_20_3_0_2:
+      case VER_20_3_0_3:
+      case VER_20_3_0_6:
+      case VER_20_3_0_9:
+         return true;
    }
    return false;
 }
@@ -1127,15 +1311,20 @@ string FormatVersionString(unsigned version) {
 }
 
 
-Ref<NiObject> CloneNifTree( NiObject * root, unsigned version, unsigned user_version ) {
+Ref<NiObject> CloneNifTree( NiObject *root, unsigned version, unsigned user_version, NiObject *target_root ) {
 	//Create a string stream to temporarily hold the state-save of this tree
 	stringstream tmp;
+	list<NiObject *> missing_link_stack;
+	list<NiObjectRef> resolved_link_stack;
 
 	//Write the existing tree into the stringstream
-	WriteNifTree( tmp, root, NifInfo(version, user_version) );
+	WriteNifTree( tmp, root, missing_link_stack, NifInfo(version, user_version) );
+	//Resolve missing links into target root.
+	if ( target_root != NULL)
+		resolved_link_stack = ResolveMissingLinkStack( target_root, missing_link_stack );
 
 	//Read the data back out of the stringstream, returning the new tree
-	return ReadNifTree( tmp );
+	return ReadNifTree( tmp, resolved_link_stack );
 }
 
 void SendNifTreeToBindPos( NiNode * root ) {

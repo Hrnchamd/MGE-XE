@@ -27,6 +27,8 @@ struct StringPalette {
 	string palette;
 	/*! Length of the palette string is repeated here. */
 	unsigned int length;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

@@ -26,3 +26,6 @@ ByteColor3 & ByteColor3::operator=( const ByteColor3 & src ) {
 
 //Destructor
 ByteColor3::~ByteColor3() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

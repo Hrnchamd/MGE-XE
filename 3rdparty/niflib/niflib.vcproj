@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8,00"
 	Name="Niflib"
 	ProjectGUID="{19FD8EE6-79CC-4BAC-9744-D9573BE47C7E}"
 	RootNamespace="NIFlib"
@@ -46,10 +46,10 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="NIFLIB_STATIC_LINK; WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="NIFLIB_STATIC_LINK;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
+				RuntimeLibrary="1"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
@@ -112,7 +112,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="NIFLIB_STATIC_LINK; WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="NIFLIB_STATIC_LINK;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
@@ -179,8 +179,8 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="NIFLIB_STATIC_LINK;WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
+				PreprocessorDefinitions="NIFLIB_STATIC_LINK;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
 				WarningLevel="3"
@@ -245,7 +245,7 @@
 				Optimization="0"
 				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="NIFLIB_STATIC_LINK;WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="NIFLIB_STATIC_LINK;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
@@ -309,7 +309,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
@@ -328,7 +328,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="bin\niflib.dll"
-				Version="0.7.2"
+				Version="0.7.3"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				ImportLibrary="lib/niflib_dll.lib"
@@ -384,7 +384,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="3"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;NDEBUG;_CONSOLE"
+				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;NDEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderThrough=""
@@ -403,10 +403,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="bin\niflib_x64.dll"
-				Version="0.7.2"
+				Version="0.7.3"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="lib/niflib_dll_x64.lib"
+				ImportLibrary="lib/niflib_dll.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -458,7 +458,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -479,7 +479,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="bin\niflib_debug.dll"
-				Version="0.7.2"
+				Version="0.7.3"
 				GenerateDebugInformation="true"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -535,7 +535,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(ProjectDir)include"
-				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;_DEBUG;_CONSOLE"
+				PreprocessorDefinitions="BUILDING_NIFLIB_DLL;WIN32;_DEBUG;_CONSOLE;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_SCL_SECURE_NO_WARNINGS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -556,10 +556,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				OutputFile="bin\niflib_debug_x64.dll"
-				Version="0.7.2"
+				Version="0.7.3"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
-				ImportLibrary="lib/niflib_dll_debug_x64.lib"
+				ImportLibrary="lib/niflib_dll_debug.lib"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -594,7 +594,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\src\ComplexShape.cpp"
+				RelativePath=".\src\obj\BSMultiBoundData.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\Inertia.cpp"
 				>
 			</File>
 			<File
@@ -650,7 +654,15 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\src\nifqhull.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\src\ObjectRegistry.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\src\pch.cpp"
 				>
 			</File>
 			<File
@@ -665,7 +677,27 @@
 				Name="obj"
 				>
 				<File
+					RelativePath=".\src\obj\AbstractAdditionalGeometryData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\ATextureRenderData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\AvoidNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkAabbPhantom.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkBallAndSocketConstraint.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkBallSocketConstraintChain.cpp"
 					>
 				</File>
 				<File
@@ -681,6 +713,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\bhkBreakableConstraint.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\bhkBvTreeShape.cpp"
 					>
 				</File>
@@ -693,7 +729,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\bhkCompressedMeshShape.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkCompressedMeshShapeData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\bhkConstraint.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkConvexListShape.cpp"
 					>
 				</File>
 				<File
@@ -721,11 +769,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\bhkLiquidAction.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\bhkListShape.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\obj\bhkMalleableConstraint.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkMeshShape.cpp"
 					>
 				</File>
 				<File
@@ -742,6 +798,10 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\bhkNiTriStripsShape.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\bhkOrientHingedBodyAction.cpp"
 					>
 				</File>
 				<File
@@ -821,7 +881,63 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\BSAnimNotes.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSBehaviorGraphExtraData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSBlastNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSBoneLODExtraData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\BSBound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSDamageStage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSDebrisNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSDecalPlacementVectorExtraData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSDismemberSkinInstance.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSDistantTreeShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSEffectShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSEffectShaderPropertyColorController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSEffectShaderPropertyFloatController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSFadeNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSFrustumFOVController.cpp"
 					>
 				</File>
 				<File
@@ -829,7 +945,79 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\BSFurnitureMarkerNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSInvMarker.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\BSKeyframeController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSLagBoneController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSLeafAnimNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSLightingShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSLightingShaderPropertyColorController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSLightingShaderPropertyFloatController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSLODTriShape.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMasterParticleSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMaterialEmittanceMultController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMultiBound.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMultiBoundAABB.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMultiBoundNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMultiBoundOBB.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSMultiBoundSphere.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSNiAlphaPropertyTestRefController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSOrderedNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPackedAdditionalGeometryData.cpp"
 					>
 				</File>
 				<File
@@ -837,7 +1025,115 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\BSProceduralLightningController.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\BSPSysArrayEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysHavokUpdateModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysInheritVelocityModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysLODModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysMultiTargetEmitterCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysRecycleBoundModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysScaleModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysSimpleColorModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysStripUpdateModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSPSysSubTexModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSRefractionFirePeriodController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSRefractionStrengthController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSRotAccumTransfInterpolator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSSegmentedTriShape.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSShaderLightingProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSShaderNoLightingProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSShaderPPLightingProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSShaderTextureSet.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSSkyShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSStripParticleSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSStripPSysData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSTreadTransfInterpolator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSTreeNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSValueNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSWArray.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\BSWaterShaderProperty.cpp"
 					>
 				</File>
 				<File
@@ -846,6 +1142,14 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\BSXFlags.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\CStreamableAssetData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\DistantLODShaderProperty.cpp"
 					>
 				</File>
 				<File
@@ -861,7 +1165,43 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\HairShaderProperty.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\hkPackedNiTriStripsData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Lighting30ShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Ni3dsAlphaAnimator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Ni3dsAnimationNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Ni3dsColorAnimator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Ni3dsMorphShape.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Ni3dsParticleSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\Ni3dsPathController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiAdditionalGeometryData.cpp"
 					>
 				</File>
 				<File
@@ -874,6 +1214,26 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\NiAmbientLight.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiArkAnimationExtraData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiArkImporterExtraData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiArkShaderExtraData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiArkTextureExtraData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiArkViewportInfoExtraData.cpp"
 					>
 				</File>
 				<File
@@ -890,6 +1250,14 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\NiAVObjectPalette.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiBezierMesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiBezierTriangle4.cpp"
 					>
 				</File>
 				<File
@@ -985,6 +1353,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiBSplineCompTransformEvaluator.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiBSplineCompTransformInterpolator.cpp"
 					>
 				</File>
@@ -1049,6 +1421,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiDataStream.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiDefaultAVObjectPalette.cpp"
 					>
 				</File>
@@ -1062,6 +1438,14 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\NiDynamicEffect.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiEnvMappedTriShape.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiEnvMappedTriShapeData.cpp"
 					>
 				</File>
 				<File
@@ -1105,6 +1489,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiFurSpringController.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiGeometry.cpp"
 					>
 				</File>
@@ -1122,6 +1510,10 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\NiImage.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiInstancingMeshModifier.cpp"
 					>
 				</File>
 				<File
@@ -1165,6 +1557,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiLightIntensityController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiLines.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiLinesData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiLODData.cpp"
 					>
 				</File>
@@ -1189,6 +1593,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiMesh.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiMeshHWInstance.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiMeshModifier.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiMeshParticleSystem.cpp"
 					>
 				</File>
@@ -1197,7 +1613,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiMorphController.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiMorphData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiMorpherController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiMorphMeshModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiMorphWeightsController.cpp"
 					>
 				</File>
 				<File
@@ -1281,6 +1713,50 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPersistentSrcTextureRendererData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXActorDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXBodyDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXD6JointDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXKinematicSrc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXMaterialDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXMeshDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXProp.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXPropDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXShapeDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPhysXTransformDest.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPixelData.cpp"
 					>
 				</File>
@@ -1301,6 +1777,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPortal.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPosData.cpp"
 					>
 				</File>
@@ -1309,7 +1789,167 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPSBombForce.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSBoundUpdater.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSBoxEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSCylinderEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSDragForce.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitParticlesCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterDeclinationCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterDeclinationVarCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterLifeSpanCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterPlanarAngleCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterPlanarAngleVarCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterRadiusCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterRotAngleCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterRotAngleVarCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterRotSpeedCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterRotSpeedVarCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSEmitterSpeedCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSFacingQuadGenerator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSForceActiveCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSGravityForce.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSGravityStrengthCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSMeshEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSMeshParticleSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSParticleSystem.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSPlanarCollider.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSResetOnLoopCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulatorCollidersStep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulatorFinalStep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulatorForcesStep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulatorGeneralStep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulatorMeshAlignStep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSimulatorStep.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSpawner.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSphereEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSSphericalCollider.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPSysAgeDeathModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysAirFieldAirFrictionCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysAirFieldInheritVelocityCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysAirFieldModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysAirFieldSpreadCtlr.cpp"
 					>
 				</File>
 				<File
@@ -1345,6 +1985,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPSysDragFieldModifier.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPSysDragModifier.cpp"
 					>
 				</File>
@@ -1377,7 +2021,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPSysEmitterPlanarAngleCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysEmitterPlanarAngleVarCtlr.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPSysEmitterSpeedCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysFieldAttenuationCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysFieldMagnitudeCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysFieldMaxDistanceCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysFieldModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysGravityFieldModifier.cpp"
 					>
 				</File>
 				<File
@@ -1390,6 +2062,22 @@
 				</File>
 				<File
 					RelativePath=".\src\obj\NiPSysGrowFadeModifier.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysInitialRotAngleCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysInitialRotAngleVarCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysInitialRotSpeedCtlr.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysInitialRotSpeedVarCtlr.cpp"
 					>
 				</File>
 				<File
@@ -1429,6 +2117,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPSysRadialFieldModifier.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPSysResetOnLoopCtlr.cpp"
 					>
 				</File>
@@ -1449,11 +2141,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiPSysTrailEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysTurbulenceFieldModifier.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiPSysUpdateCtlr.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\obj\NiPSysVolumeEmitter.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiPSysVortexFieldModifier.cpp"
 					>
 				</File>
 				<File
@@ -1465,7 +2169,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiRenderObject.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiRollController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiRoom.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiRoomGroup.cpp"
 					>
 				</File>
 				<File
@@ -1477,6 +2193,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiScreenElements.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiScreenElementsData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiScreenLODData.cpp"
 					>
 				</File>
@@ -1485,11 +2209,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiSequenceData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiSequenceStreamHelper.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\obj\NiShadeProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiShadowGenerator.cpp"
 					>
 				</File>
 				<File
@@ -1505,7 +2237,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiSkinningLODController.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiSkinningMeshModifier.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiSkinPartition.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiSortAdjustNode.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiSourceCubeMap.cpp"
 					>
 				</File>
 				<File
@@ -1585,7 +2333,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\obj\NiTransformEvaluator.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\obj\NiTransformInterpolator.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\NiTransparentProperty.cpp"
 					>
 				</File>
 				<File
@@ -1656,16 +2412,112 @@
 					RelativePath=".\src\obj\RootCollisionNode.cpp"
 					>
 				</File>
+				<File
+					RelativePath=".\src\obj\SkyShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\TallGrassShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\TileShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\VolumetricFogShaderProperty.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\obj\WaterShaderProperty.cpp"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="gen"
 				>
 				<File
+					RelativePath=".\src\gen\AdditionalDataBlock.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\AdditionalDataInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\ArkTexture.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\AVObject.cpp"
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\bhkCMSDBigTris.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\bhkCMSDMaterial.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\bhkCMSDBigTris.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\bhkCMSDChunk.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\bhkCMSDContainer.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\bhkCMSDData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\bhkCMSDTransform.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BodyPartList.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\BoundingBox.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BoundingVolume.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BoxBV.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BSPackedAdditionalDataBlock.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BSSegmentedTriangle.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BSTreadTransfInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BSTreadTransform.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BSTreadTransformData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\BSTreadTransfSubInfo.cpp"
 					>
 				</File>
 				<File
@@ -1681,11 +2533,47 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\ByteMatrix.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\CapsuleBV.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\ChannelData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\ComplexShape.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\ControllerLink.cpp"
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\DecalVectorArray.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\ElementReference.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\enums.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\ExportInfo.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\ExtraMeshDataEpicMickey.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\ExtraMeshDataEpicMickey2.cpp"
 					>
 				</File>
 				<File
@@ -1697,7 +2585,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\HalfSpaceBV.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\Header.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\HingeDescriptor.cpp"
 					>
 				</File>
 				<File
@@ -1717,11 +2613,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\MaterialData.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\MeshData.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\MipMap.cpp"
 					>
 				</File>
 				<File
 					RelativePath=".\src\gen\Morph.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\MorphWeight.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\MotorDescriptor.cpp"
 					>
 				</File>
 				<File
@@ -1749,6 +2661,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\ParticleDesc.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\physXMaterialRef.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\Polygon.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\QuaternionXYZW.cpp"
 					>
 				</File>
@@ -1757,7 +2681,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\Region.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\register.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\SemanticData.cpp"
 					>
 				</File>
 				<File
@@ -1781,11 +2713,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\src\gen\SkinTransform.cpp"
+					>
+				</File>
+				<File
 					RelativePath=".\src\gen\SkinWeight.cpp"
 					>
 				</File>
 				<File
-					RelativePath=".\src\gen\Sphere.cpp"
+					RelativePath=".\src\gen\SphereBV.cpp"
 					>
 				</File>
 				<File
@@ -1802,6 +2738,14 @@
 				</File>
 				<File
 					RelativePath=".\src\gen\TexSource.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\UnionBV.cpp"
+					>
+				</File>
+				<File
+					RelativePath=".\src\gen\UnknownMatrix1.cpp"
 					>
 				</File>
 			</Filter>
@@ -1844,6 +2788,10 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
+				RelativePath=".\include\obj\BSMultiBoundData.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\ComplexShape.h"
 				>
 			</File>
@@ -1853,6 +2801,10 @@
 			</File>
 			<File
 				RelativePath=".\include\FixLink.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\Inertia.h"
 				>
 			</File>
 			<File
@@ -1888,7 +2840,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\include\nifqhull.h"
+				>
+			</File>
+			<File
 				RelativePath=".\include\ObjectRegistry.h"
+				>
+			</File>
+			<File
+				RelativePath=".\include\pch.h"
 				>
 			</File>
 			<File
@@ -1907,7 +2867,27 @@
 				Name="obj"
 				>
 				<File
+					RelativePath=".\include\obj\AbstractAdditionalGeometryData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\ATextureRenderData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\AvoidNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkAabbPhantom.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkBallAndSocketConstraint.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkBallSocketConstraintChain.h"
 					>
 				</File>
 				<File
@@ -1923,6 +2903,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\bhkBreakableConstraint.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\bhkBvTreeShape.h"
 					>
 				</File>
@@ -1935,7 +2919,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\bhkCompressedMeshShape.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkCompressedMeshShapeData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\bhkConstraint.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkConvexListShape.h"
 					>
 				</File>
 				<File
@@ -1963,11 +2959,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\bhkLiquidAction.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\bhkListShape.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\obj\bhkMalleableConstraint.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkMeshShape.h"
 					>
 				</File>
 				<File
@@ -1984,6 +2988,10 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\bhkNiTriStripsShape.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\bhkOrientHingedBodyAction.h"
 					>
 				</File>
 				<File
@@ -2063,7 +3071,63 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\BSAnimNotes.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSBehaviorGraphExtraData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSBlastNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSBoneLODExtraData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\BSBound.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSDamageStage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSDebrisNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSDecalPlacementVectorExtraData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSDismemberSkinInstance.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSDistantTreeShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSEffectShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSEffectShaderPropertyColorController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSEffectShaderPropertyFloatController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSFadeNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSFrustumFOVController.h"
 					>
 				</File>
 				<File
@@ -2071,7 +3135,79 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\BSFurnitureMarkerNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSInvMarker.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\BSKeyframeController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSLagBoneController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSLeafAnimNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSLightingShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSLightingShaderPropertyColorController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSLightingShaderPropertyFloatController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSLODTriShape.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMasterParticleSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMaterialEmittanceMultController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMultiBound.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMultiBoundAABB.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMultiBoundNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMultiBoundOBB.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSMultiBoundSphere.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSNiAlphaPropertyTestRefController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSOrderedNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPackedAdditionalGeometryData.h"
 					>
 				</File>
 				<File
@@ -2079,7 +3215,115 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\BSProceduralLightningController.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\BSPSysArrayEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysHavokUpdateModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysInheritVelocityModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysLODModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysMultiTargetEmitterCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysRecycleBoundModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysScaleModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysSimpleColorModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysStripUpdateModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSPSysSubTexModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSRefractionFirePeriodController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSRefractionStrengthController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSRotAccumTransfInterpolator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSSegmentedTriShape.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSShaderLightingProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSShaderNoLightingProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSShaderPPLightingProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSShaderTextureSet.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSSkyShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSStripParticleSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSStripPSysData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSTreadTransfInterpolator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSTreeNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSValueNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSWArray.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\BSWaterShaderProperty.h"
 					>
 				</File>
 				<File
@@ -2088,6 +3332,14 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\BSXFlags.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\CStreamableAssetData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\DistantLODShaderProperty.h"
 					>
 				</File>
 				<File
@@ -2103,7 +3355,43 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\HairShaderProperty.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\hkPackedNiTriStripsData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Lighting30ShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Ni3dsAlphaAnimator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Ni3dsAnimationNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Ni3dsColorAnimator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Ni3dsMorphShape.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Ni3dsParticleSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\Ni3dsPathController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiAdditionalGeometryData.h"
 					>
 				</File>
 				<File
@@ -2116,6 +3404,26 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\NiAmbientLight.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiArkAnimationExtraData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiArkImporterExtraData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiArkShaderExtraData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiArkTextureExtraData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiArkViewportInfoExtraData.h"
 					>
 				</File>
 				<File
@@ -2132,6 +3440,14 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\NiAVObjectPalette.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiBezierMesh.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiBezierTriangle4.h"
 					>
 				</File>
 				<File
@@ -2227,6 +3543,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiBSplineCompTransformEvaluator.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiBSplineCompTransformInterpolator.h"
 					>
 				</File>
@@ -2291,6 +3611,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiDataStream.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiDefaultAVObjectPalette.h"
 					>
 				</File>
@@ -2304,6 +3628,14 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\NiDynamicEffect.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiEnvMappedTriShape.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiEnvMappedTriShapeData.h"
 					>
 				</File>
 				<File
@@ -2347,6 +3679,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiFurSpringController.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiGeometry.h"
 					>
 				</File>
@@ -2364,6 +3700,10 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\NiImage.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiInstancingMeshModifier.h"
 					>
 				</File>
 				<File
@@ -2407,6 +3747,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiLightIntensityController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiLines.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiLinesData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiLODData.h"
 					>
 				</File>
@@ -2431,6 +3783,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiMesh.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiMeshHWInstance.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiMeshModifier.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiMeshParticleSystem.h"
 					>
 				</File>
@@ -2439,7 +3803,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiMorphController.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiMorphData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiMorpherController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiMorphMeshModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiMorphWeightsController.h"
 					>
 				</File>
 				<File
@@ -2523,6 +3903,50 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPersistentSrcTextureRendererData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXActorDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXBodyDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXD6JointDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXKinematicSrc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXMaterialDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXMeshDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXProp.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXPropDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXShapeDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPhysXTransformDest.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPixelData.h"
 					>
 				</File>
@@ -2543,6 +3967,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPortal.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPosData.h"
 					>
 				</File>
@@ -2551,7 +3979,167 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPSBombForce.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSBoundUpdater.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSBoxEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSCylinderEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSDragForce.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitParticlesCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterDeclinationCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterDeclinationVarCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterLifeSpanCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterPlanarAngleCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterPlanarAngleVarCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterRadiusCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterRotAngleCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterRotAngleVarCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterRotSpeedCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterRotSpeedVarCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSEmitterSpeedCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSFacingQuadGenerator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSForceActiveCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSGravityForce.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSGravityStrengthCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSMeshEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSMeshParticleSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSParticleSystem.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSPlanarCollider.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSResetOnLoopCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulatorCollidersStep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulatorFinalStep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulatorForcesStep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulatorGeneralStep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulatorMeshAlignStep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSimulatorStep.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSpawner.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSphereEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSSphericalCollider.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPSysAgeDeathModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysAirFieldAirFrictionCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysAirFieldInheritVelocityCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysAirFieldModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysAirFieldSpreadCtlr.h"
 					>
 				</File>
 				<File
@@ -2587,6 +4175,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPSysDragFieldModifier.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPSysDragModifier.h"
 					>
 				</File>
@@ -2619,7 +4211,35 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPSysEmitterPlanarAngleCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysEmitterPlanarAngleVarCtlr.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPSysEmitterSpeedCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysFieldAttenuationCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysFieldMagnitudeCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysFieldMaxDistanceCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysFieldModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysGravityFieldModifier.h"
 					>
 				</File>
 				<File
@@ -2632,6 +4252,22 @@
 				</File>
 				<File
 					RelativePath=".\include\obj\NiPSysGrowFadeModifier.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysInitialRotAngleCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysInitialRotAngleVarCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysInitialRotSpeedCtlr.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysInitialRotSpeedVarCtlr.h"
 					>
 				</File>
 				<File
@@ -2671,6 +4307,10 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPSysRadialFieldModifier.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPSysResetOnLoopCtlr.h"
 					>
 				</File>
@@ -2691,11 +4331,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiPSysTrailEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysTurbulenceFieldModifier.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiPSysUpdateCtlr.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\obj\NiPSysVolumeEmitter.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiPSysVortexFieldModifier.h"
 					>
 				</File>
 				<File
@@ -2707,7 +4359,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiRenderObject.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiRollController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiRoom.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiRoomGroup.h"
 					>
 				</File>
 				<File
@@ -2719,6 +4383,14 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiScreenElements.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiScreenElementsData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiScreenLODData.h"
 					>
 				</File>
@@ -2727,11 +4399,19 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiSequenceData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiSequenceStreamHelper.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\obj\NiShadeProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiShadowGenerator.h"
 					>
 				</File>
 				<File
@@ -2747,7 +4427,23 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiSkinningLODController.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiSkinningMeshModifier.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiSkinPartition.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiSortAdjustNode.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiSourceCubeMap.h"
 					>
 				</File>
 				<File
@@ -2827,7 +4523,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\obj\NiTransformEvaluator.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\obj\NiTransformInterpolator.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\NiTransparentProperty.h"
 					>
 				</File>
 				<File
@@ -2898,16 +4602,112 @@
 					RelativePath=".\include\obj\RootCollisionNode.h"
 					>
 				</File>
+				<File
+					RelativePath=".\include\obj\SkyShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\TallGrassShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\TileShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\VolumetricFogShaderProperty.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\obj\WaterShaderProperty.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="gen"
 				>
 				<File
+					RelativePath=".\include\gen\AdditionalDataBlock.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\AdditionalDataInfo.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\ArkTexture.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\AVObject.h"
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\bhkCMSDBigTris.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\bhkCMSDMaterial.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\bhkCMSDBigTris.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\bhkCMSDChunk.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\bhkCMSDContainer.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\bhkCMSDData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\bhkCMSDTransform.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BodyPartList.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\BoundingBox.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BoundingVolume.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BoxBV.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BSPackedAdditionalDataBlock.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BSSegmentedTriangle.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BSTreadTransfInfo.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BSTreadTransform.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BSTreadTransformData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\BSTreadTransfSubInfo.h"
 					>
 				</File>
 				<File
@@ -2923,7 +4723,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\ByteMatrix.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\CapsuleBV.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\ChannelData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\ControllerLink.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\DecalVectorArray.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\ElementReference.h"
 					>
 				</File>
 				<File
@@ -2935,6 +4755,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\ExportInfo.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\ExtraMeshDataEpicMickey.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\ExtraMeshDataEpicMickey2.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\Footer.h"
 					>
 				</File>
@@ -2943,7 +4775,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\HalfSpaceBV.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\Header.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\HingeDescriptor.h"
 					>
 				</File>
 				<File
@@ -2967,11 +4807,27 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\MaterialData.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\MeshData.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\MipMap.h"
 					>
 				</File>
 				<File
 					RelativePath=".\include\gen\Morph.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\MorphWeight.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\MotorDescriptor.h"
 					>
 				</File>
 				<File
@@ -2999,6 +4855,18 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\ParticleDesc.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\physXMaterialRef.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\Polygon.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\QuaternionXYZW.h"
 					>
 				</File>
@@ -3007,7 +4875,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\Region.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\RotationKeyArray.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\SemanticData.h"
 					>
 				</File>
 				<File
@@ -3031,11 +4907,15 @@
 					>
 				</File>
 				<File
+					RelativePath=".\include\gen\SkinTransform.h"
+					>
+				</File>
+				<File
 					RelativePath=".\include\gen\SkinWeight.h"
 					>
 				</File>
 				<File
-					RelativePath=".\include\gen\Sphere.h"
+					RelativePath=".\include\gen\SphereBV.h"
 					>
 				</File>
 				<File
@@ -3052,6 +4932,14 @@
 				</File>
 				<File
 					RelativePath=".\include\gen\TexSource.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\UnionBV.h"
+					>
+				</File>
+				<File
+					RelativePath=".\include\gen\UnknownMatrix1.h"
 					>
 				</File>
 			</Filter>

@@ -25,3 +25,6 @@ StringPalette & StringPalette::operator=( const StringPalette & src ) {
 
 //Destructor
 StringPalette::~StringPalette() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

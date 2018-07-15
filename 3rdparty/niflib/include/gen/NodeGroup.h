@@ -29,6 +29,8 @@ struct NodeGroup {
 	mutable unsigned int numNodes;
 	/*! The list of NiNode references. */
 	vector<NiNode * > nodes;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

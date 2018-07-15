@@ -26,3 +26,6 @@ MipMap & MipMap::operator=( const MipMap & src ) {
 
 //Destructor
 MipMap::~MipMap() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

@@ -34,6 +34,8 @@ struct OblivionColFilter {
 	byte colFilter;
 	/*! Unknown. */
 	unsigned short unknownShort;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

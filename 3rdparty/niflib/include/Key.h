@@ -7,25 +7,25 @@ All rights reserved.  Please see niflib.h for license. */
 #include <iostream>
 #include <iomanip>
 #include <vector>
-#include <cmath>
+#include <math.h>
 #include "gen/enums.h"
 
 namespace Niflib {
 using namespace std;
 
 /*! Stores an animation key and the time in the animation that it takes affect. It is a template class so it can hold any kind of data as different objects key different sorts of information to the animation timeline.*/
-template <class T>
+template <class T> 
 struct Key {
-	float time; /*!< The time on the animation timeline that this keyframe takes affect. */
-	T data; /*!< The data being keyed to the timeline. */
-	T forward_tangent; /*!< A piece of data of the same type as is being keyed to the time line used as the forward tangent in quadratic interpolation.  Ignored if key type is set as something else. */
-	T backward_tangent; /*!< A piece of data of the same type as is being keyed to the time line used as the backward tangent in quadratic interpolation.  Ignored if key type is set as something else. */
+	float time; /*!< The time on the animation timeline that this keyframe takes affect. */ 
+	T data; /*!< The data being keyed to the timeline. */ 
+	T forward_tangent; /*!< A piece of data of the same type as is being keyed to the time line used as the forward tangent in quadratic interpolation.  Ignored if key type is set as something else. */ 
+	T backward_tangent; /*!< A piece of data of the same type as is being keyed to the time line used as the backward tangent in quadratic interpolation.  Ignored if key type is set as something else. */ 
 	float tension; /*!< The amount of tension to use in tension, bias, continuity interpolation.  Ignored if key type is something else.*/
 	float bias; /*!< The amount of bias to use in tension, bias, continuity interpolation.  Ignored if key type is something else.*/
 	float continuity; /*!< The amount of continuity to use in tension, bias, continuity interpolation.  Ignored if key type is something else.*/
 };
 
-template <class T>
+template <class T> 
 ostream & operator<<( ostream & out, Key<T> const & val ) {
 	return out << "Time:  " << val.time << endl
 			   << "Data:  " << val.data << endl
@@ -67,7 +67,7 @@ vector< Key<T> > ExtractKeySlice( const vector< Key<T> > & keys, float slice_sta
 
 	//Get additional keys based on cycle type.
 	if ( cycle == CYCLE_LOOP || cycle == CYCLE_REVERSE ) {
-		float c = std::floor( slice_start / (keys_stop - keys_start) ) + 1.0f;
+		float c = floor( slice_start / (keys_stop - keys_start) ) + 1.0f;
 		bool reverse = false;
 		bool failed = false;
 		while ( failed == false ) {
@@ -96,7 +96,7 @@ vector< Key<T> > ExtractKeySlice( const vector< Key<T> > & keys, float slice_sta
 
 				if ( time >= slice_start && time <= slice_stop ) {
 					bool add_key = true;
-					size_t prev_key = out.size() - 1;
+					size_t prev_key = out.size() - 1;		
 					if ( out.size() > 0 && out[prev_key].time == keys[i].time ) {
 						add_key = false;
 					}

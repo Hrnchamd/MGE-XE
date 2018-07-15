@@ -31,18 +31,20 @@ struct MultiTextureElement {
 	bool hasImage;
 	/*! Link to the texture image. */
 	Ref<NiImage > image;
-	/*! Unkown.  Usually 3 but sometimes 0. */
-	unsigned int unknownInt1;
-	/*! Unkown. Usually 2. */
-	unsigned int unknownInt2;
-	/*! Unkown. Usually 1. */
-	unsigned int unknownInt3;
-	/*! Unknown.  Usually 0. */
-	short unknownShort1;
-	/*! Unknown.  Usually -75. */
-	short unknownShort2;
+	/*! May be texture clamp mode. */
+	TexClampMode clamp_;
+	/*! May be texture filter mode. */
+	TexFilterMode filter_;
+	/*! This may be the UV set counting from 1 instead of zero. */
+	unsigned int uvSet_;
+	/*! 0? */
+	short ps2L;
+	/*! -75? */
+	short ps2K;
 	/*! Unknown.  Usually 0 but sometimes 257 */
 	short unknownShort3;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

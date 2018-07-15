@@ -12,6 +12,11 @@ RefObject::RefObject() {
 	objectsInMemory++;
 }
 
+RefObject::RefObject(const RefObject& src) {
+	_ref_count = 0;
+	objectsInMemory++;
+}
+
 RefObject::~RefObject() {
 	objectsInMemory--;
 }

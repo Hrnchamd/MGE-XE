@@ -26,3 +26,6 @@ TBC & TBC::operator=( const TBC & src ) {
 
 //Destructor
 TBC::~TBC() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

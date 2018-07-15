@@ -6,7 +6,7 @@ All rights reserved.  Please see niflib.h for license. */
 
 #include <map>
 #include <string>
-#include "obj/Niobject.h"
+#include "obj/NiObject.h"
 
 namespace Niflib {
 

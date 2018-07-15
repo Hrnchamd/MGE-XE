@@ -33,10 +33,12 @@ struct Particle {
 	float lifespan;
 	/*! Timestamp of the last update. */
 	float timestamp;
-	/*! Unknown short (=0) */
+	/*! Unknown short */
 	unsigned short unknownShort;
 	/*! Particle/vertex index matches array index */
 	unsigned short vertexId;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

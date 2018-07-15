@@ -1,7 +1,8 @@
 
 #include "NvTriStripObjects.h"
 #include "NvTriStrip.h"
-#include <cstring>
+#include <string.h> // memset
+#include <cstddef> // NULL
 
 using namespace NvTriStrip;
 
@@ -117,7 +118,7 @@ void Cleanup(NvStripInfoVec& tempStrips, NvFaceInfoVec& tempFaces)
 //Returns true if the two triangles defined by firstTri and secondTri are the same
 // The "same" is defined in this case as having the same indices with the same winding order
 //
-bool SameTriangle(unsigned short firstTri0, unsigned short firstTri1, unsigned short firstTri2,
+bool SameTriangle(unsigned short firstTri0, unsigned short firstTri1, unsigned short firstTri2, 
 				  unsigned short secondTri0, unsigned short secondTri1, unsigned short secondTri2)
 {
 	bool isSame = false;
@@ -159,7 +160,7 @@ bool TestTriangle(const unsigned short v0, const unsigned short v1, const unsign
 	for (size_t k = 0; k < in_bins[ctr].size(); ++k)
 	{
 		//check triangles in this bin
-		if (SameTriangle(in_bins[ctr][k].m_v0, in_bins[ctr][k].m_v1, in_bins[ctr][k].m_v2,
+		if (SameTriangle(in_bins[ctr][k].m_v0, in_bins[ctr][k].m_v1, in_bins[ctr][k].m_v2, 
 			v0, v1, v2))
 		{
 			isLegit = true;
@@ -172,34 +173,34 @@ bool TestTriangle(const unsigned short v0, const unsigned short v1, const unsign
 		for (size_t k = 0; k < in_bins[ctr].size(); ++k)
 		{
 			//check triangles in this bin
-			if (SameTriangle(in_bins[ctr][k].m_v0, in_bins[ctr][k].m_v1, in_bins[ctr][k].m_v2,
+			if (SameTriangle(in_bins[ctr][k].m_v0, in_bins[ctr][k].m_v1, in_bins[ctr][k].m_v2, 
 				v0, v1, v2))
 			{
 				isLegit = true;
 				break;
 			}
 		}
-
+		
 		if (!isLegit)
 		{
 			ctr = v2 % NUMBINS;
 			for (size_t k = 0; k < in_bins[ctr].size(); ++k)
 			{
 				//check triangles in this bin
-				if (SameTriangle(in_bins[ctr][k].m_v0, in_bins[ctr][k].m_v1, in_bins[ctr][k].m_v2,
+				if (SameTriangle(in_bins[ctr][k].m_v0, in_bins[ctr][k].m_v1, in_bins[ctr][k].m_v2, 
 					v0, v1, v2))
 				{
 					isLegit = true;
 					break;
 				}
 			}
-
+			
 		}
 	}
 
 	return isLegit;
 }
-
+	
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // GenerateStrips()
@@ -231,7 +232,7 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 	NvFaceInfoVec tempFaces;
 
 	NvStripifier stripifier;
-
+	
 	//do actual stripification
 	stripifier.Stripify(tempIndices, cacheSize, minStripSize, maxIndex, tempStrips, tempFaces);
 
@@ -250,11 +251,11 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 		unsigned int numIndices = 0;
 		for(size_t i = 0; i < tempStrips.size(); i++)
 		{
-			numIndices += (unsigned int)(tempStrips[i]->m_faces.size() * 3);
+			numIndices += tempStrips[i]->m_faces.size() * 3;
 		}
 
 		//add in the list
-		numIndices += (unsigned int)(tempFaces.size() * 3);
+		numIndices += tempFaces.size() * 3;
 
 		primGroupArray[0].type       = PT_LIST;
 		primGroupArray[0].numIndices = numIndices;
@@ -283,7 +284,7 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 
 		//do lists
 		for(size_t i = 0; i < tempFaces.size(); i++)
-		{
+		{			
 			primGroupArray[0].indices[indexCtr++] = tempFaces[i]->m_v0;
 			primGroupArray[0].indices[indexCtr++] = tempFaces[i]->m_v1;
 			primGroupArray[0].indices[indexCtr++] = tempFaces[i]->m_v2;
@@ -295,15 +296,15 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 
 		//if we're stitching strips together, we better get back only one strip from CreateStrips()
 		assert( (bStitchStrips && (numSeparateStrips == 1)) || !bStitchStrips);
-
+		
 		//convert to output format
 		*numGroups = numSeparateStrips; //for the strips
 		if(tempFaces.size() != 0)
 			(*numGroups)++;  //we've got a list as well, increment
 		(*primGroups) = new PrimitiveGroup[*numGroups];
-
+		
 		PrimitiveGroup* primGroupArray = *primGroups;
-
+		
 		//first, the strips
 		int startingLoc = 0;
    		for(size_t stripCtr = 0; stripCtr < numSeparateStrips; stripCtr++)
@@ -319,32 +320,32 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 					if(stripIndices[i] == -1)
 						break;
 				}
-
-				stripLength = int(i - startingLoc);
+				
+				stripLength = i - startingLoc;
 			}
 			else
-				stripLength = int( stripIndices.size() );
-
+				stripLength = stripIndices.size();
+			
 			primGroupArray[stripCtr].type       = PT_STRIP;
 			primGroupArray[stripCtr].indices    = new unsigned short[stripLength];
 			primGroupArray[stripCtr].numIndices = stripLength;
-
+			
 			int indexCtr = 0;
 			for(int i = startingLoc; i < stripLength + startingLoc; i++)
 				primGroupArray[stripCtr].indices[indexCtr++] = stripIndices[i];
 
 			//we add 1 to account for the -1 separating strips
 			//this doesn't break the stitched case since we'll exit the loop
-			startingLoc += stripLength + 1;
+			startingLoc += stripLength + 1; 
 		}
-
+		
 		//next, the list
 		if(tempFaces.size() != 0)
 		{
 			int faceGroupLoc = (*numGroups) - 1;    //the face group is the last one
 			primGroupArray[faceGroupLoc].type       = PT_LIST;
 			primGroupArray[faceGroupLoc].indices    = new unsigned short[tempFaces.size() * 3];
-			primGroupArray[faceGroupLoc].numIndices = (unsigned int)tempFaces.size() * 3;
+			primGroupArray[faceGroupLoc].numIndices = tempFaces.size() * 3;
 			int indexCtr = 0;
 			for(size_t i = 0; i < tempFaces.size(); i++)
 			{
@@ -361,14 +362,14 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 		const int NUMBINS = 100;
 
 		std::vector<NvFaceInfo> in_bins[NUMBINS];
-
+		
 		//hash input indices on first index
 		for (size_t i = 0; i < in_numIndices; i += 3)
 		{
 			NvFaceInfo faceInfo(in_indices[i], in_indices[i + 1], in_indices[i + 2]);
 			in_bins[in_indices[i] % NUMBINS].push_back(faceInfo);
 		}
-
+		
 		for (int i = 0; i < *numGroups; ++i)
 		{
 			switch ((*primGroups)[i].type)
@@ -380,7 +381,7 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 						unsigned short v0 = (*primGroups)[i].indices[j];
 						unsigned short v1 = (*primGroups)[i].indices[j + 1];
 						unsigned short v2 = (*primGroups)[i].indices[j + 2];
-
+						
 						//ignore degenerates
 						if (NvStripifier::IsDegenerate(v0, v1, v2))
 							continue;
@@ -403,7 +404,7 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 						unsigned short v0 = (*primGroups)[i].indices[j - 2];
 						unsigned short v1 = (*primGroups)[i].indices[j - 1];
 						unsigned short v2 = (*primGroups)[i].indices[j];
-
+						
 						if (flip)
 						{
 							//swap v1 and v2
@@ -456,7 +457,7 @@ bool GenerateStrips(const unsigned short* in_indices, const unsigned int in_numI
 //  of acceptable values for indices in your primitive groups.
 // remappedGroups: array of remapped PrimitiveGroups
 //
-// Note that, according to the remapping handed back to you, you must reorder your
+// Note that, according to the remapping handed back to you, you must reorder your 
 //  vertex buffer.
 //
 void RemapIndices(const PrimitiveGroup* in_primGroups, const unsigned short numGroups,
@@ -468,7 +469,7 @@ void RemapIndices(const PrimitiveGroup* in_primGroups, const unsigned short numG
 	int *indexCache;
 	indexCache = new int[numVerts];
 	memset(indexCache, -1, sizeof(int)*numVerts);
-
+	
 	//loop over primitive groups
 	unsigned int indexCtr = 0;
 	for(int i = 0; i < numGroups; i++)

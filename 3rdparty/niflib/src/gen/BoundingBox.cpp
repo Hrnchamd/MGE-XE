@@ -27,3 +27,6 @@ BoundingBox & BoundingBox::operator=( const BoundingBox & src ) {
 
 //Destructor
 BoundingBox::~BoundingBox() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

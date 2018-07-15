@@ -2,9 +2,14 @@
 All rights reserved.  Please see niflib.h for license. */
 
 #include "../include/Type.h"
+#include "../include/ObjectRegistry.h"
 using namespace Niflib;
 
-Type::Type (const string & type_name, const Type * par_type ) : name(type_name), base_type(par_type) {} 
+int Type::num_types = 0;
+
+Type::Type (const string & type_name, const Type * par_type ) : name(type_name), base_type(par_type), internal_type_number(num_types++) {} 
+
+Type::Type(const Type& src) : name(src.name), base_type(src.base_type), internal_type_number(src.internal_type_number) {}
 
 Type::~Type() {}
 
@@ -30,4 +35,8 @@ bool Type::IsDerivedType( const Type & compare_to ) const {
 
 string Type::GetTypeName() const {
 	return name;
+}
+
+NiObject * Type::Create() const {
+	return ObjectRegistry::CreateObject(name);
 }

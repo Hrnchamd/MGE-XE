@@ -9,7 +9,7 @@ All rights reserved.  Please see niflib.h for license. */
 using namespace Niflib;
 
 //Constructor
-FurniturePosition::FurniturePosition() : orientation((unsigned short)0), positionRef1((byte)0), positionRef2((byte)0) {};
+FurniturePosition::FurniturePosition() : orientation((unsigned short)0), positionRef1((byte)0), positionRef2((byte)0), heading(0.0f), animationType((AnimationType)0), entryProperties((FurnitureEntryPoints)0) {};
 
 //Copy Constructor
 FurniturePosition::FurniturePosition( const FurniturePosition & src ) {
@@ -22,8 +22,14 @@ FurniturePosition & FurniturePosition::operator=( const FurniturePosition & src 
 	this->orientation = src.orientation;
 	this->positionRef1 = src.positionRef1;
 	this->positionRef2 = src.positionRef2;
+	this->heading = src.heading;
+	this->animationType = src.animationType;
+	this->entryProperties = src.entryProperties;
 	return *this;
 };
 
 //Destructor
 FurniturePosition::~FurniturePosition() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

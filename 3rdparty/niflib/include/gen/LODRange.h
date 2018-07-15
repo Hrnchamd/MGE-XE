@@ -29,6 +29,8 @@ struct LODRange {
 	float farExtent;
 	/*! Unknown (0,0,0). */
 	array<3,unsigned int > unknownInts;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

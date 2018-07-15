@@ -29,6 +29,9 @@ public:
 	/*! Constructor */
 	NIFLIB_API RefObject();
 
+	/*! Copy Constructor */
+	NIFLIB_API RefObject(const RefObject& src);
+
 	/*! Destructor */
 	NIFLIB_API virtual ~RefObject();
 
@@ -79,7 +82,7 @@ public:
 	 * \return A string in the form:  address(type), or adress(type) {name}
 	 */
 	NIFLIB_API virtual string GetIDString() const;
-
+	
 	/*!
 	 * Returns the total number of reference-counted objects of any kind that have been allocated by Niflib for any reason.  This is for debugging or informational purpouses.  Mostly usful for tracking down memory leaks.
 	 * \return The total number of reference-counted objects that have been allocated.
@@ -110,88 +113,12 @@ public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info ) = 0;
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
-	NIFLIB_HIDDEN virtual void Write( ostream& out, const map< Ref<NiObject>, unsigned int> & link_map, const NifInfo & info ) const = 0;
+	NIFLIB_HIDDEN virtual void Write( ostream& out, const map< Ref<NiObject>, unsigned int> & link_map, list<NiObject *> & missing_link_stack, const NifInfo & info ) const = 0;
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
-	NIFLIB_HIDDEN virtual void FixLinks( const map<unsigned int, Ref<NiObject> > & objects, list<unsigned int> & link_stack, const NifInfo & info ) = 0;
+	NIFLIB_HIDDEN virtual void FixLinks( const map<unsigned int, Ref<NiObject> > & objects, list<unsigned int> & link_stack, list<Ref<NiObject> > & missing_link_stack, const NifInfo & info ) = 0;
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual list< Ref<NiObject> > GetRefs() const = 0;
 };
-
-/*
- * Casting Templates
- */
-
-template <class T> Ref<T> StaticCast( NiObject * object ) {
-	return (T*)object;
-}
-
-template <class T> Ref<const T> StaticCast (const NiObject * object) {
-	return (const T*)object;
-}
-
-template <class T> Ref<T> DynamicCast( RefObject * object ) {
-	if ( object && object->IsDerivedType(T::TYPE) ) {
-		return (T*)object;
-	} else {
-		return NULL;
-	}
-}
-
-template <class T> Ref<const T> DynamicCast( const RefObject * object ) {
-	if ( object && object->IsDerivedType(T::TYPE) ) {
-		return (const T*)object;
-	} else {
-		return NULL;
-	}
-}
-
-#ifdef USE_NIFLIB_TEMPLATE_HELPERS
-template <typename T, typename U> Ref<T> StaticCast( Ref<U>& object ) {
-   return object;
-}
-
-template <typename T, typename U> Ref<T> DynamicCast( Ref<U>& object ) {
-   return object;
-}
-
-template <typename T, typename U> Ref<T> StaticCast( const Ref<U>& object ) {
-   return Ref<T>(object);
-}
-
-template <typename T, typename U> Ref<T> DynamicCast( const Ref<U>& object ) {
-   return Ref<T>(object);
-}
-
-/*!
- * Dynamically cast from a collection of objects to another collection
- * \param objs A collection of object references to be dynamically casted to the specified type.
- * \return A collection of objects that support the requested type.
- */
-template <typename U, typename T>
-inline vector<Ref<U> > DynamicCast( vector<Ref<T> > const & objs ) {
-   vector<Ref<U> > retval;
-   for (vector<Ref<T> >::const_iterator itr = objs.begin(), end = objs.end(); itr != end; ++itr) {
-      Ref<U> obj = DynamicCast<U>(*itr);
-      if (obj) retval.insert(retval.end(), obj);
-   }
-   return retval;
-}
-
-/*!
-* Dynamically cast from a collection of objects to another collection
-* \param objs A collection of object references to be dynamically casted to the specified type.
-* \return A collection of objects that support the requested type.
-*/
-template <typename U, typename T>
-inline list<Ref<U> > DynamicCast( list<Ref<T> > const & objs ) {
-   list<Ref<U> > retval;
-   for (list<Ref<T> >::const_iterator itr = objs.begin(), end = objs.end(); itr != end; ++itr) {
-      Ref<U> obj = DynamicCast<U>(*itr);
-      if (obj) retval.insert(retval.end(), obj);
-   }
-   return retval;
-}
-#endif
 
 } //End Niflib namespace
 #endif

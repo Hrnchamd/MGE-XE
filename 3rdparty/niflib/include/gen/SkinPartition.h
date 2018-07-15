@@ -10,6 +10,8 @@ All rights reserved.  Please see niflib.h for license. */
 
 #include "../NIF_IO.h"
 
+// Include structures
+#include "SkinPartitionUnknownItem1.h"
 namespace Niflib {
 
 
@@ -34,7 +36,11 @@ struct SkinPartition {
 	mutable unsigned short numBones;
 	/*! Number of strips in this submesh (zero if not stripped). */
 	mutable unsigned short numStrips;
-	/*! Number of weight coefficients per vertex. */
+	/*!
+	 * Number of weight coefficients per vertex. The Gamebryo engine seems to work well
+	 * only if this number is equal to 4, even if there are less than 4 influences per
+	 * vertex.
+	 */
 	mutable unsigned short numWeightsPerVertex;
 	/*! List of bones. */
 	vector<unsigned short > bones;
@@ -51,8 +57,8 @@ struct SkinPartition {
 	vector< vector<float > > vertexWeights;
 	/*! The strip lengths. */
 	mutable vector<unsigned short > stripLengths;
-	/*! Do we have strip data? */
-	bool hasStrips;
+	/*! Do we have triangle or strip data? */
+	bool hasFaces;
 	/*! The strips. */
 	vector< vector<unsigned short > > strips;
 	/*! The triangles. */
@@ -61,6 +67,27 @@ struct SkinPartition {
 	bool hasBoneIndices;
 	/*! Bone indices, they index into 'Bones'. */
 	vector< vector<byte > > boneIndices;
+	/*! Unknown */
+	unsigned short unknownShort;
+	/*! Unknown. */
+	unsigned short unknown83C3;
+	/*! Unknown. */
+	unsigned short unknown00001;
+	/*! Unknown. */
+	mutable unsigned short numVertices2;
+	/*! Unknown. */
+	unsigned short unknown00002;
+	/*! Unknown. */
+	unsigned short unknown00003;
+	/*! Unknown. */
+	unsigned short unknown00004;
+	/*! Unknown. */
+	vector<SkinPartitionUnknownItem1 > unknownArr1;
+	//--BEGIN MISC CUSTOM CODE--//
+	/*! Calculate proper value of numTriangles field. */
+	unsigned short numTrianglesCalc() const;
+	unsigned short numTrianglesCalc(const NifInfo &) const;
+	//--END CUSTOM CODE--//
 };
 
 }

@@ -22,6 +22,8 @@ struct KeyGroup {
 	KeyType interpolation;
 	/*! The keys. */
 	vector<Key<T > > keys;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

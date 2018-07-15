@@ -27,6 +27,8 @@ struct ByteArray {
 	mutable unsigned int dataSize;
 	/*! The bytes which make up the array */
 	vector<byte > data;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

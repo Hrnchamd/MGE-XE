@@ -28,8 +28,8 @@ public:
 		: m_A(A), m_B(B), m_C(C), m_StripID(0) { }
 
 	void ResetStripID()							{ m_StripID = 0; }
-	void SetStripID(size_t StripID)				{ m_StripID = StripID; }	
-	size_t StripID() const						{ return m_StripID; }
+	void SetStripID(std::size_t StripID)				{ m_StripID = StripID; }	
+	std::size_t StripID() const						{ return m_StripID; }
 
 	index A() const								{ return m_A; }
 	index B() const								{ return m_B; }
@@ -40,7 +40,7 @@ private:
 	index	m_B;
 	index	m_C;
 
-	size_t	m_StripID;
+	std::size_t	m_StripID;
 };
 
 
@@ -75,17 +75,17 @@ public:
 	strip()
 		: m_Start(0), m_Order(ABC), m_Size(0) { }
 
-	strip(size_t Start, triangle_order Order, size_t Size)
+	strip(std::size_t Start, triangle_order Order, std::size_t Size)
 		: m_Start(Start), m_Order(Order), m_Size(Size) { }
 
-	size_t Start() const						{ return m_Start; }
+	std::size_t Start() const						{ return m_Start; }
 	triangle_order Order() const				{ return m_Order; }
-	size_t Size() const							{ return m_Size; }
+	std::size_t Size() const							{ return m_Size; }
 
 private:
-	size_t			m_Start;
+	std::size_t			m_Start;
 	triangle_order	m_Order;
-	size_t			m_Size;
+	std::size_t			m_Size;
 };
 
 

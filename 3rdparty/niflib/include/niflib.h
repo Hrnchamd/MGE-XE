@@ -61,6 +61,7 @@ class NiObject;
 class NiNode;
 class NiAVObject;
 class NiControllerSequence;
+struct Header;
 
 #ifndef NULL
 #define NULL 0  /*!< Definition used to detect null pointers. */ 
@@ -72,7 +73,8 @@ class NiControllerSequence;
 enum NifGame {
 	KF_MW = 0, /*!< keyframe files: NiSequenceStreamHelper header, .kf extension */
 	KF_DAOC = 1, /*!< keyframe files: NiNode header, .kfa extension */
-	KF_CIV4 = 2 /*!< keyframe files: NiControllerSequence header, .kf extension */
+	KF_CIV4 = 2, /*!< keyframe files: NiControllerSequence header, .kf extension */
+   KF_FFVT3R = 3, /*!< keyframe files: NiControllerSequence header, .kf extension */
 };
 
 /*! Export options. */
@@ -107,6 +109,37 @@ enum ExportOptions {
 NIFLIB_API unsigned int GetNifVersion( string const & file_name );
 
 /*!
+ * Returns the nif info without reading the entire file which includes the nif version,
+ * the nif user version1 and the nif user version2
+ * \param The full path to the nif file which includes the file name and the location of the nif file
+ * \return The nif info structure which contains the nif header info
+ */
+NIFLIB_API NifInfo ReadHeaderInfo( string const & file_name );
+
+/*!
+ * Returns the nif header without reading the entire file 
+ * \param The full path to the nif file which includes the file name and the location of the nif file
+ * \return The nif info structure which contains the nif header
+ */
+NIFLIB_API Header ReadHeader( string const & file_name );
+
+/*!
+ * Return the missing link stack with objects replaced from nif trees at specified root.
+ */
+NIFLIB_API list<Ref<NiObject> > ResolveMissingLinkStack(
+	NiObject *root,
+	const list<NiObject *> & missing_link_stack);
+
+/*!
+ * Reads the given input stream and returns a vector of object references
+ * \param in The input stream to read NIF data from.
+ * \param missing_link_stack A stack where to copy NULL refs from (in case of reading a nif from an incomplete nif tree)
+ * \param info Optionally, a NifInfo structure pointer can be passed in, and it will be filled with information from the header of the NIF file.
+ * \return All the NIF objects read from the stream.
+ */
+NIFLIB_API vector<Ref<NiObject> > ReadNifList( istream & in, list<Ref<NiObject> > & missing_link_stack, NifInfo * info );
+
+/*!
  * Reads the given file by file name and returns a vector of object references
  * \param file_name The name of the file to load, or the complete path if it is not in the working directory.
  * \param info Optionally, a NifInfo structure pointer can be passed in, and it will be filled with information from the header of the NIF file.
@@ -122,6 +155,11 @@ NIFLIB_API vector< Ref<NiObject> > ReadNifList( string const & file_name, NifInf
  * \return All the NIF objects read from the stream.
  */
 NIFLIB_API vector< Ref<NiObject> > ReadNifList( istream & in, NifInfo * info = NULL );
+
+/*!
+ * Like ReadNifList but returns root.
+ */
+NIFLIB_API Ref<NiObject> ReadNifTree( istream & in, list<Ref<NiObject> > & missing_link_stack, NifInfo * info = NULL);
 
 /*!
  * Reads the given file by file name and returns a reference to the root object.
@@ -141,6 +179,16 @@ NIFLIB_API Ref<NiObject> ReadNifTree( string const & file_name, NifInfo * info =
 NIFLIB_API Ref<NiObject> ReadNifTree( istream & in, NifInfo * info = NULL );
 
 /*!
+ * Creates a new NIF file of the given file name by crawling through the data tree starting with the root objects given, and keeps track of links that cannot been written.
+ * \param[in] out The output stream to write the NIF data to.
+ * \param[in] root The root object to start from when writing out the NIF file.  All decedents of this block will be written to the file in tree-descending order.
+ * \param[in] missing_link_stack stack of links which are referred to but which are not inside the tree rooted by roots.
+ * \param[in] info A NifInfo structure that contains information such as the version of the NIF file to create.
+ * \sa ReadNifList, WriteNifTree
+ */
+NIFLIB_API void WriteNifTree( ostream & out, NiObject *root, list<NiObject *> & missing_link_stack, const NifInfo & info = NifInfo() );
+
+/*!
  * Creates a new NIF file of the given file name by crawling through the data tree starting with the root object given.
  * \param[in] file_name The desired file name for the new NIF file.  The path is relative to the working directory unless a full path is specified.
  * \param[in] root The root object to start from when writing out the NIF file.  All decedents of this block will be written to the file in tree-descending order.
@@ -151,11 +199,11 @@ NIFLIB_API void WriteNifTree( string const & file_name, NiObject * root, const N
 
 /*!
  * Writes a nif tree to an ostream starting at the given root object.
- * \param[in] in The output stream to write the NIF data to.
+ * \param[in] out The output stream to write the NIF data to.
  * \param[in] root The root object to start from when writing out the NIF data.  All decedents of this object will be written to the stream in tree-descending order.
  * \param[in] info A NifInfo structure that contains information such as the version of the NIF file to create.
  */
-NIFLIB_API void WriteNifTree( ostream & in, NiObject * root, const NifInfo & info = NifInfo() );
+NIFLIB_API void WriteNifTree( ostream & out, NiObject * root, const NifInfo & info = NifInfo() );
 
 /*!
  * Writes a bunch of files given a base file name, and a pointer to the root object of the Nif file tree.
@@ -172,9 +220,10 @@ NIFLIB_API void WriteFileGroup( string const & file_name, NiObject * root_object
  * \param[in] root The root object to start from when cloning the NIF data.  All referenced objects will be included in the new tree.
  * \param[in] version The version of the NIF format to use when writing a file.  Default is version 4.0.0.2.
  * \param[in] user_version The user version of the NIF format to use when writing a file.  Default is user version 0.
+ * \param[in] target_root The root of the nif tree in which the cloned tree will be embedded. If specified, missing links will be resolved to that tree.
  * \return The root of the new cloned tree.
  */
-NIFLIB_API Ref<NiObject> CloneNifTree( NiObject * root, unsigned version = 0xFFFFFFFF, unsigned user_version = 0 );
+NIFLIB_API Ref<NiObject> CloneNifTree( NiObject * root, unsigned version = 0xFFFFFFFF, unsigned user_version = 0, NiObject * target_root = NULL );
 
 
 //TODO:  Figure out how to fix this to work with the new system
@@ -253,13 +302,13 @@ NIFLIB_API string FormatVersionString( unsigned version );
 
 While it is possible to use the pre-compiled DLL file if you are using Microsoft Visual Studio 2005 as your compiler, you may also want to compile it yourself.  You may also want to use Niflib on a platform other than Windows, in which case compiling yourself is the only option.
 
-If you need help to do this, there is information about it on our main website here:  <a href="http://www.niftools.org/wiki/index.php/Niflib/Compile">Compiling Niflib</a>.
+If you need help to do this, there is information about it on our main website here:  <a href="http://niftools.sourceforge.net/wiki/Niflib/Compile">Compiling Niflib</a>.
 
 \section include_lib Including the Library
 
 Visual Studio 2005 is the preferred compiler for Niflib as this is the platform that all development is done on.  The instructions in this guide assume that you are using this compiler.  If you do not have a copy, you can <a href="http://msdn.microsoft.com/vstudio/express/downloads/default.aspx">download Microsoft Visual C++ 2005 Express</a> for free from Microsoft.  Niflib should work on other compilers, and is tested on GCC from time to time, but you will have to figure out how to use those compilers on your own.
 
-You need to make some changes to the project settings of your project before you can build a program that uses Niflib.  These settings are available when right-clicking the project in the Solution Explorer and clicking “Properties.”  You want to use Niflib in Release or Debug mode, or as a static or dynamic library.
+You need to make some changes to the project settings of your project before you can build a program that uses Niflib.  These settings are available when right-clicking the project in the Solution Explorer and clicking Properties. You want to use Niflib in Release or Debug mode, or as a static or dynamic library.
 
 Debug mode means that Visual C++ will put a bunch of extra data in your program to enable you to use the Visual Debugger and see the real code when you set break points or experience a crash.  This adds bloat to your program and slows it down, however, so you should always compile in Release mode when you plan on creating the final version for distribution.
 
@@ -378,13 +427,13 @@ Each object type has member functions which allow you to get and set data, adjus
 
 You do not access the classes directly, however.  Niflib uses reference counting to determine when objects are destroyed, so you always access a class through a Ref smart pointer.  This is a template which takes the class as its template argument, such as Ref<NiNode>.  For each type of Ref a typedef has been provided in the form of [class name]Ref, so Ref<NiNode> has the typedef NiNodeRef, and this name can be used instead of the more unusual template syntax.  When the last Ref smart pointer that points to a particular object is reassigned or goes out of scope, that object will take care of cleaning itself up automatically.
 
-Objects use Ref smart pointers internally as well, so you don't have to worry about objects that are referenced by other objects destroying themselves unexpectedly.  Also, any function that takes a pointer to a NIF object, such as “NiObject*” will also take appropriate Ref versions of compatible objects.  Compatible objects are those that can be converted to the correct type via a static cast.  That is, a derived type can be substituted for a type that it inherits from.
+Objects use Ref smart pointers internally as well, so you don't have to worry about objects that are referenced by other objects destroying themselves unexpectedly.  Also, any function that takes a pointer to a NIF object, such as NiObject* will also take appropriate Ref versions of compatible objects.  Compatible objects are those that can be converted to the correct type via a static cast.  That is, a derived type can be substituted for a type that it inherits from.
 
 \section rw_files Reading and Writing NIF Files
 
-To check whether a file is really a NIF file, call the CheckNifVersion() function. You can then call the IsSupportedVersion() function to determine whether the data in the file may not be well understood.  There are two ways to read in a NIF file – as a list of objects in the order they appear in the file and as a single Ref pointing to the root of the scene graph tree from which all other objects can be found by following the links between objects.  Most of the time you will probably want to use the tree method, as this is the only one eligible for writing.  The list method is provided for uses such as Niflyze that need to retrieve all objects, regardless of whether we fully understand the links that keep them from destroying themselves.  Unsupported objects may not be included in the tree representation if no other objects reference them.  So most of the time, you're going to want to call the ReadNifTree() function.
+To check whether a file is really a NIF file, call the CheckNifVersion() function. You can then call the IsSupportedVersion() function to determine whether the data in the file may not be well understood.  There are two ways to read in a NIF file - as a list of objects in the order they appear in the file and as a single Ref pointing to the root of the scene graph tree from which all other objects can be found by following the links between objects.  Most of the time you will probably want to use the tree method, as this is the only one eligible for writing.  The list method is provided for uses such as Niflyze that need to retrieve all objects, regardless of whether we fully understand the links that keep them from destroying themselves.  Unsupported objects may not be included in the tree representation if no other objects reference them.  So most of the time, you're going to want to call the ReadNifTree() function.
 
-That's all there is to reading in a NIF file.  If all goes well with the reading process (no exception was thrown), you will have at least one NIF object in memory – the root object of the tree.  You can pass this same object to the WriteNifTree() function to create a new NIF file from the representation in memory.
+That's all there is to reading in a NIF file.  If all goes well with the reading process (no exception was thrown), you will have at least one NIF object in memory - the root object of the tree.  You can pass this same object to the WriteNifTree() function to create a new NIF file from the representation in memory.
 
 WARNING:  Some features of the NIF format are still unsupported by Niflib, therefore in some cases the exported NIF may either be different from the original, or completely unusable.  DO NOT OVERWRITE THE ORIGINAL NIF FILE.
 

@@ -29,6 +29,8 @@ struct MipMap {
 	unsigned int height;
 	/*! Offset into the pixel data array where this mipmap starts. */
 	unsigned int offset;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

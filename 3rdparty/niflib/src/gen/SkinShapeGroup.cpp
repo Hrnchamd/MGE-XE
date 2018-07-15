@@ -7,8 +7,8 @@ All rights reserved.  Please see niflib.h for license. */
 
 #include "../../include/gen/SkinShapeGroup.h"
 #include "../../include/gen/SkinShape.h"
-#include "../../include/obj/NiTriShape.h"
 #include "../../include/obj/NiSkinInstance.h"
+#include "../../include/obj/NiTriBasedGeom.h"
 using namespace Niflib;
 
 //Constructor
@@ -28,3 +28,6 @@ SkinShapeGroup & SkinShapeGroup::operator=( const SkinShapeGroup & src ) {
 
 //Destructor
 SkinShapeGroup::~SkinShapeGroup() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

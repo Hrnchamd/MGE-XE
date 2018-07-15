@@ -31,6 +31,8 @@ struct QuaternionXYZW {
 	float z;
 	/*! The w-coordinate. */
 	float w;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

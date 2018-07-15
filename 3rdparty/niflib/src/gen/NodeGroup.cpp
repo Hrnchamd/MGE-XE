@@ -26,3 +26,6 @@ NodeGroup & NodeGroup::operator=( const NodeGroup & src ) {
 
 //Destructor
 NodeGroup::~NodeGroup() {};
+
+//--BEGIN MISC CUSTOM CODE--//
+//--END CUSTOM CODE--//

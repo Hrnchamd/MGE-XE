@@ -13,6 +13,7 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../include/obj/NiAlphaProperty.h"
 #include "../include/obj/NiSourceTexture.h"
 #include "../include/obj/NiImage.h"
+#include "../include/obj/NiStencilProperty.h"
 
 namespace Niflib {
 
@@ -41,9 +42,10 @@ void MatTexCollection::GatherMaterials( NiAVObject * scene_root ) {
 			NiPropertyRef multi = scene_root->GetPropertyByType( NiMultiTextureProperty::TYPE );
 			NiPropertyRef spec = scene_root->GetPropertyByType( NiSpecularProperty::TYPE );
 			NiPropertyRef alpha = scene_root->GetPropertyByType( NiAlphaProperty::TYPE );
+			NiPropertyRef stencil = scene_root->GetPropertyByType( NiStencilProperty::TYPE);
 
 			//Make sure at least one isn't NULL
-			if ( mat != NULL || texing != NULL || tex != NULL || multi != NULL ) {
+			if ( mat != NULL || texing != NULL || tex != NULL || multi != NULL || stencil != NULL) {
 				//One isn't NULL, so create a new Material
 
 				NiMaterialPropertyRef matC = DynamicCast<NiMaterialProperty>(mat);
@@ -52,6 +54,7 @@ void MatTexCollection::GatherMaterials( NiAVObject * scene_root ) {
 				NiMultiTexturePropertyRef multiC = DynamicCast<NiMultiTextureProperty>(multi);
 				NiSpecularPropertyRef specC = DynamicCast<NiSpecularProperty>(spec);
 				NiAlphaPropertyRef alphaC = DynamicCast<NiAlphaProperty>(alpha);
+				NiStencilPropertyRef stencilC = DynamicCast<NiStencilProperty>(stencil);
 
 				//First, check if the material's textures have been found yet
 
@@ -82,7 +85,7 @@ void MatTexCollection::GatherMaterials( NiAVObject * scene_root ) {
 				//TODO: Implement this for NiMultiTextureProperty as well
 
 
-				materials.push_back( MaterialWrapper( matC, texingC, texC, multiC, specC, alphaC, this ) );
+				materials.push_back( MaterialWrapper( matC, texingC, texC, multiC, specC, alphaC, stencilC, this ) );
 			}
 		}
 		//Done with this branch, so return.
@@ -107,11 +110,11 @@ void MatTexCollection::Clear() {
 }
 
 unsigned int MatTexCollection::GetNumMaterials() {
-	return (unsigned int)materials.size();
+	return materials.size();
 }
 
 unsigned int MatTexCollection::GetNumTextures() {
-	return (unsigned int)textures.size();
+	return textures.size();
 }
 
 MaterialWrapper MatTexCollection::GetMaterial( unsigned int index ) {
@@ -137,16 +140,17 @@ unsigned int MatTexCollection::GetMaterialIndex( NiAVObject * obj ) {
 	return GetMaterialIndex( properties );
 }
 
-unsigned int MatTexCollection::GetMaterialIndex( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha ) {
+unsigned int MatTexCollection::GetMaterialIndex( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha, NiStencilProperty * stencil ) {
 	for( size_t i = 0; i < materials.size(); ++i ) {
 		if ( materials[i].mat_prop == mat &&
 			 materials[i].texing_prop == texing &&
 			 materials[i].tex_prop == tex &&
 			 materials[i].multi_prop == multi &&
 			 materials[i].spec_prop == spec &&
-			 materials[i].alpha_prop == alpha ) {
+			 materials[i].alpha_prop == alpha &&
+			 materials[i].stencil_prop == stencil) {
 				 //Match found, return its index
-				 return (unsigned int)i;
+				 return i;
 		}
 	}
 
@@ -158,7 +162,7 @@ unsigned int MatTexCollection::GetTextureIndex( NiSourceTexture * src_tex ) {
 	for( size_t i = 0; i < textures.size(); ++i ) {
 		if ( textures[i].src_tex == src_tex  ) {
 				 //Match found, return its index
-				 return (unsigned int)i;
+				 return i;
 		}
 	}
 
@@ -170,7 +174,7 @@ unsigned int MatTexCollection::GetTextureIndex( NiImage * image ) {
 	for( size_t i = 0; i < textures.size(); ++i ) {
 		if ( textures[i].image == image  ) {
 				 //Match found, return its index
-				 return (unsigned int)i;
+				 return i;
 		}
 	}
 
@@ -186,6 +190,7 @@ unsigned int MatTexCollection::GetMaterialIndex( const vector< Ref<NiProperty> >
 	NiMultiTexturePropertyRef multi = NULL;
 	NiSpecularPropertyRef spec = NULL;
 	NiAlphaPropertyRef alpha = NULL;
+	NiStencilPropertyRef stencil = NULL;
 
 	for ( unsigned i = 0; i < properties.size(); ++i ) {
 		if ( properties[i] == NULL ) {
@@ -203,11 +208,13 @@ unsigned int MatTexCollection::GetMaterialIndex( const vector< Ref<NiProperty> >
 			spec = DynamicCast<NiSpecularProperty>( properties[i] );
 		} else if ( properties[i]->IsDerivedType( NiAlphaProperty::TYPE ) ) {
 			alpha = DynamicCast<NiAlphaProperty>( properties[i] );
+		} else if ( properties[i]->IsDerivedType( NiStencilProperty::TYPE )) {
+			stencil = DynamicCast<NiStencilProperty>( properties[i] );
 		}
 	}
 
 	//Do the search
-	return GetMaterialIndex( mat, texing, tex, multi, spec, alpha );
+	return GetMaterialIndex( mat, texing, tex, multi, spec, alpha, stencil );
 }
 
 unsigned int MatTexCollection::CreateTexture( unsigned int version ) {
@@ -226,7 +233,7 @@ unsigned int MatTexCollection::CreateTexture( unsigned int version ) {
 	}
 
 	//Return the index of the newly created texture
-	return (unsigned int)(textures.size() - 1);
+	return textures.size() - 1;
 }
 
 unsigned int MatTexCollection::CreateMaterial( bool color, bool texture, bool multi_tex, bool specular, bool translucency, unsigned int version ) {
@@ -241,6 +248,7 @@ unsigned int MatTexCollection::CreateMaterial( bool color, bool texture, bool mu
 	NiMultiTexturePropertyRef multi = NULL;
 	NiSpecularPropertyRef spec = NULL;
 	NiAlphaPropertyRef alpha = NULL;
+	NiStencilPropertyRef stencil = NULL;
 
 	if ( color == true ) {
 		mat = new NiMaterialProperty;
@@ -268,21 +276,22 @@ unsigned int MatTexCollection::CreateMaterial( bool color, bool texture, bool mu
 	}
 
 	//Create Material and add it to the array
-	materials.push_back( MaterialWrapper( mat, texing, tex, multi, spec, alpha, this ) );
+	materials.push_back( MaterialWrapper( mat, texing, tex, multi, spec, alpha, stencil, this ) );
 
 	//Return the index of the newly created material
-	return (unsigned int)(materials.size() - 1);
+	return materials.size() - 1;
 }
 
 //MaterialWrapper//////////////////////////////////////////////////////////////
 
-MaterialWrapper::MaterialWrapper( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha, MatTexCollection * creator ) {
+MaterialWrapper::MaterialWrapper( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha, NiStencilProperty * stencil, MatTexCollection * creator ) {
 	mat_prop = mat;
 	texing_prop = texing;
 	tex_prop = tex;
 	multi_prop = multi;
 	spec_prop = spec;
 	alpha_prop = alpha;
+	stencil_prop = stencil;
 	_creator = creator;
 }
 
@@ -307,6 +316,9 @@ void MaterialWrapper::ApplyToObject( NiAVObject * target ) {
 	}
 	if ( alpha_prop != NULL ) {
 		target->AddProperty( alpha_prop );
+	}
+	if ( stencil_prop != NULL) {
+		target->AddProperty( stencil_prop );
 	}
 }
 
@@ -336,6 +348,10 @@ vector< Ref<NiProperty> > MaterialWrapper::GetProperties() {
 	}
 	if ( alpha_prop != NULL ) {
 		prop = StaticCast<NiProperty>(alpha_prop);
+		properties.push_back(prop);
+	}
+	if( stencil_prop != NULL ) {
+		prop = StaticCast<NiProperty>(stencil_prop);
 		properties.push_back(prop);
 	}
 

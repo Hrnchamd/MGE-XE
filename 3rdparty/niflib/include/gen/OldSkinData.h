@@ -29,6 +29,8 @@ struct OldSkinData {
 	unsigned short vertexIndex;
 	/*! Unknown.  Perhaps some sort of offset? */
 	Vector3 unknownVector;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

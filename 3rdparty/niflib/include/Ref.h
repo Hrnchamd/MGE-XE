@@ -112,7 +112,7 @@ Ref<T> & Ref<T>::operator=( T * object ) {
 		object->AddRef();
 	}
 
-	//Decriment reference count on previously referenced object, if any
+	//Decrement reference count on previously referenced object, if any
 	if ( _object != NULL ) {
 		_object->SubtractRef();
 	}
@@ -136,7 +136,7 @@ Ref<T> & Ref<T>::operator=( const Ref & ref ) {
 		ref._object->AddRef();
 	}
 
-	//Decriment reference count on previously referenced object, if any
+	//Decrement reference count on previously referenced object, if any
 	if ( _object != NULL ) {
 		_object->SubtractRef();
 	}

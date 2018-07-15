@@ -32,12 +32,14 @@ struct OblivionSubShape {
 	 * of this part in a linked body list.
 	 */
 	byte colFilter;
-	/*! Unknown. */
+	/*! Unknown. Perhaps the vertex wielding type? */
 	unsigned short unknownShort;
-	/*! Seems to be the number of vertices that form this sub shape. */
-	unsigned int vertexCount___;
+	/*! The number of vertices that form this sub shape. */
+	unsigned int numVertices;
 	/*! The material of the subshape. */
 	HavokMaterial material;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

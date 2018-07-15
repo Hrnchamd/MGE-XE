@@ -30,6 +30,7 @@ class NiMaterialProperty;
 class NiTexturingProperty;
 class NiTextureProperty;
 class NiMultiTextureProperty;
+class NiStencilProperty;
 class NiSourceTexture;
 class NiImage;
 
@@ -148,7 +149,7 @@ public:
 	 * \return The index of the material that matches the specified properties,
 	 * or NO_MATERIAL if no match is found.
 	 */
-	NIFLIB_API unsigned int GetMaterialIndex( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha );
+	NIFLIB_API unsigned int GetMaterialIndex( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha, NiStencilProperty * stencil );
 
 	/*
 	 * Retrieves the material index of the material that matches the given list
@@ -158,7 +159,7 @@ public:
 	 * or NO_MATERIAL if no match is found.
 	 */
 	NIFLIB_API unsigned int GetMaterialIndex( const vector< Ref<NiProperty> > & properties );
-
+	
 	/*
 	 * Creates a new material and adds it to the end of the array of materials
 	 * contained in this collection.  The type of material data that will
@@ -330,7 +331,7 @@ private:
 	friend class MatTexCollection;
 
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
-	NIFLIB_HIDDEN MaterialWrapper( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha, MatTexCollection * creator );
+	NIFLIB_HIDDEN MaterialWrapper( NiMaterialProperty * mat, NiTexturingProperty * texing, NiTextureProperty * tex, NiMultiTextureProperty * multi, NiSpecularProperty * spec, NiAlphaProperty * alpha, NiStencilProperty * stencil, MatTexCollection * creator );
 
 	/*! The NiMaterialProperty that this object wraps, if any. */
 	Ref<NiMaterialProperty> mat_prop;
@@ -344,6 +345,8 @@ private:
 	Ref<NiSpecularProperty> spec_prop;
 	/*! The NiAlphaProperty that this object wraps, if any. */
 	Ref<NiAlphaProperty> alpha_prop;
+	/*! The NiStencilProperty that this object wraps if any */
+	Ref<NiStencilProperty> stencil_prop;
 	/*! A pointer back to the MatTexCollection that created this wrapper */
 	MatTexCollection * _creator;
 };

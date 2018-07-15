@@ -32,6 +32,8 @@ struct SkinShapeGroup {
 	 *             Second link is a NiSkinInstance object.
 	 */
 	vector<SkinShape > linkPairs;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

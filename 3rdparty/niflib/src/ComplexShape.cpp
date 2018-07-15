@@ -15,13 +15,20 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../include/obj/NiSkinData.h"
 #include "../include/obj/NiTextureProperty.h"
 #include "../include/gen/SkinWeight.h"
+#include "../include/obj/NiSkinPartition.h"
+#include "../include/gen/BodyPartList.h"
+#include "../include/obj/BSShaderTextureSet.h"
+#include "../include/obj/BSLightingShaderProperty.h"
+#include "../include/obj/NiAlphaProperty.h"
 
 #include <stdlib.h>
-#include <float.h>
+
+
+
 
 using namespace Niflib;
 
-//Wrap these in the Niflib namespace so they don't polute the Class View
+//Wrape these in the Niflib namespace so they don't polute the Class View
 namespace Niflib {
 
 struct VertNorm {
@@ -41,10 +48,10 @@ struct VertNorm {
 		return *this;
 	}
 	bool operator==( const VertNorm & n ) {
-		if ( abs(position.x - n.position.x) > 0.0001 || abs(position.y - n.position.y) > 0.0001 || abs(position.z - n.position.z) > 0.0001 ) {
+		if ( abs(position.x - n.position.x) > 0.001 || abs(position.y - n.position.y) > 0.001 || abs(position.z - n.position.z) > 0.001 ) {
 			return false;
 		}
-		if ( abs(normal.x - n.normal.x) > 0.0001 || abs(normal.y - n.normal.y) > 0.0001 || abs(normal.z - n.normal.z) > 0.0001 ) {
+		if ( abs(normal.x - n.normal.x) > 0.001 || abs(normal.y - n.normal.y) > 0.001 || abs(normal.z - n.normal.z) > 0.001 ) {
 			return false;
 		}
 		//if ( weights != n.weights ) {
@@ -77,46 +84,20 @@ struct CompoundVertex {
 		return *this;
 	}
 	bool operator==( const CompoundVertex & n ) {
-		if ( abs(position.x - n.position.x) > 0.0001 || abs(position.y - n.position.y) > 0.0001 || abs(position.z - n.position.z) > 0.0001 ) {
+		if ( position != n.position ) {
 			return false;
 		}
-		if ( abs(normal.x - n.normal.x) > 0.0001 || abs(normal.y - n.normal.y) > 0.0001 || abs(normal.z - n.normal.z) > 0.0001 ) {
+		if ( normal != n.normal ) {
 			return false;
 		}
-		if ( abs(color.r - n.color.r) > 0.0001 || abs(color.g - n.color.g) > 0.0001 || abs(color.b - n.color.b) > 0.0001 || abs(color.a - n.color.a) > 0.0001 ) {
+		if ( color != n.color ) {
 			return false;
 		}
-
-		if ( texCoords.size() != n.texCoords.size() ) {
+		if ( texCoords != n.texCoords ) {
 			return false;
 		}
-
-		for ( map<TexType, TexCoord>::const_iterator it1 = texCoords.begin(); it1 != texCoords.end(); ++it1 ) {
-			map<TexType, TexCoord>::const_iterator it2 = n.texCoords.find( it1->first );
-
-			if ( it2 == n.texCoords.end() ) {
-				return false;
-			}
-
-			if ( abs(it1->second.u - it2->second.u) > 0.0001 || abs(it1->second.v - it2->second.v) > 0.0001 ) {
-				return false;
-			}
-		}
-
-		if ( weights.size() != n.weights.size() ) {
+		if ( weights != n.weights ) {
 			return false;
-		}
-
-		for ( map<NiNodeRef, float>::const_iterator it1 = weights.begin(); it1 != weights.end(); ++it1 ) {
-			map<NiNodeRef, float>::const_iterator it2 = n.weights.find( it1->first );
-
-			if ( it2 == n.weights.end() ) {
-				return false;
-			}
-
-			if ( abs(it1->second - it2->second) > 0.0001 ) {
-				return false;
-			}
 		}
 
 		return true;
@@ -164,6 +145,25 @@ void ComplexShape::SetSkinInfluences( const vector< Ref<NiNode> > & n ) {
 	skinInfluences = n;
 }
 
+vector<unsigned int> ComplexShape::GetDismemberPartitionsFaces() const {
+	return dismemberPartitionsFaces;
+}
+
+void ComplexShape::SetDismemberPartitionsFaces(const vector<unsigned int>& value ) {
+	dismemberPartitionsFaces.resize(value.size());
+
+	for(unsigned int i = 0; i < dismemberPartitionsFaces.size(); i++) {
+		dismemberPartitionsFaces[i] = value[i];
+	}
+}
+
+vector<BodyPartList> ComplexShape::GetDismemberPartitionsBodyParts() const {
+	return dismemberPartitionsBodyParts;
+}
+
+void ComplexShape::SetDismemberPartitionsBodyParts( const vector<BodyPartList>& value ) {
+	dismemberPartitionsBodyParts = value;
+}
 
 string ComplexShape::GetName() const {
 	return name;
@@ -206,6 +206,8 @@ void ComplexShape::Clear() {
 	propGroups.clear();
 	skinInfluences.clear();
 	name.clear();
+	dismemberPartitionsBodyParts.clear();
+	dismemberPartitionsFaces.clear();
 }
 
 void ComplexShape::Merge( NiAVObject * root ) {
@@ -222,7 +224,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 		//Add it to the list
 		shapes.push_back( DynamicCast<NiTriBasedGeom>(root) );
 	} else if ( root->IsDerivedType( NiNode::TYPE ) ) {
-		//The function was called on a NiNOde.  Search for
+		//The function was called on a NiNode.  Search for
 		//shape children
 		NiNodeRef nodeRoot = DynamicCast<NiNode>(root);
 		vector<NiAVObjectRef> children = nodeRoot->GetChildren();
@@ -253,8 +255,19 @@ void ComplexShape::Merge( NiAVObject * root ) {
 	unsigned int prop_group_index = 0;
 	for ( vector<NiTriBasedGeomRef>::iterator geom = shapes.begin(); geom != shapes.end(); ++geom ) {
 	
+		vector<NiPropertyRef> current_property_group =  (*geom)->GetProperties();
+
+		//Special code to handle the Bethesda Skyrim properties
+		array<2, NiPropertyRef> bs_properties = (*geom)->GetBSProperties();
+		if(bs_properties[0] != NULL) {
+			current_property_group.push_back(bs_properties[0]);
+		}
+		if(bs_properties[1] != NULL) {
+			current_property_group.push_back(bs_properties[1]);
+		}
+	
 		//Get properties of this shape
-		propGroups[prop_group_index] = (*geom)->GetProperties();
+		propGroups[prop_group_index] = current_property_group;
 		
 		
 		NiTriBasedGeomDataRef geomData = DynamicCast<NiTriBasedGeomData>( (*geom)->GetData() );
@@ -269,6 +282,11 @@ void ComplexShape::Merge( NiAVObject * root ) {
 		//If this is a skin influenced mesh, get vertices from niGeom
 		if ( (*geom)->GetSkinInstance() != NULL ) {
 			(*geom)->GetSkinDeformation( shapeVerts, shapeNorms );
+
+			if((*geom)->GetSkinInstance()->GetType().IsSameType(BSDismemberSkinInstance::TYPE)) {
+				BSDismemberSkinInstanceRef dismember_skin =  DynamicCast<BSDismemberSkinInstance>((*geom)->GetSkinInstance());
+				NiSkinPartitionRef skin_partition = dismember_skin->GetSkinPartition();
+			}
 		} else {
 			shapeVerts = geomData->GetVertices();
 			shapeNorms = geomData->GetNormals();
@@ -373,13 +391,32 @@ void ComplexShape::Merge( NiAVObject * root ) {
 		if ( niProp != NULL ) {
 			niTexProp = DynamicCast<NiTextureProperty>(niProp);
 		}
+		BSShaderTextureSetRef bsTexProp = NULL;
+		niProp = (*geom)->GetPropertyByType(BSShaderTextureSet::TYPE);
+		if(niProp != NULL) {
+			bsTexProp = DynamicCast<BSShaderTextureSet>(niProp);
+		}
+		niProp = (*geom)->GetBSProperties()[0];
+		if(niProp != NULL &&  niProp->GetType().IsSameType(BSLightingShaderProperty::TYPE)) {
+			BSLightingShaderPropertyRef bs_shader = DynamicCast<BSLightingShaderProperty>(niProp);
+			if(bs_shader->GetTextureSet() != NULL) {
+				bsTexProp = bs_shader->GetTextureSet();
+			}
+		}
+		niProp = (*geom)->GetBSProperties()[1];
+		if(niProp != NULL &&  niProp->GetType().IsSameType(BSLightingShaderProperty::TYPE)) {
+			BSLightingShaderPropertyRef bs_shader = DynamicCast<BSLightingShaderProperty>(niProp);
+			if(bs_shader->GetTextureSet() != NULL) {
+				bsTexProp = bs_shader->GetTextureSet();
+			}
+		}
 
 		//Create a list of UV sets to check
 		//pair.first = Texture Type
 		//pair.second = UV Set ID
 		vector< pair<TexType, unsigned int> > uvSets;
 
-		if ( shapeUVs.size() != 0 && (niTexingProp != NULL || niTexProp != NULL) ) {
+		if ( shapeUVs.size() != 0 && (niTexingProp != NULL || niTexProp != NULL || bsTexProp != NULL) ) {
 			if ( niTexingProp != NULL ) {
 				//Add the UV set to the list for every type of texture slot that uses it
 				for ( int tex = 0; tex < 8; ++tex ) {
@@ -390,7 +427,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 						uvSets.push_back( pair<TexType, unsigned int>( TexType(tex), td.uvSet ) );
 					}
 				}
-			} else if ( niTexProp != NULL ) {
+			} else if ( niTexProp != NULL || bsTexProp != NULL ) {
 				//Add the base UV set to the list and just use zero.
 				uvSets.push_back( pair<TexType, unsigned int>( BASE_MAP, 0 ) );
 			}
@@ -423,7 +460,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 					uvSetIndex = (unsigned int)(texCoordSets.size()) - 1;
 				}
 
-				//Loop through texture cooridnates in this set
+				//Loop through texture coordinates in this set
 				if ( set >= shapeUVs.size() || set < 0 ) {
 					throw runtime_error("One of the UV sets specified in the NiTexturingProperty did not exist in the NiTriBasedGeomData.");
 				}
@@ -432,17 +469,16 @@ void ComplexShape::Merge( NiAVObject * root ) {
 
 					newCoord = shapeUVs[set][v];
 
-					//Search for matching texture cooridnate
+					//Search for matching texture coordinate
 					bool match_found = false;
 					for ( unsigned int tc_index = 0; tc_index < texCoordSets[uvSetIndex].texCoords.size(); ++tc_index ) {
-						//TexCoord tc = texCoordSets[uvSetIndex].texCoords[tc_index];
-						//if ( abs(tc.u - newCoord.u) < 0.01 && abs(tc.v - newCoord.v) < 0.01 ) {
-						//	//Match found, use existing index
-						//	lookUp[v].uvIndices[uvSetIndex] = tc_index;
-						//	match_found = true;
-						//	//Stop searching
-						//	break;
-						//}
+						if ( texCoordSets[uvSetIndex].texCoords[tc_index]  == newCoord ) {
+							//Match found, use existing index
+							lookUp[v].uvIndices[uvSetIndex] = tc_index;
+							match_found = true;
+							//Stop searching
+							break;
+						}
 					}
 
 					//Done with loop, check if match was found
@@ -506,6 +542,119 @@ void ComplexShape::Merge( NiAVObject * root ) {
 					}
 				}
 			}
+
+			//Check to see if the skin is actually a dismember skin instance in which case import the partitions too
+			if(skinInst->GetType().IsSameType(BSDismemberSkinInstance::TYPE)) {
+				BSDismemberSkinInstanceRef dismember_skin = DynamicCast<BSDismemberSkinInstance>((*geom)->GetSkinInstance());
+				NiSkinPartitionRef skin_partition = dismember_skin->GetSkinPartition();
+
+				//These are the partition data of the current shapes
+				vector<BodyPartList> current_body_parts;
+				vector<int> current_body_parts_faces;
+
+				for(unsigned int y = 0; y < dismember_skin->GetPartitions().size(); y++) {
+					current_body_parts.push_back(dismember_skin->GetPartitions().at(y));
+				}
+
+				for(unsigned int y = 0; y < shapeTris.size(); y++) {
+					current_body_parts_faces.push_back(0);
+				}
+
+				for(int y = 0; y < skin_partition->GetNumPartitions(); y++) {
+					vector<Triangle> partition_triangles = skin_partition->GetTriangles(y);
+					vector<unsigned short> partition_vertex_map = skin_partition->GetVertexMap(y);
+					bool has_vertex_map = false;
+
+					if(partition_vertex_map.size() > 0) {
+						has_vertex_map = true;
+					}
+
+					for(unsigned int z = 0; z < partition_triangles.size(); z++) {
+						unsigned int w = faces.size() - shapeTris.size();
+
+						int merged_x;
+						int merged_y;
+						int merged_z;
+
+						if(has_vertex_map == true) {
+							merged_x = lookUp[partition_vertex_map[partition_triangles[z].v1]].vertIndex;
+							merged_y = lookUp[partition_vertex_map[partition_triangles[z].v2]].vertIndex;
+							merged_z = lookUp[partition_vertex_map[partition_triangles[z].v3]].vertIndex;
+						} else {
+							merged_x = lookUp[partition_triangles[z].v1].vertIndex;
+							merged_y = lookUp[partition_triangles[z].v2].vertIndex;
+							merged_z = lookUp[partition_triangles[z].v3].vertIndex;
+						}
+
+						for(; w < faces.size(); w++) {
+							ComplexFace current_face = faces[w];
+
+							//keep this commented code is case my theory that all triangles must have vertices arranged in a certain way and that you can't rearrange vertices in a triangle
+
+							/*if(current_face.points[0].vertexIndex == merged_x) {
+								if(current_face.points[1].vertexIndex == merged_y && current_face.points[2].vertexIndex == merged_z) {
+									is_same_face = true;
+									break;
+								} else if(current_face.points[2].vertexIndex == merged_y && current_face.points[1].vertexIndex == merged_z) {
+									is_same_face = true;
+									break;
+								}
+							} else if(current_face.points[1].vertexIndex == merged_x) {
+								if(current_face.points[0].vertexIndex == merged_y && current_face.points[2].vertexIndex == merged_z) {
+									is_same_face = true;
+									break;
+								} else if(current_face.points[2].vertexIndex == merged_y && current_face.points[0].vertexIndex == merged_z) {
+									is_same_face = true;
+									break;
+								}
+							} else if(current_face.points[2].vertexIndex == merged_x) {
+								if(current_face.points[0].vertexIndex == merged_y && current_face.points[1].vertexIndex == merged_z) {
+									is_same_face = true;
+									break;
+								} else if(current_face.points[1].vertexIndex == merged_y && current_face.points[0].vertexIndex == merged_z) {
+									is_same_face = true;
+									break;
+								}
+							} */
+
+							if(current_face.points[0].vertexIndex == merged_x && current_face.points[1].vertexIndex == merged_y && current_face.points[2].vertexIndex == merged_z) {
+								break;
+							}
+						}
+						
+						if(w - (faces.size() - shapeTris.size()) < shapeTris.size()) {
+							current_body_parts_faces[w - (faces.size() - shapeTris.size())] = y;
+						} 
+					}
+				}
+
+				for(unsigned int y = 0; y < current_body_parts.size(); y++) {
+					int match_index = -1;
+
+					for(unsigned int z = 0; z < dismemberPartitionsBodyParts.size(); z++) {
+						if(dismemberPartitionsBodyParts[z].bodyPart == current_body_parts[y].bodyPart 
+							&& dismemberPartitionsBodyParts[z].partFlag == current_body_parts[y].partFlag) {
+								match_index = z;
+								break;
+						}
+					}
+
+					if(match_index < 0) {
+						dismemberPartitionsBodyParts.push_back(current_body_parts[y]);
+						match_index = dismemberPartitionsBodyParts.size() - 1;
+					} 
+
+					for(unsigned int z = 0; z < current_body_parts_faces.size(); z++) {
+						if(current_body_parts_faces[z] == y) {
+							current_body_parts_faces[z] = match_index;
+						}
+					}
+				}
+
+				for(unsigned int x = 0; x < current_body_parts_faces.size(); x++) {
+					dismemberPartitionsFaces.push_back(current_body_parts_faces[x]);
+				}
+			}
 		}
 
 		//Next Shape
@@ -554,178 +703,26 @@ void ComplexShape::Merge( NiAVObject * root ) {
 	//Done Merging
 }
 
-map<size_t, float> ComplexShape::EnumerateFaceInfluences( size_t face_index ) {
-	vector<ComplexPoint> & points = faces[face_index].points;
-	size_t numPoints = points.size();
-	
-	map<size_t, float> bone_map;
-
-	for ( size_t p = 0; p < numPoints; ++p ) {
-		vector<SkinInfluence> & weights = vertices[ points[p].vertexIndex ].weights;
-		size_t numWeights = weights.size();
-
-		for ( size_t w = 0; w < numWeights; ++w ) {
-			SkinInfluence & inf = weights[w];
-
-			//Check if this influence already exists in the map
-			map<size_t, float>::iterator it = bone_map.find(inf.influenceIndex);
-			if ( it == bone_map.end() ) {
-				//Not found, so add it
-				bone_map[inf.influenceIndex] = inf.weight;
-			} else {
-				//Already exists in map, so increment it
-				bone_map[inf.influenceIndex] += inf.weight;
-			}
-		}
-	}
-
-	return bone_map;
-}
-
-void ComplexShape::ReduceSkinWeights( size_t max_bones_per_face, size_t max_bones_per_vert ) {
-	//First look for vertices that have too many influences
-	size_t numVertices = vertices.size();
-	for ( size_t v = 0; v < numVertices; ++v ) {
-		//Remove the smallest weight until we reach the correct size
-		vector<SkinInfluence> & weights = vertices[v].weights;
-		while ( weights.size() > max_bones_per_vert ) {
-			
-			size_t rem = 0;	
-			size_t numWeights = weights.size();
-			float last_value = FLT_MAX;
-			for ( int w = 0; w < numWeights; w++ ) {
-				float new_value = weights[w].weight;
-				if ( new_value < last_value ) {
-					rem = w;
-					last_value = new_value;
-				}
-			}
-			vector<SkinInfluence>::iterator rem_it = weights.begin() + rem;
-			weights.erase( rem_it );
-		}
-	}
-	
-	//Now that the first round of removals is done, normalize the skin weights so the next round is more "fair"
-	NormalizeSkinWeights();
-
-	//Next look for faces that have too many influences
-	size_t numFaces = faces.size();
-	for ( size_t f = 0; f < numFaces; ++f ) {
-		//Remove the smallest weight until we reach the correct size
-		vector<ComplexPoint> & points = faces[f].points;
-
-		map<size_t, float> bone_map;
-		size_t unremovable = 0;
-
-		while ( (bone_map = EnumerateFaceInfluences(f)).size() + unremovable > max_bones_per_face ) {
-			
-			//Search for the bone with the lowest overall weight
-			map<size_t, float>::iterator rem = bone_map.begin();
-			float last_value = FLT_MAX;
-			size_t numPoints = points.size();
-			
-
-			map<size_t, float>::iterator bone;
-
-			for ( bone = bone_map.begin(); bone != bone_map.end(); ++bone ) {
-				float new_value = bone->second;
-				if ( new_value < last_value ) {
-					rem = bone;
-					last_value = new_value;
-				}
-			}
-
-			//Check if the bone we are considering removing would remove the last weight from any vertex
-			for ( size_t p = 0; p < numPoints; ++p ) {
-				vector<SkinInfluence> & weights = vertices[ points[p].vertexIndex ].weights;
-
-				if ( weights.size() == 1 && weights[0].influenceIndex == rem->first ) {
-					//Remove this bone from the list and increment unremovable
-					bone_map.erase( rem );
-					++unremovable;
-					//Check if we've removed every bone from the list
-					if ( bone_map.size() == 0 ) {
-						//List is empty so we've failed to remove enough bones, but we did remove as many as we could.
-						break;
-					}
-				}
-			}
-
-			//Remove any weights on all points from the bone we've decided to remove
-			for ( size_t p = 0; p < numPoints; ++p ) {
-				vector<SkinInfluence> & weights = vertices[ points[p].vertexIndex ].weights;
-				size_t numWeights = weights.size();
-
-				for ( size_t w = 0; w < numWeights; ++w ) {
-					if ( weights[w].influenceIndex == rem->first ) {
-						//Assume there is only one weight on each bone that matches any particular influence
-						//which means we can erase in the middle of the list and then bail out of the loop
-						weights.erase( weights.begin() + w );
-						break;
-					}
-				}
-			}
-
-			//Now remove the bone from the bone map
-			bone_map.erase( rem );
-		}
-
-		//Re-normalize the weights of the points in the face we just finished removing influences from 
-		//so that future comparisons are fair
-		size_t numPoints = points.size();
-		for ( size_t p = 0; p < numPoints; ++p ) {
-			vector<SkinInfluence> & weights = vertices[ points[p].vertexIndex ].weights;
-			size_t numWeights = weights.size();
-
-			//Count up total weight
-			float total = 0.0f;
-
-			for ( size_t w = 0; w < numWeights; ++w ) {
-				total += weights[w].weight;
-			}
-
-			//Ignore any with no weight at all
-			if ( total != 0.0f ) {
-				//Divide each weight by the total weight to normalize
-				for ( size_t w = 0; w < numWeights; ++w ) {
-					weights[w].weight /= total;
-				}
-			}
-		}
-	}
-}
-
-void ComplexShape::NormalizeSkinWeights() {
-	size_t numVertices = vertices.size();
-	for ( size_t v = 0; v < numVertices; ++v ) {
-		vector<SkinInfluence> & weights = vertices[v].weights;
-		size_t numWeights = weights.size();
-
-		//Count up total weight
-		float total = 0.0f;
-
-		for ( size_t w = 0; w < numWeights; ++w ) {
-			total += weights[w].weight;
-		}
-
-		//Ignore any with no weight at all
-		if ( total != 0.0f ) {
-			//Divide each weight by the total weight to normalize
-			for ( size_t w = 0; w < numWeights; ++w ) {
-				weights[w].weight /= total;
-			}
-		}
-	}
-}
-
-
-Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int max_bones_per_partition, bool stripify, bool tangent_space ) const {
+Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int max_bones_per_partition, bool stripify, bool tangent_space, float min_vertex_weight, byte tspace_flags ) const {
 
 	//Make sure parent is not NULL
 	if ( parent == NULL ) {
 		throw runtime_error ("A parent is necessary to split a complex shape.");
 	}
 
+	bool use_dismember_partitions = false;
+
+	if( dismemberPartitionsFaces.size() > 0 ) {
+		if( dismemberPartitionsFaces.size() != faces.size() ) {
+			throw runtime_error ("The number of faces mapped to skin partitions is different from the actual face count.");
+		}
+		if(dismemberPartitionsBodyParts.size() == 0) {
+			throw runtime_error ("The number of dismember partition body parts can't be 0.");
+		}
+
+		use_dismember_partitions = true;
+	}
+	
 	//There will be one NiTriShape per property group
 	//with a minimum of 1
 	unsigned int num_shapes = (unsigned int)(propGroups.size());
@@ -770,7 +767,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 
 	parent->AddChild( root );
 
-	//Set transfrm of root
+	//Set transform of root
 	root->SetLocalTransform( transform );
 
 	//Create NiTriShapeData and fill it out with all data that is relevant
@@ -792,6 +789,15 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 
 		//List of triangles for the final shape to use
 		vector<Triangle> shapeTriangles;
+
+		//a vector that holds in what dismember groups or skin partition does each face belong
+		vector<BodyPartList> current_dismember_partitions = dismemberPartitionsBodyParts;
+
+		//create a map betweem the faces and the dismember groups
+		vector<unsigned int> current_dismember_partitions_faces;
+
+		//since we might have dismember partitions the face index is also required
+		int current_face_index = 0;
 
 		//Loop through all faces, and all points on each face
 		//to set the vertices in the CompoundVertex list
@@ -861,30 +867,97 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 				//Next Point
 			}
 
-			//Starting from vertex 0, create a fan of triangles to fill
-			//in non-triangle polygons
-			Triangle new_face;
-			for ( unsigned int i = 0; i < shapeFacePoints.size() - 2; ++i ) {
-				new_face[0] = shapeFacePoints[0];
-				new_face[1] = shapeFacePoints[i+1];
-				new_face[2] = shapeFacePoints[i+2];
+			if(use_dismember_partitions == false) {
+				//Starting from vertex 0, create a fan of triangles to fill
+				//in non-triangle polygons
+				Triangle new_face;
+				for ( unsigned int i = 0; i < shapeFacePoints.size() - 2; ++i ) {
+					new_face[0] = shapeFacePoints[0];
+					new_face[1] = shapeFacePoints[i+1];
+					new_face[2] = shapeFacePoints[i+2];
 
-				//Push the face into the face list
-				shapeTriangles.push_back(new_face);
+					//Push the face into the face list
+					shapeTriangles.push_back(new_face);
+				}
+
+				//Next Face
+			} else {
+				//Starting from vertex 0, create a fan of triangles to fill
+				//in non-triangle polygons
+				Triangle new_face;
+				for ( unsigned int i = 0; i < shapeFacePoints.size() - 2; ++i ) {
+					new_face[0] = shapeFacePoints[0];
+					new_face[1] = shapeFacePoints[i+1];
+					new_face[2] = shapeFacePoints[i+2];
+
+					//Push the face into the face list
+					shapeTriangles.push_back(new_face);
+
+					//all the resulting triangles belong in the the same dismember partition or better said skin partition
+					current_dismember_partitions_faces.push_back(dismemberPartitionsFaces[current_face_index]);
+				}
+			}
+			current_face_index++;
+		}
+
+		//Clean up the dismember skin partitions
+		//if no face points to a certain dismember partition then that dismember partition must be removed
+		if(use_dismember_partitions == true) {
+			vector<bool> used_dismember_groups(current_dismember_partitions.size(), false);
+			for(unsigned int x = 0; x < current_dismember_partitions_faces.size(); x++) {
+				if(used_dismember_groups[current_dismember_partitions_faces[x]] == false) {
+					used_dismember_groups[current_dismember_partitions_faces[x]] = true;
+				}	
 			}
 
-			//Next Face
+			vector<BodyPartList> cleaned_up_dismember_partitions;
+			for(unsigned int x = 0; x < current_dismember_partitions.size(); x++) {
+				if (used_dismember_groups[x] == false) {
+					for(unsigned int y = 0; y < current_dismember_partitions_faces.size(); y++) {
+						if(current_dismember_partitions_faces[y] > x) {
+							current_dismember_partitions_faces[y]--;
+						}
+					}
+				} else {
+					cleaned_up_dismember_partitions.push_back(current_dismember_partitions[x]);
+				} 
+			}
+			current_dismember_partitions = cleaned_up_dismember_partitions;
 		}
 
 		//Attatch properties if any
+		//Check if the properties are skyrim specific in which case attach them in the 2 special slots called bs_properties
 		if ( propGroups.size() > 0 ) {
-			for ( vector<NiPropertyRef>::const_iterator prop = propGroups[shape_num].begin(); prop != propGroups[shape_num].end(); ++prop ) {
-				shapes[shape_num]->AddProperty( *prop );						
+			BSLightingShaderPropertyRef shader_property = NULL;
+
+			for(vector<NiPropertyRef>::const_iterator prop = propGroups[shape_num].begin(); prop != propGroups[shape_num].end(); ++prop ) {
+				NiPropertyRef current_property = *prop;
+				if(current_property->GetType().IsSameType(BSLightingShaderProperty::TYPE)) {
+					shader_property = DynamicCast<BSLightingShaderProperty>(current_property);
+					break;
+				}
+			}
+
+			if(shader_property == NULL) {
+				for ( vector<NiPropertyRef>::const_iterator prop = propGroups[shape_num].begin(); prop != propGroups[shape_num].end(); ++prop ) {
+					shapes[shape_num]->AddProperty( *prop );						
+				}
+			} else {
+				NiAlphaPropertyRef alpha_property = NULL;
+				for ( vector<NiPropertyRef>::const_iterator prop = propGroups[shape_num].begin(); prop != propGroups[shape_num].end(); ++prop ) {
+					if ((*prop)->GetType().IsSameType(NiAlphaProperty::TYPE)) {
+						alpha_property = DynamicCast<NiAlphaProperty>((*prop));
+					}						
+				}
+				array<2, NiPropertyRef> bs_properties;
+				bs_properties[0] = shader_property;
+				bs_properties[1] = alpha_property;
+				shapes[shape_num]->SetBSProperties(bs_properties);
 			}
 		}
 
 		//--Set Shape Data--//
-
+		
 		//lists to hold data
 		vector<Vector3> shapeVerts( compVerts.size() );
 		vector<Vector3> shapeNorms( compVerts.size() );
@@ -894,7 +967,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 		map<NiNodeRef, vector<SkinWeight> > shapeWeights;
 
 		//Search for a NiTexturingProperty to build list of
-		//texture cooridinate sets to create
+		//texture coordinates sets to create
 		NiPropertyRef niProp = shapes[shape_num]->GetPropertyByType( NiTexturingProperty::TYPE );
 		NiTexturingPropertyRef niTexProp;
 		if ( niProp != NULL ) {
@@ -905,7 +978,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 				if (niTexProp->HasTexture(tex_num)) {
 					shapeTexCoordSets.push_back(tex_num);
 					TexDesc td = niTexProp->GetTexture(tex_num);
-					td.uvSet = (unsigned int)(shapeTexCoordSets.size() - 1);
+					td.uvSet = int(shapeTexCoordSets.size()) - 1;
 					niTexProp->SetTexture(tex_num, td);
 				}
 			}
@@ -937,7 +1010,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 			SkinWeight sk;
 			for ( map<NiNodeRef, float>::iterator wt = cv->weights.begin(); wt != cv->weights.end(); ++wt ) {
 				//Only record influences that make a noticable contribution
-				if ( wt->second > 0.01f ) {
+				if ( wt->second > min_vertex_weight ) {
 					sk.index = vert_index;
 					sk.weight = wt->second;
 					if ( shapeWeights.find( wt->first ) == shapeWeights.end() ) {
@@ -975,7 +1048,14 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 				shapeInfluences.push_back( inf->first );
 			}
 
-			shapes[shape_num]->BindSkin( shapeInfluences );
+			if(use_dismember_partitions == false) {
+				shapes[shape_num]->BindSkin( shapeInfluences );
+			} else {
+				shapes[shape_num]->BindSkinWith( shapeInfluences, BSDismemberSkinInstance::Create );
+				BSDismemberSkinInstanceRef dismember_skin = DynamicCast<BSDismemberSkinInstance>(shapes[shape_num]->GetSkinInstance());
+				dismember_skin->SetPartitions(current_dismember_partitions);
+			}
+			
 
 			for ( unsigned int inf = 0; inf < shapeInfluences.size(); ++inf ) {
 				shapes[shape_num]->SetBoneWeights( inf, shapeWeights[ shapeInfluences[inf] ] );
@@ -983,13 +1063,19 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 
 			shapes[shape_num]->NormalizeSkinWeights();
 
-			if ( max_bones_per_partition > 0 ) {
-				shapes[shape_num]->GenHardwareSkinInfo( max_bones_per_partition );
-			} 
-			//else {
-			//	//Make sure that fixed function skinning will work properly on this mesh
-			//	shapes[shape_num]->ReduceSkinWeights( 4, 4 );
-			//}
+			if(use_dismember_partitions == true ) {
+				int* face_map = new int[current_dismember_partitions_faces.size()];
+				for(unsigned int x = 0; x < current_dismember_partitions_faces.size(); x++) {
+					face_map[x] = current_dismember_partitions_faces[x];
+				}
+				shapes[ shape_num]->GenHardwareSkinInfo( max_bones_per_partition, 4, stripify, face_map);
+				delete[] face_map;
+
+				BSDismemberSkinInstanceRef dismember_skin = DynamicCast<BSDismemberSkinInstance>(shapes[ shape_num]->GetSkinInstance());
+				dismember_skin->SetPartitions(current_dismember_partitions);
+			} else if ( max_bones_per_partition > 0 ) {
+				shapes[shape_num]->GenHardwareSkinInfo( max_bones_per_partition, 4, stripify);
+			}
 
 			//NiSkinInstanceRef skinInst = shapes[shape_num]->GetSkinInstance();
 
@@ -1006,7 +1092,15 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 
 		//If tangent space was requested, generate it
 		if ( tangent_space ) {
-			shapes[shape_num]->UpdateTangentSpace();
+			if(tspace_flags == 0) {
+				shapes[shape_num]->UpdateTangentSpace();
+			} else {
+				if(shapes[shape_num]->GetData() != NULL) {
+					shapes[shape_num]->GetData()->SetUVSetCount(1);
+					shapes[shape_num]->GetData()->SetTspaceFlag(tspace_flags);
+					shapes[shape_num]->UpdateTangentSpace(1);
+				}
+			}
 		}
 		
 		//Next Shape

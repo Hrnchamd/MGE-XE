@@ -27,6 +27,8 @@ struct MatchGroup {
 	mutable unsigned short numVertices;
 	/*! The vertex indices. */
 	vector<unsigned short > vertexIndices;
+	//--BEGIN MISC CUSTOM CODE--//
+	//--END CUSTOM CODE--//
 };
 
 }

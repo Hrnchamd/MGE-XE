@@ -11,6 +11,8 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../NIF_IO.h"
 #include "../obj/NiObject.h"
 
+// Include structures
+#include "ExportInfo.h"
 namespace Niflib {
 
 
@@ -45,18 +47,13 @@ struct Header {
 	mutable unsigned int numBlocks;
 	/*!
 	 * This also appears to be the extra user version number and must be set in some
-	 * circumstances.
+	 * circumstances. Probably used by Bethesda to denote the Havok version.
 	 */
 	unsigned int userVersion2;
-	/*! Could be the name of the creator of the NIF file? */
-	ShortString creator;
-	/*! Unknown. Can be something like 'TriStrip Process Script'. */
-	ShortString exportInfo1;
-	/*!
-	 * Unknown. Possibly the selected option of the export script. Can be something
-	 * like 'Default Export Script'.
-	 */
-	ShortString exportInfo2;
+	/*! Unknown. Possibly User Version 2? */
+	unsigned int unknownInt3;
+	/*! Unknown. */
+	ExportInfo exportInfo;
 	/*! Number of object types in this NIF file. */
 	mutable unsigned short numBlockTypes;
 	/*! List of all object types used in this NIF file. */
@@ -67,11 +64,57 @@ struct Header {
 	 * object_types[object_type_index[1]], etc.
 	 */
 	vector<unsigned short > blockTypeIndex;
+	/*! Array of block sizes? */
+	vector<unsigned int > blockSize;
+	/*! Number of strings. */
+	mutable unsigned int numStrings;
+	/*! Maximum string length. */
+	unsigned int maxStringLength;
+	/*! Strings. */
+	vector<string > strings;
 	/*! Unknown. */
 	unsigned int unknownInt2;
 	NIFLIB_HIDDEN NifInfo Read( istream& in );
 	NIFLIB_HIDDEN void Write( ostream& out, const NifInfo & info = NifInfo() ) const;
 	NIFLIB_HIDDEN string asString( bool verbose = false ) const;
+	//--BEGIN MISC CUSTOM CODE--//
+
+	/*! HeaderString
+	 * \return The header string
+	 */
+	NIFLIB_API HeaderString getHeaderString();
+
+	/*! Nif Version
+	 * \return The current nif version
+	 */
+	NIFLIB_API unsigned int getVersion();
+
+	/*! Endian type
+	 * \return The endian type. Intel machines use small endian
+	 */
+	NIFLIB_API EndianType getEndianType();
+
+	/*! User version
+	 * \return The user version of this file which refers to the company/game that used the netimmerse/gamebryo engine
+	 */
+	NIFLIB_API unsigned int getUserVersion();
+
+	/*! User version2
+	 * \return The user version of this file which refers to the company/game that used the netimmerse/gamebryo engine
+	 */
+	NIFLIB_API unsigned int getUserVersion2();
+
+	/*! Block type
+	 * \return A vector containing all the names of the block types in the nif file. Useful for determing what does the nif contain
+	 */
+	NIFLIB_API vector<string> getBlockTypes();
+
+	/*! Block type
+	 * \return A vector containing all the indexes in the block types list that denote the type of each block in the nif
+	 */
+	NIFLIB_API vector<unsigned short> getBlockTypeIndex(); 
+
+	//--END CUSTOM CODE--//
 };
 
 }

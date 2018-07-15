@@ -26,17 +26,17 @@ namespace triangle_stripper {
 class policy
 {
 public:
-	policy(size_t MinStripSize, bool Cache);
+	policy(std::size_t MinStripSize, bool Cache);
 
 	strip BestStrip() const;
-	void Challenge(strip Strip, size_t Degree, size_t CacheHits);
+	void Challenge(strip Strip, std::size_t Degree, std::size_t CacheHits);
 
 private:
 	strip	m_Strip;
-	size_t	m_Degree;
-	size_t	m_CacheHits;
+	std::size_t	m_Degree;
+	std::size_t	m_CacheHits;
 
-	const size_t	m_MinStripSize;
+	const std::size_t	m_MinStripSize;
 	const bool		m_Cache;
 };
 
@@ -44,7 +44,7 @@ private:
 
 
 
-inline policy::policy(size_t MinStripSize, bool Cache)
+inline policy::policy(std::size_t MinStripSize, bool Cache)
 : m_Degree(0), m_CacheHits(0), m_MinStripSize(MinStripSize), m_Cache(Cache) { }
 
 

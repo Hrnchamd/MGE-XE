@@ -27,6 +27,17 @@ struct SkinWeight {
 	unsigned short index;
 	/*! The vertex weight - between 0.0 and 1.0 */
 	float weight;
+	//--BEGIN MISC CUSTOM CODE--//
+
+	bool operator<(const struct SkinWeight &other) const {
+		return index < other.index;
+	}
+
+	bool operator==(const struct SkinWeight &other) const {
+		return index == other.index;
+	}
+
+	//--END CUSTOM CODE--//
 };
 
 }

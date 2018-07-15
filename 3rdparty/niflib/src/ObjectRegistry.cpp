@@ -12,8 +12,6 @@ void ObjectRegistry::RegisterObject( const string & type_name, obj_factory_func 
 }
 
 NiObject * ObjectRegistry::CreateObject( const string & type_name ) {
-	NiObject * object = NULL;
-
 	map<string, obj_factory_func>::iterator it;
 	it = object_map.find(type_name);
 

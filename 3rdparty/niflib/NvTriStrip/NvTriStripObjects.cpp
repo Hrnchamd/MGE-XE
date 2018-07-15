@@ -1,9 +1,9 @@
 
-//#pragma warning( disable : 4786 )
+//#pragma warning( disable : 4786 )  
 
 #include <assert.h>
-#include <cstring>
 #include <set>
+#include <string.h> // memset
 #include "NvTriStripObjects.h"
 #include "VertexCache.h"
 
@@ -13,12 +13,12 @@ using namespace NvTriStrip;
 
 NvStripifier::NvStripifier()
 {
-
+	
 }
 
 NvStripifier::~NvStripifier()
 {
-
+	
 }
 
 
@@ -28,7 +28,7 @@ NvStripifier::~NvStripifier()
 // find the edge info for these two indices
 //
 NvEdgeInfo * NvStripifier::FindEdgeInfo(NvEdgeInfoVec &edgeInfos, int v0, int v1){
-
+	
 	// we can get to it through either array
 	// because the edge infos have a v0 and v1
 	// and there is no order except how it was
@@ -95,21 +95,21 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
 									 const unsigned short maxIndex)
 {
 	// reserve space for the face infos, but do not resize them.
-	int numIndices = (int)indices.size();
+	int numIndices = indices.size();
 	faceInfos.reserve(numIndices / 3);
-
+	
 	// we actually resize the edge infos, so we must initialize to NULL
 	edgeInfos.resize(maxIndex + 1);
 	for (int i = 0; i < maxIndex + 1; i++)
 		edgeInfos[i] = NULL;
-
+	
 	// iterate through the triangles of the triangle list
 	int numTriangles = numIndices / 3;
 	int index        = 0;
 	bool bFaceUpdated[3];
 
 	for (int i = 0; i < numTriangles; i++)
-	{
+	{	
 		bool bMightAlreadyExist = true;
 		bFaceUpdated[0] = false;
 		bFaceUpdated[1] = false;
@@ -123,11 +123,11 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
 		//we disregard degenerates
 		if(IsDegenerate(v0, v1, v2))
 			continue;
-
-		// create the face info and add it to the list of faces, but only if this exact face doesn't already
+		
+		// create the face info and add it to the list of faces, but only if this exact face doesn't already 
 		//  exist in the list
 		NvFaceInfo *faceInfo = new NvFaceInfo(v0, v1, v2);
-
+		
 		// grab the edge infos, creating them if they do not already exist
 		NvEdgeInfo *edgeInfo01 = FindEdgeInfo(edgeInfos, v0, v1);
 		if (edgeInfo01 == NULL)
@@ -137,17 +137,17 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
 
 			// create the info
 			edgeInfo01 = new NvEdgeInfo(v0, v1);
-
-			// update the linked list on both
+			
+			// update the linked list on both 
 			edgeInfo01->m_nextV0 = edgeInfos[v0];
 			edgeInfo01->m_nextV1 = edgeInfos[v1];
 			edgeInfos[v0] = edgeInfo01;
 			edgeInfos[v1] = edgeInfo01;
-
+			
 			// set face 0
 			edgeInfo01->m_face0 = faceInfo;
 		}
-		else
+		else 
 		{
 			if (edgeInfo01->m_face1 != NULL)
 			{
@@ -159,26 +159,26 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
 				bFaceUpdated[0] = true;
 			}
 		}
-
+		
 		// grab the edge infos, creating them if they do not already exist
 		NvEdgeInfo *edgeInfo12 = FindEdgeInfo(edgeInfos, v1, v2);
 		if (edgeInfo12 == NULL)
 		{
 			bMightAlreadyExist = false;
-
+			
 			// create the info
 			edgeInfo12 = new NvEdgeInfo(v1, v2);
-
-			// update the linked list on both
+			
+			// update the linked list on both 
 			edgeInfo12->m_nextV0 = edgeInfos[v1];
 			edgeInfo12->m_nextV1 = edgeInfos[v2];
 			edgeInfos[v1] = edgeInfo12;
 			edgeInfos[v2] = edgeInfo12;
-
+			
 			// set face 0
 			edgeInfo12->m_face0 = faceInfo;
 		}
-		else
+		else 
 		{
 			if (edgeInfo12->m_face1 != NULL)
 			{
@@ -190,7 +190,7 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
 				bFaceUpdated[1] = true;
 			}
 		}
-
+		
 		// grab the edge infos, creating them if they do not already exist
 		NvEdgeInfo *edgeInfo20 = FindEdgeInfo(edgeInfos, v2, v0);
 		if (edgeInfo20 == NULL)
@@ -199,17 +199,17 @@ void NvStripifier::BuildStripifyInfo(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &ed
 
 			// create the info
 			edgeInfo20 = new NvEdgeInfo(v2, v0);
-
-			// update the linked list on both
+			
+			// update the linked list on both 
 			edgeInfo20->m_nextV0 = edgeInfos[v2];
 			edgeInfo20->m_nextV1 = edgeInfos[v0];
 			edgeInfos[v2] = edgeInfo20;
 			edgeInfos[v0] = edgeInfo20;
-
+			
 			// set face 0
 			edgeInfo20->m_face0 = faceInfo;
 		}
-		else
+		else 
 		{
 			if (edgeInfo20->m_face1 != NULL)
 			{
@@ -261,7 +261,7 @@ int NvStripifier::FindStartPoint(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &edgeIn
 	for(size_t i = 0; i < faceInfos.size(); i++)
 	{
 		int ctr = 0;
-
+		
 		if(FindOtherFace(edgeInfos, faceInfos[i]->m_v0, faceInfos[i]->m_v1, faceInfos[i]) == NULL)
 			ctr++;
 		if(FindOtherFace(edgeInfos, faceInfos[i]->m_v1, faceInfos[i]->m_v2, faceInfos[i]) == NULL)
@@ -271,12 +271,12 @@ int NvStripifier::FindStartPoint(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &edgeIn
 		if(ctr > bestCtr)
 		{
 			bestCtr = ctr;
-			bestIndex = int(i);
+			bestIndex = i;
 			//return i;
 		}
 	}
 	//return -1;
-
+	
 	if(bestCtr == 0)
 		return -1;
 	else
@@ -286,7 +286,7 @@ int NvStripifier::FindStartPoint(NvFaceInfoVec &faceInfos, NvEdgeInfoVec &edgeIn
 
 ///////////////////////////////////////////////////////////////////////////////////////////
 // FindGoodResetPoint()
-//
+//  
 // A good reset point is one near other commited areas so that
 // we know that when we've made the longest strips its because
 // we're stripifying in the same general orientation.
@@ -296,10 +296,10 @@ NvFaceInfo* NvStripifier::FindGoodResetPoint(NvFaceInfoVec &faceInfos, NvEdgeInf
 	// other large open spans done.  Areas of small strips can
 	// just be left to triangle lists added at the end.
 	NvFaceInfo *result = NULL;
-
+	
 	if(result == NULL)
 	{
-		int numFaces   = (int)faceInfos.size();
+		int numFaces   = faceInfos.size();
       if (numFaces == 0)
          return NULL;
 
@@ -312,11 +312,11 @@ NvFaceInfo* NvStripifier::FindGoodResetPoint(NvFaceInfoVec &faceInfos, NvEdgeInf
 		}
 		else
 			startPoint = (int)(((float) numFaces - 1) * meshJump);
-
+		
 		if(startPoint == -1)
 		{
 			startPoint = (int)(((float) numFaces - 1) * meshJump);
-
+			
 			//meshJump += 0.1f;
 			//if (meshJump > 1.0f)
 			//	meshJump = .05f;
@@ -324,25 +324,25 @@ NvFaceInfo* NvStripifier::FindGoodResetPoint(NvFaceInfoVec &faceInfos, NvEdgeInf
 
 		int i = startPoint;
 		do {
-
+			
 			// if this guy isn't visited, try him
 			if (faceInfos[i]->m_stripId < 0){
 				result = faceInfos[i];
 				break;
 			}
-
+			
 			// update the index and clamp to 0-(numFaces-1)
 			if (++i >= numFaces)
 				i = 0;
-
+			
 		} while (i != startPoint);
-
+		
 		// update the meshJump
 		meshJump += 0.1f;
 		if (meshJump > 1.0f)
 			meshJump = .05f;
 	}
-
+	
 	// return the best face we found
 	return result;
 }
@@ -354,25 +354,25 @@ NvFaceInfo* NvStripifier::FindGoodResetPoint(NvFaceInfoVec &faceInfos, NvEdgeInf
 // Returns the vertex unique to faceB
 //
 int NvStripifier::GetUniqueVertexInB(NvFaceInfo *faceA, NvFaceInfo *faceB){
-
+	
 	int facev0 = faceB->m_v0;
 	if (facev0 != faceA->m_v0 &&
 		facev0 != faceA->m_v1 &&
 		facev0 != faceA->m_v2)
 		return facev0;
-
+	
 	int facev1 = faceB->m_v1;
 	if (facev1 != faceA->m_v0 &&
 		facev1 != faceA->m_v1 &&
 		facev1 != faceA->m_v2)
 		return facev1;
-
+	
 	int facev2 = faceB->m_v2;
 	if (facev2 != faceA->m_v0 &&
 		facev2 != faceA->m_v1 &&
 		facev2 != faceA->m_v2)
 		return facev2;
-
+	
 	// nothing is different
 	return -1;
 }
@@ -401,7 +401,7 @@ void NvStripifier::GetSharedVertices(NvFaceInfo *faceA, NvFaceInfo *faceB, int* 
 			return;
 		}
 	}
-
+	
 	int facev1 = faceB->m_v1;
 	if (facev1 == faceA->m_v0 ||
 		facev1 == faceA->m_v1 ||
@@ -414,7 +414,7 @@ void NvStripifier::GetSharedVertices(NvFaceInfo *faceA, NvFaceInfo *faceB, int* 
 			*vertex1 = facev1;
 			return;
 		}
-	}
+	}	
 
 	int facev2 = faceB->m_v2;
 	if (facev2 == faceA->m_v0 ||
@@ -439,17 +439,17 @@ void NvStripifier::GetSharedVertices(NvFaceInfo *faceA, NvFaceInfo *faceB, int* 
 // Returns vertex of the input face which is "next" in the input index list
 //
 inline int NvStripifier::GetNextIndex(const WordVec &indices, NvFaceInfo *face){
-
-	int numIndices = (int)indices.size();
+	
+	int numIndices = indices.size();
 	assert(numIndices >= 2);
-
+	
 	int v0  = indices[numIndices-2];
 	int v1  = indices[numIndices-1];
-
+	
 	int fv0 = face->m_v0;
 	int fv1 = face->m_v1;
 	int fv2 = face->m_v2;
-
+	
 	if (fv0 != v0 && fv0 != v1){
 		if ((fv1 != v0 && fv1 != v1) || (fv2 != v0 && fv2 != v1)){
 			//printf("GetNextIndex: Triangle doesn't have all of its vertices\n");
@@ -471,7 +471,7 @@ inline int NvStripifier::GetNextIndex(const WordVec &indices, NvFaceInfo *face){
 		}
 		return fv2;
 	}
-
+	
 	// shouldn't get here, but let's try and fail gracefully
 	if( (fv0 == fv1) || (fv0 == fv2) )
 		return fv0;
@@ -524,7 +524,7 @@ bool NvStripInfo::Unique(NvFaceInfoVec& faceVec, NvFaceInfo* face)
 	{
 		if(!bv0)
 		{
-			if( (faceVec[i]->m_v0 == face->m_v0) ||
+			if( (faceVec[i]->m_v0 == face->m_v0) || 
 				(faceVec[i]->m_v1 == face->m_v0) ||
 				(faceVec[i]->m_v2 == face->m_v0) )
 				bv0 = true;
@@ -532,7 +532,7 @@ bool NvStripInfo::Unique(NvFaceInfoVec& faceVec, NvFaceInfo* face)
 
 		if(!bv1)
 		{
-			if( (faceVec[i]->m_v0 == face->m_v1) ||
+			if( (faceVec[i]->m_v0 == face->m_v1) || 
 				(faceVec[i]->m_v1 == face->m_v1) ||
 				(faceVec[i]->m_v2 == face->m_v1) )
 				bv1 = true;
@@ -540,7 +540,7 @@ bool NvStripInfo::Unique(NvFaceInfoVec& faceVec, NvFaceInfo* face)
 
 		if(!bv2)
 		{
-			if( (faceVec[i]->m_v0 == face->m_v2) ||
+			if( (faceVec[i]->m_v0 == face->m_v2) || 
 				(faceVec[i]->m_v1 == face->m_v2) ||
 				(faceVec[i]->m_v2 == face->m_v2) )
 				bv2 = true;
@@ -550,7 +550,7 @@ bool NvStripInfo::Unique(NvFaceInfoVec& faceVec, NvFaceInfo* face)
 		if(bv0 && bv1 && bv2)
 			return false;
 	}
-
+	
 	//if we get out here, it's unique
 	return true;
 }
@@ -565,16 +565,16 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 {
 	// used in building the strips forward and backward
 	WordVec scratchIndices;
-
+	
 	// build forward... start with the initial face
 	NvFaceInfoVec forwardFaces, backwardFaces;
 	forwardFaces.push_back(m_startInfo.m_startFace);
 
 	MarkTriangle(m_startInfo.m_startFace);
-
+	
 	int v0 = (m_startInfo.m_toV1 ? m_startInfo.m_startEdge->m_v0 : m_startInfo.m_startEdge->m_v1);
 	int v1 = (m_startInfo.m_toV1 ? m_startInfo.m_startEdge->m_v1 : m_startInfo.m_startEdge->m_v0);
-
+	
 	// easiest way to get v2 is to use this function which requires the
 	// other indices to already be in the list.
 	scratchIndices.push_back(v0);
@@ -594,7 +594,7 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 		//check to see if this next face is going to cause us to die soon
 		int testnv0 = nv1;
 		int testnv1 = NvStripifier::GetNextIndex(scratchIndices, nextFace);
-
+		
 		NvFaceInfo* nextNextFace = NvStripifier::FindOtherFace(edgeInfos, testnv0, testnv1, nextFace);
 
 		if( (nextNextFace == NULL) || (IsMarked(nextNextFace)) )
@@ -605,10 +605,10 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 			if( ((testNextFace != NULL) && !IsMarked(testNextFace)) )
 			{
 				//we only swap if it buys us something
-
+				
 				//add a "fake" degenerate face
 				NvFaceInfo* tempFace = new NvFaceInfo(nv0, nv1, nv0, true);
-
+				
 				forwardFaces.push_back(tempFace);
 				MarkTriangle(tempFace);
 
@@ -624,20 +624,20 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 		forwardFaces.push_back(nextFace);
 
 		MarkTriangle(nextFace);
-
+		
 		// add the index
 		//nv0 = nv1;
 		//nv1 = NvStripifier::GetNextIndex(scratchIndices, nextFace);
 		scratchIndices.push_back(testnv1);
-
+		
 		// and get the next face
 		nv0 = testnv0;
 		nv1 = testnv1;
 
 		nextFace = NvStripifier::FindOtherFace(edgeInfos, nv0, nv1, nextFace);
-
+	
 	}
-
+	
 	// tempAllFaces is going to be forwardFaces + backwardFaces
 	// it's used for Unique()
 	NvFaceInfoVec tempAllFaces;
@@ -664,7 +664,7 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 		//check to see if this next face is going to cause us to die soon
 		int testnv0 = nv1;
 		int testnv1 = NvStripifier::GetNextIndex(scratchIndices, nextFace);
-
+		
 		NvFaceInfo* nextNextFace = NvStripifier::FindOtherFace(edgeInfos, testnv0, testnv1, nextFace);
 
 		if( (nextNextFace == NULL) || (IsMarked(nextNextFace)) )
@@ -674,7 +674,7 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 			if( ((testNextFace != NULL) && !IsMarked(testNextFace)) )
 			{
 				//we only swap if it buys us something
-
+				
 				//add a "fake" degenerate face
 				NvFaceInfo* tempFace = new NvFaceInfo(nv0, nv1, nv0, true);
 
@@ -685,28 +685,28 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 
 				++m_numDegenerates;
 			}
-
+				
 		}
 
 		// add this to the strip
 		backwardFaces.push_back(nextFace);
-
+		
 		//this is just so Unique() will work
 		tempAllFaces.push_back(nextFace);
 
 		MarkTriangle(nextFace);
-
+		
 		// add the index
 		//nv0 = nv1;
 		//nv1 = NvStripifier::GetNextIndex(scratchIndices, nextFace);
 		scratchIndices.push_back(testnv1);
-
+		
 		// and get the next face
 		nv0 = testnv0;
 		nv1 = testnv1;
 		nextFace = NvStripifier::FindOtherFace(edgeInfos, nv0, nv1, nextFace);
 	}
-
+	
 	// Combine the forward and backwards stripification lists and put into our own face vector
 	Combine(forwardFaces, backwardFaces);
 }
@@ -718,14 +718,14 @@ void NvStripInfo::Build(NvEdgeInfoVec &edgeInfos, NvFaceInfoVec &faceInfos)
 // Combines the two input face vectors and puts the result into m_faces
 //
 void NvStripInfo::Combine(const NvFaceInfoVec &forward, const NvFaceInfoVec &backward){
-
+	
 	// add backward faces
-	int numFaces = (int)backward.size();
+	int numFaces = backward.size();
 	for (int i = numFaces - 1; i >= 0; i--)
 		m_faces.push_back(backward[i]);
-
+	
 	// add forward faces
-	numFaces = (int)forward.size();
+	numFaces = forward.size();
 	for (int i = 0; i < numFaces; i++)
 		m_faces.push_back(forward[i]);
 }
@@ -740,24 +740,24 @@ bool NvStripInfo::SharesEdge(const NvFaceInfo* faceInfo, NvEdgeInfoVec &edgeInfo
 {
 	//check v0->v1 edge
 	NvEdgeInfo* currEdge = NvStripifier::FindEdgeInfo(edgeInfos, faceInfo->m_v0, faceInfo->m_v1);
-
+	
 	if(IsInStrip(currEdge->m_face0) || IsInStrip(currEdge->m_face1))
 		return true;
-
+	
 	//check v1->v2 edge
 	currEdge = NvStripifier::FindEdgeInfo(edgeInfos, faceInfo->m_v1, faceInfo->m_v2);
-
+	
 	if(IsInStrip(currEdge->m_face0) || IsInStrip(currEdge->m_face1))
 		return true;
-
+	
 	//check v2->v0 edge
 	currEdge = NvStripifier::FindEdgeInfo(edgeInfos, faceInfo->m_v2, faceInfo->m_v0);
-
+	
 	if(IsInStrip(currEdge->m_face0) || IsInStrip(currEdge->m_face1))
 		return true;
-
+	
 	return false;
-
+	
 }
 
 
@@ -768,22 +768,22 @@ bool NvStripInfo::SharesEdge(const NvFaceInfo* faceInfo, NvEdgeInfoVec &edgeInfo
 //  vector
 //
 void NvStripifier::CommitStrips(NvStripInfoVec &allStrips, const NvStripInfoVec &strips)
-{
+{	
 	// Iterate through strips
-	int numStrips = (int)strips.size();
+	int numStrips = strips.size();
 	for (int i = 0; i < numStrips; i++){
 
 		// Tell the strip that it is now real
 		NvStripInfo *strip = strips[i];
 		strip->m_experimentId = -1;
-
+		
 		// add to the list of real strips
 		allStrips.push_back(strip);
-
+		
 		// Iterate through the faces of the strip
 		// Tell the faces of the strip that they belong to a real strip now
 		const NvFaceInfoVec &faces = strips[i]->m_faces;
-		int numFaces = (int)faces.size();
+		int numFaces = faces.size();
 
 		for (int j = 0; j < numFaces; j++)
 		{
@@ -802,10 +802,10 @@ bool NvStripifier::FindTraversal(NvFaceInfoVec &faceInfos,
 								 NvEdgeInfoVec    &edgeInfos,
 								 NvStripInfo      *strip,
 								 NvStripStartInfo &startInfo){
-
+	
 	// if the strip was v0->v1 on the edge, then v1 will be a vertex in the next edge.
 	int v = (strip->m_startInfo.m_toV1 ? strip->m_startInfo.m_startEdge->m_v1 : strip->m_startInfo.m_startEdge->m_v0);
-
+	
 	NvFaceInfo *untouchedFace = NULL;
 	NvEdgeInfo *edgeIter      = edgeInfos[v];
 	while (edgeIter != NULL){
@@ -820,11 +820,11 @@ bool NvStripifier::FindTraversal(NvFaceInfoVec &faceInfos,
 			untouchedFace = face0;
 			break;
 		}
-
+		
 		// find the next edgeIter
 		edgeIter = (edgeIter->m_v0 == v ? edgeIter->m_nextV0 : edgeIter->m_nextV1);
 	}
-
+	
 	startInfo.m_startFace = untouchedFace;
 	startInfo.m_startEdge = edgeIter;
 	if (edgeIter != NULL)
@@ -850,7 +850,7 @@ void NvStripifier::RemoveSmallStrips(NvStripInfoVec& allStrips, NvStripInfoVec& 
 	faceList.clear();
 	allBigStrips.clear();  //make sure these are empty
 	NvFaceInfoVec tempFaceList;
-
+	
 	for(size_t i = 0; i < allStrips.size(); i++)
 	{
 		if(allStrips[i]->m_faces.size() < size_t(minStripLength))
@@ -858,7 +858,7 @@ void NvStripifier::RemoveSmallStrips(NvStripInfoVec& allStrips, NvStripInfoVec& 
 			//strip is too small, add faces to faceList
 			for(size_t j = 0; j < allStrips[i]->m_faces.size(); j++)
 				tempFaceList.push_back(allStrips[i]->m_faces[j]);
-
+			
 			//and free memory
 			delete allStrips[i];
 		}
@@ -867,43 +867,43 @@ void NvStripifier::RemoveSmallStrips(NvStripInfoVec& allStrips, NvStripInfoVec& 
 			allBigStrips.push_back(allStrips[i]);
 		}
 	}
-
+	
 	if(tempFaceList.size())
 	{
 		bool *bVisitedList = new bool[tempFaceList.size()];
 		memset(bVisitedList, 0, tempFaceList.size()*sizeof(bool));
-
+		
 		VertexCache* vcache = new VertexCache(cacheSize);
-
+		
 		int bestNumHits = -1;
 		int numHits;
 		int bestIndex = -1;
-
+		
 		while(1)
 		{
 			bestNumHits = -1;
-
+			
 			//find best face to add next, given the current cache
 			for(size_t i = 0; i < tempFaceList.size(); i++)
 			{
 				if(bVisitedList[i])
 					continue;
-
+				
 				numHits = CalcNumHitsFace(vcache, tempFaceList[i]);
 				if(numHits > bestNumHits)
 				{
 					bestNumHits = numHits;
-					bestIndex = (int)i;
+					bestIndex = i;
 				}
 			}
-
+			
 			if(bestNumHits == -1.0f)
 				break;
 			bVisitedList[bestIndex] = true;
 			UpdateCacheFace(vcache, tempFaceList[bestIndex]);
 			faceList.push_back(tempFaceList[bestIndex]);
 		}
-
+		
 		delete vcache;
 		delete[] bVisitedList;
 	}
@@ -930,13 +930,13 @@ bool NvStripifier::IsCW(NvFaceInfo *faceInfo, int v0, int v1)
 {
 	if (faceInfo->m_v0 == v0)
 		return (faceInfo->m_v1 == v1);
-
+	
 	else if (faceInfo->m_v1 == v0)
 		return (faceInfo->m_v2 == v1);
-
-	else
+	
+	else 
 		return (faceInfo->m_v0 == v1);
-
+	
 	// shouldn't get here
 	assert(0);
 	return false;
@@ -956,21 +956,21 @@ bool NvStripifier::IsMoneyFace(const NvFaceInfo& face)
 
 	return false;
 }
-
+				
 ////////////////////////////////////////////////////////////////////////////////////////
 // CreateStrips()
 //
 // Generates actual strips from the list-in-strip-order.
 //
-void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIndices,
-								const bool bStitchStrips, unsigned int& numSeparateStrips,
+void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIndices, 
+								const bool bStitchStrips, unsigned int& numSeparateStrips, 
 								const bool bRestart, const unsigned int restartVal)
 {
 	assert(numSeparateStrips == 0);
 
 	NvFaceInfo tLastFace(0, 0, 0);
 	NvFaceInfo tPrevStripLastFace(0, 0, 0);
-	int nStripCount = (int)allStrips.size();
+	int nStripCount = allStrips.size();
 	assert(nStripCount > 0);
 
 	//we infer the cw/ccw ordering depending on the number of indices
@@ -981,7 +981,7 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 	for (int i = 0; i < nStripCount; i++)
 	{
 		NvStripInfo *strip = allStrips[i];
-		int nStripFaceCount = (int)strip->m_faces.size();
+		int nStripFaceCount = strip->m_faces.size();
 		assert(nStripFaceCount > 0);
 
 		// Handle the first face in the strip
@@ -1035,9 +1035,9 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 			{
 				// Double tap the first in the new strip
 				stripIndices.push_back(tFirstFace.m_v0);
-
+	
 				// Check CW/CCW ordering
-				if (NextIsCW((int)stripIndices.size() - accountForNegatives) != IsCW(strip->m_faces[0], tFirstFace.m_v0, tFirstFace.m_v1))
+				if (NextIsCW(stripIndices.size() - accountForNegatives) != IsCW(strip->m_faces[0], tFirstFace.m_v0, tFirstFace.m_v1))
 				{
 					stripIndices.push_back(tFirstFace.m_v0);
 				}
@@ -1075,16 +1075,16 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 		}
 
 		// Double tap between strips.
-		if (bStitchStrips && !bRestart)
+		if (bStitchStrips && !bRestart) 
 		{
 			if (i != nStripCount - 1)
 				stripIndices.push_back(tLastFace.m_v2);
-		}
-		else if (bRestart)
+		} 
+		else if (bRestart) 
 		{
 			stripIndices.push_back(restartVal);
-		}
-		else
+		} 
+		else 
 		{
 			//-1 index indicates next strip
 			stripIndices.push_back(-1);
@@ -1097,7 +1097,7 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 		tLastFace.m_v1 = tLastFace.m_v2;
 		tLastFace.m_v2 = tLastFace.m_v2;
 	}
-
+	
 	if(bStitchStrips || bRestart)
 		numSeparateStrips = 1;
 }
@@ -1108,10 +1108,10 @@ void NvStripifier::CreateStrips(const NvStripInfoVec& allStrips, IntVec& stripIn
 //
 //
 // in_indices are the input indices of the mesh to stripify
-// in_cacheSize is the target cache size
+// in_cacheSize is the target cache size 
 //
-void NvStripifier::Stripify(const WordVec &in_indices, const int in_cacheSize,
-							const int in_minStripLength, const unsigned short maxIndex,
+void NvStripifier::Stripify(const WordVec &in_indices, const int in_cacheSize, 
+							const int in_minStripLength, const unsigned short maxIndex, 
 							NvStripInfoVec &outStrips, NvFaceInfoVec& outFaceList)
 {
 	meshJump = 0.0f;
@@ -1119,21 +1119,21 @@ void NvStripifier::Stripify(const WordVec &in_indices, const int in_cacheSize,
 
 	//the number of times to run the experiments
 	int numSamples = 10;
-
+	
 	//the cache size, clamped to one
 	if ( in_cacheSize - CACHE_INEFFICIENCY < 1 ) cacheSize = 1;
 	else cacheSize = in_cacheSize - CACHE_INEFFICIENCY;
-
+	
 	minStripLength = in_minStripLength;  //this is the strip size threshold below which we dump the strip into a list
-
+	
 	indices = in_indices;
-
+	
 	// build the stripification info
 	NvFaceInfoVec allFaceInfos;
 	NvEdgeInfoVec allEdgeInfos;
-
+	
 	BuildStripifyInfo(allFaceInfos, allEdgeInfos, maxIndex);
-
+	
 	NvStripInfoVec allStrips;
 
 	// stripify
@@ -1147,7 +1147,7 @@ void NvStripifier::Stripify(const WordVec &in_indices, const int in_cacheSize,
 	{
 		delete allStrips[i];
 	}
-
+	
 	for (size_t i = 0; i < allEdgeInfos.size(); i++)
 	{
 		NvEdgeInfo *info = allEdgeInfos[i];
@@ -1158,7 +1158,7 @@ void NvStripifier::Stripify(const WordVec &in_indices, const int in_cacheSize,
 			info = next;
 		}
 	}
-
+	
 }
 
 
@@ -1198,23 +1198,23 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 {
 	int threshold = cacheSize;
 	NvStripInfoVec tempStrips;
-
+	
 	//split up strips into threshold-sized pieces
 	for(size_t i = 0; i < allStrips.size(); i++)
 	{
 		NvStripInfo* currentStrip;
 		NvStripStartInfo startInfo(NULL, NULL, false);
-
+	
 		int actualStripSize = 0;
 		for(size_t j = 0; j < allStrips[i]->m_faces.size(); ++j)
 		{
 			if( !IsDegenerate(allStrips[i]->m_faces[j]) )
 				actualStripSize++;
 		}
-
+		
 		if(actualStripSize /*allStrips[i]->m_faces.size()*/ > threshold)
 		{
-
+			
 			int numTimes    = actualStripSize /*allStrips[i]->m_faces.size()*/ / threshold;
 			int numLeftover = actualStripSize /*allStrips[i]->m_faces.size()*/ % threshold;
 
@@ -1223,7 +1223,7 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 			for(j = 0; j < numTimes; j++)
 			{
 				currentStrip = new NvStripInfo(startInfo, 0, -1);
-
+				
 				int faceCtr = j*threshold + degenerateCount;
 				bool bFirstTime = true;
 				while(faceCtr < threshold+(j*threshold)+degenerateCount)
@@ -1231,10 +1231,10 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 					if(IsDegenerate(allStrips[i]->m_faces[faceCtr]))
 					{
 						degenerateCount++;
-
+						
 						//last time or first time through, no need for a degenerate
 						if( (((faceCtr + 1) != threshold+(j*threshold)+degenerateCount) ||
-							 ((j == numTimes - 1) && (numLeftover < 4) && (numLeftover > 0))) &&
+							 ((j == numTimes - 1) && (numLeftover < 4) && (numLeftover > 0))) && 
 							 !bFirstTime)
 						{
 							currentStrip->m_faces.push_back(allStrips[i]->m_faces[faceCtr++]);
@@ -1277,13 +1277,13 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 				}
 				tempStrips.push_back(currentStrip);
 			}
-
+			
 			int leftOff = j * threshold + degenerateCount;
-
+			
 			if(numLeftover != 0)
 			{
-				currentStrip = new NvStripInfo(startInfo, 0, -1);
-
+				currentStrip = new NvStripInfo(startInfo, 0, -1);   
+				
 				int ctr = 0;
 				bool bFirstTime = true;
 				while(ctr < numLeftover)
@@ -1313,7 +1313,7 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 					currentStrip->m_faces.push_back(allStrips[i]->m_faces[leftOff++]);
 				}
 				*/
-
+				
 				tempStrips.push_back(currentStrip);
 			}
 		}
@@ -1322,10 +1322,10 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 			//we're not just doing a tempStrips.push_back(allBigStrips[i]) because
 			// this way we can delete allBigStrips later to free the memory
 			currentStrip = new NvStripInfo(startInfo, 0, -1);
-
+			
 			for(size_t j = 0; j < allStrips[i]->m_faces.size(); j++)
 				currentStrip->m_faces.push_back(allStrips[i]->m_faces[j]);
-
+			
 			tempStrips.push_back(currentStrip);
 		}
 	}
@@ -1333,48 +1333,48 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 	//add small strips to face list
 	NvStripInfoVec tempStrips2;
 	RemoveSmallStrips(tempStrips, tempStrips2, outFaceList);
-
+	
 	outStrips.clear();
 	//screw optimization for now
 //	for(i = 0; i < tempStrips.size(); ++i)
 //    outStrips.push_back(tempStrips[i]);
-
+	
 	if(tempStrips2.size() != 0)
 	{
 		//Optimize for the vertex cache
 		VertexCache* vcache = new VertexCache(cacheSize);
-
+		
 		float bestNumHits = -1.0f;
 		float numHits;
 		int bestIndex = -1;
 		//bool done = false;
-
+		
 		int firstIndex = 0;
 		float minCost = 10000.0f;
-
+		
 		for(size_t i = 0; i < tempStrips2.size(); i++)
 		{
 			int numNeighbors = 0;
-
+			
 			//find strip with least number of neighbors per face
 			for(size_t j = 0; j < tempStrips2[i]->m_faces.size(); j++)
 			{
 				numNeighbors += NumNeighbors(tempStrips2[i]->m_faces[j], edgeInfos);
 			}
-
+			
 			float currCost = (float)numNeighbors / (float)tempStrips2[i]->m_faces.size();
 			if(currCost < minCost)
 			{
 				minCost = currCost;
-				firstIndex = int(i);
+				firstIndex = i;
 			}
 		}
-
+		
 		UpdateCacheStrip(vcache, tempStrips2[firstIndex]);
 		outStrips.push_back(tempStrips2[firstIndex]);
-
+		
 		tempStrips2[firstIndex]->visited = true;
-
+		
 		bool bWantsCW = (tempStrips2[firstIndex]->m_faces.size() % 2) == 0;
 
 		//this n^2 algo is what slows down stripification so much....
@@ -1382,7 +1382,7 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 		while(1)
 		{
 			bestNumHits = -1.0f;
-
+			
 			//find best strip to add next, given the current cache
 			for(size_t i = 0; i < tempStrips2.size(); i++)
 			{
@@ -1393,16 +1393,16 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 				if(numHits > bestNumHits)
 				{
 					bestNumHits = numHits;
-					bestIndex = int(i);
+					bestIndex = i;
 				}
 				else if(numHits >= bestNumHits)
 				{
 					//check previous strip to see if this one requires it to switch polarity
 					NvStripInfo *strip = tempStrips2[i];
-					int nStripFaceCount = (int)strip->m_faces.size();
-
+					int nStripFaceCount = strip->m_faces.size();
+					
 					NvFaceInfo tFirstFace(strip->m_faces[0]->m_v0, strip->m_faces[0]->m_v1, strip->m_faces[0]->m_v2);
-
+					
 					// If there is a second face, reorder vertices such that the
 					// unique vertex is first
 					if (nStripFaceCount > 1)
@@ -1416,7 +1416,7 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 						{
 							SWAP(tFirstFace.m_v0, tFirstFace.m_v2);
 						}
-
+						
 						// If there is a third face, reorder vertices such that the
 						// shared vertex is last
 						if (nStripFaceCount > 2)
@@ -1429,16 +1429,16 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 							}
 						}
 					}
-
+						
 					// Check CW/CCW ordering
 					if (bWantsCW == IsCW(strip->m_faces[0], tFirstFace.m_v0, tFirstFace.m_v1))
 					{
 						//I like this one!
-						bestIndex = int(i);
+						bestIndex = i;
 					}
 				}
 			}
-
+			
 			if(bestNumHits == -1.0f)
 				break;
 			tempStrips2[bestIndex]->visited = true;
@@ -1446,8 +1446,8 @@ void NvStripifier::SplitUpStripsAndOptimize(NvStripInfoVec &allStrips, NvStripIn
 			outStrips.push_back(tempStrips2[bestIndex]);
 			bWantsCW = (tempStrips2[bestIndex]->m_faces.size() % 2 == 0) ? bWantsCW : !bWantsCW;
 		}
-
-		delete vcache;
+		
+		delete vcache;	
 	}
 }
 
@@ -1463,10 +1463,10 @@ void NvStripifier::UpdateCacheStrip(VertexCache* vcache, NvStripInfo* strip)
 	{
 		if(!vcache->InCache(strip->m_faces[i]->m_v0))
 			vcache->AddEntry(strip->m_faces[i]->m_v0);
-
+		
 		if(!vcache->InCache(strip->m_faces[i]->m_v1))
 			vcache->AddEntry(strip->m_faces[i]->m_v1);
-
+		
 		if(!vcache->InCache(strip->m_faces[i]->m_v2))
 			vcache->AddEntry(strip->m_faces[i]->m_v2);
 	}
@@ -1481,10 +1481,10 @@ void NvStripifier::UpdateCacheFace(VertexCache* vcache, NvFaceInfo* face)
 {
 	if(!vcache->InCache(face->m_v0))
 		vcache->AddEntry(face->m_v0);
-
+		
 	if(!vcache->InCache(face->m_v1))
 		vcache->AddEntry(face->m_v1);
-
+		
 	if(!vcache->InCache(face->m_v2))
 		vcache->AddEntry(face->m_v2);
 }
@@ -1499,21 +1499,21 @@ float NvStripifier::CalcNumHitsStrip(VertexCache* vcache, NvStripInfo* strip)
 {
 	int numHits = 0;
 	int numFaces = 0;
-
+	
 	for(size_t i = 0; i < strip->m_faces.size(); i++)
 	{
 		if(vcache->InCache(strip->m_faces[i]->m_v0))
 			++numHits;
-
+		
 		if(vcache->InCache(strip->m_faces[i]->m_v1))
 			++numHits;
-
+		
 		if(vcache->InCache(strip->m_faces[i]->m_v2))
 			++numHits;
-
+		
 		numFaces++;
 	}
-
+	
 	return ((float)numHits / (float)numFaces);
 }
 
@@ -1529,13 +1529,13 @@ int NvStripifier::CalcNumHitsFace(VertexCache* vcache, NvFaceInfo* face)
 
 	if(vcache->InCache(face->m_v0))
 		numHits++;
-
+		
 	if(vcache->InCache(face->m_v1))
 		numHits++;
-
+		
 	if(vcache->InCache(face->m_v2))
 		numHits++;
-
+		
 	return numHits;
 }
 
@@ -1548,22 +1548,22 @@ int NvStripifier::CalcNumHitsFace(VertexCache* vcache, NvFaceInfo* face)
 int NvStripifier::NumNeighbors(NvFaceInfo* face, NvEdgeInfoVec& edgeInfoVec)
 {
 	int numNeighbors = 0;
-
+	
 	if(FindOtherFace(edgeInfoVec, face->m_v0, face->m_v1, face) != NULL)
 	{
 		numNeighbors++;
 	}
-
+	
 	if(FindOtherFace(edgeInfoVec, face->m_v1, face->m_v2, face) != NULL)
 	{
 		numNeighbors++;
 	}
-
+	
 	if(FindOtherFace(edgeInfoVec, face->m_v2, face->m_v0, face) != NULL)
 	{
 		numNeighbors++;
 	}
-
+	
 	return numNeighbors;
 }
 
@@ -1575,10 +1575,10 @@ int NvStripifier::NumNeighbors(NvFaceInfo* face, NvEdgeInfoVec& edgeInfoVec)
 //
 float NvStripifier::AvgStripSize(const NvStripInfoVec &strips){
 	int sizeAccum = 0;
-	int numStrips = (int)strips.size();
+	int numStrips = strips.size();
 	for (int i = 0; i < numStrips; i++){
 		NvStripInfo *strip = strips[i];
-		sizeAccum += (int)strip->m_faces.size();
+		sizeAccum += strip->m_faces.size();
 		sizeAccum -= strip->m_numDegenerates;
 	}
 	return ((float)sizeAccum) / ((float)numStrips);
@@ -1605,11 +1605,11 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 	bool done        = false;
 
 	int loopCtr = 0;
-
+	
 	while (!done)
 	{
 		loopCtr++;
-
+		
 		//
 		// PHASE 1: Set up numSamples * numEdges experiments
 		//
@@ -1618,7 +1618,7 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 		std::set   <NvFaceInfo*>  resetPoints;
 		for (int i = 0; i < numSamples; i++)
 		{
-
+			
 			// Try to find another good reset point.
 			// If there are none to be found, we are done
 			NvFaceInfo *nextFace = FindGoodResetPoint(allFaceInfos, allEdgeInfos);
@@ -1631,44 +1631,44 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 			else if (resetPoints.find(nextFace) != resetPoints.end()){
 				continue;
 			}
-
+			
 			// trying it now...
 			resetPoints.insert(nextFace);
-
+			
 			// otherwise, we shall now try experiments for starting on the 01,12, and 20 edges
 			assert(nextFace->m_stripId < 0);
-
+			
 			// build the strip off of this face's 0-1 edge
 			NvEdgeInfo *edge01 = FindEdgeInfo(allEdgeInfos, nextFace->m_v0, nextFace->m_v1);
 			NvStripInfo *strip01 = new NvStripInfo(NvStripStartInfo(nextFace, edge01, true), stripId++, experimentId++);
 			experiments[experimentIndex++].push_back(strip01);
-
+			
 			// build the strip off of this face's 1-0 edge
 			NvEdgeInfo *edge10 = FindEdgeInfo(allEdgeInfos, nextFace->m_v0, nextFace->m_v1);
 			NvStripInfo *strip10 = new NvStripInfo(NvStripStartInfo(nextFace, edge10, false), stripId++, experimentId++);
 			experiments[experimentIndex++].push_back(strip10);
-
+			
 			// build the strip off of this face's 1-2 edge
 			NvEdgeInfo *edge12 = FindEdgeInfo(allEdgeInfos, nextFace->m_v1, nextFace->m_v2);
 			NvStripInfo *strip12 = new NvStripInfo(NvStripStartInfo(nextFace, edge12, true), stripId++, experimentId++);
 			experiments[experimentIndex++].push_back(strip12);
-
+			
 			// build the strip off of this face's 2-1 edge
 			NvEdgeInfo *edge21 = FindEdgeInfo(allEdgeInfos, nextFace->m_v1, nextFace->m_v2);
 			NvStripInfo *strip21 = new NvStripInfo(NvStripStartInfo(nextFace, edge21, false), stripId++, experimentId++);
 			experiments[experimentIndex++].push_back(strip21);
-
+			
 			// build the strip off of this face's 2-0 edge
 			NvEdgeInfo *edge20 = FindEdgeInfo(allEdgeInfos, nextFace->m_v2, nextFace->m_v0);
 			NvStripInfo *strip20 = new NvStripInfo(NvStripStartInfo(nextFace, edge20, true), stripId++, experimentId++);
 			experiments[experimentIndex++].push_back(strip20);
-
+			
 			// build the strip off of this face's 0-2 edge
 			NvEdgeInfo *edge02 = FindEdgeInfo(allEdgeInfos, nextFace->m_v2, nextFace->m_v0);
 			NvStripInfo *strip02 = new NvStripInfo(NvStripStartInfo(nextFace, edge02, false), stripId++, experimentId++);
 			experiments[experimentIndex++].push_back(strip02);
 		}
-
+		
 		//
 		// PHASE 2: Iterate through that we setup in the last phase
 		// and really build each of the strips and strips that follow to see how
@@ -1676,28 +1676,28 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 		//
 		int numExperiments = experimentIndex;
 		for (int i = 0; i < numExperiments; i++){
-
+			
 			// get the strip set
-
+			
 			// build the first strip of the list
 			experiments[i][0]->Build(allEdgeInfos, allFaceInfos);
 			int experimentId = experiments[i][0]->m_experimentId;
-
+			
 			NvStripInfo *stripIter = experiments[i][0];
 			NvStripStartInfo startInfo(NULL, NULL, false);
 			while (FindTraversal(allFaceInfos, allEdgeInfos, stripIter, startInfo)){
-
+				
 				// create the new strip info
 				stripIter = new NvStripInfo(startInfo, stripId++, experimentId);
-
+				
 				// build the next strip
 				stripIter->Build(allEdgeInfos, allFaceInfos);
-
+				
 				// add it to the list
 				experiments[i].push_back(stripIter);
 			}
 		}
-
+		
 		//
 		// Phase 3: Find the experiment that has the most promise
 		//
@@ -1713,7 +1713,7 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 			float value        = avgStripSize * avgStripSizeWeight + (numStrips * numStripsWeight);
 			//float value = 1.f / numStrips;
 			//float value = numStrips * avgStripSize;
-
+				
 			if (value > bestValue)
 			{
 				bestValue = value;
@@ -1725,13 +1725,13 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 		// Phase 4: commit the best experiment of the bunch
 		//
 		CommitStrips(allStrips, experiments[bestIndex]);
-
+		
 		// and destroy all of the others
 		for (int i = 0; i < numExperiments; i++)
 		{
 			if (i != bestIndex)
 			{
-				int numStrips = (int)experiments[i].size();
+				int numStrips = experiments[i].size();
 				for (int j = 0; j < numStrips; j++)
 				{
 					NvStripInfo* currStrip = experiments[i][j];
@@ -1747,7 +1747,7 @@ void NvStripifier::FindAllStrips(NvStripInfoVec &allStrips,
 				}
 			}
 		}
-
+		
 		// delete the array that we used for all experiments
 		delete [] experiments;
   }
@@ -1764,7 +1764,7 @@ int NvStripifier::CountRemainingTris(std::list<NvStripInfo*>::iterator iter,
 											std::list<NvStripInfo*>::iterator  end){
 	int count = 0;
 	while (iter != end){
-		count += (int)( (*iter)->m_faces.size() );
+		count += (*iter)->m_faces.size();
 		iter++;
 	}
 	return count;

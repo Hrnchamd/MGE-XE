@@ -3,6 +3,8 @@ All rights reserved.  Please see niflib.h for license. */
 
 #include "../include/NIF_IO.h"
 #include "../include/niflib.h"
+#include "../include/gen/Header.h"
+#include "../include/gen/ByteColor4.h"
 namespace Niflib {
 
 //--Endian Support Functions--//
@@ -110,53 +112,67 @@ float SwapEndian( float in ) {
 
 int ReadInt( istream& in ){
 
-	int tmp;
+	int tmp = 0;
 	in.read( (char*)&tmp, 4 );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	return tmp;
 }
 
 unsigned int ReadUInt( istream& in ){
 
-	unsigned int tmp;
+	unsigned int tmp = 0;
 	in.read( (char*)&tmp, 4 );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	return tmp;
 }
 
 unsigned short ReadUShort( istream& in ){
 
-	unsigned short tmp;
+	unsigned short tmp = 0;
 	in.read( (char*)&tmp, 2 );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	return tmp;
 }
 
 short ReadShort( istream& in ){
 
-	short tmp;
+	short tmp = 0;
 	in.read( (char*)&tmp, 2 );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	return tmp;
 }
 
 byte ReadByte( istream& in ){
 
-	byte tmp;
+	byte tmp = 0;
 	in.read( (char*)&tmp, 1 );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	return tmp;
 }
 float ReadFloat( istream &in ){
 
-	float tmp;
+	float tmp = 0;
 	in.read( reinterpret_cast<char*>(&tmp), sizeof(tmp) );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	return tmp;
 }
 
 string ReadString( istream &in ) {
 	unsigned int len = ReadUInt( in );
 	string out;
-	if ( len > 10000 )
+	if ( len > 0x4000 )
 	    throw runtime_error("String too long. Not a NIF file or unsupported format?");
 	if ( len > 0 ) {
 	    out.resize(len);
-		in.read( (char*)&out[0], len );
+	    in.read( (char*)&out[0], len );
+	    if (in.fail())
+	      throw runtime_error("premature end of stream");
 	}
 	return out;
 }
@@ -181,6 +197,28 @@ void WriteInt( int val, ostream& out ){
 void WriteUInt( unsigned int val, ostream& out ){
 
 	out.write( (char*)&val, 4 );
+}
+
+void WritePtr32( void * val, ostream& out ){
+#if __SIZEOF_POINTER__ == 4
+  // 32 bit
+  WriteUInt( (unsigned int)val, out );
+#else
+  // 64 bit
+  union intpoint_t {
+    void *ptr;
+    struct {
+      unsigned int id1;
+      unsigned int id2;
+    };
+  } ptr;
+  ptr.id1 = 0;		//  just for compiler warning C4700 (VS2010)
+  ptr.id2 = 0;		//  just for compiler warning C4700 (VS2010)
+  ptr.ptr = val;
+  // xor the two parts
+  // (maybe a more advanced hash function would be better, experience will tell)
+  WriteUInt(ptr.id1 ^ ptr.id2, out);
+#endif
 }
 
 void WriteUShort( unsigned short val, ostream& out ){
@@ -356,6 +394,8 @@ void NifStream( HeaderString & val, istream& in, NifInfo & info ) {
 		ver_start = 32;
 	} else if ( val.header.substr(0, 20) == "Gamebryo File Format" ) {
 		ver_start = 30;
+	} else if ( val.header.substr(0, 6) == "NDSNIF" ) {
+		ver_start = 30;
 	} else {
 		//Not a NIF file
 		info.version = VER_INVALID;
@@ -385,10 +425,6 @@ void NifStream( HeaderString const & val, ostream& out, const NifInfo & info ) {
 	}
 
 	header_string << FormatVersionString(info.version);
-
-	char * byte_ver = (char*)&(info.version);
-	int int_ver[4] = { byte_ver[3], byte_ver[2], byte_ver[1], byte_ver[0] };
-
 	out << header_string.str() << "\n";
 };
 
@@ -416,6 +452,8 @@ void NifStream( ShortString & val, istream& in, const NifInfo & info ) {
 	byte len = ReadByte( in );
 	char * buffer = new char[len];
 	in.read( buffer, len );
+	if (in.fail())
+	  throw runtime_error("premature end of stream");
 	val.str = buffer;
 	delete [] buffer;
 };
@@ -465,6 +503,21 @@ void NifStream( Vector3 const & val, ostream& out, const NifInfo & info ) {
 	WriteFloat( val.x, out );
 	WriteFloat( val.y, out );
 	WriteFloat( val.z, out );
+};
+
+//Vector3
+void NifStream( Vector4 & val, istream& in, const NifInfo & info ) {
+	val.x = ReadFloat( in );
+	val.y = ReadFloat( in );
+	val.z = ReadFloat( in );
+	val.w = ReadFloat( in );
+};
+
+void NifStream( Vector4 const & val, ostream& out, const NifInfo & info ) {
+	WriteFloat( val.x, out );
+	WriteFloat( val.y, out );
+	WriteFloat( val.z, out );
+	WriteFloat( val.w, out );
 };
 
 //Float2
@@ -639,7 +692,7 @@ void NifStream( Key<Quaternion> & key, istream& file, const NifInfo & info, KeyT
 	}
 
 	//Read data based on the type of key
-	NifStream( key.data, file );
+	NifStream( key.data, file, info );
 	if ( type == TBC_KEY ) {
 		//Uses TBC interpolation
 		key.tension = ReadFloat( file );
@@ -659,13 +712,226 @@ void NifStream( Key<Quaternion> const & key, ostream& file, const NifInfo & info
 	}
 
 	//Read data based on the type of key
-	NifStream( key.data, file );
+	NifStream( key.data, file, info );
 	if ( type == TBC_KEY ) {
 		//Uses TBC interpolation
 		WriteFloat( key.tension, file);
 		WriteFloat( key.bias, file);
 		WriteFloat( key.continuity, file);
 	}
+}
+
+static void FromIndexString(IndexString const &value, Header* header, unsigned int& idx)
+{
+	if (header == NULL)
+		throw runtime_error("stream not properly configured");
+	if (value.empty()) {
+		idx = 0xffffffff;
+	} else {
+		size_t i = 0;
+		for ( ; i < header->strings.size(); i++) {
+			if (header->strings[i] == value)
+				break;
+		}
+		if (i >= header->numStrings)
+			header->numStrings = i;
+		size_t len = value.length();
+		if (header->maxStringLength < len)
+			header->maxStringLength = len;
+		header->strings.push_back(value);
+		idx = i;
+	}
+}
+
+static void ToIndexString(unsigned int idx, Header* header, IndexString & value)
+{
+	if (header == NULL)
+		throw runtime_error("stream not properly configured");
+	if ( idx == 0xffffffff ) {
+		value.clear();
+	} else if (idx >= 0 && idx <= header->strings.size()) {
+		value = header->strings[idx];
+	} else {
+		throw runtime_error("invalid string index");
+	}
+}
+
+void NifStream( IndexString & val, istream& in, const NifInfo & info ) {
+	if (info.version >= VER_20_1_0_3) {
+		std::streampos pos = in.tellg();
+
+		ToIndexString(ReadUInt(in), hdrInfo::getInfo(in), val);
+	} else {
+		val = ReadString( in );
+	}
+}
+
+void NifStream( IndexString const & val, ostream& out, const NifInfo & info ) {
+	if (info.version >= VER_20_1_0_3) {
+		unsigned idx = 0xffffffff;
+		FromIndexString(val, hdrInfo::getInfo(out), idx);
+		WriteInt(idx, out);
+	} else {
+		WriteString( val, out );
+	}
+}
+
+ostream & operator<<( ostream & out, IndexString const & val ) {
+	out << static_cast<string const &>(val);
+	return out;
+}
+
+template <> void NifStream( Key<IndexString> & key, istream& file, const NifInfo & info, KeyType type )
+{
+	if (info.version >= VER_20_1_0_3) {
+		Key<int> ikey;
+		NifStream(ikey, file, info, type);
+		key.time = ikey.time;
+		ToIndexString(ikey.data, hdrInfo::getInfo(file), key.data);
+		key.tension = ikey.tension;
+		key.bias = ikey.bias;
+		key.continuity = ikey.continuity;
+	} else {
+		Key<string> skey;
+		NifStream(skey, file, info, type);
+		key.time = skey.time;
+		key.data = skey.data;
+		key.tension = skey.tension;
+		key.bias = skey.bias;
+		key.continuity = skey.continuity;
+	}
+}
+
+template <> void NifStream( Key<IndexString> const & key, ostream& file, const NifInfo & info,  KeyType type ) {
+	if (info.version >= VER_20_1_0_3) {
+		Key<unsigned int> ikey;
+		ikey.time = key.time;
+		ikey.tension = key.tension;
+		ikey.bias = key.bias;
+		ikey.continuity = key.continuity;
+		FromIndexString(key.data, hdrInfo::getInfo(file), ikey.data);
+		NifStream(ikey, file, info, type);
+	} else {
+		Key<string> skey;
+		skey.time = key.time;
+		skey.data = key.data;
+		skey.tension = key.tension;
+		skey.bias = key.bias;
+		skey.continuity = key.continuity;
+		NifStream(skey, file, info, type);
+	}
+}
+
+
+const int strInfo::infoIdx = ios_base::xalloc();
+const int hdrInfo::infoIdx = ios_base::xalloc();
+
+std::streamsize NifStreamBuf::xsputn(const char_type *_Ptr, std::streamsize _Count) {
+	pos += _Count;
+	if (size < pos) size = pos;
+	return _Count;
+}
+
+std::streampos NifStreamBuf::seekoff(std::streamoff offset, std::ios_base::seekdir dir, std::ios_base::openmode mode)
+{	// change position by offset, according to way and mode
+	switch (dir)
+	{
+	case std::ios_base::beg:
+		pos = offset;
+		return (pos >= 0 && pos < size) ? (streampos(-1)) : pos;
+	case std::ios_base::cur:
+		pos += offset;
+		return (pos >= 0 && pos < size) ? (streampos(-1)) : pos;
+	case std::ios_base::end:
+		pos = size - offset;
+		return (pos >= 0 && pos < size) ? (streampos(-1)) : pos;		
+        default:
+	        return streampos(-1);
+	}
+	return streampos(-1);
+}
+
+std::streampos NifStreamBuf::seekpos(std::streampos offset, std::ios_base::openmode mode)
+{	// change to specified position, according to mode
+	pos = offset;
+	return (pos >= 0 && pos < size) ? (streampos(-1)) : pos;
+}
+
+void NifStream( Char8String & val, istream& in, const NifInfo & info ) {
+	val.resize(8, '\x0');
+	for (int i=0; i<8; ++i)
+		in.read( &val[i], 1 );
+}
+
+void NifStream( Char8String const & val, ostream& out, const NifInfo & info ) {
+	size_t i = 0, n = std::min<size_t>(8, val.size());
+	for (i=0;i<n;++i)
+		out.write( &val[i], 1 );
+	for (;i<8;++i)
+		out.write( "\x0", 1 );
+}
+
+ostream & operator<<( ostream & out, Char8String const & val ) {
+	out << static_cast<string const &>(val);
+	return out;
+}
+
+//InertiaMatrix
+void NifStream( InertiaMatrix & val, istream& in, const NifInfo & info ) {
+	for (int r = 0; r < 3; ++r) {
+		for (int c = 0; c < 4; ++c) {
+			val[r][c] = ReadFloat( in );
+		}
+	}
+}
+
+void NifStream( InertiaMatrix const & val, ostream& out, const NifInfo & info ) {
+	for (int r = 0; r < 3; ++r) {
+		for (int c = 0; c < 4; ++c) {
+			WriteFloat( val[r][c], out );
+		}
+	}
+}
+
+//ByteColor4
+void NifStream( ByteColor4 & val, istream& in, const NifInfo & info ) {
+  val.r = ReadByte(in);
+  val.g = ReadByte(in);
+  val.b = ReadByte(in);
+  val.a = ReadByte(in);
+}
+
+void NifStream( ByteColor4 const & val, ostream& out, const NifInfo & info ) {
+  WriteByte( val.r, out);
+  WriteByte( val.g, out);
+  WriteByte( val.b, out);
+  WriteByte( val.a, out);
+}
+
+ostream & operator<<( ostream & out, ByteColor4 const & val ) {
+  out << "RGBA: " << val.r << " " << val.g << " " << val.b << " " << val.a;
+  return out;
+}
+
+ostream & operator<<( ostream & out, hdrInfo const & val ) {
+	out.pword(hdrInfo::infoIdx) = (void*)val.info;
+	return (out);
+}
+
+istream & operator>>( istream & istr, hdrInfo & val ) {
+	istr.pword(hdrInfo::infoIdx) = (void*)val.info;
+	return (istr);
+}
+
+
+ostream & operator<<( ostream & out, strInfo const & val ) {
+	out.pword(strInfo::infoIdx) = (void*)val.info;
+	return (out);
+}
+
+istream & operator>>( istream & istr, strInfo & val ) {
+	istr.pword(strInfo::infoIdx) = (void*)val.info;
+	return (istr);
 }
 
 }

@@ -19,7 +19,7 @@ namespace triangle_stripper {
 
 
 
-void policy::Challenge(strip Strip, size_t Degree, size_t CacheHits)
+void policy::Challenge(strip Strip, std::size_t Degree, std::size_t CacheHits)
 {
 	if (Strip.Size() < m_MinStripSize)
 		return;
