@@ -19,7 +19,7 @@
 #include <vector>
 #include <iostream>
 
-#include <nif_math.h>
+#include "../../3rdparty/niflib/include/nif_math.h"
 
 #include "../DXVertex.h"
 #include "CollapseVertex.h"

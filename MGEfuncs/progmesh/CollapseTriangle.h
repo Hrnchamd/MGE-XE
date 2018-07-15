@@ -3,8 +3,8 @@
 
 #include <vector>
 
-#include <nif_math.h>
-#include <obj/NiTriBasedGeomData.h>
+#include "../../3rdparty/niflib/include/nif_math.h"
+#include "../../3rdparty/niflib/include/obj/NiTriBasedGeomData.h"
 
 #include "ProgMesh.h"
 #include "CollapseVertex.h"

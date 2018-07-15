@@ -1,7 +1,7 @@
 #pragma once
 
 #define WIN32_LEAN_AND_MEAN
-#include <nif_math.h>
+#include "../3rdparty/niflib/include/nif_math.h"
 
 using namespace Niflib;
 

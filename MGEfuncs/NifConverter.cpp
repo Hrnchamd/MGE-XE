@@ -1,19 +1,19 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 
-#include "niflib.h"
-#include "obj/NiObject.h"
-#include "obj/NiAVObject.h"
-#include "obj/NiNode.h"
-#include "obj/NiProperty.h"
-#include "obj/NiMaterialProperty.h"
-#include "obj/NiTexturingProperty.h"
-#include "obj/NiSourceTexture.h"
-#include "obj/NiTriBasedGeom.h"
-#include "obj/NiTriBasedGeomData.h"
-#include "obj/NiBinaryExtraData.h"
-#include "obj/NiTriStripsData.h"
-#include "obj/RootCollisionNode.h"
+#include "../3rdparty/niflib/include/niflib.h"
+#include "../3rdparty/niflib/include/obj/NiObject.h"
+#include "../3rdparty/niflib/include/obj/NiAVObject.h"
+#include "../3rdparty/niflib/include/obj/NiNode.h"
+#include "../3rdparty/niflib/include/obj/NiProperty.h"
+#include "../3rdparty/niflib/include/obj/NiMaterialProperty.h"
+#include "../3rdparty/niflib/include/obj/NiTexturingProperty.h"
+#include "../3rdparty/niflib/include/obj/NiSourceTexture.h"
+#include "../3rdparty/niflib/include/obj/NiTriBasedGeom.h"
+#include "../3rdparty/niflib/include/obj/NiTriBasedGeomData.h"
+#include "../3rdparty/niflib/include/obj/NiBinaryExtraData.h"
+#include "../3rdparty/niflib/include/obj/NiTriStripsData.h"
+#include "../3rdparty/niflib/include/obj/RootCollisionNode.h"
 
 #include <assert.h>
 #include <fstream>
@@ -29,7 +29,7 @@
 #include "progmesh/ProgMesh.h"
 
 //Vertex Cache Optimizer
-#include <tootlelib.h>
+#include "../3rdparty/tootle/src/TootleLib/include/tootlelib.h"
 
 using namespace Niflib;
 
