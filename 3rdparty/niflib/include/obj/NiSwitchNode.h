@@ -53,12 +53,13 @@ public:
 	NIFLIB_API virtual const Type & GetType() const;
 
 	//--BEGIN MISC CUSTOM CODE--//
+	NIFLIB_API NiAVObjectRef GetActiveChild();
 	//--END CUSTOM CODE--//
 protected:
 	/*! Flags */
 	unsigned short unknownFlags1;
-	/*! Index? */
-	int unknownInt1;
+	/*! Index of active child node */
+	int indexActive;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

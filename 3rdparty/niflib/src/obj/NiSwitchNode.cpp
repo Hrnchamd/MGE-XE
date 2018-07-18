@@ -19,7 +19,7 @@ using namespace Niflib;
 //Definition of TYPE constant
 const Type NiSwitchNode::TYPE("NiSwitchNode", &NiNode::TYPE );
 
-NiSwitchNode::NiSwitchNode() : unknownFlags1((unsigned short)0), unknownInt1((int)0) {
+NiSwitchNode::NiSwitchNode() : unknownFlags1((unsigned short)0), indexActive((int)0) {
 	//--BEGIN CONSTRUCTOR CUSTOM CODE--//
 	//--END CUSTOM CODE--//
 }
@@ -37,6 +37,13 @@ NiObject * NiSwitchNode::Create() {
 	return new NiSwitchNode;
 }
 
+NiAVObjectRef NiSwitchNode::GetActiveChild() {
+    if ( indexActive == -1 )
+        return NULL;
+
+    return children[indexActive];
+}
+
 void NiSwitchNode::Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info ) {
 	//--BEGIN PRE-READ CUSTOM CODE--//
 	//--END CUSTOM CODE--//
@@ -45,7 +52,7 @@ void NiSwitchNode::Read( istream& in, list<unsigned int> & link_stack, const Nif
 	if ( info.version >= 0x0A010000 ) {
 		NifStream( unknownFlags1, in, info );
 	};
-	NifStream( unknownInt1, in, info );
+	NifStream( indexActive, in, info );
 
 	//--BEGIN POST-READ CUSTOM CODE--//
 	//--END CUSTOM CODE--//
@@ -59,7 +66,7 @@ void NiSwitchNode::Write( ostream& out, const map<NiObjectRef,unsigned int> & li
 	if ( info.version >= 0x0A010000 ) {
 		NifStream( unknownFlags1, out, info );
 	};
-	NifStream( unknownInt1, out, info );
+	NifStream( indexActive, out, info );
 
 	//--BEGIN POST-WRITE CUSTOM CODE--//
 	//--END CUSTOM CODE--//
@@ -72,7 +79,7 @@ std::string NiSwitchNode::asString( bool verbose ) const {
 	stringstream out;
 	out << NiNode::asString();
 	out << "  Unknown Flags 1:  " << unknownFlags1 << endl;
-	out << "  Unknown Int 1:  " << unknownInt1 << endl;
+	out << "  Index of Active Child:  " << indexActive << endl;
 	return out.str();
 
 	//--BEGIN POST-STRING CUSTOM CODE--//

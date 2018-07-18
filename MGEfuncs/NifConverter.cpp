@@ -5,6 +5,7 @@
 #include "../3rdparty/niflib/include/obj/NiObject.h"
 #include "../3rdparty/niflib/include/obj/NiAVObject.h"
 #include "../3rdparty/niflib/include/obj/NiNode.h"
+#include "../3rdparty/niflib/include/obj/NiSwitchNode.h"
 #include "../3rdparty/niflib/include/obj/NiProperty.h"
 #include "../3rdparty/niflib/include/obj/NiMaterialProperty.h"
 #include "../3rdparty/niflib/include/obj/NiTexturingProperty.h"
@@ -614,10 +615,15 @@ private:
             SubsetNodes->push_back(niGeom);
         } else {
             //Check if this object derives from NiNode and, thus, may have children
-            //Ignore RootCollisionNodes
+            //Follow switch index for NiSwitchNodes, ignore RootCollisionNodes
             NiNodeRef niNode = DynamicCast<NiNode>( rootObj );
+            NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>( rootObj );
             RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>( rootObj );
-            if(niNode && !collision) {
+            if(niSwitch) {
+                //Search just the selected child
+                SearchShapes( niSwitch->GetActiveChild(), SubsetNodes );
+            }
+            else if(niNode && !collision) {
                 //Call this function for any children
                 vector<NiAVObjectRef> children = niNode->GetChildren();
                 for(size_t i = 0; i < children.size(); i++) {
@@ -818,20 +824,27 @@ public:
     }
 
     bool LoadNifFromStream( const char* data, int size ) {
-
         istrstream s(data, size);
-        NiAVObjectRef rootObj = DynamicCast<NiAVObject>( ReadNifTree(s, 0) );
+        NiAVObjectRef rootObj;
 
-        //Object root transform should not affect results
-        rootObj->SetLocalTransform( Matrix44::IDENTITY );
-
-        vector<NiTriBasedGeomRef> SubsetNodes;
+        try {
+            rootObj = DynamicCast<NiAVObject>( ReadNifTree(s, 0) );
+        }
+        catch (std::runtime_error& e) {
+            std::fstream error_log("distant-land-niflib-error.log", std::ios_base::out | std::ios_base::app);
+            error_log << e.what() << std::endl;
+            return false;
+        }
 
         if(!rootObj) {
             //log_file << "Root object was null." << endl;
             return false;
         }
 
+        //Object root transform should not affect results
+        rootObj->SetLocalTransform( Matrix44::IDENTITY );
+
+        vector<NiTriBasedGeomRef> SubsetNodes;
         SearchShapes( rootObj, &SubsetNodes );
 
         if( SubsetNodes.size() == 0 ) {
