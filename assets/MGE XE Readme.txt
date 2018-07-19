@@ -1,8 +1,8 @@
 
-MGE XE 0.10.0
+MGE XE 0.10.1
 
 Questions and support thread at bethsoft forums
-http://forums.bethsoft.com/forum/12-morrowind-mods/
+https://bethesda.net/community/category/106/mods
 
 Licensed under GPL v2, source available at https://github.com/Hrnchamd/MGE-XE
 
@@ -39,7 +39,7 @@ Delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
 You might want to know
 ----------------------
 
-MGE XE includes the latest update to MWSE, Merzaphor's version. When running MGE XE adds some script commands much like MGE does. MWSE mods are therefore supported when you use MGE XE, the MWSE launcher is not required.
+MGE XE includes an updated MWSE 2.0 by NullCascade. When running MGE XE adds some script commands much like MGE does. MWSE mods are therefore supported when you use MGE XE, the MWSE launcher is not required. MWSE remains upgradable by installing new versions of MWSE.dll.
 
 Standard MGE (3.8) shaders and HUD mods are not compatible due to design differences. You will not be able to use them with MGE XE without modification. Incompatible shaders will be detected and will not load.
 
@@ -66,6 +66,7 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+- Updated distant land generator to fix crashes on certain meshes, and to handle NiSwitchNode.
 - Added MWSE weather commands to set glare view, cloud speed and wind speed for each weather type.
 - Re-introduced some MWSE camera rotation commands.
 - Added MWSE switch node command xModelSwitch.
