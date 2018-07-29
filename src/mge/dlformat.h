@@ -20,8 +20,7 @@ struct LandMesh
 };
 
 struct DistantSubset {
-    float radius;                       // radius of bounding sphere
-    D3DXVECTOR3 center;                 // center of bounding sphere
+    BoundingSphere sphere;
     D3DXVECTOR3 min, max;               // corners of the axis-aligned bounding box
     IDirect3DTexture9 *tex;
     bool hasalpha;                      // texture has alpha transparency
@@ -33,25 +32,23 @@ struct DistantSubset {
 
 struct DistantStatic {
     unsigned char type;
-    D3DXVECTOR3 center;                 // center of bounding sphere
-    float radius;                       // radius of bounding sphere
+    BoundingSphere sphere;
     int numSubsets;
     DistantSubset *subsets;
 };
 
 struct UsedDistantStatic {
     DWORD staticRef;
-    D3DXMATRIX transform;
-    float radius;                       // radius * scale
-    D3DXVECTOR3 center;                 // center + transform
-    float scale;
     D3DXVECTOR3 pos;
+    float scale;
+    D3DXMATRIX transform;
+    BoundingSphere sphere;      // post-transform
 
     BoundingSphere GetBoundingSphere(const DistantSubset& sub) const
     {
         BoundingSphere sphere;
-        D3DXVec3TransformCoord(&sphere.center, &sub.center, &transform);
-        sphere.radius = sub.radius * scale;
+        D3DXVec3TransformCoord(&sphere.center, &sub.sphere.center, &transform);
+        sphere.radius = sub.sphere.radius * scale;
 
         return sphere;
     }

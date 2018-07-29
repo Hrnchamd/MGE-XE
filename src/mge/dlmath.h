@@ -23,7 +23,7 @@ struct BoundingSphere {
 //-----------------------------------------------------------------------------
 
 struct BoundingBox {
-    D3DXVECTOR3 centre, vx, vy, vz;
+    D3DXVECTOR3 center, vx, vy, vz;
 
     BoundingBox();
     BoundingBox(const BoundingBox& rh);

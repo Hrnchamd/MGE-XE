@@ -102,8 +102,8 @@ BoundingSphere BoundingSphere::operator+(const BoundingSphere& rh)
 
 BoundingBox::BoundingBox()
 {
-    centre = D3DXVECTOR3(0.0, 0.0, 0.0);
-    vx = vy = vz = centre;
+    center = D3DXVECTOR3(0.0, 0.0, 0.0);
+    vx = vy = vz = center;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +117,7 @@ BoundingBox::BoundingBox(const BoundingBox& rh)
 
 BoundingBox& BoundingBox::operator=(const BoundingBox& rh)
 {
-    centre = rh.centre;
+    center = rh.center;
     vx = rh.vx;
     vy = rh.vy;
     vz = rh.vz;
@@ -136,7 +136,7 @@ BoundingBox::BoundingBox(const D3DXVECTOR3& min, const D3DXVECTOR3& max)
 
 void BoundingBox::Set(const D3DXVECTOR3& min, const D3DXVECTOR3& max)
 {
-    centre = 0.5 * (min + max);
+    center = 0.5 * (min + max);
     vx = D3DXVECTOR3(0.5 * (max.x - min.x), 0, 0);
     vy = D3DXVECTOR3(0, 0.5 * (max.y - min.y), 0);
     vz = D3DXVECTOR3(0, 0, 0.5 * (max.z - min.z));
@@ -146,7 +146,7 @@ void BoundingBox::Set(const D3DXVECTOR3& min, const D3DXVECTOR3& max)
 
 void BoundingBox::Transform(const D3DXMATRIX& m)
 {
-    D3DXVec3TransformCoord(&centre, &centre, &m);
+    D3DXVec3TransformCoord(&center, &center, &m);
     D3DXVec3TransformNormal(&vx, &vx, &m);
     D3DXVec3TransformNormal(&vy, &vy, &m);
     D3DXVec3TransformNormal(&vz, &vz, &m);
@@ -237,7 +237,7 @@ ViewFrustum::Containment ViewFrustum::ContainsBox(const BoundingBox& box) const
         extent.x = abs(D3DXPlaneDotNormal(&frustum[f], &box.vx));
         extent.y = abs(D3DXPlaneDotNormal(&frustum[f], &box.vy));
         extent.z = abs(D3DXPlaneDotNormal(&frustum[f], &box.vz));
-        extent.w = D3DXPlaneDotCoord(&frustum[f], &box.centre);
+        extent.w = D3DXPlaneDotCoord(&frustum[f], &box.center);
 
         // Fail if centre + projected extents is outside the halfspace
         if(extent.w + extent.x + extent.y + extent.z < 0)

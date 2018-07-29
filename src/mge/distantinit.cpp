@@ -721,8 +721,8 @@ bool DistantLand::loadDistantStatics()
     for(vector<DistantStatic>::iterator i = DistantStatics.begin(); i != DistantStatics.end(); ++i)
     {
         READ_FROM_BUFFER(pos, &i->numSubsets, 4);
-        READ_FROM_BUFFER(pos, &i->radius, 4);
-        READ_FROM_BUFFER(pos, &i->center, 12);
+        READ_FROM_BUFFER(pos, &i->sphere.radius, 4);
+        READ_FROM_BUFFER(pos, &i->sphere.center, 12);
         READ_FROM_BUFFER(pos, &i->type, 1);
 
         i->subsets = new DistantSubset[i->numSubsets];
@@ -732,8 +732,8 @@ bool DistantLand::loadDistantStatics()
             DistantSubset *subset = &i->subsets[j];
 
             // Get bounding sphere
-            READ_FROM_BUFFER(pos, &subset->radius, 4);
-            READ_FROM_BUFFER(pos, &subset->center, 12);
+            READ_FROM_BUFFER(pos, &subset->sphere.radius, 4);
+            READ_FROM_BUFFER(pos, &subset->sphere.center, 12);
 
             // Get AABB min and max
             READ_FROM_BUFFER(pos, &subset->min, 12);
@@ -830,16 +830,15 @@ bool DistantLand::loadDistantStatics()
 
             READ_FROM_BUFFER(dataPos, &NewUsedStatic.staticRef, 4);
             READ_FROM_BUFFER(dataPos, &NewUsedStatic.pos, 12);
-
             READ_FROM_BUFFER(dataPos, &yaw, 4);
             READ_FROM_BUFFER(dataPos, &pitch, 4);
             READ_FROM_BUFFER(dataPos, &roll, 4);
             READ_FROM_BUFFER(dataPos, &scale, 4);
             if(scale == 0.0f) scale = 1.0f;
 
-            NewUsedStatic.radius = DistantStatics[NewUsedStatic.staticRef].radius * scale;
-            NewUsedStatic.center = DistantStatics[NewUsedStatic.staticRef].center + NewUsedStatic.pos;
             NewUsedStatic.scale = scale;
+            NewUsedStatic.sphere.radius = DistantStatics[NewUsedStatic.staticRef].sphere.radius * scale;
+            NewUsedStatic.sphere.center = DistantStatics[NewUsedStatic.staticRef].sphere.center + NewUsedStatic.pos;
 
             D3DXMATRIX transmat, rotmatx, rotmaty, rotmatz, scalemat;
             D3DXMatrixTranslation(&transmat, NewUsedStatic.pos.x, NewUsedStatic.pos.y, NewUsedStatic.pos.z);
@@ -881,12 +880,12 @@ bool DistantLand::initDistantStaticsBVH()
         // Find xyz bounds
         for(i = uds->begin(); i != uds->end(); ++i)
         {
-            float x = i->pos.x, y = i->pos.y;
+            float x = i->pos.x, y = i->pos.y, r = i->sphere.radius;
 
-            max.x = std::max(x, max.x);
-            max.y = std::max(y, max.y);
-            min.x = std::min(min.x, x);
-            min.y = std::min(min.y, y);
+            max.x = std::max(x + r, max.x);
+            max.y = std::max(y + r, max.y);
+            min.x = std::min(min.x, x - r);
+            min.y = std::min(min.y, y - r);
         }
 
         float box_size = std::max(max.x - min.x, max.y - min.y);
@@ -902,9 +901,11 @@ bool DistantLand::initDistantStaticsBVH()
             DistantStatic *stat = &DistantStatics[i->staticRef];
             QuadTree *targetQTR;
 
+            // Use transformed radius
+            float radius = i->sphere.radius;
+
             // Buildings are treated as larger objects, as they are typically
             // smaller component meshes combined to make a single building
-            float radius = stat->radius;
             if(stat->type == STATIC_BUILDING)
                 radius *= 2.0f;
 
