@@ -21,7 +21,7 @@ struct LandMesh
 
 struct DistantSubset {
     BoundingSphere sphere;
-    D3DXVECTOR3 min, max;               // corners of the axis-aligned bounding box
+    D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
     IDirect3DTexture9 *tex;
     bool hasalpha;                      // texture has alpha transparency
     IDirect3DVertexBuffer9 *vbuffer;
@@ -33,6 +33,7 @@ struct DistantSubset {
 struct DistantStatic {
     unsigned char type;
     BoundingSphere sphere;
+    D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
     int numSubsets;
     DistantSubset *subsets;
 };
@@ -43,20 +44,21 @@ struct UsedDistantStatic {
     float scale;
     D3DXMATRIX transform;
     BoundingSphere sphere;      // post-transform
+    BoundingBox box;            // post-transform
 
-    BoundingSphere GetBoundingSphere(const DistantSubset& sub) const
+    BoundingSphere GetBoundingSphere(const BoundingSphere& base) const
     {
         BoundingSphere sphere;
-        D3DXVec3TransformCoord(&sphere.center, &sub.sphere.center, &transform);
-        sphere.radius = sub.sphere.radius * scale;
+        D3DXVec3TransformCoord(&sphere.center, &base.center, &transform);
+        sphere.radius = base.radius * scale;
 
         return sphere;
     }
 
-    BoundingBox GetBoundingBox(const DistantSubset& sub) const
+    BoundingBox GetBoundingBox(const D3DXVECTOR3& aabbMin, const D3DXVECTOR3& aabbMax) const
     {
         BoundingBox box;
-        box.Set(sub.min, sub.max);
+        box.Set(aabbMin, aabbMax);
         box.Transform(transform);
 
         return box;

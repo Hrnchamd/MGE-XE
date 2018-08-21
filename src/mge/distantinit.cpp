@@ -726,6 +726,8 @@ bool DistantLand::loadDistantStatics()
         READ_FROM_BUFFER(pos, &i->type, 1);
 
         i->subsets = new DistantSubset[i->numSubsets];
+        i->aabbMin = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
+        i->aabbMax = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
         for(int j = 0; j != i->numSubsets; j++)
         {
@@ -736,12 +738,20 @@ bool DistantLand::loadDistantStatics()
             READ_FROM_BUFFER(pos, &subset->sphere.center, 12);
 
             // Get AABB min and max
-            READ_FROM_BUFFER(pos, &subset->min, 12);
-            READ_FROM_BUFFER(pos, &subset->max, 12);
+            READ_FROM_BUFFER(pos, &subset->aabbMin, 12);
+            READ_FROM_BUFFER(pos, &subset->aabbMax, 12);
 
             // Get vertex and face count
             READ_FROM_BUFFER(pos, &subset->verts, 4);
             READ_FROM_BUFFER(pos, &subset->faces, 4);
+
+            // Update parent AABB
+            i->aabbMin.x = std::min(i->aabbMin.x, subset->aabbMin.x);
+            i->aabbMin.y = std::min(i->aabbMin.y, subset->aabbMin.y);
+            i->aabbMin.z = std::min(i->aabbMin.z, subset->aabbMin.z);
+            i->aabbMax.x = std::max(i->aabbMax.x, subset->aabbMax.x);
+            i->aabbMax.y = std::max(i->aabbMax.y, subset->aabbMax.y);
+            i->aabbMax.z = std::max(i->aabbMax.z, subset->aabbMax.z);
 
             // Load mesh data
             IDirect3DVertexBuffer9 *vb;
@@ -875,22 +885,22 @@ bool DistantLand::initDistantStaticsBVH()
         QuadTree *GQTR = iWS->second.GrassStatics = new QuadTree();
 
         // Calclulate optimal initial quadtree size
-        D3DXVECTOR2 max = D3DXVECTOR2(FLT_MIN, FLT_MIN);
-        D3DXVECTOR2 min = D3DXVECTOR2(FLT_MAX, FLT_MAX);
+        D3DXVECTOR2 aabbMax = D3DXVECTOR2(-FLT_MAX, -FLT_MAX);
+        D3DXVECTOR2 aabbMin = D3DXVECTOR2(FLT_MAX, FLT_MAX);
 
         // Find xyz bounds
         for(i = uds->begin(); i != uds->end(); ++i)
         {
             float x = i->pos.x, y = i->pos.y, r = i->sphere.radius;
 
-            max.x = std::max(x + r, max.x);
-            max.y = std::max(y + r, max.y);
-            min.x = std::min(min.x, x - r);
-            min.y = std::min(min.y, y - r);
+            aabbMax.x = std::max(x + r, aabbMax.x);
+            aabbMax.y = std::max(y + r, aabbMax.y);
+            aabbMin.x = std::min(aabbMin.x, x - r);
+            aabbMin.y = std::min(aabbMin.y, y - r);
         }
 
-        float box_size = std::max(max.x - min.x, max.y - min.y);
-        D3DXVECTOR2 box_center = 0.5 * (max + min);
+        float box_size = std::max(aabbMax.x - aabbMin.x, aabbMax.y - aabbMin.y);
+        D3DXVECTOR2 box_center = 0.5 * (aabbMax + aabbMin);
 
         NQTR->SetBox(box_size, box_center);
         FQTR->SetBox(box_size, box_center);
@@ -945,18 +955,40 @@ bool DistantLand::initDistantStaticsBVH()
             }
 
             // Add sub-meshes to appropriate quadtree
-            for(int s = 0; s != stat->numSubsets; ++s)
+            if(stat->type == STATIC_BUILDING)
             {
-                targetQTR->AddMesh(
-                    i->GetBoundingSphere(stat->subsets[s]),
-                    i->GetBoundingBox(stat->subsets[s]),
-                    i->transform,
-                    stat->subsets[s].tex,
-                    stat->subsets[s].verts,
-                    stat->subsets[s].vbuffer,
-                    stat->subsets[s].faces,
-                    stat->subsets[s].ibuffer
-                );
+                // Use model bound so that all building parts have coherent visibility
+                for(int s = 0; s != stat->numSubsets; ++s)
+                {
+                    BoundingSphere sss = i->GetBoundingSphere(stat->subsets[s].sphere);
+                    targetQTR->AddMesh(
+                        i->sphere,
+                        i->box,
+                        i->transform,
+                        stat->subsets[s].tex,
+                        stat->subsets[s].verts,
+                        stat->subsets[s].vbuffer,
+                        stat->subsets[s].faces,
+                        stat->subsets[s].ibuffer
+                    );
+                }
+            }
+            else
+            {
+                // Use individual mesh bounds
+                for(int s = 0; s != stat->numSubsets; ++s)
+                {
+                    targetQTR->AddMesh(
+                        i->GetBoundingSphere(stat->subsets[s].sphere),
+                        i->GetBoundingBox(stat->subsets[s].aabbMin, stat->subsets[s].aabbMax),
+                        i->transform,
+                        stat->subsets[s].tex,
+                        stat->subsets[s].verts,
+                        stat->subsets[s].vbuffer,
+                        stat->subsets[s].faces,
+                        stat->subsets[s].ibuffer
+                    );
+                }
             }
         }
 
@@ -1023,7 +1055,7 @@ bool DistantLand::initLandscape()
 
     if(!meshesLand.empty())
     {
-        D3DXVECTOR2 qtmin(FLT_MAX, FLT_MAX), qtmax(FLT_MIN, FLT_MIN);
+        D3DXVECTOR2 qtmin(FLT_MAX, FLT_MAX), qtmax(-FLT_MAX, -FLT_MAX);
         vector<LandMesh>::iterator  i;
         D3DXMATRIX world;
         D3DXMatrixIdentity(&world);
