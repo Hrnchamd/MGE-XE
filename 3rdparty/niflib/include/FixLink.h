@@ -48,14 +48,10 @@ Ref<T> FixLink( const map<unsigned,NiObjectRef> & objects, list<unsigned int> & 
 			return NULL;
 		}
 	}
-		
+
 	Ref<T> object = DynamicCast<T>(it->second);
 	if ( object == NULL ) {
-		stringstream ss;
-		ss << FIX_LINK_CAST_ERROR << endl;
-		ss << "Type of object with index " << index << " was:  " << it->second->GetType().GetTypeName() << endl;
-		ss << "Required type was:  " << T::TYPE.GetTypeName() << endl;
-		throw runtime_error( ss.str().c_str() );
+	    // Skip cast error instead of throwing exception
 	}
 
 	return object;
