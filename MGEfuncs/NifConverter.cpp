@@ -545,7 +545,7 @@ public:
         }
 
         //Average min/max positions to get center
-        Vector3 center = (min + max) / 2;
+        center = (min + max) / 2;
 
         //Find the furthest point from the center to get the radius
         float radius_squared = 0.0f;

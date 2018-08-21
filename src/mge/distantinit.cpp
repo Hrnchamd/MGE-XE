@@ -834,11 +834,10 @@ bool DistantLand::loadDistantStatics()
             READ_FROM_BUFFER(dataPos, &pitch, 4);
             READ_FROM_BUFFER(dataPos, &roll, 4);
             READ_FROM_BUFFER(dataPos, &scale, 4);
-            if(scale == 0.0f) scale = 1.0f;
 
+            DistantStatic *stat = &DistantStatics[NewUsedStatic.staticRef];
+            if(scale == 0.0f) scale = 1.0f;
             NewUsedStatic.scale = scale;
-            NewUsedStatic.sphere.radius = DistantStatics[NewUsedStatic.staticRef].sphere.radius * scale;
-            NewUsedStatic.sphere.center = DistantStatics[NewUsedStatic.staticRef].sphere.center + NewUsedStatic.pos;
 
             D3DXMATRIX transmat, rotmatx, rotmaty, rotmatz, scalemat;
             D3DXMatrixTranslation(&transmat, NewUsedStatic.pos.x, NewUsedStatic.pos.y, NewUsedStatic.pos.z);
@@ -847,6 +846,8 @@ bool DistantLand::loadDistantStatics()
             D3DXMatrixRotationZ(&rotmatz, -roll);
             D3DXMatrixScaling(&scalemat, scale, scale, scale);
             NewUsedStatic.transform = scalemat * rotmatz * rotmaty * rotmatx * transmat;
+            NewUsedStatic.sphere = NewUsedStatic.GetBoundingSphere(stat->sphere);
+            NewUsedStatic.box = NewUsedStatic.GetBoundingBox(stat->aabbMin, stat->aabbMax);
 
             ThisWorldStatics->push_back(NewUsedStatic);
         }
