@@ -236,6 +236,20 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
     return true;
 }
 
+bool DistantLand::reloadShaders()
+{
+    LOG::logline(">> Distant Land reload shader");
+    if(!initShader())
+        return false;
+
+    LOG::logline(">> Distant Land reload fixed function emu");
+    FixedFunctionShader::release();
+    if(!FixedFunctionShader::init(device, effectPool))
+        return false;
+
+    return true;
+}
+
 static void logShaderError(const char *shaderID, ID3DXBuffer *errors)
 {
     LOG::logline("!! %s shader error", shaderID);
@@ -256,6 +270,7 @@ bool DistantLand::initShader()
 {
     ID3DXBuffer *errors;
     std::vector<D3DXMACRO> features;
+    HRESULT hr;
 
     // Set shader defines corresponding to required features
     if(Configuration.MGEFlags & EXP_FOG)
@@ -268,11 +283,14 @@ bool DistantLand::initShader()
         features.push_back(macroDynamicRipples);
     features.push_back(macroTerminator);
 
-    HRESULT hr = D3DXCreateEffectPool(&effectPool);
-    if(hr != D3D_OK)
+    if(!effectPool)
     {
-        LOG::logline("!! Effect pool creation failure");
-        return false;
+        hr = D3DXCreateEffectPool(&effectPool);
+        if(hr != D3D_OK)
+        {
+            LOG::logline("!! Effect pool creation failure");
+            return false;
+        }
     }
 
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);

@@ -124,6 +124,7 @@ public:
     static bool initGrass();
     static bool loadDistantStatics();
     static bool initDistantStaticsBVH();
+    static bool reloadShaders();
     static void release();
 
     static void editProjectionZ(D3DMATRIX *m, float zn, float zf);

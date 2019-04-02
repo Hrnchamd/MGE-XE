@@ -93,9 +93,16 @@ class FixedFunctionShader
         void log() const;
     };
 
+    struct ShaderLRU
+    {
+        ID3DXEffect *effect;
+        FixedFunctionShader::ShaderKey last_sk;
+    };
+
     static IDirect3DDevice *device;
     static ID3DXEffectPool *constantPool;
     static std::map<ShaderKey, ID3DXEffect *> cacheEffects;
+    static ShaderLRU shaderLRU;
     static ID3DXEffect *effectDefaultPurple;
 
     static D3DXHANDLE ehWorld, ehVertexBlendState, ehVertexBlendPalette;

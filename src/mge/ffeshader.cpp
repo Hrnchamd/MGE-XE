@@ -12,6 +12,7 @@ using std::map;
 IDirect3DDevice *FixedFunctionShader::device;
 ID3DXEffectPool *FixedFunctionShader::constantPool;
 map<FixedFunctionShader::ShaderKey, ID3DXEffect *> FixedFunctionShader::cacheEffects;
+FixedFunctionShader::ShaderLRU FixedFunctionShader::shaderLRU;
 ID3DXEffect *FixedFunctionShader::effectDefaultPurple;
 
 D3DXHANDLE FixedFunctionShader::ehWorld, FixedFunctionShader::ehVertexBlendState, FixedFunctionShader::ehVertexBlendPalette;
@@ -78,6 +79,10 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
 
     effectDefaultPurple = effect;
     sunMultiplier = ambMultiplier = 1.0;
+
+    shaderLRU.effect = NULL;
+    shaderLRU.last_sk = ShaderKey();
+    cacheEffects.clear();
     return true;
 }
 
@@ -89,22 +94,27 @@ void FixedFunctionShader::updateLighting(float sunMult, float ambMult)
 
 void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const FragmentState *frs, const LightState *lightrs)
 {
-    static ID3DXEffect *effectFFE;
-    static ShaderKey lastsk;
+    ID3DXEffect *effectFFE;
 
     // Check if state matches last used effect
     ShaderKey sk(rs, frs, lightrs);
 
-    if(!(sk == lastsk))
+    if(sk == shaderLRU.last_sk)
+    {
+        effectFFE = shaderLRU.effect;
+    }
+    else
     {
         // Read from shader cache / generate
         map<ShaderKey, ID3DXEffect*>::const_iterator iEffect = cacheEffects.find(sk);
-        lastsk = sk;
 
         if(iEffect != cacheEffects.end())
             effectFFE = iEffect->second;
         else
             effectFFE = generateMWShader(sk);
+
+        shaderLRU.effect = effectFFE;
+        shaderLRU.last_sk = sk;
     }
 
     // Set up material
@@ -579,6 +589,8 @@ void FixedFunctionShader::release()
             i->second->Release();
     }
 
+    shaderLRU.effect = NULL;
+    shaderLRU.last_sk = ShaderKey();
     cacheEffects.clear();
     effectDefaultPurple->Release();
 }

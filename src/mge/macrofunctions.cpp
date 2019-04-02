@@ -219,6 +219,12 @@ void MacroFunctions::ToggleShaders() {
 void MacroFunctions::ToggleDistantLand() {
     Configuration.MGEFlags ^= USE_DISTANT_LAND;
     displayFlag(USE_DISTANT_LAND, "Distant land enabled", "Distant land disabled");
+
+    if(Configuration.MGEFlags & USE_DISTANT_LAND)
+    {
+        DistantLand::reloadShaders();
+        StatusOverlay::setStatus("Distant land and FFE shaders reloaded");
+    }
 }
 
 void MacroFunctions::ToggleShadows() {
