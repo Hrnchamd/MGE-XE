@@ -507,10 +507,12 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
 
     switch(sk.fogMode)
     {
-    case 0:     // Standard fog mode
+    case 0:     // Fog disabled
+        break;
+    case 1:     // Standard fog mode
         buf << "c.rgb = lerp(FogCol1, c.rgb, fog); ";
         break;
-    case 1:     // Additive objects should fog towards black, which preserves the destination correctly
+    case 2:     // Additive objects should fog towards black, which preserves the destination correctly
         buf << "c.rgb *= fog; ";
         break;
     }
@@ -622,9 +624,14 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState *rs, const Fragmen
         }
     }
 
-    // Match premultipled alpha or additive blending
-    if(rs->blendEnable && (rs->srcBlend == D3DBLEND_ONE || rs->destBlend == D3DBLEND_ONE))
-        fogMode = 1;
+    if(rs->useFog)
+    {
+        // Match premultipled alpha or additive blending
+        if(rs->blendEnable && (rs->srcBlend == D3DBLEND_ONE || rs->destBlend == D3DBLEND_ONE))
+            fogMode = 2;
+        else
+            fogMode = 1;
+    }
 
     for(int i = 0; i != 8; ++i)
     {

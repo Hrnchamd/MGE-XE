@@ -16,7 +16,7 @@ struct RenderedState
     D3DXMATRIX worldTransforms[4];
     BYTE blendEnable, srcBlend, destBlend;
     BYTE alphaTest, alphaFunc, alphaRef;
-    BYTE useLighting, matSrcDiffuse, matSrcEmissive;
+    BYTE useLighting, useFog, matSrcDiffuse, matSrcEmissive;
 
     D3DPRIMITIVETYPE primType;
     UINT baseIndex, minIndex, vertCount, startIndex, primCount;
@@ -69,7 +69,7 @@ class FixedFunctionShader
         DWORD vertexColour : 1;
         DWORD heavyLighting : 1;
         DWORD vertexMaterial : 2;
-        DWORD fogMode : 1;
+        DWORD fogMode : 2;
         DWORD activeStages : 3;
         DWORD usesBumpmap : 1;
         DWORD bumpmapStage : 3;

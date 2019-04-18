@@ -569,6 +569,7 @@ void captureRenderState(D3DRENDERSTATETYPE a, DWORD b)
         case D3DRS_ALPHAREF: rs.alphaRef = (BYTE)b; break;
 
         case D3DRS_LIGHTING: rs.useLighting = (BYTE)b; break;
+        case D3DRS_FOGENABLE: rs.useFog = (BYTE)b; break;
         case D3DRS_DIFFUSEMATERIALSOURCE: rs.matSrcDiffuse = (BYTE)b; break;
         case D3DRS_EMISSIVEMATERIALSOURCE: rs.matSrcEmissive = (BYTE)b; break;
     }
