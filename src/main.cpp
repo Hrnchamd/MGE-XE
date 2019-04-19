@@ -37,7 +37,7 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
 
         if(!Configuration.LoadSettings())
         {
-            LOG::logline("Error: MGE is not configured. MGE will be disabled for this session.");
+            LOG::logline("Error: MGE XE is not configured. MGE XE will be disabled for this session.");
             isMW = false;
             return true;
         }
@@ -51,21 +51,23 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void * unused)
             MWInitPatch::patchUIScale();
         }
 
-        if(~Configuration.MGEFlags & MWSE_DISABLED)
+        if(~Configuration.MGEFlags & MWSE_DISABLED && ~Configuration.MGEFlags & MGE_DISABLED)
         {
             // Load MWSE dll, it injects by itself
             HMODULE dll = LoadLibraryA("MWSE.dll");
             if(dll)
             {
-                if(~Configuration.MGEFlags & MGE_DISABLED)
-                    MWSE_MGEPlugin::init(dll);
-
-                LOG::logline("MWSE dll injected");
+                MWSE_MGEPlugin::init(dll);
+                LOG::logline("MWSE.dll injected.");
             }
             else
             {
-                LOG::logline("MWSE dll failed to load");
+                LOG::logline("MWSE.dll failed to load.");
             }
+        }
+        else
+        {
+            LOG::logline("MWSE is disabled.");
         }
 
         if(Configuration.MGEFlags & SKIP_INTRO)
