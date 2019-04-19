@@ -435,15 +435,17 @@ HRESULT _stdcall MGEProxyDevice::SetTextureStageState(DWORD a, D3DTEXTURESTAGEST
 {
     captureFragmentRenderState(a, b, c);
 
-    // Sampler overrides
+    // Sampler overrides to ensure trilinear/anisotropic filtering works
     // Note that DX8 had sampling state bound to texture stages instead of samplers
-    if(a == 0)
+    if(b == D3DTSS_MINFILTER)
     {
-        if(b == D3DTSS_MINFILTER && c == D3DTEXF_LINEAR)
-            return realDevice->SetSamplerState(0, D3DSAMP_MINFILTER, Configuration.ScaleFilter);
-
-        if(b == D3DTSS_MIPMAPLODBIAS && Configuration.LODBias)
-            return realDevice->SetSamplerState(0, D3DSAMP_MIPMAPLODBIAS, *(DWORD *)&Configuration.LODBias);
+        DWORD filter = (c != D3DTEXF_NONE) ? Configuration.ScaleFilter : D3DTEXF_NONE;
+        return realDevice->SetSamplerState(a, D3DSAMP_MINFILTER, filter);
+    }
+    else if(b == D3DTSS_MIPFILTER)
+    {
+        DWORD filter = (c != D3DTEXF_NONE) ? D3DTEXF_LINEAR : D3DTEXF_NONE;
+        return realDevice->SetSamplerState(a, D3DSAMP_MIPFILTER, filter);
     }
 
     return ProxyDevice::SetTextureStageState(a, b, c);

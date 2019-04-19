@@ -92,32 +92,32 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     // Set up default render states
     Configuration.ScaleFilter = (Configuration.AnisoLevel > 0) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
 
-    for(int i = 0; i != 4; ++i)
+    for(int i = 0; i != 8; ++i)
     {
-        realDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, Configuration.AnisoLevel);
         realDevice->SetSamplerState(i, D3DSAMP_MINFILTER, Configuration.ScaleFilter);
-        realDevice->SetSamplerState(i, D3DSAMP_MIPMAPLODBIAS, *(DWORD *)&Configuration.LODBias);
+        realDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+        realDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, Configuration.AnisoLevel);
     }
 
     // Set variables dependent on configuration
     DWORD FogPixelMode, FogVertexMode, RangedFog;
     if(Configuration.FogMode == 2)
     {
-            FogVertexMode = D3DFOG_LINEAR;
-            FogPixelMode = D3DFOG_NONE;
-            RangedFog = 1;
+        FogVertexMode = D3DFOG_LINEAR;
+        FogPixelMode = D3DFOG_NONE;
+        RangedFog = 1;
     }
     else if(Configuration.FogMode == 1)
     {
-            FogVertexMode = D3DFOG_LINEAR;
-            FogPixelMode = D3DFOG_NONE;
-            RangedFog = 0;
+        FogVertexMode = D3DFOG_LINEAR;
+        FogPixelMode = D3DFOG_NONE;
+        RangedFog = 0;
     }
     else
     {
-            FogVertexMode = D3DFOG_NONE;
-            FogPixelMode = D3DFOG_LINEAR;
-            RangedFog = 0;
+        FogVertexMode = D3DFOG_NONE;
+        FogPixelMode = D3DFOG_LINEAR;
+        RangedFog = 0;
     }
 
     realDevice->SetRenderState(D3DRS_FOGVERTEXMODE, FogVertexMode);
