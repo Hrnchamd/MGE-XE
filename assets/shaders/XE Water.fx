@@ -26,11 +26,11 @@ shared float3 rippleOrigin;
 shared float waveHeight;
 
 sampler sampRain = sampler_state { texture = <tex4>; minfilter = linear; magfilter = linear; mipfilter = linear; addressu = wrap; addressv = wrap; };
-sampler sampWave = sampler_state { texture = <tex5>; minfilter = linear; magfilter = linear; mipfilter = linear; bordercolor = 0x80808080; addressu = border; addressv = border; };
+sampler sampWave = sampler_state { texture = <tex5>; minfilter = linear; magfilter = linear; mipfilter = linear; bordercolor = 0; addressu = border; addressv = border; };
 
 static const float waveTexResolution = 512;
 static const float waveTexWorldSize = waveTexResolution * 2.5;
-static const float waveTexRcpRes = 1.0 / (waveTexResolution-1);
+static const float waveTexRcpRes = 1.0 / waveTexResolution;
 static const float playerWaveSize = 12.0 / waveTexWorldSize; // 12 world units radius
 
 //------------------------------------------------------------
@@ -48,9 +48,9 @@ float3 getFinalWaterNormal(float2 texcoord1, float2 texcoord2, float dist, float
     float2 close_normal = tex3D(sampWater3d, w2).rg;
 
 #ifdef DYNAMIC_RIPPLES
-    // Add rain and player ripples
-    close_normal.rg += tex2D(sampRain, texcoord2).ba - 0.5;
-    close_normal.rg += tex2D(sampWave, (vertXY - rippleOrigin) / waveTexWorldSize).ba * 2 - 1;
+    // Blend normals from rain and player ripples
+    close_normal.rg += tex2Dlod(sampRain, float4(texcoord2, 0, 0)).ba;
+    close_normal.rg += tex2Dlod(sampWave, float4((vertXY - rippleOrigin) / waveTexWorldSize, 0, 0)).ba;
 #endif
 
     float2 normal_R = 2 * lerp(close_normal, far_normal, saturate(dist / 8000)) - 1;
@@ -337,26 +337,25 @@ WaveVertOut WaveVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0)
 
 //------------------------------------------------------------
 
-float4 WaveStepPS(float2 Tex : TEXCOORD0) : COLOR0
+float4 WaveStepPS(float2 tex : TEXCOORD0) : COLOR0
 {
-    float4 c = 2 * tex2D(sampRain, Tex) - 1;
+    // Texture content is now float16 in range [-1, 1]
+    float4 tc = float4(tex, 0, 0);
+    float4 c = tex2Dlod(sampRain, tc);
     float4 ret = {0, c.r, 0, 0};
     
     float4 n = {
-        tex2D(sampRain, Tex + float2(waveTexRcpRes, 0)).r,
-        tex2D(sampRain, Tex + float2(-waveTexRcpRes, 0)).r,
-        tex2D(sampRain, Tex + float2(0, waveTexRcpRes)).r,
-        tex2D(sampRain, Tex + float2(0, -waveTexRcpRes)).r
+        tex2D(sampRain, tc + float4(waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(-waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, waveTexRcpRes, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, -waveTexRcpRes, 0, 0)).r
     };
     float4 n2 = {
-        tex2D(sampRain, Tex + float2(1.5 * waveTexRcpRes, 0)).r,
-        tex2D(sampRain, Tex + float2(-1.5 * waveTexRcpRes, 0)).r,
-        tex2D(sampRain, Tex + float2(0, 1.5 * waveTexRcpRes)).r,
-        tex2D(sampRain, Tex + float2(0, -1.5 * waveTexRcpRes)).r
+        tex2D(sampRain, tc + float4(1.5 * waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(-1.5 * waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, 1.5 * waveTexRcpRes, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, -1.5 * waveTexRcpRes, 0, 0)).r
     };
-    
-    // expand normal
-    n = 2 * n - 1;
     
     // dampened discrete two-dimensional wave equation
     // red channel: u(t)
@@ -367,16 +366,15 @@ float4 WaveStepPS(float2 Tex : TEXCOORD0) : COLOR0
     ret.r = 0.14 * nsum + (1.96 - 0.56) * c.r - 0.98 * c.g;
     
     // calculate normal map
-    ret.ba = 2 * (n.xy - n.zw) + (n2.xy - n2.zw);
-    ret = 0.5 * ret + 0.5;
-    
+    ret.ba = 2 * (n.xy - n.zw) + 0.5 * (n2.xy - n2.zw);
     return ret;
 }
 
-float4 PlayerWavePS(float2 Tex : TEXCOORD0) : COLOR0
+float4 PlayerWavePS(float2 tex : TEXCOORD0) : COLOR0
 {
-    float4 ret = tex2D(sampRain, Tex);
+    float4 ret = tex2Dlod(sampRain, float4(tex, 0, 0));
     float wavesize = (1.0 + 0.055 * sin(16 * time) + 0.065 * sin(12.87645 * time)) * playerWaveSize;
-    ret.rg *= saturate(2 * abs(length(Tex - rippleOrigin) / wavesize - 1));
+    float displace = saturate(2 * abs(length(tex - rippleOrigin) / wavesize - 1));
+    ret.rg = lerp(-1, ret.rg, displace);
     return ret;
 }

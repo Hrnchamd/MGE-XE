@@ -534,7 +534,7 @@ bool DistantLand::initDynamicWaves()
         return false;
     }
     texRain->GetSurfaceLevel(0, &surfRain);
-    device->ColorFill(surfRain, 0, 0x80808080);
+    device->ColorFill(surfRain, 0, 0);
 
     hr = device->CreateTexture(waveTexResolution, waveTexResolution, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A16B16G16R16F, D3DPOOL_DEFAULT, &texRipples, NULL);
     if(hr != D3D_OK)
@@ -543,7 +543,7 @@ bool DistantLand::initDynamicWaves()
         return false;
     }
     texRipples->GetSurfaceLevel(0, &surfRipples);
-    device->ColorFill(surfRipples, 0, 0x80808080);
+    device->ColorFill(surfRipples, 0, 0);
 
     hr = device->CreateTexture(waveTexResolution, waveTexResolution, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A16B16G16R16F, D3DPOOL_DEFAULT, &texRippleBuffer, NULL);
     if(hr != D3D_OK)
@@ -552,7 +552,7 @@ bool DistantLand::initDynamicWaves()
         return false;
     }
     texRippleBuffer->GetSurfaceLevel(0, &surfRippleBuffer);
-    device->ColorFill(surfRippleBuffer, 0, 0x80808080);
+    device->ColorFill(surfRippleBuffer, 0, 0);
 
     // Vertex buffer for wave texture
     static float waveVertices[] = {

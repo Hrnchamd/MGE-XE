@@ -234,8 +234,10 @@ void DistantLand::simulateDynamicWaves()
             RECT drop;
 
             remainingRipples += rippleFrequency * frameTime;
+            int n = floor(remainingRipples);
+            remainingRipples -= n;
 
-            while(remainingRipples >= 1.0f)
+            while(n-- > 0)
             {
                 // Place rain ripple at random location
                 for(int i = 0; i != 2; ++i)
@@ -249,21 +251,19 @@ void DistantLand::simulateDynamicWaves()
                 drop.right = ripplePos[0] + 2;
                 drop.top = ripplePos[1] - 1;
                 drop.bottom = ripplePos[1] + 1;
-                device->ColorFill(surfRain, &drop, 0x80806060);
+                device->ColorFill(surfRain, &drop, 0x6060);
 
                 drop.left = ripplePos[0] - 1;
                 drop.right = ripplePos[0] + 1;
                 drop.top = ripplePos[1] - 2;
                 drop.bottom = ripplePos[1] + 2;
-                device->ColorFill(surfRain, &drop, 0x80806060);
+                device->ColorFill(surfRain, &drop, 0x6060);
 
                 drop.left = ripplePos[0] - 1;
                 drop.right = ripplePos[0] + 1;
                 drop.top = ripplePos[1] - 1;
                 drop.bottom = ripplePos[1] + 1;
-                device->ColorFill(surfRain, &drop, 0x80804040);
-
-                remainingRipples -= 1.0f;
+                device->ColorFill(surfRain, &drop, 0x4040);
             }
         }
 
@@ -291,7 +291,7 @@ void DistantLand::simulateDynamicWaves()
     else if(resetRippleSurface)
     {
         // No weather - clear rain ripples
-        device->ColorFill(surfRain, 0, 0x80808080);
+        device->ColorFill(surfRain, NULL, 0);
         resetRippleSurface = false;
     }
 
@@ -328,7 +328,7 @@ void DistantLand::simulateDynamicWaves()
     target.top = 1 + shiftYn;
     target.bottom = waveTexResolution - shiftYp;
 
-    device->ColorFill(surfRippleBuffer, 0, 0x80808080);
+    device->ColorFill(surfRippleBuffer, 0, 0);
     device->StretchRect(surfRipples, &source, surfRippleBuffer, &target, D3DTEXF_NONE);
 
     // Water simulation; realigned water starts in surfRippleBuffer
