@@ -1,6 +1,6 @@
 
 #include <vector>
-#include <map>
+#include <tr1/unordered_map>
 #include "proxydx/d3d8header.h"
 
 struct RenderedState
@@ -50,13 +50,13 @@ struct LightState
         D3DVECTOR position;     // position / normalized direction
         union
         {
-            D3DVECTOR falloff;      // constant, linear, quadratic
+            D3DVECTOR falloff;  // constant, linear, quadratic
             D3DVECTOR ambient;  // for directional lights
         };
     };
 
     D3DCOLORVALUE globalAmbient;
-    std::map<DWORD, Light> lights;
+    std::tr1::unordered_map<DWORD, Light> lights;
     std::vector<DWORD> active;
 };
 
@@ -91,6 +91,11 @@ class FixedFunctionShader
         bool operator<(const ShaderKey& other) const;
         bool operator==(const ShaderKey& other) const;
         void log() const;
+
+        struct hasher
+        {
+            std::size_t operator()(const ShaderKey& k) const;
+        };
     };
 
     struct ShaderLRU
@@ -101,7 +106,7 @@ class FixedFunctionShader
 
     static IDirect3DDevice *device;
     static ID3DXEffectPool *constantPool;
-    static std::map<ShaderKey, ID3DXEffect *> cacheEffects;
+    static std::tr1::unordered_map<ShaderKey, ID3DXEffect *, ShaderKey::hasher> cacheEffects;
     static ShaderLRU shaderLRU;
     static ID3DXEffect *effectDefaultPurple;
 

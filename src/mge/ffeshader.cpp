@@ -7,11 +7,11 @@
 
 using std::string;
 using std::stringstream;
-using std::map;
+using std::tr1::unordered_map;
 
 IDirect3DDevice *FixedFunctionShader::device;
 ID3DXEffectPool *FixedFunctionShader::constantPool;
-map<FixedFunctionShader::ShaderKey, ID3DXEffect *> FixedFunctionShader::cacheEffects;
+unordered_map<FixedFunctionShader::ShaderKey, ID3DXEffect *, FixedFunctionShader::ShaderKey::hasher> FixedFunctionShader::cacheEffects;
 FixedFunctionShader::ShaderLRU FixedFunctionShader::shaderLRU;
 ID3DXEffect *FixedFunctionShader::effectDefaultPurple;
 
@@ -106,7 +106,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     else
     {
         // Read from shader cache / generate
-        map<ShaderKey, ID3DXEffect*>::const_iterator iEffect = cacheEffects.find(sk);
+        unordered_map<ShaderKey, ID3DXEffect*>::const_iterator iEffect = cacheEffects.find(sk);
 
         if(iEffect != cacheEffects.end())
             effectFFE = iEffect->second;
@@ -585,7 +585,7 @@ string buildArgString(DWORD arg, const string& mask, const string& sampler)
 
 void FixedFunctionShader::release()
 {
-    for(map<ShaderKey, ID3DXEffect*>::iterator i = cacheEffects.begin(); i != cacheEffects.end(); ++i)
+    for(unordered_map<ShaderKey, ID3DXEffect*>::iterator i = cacheEffects.begin(); i != cacheEffects.end(); ++i)
     {
         if(i->second)
             i->second->Release();
@@ -671,6 +671,13 @@ bool FixedFunctionShader::ShaderKey::operator<(const ShaderKey& other) const
 bool FixedFunctionShader::ShaderKey::operator==(const ShaderKey& other) const
 {
     return memcmp(this, &other, sizeof(ShaderKey)) == 0;
+}
+
+std::size_t FixedFunctionShader::ShaderKey::hasher::operator()(const ShaderKey& k) const
+{
+    DWORD z[9];
+    memcpy(&z, &k, sizeof(z));
+    return (z[0] << 16) ^ z[1] ^ z[2] ^ z[3] ^ z[4] ^ z[5] ^ z[6] ^ z[7] ^ z[8];
 }
 
 void FixedFunctionShader::ShaderKey::log() const
