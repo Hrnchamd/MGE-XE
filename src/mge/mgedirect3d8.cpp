@@ -43,6 +43,13 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
             AdjustWindowRect(&rect, GetWindowLong(hMainWnd, GWL_STYLE), FALSE);
             SetWindowPos(hMainWnd, NULL, rect.left, 0, 0, 0, SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
         }
+
+        // Windowed mode does not allow multiple frame vsync
+        if(Configuration.VWait >= D3DPRESENT_INTERVAL_TWO && Configuration.VWait <= D3DPRESENT_INTERVAL_FOUR)
+        {
+            Configuration.VWait = D3DPRESENT_INTERVAL_ONE;
+            LOG::logline("VWait greater than one is not supported in windowed mode.");
+        }
     }
 
     // Map 16x antialiasing to equivalent CSAA
