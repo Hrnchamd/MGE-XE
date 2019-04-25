@@ -47,8 +47,7 @@
             this.dgvWarnings.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvWarnings.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dgvWarnings.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvWarnings.ColumnHeadersHeight = 24;
-            this.dgvWarnings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.dgvWarnings.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvWarnings.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
                                     this.warnId,
                                     this.warnText});
@@ -57,8 +56,7 @@
             this.dgvWarnings.Name = "dgvWarnings";
             this.dgvWarnings.ReadOnly = true;
             this.dgvWarnings.RowHeadersVisible = false;
-            this.dgvWarnings.RowHeadersWidth = 5;
-            this.dgvWarnings.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
+            this.dgvWarnings.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.AutoSizeToFirstHeader;
             this.dgvWarnings.RowTemplate.Height = 18;
             this.dgvWarnings.RowTemplate.ReadOnly = true;
             this.dgvWarnings.Size = new System.Drawing.Size(692, 344);

@@ -876,21 +876,24 @@ namespace MGEgui.DistantLand {
                 //Try to load the NIFs and remove any from the list that fail or are too small
                 for (int i = 0; i < UsedNifList.Count; i++) {
                     string name = UsedNifList[i];
+                    var simplify = args.simplify;
                     byte[] data;
 
                     //Try to load a version of the file that ends with '_dist' first.
                     // This allows people to supply a different version of the NIF to be
                     // rendered by distant land.  For example, a low poly nif.
                     string file_name = name;
-                    string extention = "";
+                    string extension = "";
                     int dot_pos = file_name.LastIndexOf ('.');
                     if (dot_pos != -1) {
-                        extention = file_name.Substring (dot_pos, file_name.Length - dot_pos);
+                        extension = file_name.Substring (dot_pos, file_name.Length - dot_pos);
                         file_name = file_name.Substring (0, dot_pos);
                     }
-                    string dist_name = file_name + "_dist" + extention;
+                    string dist_name = file_name + "_dist" + extension;
                     try {
                         data = BSA.GetNif (dist_name);
+                        // Do not simplify '_dist' NIFs.
+                        simplify = 1;
                     } catch {
                         // We didn't find a NIF file with '_dist' in its name,
                         // so search for the normal NIF file now.
@@ -904,24 +907,28 @@ namespace MGEgui.DistantLand {
                         UsedNifList.RemoveAt (i--);
                     } else {
                         try {
+                            statusText.Text = strings["StaticsGenerate3Nif"] + name;
                             if (DEBUG) {
-                                statusText.Text = strings["StaticsGenerate3Nif"] + name;
                                 allWarnings.Add ("Processing NIF: " + name);
                             }
                             float size = -1;
                             if (OverrideList.ContainsKey (name)) {
                                 staticOverride so = OverrideList[name];
-                                if (!so.Ignore || so.NamesNoIgnore) size = NativeMethods.ProcessNif (data, data.Length, so.overrideSimplify ? so.Simplify : args.simplify, args.MinSize, (byte)so.Type, (so.OldSimplify ? (byte)1 : (byte)0));
+                                if (!so.Ignore || so.NamesNoIgnore) {
+                                    size = NativeMethods.ProcessNif (data, data.Length, so.overrideSimplify ? so.Simplify : simplify, args.MinSize, (byte)so.Type, (so.OldSimplify ? (byte)1 : (byte)0));
+                                }
                             } else {
                                 // Set static classification based on the file path
-                                if (name.StartsWith ("grass\\")) size = NativeMethods.ProcessNif (data, data.Length, args.simplify, args.MinSize, (byte)StaticType.Grass, 0);
-                                else if (name.StartsWith ("trees\\")) size = NativeMethods.ProcessNif (data, data.Length, args.simplify, args.MinSize, (byte)StaticType.Tree, 0);
-                                else if (name.StartsWith ("x\\")) size = NativeMethods.ProcessNif (data, data.Length, args.simplify, args.MinSize, (byte)StaticType.Building, 0);
-                                else size = NativeMethods.ProcessNif (data, data.Length, args.simplify, args.MinSize, (byte)StaticType.Auto, 0);
+                                StaticType classifier = StaticType.Auto;
+                                if (name.StartsWith ("grass\\")) classifier = StaticType.Grass;
+                                else if (name.StartsWith ("trees\\")) classifier = StaticType.Tree;
+                                else if (name.StartsWith ("x\\")) classifier = StaticType.Building;
+                                
+                                size = NativeMethods.ProcessNif (data, data.Length, simplify, args.MinSize, (byte)classifier, 0);
                             }
                             if (size < 0) UsedNifList.RemoveAt (i--);
-                        } catch (Exception) {
-                            warnings.Add ("Failed to process " + name);
+                        } catch (Exception ex) {
+                            warnings.Add ("Failed to process NIF " + name + "\n    " + ex.ToString());
                             UsedNifList.RemoveAt (i--);
                         }
                     }

@@ -48,27 +48,33 @@ namespace MGEgui.DistantLand {
 
         public static void InitBSAs() {
             if(entries.Count>0) return; //Already been init-ed
-            string[] bsas=Directory.GetFiles("data files", "*.bsa");
+            string[] bsas=Directory.GetFiles("Data Files", "*.bsa");
             foreach(string s in bsas) {
-                BinaryReader br=new BinaryReader(File.OpenRead(s));
-                br.BaseStream.Position+=4;
-                int hashoffset=br.ReadInt32();
-                int numfiles=br.ReadInt32();
-                for(int i=0;i<numfiles;i++) {
-                    br.BaseStream.Position=12+i*8;
-                    int size=br.ReadInt32();
-                    int offset=br.ReadInt32()+12+hashoffset+numfiles*8;
-                    br.BaseStream.Position=12+numfiles*8+i*4;
-                    br.BaseStream.Position=br.ReadInt32()+12+numfiles*12;
-                    string name="";
-                    while(true) {
-                        byte b=br.ReadByte();
-                        if(b==0) break;
-                        name+=(char)b;
+                try {
+                    BinaryReader br=new BinaryReader(File.OpenRead(s));
+                    br.BaseStream.Position+=4;
+                    int hashoffset=br.ReadInt32();
+                    int numfiles=br.ReadInt32();
+                    for(int i=0;i<numfiles;i++) {
+                        br.BaseStream.Position=12+i*8;
+                        int size=br.ReadInt32();
+                        int offset=br.ReadInt32()+12+hashoffset+numfiles*8;
+                        br.BaseStream.Position=12+numfiles*8+i*4;
+                        br.BaseStream.Position=br.ReadInt32()+12+numfiles*12;
+                        string name="";
+                        while(true) {
+                            byte b=br.ReadByte();
+                            if(b==0) break;
+                            name+=(char)b;
+                        }
+                        entries.Add(new BSAEntry(br, "Data Files\\"+name, offset, size));
                     }
-                    entries.Add(new BSAEntry(br, "data files\\"+name, offset, size));
+                    files.Add(br);
                 }
-                files.Add(br);
+                catch (IOException ex) {
+                    entries.Clear();
+                    throw new Exception("While reading \"" + s + "\"", ex);
+                }
             }
             entries.Sort();
         }
