@@ -2,6 +2,7 @@
 #include "mged3d8device.h"
 #include "proxydx/d3d8texture.h"
 #include "proxydx/d3d8surface.h"
+#include "support/timing.h"
 
 #include <algorithm>
 #include "mgeversion.h"
@@ -38,6 +39,8 @@ static float calcFPS();
 
 MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d) : ProxyDevice(real, d3d)
 {
+    HighResolutionTimer::init();
+
     // Initialize state here, as the device is released and recreated on fullscreen Alt-Tab
     sceneCount = -1;
     rendertargetNormal = true;
@@ -82,6 +85,7 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, c
     if(!mwBridge->IsLoaded() && mwBridge->CanLoad())
     {
         mwBridge->Load();
+        mwBridge->patchFrameTimer(&HighResolutionTimer::getMilliseconds);
         mwBridge->disableScreenshotFunc();
         mwBridge->markWaterNode(99999.0f);
     }
@@ -651,20 +655,23 @@ void captureMaterial(const D3DMATERIAL8 *a)
 }
 
 // --------------------------------------------------------
-// Cheap, nasty fps meter
+// FPS meter - Updates every 500ms. Morrowind's internal meter changes too fast and falsely clamps the fps.
 
 float calcFPS()
 {
-    static DWORD lasttick, tick, f;
+    static int lastMillis, framesSinceUpdate;
     static float fps;
+    DECLARE_MWBRIDGE
 
-    ++f;
-    tick = GetTickCount();
-    if((tick - lasttick) > 1000)
+    ++framesSinceUpdate;
+    int millis = mwBridge->getFrameBeginMillis();
+    int diff = millis - lastMillis;
+
+    if(diff >= 500)
     {
-        fps = 1000.0 * f / (tick - lasttick);
-        lasttick = tick;
-        f = 0;
+        fps = 1000 * framesSinceUpdate / diff;
+        lastMillis = millis;
+        framesSinceUpdate = 0;
     }
 
     return fps;

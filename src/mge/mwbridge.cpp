@@ -1,7 +1,7 @@
 // This file contains code from fps optimizer
 // Memory layout originally worked out by Alexander Stasenko
 
-#include "MWBridge.h"
+#include "mwbridge.h"
 #include "assert.h"
 
 static MWBridge m_instance;
@@ -93,8 +93,8 @@ void MWBridge::Load()
     DWORD dwTruRenderWidthOff = 0x48;
     DWORD dwHRotScaleOff = 0x50;
 
-    eMaster1 = read_dword(eMaster); //0x007C67DC
-    eMaster2 = read_dword(eMaster + 0x500);  //0x007C6CDC
+    eMaster1 = read_dword(eMaster);
+    eMaster2 = read_dword(eMaster + 0x500);
 
     eFPS = eMaster1 + 0x14;  //0x14
     eTimer = eFPS + 0xC;       //0x20
@@ -1198,6 +1198,22 @@ void MWBridge::patchUIConfigure(void (_stdcall *newfunc)())
 
 //-----------------------------------------------------------------------------
 
+// patchFrameTimer - Patches the normal call to timeGetTime to redirect to a new function.
+void MWBridge::patchFrameTimer(int (__cdecl *newfunc)())
+{
+    DWORD addr = 0x453636;
+    BYTE patch[] = {
+        0xe8, 0xff, 0xff, 0xff, 0xff,       // call newfunc
+        0x90                                // nop
+    };
+
+    VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
+    memcpy((void *)addr, patch, sizeof(patch));
+    write_dword(addr + 1, reinterpret_cast<DWORD>(newfunc) - (addr+5));
+}
+
+//-----------------------------------------------------------------------------
+
 // getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
 void * MWBridge::getGMSTPointer(DWORD id)
 {
@@ -1243,9 +1259,17 @@ float MWBridge::getGameHour()
 
 //-----------------------------------------------------------------------------
 
-// geDaysPassed - Returns the value of the script global DaysPassed
+// getDaysPassed - Returns the value of the script global DaysPassed
 int MWBridge::getDaysPassed()
 {
     DWORD gvar = read_dword(eMaster1 + 0xb8);
     return int(read_float(gvar + 0x34));
+}
+
+//-----------------------------------------------------------------------------
+
+// getFrameBeginMillis - Returns timer millis measured at start of frame
+int MWBridge::getFrameBeginMillis()
+{
+    return read_dword(eMaster1 + 0x20);
 }

@@ -108,15 +108,17 @@ public:
     void disableIntroMovies();
     bool isIntroDone();
     bool isLoadingSplash();
-    void redirectMenuBackground(void (_stdcall *func)(int));
+    void redirectMenuBackground(void (__stdcall *func)(int));
     void setUIScale(float scale);
-    void patchUIConfigure(void (_stdcall *newfunc)());
+    void patchUIConfigure(void (__stdcall *newfunc)());
+    void patchFrameTimer(int (__cdecl *newfunc)());
 
     void * getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
     const char * getPlayerName();
     float getGameHour();
     int getDaysPassed();
+    int getFrameBeginMillis();
 
     MWBridge();
 
