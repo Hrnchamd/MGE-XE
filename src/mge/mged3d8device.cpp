@@ -15,7 +15,8 @@
 
 static int sceneCount;
 static bool rendertargetNormal, isHUDready;
-static bool isMainView, isStencilScene, stage0Complete, isFrameComplete, isHUDComplete;
+static bool isMainView, isStencilScene, isAmbientWhite;
+static bool stage0Complete, isFrameComplete, isHUDComplete;
 static bool isWaterMaterial, waterDrawn;
 
 static bool zoomSensSaved;
@@ -45,7 +46,7 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d) : ProxyDev
     sceneCount = -1;
     rendertargetNormal = true;
     isHUDready = false;
-    isMainView = isStencilScene = stage0Complete = isFrameComplete = isHUDComplete = false;
+    isMainView = isStencilScene = isAmbientWhite = stage0Complete = isFrameComplete = isHUDComplete = false;
     isWaterMaterial = waterDrawn = false;
     D3DXMatrixIdentity(&camEffectsMatrix);
 
@@ -411,22 +412,19 @@ HRESULT _stdcall MGEProxyDevice::SetRenderState(D3DRENDERSTATETYPE a, DWORD b)
     if(a == D3DRS_STENCILENABLE)
         isStencilScene = b;
 
-    // Ambient is the final setting in Morrowind light setup, directly after sky rendering
-    // Ignore pure white ambient, most likely to be menu mode setting
-    if(a == D3DRS_AMBIENT && b != 0xffffffff)
+    // Ambient is used for scene detection
+    if(a == D3DRS_AMBIENT)
     {
+        // Pure white ambient occurs with skydome and menu mode rendering
         // Ambient is also never set properly when high enough outside that Morrowind renders nothing
-        // Avoid changing ambient to pure white in this case
-        RGBVECTOR amb = D3DCOLOR(b);
-        DistantLand::setAmbientColour(amb);
-        lightrs.globalAmbient.r = amb.r; lightrs.globalAmbient.g = amb.g; lightrs.globalAmbient.b = amb.b;
+        isAmbientWhite = (b == 0xffffffff);
 
-        if(DistantLand::ready && !stage0Complete && sceneCount == 0)
+        if(!isAmbientWhite)
         {
-            // At this point, only the sky is rendered
-            ProxyDevice::SetRenderState(a, b);
-            DistantLand::renderStage0();
-            stage0Complete = true;
+            // Save real ambient, can be used in future frames if no draw calls are provoked
+            RGBVECTOR amb = D3DCOLOR(b);
+            DistantLand::setAmbientColour(amb);
+            lightrs.globalAmbient.r = amb.r; lightrs.globalAmbient.g = amb.g; lightrs.globalAmbient.b = amb.b;
         }
     }
 
@@ -463,6 +461,13 @@ HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b
     if(DistantLand::ready && rendertargetNormal && isMainView && !isStencilScene)
     {
         rs.primType = a; rs.baseIndex = baseVertexIndex; rs.minIndex = b; rs.vertCount = c; rs.startIndex = d; rs.primCount = e;
+
+        if(!stage0Complete && !isAmbientWhite)
+        {
+            // At this point, only the sky is rendered in exteriors, or nothing in interiors
+            DistantLand::renderStage0();
+            stage0Complete = true;
+        }
 
         if(isWaterMaterial)
         {
