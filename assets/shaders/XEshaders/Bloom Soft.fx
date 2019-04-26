@@ -38,12 +38,6 @@ static const float bloom_power = 1.1f; // Effects the focus and hue of highlight
 
 
 
-#if BLOOM_QUALITY >= 3
-    #define SMODEL ps_3_0
-#else
-    #define SMODEL ps_2_0
-#endif
-
 texture lastpass;
 texture lastshader;
 
@@ -61,6 +55,11 @@ sampler s1 = sampler_state { texture = <lastpass>; minfilter = linear; magfilter
 #endif
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
+
 float4 blurHorI(in float2 Tex : TEXCOORD) : COLOR0
 { // a simple 7-sample horizontal blur pass
     #if ( ( BLOOM_FX_SKY != 1 ) || ( BLOOM_FX_HANDS != 1 ) )
@@ -69,7 +68,7 @@ float4 blurHorI(in float2 Tex : TEXCOORD) : COLOR0
     #define TSAMP s0
     #endif
 
-    float4 Color = tex2D(TSAMP, Tex);
+    float4 Color = sample0(TSAMP, Tex);
 
     #if ( BLOOM_FX_DARK == 1 )
         float div = 4.7;
@@ -77,18 +76,18 @@ float4 blurHorI(in float2 Tex : TEXCOORD) : COLOR0
         float div = 4.2;
     #endif
 
-    Color += tex2D(TSAMP, float2(Tex.x-(rcpres.x*1), Tex.y)) * 0.8;
-    Color += tex2D(TSAMP, float2(Tex.x+(rcpres.x*1), Tex.y)) * 0.8;
+    Color += sample0(TSAMP, float2(Tex.x-(rcpres.x*1), Tex.y)) * 0.8;
+    Color += sample0(TSAMP, float2(Tex.x+(rcpres.x*1), Tex.y)) * 0.8;
 
-    Color += tex2D(TSAMP, float2(Tex.x-(rcpres.x*2), Tex.y)) * 0.65;
-    Color += tex2D(TSAMP, float2(Tex.x+(rcpres.x*2), Tex.y)) * 0.65;
+    Color += sample0(TSAMP, float2(Tex.x-(rcpres.x*2), Tex.y)) * 0.65;
+    Color += sample0(TSAMP, float2(Tex.x+(rcpres.x*2), Tex.y)) * 0.65;
 
-    Color += tex2D(TSAMP, float2(Tex.x-(rcpres.x*3), Tex.y)) * 0.4;
-    Color += tex2D(TSAMP, float2(Tex.x+(rcpres.x*3), Tex.y)) * 0.4;
+    Color += sample0(TSAMP, float2(Tex.x-(rcpres.x*3), Tex.y)) * 0.4;
+    Color += sample0(TSAMP, float2(Tex.x+(rcpres.x*3), Tex.y)) * 0.4;
 
     #if BLOOM_QUALITY >= 2
-        Color += tex2D(TSAMP, float2(Tex.x-(rcpres.x*4), Tex.y)) * 0.25;
-        Color += tex2D(TSAMP, float2(Tex.x+(rcpres.x*4), Tex.y)) * 0.25;
+        Color += sample0(TSAMP, float2(Tex.x-(rcpres.x*4), Tex.y)) * 0.25;
+        Color += sample0(TSAMP, float2(Tex.x+(rcpres.x*4), Tex.y)) * 0.25;
         #if ( BLOOM_FX_DARK == 1 )
             div = 5.2;
         #else
@@ -96,11 +95,11 @@ float4 blurHorI(in float2 Tex : TEXCOORD) : COLOR0
         #endif
     
         #if BLOOM_QUALITY >= 3
-            Color += tex2D(TSAMP, float2(Tex.x-(rcpres.x*5), Tex.y)) * 0.15;
-            Color += tex2D(TSAMP, float2(Tex.x+(rcpres.x*5), Tex.y)) * 0.15;
+            Color += sample0(TSAMP, float2(Tex.x-(rcpres.x*5), Tex.y)) * 0.15;
+            Color += sample0(TSAMP, float2(Tex.x+(rcpres.x*5), Tex.y)) * 0.15;
 
-            Color += tex2D(TSAMP, float2(Tex.x-(rcpres.x*6), Tex.y)) * 0.10;
-            Color += tex2D(TSAMP, float2(Tex.x+(rcpres.x*6), Tex.y)) * 0.10;
+            Color += sample0(TSAMP, float2(Tex.x-(rcpres.x*6), Tex.y)) * 0.10;
+            Color += sample0(TSAMP, float2(Tex.x+(rcpres.x*6), Tex.y)) * 0.10;
             #if ( BLOOM_FX_DARK == 1 )
                 div = 5.65;
             #else
@@ -117,7 +116,7 @@ float4 blurHorI(in float2 Tex : TEXCOORD) : COLOR0
 float4 blurHor2(in float2 Tex : TEXCOORD) : COLOR0
 { // a simple 7-sample horizontal blur pass   
 
-    float4 Color = tex2D(s1, Tex);
+    float4 Color = sample0(s1, Tex);
 
     #if ( BLOOM_FX_DARK == 1 )
         float div = 4.7;
@@ -128,18 +127,18 @@ float4 blurHor2(in float2 Tex : TEXCOORD) : COLOR0
     float spread = 1-( Color.r * 0.3 ) + ( Color.g * 0.6 ) + ( Color.b * 0.1 );
     spread = ( smoothstep(0, 0.7, spread) * 4 ) + 1.0f;
 
-    Color += tex2D(s1, float2(Tex.x-(rcpres.x*spread*1), Tex.y)) * 0.8;
-    Color += tex2D(s1, float2(Tex.x+(rcpres.x*spread*1), Tex.y)) * 0.8;
+    Color += sample0(s1, float2(Tex.x-(rcpres.x*spread*1), Tex.y)) * 0.8;
+    Color += sample0(s1, float2(Tex.x+(rcpres.x*spread*1), Tex.y)) * 0.8;
 
-    Color += tex2D(s1, float2(Tex.x-(rcpres.x*spread*2), Tex.y)) * 0.65;
-    Color += tex2D(s1, float2(Tex.x+(rcpres.x*spread*2), Tex.y)) * 0.65;
+    Color += sample0(s1, float2(Tex.x-(rcpres.x*spread*2), Tex.y)) * 0.65;
+    Color += sample0(s1, float2(Tex.x+(rcpres.x*spread*2), Tex.y)) * 0.65;
 
-    Color += tex2D(s1, float2(Tex.x-(rcpres.x*spread*3), Tex.y)) * 0.4;
-    Color += tex2D(s1, float2(Tex.x+(rcpres.x*spread*3), Tex.y)) * 0.4;
+    Color += sample0(s1, float2(Tex.x-(rcpres.x*spread*3), Tex.y)) * 0.4;
+    Color += sample0(s1, float2(Tex.x+(rcpres.x*spread*3), Tex.y)) * 0.4;
 
     #if BLOOM_QUALITY >= 2
-        Color += tex2D(s1, float2(Tex.x-(rcpres.x*spread*4), Tex.y)) * 0.25;
-        Color += tex2D(s1, float2(Tex.x+(rcpres.x*spread*4), Tex.y)) * 0.25;
+        Color += sample0(s1, float2(Tex.x-(rcpres.x*spread*4), Tex.y)) * 0.25;
+        Color += sample0(s1, float2(Tex.x+(rcpres.x*spread*4), Tex.y)) * 0.25;
         #if ( BLOOM_FX_DARK == 1 )
             div = 5.2;
         #else
@@ -154,7 +153,7 @@ float4 blurHor2(in float2 Tex : TEXCOORD) : COLOR0
 
 float4 blurHor3(in float2 Tex : TEXCOORD) : COLOR0
 { // a simple 7-sample horizontal blur pass   
-    float4 Color = tex2D(s1, Tex);
+    float4 Color = sample0(s1, Tex);
 
     #if ( BLOOM_FX_DARK == 1 )
         float div = 4.7;
@@ -162,18 +161,18 @@ float4 blurHor3(in float2 Tex : TEXCOORD) : COLOR0
         float div = 4.2;
     #endif
 
-    Color += tex2D(s1, float2(Tex.x-(rcpres.x*1), Tex.y)) * 0.8;
-    Color += tex2D(s1, float2(Tex.x+(rcpres.x*1), Tex.y)) * 0.8;
+    Color += sample0(s1, float2(Tex.x-(rcpres.x*1), Tex.y)) * 0.8;
+    Color += sample0(s1, float2(Tex.x+(rcpres.x*1), Tex.y)) * 0.8;
 
-    Color += tex2D(s1, float2(Tex.x-(rcpres.x*2), Tex.y)) * 0.65;
-    Color += tex2D(s1, float2(Tex.x+(rcpres.x*2), Tex.y)) * 0.65;
+    Color += sample0(s1, float2(Tex.x-(rcpres.x*2), Tex.y)) * 0.65;
+    Color += sample0(s1, float2(Tex.x+(rcpres.x*2), Tex.y)) * 0.65;
 
-    Color += tex2D(s1, float2(Tex.x-(rcpres.x*3), Tex.y)) * 0.4;
-    Color += tex2D(s1, float2(Tex.x+(rcpres.x*3), Tex.y)) * 0.4;
+    Color += sample0(s1, float2(Tex.x-(rcpres.x*3), Tex.y)) * 0.4;
+    Color += sample0(s1, float2(Tex.x+(rcpres.x*3), Tex.y)) * 0.4;
 
     #if BLOOM_QUALITY >= 2
-        Color += tex2D(s1, float2(Tex.x-(rcpres.x*4), Tex.y)) * 0.25;
-        Color += tex2D(s1, float2(Tex.x+(rcpres.x*4), Tex.y)) * 0.25;
+        Color += sample0(s1, float2(Tex.x-(rcpres.x*4), Tex.y)) * 0.25;
+        Color += sample0(s1, float2(Tex.x+(rcpres.x*4), Tex.y)) * 0.25;
         #if ( BLOOM_FX_DARK == 1 )
             div = 5.2;
         #else
@@ -181,11 +180,11 @@ float4 blurHor3(in float2 Tex : TEXCOORD) : COLOR0
         #endif
     
         #if BLOOM_QUALITY >= 3
-            Color += tex2D(s1, float2(Tex.x-(rcpres.y*5), Tex.y)) * 0.15;
-            Color += tex2D(s1, float2(Tex.x+(rcpres.y*5), Tex.y)) * 0.15;
+            Color += sample0(s1, float2(Tex.x-(rcpres.y*5), Tex.y)) * 0.15;
+            Color += sample0(s1, float2(Tex.x+(rcpres.y*5), Tex.y)) * 0.15;
         
-            Color += tex2D(s1, float2(Tex.x-(rcpres.y*6), Tex.y)) * 0.10;
-            Color += tex2D(s1, float2(Tex.x+(rcpres.y*6), Tex.y)) * 0.10;
+            Color += sample0(s1, float2(Tex.x-(rcpres.y*6), Tex.y)) * 0.10;
+            Color += sample0(s1, float2(Tex.x+(rcpres.y*6), Tex.y)) * 0.10;
             #if ( BLOOM_FX_DARK == 1 )
                 div = 5.65;
             #else
@@ -201,7 +200,7 @@ float4 blurHor3(in float2 Tex : TEXCOORD) : COLOR0
 
 float4 blurVertI(in float2 Tex : TEXCOORD) : COLOR0
 { // a simple 7-sample vertical blur pass
-    float4 Color = tex2D(s1, Tex);
+    float4 Color = sample0(s1, Tex);
 
     #if ( BLOOM_FX_DARK == 1 )
         float div = 4.7;
@@ -209,18 +208,18 @@ float4 blurVertI(in float2 Tex : TEXCOORD) : COLOR0
         float div = 4.2;
     #endif
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*1))) * 0.8;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*1))) * 0.8;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*1))) * 0.8;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*1))) * 0.8;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*2))) * 0.65;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*2))) * 0.65;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*2))) * 0.65;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*2))) * 0.65;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*3))) * 0.4;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*3))) * 0.4;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*3))) * 0.4;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*3))) * 0.4;
 
     #if BLOOM_QUALITY >= 2
-        Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*4))) * 0.25;
-        Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*4))) * 0.25;
+        Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*4))) * 0.25;
+        Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*4))) * 0.25;
         #if ( BLOOM_FX_DARK == 1 )
             div = 5.2;
         #else
@@ -228,11 +227,11 @@ float4 blurVertI(in float2 Tex : TEXCOORD) : COLOR0
         #endif
     
         #if BLOOM_QUALITY >= 3
-            Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*5))) * 0.15;
-            Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*5))) * 0.15;
+            Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*5))) * 0.15;
+            Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*5))) * 0.15;
         
-            Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*6))) * 0.10;
-            Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*6))) * 0.10;
+            Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*6))) * 0.10;
+            Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*6))) * 0.10;
         
             #if ( BLOOM_FX_DARK == 1 )
                 div = 5.65;
@@ -249,7 +248,7 @@ float4 blurVertI(in float2 Tex : TEXCOORD) : COLOR0
 
 float4 blurVert2(in float2 Tex : TEXCOORD) : COLOR0
 { // a simple 7-sample vertical blur pass
-    float4 Color = tex2D(s1, Tex);
+    float4 Color = sample0(s1, Tex);
 
     #if ( BLOOM_FX_DARK == 1 )
         float div = 4.7;
@@ -260,18 +259,18 @@ float4 blurVert2(in float2 Tex : TEXCOORD) : COLOR0
     float spread = 1-( Color.r * 0.3 ) + ( Color.g * 0.6 ) + ( Color.b * 0.1 );
     spread = ( smoothstep(0, 0.7, spread) * 4 ) + 1.0f;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*1))) * 0.8;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*1))) * 0.8;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*1))) * 0.8;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*1))) * 0.8;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*2))) * 0.65;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*2))) * 0.65;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*2))) * 0.65;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*2))) * 0.65;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*3))) * 0.4;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*3))) * 0.4;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*3))) * 0.4;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*3))) * 0.4;
 
     #if BLOOM_QUALITY >= 2
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*4))) * 0.25;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*4))) * 0.25;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*spread*4))) * 0.25;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*spread*4))) * 0.25;
     #if ( BLOOM_FX_DARK == 1 )
         div = 5.2;
     #else
@@ -286,7 +285,7 @@ float4 blurVert2(in float2 Tex : TEXCOORD) : COLOR0
 
 float4 blurVert3(in float2 Tex : TEXCOORD) : COLOR0
 { // a simple 7-sample vertical blur pass
-    float4 Color = tex2D(s1, Tex);
+    float4 Color = sample0(s1, Tex);
 
     #if ( BLOOM_FX_DARK == 1 )
         float div = 4.7;
@@ -294,18 +293,18 @@ float4 blurVert3(in float2 Tex : TEXCOORD) : COLOR0
         float div = 4.2;
     #endif
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*1))) * 0.8;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*1))) * 0.8;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*1))) * 0.8;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*1))) * 0.8;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*2))) * 0.65;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*2))) * 0.65;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*2))) * 0.65;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*2))) * 0.65;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*3))) * 0.4;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*3))) * 0.4;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*3))) * 0.4;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*3))) * 0.4;
 
     #if BLOOM_QUALITY >= 2
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*4))) * 0.25;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*4))) * 0.25;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*4))) * 0.25;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*4))) * 0.25;
     #if ( BLOOM_FX_DARK == 1 )
         div = 5.2;
     #else
@@ -313,11 +312,11 @@ float4 blurVert3(in float2 Tex : TEXCOORD) : COLOR0
     #endif
 
     #if BLOOM_QUALITY >= 3
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*5))) * 0.15;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*5))) * 0.15;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*5))) * 0.15;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*5))) * 0.15;
 
-    Color += tex2D(s1, float2(Tex.x, Tex.y-(rcpres.y*6))) * 0.10;
-    Color += tex2D(s1, float2(Tex.x, Tex.y+(rcpres.y*6))) * 0.10;
+    Color += sample0(s1, float2(Tex.x, Tex.y-(rcpres.y*6))) * 0.10;
+    Color += sample0(s1, float2(Tex.x, Tex.y+(rcpres.y*6))) * 0.10;
     #if ( BLOOM_FX_DARK == 1 )
         div = 5.65;
     #else
@@ -335,7 +334,7 @@ float4 blurVert3(in float2 Tex : TEXCOORD) : COLOR0
 
 float4 brightPass(in float2 Tex : TEXCOORD ) :COLOR0
 {
-    float4 c = tex2D(s1, Tex);
+    float4 c = sample0(s1, Tex);
     float4 cB = c;
 
     c = smoothstep(0, bloom_cutoff, c);
@@ -349,8 +348,8 @@ float4 brightPass(in float2 Tex : TEXCOORD ) :COLOR0
 float4 recombA(in float2 Tex: TEXCOORD) : COLOR0
 {
     #if ( ( BLOOM_FX_SKY != 1 ) || ( BLOOM_FX_HANDS != 1 ) )
-        float d = tex2D(sDepth, Tex).r;
-        float4 cB = tex2D(s0, Tex);
+        float d = sample0(sDepth, Tex).r;
+        float4 cB = sample0(s0, Tex);
         #if ( BLOOM_FX_SKY != 1 )
             cB.rgb *= saturate((fogrange - d) / (fogrange - fogstart));
         #endif
@@ -358,10 +357,10 @@ float4 recombA(in float2 Tex: TEXCOORD) : COLOR0
             cB.rgb *= smoothstep(35, 50, d);
         #endif
     #else
-        float4 cB = tex2D(s0, Tex);
+        float4 cB = sample0(s0, Tex);
     #endif
     
-    float4 c = tex2D(s1, Tex);
+    float4 c = sample0(s1, Tex);
 
     c = smoothstep(0, bloom_cutoff, c);
     c += smoothstep(bloom_cutoff-0.5, bloom_cutoff+0.5, cB);
@@ -372,8 +371,8 @@ float4 recombA(in float2 Tex: TEXCOORD) : COLOR0
 float4 tB0(in float2 Tex : TEXCOORD) : COLOR0
 {
     // grab scene and blurred highlights
-    float4 scene = tex2D(s0, Tex);
-    float4 blur = tex2D(s1, Tex);
+    float4 scene = sample0(s0, Tex);
+    float4 blur = sample0(s1, Tex);
     float4 highlights = 0;
     
     // apply all needed mults
@@ -395,8 +394,8 @@ float4 tB0(in float2 Tex : TEXCOORD) : COLOR0
 #if ( ( BLOOM_FX_SKY != 1 ) || ( BLOOM_FX_HANDS != 1 ) )
 float4 doDepthFix(in float2 Tex : TEXCOORD) : COLOR0
 {
-    float d = tex2D(sDepth, Tex).r;
-    float4 Color = tex2D(s0, Tex);
+    float d = sample0(sDepth, Tex).r;
+    float4 Color = sample0(s0, Tex);
     #if ( BLOOM_FX_SKY != 1 )
         Color.rgb *= saturate((fogrange - d) / (fogrange - fogstart));
     #endif
@@ -410,19 +409,19 @@ float4 doDepthFix(in float2 Tex : TEXCOORD) : COLOR0
 technique T0 < string MGEinterface = "MGE XE 0"; >
 {
     #if ( ( BLOOM_FX_SKY != 1 ) || ( BLOOM_FX_HANDS != 1 ) )
-    pass fixSky { PixelShader = compile ps_2_0 doDepthFix(); }
+    pass fixSky { PixelShader = compile ps_3_0 doDepthFix(); }
     #endif
-    pass blurHBA { PixelShader = compile ps_2_0 blurHorI(); }
-    pass blurVBA { PixelShader = compile ps_2_0 blurVertI(); }
-    pass filter_Bright { PixelShader = compile ps_2_0 brightPass(); }
-    pass blurHA { PixelShader = compile ps_2_0 blurHor2(); }
-    pass blurVA { PixelShader = compile ps_2_0 blurVert2(); }
+    pass blurHBA { PixelShader = compile ps_3_0 blurHorI(); }
+    pass blurVBA { PixelShader = compile ps_3_0 blurVertI(); }
+    pass filter_Bright { PixelShader = compile ps_3_0 brightPass(); }
+    pass blurHA { PixelShader = compile ps_3_0 blurHor2(); }
+    pass blurVA { PixelShader = compile ps_3_0 blurVert2(); }
 
     #if BLOOM_QUALITY >= 2
-    pass recombine_A { PixelShader = compile ps_2_0 recombA(); }
-    pass blurHB { PixelShader = compile SMODEL blurHor3(); }
-    pass blurVB { PixelShader = compile SMODEL blurVert3(); }
+    pass recombine_A { PixelShader = compile ps_3_0 recombA(); }
+    pass blurHB { PixelShader = compile ps_3_0 blurHor3(); }
+    pass blurVB { PixelShader = compile ps_3_0 blurVert3(); }
     #endif
 
-    pass BloomB { PixelShader = compile ps_2_0 tB0(); }
+    pass BloomB { PixelShader = compile ps_3_0 tB0(); }
 }

@@ -30,6 +30,11 @@ static const float4 lightcolour = float4(0.6, 0.91, 1.0, 0);
 
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
+
 float3 toWorld(float2 tex)
 {
     float3 v = float3(mview[0][2], mview[1][2], mview[2][2]);
@@ -50,8 +55,8 @@ float4 rays(float2 tex : TEXCOORD0) : COLOR
     wobble *= 1 - pow(2*tex - 1, 32);
     tex += wobble;
 
-    float4 c = tex2D(s0, tex);
-    float d = tex2D(s1, tex).r;
+    float4 c = sample0(s0, tex);
+    float d = sample0(s1, tex).r;
     float3 v = toWorld(tex);
     float3 e = float3(0.1, 0.1, 1) * eyepos;
     float2 r;

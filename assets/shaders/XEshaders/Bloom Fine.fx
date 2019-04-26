@@ -26,10 +26,15 @@ sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv 
 
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
+
 float4 energyLevels(in float2 Tex : TEXCOORD) : COLOR0
 {
-    float4 radiance = tex2D(s0, Tex);
-    float depth = tex2D(s2, Tex);
+    float4 radiance = sample0(s0, Tex);
+    float depth = sample0(s2, Tex);
     float lum = dot(float3(0.27, 0.54, 0.19), radiance.rgb);
 
     // Mix with luminance to avoid oversaturated single channels
@@ -50,18 +55,18 @@ float4 blurVert(in float2 Tex : TEXCOORD) : COLOR0
     float4 radiance = 0;
     
     for(int i = 0; i < N; ++i)
-        radiance += kernel[i] * tex2D(s1, Tex + float2(0, rcpres.y * taps[i]));
+        radiance += kernel[i] * sample0(s1, Tex + float2(0, rcpres.y * taps[i]));
 
     return radiance;
 }
 
 float4 blurHorzCombine(in float2 Tex : TEXCOORD) : COLOR0
 {
-    float4 base = tex2D(s0, Tex);
+    float4 base = sample0(s0, Tex);
     float4 radiance = 0;
     
     for(int i = 0; i < N; ++i)
-        radiance += kernel[i] * tex2D(s1, Tex + float2(rcpres.x * taps[i], 0));
+        radiance += kernel[i] * sample0(s1, Tex + float2(rcpres.x * taps[i], 0));
 
     // Mix in linear space
     base = pow(base, bloomGamma);

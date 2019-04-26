@@ -25,6 +25,11 @@ float time;
 
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
+
 float3 toWorld(float2 tex)
 {
     float3 v = float3(mview[0][2], mview[1][2], mview[2][2]);
@@ -39,8 +44,8 @@ float4 wobble(float2 tex : TEXCOORD0) : COLOR
     wobble *= 1 - pow(2*tex - 1, 32);
     tex += wobble;
 
-    float4 c = tex2D(s0, tex);
-    float d = tex2D(s1, tex).r;
+    float4 c = sample0(s0, tex);
+    float d = sample0(s1, tex).r;
     float3 v = eyepos + d * toWorld(tex);
     float k = 1 - tex3D(s2, float3(v.xy / 1783, 0.4 * time)).b;
 

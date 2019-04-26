@@ -15,6 +15,7 @@ int mgeflags = 8;
 
 static const float R = 15.0; // Max ray radius, world units
 static const float multiplier = 1.6; // Overall strength. 1.0 is the correct physical value
+static const float occlusion_ceiling = 0.55; // Ceiling on occlusion darkening
 static const float occlusion_falloff = 15.0; // More means less precision, and more strength
 static const float blur_falloff = 5.0; // Same for blur
 static const float blur_radius = 4.0; // In pixels
@@ -40,7 +41,7 @@ sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv 
 
 
 static const float depth_scale = 10000;
-static const float t =  2.0 * tan(0.5 * radians(fov));
+static const float2 invproj =  2.0 * tan(0.5 * radians(fov)) * float2(1, rcpres.x / rcpres.y);
 static const float eps = 1e-6;
 static const float sky = 1e6;
 
@@ -127,20 +128,21 @@ static float2 taps[M] =
 };
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
 
 float3 toView(float2 tex)
 {
-    float depth = tex2D(s2, tex).r;
-    float x = (tex.x - 0.5) * depth * t;
-    float y = (tex.y - 0.5) * depth * t / rcpres.y * rcpres.x;
-    return float3(x, y, depth);
+    float depth = sample0(s2, tex).r;
+    float2 xy = depth * (tex - 0.5) * invproj;
+    return float3(xy, depth);
 }
 
 float2 fromView(float3 view)
 {
-    float x = (view.x / t / view.z) + 0.5;
-    float y = (view.y / t / view.z * rcpres.y / rcpres.x) + 0.5;
-    return float2(x, y);
+    return (view.xy / view.z) / invproj + float2(0.5, 0.5);
 }
 
 inline float2 pack2(float f)
@@ -155,10 +157,11 @@ inline float unpack2(float2 f)
 
 
 
+static const float xylength = sqrt(1 - eyevec.z * eyevec.z);
 float4 ssao(in float2 tex : TEXCOORD0) : COLOR0
 {
     float3 pos = toView(tex);
-    float water = pos.z * eyevec.z - pos.y * sqrt(1 - eyevec.z * eyevec.z) + eyepos.z;
+    float water = pos.z * eyevec.z - pos.y * xylength + eyepos.z;
 
     if(pos.z <= 0 || pos.z > sky || (water - waterlevel) < 0)
         return float4(0, 0, 0, 1);
@@ -208,14 +211,14 @@ float4 ssao(in float2 tex : TEXCOORD0) : COLOR0
 
 float4 smartblur(in float2 tex : TEXCOORD0) : COLOR
 {
-    float4 data = tex2D(s4, tex);
+    float4 data = sample0(s4, tex);
     float total = data.r;
     float depth = unpack2(data.gb);
-    float rev = data.a * 2.0 - 1.0;
+    float rev = blur_radius * (2.0*data.a - 1.0);
     float amount = 1;
     for (int i = 0; i < M; i++)
     {
-        float2 s_tex = tex + rcpres * taps[i] * blur_radius * rev;
+        float2 s_tex = tex + rcpres * taps[i] * rev;
         float3 s_data = tex2D(s4, s_tex); 
         float s_depth = unpack2(s_data.gb);
         float weight = exp2(-abs(depth - s_depth) * depth_scale / blur_falloff);
@@ -231,18 +234,18 @@ float4 smartblur(in float2 tex : TEXCOORD0) : COLOR
 
 float4 show(float2 tex : TEXCOORD0) : COLOR
 {
-    float4 result = (1.0 - multiplier * tex2D(s1, tex).r);
+    float4 result = (1.0 - multiplier * sample0(s1, tex).r);
 
     result.a = 1;
-    return result;	
+    return result;
 } 
-
 
 
 float4 combine(float2 tex : TEXCOORD0) : COLOR
 {
     float dist = length(toView(tex));
-    float final = multiplier * tex2D(s1, tex).r;
+    float final = multiplier * sample0(s1, tex).r;
+    final = min(final, occlusion_ceiling);
 
 #ifdef USE_EXPFOG
     float fog = (dist - fogstart) / (fogrange - fogstart);
@@ -251,9 +254,9 @@ float4 combine(float2 tex : TEXCOORD0) : COLOR
     float fog = saturate((fogrange - dist) / (fogrange - fogstart));
 #endif
 
-    float3 result = tex2D(s0, tex).rgb * (1 - final * pow(fog, 3));
+    float3 result = sample0(s0, tex).rgb * (1 - final * pow(fog, 6));
     return float4(result, 1);
-} 
+}
 
 
 
@@ -262,9 +265,7 @@ technique T0 < string MGEinterface="MGE XE 0"; >
     pass { PixelShader = compile ps_3_0 ssao(); }
 #ifdef BLUR
     pass { PixelShader = compile ps_3_0 smartblur(); }
-  #ifdef ROTATE //needs 2 passes
     pass { PixelShader = compile ps_3_0 smartblur(); }
-  #endif
 #endif
 
 #ifdef DEBUG

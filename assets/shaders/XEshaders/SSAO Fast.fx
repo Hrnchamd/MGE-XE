@@ -1,6 +1,6 @@
 // Screen Space Ambient Occlusion
 // based on ssao v09 by Knu
-// Fast version, 6 sample taps
+// Fast version, 10 sample taps
 
 // Compatibility: MGE XE 0, fully working
 int mgeflags = 8;
@@ -8,14 +8,14 @@ int mgeflags = 8;
 // **
 // ** ADJUSTABLE VARIABLES
 
-#define N 6  // Samples: 16, 10, 6. More means precision and performance hit.
+#define N 10  // Samples: 16, 10, 6. More means precision and performance hit.
 #define BLUR // Enable AO blur.
 //#define ROTATE // Enable random rotation. Generally more precise, but might give noise or other artifacts.
 //#define DEBUG // Enable debug mode: AO term only.
 
 static const float R = 15.0; // Max ray radius, world units
 static const float multiplier = 1.6; // Overall strength. 1.0 is the correct physical value
-static const float occlusion_ceiling = 0.45; // Ceiling on occlusion darkening
+static const float occlusion_ceiling = 0.55; // Ceiling on occlusion darkening
 static const float occlusion_falloff = 20.0; // More means less precision, and more strength
 static const float blur_falloff = 15.0; // Same for blur
 static const float blur_radius = 5.0; // In pixels
@@ -41,11 +41,9 @@ sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv 
 
 
 static const float depth_scale = 10000;
-static const float t =  2.0 * tan(radians(fov * 0.5));
-static const float ty = t / rcpres.y * rcpres.x;
-static const float eps = 0.000001;
-static const float sky = 1000000;
-static const float2 halfpix = 0.5 * rcpres;
+static const float2 invproj =  2.0 * tan(0.5 * radians(fov)) * float2(1, rcpres.x / rcpres.y);
+static const float eps = 1e-6;
+static const float sky = 1e6;
 
 #ifdef ROTATE
 texture tex1 < string src="noise8q.tga"; >;
@@ -88,19 +86,21 @@ static float2 taps[M] =
 };
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
+
 float3 toView(float2 tex)
 {
-    float depth = tex2D(s2, tex).r;
-    float x = (tex.x - 0.5) * depth * t;
-    float y = (tex.y - 0.5) * depth * ty;
-    return float3(x, y, depth);
+    float depth = sample0(s2, tex).r;
+    float2 xy = depth * (tex - 0.5) * invproj;
+    return float3(xy, depth);
 }
 
 float2 fromView(float3 view)
 {
-    float x = (view.x / t / view.z) + 0.5;
-    float y = (view.y / ty / view.z) + 0.5;
-    return float2(x, y);
+    return (view.xy / view.z) / invproj + float2(0.5, 0.5);
 }
 
 inline float2 pack2(float f)
@@ -133,8 +133,8 @@ float4 ssao(in float2 tex : TEXCOORD0) : COLOR0
     float3 dy = length(up) < length(down) ? up : down;
 
     float3 normal = normalize(cross(dy, dx));
-    dx = normalize(dx);
     dy = normalize(cross(dx, normal));
+    dx = normalize(dx);
 
 #ifdef ROTATE
     float3 rnd = normalize(tex2D(s3, tex / rcpres / 8).xyz * 2 - float3(1, 1, 1));
@@ -169,7 +169,7 @@ float4 ssao(in float2 tex : TEXCOORD0) : COLOR0
 
 float4 smartblur(in float2 tex : TEXCOORD0) : COLOR
 {
-    float4 data = tex2D(s4, tex);
+    float4 data = sample0(s4, tex);
     float total = data.r;
     float depth = unpack2(data.gb);
     float rev = blur_radius * (2.0*data.a - 1.0);
@@ -192,17 +192,18 @@ float4 smartblur(in float2 tex : TEXCOORD0) : COLOR
 
 float4 show(float2 tex : TEXCOORD0) : COLOR
 {
-    float4 result = (1.0 - multiplier * tex2D(s1, tex).r);
+    float4 result = (1.0 - multiplier * sample0(s1, tex).r);
 
     result.a = 1;
-    return result;	
+    return result;
 } 
 
 
 float4 combine(float2 tex : TEXCOORD0) : COLOR
 {
     float dist = length(toView(tex));
-    float final = min(multiplier * tex2D(s1, tex).r, occlusion_ceiling);
+    float final = multiplier * sample0(s1, tex).r;
+    final = min(final, occlusion_ceiling);
 
 #ifdef USE_EXPFOG
     float fog = (dist - fogstart) / (fogrange - fogstart);
@@ -211,9 +212,9 @@ float4 combine(float2 tex : TEXCOORD0) : COLOR
     float fog = saturate((fogrange - dist) / (fogrange - fogstart));
 #endif
 
-    float3 result = tex2D(s0, tex).rgb * (1 - final * pow(fog, 3));
+    float3 result = sample0(s0, tex).rgb * (1 - final * pow(fog, 6));
     return float4(result, 1);
-} 
+}
 
 
 

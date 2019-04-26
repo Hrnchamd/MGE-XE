@@ -75,12 +75,17 @@ static float2 taps[M] =
 
 
 
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
+
 float4 dof(float2 tex : TEXCOORD) : COLOR0
 {
-    float s = tex2D(s1, float2(0.5, 0.5)).r * unit2m;
+    float s = sample0(s1, float2(0.5, 0.5)).r * unit2m;
 
     float z_corr = length(float3((tex.x - 0.5) * t, (tex.y - 0.5) * t / rcpres.y * rcpres.x, 1));
-    float z = z_corr * unit2m * tex2D(s1, tex).r;
+    float z = z_corr * unit2m * sample0(s1, tex).r;
     float savemyhands = smoothstep(0.568, 0.781, z);
     
     float fpf = clamp(1 / s + fr, fp, fp + fpa);
@@ -88,16 +93,16 @@ float4 dof(float2 tex : TEXCOORD) : COLOR0
     float fog = fogoffset * saturate(z / (4 * fogrange * unit2m));
     
     c = min(abs(c / Rfixed) + fog, 1) * savemyhands;
-    return float4(tex2D(s0, tex).rgb, c);
+    return float4(sample0(s0, tex).rgb, c);
 }
 
 float4 smartblur(float2 tex : TEXCOORD) : COLOR0
 {
-    float4 color = tex2D(s3, tex);
+    float4 color = sample0(s3, tex);
     float c = color.a * Rfixed;
 
 #ifdef ROTATE
-    float2 rnd = normalize(tex2D(s2, tex / rcpres / 64).xy * 2 + 1);
+    float2 rnd = normalize(sample0(s2, tex / rcpres / 64).xy * 2 + 1);
 #endif
 
     float amount = 1.0;
@@ -110,7 +115,7 @@ float4 smartblur(float2 tex : TEXCOORD) : COLOR0
 #endif
 
         float2 s_tex = tex + rcpres * dir * c;
-        float4 s_color = tex2D(s3, s_tex);
+        float4 s_color = sample0(s3, s_tex);
         float s_c = s_color.a * Rfixed;
         float weight = exp2(-abs(c - s_c) / blur_falloff);
 

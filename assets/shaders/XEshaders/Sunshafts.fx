@@ -16,7 +16,7 @@ int mgeflags = 9;
 #define offscreenrange 0.5       // Maximum offscreen position of sun before rays vanish
 #define sundisc 1                // Draws additional sun disc. 0 disables
 #define sundiscradius 0.025      // Radius of sun disc
-#define sundiscbrightness 1.4    // Brightness of sun disc
+#define sundiscbrightness 1.2    // Brightness of sun disc
 #define sundiscdesaturate 0.4    // Desaturation of sun disc color, negative values for more saturation
 #define sundiscocclude 0.75      // How much the sun disc will 'overwrite' original image
 #define horizonclipping 1        // Prevents the sun disc from being drawn below the horizon. Might cause an FPS hit.
@@ -45,15 +45,11 @@ matrix mview;
 matrix mproj;
 
 static const float raspect = rcpres.x / rcpres.y;
-
 static const float3 sundir = -normalize(sunpos);
-
 static const float forward = dot(sundir, eyevec);
+static const float2 texproj = 0.5 * float2(1, -rcpres.y / rcpres.x) / tan(radians(fov * 0.5));
 
-static const float2 texproj = 0.5f * float2(1, -rcpres.y / rcpres.x ) / tan(radians(fov * 0.5));
-
-static const float d = dot(eyevec, sunpos);
-static const float3 sunview_v = mul(sunpos/d, mview);
+static const float3 sunview_v = mul(sunpos / dot(eyevec, sunpos), mview);
 static const float2 sunview = (0.5).xx + sunview_v.xy * texproj;
 static const float2 sunviewhalf = 0.5 * sunview;
 
@@ -62,15 +58,18 @@ static const float light = 1 - pow(1 - sunvis, 2);
 static const float strength = raystrength * light * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.x-0.5)) * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.y-0.5));
 static const float oneminuscentervis = 1-centervis;
 
-static const float3 suncoldisc = float3(1, 0.76+0.24*sunpos.z, 0.37+0.63*sunpos.z) * saturate(suncol/max(suncol.r,max(suncol.g,suncol.b)) * (1-sundiscdesaturate) + float3(sundiscdesaturate,sundiscdesaturate,sundiscdesaturate));
+static const float3 suncoldisc = float3(1, 0.76+0.24*sunpos.z, 0.54+0.46*sunpos.z) * (1 + pow(1 - sunpos.z, 2)) * saturate(suncol/max(suncol.r,max(suncol.g,suncol.b)) * (1-sundiscdesaturate) + float3(sundiscdesaturate,sundiscdesaturate,sundiscdesaturate));
 
 static const float aziHorizon = normalize( float2(4*fogrange, waterlevel-eyepos.z) ).y;
 
+static const float scale = 2.0;
+static const float rscale = 0.5;
+static const float threshold = 1e7;
 
-#define scale 2.0
-#define rscale 0.5
-#define rscale2 0.25
-#define threshold 1e7
+float4 sample0(sampler2D s, float2 t)
+{
+    return tex2Dlod(s, float4(t, 0, 0));
+}
 
 float4 stretch( float2 Tex : TEXCOORD0 ) : COLOR0
 {
@@ -80,11 +79,11 @@ float4 stretch( float2 Tex : TEXCOORD0 ) : COLOR0
     if(forward < 0)
     {
         float2 srcTex = scale * Tex;
-        depth = step(threshold, tex2D(s0, srcTex).r);
-        depth += step(threshold, tex2D(s0, srcTex + float2(rcpres.x, 0)).r);
-        depth += step(threshold, tex2D(s0, srcTex + float2(0, rcpres.y)).r);
-        depth += step(threshold, tex2D(s0, srcTex + float2(rcpres.x, rcpres.y)).r);
-        depth *= rscale2;
+        depth = step(threshold, sample0(s0, srcTex).r);
+        depth += step(threshold, sample0(s0, srcTex + float2(rcpres.x, 0)).r);
+        depth += step(threshold, sample0(s0, srcTex + float2(0, rcpres.y)).r);
+        depth += step(threshold, sample0(s0, srcTex + float2(rcpres.x, rcpres.y)).r);
+        depth *= 0.25;
     }
     return float4(0, 0, 0, depth);
 }
@@ -97,11 +96,11 @@ float4 blurRHalf( float2 Tex : TEXCOORD0 ) : COLOR0
 
     float2 radial = normalize(Tex - sunviewhalf).xy * rcpres.yx;
 
-    float alpha = 0.3333 * tex2D(s2, Tex).a;
-    alpha += 0.2222 * tex2D(s2, Tex + radial).a;
-    alpha += 0.2222 * tex2D(s2, Tex - radial).a;
-    alpha += 0.1111 * tex2D(s2, Tex + 2*radial).a;
-    alpha += 0.1111 * tex2D(s2, Tex - 2*radial).a;
+    float alpha = 0.3333 * sample0(s2, Tex).a;
+    alpha += 0.2222 * sample0(s2, Tex + radial).a;
+    alpha += 0.2222 * sample0(s2, Tex - radial).a;
+    alpha += 0.1111 * sample0(s2, Tex + 2*radial).a;
+    alpha += 0.1111 * sample0(s2, Tex - 2*radial).a;
 
     return float4(0, 0, 0, alpha);
 }
@@ -120,7 +119,7 @@ float4 rays( float2 Tex : TEXCOORD0 ) : COLOR0
     for(int i = 1; i <= N; i++)
     {
         float sundist = (float)i / (float)N * sunr;
-        l += tex2D(s2, saturate(sunview + sundist * screendir) * rscale).a * exp(-((screendist-sundist)/(rayfalloffconst+sundist)) * rayfalloff) * pow(1 - saturate(sundist/raysunradius), raysunfalloff);
+        l += sample0(s2, saturate(sunview + sundist * screendir) * rscale).a * exp(-((screendist-sundist)/(rayfalloffconst+sundist)) * rayfalloff) * pow(1 - saturate(sundist/raysunradius), raysunfalloff);
     }
 
     l *= strength / (float)N * (screendist/raysunradius * oneminuscentervis + centervis);
@@ -137,11 +136,11 @@ float4 blurT( float2 Tex : TEXCOORD0 ) : COLOR0
 
     float2 tangent = 1.0 * normalize(Tex - sunview).yx * float2(rcpres.y, -rcpres.x);
 
-    float4 col = 0.3333 * tex2D(s2, Tex);
-    col += 0.2222 * tex2D(s2, Tex + tangent);
-    col += 0.2222 * tex2D(s2, Tex - tangent);
-    col += 0.1111 * tex2D(s2, Tex + 2*tangent);
-    col += 0.1111 * tex2D(s2, Tex - 2*tangent);
+    float4 col = 0.3333 * sample0(s2, Tex);
+    col += 0.2222 * sample0(s2, Tex + tangent);
+    col += 0.2222 * sample0(s2, Tex - tangent);
+    col += 0.1111 * sample0(s2, Tex + 2*tangent);
+    col += 0.1111 * sample0(s2, Tex - 2*tangent);
     return col;
 }
 
@@ -152,11 +151,11 @@ float4 blurR( float2 Tex : TEXCOORD0 ) : COLOR0
 
     float2 radial = 3.0 * normalize(Tex - sunview).xy * rcpres.yx;
 
-    float4 col = 0.3333 * tex2D(s2, Tex);
-    col += 0.2222 * tex2D(s2, Tex + radial);
-    col += 0.2222 * tex2D(s2, Tex - radial);
-    col += 0.1111 * tex2D(s2, Tex + 2*radial);
-    col += 0.1111 * tex2D(s2, Tex - 2*radial);
+    float4 col = 0.3333 * sample0(s2, Tex);
+    col += 0.2222 * sample0(s2, Tex + radial);
+    col += 0.2222 * sample0(s2, Tex - radial);
+    col += 0.1111 * sample0(s2, Tex + 2*radial);
+    col += 0.1111 * sample0(s2, Tex - 2*radial);
     return col;
 }
 
@@ -170,8 +169,8 @@ float3 toWorld(float2 tex)
 
 float4 combine( float2 Tex : TEXCOORD0 ) : COLOR0
 {
-    float4 ray = tex2D(s2, Tex);
-    float3 col = tex2D(s1, Tex);
+    float4 ray = sample0(s2, Tex);
+    float3 col = sample0(s1, Tex);
     
     col *= saturate(1 - sunrayocclude * ray.a);
     col = saturate(col + ray.rgb * ray.a);
@@ -182,8 +181,8 @@ float4 combine( float2 Tex : TEXCOORD0 ) : COLOR0
         float2 screendir = Tex - sunview;
         screendir.y *= raspect;
 
-        float occl = light * step(threshold, tex2D(s0, Tex).r);
-        occl *= pow(saturate(sundiscradius / (length(screendir)+0.0001)), 3);
+        float occl = light * step(threshold, sample0(s0, Tex).r);
+        occl *= saturate(exp(221 * (sundiscradius - length(screendir))));
         
         if(occl > 0.004)
         {
@@ -191,9 +190,9 @@ float4 combine( float2 Tex : TEXCOORD0 ) : COLOR0
 #if horizonclipping == 1
             float azi = normalize(toWorld(Tex)).z;
             occl *= smoothstep(-0.005, 0.010, azi - aziHorizon);
-            scol.gb *= smoothstep(-0.04, 0.05, azi - aziHorizon);
+            scol.gb *= smoothstep(-0.04, 0.09, azi - aziHorizon);
 #endif
-            col = max(col, scol) * occl + col * (1 - sundiscocclude * occl);
+            col = lerp(col, scol, sundiscocclude * occl);
         }
     }
 #endif
@@ -203,7 +202,7 @@ float4 combine( float2 Tex : TEXCOORD0 ) : COLOR0
 
 float4 alpha( float2 Tex : TEXCOORD0 ) : COLOR0
 {
-    float a = tex2D(s2, Tex).a;
+    float a = sample0(s2, Tex).a;
     return float4(a, a, a, 1);
 }
 
