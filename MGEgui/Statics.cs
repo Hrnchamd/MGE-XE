@@ -159,7 +159,7 @@ namespace MGEgui {
         public const string versionNumber = "0.10.1";
         public const string versionString = "v" + versionNumber;
         public const byte SaveVersion = 47;
-        public const byte DistantLandVersion = 5;
+        public const byte DistantLandVersion = 6;
 
         public const int MACROS=266;
         public const int TRIGGERS=4;
@@ -180,7 +180,7 @@ namespace MGEgui {
         public const string fn_dlver = "Data files/distantland/version";
         public const string fn_world = "Data files/distantland/world";
         public const string fn_worldds = "Data files/distantland/world.dds";
-        public const string fn_worldn = "Data files/distantland/world_n.tga";
+        public const string fn_worldn = "Data files/distantland/world_n.dds";
         public const string fn_statics = "Data files/distantland/statics";
         public const string fn_usagedata = "Data files/distantland/statics/usage.data";
         public const string fn_statmesh = "Data files/distantland/statics/static_meshes";

@@ -923,7 +923,7 @@ namespace MGEgui.DirectX {
             Surface output = UncompressedTex.GetSurfaceLevel(0);
             Surface.FromSurface(output, RenderTarget, Filter.None, 0);
             UncompressedTex.FilterTexture(0, Filter.Box);
-            Texture.ToFile(UncompressedTex, path, ImageFileFormat.Tga);
+            Texture.ToFile(UncompressedTex, path, ImageFileFormat.Dds);
             output.Dispose();
         }
 

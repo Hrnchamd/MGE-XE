@@ -8,6 +8,7 @@
 #include "postshaders.h"
 #include "morrowindbsa.h"
 #include "mwbridge.h"
+#include "mgeversion.h"
 
 #define READ_FROM_BUFFER(src, dest, size) memcpy((void*)dest, (void*)src, size); src += size;
 
@@ -695,6 +696,7 @@ bool DistantLand::initDistantStatics()
 bool DistantLand::loadDistantStatics()
 {
     DWORD unused;
+    HANDLE h;
 
     if(GetFileAttributes("Data Files\\distantland\\statics") == INVALID_FILE_ATTRIBUTES)
     {
@@ -702,7 +704,21 @@ bool DistantLand::loadDistantStatics()
         return true;
     }
 
-    HANDLE h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    if (h == INVALID_HANDLE_VALUE)
+    {
+        LOG::logline("!! Required distant statics data is missing or corrupted");
+        return false;
+    }
+    BYTE version = 0;
+    ReadFile(h, &version, sizeof(version), &unused, 0);
+    if(version != MGE_DL_VERSION)
+    {
+        LOG::logline("!! Distant land data is from an old version and needs to be regenerated");
+        return false;
+    }
+
+    h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE)
     {
         LOG::logline("!! Required distant statics data is missing or corrupted");
@@ -1046,7 +1062,7 @@ bool DistantLand::initLandscape()
         return false;
     }
 
-    hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world_n.tga", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
+    hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world_n.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
     if(hr != D3D_OK)
     {
         LOG::logline("!! Could not load world normal map texture for distant land");

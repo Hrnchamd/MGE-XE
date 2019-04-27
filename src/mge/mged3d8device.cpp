@@ -250,7 +250,8 @@ HRESULT _stdcall MGEProxyDevice::BeginScene()
                 }
                 else
                 {
-                    StatusOverlay::setStatus("Serious error. Check mgeXE.log for details.");
+                    Configuration.MGEFlags &= ~USE_DISTANT_LAND;
+                    StatusOverlay::setStatus("MGE XE serious error condition. Check mgeXE.log for details.");
                 }
             }
         }

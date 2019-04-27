@@ -404,7 +404,8 @@ namespace MGEgui.DistantLand {
                                     "512",
                                     "1024",
                                     "2048",
-                                    "4096"});
+                                    "4096",
+                                    "8192"});
             this.cmbTexWorldResolution.Location = new System.Drawing.Point(11, 62);
             this.cmbTexWorldResolution.Name = "cmbTexWorldResolution";
             this.cmbTexWorldResolution.Size = new System.Drawing.Size(100, 23);
@@ -431,7 +432,8 @@ namespace MGEgui.DistantLand {
                                     "512",
                                     "1024",
                                     "2048",
-                                    "4096"});
+                                    "4096",
+                                    "8192"});
             this.cmbTexWorldNormalRes.Location = new System.Drawing.Point(11, 98);
             this.cmbTexWorldNormalRes.Name = "cmbTexWorldNormalRes";
             this.cmbTexWorldNormalRes.Size = new System.Drawing.Size(100, 23);

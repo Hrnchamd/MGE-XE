@@ -1142,13 +1142,13 @@ namespace MGEgui {
                 }
                 if (!File.Exists (Statics.fn_dlver) || !File.Exists (Statics.fn_world) || !File.Exists (Statics.fn_worldds) || !File.Exists (Statics.fn_worldn)) {
                     cbDLDistantLand.Checked = false;
-                    MessageBox.Show (strings ["NoDLOrOld"], Statics.strings ["Error"]);
+                    MessageBox.Show (strings ["NoDLOrOld"], Statics.strings ["Warning"]);
                     return;
                 }
                 byte [] bytes = File.ReadAllBytes (Statics.fn_dlver);
                 if (bytes.Length != 1 || bytes [0] != Statics.DistantLandVersion) {
                     cbDLDistantLand.Checked = false;
-                    MessageBox.Show (strings ["DLDiffer"], Statics.strings ["Error"]);
+                    MessageBox.Show (strings ["DLDiffer"], Statics.strings ["Warning"]);
                     return;
                 }
                 gbDistantLand.Enabled = true;

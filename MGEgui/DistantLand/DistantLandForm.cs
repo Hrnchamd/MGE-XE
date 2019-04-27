@@ -153,7 +153,8 @@ namespace MGEgui.DistantLand {
             {"512", 2},
             {"1024", 3},
             {"2048", 4},
-            {"4096", 5}
+            {"4096", 5},
+            {"8192", 6}
         };
 
         private static Dictionary<string, double> wMeshDet = new Dictionary<string, double> {
@@ -559,6 +560,7 @@ namespace MGEgui.DistantLand {
             DirectX.CellTexCreator ctc = new CellTexCreator(4);
             int count = 0;
             backgroundWorker.ReportProgress(count, strings["LandTextureCreate"]);
+            
             //Render world texture
             WorldTexCreator wtc = new WorldTexCreator(args.WorldRes, MapMinX, MapMaxX, MapMinY, MapMaxY);
             wtc.Begin();
@@ -578,6 +580,8 @@ namespace MGEgui.DistantLand {
             //Save the world texture.
             wtc.FinishCompressed(Statics.fn_worldds, args.twoStep);
             wtc.Dispose();
+            
+            // World normal map
             wtc = new WorldTexCreator(args.WorldNormal, MapMinX, MapMaxX, MapMinY, MapMaxY);
             wtc.Begin();
             ctc.BeginNormalMap();
@@ -595,6 +599,7 @@ namespace MGEgui.DistantLand {
             ctc.EndNormalMap();
             wtc.FinishUncompressed(Statics.fn_worldn);
             wtc.Dispose();
+            
             ctc.Dispose();
         }
 
@@ -2301,17 +2306,17 @@ namespace MGEgui.DistantLand {
         }
 
         void cmbTexWorldResolution_SelectedIndexChanged(object sender, EventArgs e) {
-            // Calcuate usage for DXT1 texture
-            int extent = 128 << cmbTexWorldResolution.SelectedIndex;
-            extent = (extent * extent + 1048576) / 2097152;
+            // Calcuate usage for DXT1 texture with mip-maps
+            Int64 extent = 128 << cmbTexWorldResolution.SelectedIndex;
+            extent = (extent * extent * 1333 / 1000 + 1048576) / 2097152;
             
             lTexWorldMemUse.Text = strings["VideoMemUse"] + extent.ToString() + "MB";
         }
         
         void cmbTexWorldNormalRes_SelectedIndexChanged(object sender, EventArgs e) {
-            // Calcuate usage for uncompressed texture
-            int extent = 128 << cmbTexWorldNormalRes.SelectedIndex;
-            extent = (extent * extent + 131072) / 262144;
+            // Calcuate usage for uncompressed texture with mip-maps
+            Int64 extent = 128 << cmbTexWorldNormalRes.SelectedIndex;
+            extent = (extent * extent * 1333 / 1000 + 131072) / 262144;
             
             lTexNormalMemUse.Text = strings["VideoMemUse"] + extent.ToString() + "MB";
         }
