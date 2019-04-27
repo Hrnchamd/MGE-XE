@@ -1163,12 +1163,12 @@ namespace MGEgui {
             this.udFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.udFPSLimit.Location = new System.Drawing.Point(386, 50);
             this.udFPSLimit.Maximum = new decimal(new int[] {
-                                    144,
+                                    240,
                                     0,
                                     0,
                                     0});
             this.udFPSLimit.Minimum = new decimal(new int[] {
-                                    10,
+                                    15,
                                     0,
                                     0,
                                     0});

@@ -159,7 +159,7 @@ namespace MGEgui {
         private const string smwiniLighting = "LightAttenuation";
 
         #region morrowind_ini_variable_definitions
-        private static INIFile.INIVariableDef mwiniFPSLimit = new INIFile.INIVariableDef ("FPSLimit", smwiniGeneral, "Max FPS", INIFile.INIVariableType.Int32, "0");
+        private static INIFile.INIVariableDef mwiniFPSLimit = new INIFile.INIVariableDef ("FPSLimit", smwiniGeneral, "Max FPS", INIFile.INIVariableType.Int32, "240");
         private static INIFile.INIVariableDef mwiniSSEnable = new INIFile.INIVariableDef ("SSEnable", smwiniGeneral, "Screen Shot Enable", INIFile.INIBoolType.Number, "0");
         private static INIFile.INIVariableDef mwiniNoThread = new INIFile.INIVariableDef ("NoThread", smwiniGeneral, "DontThreadLoad", INIFile.INIBoolType.Number, "0");
         private static INIFile.INIVariableDef mwiniYesToAll = new INIFile.INIVariableDef ("YesToAll", smwiniGeneral, "allowyestoall", INIFile.INIBoolType.Number, "0");
