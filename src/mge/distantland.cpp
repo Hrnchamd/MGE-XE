@@ -425,9 +425,9 @@ void DistantLand::adjustFog()
 
     nearViewRange = mwBridge->GetViewDistance();
 
-    // Morrowind does not update weather during menu mode and the frame after
-    // No need to run adjustment during menu mode
-    if(mwBridge->IsMenu())
+    // Morrowind does not update weather during menu mode, except when time is changed
+    // Therefore always run adjustment during menu mode, except if background caching is used
+    if(isRenderCached)
         return;
 
     // Get fog cell ranges based on environment and weather
@@ -620,7 +620,7 @@ void DistantLand::postProcess()
         }
 
         // Cache render for first frame of menu mode
-        if(mwBridge->IsMenu())
+        if((Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu())
         {
             texDistantBlend = PostShaders::borrowBuffer(0);
             isRenderCached = true;
