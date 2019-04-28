@@ -198,6 +198,10 @@ void DistantLand::simulateDynamicWaves()
     static float remainingWaveTime = 0;
     static const float waveStep = 0.0125f;  // time per wave simulation step (1/80 sec)
 
+    // Simulation paused in menu mode
+    if(mwBridge->IsMenu())
+        return;
+
     device->SetFVF(fvfWave);
     device->SetStreamSource(0, vbWaveSim, 0, 32);
 
