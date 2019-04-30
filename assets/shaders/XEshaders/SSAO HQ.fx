@@ -1,5 +1,5 @@
 // Screen Space Ambient Occlusion
-// v09 by Knu
+// based on ssao v09 by Knu
 // High-quality version, full resolution, 16 sample taps
 
 // Compatibility: MGE XE 0, fully working
@@ -14,10 +14,9 @@ int mgeflags = 8;
 //#define DEBUG // Enable debug mode: AO term only.
 
 static const float R = 15.0; // Max ray radius, world units
-static const float multiplier = 1.6; // Overall strength. 1.0 is the correct physical value
-static const float occlusion_ceiling = 0.55; // Ceiling on occlusion darkening
+static const float multiplier = 2.1; // Overall strength. 1.0 is the correct physical value
 static const float occlusion_falloff = 15.0; // More means less precision, and more strength
-static const float blur_falloff = 5.0; // Same for blur
+static const float blur_falloff = 0.06; // Blur depth falloff, more means a larger depth range is blurred
 static const float blur_radius = 4.0; // In pixels
 
 // ** END OF
@@ -36,7 +35,7 @@ texture depthframe;
 sampler s0 = sampler_state { texture = <lastshader>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
 sampler s1 = sampler_state { texture = <lastpass>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
 sampler s4 = sampler_state { texture = <lastpass>; addressu = mirror; addressv = mirror; magfilter = linear; minfilter = linear; };
-sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = point; minfilter = point; };
+sampler s2 = sampler_state { texture = <depthframe>; addressu = clamp; addressv = clamp; magfilter = linear; minfilter = linear; };
 
 
 
@@ -46,8 +45,8 @@ static const float eps = 1e-6;
 static const float sky = 1e6;
 
 #ifdef ROTATE
-texture tex1 < string src="noise8q.tga"; >;
-sampler s3 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = linear; minfilter = linear; };
+texture tex1 < string src="MGE/poisson_nrm.dds"; >;
+sampler s3 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = point; minfilter = point; };
 #endif
 
 
@@ -179,7 +178,7 @@ float4 ssao(in float2 tex : TEXCOORD0) : COLOR0
     dx = normalize(dx);
 
 #ifdef ROTATE
-    float3 rnd = normalize(tex2D(s3, tex / rcpres / 8).xyz * 2 - float3(1, 1, 1));
+    float3 rnd = sample0(s3, tex / rcpres / 8).xyz * 2 - 1;
 #endif
 
     float AO = 0, amount = 0;
@@ -197,8 +196,8 @@ float4 ssao(in float2 tex : TEXCOORD0) : COLOR0
         ray = dx * ray.x + dy * ray.y + normal * ray.z;
         float weight = dot(normalize(ray), normal);
 
-        occ = toView(fromView(pos + ray)) - pos;
-        float diff = ray.z - occ.z - 1.0;    // -1 avoid self-occlusion
+        occ = toView(fromView(pos + ray));
+        float diff = pos.z + ray.z - occ.z;
 
         amount += weight;
         AO += weight * step(0, diff) * exp2(-diff / occlusion_falloff);
@@ -219,9 +218,9 @@ float4 smartblur(in float2 tex : TEXCOORD0) : COLOR
     for (int i = 0; i < M; i++)
     {
         float2 s_tex = tex + rcpres * taps[i] * rev;
-        float3 s_data = tex2D(s4, s_tex); 
+        float3 s_data = sample0(s4, s_tex); 
         float s_depth = unpack2(s_data.gb);
-        float weight = exp2(-abs(depth - s_depth) * depth_scale / blur_falloff);
+        float weight = exp2(-abs(depth - s_depth) / depth / blur_falloff);
 
         amount += weight;
         total += s_data.r * weight;
@@ -234,18 +233,17 @@ float4 smartblur(in float2 tex : TEXCOORD0) : COLOR
 
 float4 show(float2 tex : TEXCOORD0) : COLOR
 {
-    float4 result = (1.0 - multiplier * sample0(s1, tex).r);
-
+    float4 result = 1 - multiplier * sample0(s1, tex).r;
     result.a = 1;
     return result;
 } 
+
 
 
 float4 combine(float2 tex : TEXCOORD0) : COLOR
 {
     float dist = length(toView(tex));
     float final = multiplier * sample0(s1, tex).r;
-    final = min(final, occlusion_ceiling);
 
 #ifdef USE_EXPFOG
     float fog = (dist - fogstart) / (fogrange - fogstart);
@@ -265,7 +263,9 @@ technique T0 < string MGEinterface="MGE XE 0"; >
     pass { PixelShader = compile ps_3_0 ssao(); }
 #ifdef BLUR
     pass { PixelShader = compile ps_3_0 smartblur(); }
+#ifdef ROTATE
     pass { PixelShader = compile ps_3_0 smartblur(); }
+#endif
 #endif
 
 #ifdef DEBUG

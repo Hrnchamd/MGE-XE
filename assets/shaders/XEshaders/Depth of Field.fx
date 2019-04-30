@@ -51,8 +51,8 @@ sampler s3 = sampler_state { texture = <lastpass>; addressu = mirror; addressv =
 
 
 #ifdef ROTATE
-texture tex1 < string src="noise64.tga"; >;
-sampler s2 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = linear; minfilter = linear; };
+texture tex1 < string src="MGE/noise64.dds"; >;
+sampler s2 = sampler_state { texture = <tex1>; addressu = wrap; addressv = wrap; magfilter = point; minfilter = point; };
 #endif
 
 
