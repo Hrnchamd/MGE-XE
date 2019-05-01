@@ -1,6 +1,6 @@
 
 // XE Shadow.fx
-// MGE XE 0.9
+// MGE XE 0.11
 // Shadow receiver functions (included by XE Main)
 
 #include "XE Shadow Settings.fx"
@@ -74,30 +74,29 @@ struct RenderShadowVertOut
 RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
 {
     RenderShadowVertOut OUT;
-    float4 worldpos;
+    float4 viewpos;
     float4 normal = float4(IN.normal.xyz, 0);
 
     // Skin mesh if required
     if(hasbones)
     {
-        worldpos = skin(IN.pos, IN.blendweights);
+        viewpos = skin(IN.pos, IN.blendweights);
         normal = skin(normal, IN.blendweights);
         normal = normalize(normal);
     }
     else
     {
-        worldpos = mul(IN.pos, vertexblendpalette[0]);
+        viewpos = mul(IN.pos, vertexblendpalette[0]);
         normal = mul(normal, vertexblendpalette[0]);
     }
     
     // Transform and depth bias to mitigate difference between FFP and VS
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
+    OUT.pos = mul(viewpos, proj);
     OUT.pos.z *= 1 - 2e-6;
     OUT.pos.z -= clamp(0.5 / OUT.pos.w, 0, 1e-2);
     
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
-    OUT.light = shadowSunEstimate(saturate(dot(normal.xyz, -SunVec)));
+    OUT.light = shadowSunEstimate(saturate(dot(normal.xyz, -SunVecView)));
 
     // Fog attenuation (shadow darkness and distance fade)
     float fogatt = pow(fogMWScalar(OUT.pos.w), 2);
@@ -107,8 +106,8 @@ RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
         OUT.light *= saturate(4 * fogatt);
     
     // Find position in light space, output light depth
-    OUT.shadow0pos = mul(worldpos, shadowviewproj[0]);
-    OUT.shadow1pos = mul(worldpos, shadowviewproj[1]);
+    OUT.shadow0pos = mul(viewpos, shadowviewproj[0]);
+    OUT.shadow1pos = mul(viewpos, shadowviewproj[1]);
     OUT.shadow0pos.z = OUT.shadow0pos.z / OUT.shadow0pos.w;
     OUT.shadow1pos.z = OUT.shadow1pos.z / OUT.shadow1pos.w;
 

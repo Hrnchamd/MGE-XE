@@ -1,6 +1,6 @@
 
 // XE Water.fx
-// MGE XE 0.9
+// MGE XE 0.11
 // Water functions (included by XE Main)
 
 

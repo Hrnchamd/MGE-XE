@@ -350,8 +350,12 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehEyePos, eyePos, 3);
 
     // Sunlight
+    D3DXVECTOR3 sunVecView;
     RGBVECTOR totalAmb = sunAmb + ambCol;
+    D3DXVec3TransformNormal(&sunVecView, (const D3DXVECTOR3*)&sunVec, view);
+
     effect->SetFloatArray(ehSunVec, sunVec, 3);
+    effect->SetFloatArray(ehSunVecView, sunVecView, 3);
     effect->SetFloatArray(ehSunCol, sunCol, 3);
     effect->SetFloatArray(ehSunAmb, totalAmb, 3);
     effect->SetFloatArray(ehSunPos, sunPos, 3);

@@ -96,6 +96,8 @@ void DistantLand::renderDepthRecorded()
     for(std::vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
     {
         // Set variables in main effect; variables are shared via effect pool
+
+        // Only bind texture for alphas
         if((i->alphaTest || i->blendEnable) && i->texture)
         {
             effect->SetTexture(ehTex0, i->texture);
@@ -109,9 +111,15 @@ void DistantLand::renderDepthRecorded()
             effect->SetFloat(ehAlphaRef, -1.0f);
         }
 
+        // Skin using worldview matrices for numerical accuracy
+        D3DXMATRIX worldView[4];
+        const int count = (i->vertexBlendState <= 3) ? i->vertexBlendState + 1 : 1;
+        for(int n = 0; n != count; ++n)
+            worldView[n] = i->worldTransforms[n] * mwView;
+
         effect->SetBool(ehHasBones, i->vertexBlendState != 0);
         effect->SetInt(ehVertexBlendState, i->vertexBlendState);
-        effect->SetMatrixArray(ehVertexBlendPalette, i->worldTransforms, 4);
+        effect->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
         effectDepth->CommitChanges();
 
         device->SetRenderState(D3DRS_CULLMODE, i->cullMode);

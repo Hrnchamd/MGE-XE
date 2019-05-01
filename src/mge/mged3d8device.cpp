@@ -621,6 +621,7 @@ void captureTransform(D3DTRANSFORMSTATETYPE a, const D3DMATRIX *b)
         case D3DTS_WORLDMATRIX(1): rs.worldTransforms[1] = *b; break;
         case D3DTS_WORLDMATRIX(2): rs.worldTransforms[2] = *b; break;
         case D3DTS_WORLDMATRIX(3): rs.worldTransforms[3] = *b; break;
+        case D3DTS_VIEW: rs.viewTransform = *b; break;
     }
 }
 

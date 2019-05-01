@@ -14,6 +14,7 @@ struct RenderedState
     DWORD zWrite, cullMode;
     DWORD vertexBlendState;
     D3DXMATRIX worldTransforms[4];
+    D3DXMATRIX viewTransform;
     BYTE blendEnable, srcBlend, destBlend;
     BYTE alphaTest, alphaFunc, alphaRef;
     BYTE useLighting, useFog, matSrcDiffuse, matSrcEmissive;
@@ -110,7 +111,8 @@ class FixedFunctionShader
     static ShaderLRU shaderLRU;
     static ID3DXEffect *effectDefaultPurple;
 
-    static D3DXHANDLE ehWorld, ehVertexBlendState, ehVertexBlendPalette;
+    static D3DXHANDLE ehWorld, ehWorldView;
+    static D3DXHANDLE ehVertexBlendState, ehVertexBlendPalette;
     static D3DXHANDLE ehTex0, ehTex1, ehTex2, ehTex3, ehTex4, ehTex5;
     static D3DXHANDLE ehMaterialDiffuse, ehMaterialAmbient, ehMaterialEmissive;
     static D3DXHANDLE ehLightSceneAmbient, ehLightSunDiffuse, ehLightSunDirection;

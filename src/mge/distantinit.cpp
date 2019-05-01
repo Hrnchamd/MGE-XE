@@ -108,6 +108,7 @@ D3DXHANDLE DistantLand::ehFootPos;
 D3DXHANDLE DistantLand::ehSunCol;
 D3DXHANDLE DistantLand::ehSunAmb;
 D3DXHANDLE DistantLand::ehSunVec;
+D3DXHANDLE DistantLand::ehSunVecView;
 D3DXHANDLE DistantLand::ehSunPos;
 D3DXHANDLE DistantLand::ehSunVis;
 D3DXHANDLE DistantLand::ehOutscatter;
@@ -303,10 +304,10 @@ bool DistantLand::initShader()
 
     ehRcpRes = effect->GetParameterByName(0, "rcpres");
     ehShadowRcpRes = effect->GetParameterByName(0, "shadowRcpRes");
+    ehWorld = effect->GetParameterByName(0, "world");
     ehView = effect->GetParameterByName(0, "view");
     ehProj = effect->GetParameterByName(0, "proj");
     ehShadowViewproj = effect->GetParameterByName(0, "shadowviewproj");
-    ehWorld = effect->GetParameterByName(0, "world");
     ehVertexBlendState = effect->GetParameterByName(0, "vertexblendstate");
     ehVertexBlendPalette = effect->GetParameterByName(0, "vertexblendpalette");
     ehAlphaRef = effect->GetParameterByName(0, "alpharef");
@@ -321,6 +322,7 @@ bool DistantLand::initShader()
     ehSunCol = effect->GetParameterByName(0, "SunCol");
     ehSunAmb = effect->GetParameterByName(0, "SunAmb");
     ehSunVec = effect->GetParameterByName(0, "SunVec");
+    ehSunVecView = effect->GetParameterByName(0, "SunVecView");
     ehSunPos = effect->GetParameterByName(0, "SunPos");
     ehSunVis = effect->GetParameterByName(0, "SunVis");
     ehSkyCol = effect->GetParameterByName(0, "SkyCol");

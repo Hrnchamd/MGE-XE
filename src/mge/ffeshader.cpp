@@ -15,7 +15,8 @@ unordered_map<FixedFunctionShader::ShaderKey, ID3DXEffect *, FixedFunctionShader
 FixedFunctionShader::ShaderLRU FixedFunctionShader::shaderLRU;
 ID3DXEffect *FixedFunctionShader::effectDefaultPurple;
 
-D3DXHANDLE FixedFunctionShader::ehWorld, FixedFunctionShader::ehVertexBlendState, FixedFunctionShader::ehVertexBlendPalette;
+D3DXHANDLE FixedFunctionShader::ehWorld, FixedFunctionShader::ehWorldView;
+D3DXHANDLE FixedFunctionShader::ehVertexBlendState, FixedFunctionShader::ehVertexBlendPalette;
 D3DXHANDLE FixedFunctionShader::ehTex0, FixedFunctionShader::ehTex1, FixedFunctionShader::ehTex2, FixedFunctionShader::ehTex3, FixedFunctionShader::ehTex4, FixedFunctionShader::ehTex5;
 D3DXHANDLE FixedFunctionShader::ehMaterialDiffuse, FixedFunctionShader::ehMaterialAmbient, FixedFunctionShader::ehMaterialEmissive;
 D3DXHANDLE FixedFunctionShader::ehLightSceneAmbient, FixedFunctionShader::ehLightSunDiffuse, FixedFunctionShader::ehLightDiffuse;
@@ -61,6 +62,7 @@ bool FixedFunctionShader::init(IDirect3DDevice *d, ID3DXEffectPool *pool)
     ehTex4 = effect->GetParameterByName(0, "tex4");
     ehTex5 = effect->GetParameterByName(0, "tex5");
 
+    ehWorldView = effect->GetParameterByName(0, "worldview");
     ehMaterialDiffuse = effect->GetParameterByName(0, "materialDiffuse");
     ehMaterialAmbient = effect->GetParameterByName(0, "materialAmbient");
     ehMaterialEmissive = effect->GetParameterByName(0, "materialEmissive");
@@ -148,10 +150,12 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         {
             memcpy(&bufferDiffuse[pointLightCount], &light->diffuse, sizeof(light->diffuse));
 
-            // Scatter position vectors for vectorization
-            bufferPosition[pointLightCount] = light->position.x;
-            bufferPosition[pointLightCount + MaxLights] = light->position.y;
-            bufferPosition[pointLightCount + 2*MaxLights] = light->position.z;
+            // Transform to view space and scatter position vectors for vectorization
+            D3DXVECTOR3 lightViewPos;
+            D3DXVec3TransformCoord(&lightViewPos, (D3DXVECTOR3*)&light->position, &rs->viewTransform);
+            bufferPosition[pointLightCount] = lightViewPos.x;
+            bufferPosition[pointLightCount + MaxLights] = lightViewPos.y;
+            bufferPosition[pointLightCount + 2*MaxLights] = lightViewPos.z;
 
             // Scatter attenuation factors for vectorization
             if(light->falloff.x > 0)
@@ -201,7 +205,10 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         }
         else if(light->type == D3DLIGHT_DIRECTIONAL)
         {
-            effectFFE->SetFloatArray(ehLightSunDirection, (const float *)&light->position, 3);
+            D3DXVECTOR3 sunViewDirection;
+            D3DXVec3TransformNormal(&sunViewDirection, (D3DXVECTOR3*)&light->position, &rs->viewTransform);
+            effectFFE->SetFloatArray(ehLightSunDirection, sunViewDirection, 3);
+
             sunDiffuse = light->diffuse;
             ambient.r += light->ambient.x;
             ambient.g += light->ambient.y;
@@ -263,9 +270,19 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     // Set common state and render
     effectFFE->SetInt(ehVertexBlendState, rs->vertexBlendState);
     if(rs->vertexBlendState)
-        effectFFE->SetMatrixArray(ehVertexBlendPalette, rs->worldTransforms, 4);
+    {
+        D3DXMATRIX worldView[4];
+        for(n = 0; n != 4; ++n)
+            worldView[n] = rs->worldTransforms[n] * rs->viewTransform;
+
+        effectFFE->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
+    }
     else
+    {
+        D3DXMATRIX worldView = rs->worldTransforms[0] * rs->viewTransform;
         effectFFE->SetMatrix(ehWorld, &rs->worldTransforms[0]);
+        effectFFE->SetMatrix(ehWorldView, &worldView);
+    }
 
     UINT passes;
     effectFFE->Begin(&passes, D3DXFX_DONOTSAVESTATE);
@@ -351,9 +368,9 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
     buf.str(string());
 
     if(sk.usesSkinning)
-        buf << "worldpos = skinnedVertex(IN.pos, IN.blendweights); normal = skinnedNormal(IN.nrm, IN.blendweights);";
+        buf << "viewpos = skinnedVertex(IN.pos, IN.blendweights); normal = skinnedNormal(IN.nrm, IN.blendweights);";
     else
-        buf << "worldpos = rigidVertex(IN.pos); normal = rigidNormal(IN.nrm);";
+        buf << "viewpos = rigidVertex(IN.pos); normal = rigidNormal(IN.nrm);";
 
     genTransform = buf.str();
 
@@ -377,10 +394,10 @@ ID3DXEffect * FixedFunctionShader::generateMWShader(const ShaderKey& sk)
             buf << "texgenNormal(normal); ";
             break;
         case D3DTSS_TCI_CAMERASPACEPOSITION >> 16:
-            buf << "texgenPosition(worldpos); ";
+            buf << "texgenPosition(viewpos); ";
             break;
         case D3DTSS_TCI_CAMERASPACEREFLECTIONVECTOR >> 16:
-            buf << "texgenReflection(worldpos, normal); ";
+            buf << "texgenReflection(viewpos, normal); ";
             break;
         case D3DTSS_TCI_SPHEREMAP >> 16:
             buf << "texgenSphere(" << texRouting[texGenSrcIndex] << "); ";

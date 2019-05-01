@@ -162,14 +162,23 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *i
 // renderShadow - Renders shadows (using blending) over Morrowind shadow receivers
 void DistantLand::renderShadow()
 {
-    effect->SetMatrixArray(ehShadowViewproj, smViewproj, 2);
+    // Supply view space -> shadow clip space matrix
+    D3DXMATRIX inverseView, viewToShadow[2];
+    D3DXMatrixInverse(&inverseView, NULL, &mwView);
+    viewToShadow[0] = inverseView * smViewproj[0];
+    viewToShadow[1] = inverseView * smViewproj[1];
+    effect->SetMatrixArray(ehShadowViewproj, viewToShadow, 2);
+
+    // Bind filtered ESM
     effect->SetTexture(ehTex3, texSoftShadow);
 
     for(std::vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
     {
+        // Additive alphas do not receive shadows
         if(i->blendEnable && i->destBlend == D3DBLEND_ONE)
             continue;
 
+        // Only bind texture for alphas
         if((i->alphaTest || i->blendEnable) && i->texture)
         {
             effect->SetTexture(ehTex0, i->texture);
@@ -183,9 +192,15 @@ void DistantLand::renderShadow()
             effect->SetFloat(ehAlphaRef, -1.0f);
         }
 
+        // Skin using worldview matrices for numerical accuracy
+        D3DXMATRIX worldView[4];
+        const int count = (i->vertexBlendState <= 3) ? i->vertexBlendState + 1 : 1;
+        for(int n = 0; n != count; ++n)
+            worldView[n] = i->worldTransforms[n] * mwView;
+
         effect->SetBool(ehHasBones, i->vertexBlendState != 0);
         effect->SetInt(ehVertexBlendState, i->vertexBlendState);
-        effect->SetMatrixArray(ehVertexBlendPalette, i->worldTransforms, 4);
+        effect->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
         effect->CommitChanges();
 
         // Ignore two-sided poly (cull none) mode, shadow casters are drawn with CW culling only,

@@ -1,6 +1,6 @@
 
 // XE Depth.fx
-// MGE XE 0.9
+// MGE XE 0.11
 // Depth buffer render sequence
 
 #include "XE Common.fx"
@@ -33,17 +33,16 @@ struct DepthVertOut
 DepthVertOut DepthMWVS (in MorrowindVertIn IN)
 {
     DepthVertOut OUT;
-    float4 worldpos;
+    float4 viewpos;
 
     // Skin mesh if required
     if(hasbones)
-        worldpos = skin(IN.pos, IN.blendweights);
+        viewpos = skin(IN.pos, IN.blendweights);
     else
-        worldpos = mul(IN.pos, vertexblendpalette[0]);
+        viewpos = mul(IN.pos, vertexblendpalette[0]);
     
-    // Transform to world space
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
+    // Transform and output depth
+    OUT.pos = mul(viewpos, proj);
     OUT.depth = OUT.pos.w;
     OUT.texcoords = IN.texcoords;
 

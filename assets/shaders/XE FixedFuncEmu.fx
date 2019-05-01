@@ -1,11 +1,12 @@
 
 // XE FixedFuncEmu.fx
-// MGE XE 0.9
+// MGE XE 0.11
 // Replacement shaders for Morrowind's object rendering
 
 #include "XE Common.fx"
 
 shared texture tex4, tex5;
+shared matrix worldview;
 shared float4 materialDiffuse, materialAmbient, materialEmissive;
 shared float3 lightSceneAmbient, lightSunDiffuse, lightDiffuse[8];
 shared float4 lightAmbient[2];
@@ -29,8 +30,8 @@ sampler sampFFE5 = sampler_state { texture = <tex5>; };
 #ifdef VERIFY
 #define FFE_VB_COUPLING float2 texcoord0 : TEXCOORD0; float4 col : COLOR;
 #define FFE_SHADER_COUPLING float4 texcoord01 : TEXCOORD0; float4 col : COLOR;
-#define FFE_TRANSFORM_SKIN worldpos = rigidVertex(IN.pos); normal = rigidNormal(IN.nrm);
-#define FFE_TEXCOORDS_TEXGEN float3 texgen = texgenReflection(worldpos, normal); texgen = mul(float4(texgen, 1), texgenTransform).xyz; OUT.texcoord01 = float4(IN.texcoord0, texgen.xy);
+#define FFE_TRANSFORM_SKIN viewpos = rigidVertex(IN.pos); normal = rigidNormal(IN.nrm);
+#define FFE_TEXCOORDS_TEXGEN float3 texgen = texgenReflection(viewpos, normal); texgen = mul(float4(texgen, 1), texgenTransform).xyz; OUT.texcoord01 = float4(IN.texcoord0, texgen.xy);
 #define FFE_VERTEX_COLOUR OUT.col = IN.col;
 #define FFE_LIGHTS_ACTIVE 8
 #define FFE_VERTEX_MATERIAL diffuse = vertexMaterialDiffAmb(d, a, IN.col);
@@ -41,7 +42,7 @@ sampler sampFFE5 = sampler_state { texture = <tex5>; };
 #ifdef FFE_ERROR_MATERIAL
 #define FFE_VB_COUPLING
 #define FFE_SHADER_COUPLING
-#define FFE_TRANSFORM_SKIN worldpos = rigidVertex(IN.pos); normal = float3(0, 0, 1);
+#define FFE_TRANSFORM_SKIN viewpos = rigidVertex(IN.pos); normal = float3(0, 0, 1);
 #define FFE_TEXCOORDS_TEXGEN
 #define FFE_VERTEX_COLOUR
 #define FFE_LIGHTS_ACTIVE 0
@@ -54,17 +55,17 @@ sampler sampFFE5 = sampler_state { texture = <tex5>; };
 //------------------------------------------------------------
 // Transform library functions
 
-// Vertex transforms, note that scaled normals are normalized in the pixel shader
-float4 rigidVertex(float4 pos) { return mul(pos, world); }
-float3 rigidNormal(float3 normal) { return mul(float4(normal, 0), world).xyz; }
+// Vertex transform to view space, note that scaled normals are normalized in the pixel shader
+float4 rigidVertex(float4 pos) { return mul(pos, worldview); }
+float3 rigidNormal(float3 normal) { return mul(float4(normal, 0), worldview).xyz; }
 
 float4 skinnedVertex(float4 pos, float4 weights) { return skin(pos, weights); }
 float3 skinnedNormal(float3 normal, float4 weights) { return skin(float4(normal, 0), weights).xyz; }
 
-// Texgens with world space inputs, normals must be normalized due to ubiquitous scaling matrices
-float3 texgenNormal(float3 normal) { return mul(float4(normalize(normal), 0), view).xyz; }
-float3 texgenPosition(float4 pos) { return mul(pos, view).xyz; }
-float3 texgenReflection(float4 pos, float3 normal) { float3 r = reflect(normalize(pos.xyz - EyePos), normalize(normal)); return mul(float4(r, 0), view).xyz; }
+// Texgens with view space inputs, normals must be normalized due to non-uniform scaling matrices
+float3 texgenNormal(float3 normal) { return normalize(normal); }
+float3 texgenPosition(float4 pos) { return pos.xyz; }
+float3 texgenReflection(float4 pos, float3 normal) { return reflect(normalize(pos.xyz), normalize(normal)); }
 float3 texgenSphere(float2 tex) { return float3(0.5 * tex + 0.5, 0); }
 
 //------------------------------------------------------------
@@ -164,13 +165,12 @@ FFEPixel PerPixelVS(FFEVertIn IN)
     FFEPixel OUT;
 
     // Transforms
-    float4 worldpos;
+    float4 viewpos;
     float3 normal;
     /* template */ FFE_TRANSFORM_SKIN
     
-    OUT.pos = mul(worldpos, view);
-    float dist = length(OUT.pos);
-    OUT.pos = mul(OUT.pos, proj);
+    float dist = length(viewpos);
+    OUT.pos = mul(viewpos, proj);
     OUT.nrm_fog = float4(normal, fogMWScalar(dist));
     
     // Texcoord routing and texgen
@@ -182,9 +182,9 @@ FFEPixel PerPixelVS(FFEVertIn IN)
     // Point lighting setup, vectorized
     for(int i = 0; i != LGs; ++i)
     {
-        OUT.lightvec[3*i + 0] = lightPosition[i + 0] - worldpos.x;
-        OUT.lightvec[3*i + 1] = lightPosition[i + 2] - worldpos.y;
-        OUT.lightvec[3*i + 2] = lightPosition[i + 4] - worldpos.z;
+        OUT.lightvec[3*i + 0] = lightPosition[i + 0] - viewpos.x;
+        OUT.lightvec[3*i + 1] = lightPosition[i + 2] - viewpos.y;
+        OUT.lightvec[3*i + 2] = lightPosition[i + 4] - viewpos.z;
     }
     
     return OUT;

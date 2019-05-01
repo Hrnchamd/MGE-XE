@@ -1,6 +1,6 @@
 
 // XE Common.fx
-// MGE XE 0.9
+// MGE XE 0.11
 // Shared structures and functions
 
 
@@ -10,7 +10,7 @@
 
 shared float2 rcpres;
 shared float shadowRcpRes;
-shared matrix view, proj, world;
+shared matrix world, view, proj;
 shared matrix vertexblendpalette[4];
 shared matrix shadowviewproj[2];
 shared bool hasalpha, hasbones;
@@ -18,7 +18,7 @@ shared float alpharef;
 shared int vertexblendstate;
 
 shared float3 EyePos, FootPos;
-shared float3 SunVec, SunCol, SunAmb;
+shared float3 SunVec, SunVecView, SunCol, SunAmb;
 shared float3 SkyCol, FogCol1, FogCol2;
 shared float FogStart, FogRange;
 shared float nearFogStart, nearFogRange;
@@ -264,6 +264,7 @@ float4 instancedMul(float4 pos, float4 m0, float4 m1, float4 m2)
 
 //------------------------------------------------------------
 // Skinning, fixed-function
+// Uses worldview matrices for numerical accuracy
 
 float4 skin(float4 pos, float4 blend)
 {
@@ -274,16 +275,16 @@ float4 skin(float4 pos, float4 blend)
     else if(vertexblendstate == 3)
         blend[3] = 1 - (blend[0] + blend[1] + blend[2]);
 
-    float4 worldpos = mul(pos, vertexblendpalette[0]) * blend[0];
+    float4 viewpos = mul(pos, vertexblendpalette[0]) * blend[0];
 
     if(vertexblendstate >= 1)
-        worldpos += mul(pos, vertexblendpalette[1]) * blend[1];
+        viewpos += mul(pos, vertexblendpalette[1]) * blend[1];
     if(vertexblendstate >= 2)
-        worldpos += mul(pos, vertexblendpalette[2]) * blend[2];
+        viewpos += mul(pos, vertexblendpalette[2]) * blend[2];
     if(vertexblendstate >= 3)
-        worldpos += mul(pos, vertexblendpalette[3]) * blend[3];
+        viewpos += mul(pos, vertexblendpalette[3]) * blend[3];
         
-    return worldpos;
+    return viewpos;
 }
 
 //------------------------------------------------------------
