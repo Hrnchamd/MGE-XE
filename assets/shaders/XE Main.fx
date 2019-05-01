@@ -276,7 +276,7 @@ float4 MGEBlendPS (DeferredOut IN) : COLOR0
         w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, rcpres.y, 0, 0)).r);
     }
     
-    //w = length(w * IN.eye);   // causes some errors with distant land
+    //w *= length(IN.eye);   // causes some errors with distant land
     v = (w - bound) / zone;
     clip(v);
     

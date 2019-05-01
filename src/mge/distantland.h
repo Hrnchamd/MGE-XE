@@ -82,7 +82,7 @@ public:
     static D3DXVECTOR4 eyeVec, eyePos, sunVec, sunPos;
     static float sunVis;
     static RGBVECTOR sunCol, sunAmb, ambCol;
-    static RGBVECTOR nearfogCol, horizonCol;
+    static RGBVECTOR nearFogCol, horizonCol;
     static RGBVECTOR atmOutscatter, atmInscatter;
     static float fogStart, fogEnd;
     static float fogNearStart, fogNearEnd;

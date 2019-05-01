@@ -135,11 +135,10 @@ float fogMWScalar(float dist)
     float3 outscatter, inscatter;
     static const float3 midscatter = 0.5 * (outscatter + inscatter);
 
-    float4 fogColour(float3 dir, float dist)
+    float4 fogColourScatter(float3 dir, float dist, float3 skyColDirectional)
     {
         float fogdist;
         float fog;
-        float3 fFogCol2 = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         
         if(dist < 0)
         {
@@ -149,8 +148,12 @@ float fogMWScalar(float dist)
         else
         {
             fogdist = (dist - FogStart) / (FogRange - FogStart);
-            fog = saturate(exp(-fogdist));
-            fFogCol2 *= 1 - fog;
+            if(dist > nearViewRange)
+                fog = saturate(exp(-fogdist));
+            else
+                fog = fogMWScalar(dist);
+            
+            skyColDirectional *= 1 - fog;
             fogdist = saturate(0.21 * fogdist);
         }
         
@@ -168,32 +171,37 @@ float fogMWScalar(float dist)
             
             float3 colour = 0.125 * mie + newskycol * rayl;
             colour *= att * (1.1*atmdep + 0.5) * sunaltitude_b;
-            colour = lerp(fFogCol2, colour, niceWeather);
+            colour = lerp(skyColDirectional, colour, niceWeather);
 
             return float4(colour, fog);
         }
         else
         {
-            return float4(fFogCol2, fog);
+            return float4(skyColDirectional, fog);
         }
     }
     
+    float4 fogColour(float3 dir, float dist)
+    {
+        return fogColourScatter(dir, dist, FogCol2);
+    }
+
     float4 fogColourSky(float3 dir)
     {
-        return fogColour(dir, -1);
+        float3 skyColDirectional = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
+        return fogColourScatter(dir, -1, skyColDirectional);
     }
 #else
     float4 fogColour(float3 dir, float dist)
     {
-        float3 c = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         float f = fogScalar(dist);
-        return float4((1 - f) * c, f);
+        return float4((1 - f) * FogCol2, f);
     }
     
     float4 fogColourSky(float3 dir)
     {
-        float3 c = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
-        return float4(c, 0);
+        float3 skyColDirectional = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
+        return float4(skyColDirectional, 0);
     }
 #endif
 

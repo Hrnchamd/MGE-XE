@@ -378,7 +378,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloat(ehFogNearStart, fogNearStart);
     effect->SetFloat(ehFogNearRange, fogNearEnd);
     effect->SetFloatArray(ehSkyCol, *skyCol, 3);
-    effect->SetFloatArray(ehFogCol1, nearfogCol, 3);
+    effect->SetFloatArray(ehFogCol1, nearFogCol, 3);
     effect->SetFloatArray(ehFogCol2, horizonCol, 3);
     effect->SetFloat(ehNearViewRange, nearViewRange);
     effect->SetFloat(ehNiceWeather, niceWeather);
@@ -494,11 +494,12 @@ void DistantLand::adjustFog()
             else
             {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
-                // Linear density matched to exp fog at dist = 1280 and dist = viewrange (or fog end if closer)
+                // Linear density matched to exp fog at dist = 1280 and dist = viewrange at viewport corner (or fog end if closer)
                 fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
                 fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
 
-                float farIntercept = std::min(fogEnd, nearViewRange);
+                float longestViewRange = nearViewRange / mwProj._11;
+                float farIntercept = std::min(fogEnd, longestViewRange);
                 float expStart = exp(-(1280.0 - fogNearStart) / (fogNearEnd - fogNearStart));
                 float expEnd = exp(-(farIntercept - fogNearStart) / (fogNearEnd - fogNearStart));
                 fogNearStart = 1280.0 + (farIntercept - 1280.0) * (1 - expStart) / (expEnd - expStart);
@@ -580,11 +581,11 @@ void DistantLand::adjustFog()
         c0 = (1.0f - niceWeather) * c0 + niceWeather * c1;
 
         // Save colour for matching near fog in shaders
-        nearfogCol = c0;
+        nearFogCol = c0;
 
         // Alter Morrowind's fog colour through its scenegraph
         // This way it automatically restores the correct colour if it has to switch fog modes mid-frame
-        DWORD fc = (DWORD)nearfogCol;
+        DWORD fc = (DWORD)nearFogCol;
         mwBridge->setScenegraphFogCol(fc);
 
         // Set device fog colour to propagate change immediately
@@ -593,7 +594,7 @@ void DistantLand::adjustFog()
     else
     {
         // Save current fog colour for matching near fog in shaders
-        nearfogCol = RGBVECTOR(mwBridge->getScenegraphFogCol());
+        nearFogCol = RGBVECTOR(mwBridge->getScenegraphFogCol());
     }
 }
 

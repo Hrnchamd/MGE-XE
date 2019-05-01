@@ -78,7 +78,7 @@ D3DXVECTOR4 DistantLand::eyeVec, DistantLand::eyePos;
 D3DXVECTOR4 DistantLand::sunVec, DistantLand::sunPos;
 float DistantLand::sunVis;
 RGBVECTOR DistantLand::sunCol, DistantLand::sunAmb, DistantLand::ambCol;
-RGBVECTOR DistantLand::nearfogCol, DistantLand::horizonCol;
+RGBVECTOR DistantLand::nearFogCol, DistantLand::horizonCol;
 RGBVECTOR DistantLand::atmOutscatter, DistantLand::atmInscatter;
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;

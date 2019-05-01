@@ -77,7 +77,8 @@ Changelog (newest first)
 0.11.0
 - 4GB patch applied to MGEXEgui.
 - Fixed slow mouse movement and dropped inputs when frame rate was too high (e.g. in small interiors).
-- Distant statics generator handles incorrect NIFs better and most hangs are solved.
+- Fog blending with distant land in fog, rain and storms greatly improved.
+- Distant statics generator handles incorrect NIFs better and most hangs are solved, making generation faster.
 - Distant statics generator displays current processing NIF to help find bad NIFs.
 - Rendering improved to avoid cracks in some modded skinned meshes.
 - Dynamic ripples wave border artifacts fixed. Ripple simulation pauses in menu mode.
@@ -86,10 +87,10 @@ Changelog (newest first)
 - SSAO shaders behave better in fog, and no longer have artifacts on more distant objects.
 - Sunshafts shader now has a more consistent sun disc size and brightness.
 - Distant land generator texture size limit increased to 8192. Only recommended when using mods with added landmass.
+- Multiple component buildings like Vivec cantons will now appear in one piece once in distant land view range, instead of the component parts appearing separately.
 - Changed FPS limiter range limit back to 240.
 - No longer gives a renderer error when using 2x or higher vsync in windowed mode.
 - Distant land and FFE shaders can be live reloaded by toggling distant land, post shaders can be live reloaded by toggling shaders.
-- Multiple component buildings like Vivec cantons will now appear in one piece once in distant land view range, instead of the component parts appearing separately.
 
 0.10.1
 - Updated distant land generator to fix crashes on certain meshes, and to handle NiSwitchNode.
