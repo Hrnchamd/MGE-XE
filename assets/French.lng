@@ -67,7 +67,6 @@ SShotFolderDialog = "Sélectionner le dossier de destination pour les captures d
 
 ;;;;   buttons   ;;;;
 bAbout = "À propos"
-bAutoFOV = "FOV Auto"
 bCalcRefresh = "Détecter les taux de rafraîchissement"
 bSelectResolution = "Choisir la &résolution du jeu"
 bDistantLandWizard = "&Assistant de création des Paysages Distants"
@@ -86,12 +85,13 @@ bResetSettings = "Réinitialiser les paramètres"
 bShaderEd = "Paramétrer les shaders"
 bSShotDirBrowse = "Parcourir"
 bSShotDirClear = "Effacer"
+bViewCaps = "Niveau max d'AA et d'AF"
 
 ;;;;   check boxes   ;;;;
-bViewCaps = "Niveau max d'AA et d'AF"
 cbAltCombat = "Cmds. de combat comme Daggerfall"
 cbAudio = "Désactiver le son"
 cbAutoCrosshair = "Masquage auto du curseur"
+cbAutoFOV = "FOV Auto"
 cbCam3rdPrsn = "Personnaliser la caméra 3e personne"
 cbClearINI = "Effacer les paramètres sauvés"
 cbDisableMGE = "Désactiver MGE dans le jeu"

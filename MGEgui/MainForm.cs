@@ -78,7 +78,7 @@ namespace MGEgui {
             { "AnisoLevel", new string [] { "cmbAnisoLevel", "lAnisoLevel" } },
             { "VWait", new string [] { "cmbVWait", "lVWait" } },
             { "FOV", new string [] { "udFOV", "lFOV" } },
-            { "AutoFOV", new string [] { "bAutoFOV" } },
+            { "AutoFOV", new string [] { "cbAutoFOV" } },
             { "FPSLimit", new string [] { "udFPSLimit", "lFPSLimit" } },
             { "LOD", new string [] { "udLOD", "lLOD" } },
             { "FogMode", new string [] { "cmbFogMode", "lFogMode" } },
@@ -270,11 +270,6 @@ namespace MGEgui {
             {"Range vertex", 2}
         };
 
-        private static Dictionary<string, double> shaderModelDict = new Dictionary<string, double> {
-            {"2.0", 2},
-            {"3.0", 3}
-        };
-
         private static Dictionary<string, double> autoDistDict = new Dictionary<string, double> {
             {"By Draw Distance", 1},
             {"By Above Water Fog End", 2}
@@ -322,15 +317,16 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniVWait = new INIFile.INIVariableDef ("VWait", siniGlobGraph, "VWait", INIFile.INIVariableType.Dictionary, "Immediate", vWaitDict);
         private static INIFile.INIVariableDef iniRefresh = new INIFile.INIVariableDef ("Refresh", siniGlobGraph, "Refresh Rate", INIFile.INIVariableType.Byte, "Default", refreshDict, 0, 240);
         private static INIFile.INIVariableDef iniBorderless = new INIFile.INIVariableDef ("Borderless", siniGlobGraph, "Borderless Window", INIFile.INIBoolType.Text, "True");
-        private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "Off", anisoLevelDict);
-        private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -2, 2, 3);
-        private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef ("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Depth pixel", fogModeDict);
+        private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef ("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "8x", anisoLevelDict);
+        private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef ("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -1, 1, 3);
+        private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef ("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Range vertex", fogModeDict);
         private static INIFile.INIVariableDef iniTransparencyAA = new INIFile.INIVariableDef ("TrAA", siniRendState, "Transparency Antialiasing", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef ("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniMessages = new INIFile.INIVariableDef ("Messages", siniRendState, "MGE Messages", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef ("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
         private static INIFile.INIVariableDef iniHWShader = new INIFile.INIVariableDef ("HWShader", siniRendState, "Hardware Shader", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef ("HDRTime", siniRendState, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
+        private static INIFile.INIVariableDef iniFOVAuto = new INIFile.INIVariableDef ("FOVAuto", siniRendState, "Match FOV To Aspect Ratio", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef ("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
         private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef ("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 0.5, 5, 3);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef ("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
@@ -367,14 +363,13 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniInterEnd = new INIFile.INIVariableDef ("InterEnd", siniDL, "Interior Fog End", INIFile.INIVariableType.Single, "2.0", 0.1, 10, 2);
         private static INIFile.INIVariableDef iniReflLand = new INIFile.INIVariableDef ("ReflLand", siniDL, "Water Reflects Land", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniReflNear = new INIFile.INIVariableDef ("ReflNear", siniDL, "Water Reflects Near Statics", INIFile.INIBoolType.Text, "True");
-        private static INIFile.INIVariableDef iniReflIntr = new INIFile.INIVariableDef ("ReflIntr", siniDL, "Water Reflects Interiors", INIFile.INIBoolType.Text, "False");
+        private static INIFile.INIVariableDef iniReflIntr = new INIFile.INIVariableDef ("ReflIntr", siniDL, "Water Reflects Interiors", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniSkyRefl = new INIFile.INIVariableDef ("SkyRefl", siniDL, "Enable Sky Reflections", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniDynRipples = new INIFile.INIVariableDef ("DynRipples", siniDL, "Dynamic Ripples", INIFile.INIBoolType.Text, "False");
-        private static INIFile.INIVariableDef iniDLShader = new INIFile.INIVariableDef ("DLShader", siniDL, "Shader Model", INIFile.INIVariableType.Dictionary, "3.0", shaderModelDict);
         private static INIFile.INIVariableDef iniReflBlur = new INIFile.INIVariableDef ("ReflBlur", siniDL, "Blur Water Reflections", INIFile.INIBoolType.OnOff, "Off");
-        private static INIFile.INIVariableDef iniExpFog = new INIFile.INIVariableDef ("ExpFog", siniDL, "Use Exponential Fog", INIFile.INIBoolType.YesNo, "No");
+        private static INIFile.INIVariableDef iniExpFog = new INIFile.INIVariableDef ("ExpFog", siniDL, "Use Exponential Fog", INIFile.INIBoolType.YesNo, "Yes");
         private static INIFile.INIVariableDef iniDLExpMul = new INIFile.INIVariableDef ("DLExpMul", siniDL, "Exponential Distance Multiplier", INIFile.INIVariableType.Single, "4.0", 2.5, 5.0, 2);
-        private static INIFile.INIVariableDef iniScattering = new INIFile.INIVariableDef ("Scatter", siniDL, "Use Atmosphere Scattering", INIFile.INIBoolType.YesNo, "No");
+        private static INIFile.INIVariableDef iniScattering = new INIFile.INIVariableDef ("Scatter", siniDL, "Use Atmosphere Scattering", INIFile.INIBoolType.YesNo, "Yes");
         private static INIFile.INIVariableDef iniWaveHght = new INIFile.INIVariableDef ("WaveHght", siniDL, "Water Wave Height", INIFile.INIVariableType.Byte, "50", 0, 250);
         private static INIFile.INIVariableDef iniCaustics = new INIFile.INIVariableDef ("Caustics", siniDL, "Water Caustics Intensity", INIFile.INIVariableType.Byte, "50", 0, 100);
         private static INIFile.INIVariableDef iniShadows = new INIFile.INIVariableDef ("SunShadows", siniDL, "Sun Shadows", INIFile.INIBoolType.OnOff, "On");
@@ -388,7 +383,7 @@ namespace MGEgui {
             iniVersion, iniTipSpeed, iniLanguage, iniAutoLang,
             // Graphics
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
-            iniAnisoLvl, iniLODBias, iniFOV, iniFogMode,
+            iniAnisoLvl, iniLODBias, iniFOVAuto, iniFOV, iniFogMode,
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
             iniUIScale, iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
@@ -403,7 +398,7 @@ namespace MGEgui {
             iniSizeVFar, iniReflLand, iniReflNear, iniReflIntr,
             iniAboveBeg, iniAboveEnd, iniBelowBeg, iniBelowEnd,
             iniInterBeg, iniInterEnd, iniSkyRefl, iniDynRipples,
-            iniDLShader, iniReflBlur, iniExpFog, iniDLExpMul,
+            iniReflBlur, iniExpFog, iniDLExpMul,
             iniScattering, iniWaveHght, iniCaustics,
             iniShadows, iniPixelLighting, iniPixelLightingFlags
         };
@@ -436,6 +431,7 @@ namespace MGEgui {
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue ("AnisoLvl");
             udLOD.Value = (decimal)iniFile.getKeyValue ("LODBias");
             cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue ("FogMode");
+            cbAutoFOV.Checked = (iniFile.getKeyValue ("FOVAuto") == 1);
             udFOV.Value = (decimal)iniFile.getKeyValue ("FOV");
             cbFPSCounter.Checked = (iniFile.getKeyValue ("FPSCount") == 1);
             cbDisplayMessages.Checked = (iniFile.getKeyValue ("Messages") == 1);
@@ -510,6 +506,7 @@ namespace MGEgui {
             iniFile.setKey ("AnisoLvl", cmbAnisoLevel.SelectedIndex);
             iniFile.setKey ("LODBias", (double)udLOD.Value);
             iniFile.setKey ("FogMode", cmbFogMode.SelectedIndex);
+            iniFile.setKey ("FOVAuto", cbAutoFOV.Checked);
             iniFile.setKey ("FOV", (double)udFOV.Value);
             iniFile.setKey ("FPSCount", cbFPSCounter.Checked);
             iniFile.setKey ("Messages", cbDisplayMessages.Checked);
@@ -854,12 +851,13 @@ namespace MGEgui {
                 height = (int)key.GetValue("Screen Height");
             } catch {
                 // If Morrowind hasn't run yet, no keys exist
-                key.SetValue("Screen Width", 640);
-                key.SetValue("Screen Height", 480);
+                Rectangle screen = Screen.FromControl(this).Bounds;
+                width = screen.Width;
+                height = screen.Height;
+                key.SetValue("Screen Width", width);
+                key.SetValue("Screen Height", height);
                 key.SetValue("Refresh Rate", 0);
                 key.SetValue("Fullscreen", new byte[] { (byte)1 });
-                width = 640;
-                height = 480;
             }
             tbResolution.Text = width.ToString() + " x " + height.ToString();
             CalcAspectRatio(width, height);
@@ -915,6 +913,7 @@ namespace MGEgui {
                 }
             }
             ValidateDistances (null, null);
+            UpdateFOV();
         }
 
         private void IgnoreKey (object sender, KeyPressEventArgs e) {
@@ -1000,6 +999,7 @@ namespace MGEgui {
                 tbResolution.Text = p.X.ToString () + " x " + p.Y.ToString ();
                 tbRefreshRate.Text = (refresh == 0) ? "Default" : refresh.ToString();
                 CalcAspectRatio (p.X, p.Y);
+                UpdateFOV();
             }
         }
 
@@ -1265,12 +1265,28 @@ namespace MGEgui {
             udDLFogIStart.Value = 0.0M;
             udDLFogIEnd.Value = 2.0M;
             udDLDistNear.Value = (decimal)(draw_distance * 0.3);
-            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.95);
             udDLDistFar.Value = (decimal)(draw_distance * 0.7);
+            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.95);
             
             // Make sure improper values have not been generated
             loading = false;
             ValidateDistances (sender, e);
+        }
+
+        private void UpdateFOV() {
+            if (cbAutoFOV.Checked) {
+                try {
+                    RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
+    
+                    // Morrowind standard horizontal FOV is 75 degrees at 4:3 aspect ratio
+                    double basefov = 75.0 * Math.PI/180.0;
+                    double aspect = (double)(int)key.GetValue("Screen Width") / (double)(int)key.GetValue("Screen Height");
+                    double x = 2.0 * Math.Atan((aspect / (4.0/3.0)) * Math.Tan(0.5 * basefov));
+    
+                    udFOV.Value = (Decimal)(x * 180.0/Math.PI);
+                }
+                catch {}
+            }
         }
 
         private void bResetSettings_Click (object sender, EventArgs e) {
@@ -1481,17 +1497,10 @@ namespace MGEgui {
             gbCam3rdPrsn.Enabled = cbCam3rdPrsn.Checked;
         }
 
-        private void bAutoFOV_Click(object sender, EventArgs e) {
-            try {
-                RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
-
-                double basefov = 75.0 * Math.PI/180.0;
-                double aspect = (double)(int)key.GetValue("Screen Width") / (double)(int)key.GetValue("Screen Height");
-                double x = 2.0 * Math.Atan((aspect / (4.0/3.0)) * Math.Tan(0.5 * basefov));
-
-                udFOV.Value = (Decimal)(x * 180.0/Math.PI);
+        private void cbAutoFOV_CheckedChanged(object sender, EventArgs e) {
+            if(cbAutoFOV.Checked) {
+                UpdateFOV();
             }
-            catch {}
         }
 
         private void bMWLightingReset_Click(object sender, EventArgs e) {

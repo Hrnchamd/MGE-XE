@@ -64,7 +64,6 @@ SShotFolderDialog = "Выберите папку сохранения игров
 
 ;;;;   buttons   ;;;;
 bAbout = "О программе"
-bAutoFOV = "Авт.FOV"
 bCalcRefresh = "Найти частоту обновления"
 bSelectResolution = "Задать разрешение экрана"
 bDistantLandWizard = "Мастер создания Distant Land"
@@ -83,12 +82,13 @@ bResetSettings = "Сброс настроек"
 bShaderEd = "Редактор шейдеров"
 bSShotDirBrowse = "Выбрать"
 bSShotDirClear = "Сброс"
+bViewCaps = "Возможности видеокарты"
 
 ;;;;   check boxes   ;;;;
-bViewCaps = "Возможности видеокарты"
 cbAltCombat = "управление боем в стиле Daggerfall"
 cbAudio = "Отключить звук"
 cbAutoCrosshair = "Автоскрытие прицела"
+cbAutoFOV = "Авт.FOV"
 cbCam3rdPrsn = "Настройка вида от третьего лица"
 cbClearINI = "Сброс файла настроек"
 cbDisableMGE = "Отключить MGE XE"

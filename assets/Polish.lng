@@ -68,7 +68,6 @@ SShotFolderDialog = "Wybierz folder wyjściowy dla zrzutów ekranu przechwyconyc
 
 ;;;;   buttons   ;;;;
 bAbout = "O programie"
-bAutoFOV = "Auto"
 bCalcRefresh = "Wykryj poprawne wartości odświeżania"
 bSelectResolution = "Wybierz rozdzielczość ekranu"
 bDistantLandWizard = "Kreator odległego terenu"
@@ -87,12 +86,13 @@ bResetSettings = "Resetuj ustawienia"
 bShaderEd = "Ustawienia shaderów"
 bSShotDirBrowse = "Przeglądaj"
 bSShotDirClear = "Wyczyść"
+bViewCaps = "Raportuj maksymalne AA i AF"
 
 ;;;;   check boxes   ;;;;
-bViewCaps = "Raportuj maksymalne AA i AF"
 cbAltCombat = "Sterowanie walki w stylu Daggerfall"
 cbAudio = "Wyłącz dźwięk"
 cbAutoCrosshair = "Autom. ukrywanie celownika"
+cbAutoFOV = "Auto FOV"
 cbCam3rdPrsn = "Dostosuj kamerę 3-osobową"
 cbClearINI = "Wyczyść zapisane ustawienia"
 cbDisableMGE = "Wyłącz MGE w grze"
