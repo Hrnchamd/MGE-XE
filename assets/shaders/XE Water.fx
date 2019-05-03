@@ -218,6 +218,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     // Dull reflection to avoid being too bright relative to sky,
     // except for fading into an inscatter dominated horizon
     reflected *= 1 - 0.16 * saturate(2 * fog.a);
+    reflected = fogApply(reflected, fog);
 
     // Smooth out high frequencies at a distance
     float3 adjustnormal = lerp(float3(0, 0, 0.1), normal, pow(saturate(1.05 * fog.a), 2));
@@ -239,7 +240,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     // Smooth transition at shore line
     result = lerp(result, refracted, shorefactor * fog.a);
     
-    // Note that both refraction and reflection textures were rendered fogged already
+    // Note that both refraction and reflection textures have fog applied already
     
     return float4(result, 1);
 }
