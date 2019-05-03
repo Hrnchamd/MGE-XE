@@ -1198,18 +1198,20 @@ void MWBridge::patchUIConfigure(void (_stdcall *newfunc)())
 
 //-----------------------------------------------------------------------------
 
-// patchFrameTimer - Patches the normal call to timeGetTime to redirect to a new function.
+static int (__cdecl *patchFrameTimerTarget)();
+
+// patchFrameTimer - Patches certain calls to timeGetTime to redirect to a new function.
 void MWBridge::patchFrameTimer(int (__cdecl *newfunc)())
 {
-    DWORD addr = 0x453636;
-    BYTE patch[] = {
-        0xe8, 0xff, 0xff, 0xff, 0xff,       // call newfunc
-        0x90                                // nop
-    };
+    DWORD addrs[] = { 0x403b52, 0x4535fd, 0x453615, 0x453638 };
 
-    VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
-    memcpy((void *)addr, patch, sizeof(patch));
-    write_dword(addr + 1, reinterpret_cast<DWORD>(newfunc) - (addr+5));
+    patchFrameTimerTarget = newfunc;
+
+    for(int i = 0; i != sizeof(addrs)/sizeof(addrs[0]); ++i)
+    {
+        VirtualMemWriteAccessor vw((void*)addrs[i], sizeof(&patchFrameTimerTarget));
+        write_dword(addrs[i], reinterpret_cast<DWORD>(&patchFrameTimerTarget));
+    }
 }
 
 //-----------------------------------------------------------------------------
