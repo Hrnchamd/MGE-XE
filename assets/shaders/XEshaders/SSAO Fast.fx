@@ -14,7 +14,7 @@ int mgeflags = 8;
 //#define DEBUG // Enable debug mode: AO term only.
 
 static const float R = 15.0; // Max ray radius, world units
-static const float multiplier = 2.1; // Overall strength. 1.0 is the correct physical value
+static const float multiplier = 1.8; // Overall strength. 1.0 is the correct physical value
 static const float occlusion_falloff = 20.0; // More means less depth precision, and more strength
 static const float blur_falloff = 0.1; // Blur depth falloff, more means a larger depth range is blurred
 static const float blur_radius = 5.0; // In pixels
@@ -24,7 +24,8 @@ static const float blur_radius = 5.0; // In pixels
 
 float2 rcpres;
 float3 eyepos, eyevec;
-float fogstart, fogrange;
+float3 fogcol;
+float fognearstart, fognearrange;
 float waterlevel;
 float fov;
 
@@ -204,16 +205,9 @@ float4 show(float2 tex : TEXCOORD0) : COLOR
 float4 combine(float2 tex : TEXCOORD0) : COLOR
 {
     float dist = length(toView(tex));
-    float final = multiplier * sample0(s1, tex).r;
-
-#ifdef USE_EXPFOG
-    float fog = (dist - fogstart) / (fogrange - fogstart);
-    fog = saturate(exp(-fog));
-#else
-    float fog = saturate((fogrange - dist) / (fogrange - fogstart));
-#endif
-
-    float3 result = sample0(s0, tex).rgb * (1 - final * pow(fog, 6));
+    float fog = saturate((fognearrange - dist) / (fognearrange - fognearstart));
+    float final = fog * multiplier * sample0(s1, tex).r;
+    float3 result = sample0(s0, tex).rgb * (1 - final) + fogcol * (1-fog) * final;
     return float4(result, 1);
 }
 

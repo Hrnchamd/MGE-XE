@@ -6,7 +6,7 @@
 enum EffectVariableID {
     EV_lastshader, EV_lastpass, EV_depthframe, EV_watertexture,
     EV_eyevec, EV_eyepos, EV_sunvec, EV_suncol, EV_sunamb, EV_sunpos, EV_sunvis, EV_HDR,
-    EV_mview, EV_mproj, EV_fogcol, EV_fogstart, EV_fogrange,
+    EV_mview, EV_mproj, EV_fogcol, EV_fogstart, EV_fogrange, EV_fognearstart, EV_fognearrange,
     EV_rcpres, EV_fov, EV_time, EV_waterlevel, EV_isinterior, EV_isunderwater
 };
 

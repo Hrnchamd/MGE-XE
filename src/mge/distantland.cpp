@@ -689,9 +689,11 @@ void DistantLand::updatePostShader(MGEShader *shader)
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
+    shader->SetFloatArray(EV_fogcol, horizonCol, 3);
     shader->SetFloat(EV_fogstart, fogS);
     shader->SetFloat(EV_fogrange, fogE);
-    shader->SetFloatArray(EV_fogcol, horizonCol, 3);
+    shader->SetFloat(EV_fognearstart, fogNearStart);
+    shader->SetFloat(EV_fognearrange, fogNearEnd);
 
     // Other
     // In cells without water, set very low waterlevel for shaders that clip against water

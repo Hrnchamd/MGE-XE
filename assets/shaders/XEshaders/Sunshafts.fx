@@ -1,4 +1,5 @@
 // Sun shaft rays by phal v0.02a
+// Many tweaks by Hrnchamd for MGE XE 0.11.0
 
 // Compatibility: MGE XE 0, fully working
 int mgeflags = 9;
@@ -16,8 +17,8 @@ int mgeflags = 9;
 #define offscreenrange 0.5       // Maximum offscreen position of sun before rays vanish
 #define sundisc 1                // Draws additional sun disc. 0 disables
 #define sundiscradius 0.025      // Radius of sun disc
-#define sundiscbrightness 1.2    // Brightness of sun disc
-#define sundiscdesaturate 0.4    // Desaturation of sun disc color, negative values for more saturation
+#define sundiscbrightness 1.6    // Brightness of sun disc
+#define sundiscdesaturate 0.5    // Desaturation of sun disc color, negative values for more saturation
 #define sundiscocclude 0.75      // How much the sun disc will 'overwrite' original image
 #define horizonclipping 1        // Prevents the sun disc from being drawn below the horizon. Might cause an FPS hit.
 // end
@@ -38,6 +39,7 @@ float3 sunpos;
 float sunvis;
 float2 rcpres;
 float waterlevel;
+float fogstart;
 float fogrange;
 float fov;
 
@@ -54,11 +56,12 @@ static const float2 sunview = (0.5).xx + sunview_v.xy * texproj;
 static const float2 sunviewhalf = 0.5 * sunview;
 
 static const float light = 1 - pow(1 - sunvis, 2);
+static const float sharpness = lerp(60, 900 + 600 * sundir.z, saturate(fogstart / 480));
 
 static const float strength = raystrength * light * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.x-0.5)) * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.y-0.5));
 static const float oneminuscentervis = 1-centervis;
 
-static const float3 suncoldisc = float3(1, 0.76+0.24*sunpos.z, 0.54+0.46*sunpos.z) * (1 + pow(1 - sunpos.z, 2)) * saturate(suncol/max(suncol.r,max(suncol.g,suncol.b)) * (1-sundiscdesaturate) + float3(sundiscdesaturate,sundiscdesaturate,sundiscdesaturate));
+static const float3 suncoldisc = float3(1, 0.76+0.24*sunpos.z, 0.54+0.46*sunpos.z) * saturate(suncol/max(suncol.r,max(suncol.g,suncol.b)) * (1-sundiscdesaturate) + float3(sundiscdesaturate,sundiscdesaturate,sundiscdesaturate));
 
 static const float aziHorizon = normalize( float2(4*fogrange, waterlevel-eyepos.z) ).y;
 
@@ -182,7 +185,7 @@ float4 combine( float2 Tex : TEXCOORD0 ) : COLOR0
         screendir.y *= raspect;
 
         float occl = light * step(threshold, sample0(s0, Tex).r);
-        occl *= saturate(exp(221 * (sundiscradius - length(screendir))));
+        occl *= saturate(exp2(sharpness * (sundiscradius - length(screendir))));
         
         if(occl > 0.004)
         {

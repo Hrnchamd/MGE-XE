@@ -12,7 +12,7 @@
 const char * effectVariableList[] = {
     "lastshader", "lastpass", "depthframe", "watertexture",
     "eyevec", "eyepos", "sunvec", "suncol", "sunamb", "sunpos", "sunvis", "HDR",
-    "mview", "mproj", "fogcol", "fogstart", "fogrange",
+    "mview", "mproj", "fogcol", "fogstart", "fogrange", "fognearstart", "fognearrange",
     "rcpres", "fov", "time", "waterlevel", "isInterior", "isUnderwater"
 };
 
