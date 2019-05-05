@@ -49,6 +49,7 @@ struct LightState
         D3DLIGHTTYPE type;
         D3DCOLORVALUE diffuse;
         D3DVECTOR position;     // position / normalized direction
+        D3DVECTOR viewspacePos;
         union
         {
             D3DVECTOR falloff;  // constant, linear, quadratic
@@ -58,6 +59,7 @@ struct LightState
 
     D3DCOLORVALUE globalAmbient;
     std::tr1::unordered_map<DWORD, Light> lights;
+    std::tr1::unordered_map<DWORD, bool> lightsTransformed;
     std::vector<DWORD> active;
 };
 
@@ -127,6 +129,6 @@ class FixedFunctionShader
 public:
     static bool init(IDirect3DDevice *d, ID3DXEffectPool *pool);
     static void updateLighting(float sunMult, float ambMult);
-    static void renderMorrowind(const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
+    static void renderMorrowind(const RenderedState *rs, const FragmentState *frs, LightState *lightrs);
     static void release();
 };

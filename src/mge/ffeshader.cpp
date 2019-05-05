@@ -94,7 +94,7 @@ void FixedFunctionShader::updateLighting(float sunMult, float ambMult)
     ambMultiplier = ambMult;
 }
 
-void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const FragmentState *frs, const LightState *lightrs)
+void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const FragmentState *frs, LightState *lightrs)
 {
     ID3DXEffect *effectFFE;
 
@@ -146,16 +146,25 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         DWORD i = lightrs->active[n];
         const LightState::Light *light = &lightrs->lights.find(i)->second;
 
+        // Transform to view space if not transformed this frame
+        if(lightrs->lightsTransformed.find(i) == lightrs->lightsTransformed.end())
+        {
+            if(light->type == D3DLIGHT_DIRECTIONAL)
+                D3DXVec3TransformNormal((D3DXVECTOR3*)&light->viewspacePos, (D3DXVECTOR3*)&light->position, &rs->viewTransform);
+            else
+                D3DXVec3TransformCoord((D3DXVECTOR3*)&light->viewspacePos, (D3DXVECTOR3*)&light->position, &rs->viewTransform);
+
+            lightrs->lightsTransformed[i] = true;
+        }
+
         if(light->type == D3DLIGHT_POINT)
         {
             memcpy(&bufferDiffuse[pointLightCount], &light->diffuse, sizeof(light->diffuse));
 
-            // Transform to view space and scatter position vectors for vectorization
-            D3DXVECTOR3 lightViewPos;
-            D3DXVec3TransformCoord(&lightViewPos, (D3DXVECTOR3*)&light->position, &rs->viewTransform);
-            bufferPosition[pointLightCount] = lightViewPos.x;
-            bufferPosition[pointLightCount + MaxLights] = lightViewPos.y;
-            bufferPosition[pointLightCount + 2*MaxLights] = lightViewPos.z;
+            // Scatter position vectors for vectorization
+            bufferPosition[pointLightCount] = light->viewspacePos.x;
+            bufferPosition[pointLightCount + MaxLights] = light->viewspacePos.y;
+            bufferPosition[pointLightCount + 2*MaxLights] = light->viewspacePos.z;
 
             // Scatter attenuation factors for vectorization
             if(light->falloff.x > 0)
@@ -205,9 +214,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
         }
         else if(light->type == D3DLIGHT_DIRECTIONAL)
         {
-            D3DXVECTOR3 sunViewDirection;
-            D3DXVec3TransformNormal(&sunViewDirection, (D3DXVECTOR3*)&light->position, &rs->viewTransform);
-            effectFFE->SetFloatArray(ehLightSunDirection, sunViewDirection, 3);
+            effectFFE->SetFloatArray(ehLightSunDirection, (const float*)&light->viewspacePos, 3);
 
             sunDiffuse = light->diffuse;
             ambient.r += light->ambient.x;

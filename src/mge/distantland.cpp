@@ -825,7 +825,7 @@ void DistantLand::setSunLight(const D3DLIGHT8 *s)
 // inspectIndexedPrimitive
 // Filters and records DIP calls for later use; returning false should cause the draw call to be skipped
 // Can also replace selected fixed function calls with an augmented shader
-bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, const LightState *lightrs)
+bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, LightState *lightrs)
 {
     DECLARE_MWBRIDGE
 

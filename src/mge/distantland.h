@@ -138,7 +138,7 @@ public:
     static void setSunLight(const D3DLIGHT8 *s);
     static void setScattering(const RGBVECTOR& out, const RGBVECTOR& in);
     static void adjustFog();
-    static bool inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
+    static bool inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, LightState *lightrs);
 
     static void renderSky();
     static void renderStage0();
