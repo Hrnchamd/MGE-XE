@@ -1,40 +1,39 @@
 
 MGE XE 0.11.0
+-------------
+Released 2019-05-06
 
-Released 2019-05-01
-
-Licensed under GPL v2, source available at https://github.com/Hrnchamd/MGE-XE
-
+Source available at https://github.com/Hrnchamd/MGE-XE
+Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
 
 Summary
 -------
 
-A graphics improvement add-on to Morrowind, for longer viewing distances, great sunsets, fine shaders and better lighting. MWSE 2.1 beta is included so that the newest gameplay mods work straight away.
+A graphics improvement add-on to Morrowind, for longer viewing distances, great sunsets, fine shaders and better lighting. Supports MWSE 2.1 beta, included as part of the installer, so that the newest Lua gameplay mods work straight away.
 
 
 Requirements
 ------------
 
 Morrowind GOTY or Bloodmoon fully patched.
-Any graphics card made since 2008 or so.
+Any graphics card made since 2009 or so.
 
 
 Install
 -------
 1. Update to DirectX 9.0c June 2010 at http://www.microsoft.com/download/en/details.aspx?id=35 (This is a required update for all Windows, and won't conflict with DX10+.).
-2. If you've just installed Morrowind, run Morrowind to the title screen once, to generate Morrowind's first time settings.
-3. Install MGE XE by extracting the archive to the Morrowind directory.
-4. Run the new MGEXEgui. Read the instructions page.
-5. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Responsive menu caching" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
-6. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires high quality sky scattering enabled, and MWSE enabled.
+
+2. Run the MGE XE installer, and then configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. For a manual installation, extract the archive files to your Morrowind directory and run MWSE-Update.
+
+3. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Responsive menu caching" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
+
+4. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires high quality sky scattering enabled, and MWSE installed.
 
 
 Upgrading
 ---------
 From a previous MGE XE:
-Extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land.
-
-Morrowind has a different resolution setting per user, which this version tries to be compatible with. If you're running Morrowind as an administrator, you need to set MGEXEgui to run as administrator. If you're running Morrowind normally, run MGEXEgui normally. After you've set that correctly, run MGEXEgui to configure new settings.
+Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land. Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update or stick to the default shaders.
 
 From MGE 3.8:
 You should regenerate distant land with 150 minimum static size. If you were using HUD mods made for standard MGE, you should deselect them from your load order. MGE XE requires its own HUD mods to fix design problems with older mods.
@@ -42,13 +41,13 @@ You should regenerate distant land with 150 minimum static size. If you were usi
 
 Uninstall
 ---------
-Delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
+Uninstall by running uninstall_MGEXE.exe. If you installed manually, delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
 
 
 You might want to know
 ----------------------
 
-MGE XE includes an updated MWSE 2.1 by NullCascade. MWSE mods are therefore supported while you are using MGE XE, the MWSE launcher is not required. MWSE is upgradable by running MWSE-Update in the Morrowind directory.
+MGE XE includes an install option for MWSE 2.1 beta by NullCascade. (https://github.com/MWSE/MWSE/) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
 
 Standard MGE (3.8) shaders and HUD mods are not compatible due to design differences. You will not be able to use them with MGE XE without modification. Incompatible shaders will be detected and will not load.
 
@@ -75,12 +74,15 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 Changelog (newest first)
 ---------
 0.11.0
+- Installer added. Optionally downloads MWSE 2.1. Sets registry so that Morrowind settings will not randomly reset.
 - 4GB patch applied to MGEXEgui.
-- Fixed slow mouse movement and dropped inputs when frame rate was too high (e.g. in small interiors).
+- Fixed engine bug which caused slow mouse movement and dropped inputs when frame rate was too high (e.g. in small interiors).
 - Fog blending with distant land in fog, rain and storms greatly improved.
+- Distant water fogging improved.
 - Distant statics generator handles incorrect NIFs better and most hangs are solved, making generation faster.
 - Distant statics generator displays current processing NIF to help find bad NIFs.
 - Rendering improved to avoid cracks in some modded skinned meshes.
+- Distant water horizon blends well at all view distances.
 - Dynamic ripples wave border artifacts fixed. Ripple simulation pauses in menu mode.
 - Shaders like SSAO/DoF no longer glitch when equipping inventory items in the menu.
 - HDR shader has a slightly wider range of brightness adaptation.
@@ -89,6 +91,7 @@ Changelog (newest first)
 - Distant land generator texture size limit increased to 8192. Only recommended when using mods with added landmass.
 - Multiple component buildings like Vivec cantons will now appear in one piece once in distant land view range, instead of the component parts appearing separately.
 - Changed FPS limiter range limit back to 240.
+- Auto FOV is now a mode toggle, and on by default.
 - No longer gives a renderer error when using 2x or higher vsync in windowed mode.
 - Distant land and FFE shaders can be live reloaded by toggling distant land, post shaders can be live reloaded by toggling shaders.
 
@@ -114,7 +117,7 @@ Changelog (newest first)
 - Shader reloading when shaders are toggled on/off.
 - MGEXEgui DPI awareness improvements.
 - Sun shadow improved stabilization.
-- Fixed sunflare overbrightness with per-pixel lighting.
+- Fixed sunflare over-brightness with per-pixel lighting.
 - UI scaling now works even when MGE is set to disabled.
 - Fixed WINE-specific shader rendering issue.
 - Issue with frame rate meter showing doubled framerate when another shader injector is loaded.
@@ -258,7 +261,7 @@ A working replacement for xSetName which allows you to set the base name of any 
 
 [ref] xSetOwner <string npc_id>
 Returns: <long>
-Sets the current owner of a reference. This function will fail if the reference does not already have extra data, e.g. an existing owner or a script, or if the string is not an NPC ID. Returns 1 if succesful, 0 if failed.
+Sets the current owner of a reference. This function will fail if the reference does not already have extra data, e.g. an existing owner or a script, or if the string is not an NPC ID. Returns 1 if successful, 0 if failed.
 
 MGEUIShow <long index>
 MGEUIHide <long index>
