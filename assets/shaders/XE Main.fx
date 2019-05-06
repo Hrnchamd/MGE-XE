@@ -75,10 +75,6 @@ float4 StaticPS (StatVertOut IN): COLOR0
     result.rgb *= IN.color.rgb;
     result.rgb = fogApply(result.rgb, IN.fog);
     
-    // Transition out alpha tested textures inside view boundary;
-    // range is approximate due to interpolation
-    result.a -= saturate((nearViewRange - range) / 512.0);
-    
     // Alpha to coverage conversion
     result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
     

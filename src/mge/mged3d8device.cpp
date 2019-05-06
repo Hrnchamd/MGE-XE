@@ -307,7 +307,7 @@ HRESULT _stdcall MGEProxyDevice::EndScene()
 
             // Draw water if the Morrowind water plane doesn't appear in view
             // it may be too distant or stencil scene order is non-normative
-            if(!waterDrawn && !isStencilScene)
+            if((Configuration.MGEFlags & USE_DISTANT_LAND) && !waterDrawn && !isStencilScene)
             {
                 DistantLand::renderStageWater();
                 waterDrawn = true;
@@ -470,7 +470,7 @@ HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b
             stage0Complete = true;
         }
 
-        if(isWaterMaterial)
+        if((Configuration.MGEFlags & USE_DISTANT_LAND) && isWaterMaterial)
         {
             // Call distant land instead of drawing water grid
             if(!waterDrawn)

@@ -169,7 +169,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     EyeVec /= dist;
 
     // Define fog
-    float4 fog = fogColour(EyeVec, dist);
+    float4 fog = fogColourWater(EyeVec, dist);
     float3 depthcolor = fogApply(_depthcolor, fog);
     
     // Calculate water normal
@@ -215,10 +215,8 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
 #endif
     float3 reflected = getProjectedReflection(screenpos - float4(2.1 * reffactor.x, -abs(reffactor.y), 0, 0));
 
-    // Dull reflection to avoid being too bright relative to sky,
-    // except for fading into an inscatter dominated horizon
-    reflected *= 1 - 0.16 * saturate(2 * fog.a);
-    reflected = fogApply(reflected, fog);
+    // Fade reflection into an inscatter dominated horizon
+    reflected = lerp(fog.rgb, reflected, fog.a);
 
     // Smooth out high frequencies at a distance
     float3 adjustnormal = lerp(float3(0, 0, 0.1), normal, pow(saturate(1.05 * fog.a), 2));
