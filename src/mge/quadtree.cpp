@@ -118,49 +118,45 @@ void VisibleSet::Render(
     D3DXHANDLE *world_matrix_handle,
     unsigned int vertex_size)
 {
-
     // Iterate through each group of textures in the map
-    deque<const QuadTreeMesh*>::const_iterator mesh = visible_set.begin();
-    deque<const QuadTreeMesh*>::const_iterator meshes_end = visible_set.end();
-
     IDirect3DTexture9 *last_texture = 0;
     IDirect3DVertexBuffer9 *last_buffer = 0;
 
-    for(mesh; mesh != meshes_end; ++mesh)
+    const auto& visible_set_const = visible_set;
+    for(const auto mesh : visible_set_const)
     {
         bool effect_changed = false;
-        const QuadTreeMesh *const m = *mesh;
 
         // Set texture if it has changed
-        if(effect && texture_handle && last_texture != m->tex)
+        if(effect && texture_handle && last_texture != mesh->tex)
         {
-            effectPool->SetTexture(*texture_handle, m->tex);
+            effectPool->SetTexture(*texture_handle, mesh->tex);
             if(hasalpha_handle)
             {
                 // Control if texture access is required
-                effectPool->SetBool(*hasalpha_handle, m->hasalpha);
+                effectPool->SetBool(*hasalpha_handle, mesh->hasalpha);
             }
             else
             {
                 // Alpha test is compatible with transparency supersampling, while clip() isn't
-                device->SetRenderState(D3DRS_ALPHATESTENABLE, m->hasalpha);
+                device->SetRenderState(D3DRS_ALPHATESTENABLE, mesh->hasalpha);
             }
             effect_changed = true;
-            last_texture = m->tex;
+            last_texture = mesh->tex;
         }
 
         // Set buffer if it has changed
-        if(last_buffer != m->vBuffer)
+        if(last_buffer != mesh->vBuffer)
         {
-            device->SetIndices(m->iBuffer);
-            device->SetStreamSource(0, m->vBuffer, 0, vertex_size);
-            last_buffer = m->vBuffer;
+            device->SetIndices(mesh->iBuffer);
+            device->SetStreamSource(0, mesh->vBuffer, 0, vertex_size);
+            last_buffer = mesh->vBuffer;
         }
 
         // Set transform matrix
         if(effect && world_matrix_handle)
         {
-            effectPool->SetMatrix(*world_matrix_handle, &(*mesh)->transform);
+            effectPool->SetMatrix(*world_matrix_handle, &mesh->transform);
             effect_changed = true;
         }
 
@@ -168,7 +164,7 @@ void VisibleSet::Render(
         if(effect_changed)
             effect->CommitChanges();
 
-        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, (*mesh)->verts, 0, (*mesh)->faces);
+        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mesh->verts, 0, mesh->faces);
     }
 }
 

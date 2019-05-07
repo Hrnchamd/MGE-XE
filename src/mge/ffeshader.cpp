@@ -609,10 +609,10 @@ string buildArgString(DWORD arg, const string& mask, const string& sampler)
 
 void FixedFunctionShader::release()
 {
-    for(unordered_map<ShaderKey, ID3DXEffect*>::iterator i = cacheEffects.begin(); i != cacheEffects.end(); ++i)
+    for(auto& i : cacheEffects)
     {
-        if(i->second)
-            i->second->Release();
+        if(i.second)
+            i.second->Release();
     }
 
     shaderLRU.effect = NULL;

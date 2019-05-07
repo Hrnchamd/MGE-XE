@@ -106,13 +106,14 @@ void DistantLand::renderReflectedSky()
     // Sky objects are not correctly positioned at infinity, so correction is required
     const float adjustZ = -2.0 * eyePos.z;
 
-    for(std::vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
+    const auto& recordSky_const = recordSky;
+    for(const auto& i : recordSky_const)
     {
         // Adjust world transform, as skydome objects are positioned relative to the viewer
-        D3DXMATRIX worldTransform = i->worldTransforms[0];
+        D3DXMATRIX worldTransform = i.worldTransforms[0];
         worldTransform._43 += adjustZ;
 
-        if(i->texture == 0)
+        if(i.texture == 0)
         {
             // Inflate sky mesh towards infinity, makes skypos in shader calculate correctly
             D3DXMATRIX scale;
@@ -121,18 +122,18 @@ void DistantLand::renderReflectedSky()
         }
 
         effect->SetMatrix(ehWorld, &worldTransform);
-        effect->SetBool(ehHasAlpha, i->texture != 0);
-        effect->SetBool(ehHasBones, i->texture == 0);
-        effect->SetTexture(ehTex0, i->texture);
+        effect->SetBool(ehHasAlpha, i.texture != 0);
+        effect->SetBool(ehHasBones, i.texture == 0);
+        effect->SetTexture(ehTex0, i.texture);
         effect->CommitChanges();
-        device->SetRenderState(D3DRS_ALPHABLENDENABLE, i->texture ? 1 : 0);
-        device->SetRenderState(D3DRS_SRCBLEND, i->srcBlend);
-        device->SetRenderState(D3DRS_DESTBLEND, i->destBlend);
+        device->SetRenderState(D3DRS_ALPHABLENDENABLE, i.texture ? 1 : 0);
+        device->SetRenderState(D3DRS_SRCBLEND, i.srcBlend);
+        device->SetRenderState(D3DRS_DESTBLEND, i.destBlend);
 
-        device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
-        device->SetIndices(i->ib);
-        device->SetFVF(i->fvf);
-        device->DrawIndexedPrimitive(i->primType, i->baseIndex, i->minIndex, i->vertCount, i->startIndex, i->primCount);
+        device->SetStreamSource(0, i.vb, i.vbOffset, i.vbStride);
+        device->SetIndices(i.ib);
+        device->SetFVF(i.fvf);
+        device->DrawIndexedPrimitive(i.primType, i.baseIndex, i.minIndex, i.vertCount, i.startIndex, i.primCount);
     }
 }
 

@@ -683,10 +683,10 @@ bool DistantLand::initDistantStatics()
     // Remove UsedDistantStatic, DistantStatic, and DistantStaticSubset objects
     UsedDistantStatics.clear();
 
-    for(vector<DistantStatic>::iterator i = DistantStatics.begin(); i != DistantStatics.end(); ++i)
+    for(auto& i : DistantStatics)
     {
-        delete [] i->subsets;
-        i->subsets = 0;
+        delete [] i.subsets;
+        i.subsets = 0;
     }
 
     DistantStatics.clear();
@@ -754,20 +754,20 @@ bool DistantLand::loadDistantStatics()
     ReadFile(h2, file_buffer, file_size, &unused, NULL);
     CloseHandle(h2);
 
-    for(vector<DistantStatic>::iterator i = DistantStatics.begin(); i != DistantStatics.end(); ++i)
+    for(auto& i : DistantStatics)
     {
-        READ_FROM_BUFFER(pos, &i->numSubsets, 4);
-        READ_FROM_BUFFER(pos, &i->sphere.radius, 4);
-        READ_FROM_BUFFER(pos, &i->sphere.center, 12);
-        READ_FROM_BUFFER(pos, &i->type, 1);
+        READ_FROM_BUFFER(pos, &i.numSubsets, 4);
+        READ_FROM_BUFFER(pos, &i.sphere.radius, 4);
+        READ_FROM_BUFFER(pos, &i.sphere.center, 12);
+        READ_FROM_BUFFER(pos, &i.type, 1);
 
-        i->subsets = new DistantSubset[i->numSubsets];
-        i->aabbMin = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
-        i->aabbMax = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+        i.subsets = new DistantSubset[i.numSubsets];
+        i.aabbMin = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
+        i.aabbMax = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-        for(int j = 0; j != i->numSubsets; j++)
+        for(int j = 0; j != i.numSubsets; j++)
         {
-            DistantSubset *subset = &i->subsets[j];
+            DistantSubset *subset = &i.subsets[j];
 
             // Get bounding sphere
             READ_FROM_BUFFER(pos, &subset->sphere.radius, 4);
@@ -782,12 +782,12 @@ bool DistantLand::loadDistantStatics()
             READ_FROM_BUFFER(pos, &subset->faces, 4);
 
             // Update parent AABB
-            i->aabbMin.x = std::min(i->aabbMin.x, subset->aabbMin.x);
-            i->aabbMin.y = std::min(i->aabbMin.y, subset->aabbMin.y);
-            i->aabbMin.z = std::min(i->aabbMin.z, subset->aabbMin.z);
-            i->aabbMax.x = std::max(i->aabbMax.x, subset->aabbMax.x);
-            i->aabbMax.y = std::max(i->aabbMax.y, subset->aabbMax.y);
-            i->aabbMax.z = std::max(i->aabbMax.z, subset->aabbMax.z);
+            i.aabbMin.x = std::min(i.aabbMin.x, subset->aabbMin.x);
+            i.aabbMin.y = std::min(i.aabbMin.y, subset->aabbMin.y);
+            i.aabbMin.z = std::min(i.aabbMin.z, subset->aabbMin.z);
+            i.aabbMax.x = std::max(i.aabbMax.x, subset->aabbMax.x);
+            i.aabbMax.y = std::max(i.aabbMax.y, subset->aabbMax.y);
+            i.aabbMax.z = std::max(i.aabbMax.z, subset->aabbMax.z);
 
             // Load mesh data
             IDirect3DVertexBuffer9 *vb;
@@ -843,7 +843,7 @@ bool DistantLand::loadDistantStatics()
     for(size_t nWorldSpace = 0; true; ++nWorldSpace)
     {
         size_t UsedDistantStaticCount;
-        unordered_map< string, vector<UsedDistantStatic> >::iterator iCell;
+        decltype(UsedDistantStatics)::iterator iCell;
 
         ReadFile(h, &UsedDistantStaticCount, 4, &unused, 0);
         if(nWorldSpace != 0 && UsedDistantStaticCount == 0) break;
@@ -866,8 +866,8 @@ bool DistantLand::loadDistantStatics()
         unsigned char *dataPos = UsedDistantStaticData;
         ReadFile(h, UsedDistantStaticData, UsedDistantStaticCount * 32, &unused, 0);
 
-        vector<UsedDistantStatic> *ThisWorldStatics = &iCell->second;
-        ThisWorldStatics->reserve(UsedDistantStaticCount);
+        vector<UsedDistantStatic>& ThisWorldStatics = iCell->second;
+        ThisWorldStatics.reserve(UsedDistantStaticCount);
 
         for(size_t i = 0; i < UsedDistantStaticCount; ++i)
         {
@@ -895,7 +895,7 @@ bool DistantLand::loadDistantStatics()
             NewUsedStatic.sphere = NewUsedStatic.GetBoundingSphere(stat->sphere);
             NewUsedStatic.box = NewUsedStatic.GetBoundingBox(stat->aabbMin, stat->aabbMax);
 
-            ThisWorldStatics->push_back(NewUsedStatic);
+            ThisWorldStatics.push_back(NewUsedStatic);
         }
 
         delete [] UsedDistantStaticData;
@@ -908,26 +908,24 @@ bool DistantLand::loadDistantStatics()
 
 bool DistantLand::initDistantStaticsBVH()
 {
-    unordered_map<string, WorldSpace>::iterator iWS;
-    for(iWS = mapWorldSpaces.begin(); iWS != mapWorldSpaces.end(); ++iWS)
+    for(auto& iWS : mapWorldSpaces)
     {
-        vector<UsedDistantStatic> *uds = &UsedDistantStatics.find(iWS->first)->second;
-        vector<UsedDistantStatic>::iterator i;
+        vector<UsedDistantStatic>& uds = UsedDistantStatics.find(iWS.first)->second;
 
         // Initialize quadtrees
-        QuadTree *NQTR = iWS->second.NearStatics = new QuadTree();
-        QuadTree *FQTR =iWS->second.FarStatics = new QuadTree();
-        QuadTree *VFQTR = iWS->second.VeryFarStatics = new QuadTree();
-        QuadTree *GQTR = iWS->second.GrassStatics = new QuadTree();
+        QuadTree *NQTR = iWS.second.NearStatics = new QuadTree();
+        QuadTree *FQTR = iWS.second.FarStatics = new QuadTree();
+        QuadTree *VFQTR = iWS.second.VeryFarStatics = new QuadTree();
+        QuadTree *GQTR = iWS.second.GrassStatics = new QuadTree();
 
         // Calclulate optimal initial quadtree size
         D3DXVECTOR2 aabbMax = D3DXVECTOR2(-FLT_MAX, -FLT_MAX);
         D3DXVECTOR2 aabbMin = D3DXVECTOR2(FLT_MAX, FLT_MAX);
 
         // Find xyz bounds
-        for(i = uds->begin(); i != uds->end(); ++i)
+        for(const auto& i : uds)
         {
-            float x = i->pos.x, y = i->pos.y, r = i->sphere.radius;
+            float x = i.pos.x, y = i.pos.y, r = i.sphere.radius;
 
             aabbMax.x = std::max(x + r, aabbMax.x);
             aabbMax.y = std::max(y + r, aabbMax.y);
@@ -943,13 +941,13 @@ bool DistantLand::initDistantStaticsBVH()
         VFQTR->SetBox(box_size, box_center);
         GQTR->SetBox(box_size, box_center);
 
-        for(i = uds->begin(); i != uds->end(); ++i)
+        for(const auto& i : uds)
         {
-            DistantStatic *stat = &DistantStatics[i->staticRef];
+            DistantStatic *stat = &DistantStatics[i.staticRef];
             QuadTree *targetQTR;
 
             // Use transformed radius
-            float radius = i->sphere.radius;
+            float radius = i.sphere.radius;
 
             // Buildings are treated as larger objects, as they are typically
             // smaller component meshes combined to make a single building
@@ -996,11 +994,10 @@ bool DistantLand::initDistantStaticsBVH()
                 // Use model bound so that all building parts have coherent visibility
                 for(int s = 0; s != stat->numSubsets; ++s)
                 {
-                    BoundingSphere sss = i->GetBoundingSphere(stat->subsets[s].sphere);
                     targetQTR->AddMesh(
-                        i->sphere,
-                        i->box,
-                        i->transform,
+                        i.sphere,
+                        i.box,
+                        i.transform,
                         stat->subsets[s].tex,
                         stat->subsets[s].verts,
                         stat->subsets[s].vbuffer,
@@ -1015,9 +1012,9 @@ bool DistantLand::initDistantStaticsBVH()
                 for(int s = 0; s != stat->numSubsets; ++s)
                 {
                     targetQTR->AddMesh(
-                        i->GetBoundingSphere(stat->subsets[s].sphere),
-                        i->GetBoundingBox(stat->subsets[s].aabbMin, stat->subsets[s].aabbMax),
-                        i->transform,
+                        i.GetBoundingSphere(stat->subsets[s].sphere),
+                        i.GetBoundingBox(stat->subsets[s].aabbMin, stat->subsets[s].aabbMax),
+                        i.transform,
                         stat->subsets[s].tex,
                         stat->subsets[s].verts,
                         stat->subsets[s].vbuffer,
@@ -1033,7 +1030,7 @@ bool DistantLand::initDistantStaticsBVH()
         VFQTR->Optimize(); VFQTR->CalcVolume();
         GQTR->Optimize(); GQTR->CalcVolume();
 
-        uds->clear();
+        uds.clear();
     }
 
     return true;
@@ -1092,55 +1089,54 @@ bool DistantLand::initLandscape()
     if(!meshesLand.empty())
     {
         D3DXVECTOR2 qtmin(FLT_MAX, FLT_MAX), qtmax(-FLT_MAX, -FLT_MAX);
-        vector<LandMesh>::iterator  i;
         D3DXMATRIX world;
         D3DXMatrixIdentity(&world);
 
         // Load meshes and calculate max size of quadtree
-        for(i = meshesLand.begin(); i != meshesLand.end(); ++i)
+        for(auto& i : meshesLand)
         {
-            ReadFile(file, &i->sphere.radius, 4, &unused,0);
-            ReadFile(file, &i->sphere.center, 12, &unused,0);
+            ReadFile(file, &i.sphere.radius, 4, &unused,0);
+            ReadFile(file, &i.sphere.center, 12, &unused,0);
 
             D3DXVECTOR3 min, max;
             ReadFile(file, &min, 12, &unused, 0);
             ReadFile(file, &max, 12, &unused, 0);
-            i->box.Set(min, max);
+            i.box.Set(min, max);
 
-            ReadFile(file, &i->verts, 4, &unused, 0);
-            ReadFile(file, &i->faces, 4, &unused, 0);
+            ReadFile(file, &i.verts, 4, &unused, 0);
+            ReadFile(file, &i.faces, 4, &unused, 0);
 
-            bool large = (i->verts > 0xFFFF || i->faces > 0xFFFF);
+            bool large = (i.verts > 0xFFFF || i.faces > 0xFFFF);
             IDirect3DVertexBuffer9 *vb;
             IDirect3DIndexBuffer9 *ib;
             void *lockdata;
 
-            device->CreateVertexBuffer(i->verts * SIZEOFLANDVERT, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vb, 0);
+            device->CreateVertexBuffer(i.verts * SIZEOFLANDVERT, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vb, 0);
             vb->Lock(0, 0, &lockdata, 0);
-            ReadFile(file, lockdata, i->verts * SIZEOFLANDVERT, &unused, 0);
+            ReadFile(file, lockdata, i.verts * SIZEOFLANDVERT, &unused, 0);
             vb->Unlock();
 
-            device->CreateIndexBuffer(i->faces * (large ? 12 : 6), D3DUSAGE_WRITEONLY, large ? D3DFMT_INDEX32 : D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, 0);
+            device->CreateIndexBuffer(i.faces * (large ? 12 : 6), D3DUSAGE_WRITEONLY, large ? D3DFMT_INDEX32 : D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, 0);
             ib->Lock(0, 0, &lockdata, 0);
-            ReadFile(file, lockdata, i->faces * (large ? 12 : 6), &unused, 0);
+            ReadFile(file, lockdata, i.faces * (large ? 12 : 6), &unused, 0);
             ib->Unlock();
 
-            i->vbuffer = vb;
-            i->ibuffer = ib;
+            i.vbuffer = vb;
+            i.ibuffer = ib;
 
-            qtmin.x = std::min(qtmin.x, i->sphere.center.x - i->sphere.radius);
-            qtmin.y = std::min(qtmin.y, i->sphere.center.y - i->sphere.radius);
-            qtmax.x = std::max(qtmax.x, i->sphere.center.x + i->sphere.radius);
-            qtmax.y = std::max(qtmax.y, i->sphere.center.y + i->sphere.radius);
+            qtmin.x = std::min(qtmin.x, i.sphere.center.x - i.sphere.radius);
+            qtmin.y = std::min(qtmin.y, i.sphere.center.y - i.sphere.radius);
+            qtmax.x = std::max(qtmax.x, i.sphere.center.x + i.sphere.radius);
+            qtmax.y = std::max(qtmax.y, i.sphere.center.y + i.sphere.radius);
         }
 
         LandQuadTree.SetBox(std::max(qtmax.x - qtmin.x, qtmax.y - qtmin.y), 0.5 * (qtmax + qtmin));
 
         // Add meshes to the quadtree
-        for(i = meshesLand.begin(); i != meshesLand.end(); ++i)
+        for(auto& i : meshesLand)
         {
-            meshCollectionLand.push_back(MeshResources(i->vbuffer, i->ibuffer, 0));
-            LandQuadTree.AddMesh(i->sphere, i->box, world, texWorldColour, i->verts, i->vbuffer, i->faces, i->ibuffer);
+            meshCollectionLand.push_back(MeshResources(i.vbuffer, i.ibuffer, 0));
+            LandQuadTree.AddMesh(i.sphere, i.box, world, texWorldColour, i.verts, i.vbuffer, i.faces, i.ibuffer);
         }
     }
 
@@ -1181,31 +1177,29 @@ void DistantLand::release()
     PostShaders::release();
     FixedFunctionShader::release();
 
-    unordered_map<string, WorldSpace>::iterator iWS;
-    for(iWS = mapWorldSpaces.begin(); iWS != mapWorldSpaces.end(); ++iWS)
+    for(auto& iWS : mapWorldSpaces)
     {
-        WorldSpace *w = &iWS->second;
-        delete w->NearStatics;
-        delete w->FarStatics;
-        delete w->VeryFarStatics;
-        delete w->GrassStatics;
+        WorldSpace& w = iWS.second;
+        delete w.NearStatics;
+        delete w.FarStatics;
+        delete w.VeryFarStatics;
+        delete w.GrassStatics;
     }
     mapWorldSpaces.clear();
 
-    vector<MeshResources>::iterator iM;
-    for(iM = meshCollectionStatics.begin(); iM != meshCollectionStatics.end(); ++iM)
+    for(auto& iM : meshCollectionStatics)
     {
-        iM->vb->Release();
-        iM->ib->Release();
-        iM->tex->Release();
+        iM.vb->Release();
+        iM.ib->Release();
+        iM.tex->Release();
     }
     meshCollectionStatics.clear();
 
     LandQuadTree.Clear();
-    for(iM = meshCollectionLand.begin(); iM != meshCollectionLand.end(); ++iM)
+    for(auto& iM : meshCollectionLand)
     {
-        iM->vb->Release();
-        iM->ib->Release();
+        iM.vb->Release();
+        iM.ib->Release();
         // A shared texture is used for land, and is released below
     }
     meshCollectionLand.clear();

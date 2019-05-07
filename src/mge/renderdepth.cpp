@@ -93,16 +93,17 @@ void DistantLand::renderDepthAdditional()
 void DistantLand::renderDepthRecorded()
 {
     // Recorded renders
-    for(std::vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    const auto& recordMW_const = recordMW;
+    for(const auto& i : recordMW_const)
     {
         // Set variables in main effect; variables are shared via effect pool
 
         // Only bind texture for alphas
-        if((i->alphaTest || i->blendEnable) && i->texture)
+        if((i.alphaTest || i.blendEnable) && i.texture)
         {
-            effect->SetTexture(ehTex0, i->texture);
+            effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
-            effect->SetFloat(ehAlphaRef, i->alphaTest ? (i->alphaRef / 255.0f) : 0.5f);
+            effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : 0.5f);
         }
         else
         {
@@ -113,19 +114,19 @@ void DistantLand::renderDepthRecorded()
 
         // Skin using worldview matrices for numerical accuracy
         D3DXMATRIX worldView[4];
-        const int count = (i->vertexBlendState <= 3) ? i->vertexBlendState + 1 : 1;
+        const int count = (i.vertexBlendState <= 3) ? i.vertexBlendState + 1 : 1;
         for(int n = 0; n != count; ++n)
-            worldView[n] = i->worldTransforms[n] * mwView;
+            worldView[n] = i.worldTransforms[n] * mwView;
 
-        effect->SetBool(ehHasBones, i->vertexBlendState != 0);
-        effect->SetInt(ehVertexBlendState, i->vertexBlendState);
+        effect->SetBool(ehHasBones, i.vertexBlendState != 0);
+        effect->SetInt(ehVertexBlendState, i.vertexBlendState);
         effect->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
         effectDepth->CommitChanges();
 
-        device->SetRenderState(D3DRS_CULLMODE, i->cullMode);
-        device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
-        device->SetIndices(i->ib);
-        device->SetFVF(i->fvf);
-        device->DrawIndexedPrimitive(i->primType, i->baseIndex, i->minIndex, i->vertCount, i->startIndex, i->primCount);
+        device->SetRenderState(D3DRS_CULLMODE, i.cullMode);
+        device->SetStreamSource(0, i.vb, i.vbOffset, i.vbStride);
+        device->SetIndices(i.ib);
+        device->SetFVF(i.fvf);
+        device->DrawIndexedPrimitive(i.primType, i.baseIndex, i.minIndex, i.vertCount, i.startIndex, i.primCount);
     }
 }

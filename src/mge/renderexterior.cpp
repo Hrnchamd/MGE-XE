@@ -11,22 +11,23 @@
 void DistantLand::renderSky()
 {
     // Recorded renders
-    for(std::vector<RenderedState>::const_iterator i = recordSky.begin(); i != recordSky.end(); ++i)
+    const auto& recordSky_const = recordSky;
+    for(const auto& i : recordSky_const)
     {
         // Set variables in main effect; variables are shared via effect pool
-        effect->SetTexture(ehTex0, i->texture);
-        if(i->texture)
+        effect->SetTexture(ehTex0, i.texture);
+        if(i.texture)
         {
             // Textured object; draw as normal in shader,
             // except moon shadow (prevents stars shining through moons) which
             // requires colour to be replaced with atmosphere scattering colour
-            bool isMoonShadow = i->destBlend == D3DBLEND_INVSRCALPHA && !i->useLighting;
+            bool isMoonShadow = i.destBlend == D3DBLEND_INVSRCALPHA && !i.useLighting;
 
             effect->SetBool(ehHasAlpha, true);
             effect->SetBool(ehHasBones, isMoonShadow);
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
-            device->SetRenderState(D3DRS_SRCBLEND, i->srcBlend);
-            device->SetRenderState(D3DRS_DESTBLEND, i->destBlend);
+            device->SetRenderState(D3DRS_SRCBLEND, i.srcBlend);
+            device->SetRenderState(D3DRS_DESTBLEND, i.destBlend);
         }
         else
         {
@@ -36,13 +37,13 @@ void DistantLand::renderSky()
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
         }
 
-        effect->SetMatrix(ehWorld, &i->worldTransforms[0]);
+        effect->SetMatrix(ehWorld, &i.worldTransforms[0]);
         effect->CommitChanges();
 
-        device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
-        device->SetIndices(i->ib);
-        device->SetFVF(i->fvf);
-        device->DrawIndexedPrimitive(i->primType, i->baseIndex, i->minIndex, i->vertCount, i->startIndex, i->primCount);
+        device->SetStreamSource(0, i.vb, i.vbOffset, i.vbStride);
+        device->SetIndices(i.ib);
+        device->SetFVF(i.fvf);
+        device->DrawIndexedPrimitive(i.primType, i.baseIndex, i.minIndex, i.vertCount, i.startIndex, i.primCount);
     }
 }
 

@@ -128,28 +128,28 @@ bool PostShaders::updateShaderChain()
     char path[MAX_PATH];
     bool updated = false;
 
-    for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
+    for(auto& s : shaders)
     {
         WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
         ID3DXEffect *effect;
         ID3DXBuffer *errors;
 
-        std::snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", s->name.c_str());
+        std::snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", s.name.c_str());
         if(!GetFileAttributesEx(path, GetFileExInfoStandard, &fileAttrs))
             continue;
 
-        if(s->timestamp != fileAttrs.ftLastWriteTime.dwLowDateTime)
+        if(s.timestamp != fileAttrs.ftLastWriteTime.dwLowDateTime)
         {
             HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &effect, &errors);
 
             if(hr == D3D_OK)
             {
-                s->effect->Release();
-                s->effect = effect;
-                s->timestamp = fileAttrs.ftLastWriteTime.dwLowDateTime;
+                s.effect->Release();
+                s.effect = effect;
+                s.timestamp = fileAttrs.ftLastWriteTime.dwLowDateTime;
 
-                initShader(&*s);
-                loadShaderDependencies(&*s);
+                initShader(&s);
+                loadShaderDependencies(&s);
                 LOG::logline("-- Post shader %s reloaded", path);
                 updated = true;
             }
@@ -329,8 +329,8 @@ bool PostShaders::initBuffers()
 // release - Cleans up Direct3D resources
 void PostShaders::release()
 {
-    for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
-        s->effect->Release();
+    for(auto& s : shaders)
+        s.effect->Release();
     shaders.clear();
 
     surfaceLastShader->Release();
@@ -430,25 +430,25 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
         evalAdaptHDR(surfaceLastShader, environmentFlags, frameTime);
 
     // Render all those shaders
-    for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
+    for(auto& s : shaders)
     {
-        ID3DXEffect *effect = s->effect;
+        ID3DXEffect *effect = s.effect;
         UINT passes;
 
-        if(!s->enabled)
+        if(!s.enabled)
             continue;
-        if(s->disableFlags & environmentFlags)
+        if(s.disableFlags & environmentFlags)
             continue;
 
-        updateVarsFunc(&*s);
-        s->SetFloatArray(EV_HDR, adaptPoint, 4);
-        s->SetTexture(EV_lastshader, texLastShader);
+        updateVarsFunc(&s);
+        s.SetFloatArray(EV_HDR, adaptPoint, 4);
+        s.SetTexture(EV_lastshader, texLastShader);
         effect->Begin(&passes, 0);
 
         for(UINT p = 0; p != passes; ++p)
         {
             device->SetRenderTarget(0, doublebuffer.sinkSurface());
-            s->SetTexture(EV_lastpass, doublebuffer.sourceTexture());
+            s.SetTexture(EV_lastpass, doublebuffer.sourceTexture());
 
             effect->BeginPass(p);
             device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
@@ -502,13 +502,14 @@ void PostShaders::applyBlend()
 // Scripting interface for shaders
 MGEShader* PostShaders::findShader(const char *shaderName)
 {
-    for(std::vector<MGEShader>::iterator s = shaders.begin(); s != shaders.end(); ++s)
+    for(auto& s : shaders)
     {
-        if(s->name == shaderName)
-            return &*s;
+        if(s.name == shaderName)
+            return &s;
     }
     return 0;
 }
+
 bool PostShaders::setShaderVar(const char *shaderName, const char *varName, int x)
 {
     MGEShader *shader = findShader(shaderName);

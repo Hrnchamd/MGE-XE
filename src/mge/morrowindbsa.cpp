@@ -222,10 +222,11 @@ void BSACacheStats(int *total, int *memuse)
 {
     __int64 texMemUsage = 0;
 
-    for(unordered_map<__int64, IDirect3DTexture9*>::const_iterator i = BSALoadedTextures.begin(); i != BSALoadedTextures.end(); ++i)
+    const auto& BSALoadedTextures_const = BSALoadedTextures;
+    for(const auto& i : BSALoadedTextures_const)
     {
         D3DSURFACE_DESC texdesc;
-        i->second->GetLevelDesc(0, &texdesc);
+        i.second->GetLevelDesc(0, &texdesc);
 
         int bpp = 32;
         if(texdesc.Format == D3DFMT_DXT1) bpp = 4;

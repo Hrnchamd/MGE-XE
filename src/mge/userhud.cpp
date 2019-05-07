@@ -58,9 +58,7 @@ bool MGEhud::init(IDirect3DDevice9 *d)
 
 void MGEhud::draw()
 {
-    std::map<std::string, MGEhud::hud_id>::const_iterator i;
     IDirect3DStateBlock9 *stateSaved;
-
     device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
     D3DXVECTOR4 *vbase;
@@ -68,9 +66,9 @@ void MGEhud::draw()
     if(hr != D3D_OK || vbase == 0)
         return;
 
-    for(i = element_names.begin(); i != element_names.end(); ++i)
+    for(const auto& i : element_names)
     {
-        const Element *e = &elements[i->second];
+        const Element *e = &elements[i.second];
 
         if(e->enabled)
         {
@@ -80,7 +78,7 @@ void MGEhud::draw()
             // Correct for D3D9 pixel offset
             x0 -= 0.5; y0 -= 0.5; x1 -= 0.5; y1 -= 0.5;
 
-            D3DXVECTOR4 *v = vbase + 8 * i->second;
+            D3DXVECTOR4 *v = vbase + 8 * i.second;
             v[0] = D3DXVECTOR4(x0, y1, 0, 1);
             v[1] = D3DXVECTOR4(0, 1, 0, 0);
             v[2] = D3DXVECTOR4(x0, y0, 0, 1);
@@ -99,9 +97,9 @@ void MGEhud::draw()
     device->SetRenderState(D3DRS_CULLMODE, D3DCULL_NONE);
     device->SetRenderState(D3DRS_ZWRITEENABLE, FALSE);
 
-    for(i = element_names.begin(); i != element_names.end(); ++i)
+    for(const auto& i : element_names)
     {
-        const Element *e = &elements[i->second];
+        const Element *e = &elements[i.second];
 
         if(e->enabled)
         {
@@ -112,7 +110,7 @@ void MGEhud::draw()
             effect->SetTexture(ehTex, e->texture);
             effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
             effect->BeginPass(0);
-            device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * i->second, 2);
+            device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 4 * i.second, 2);
             effect->EndPass();
             effect->End();
         }
@@ -128,10 +126,9 @@ void MGEhud::release()
 
     // Only release D3D resources
     // HUD status must be remembered if the device restarts on alt-tab
-    std::map<std::string, MGEhud::hud_id>::const_iterator i;
-    for(i = element_names.begin(); i != element_names.end(); ++i)
+    for(const auto& i : element_names)
     {
-        Element *e = &elements[i->second];
+        Element *e = &elements[i.second];
 
         if(e->texture)
             e->texture->Release();
@@ -161,9 +158,8 @@ int MGEhud::getScreenHeight()
 
 void MGEhud::reset()
 {
-    std::map<std::string, MGEhud::hud_id>::const_iterator i;
-    for(i = element_names.begin(); i != element_names.end(); ++i)
-        MGEhud::free(i->second);
+    for(auto& i : element_names)
+        MGEhud::free(i.second);
 
     element_names.clear();
     elements_free.clear();
@@ -176,10 +172,9 @@ void MGEhud::reload()
 {
     LOG::logline("-- HUD reloading assets");
 
-    std::map<std::string, MGEhud::hud_id>::iterator i;
-    for(i = element_names.begin(); i != element_names.end(); ++i)
+    for(auto& i : element_names)
     {
-        hud_id hud = i->second;
+        hud_id hud = i.second;
         Element *e = &elements[hud];
 
         // Reload assets from source files

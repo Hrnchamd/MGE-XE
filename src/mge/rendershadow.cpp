@@ -172,18 +172,19 @@ void DistantLand::renderShadow()
     // Bind filtered ESM
     effect->SetTexture(ehTex3, texSoftShadow);
 
-    for(std::vector<RenderedState>::const_iterator i = recordMW.begin(); i != recordMW.end(); ++i)
+    const auto& recordMW_const = recordMW;
+    for(const auto& i : recordMW_const)
     {
         // Additive alphas do not receive shadows
-        if(i->blendEnable && i->destBlend == D3DBLEND_ONE)
+        if(i.blendEnable && i.destBlend == D3DBLEND_ONE)
             continue;
 
         // Only bind texture for alphas
-        if((i->alphaTest || i->blendEnable) && i->texture)
+        if((i.alphaTest || i.blendEnable) && i.texture)
         {
-            effect->SetTexture(ehTex0, i->texture);
+            effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
-            effect->SetFloat(ehAlphaRef, i->alphaTest ? (i->alphaRef / 255.0f) : 0.01f);
+            effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : 0.01f);
         }
         else
         {
@@ -194,23 +195,23 @@ void DistantLand::renderShadow()
 
         // Skin using worldview matrices for numerical accuracy
         D3DXMATRIX worldView[4];
-        const int count = (i->vertexBlendState <= 3) ? i->vertexBlendState + 1 : 1;
+        const int count = (i.vertexBlendState <= 3) ? i.vertexBlendState + 1 : 1;
         for(int n = 0; n != count; ++n)
-            worldView[n] = i->worldTransforms[n] * mwView;
+            worldView[n] = i.worldTransforms[n] * mwView;
 
-        effect->SetBool(ehHasBones, i->vertexBlendState != 0);
-        effect->SetInt(ehVertexBlendState, i->vertexBlendState);
+        effect->SetBool(ehHasBones, i.vertexBlendState != 0);
+        effect->SetInt(ehVertexBlendState, i.vertexBlendState);
         effect->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
         effect->CommitChanges();
 
         // Ignore two-sided poly (cull none) mode, shadow casters are drawn with CW culling only,
         // which causes false shadows when cast on the reverse side (wrt normals) of a two-sided poly
-        DWORD cull = (i->cullMode != D3DCULL_NONE) ? i->cullMode : (DWORD)D3DCULL_CW;
+        DWORD cull = (i.cullMode != D3DCULL_NONE) ? i.cullMode : (DWORD)D3DCULL_CW;
         device->SetRenderState(D3DRS_CULLMODE, cull);
-        device->SetStreamSource(0, i->vb, i->vbOffset, i->vbStride);
-        device->SetIndices(i->ib);
-        device->SetFVF(i->fvf);
-        device->DrawIndexedPrimitive(i->primType, i->baseIndex, i->minIndex, i->vertCount, i->startIndex, i->primCount);
+        device->SetStreamSource(0, i.vb, i.vbOffset, i.vbStride);
+        device->SetIndices(i.ib);
+        device->SetFVF(i.fvf);
+        device->DrawIndexedPrimitive(i.primType, i.baseIndex, i.minIndex, i.vertCount, i.startIndex, i.primCount);
     }
 }
 
