@@ -33,7 +33,7 @@ struct Header {
 	 */
 	HeaderString headerString;
 	/*! Unknown. */
-	array<3,LineString > copyright;
+	NiArray<3,LineString > copyright;
 	/*!
 	 * The NIF version, in hexadecimal notation: 0x04000002, 0x0401000C, 0x04020002,
 	 * 0x04020100, 0x04020200, 0x0A000100, 0x0A010000, 0x0A020000, 0x14000004, ...
@@ -112,7 +112,7 @@ struct Header {
 	/*! Block type
 	 * \return A vector containing all the indexes in the block types list that denote the type of each block in the nif
 	 */
-	NIFLIB_API vector<unsigned short> getBlockTypeIndex(); 
+	NIFLIB_API vector<unsigned short> getBlockTypeIndex();
 
 	//--END CUSTOM CODE--//
 };

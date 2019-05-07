@@ -77,13 +77,13 @@ protected:
 	/*! Unknown (illegal link?). */
 	unsigned int unknown5;
 	/*! data. */
-	vector< array<2,float > > points2;
+	vector< NiArray<2,float > > points2;
 	/*! unknown */
 	unsigned int unknown6;
 	/*! data count 2. */
 	mutable unsigned short count2;
 	/*! data count. */
-	vector< array<4,unsigned short > > data2;
+	vector< NiArray<4,unsigned short > > data2;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

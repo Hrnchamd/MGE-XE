@@ -60,7 +60,7 @@ protected:
 	/*! Number of extra bytes. */
 	mutable byte numExtraBytes;
 	/*! Unknown. */
-	array<7,byte > unknownBytes;
+	NiArray<7,byte > unknownBytes;
 	/*! Unknown. */
 	vector<byte > unknownExtraBytes;
 public:

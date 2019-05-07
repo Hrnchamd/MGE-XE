@@ -97,7 +97,7 @@ public:
 	 * \return The NiSkinInstance object used by this geometry node, or NULL if none is used.
 	 */
 	NIFLIB_API Ref<NiSkinInstance> GetSkinInstance() const;
-	
+
 	/*!
 	 * Sets the NiSkinInstance object used by this geometry node.
 	 * \param[in] skin The NiSkinInstance object to be used by this geometry node, or NULL if none is to be used.
@@ -186,13 +186,13 @@ public:
 	 * Returns the array of the only 2 properties that are specific to Bethesda
 	 * \return Returns the array of the 2 properties
 	 */
-   NIFLIB_API array<2,Ref<NiProperty > > GetBSProperties();
+   NIFLIB_API NiArray<2,Ref<NiProperty > > GetBSProperties();
 
    /*
 	 * Sets the array of the only 2 properties that are specific to Bethesda
 	 * \param[in] The new array of properties
 	 */
-   NIFLIB_API void SetBSProperties( array<2, Ref<NiProperty> > value);
+   NIFLIB_API void SetBSProperties( NiArray<2, Ref<NiProperty> > value);
 
 	//--END CUSTOM CODE--//
 protected:
@@ -221,7 +221,7 @@ protected:
 	/*! Dirty Flag? */
 	bool dirtyFlag;
 	/*! Two property links, used by Bethesda. */
-	array<2,Ref<NiProperty > > bsProperties;
+	NiArray<2,Ref<NiProperty > > bsProperties;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

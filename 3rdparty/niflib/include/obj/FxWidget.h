@@ -58,7 +58,7 @@ protected:
 	/*! Unknown. */
 	byte unknown3;
 	/*! Looks like 9 links and some string data. */
-	array<292,byte > unknown292Bytes;
+	NiArray<292,byte > unknown292Bytes;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

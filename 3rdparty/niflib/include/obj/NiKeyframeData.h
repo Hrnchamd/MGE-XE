@@ -241,7 +241,7 @@ protected:
 	/*! Possibly a vestigial time value?  Doesn't appear to be significant. */
 	float unknownFloat;
 	/*! Individual arrays of keys for rotating X, Y, and Z individually. */
-	array<3,KeyGroup<float > > xyzRotations;
+	NiArray<3,KeyGroup<float > > xyzRotations;
 	/*! Translation keys. */
 	KeyGroup<Vector3 > translations;
 	/*! Scale keys. */

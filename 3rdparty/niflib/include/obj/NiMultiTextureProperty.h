@@ -69,7 +69,7 @@ protected:
 	 * Describes the various textures used by this mutli-texture property.  Each slot
 	 * probably has special meaning like thoes in NiTexturingProperty.
 	 */
-	array<5,MultiTextureElement > textureElements;
+	NiArray<5,MultiTextureElement > textureElements;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

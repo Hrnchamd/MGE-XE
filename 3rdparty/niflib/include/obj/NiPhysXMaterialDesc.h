@@ -58,7 +58,7 @@ public:
 	//--END CUSTOM CODE--//
 protected:
 	/*! Unknown */
-	array<12,unsigned int > unknownInt;
+	NiArray<12,unsigned int > unknownInt;
 	/*! Unknown */
 	byte unknownByte1;
 	/*! Unknown */

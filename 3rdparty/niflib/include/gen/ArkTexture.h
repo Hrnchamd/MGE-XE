@@ -36,7 +36,7 @@ struct ArkTexture {
 	/*! Unknown. */
 	Ref<NiTexturingProperty > texturingProperty;
 	/*! Unknown. */
-	array<9,byte > unknownBytes;
+	NiArray<9,byte > unknownBytes;
 	//--BEGIN MISC CUSTOM CODE--//
 	//--END CUSTOM CODE--//
 };

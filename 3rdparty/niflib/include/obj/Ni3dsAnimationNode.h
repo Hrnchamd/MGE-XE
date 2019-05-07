@@ -67,17 +67,17 @@ protected:
 	/*! Unknown. */
 	bool hasData;
 	/*! Unknown. Matrix? */
-	array<21,float > unknownFloats1;
+	NiArray<21,float > unknownFloats1;
 	/*! Unknown. */
 	unsigned short unknownShort;
 	/*! Child? */
 	Ref<NiObject > child;
 	/*! Unknown. */
-	array<12,float > unknownFloats2;
+	NiArray<12,float > unknownFloats2;
 	/*! A count. */
 	mutable unsigned int count;
 	/*! Unknown. */
-	vector< array<5,byte > > unknownArray;
+	vector< NiArray<5,byte > > unknownArray;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

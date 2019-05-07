@@ -129,7 +129,7 @@ protected:
 	/*! Scale. */
 	float scale;
 	/*! Unknown. */
-	array<3,byte > unknownBytes;
+	NiArray<3,byte > unknownBytes;
 	/*! Refers to NiTransformData. */
 	Ref<NiTransformData > data;
 public:

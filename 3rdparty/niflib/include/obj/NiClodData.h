@@ -75,11 +75,11 @@ protected:
 	/*! Unknown. */
 	unsigned short unknownShort;
 	/*! Unknown. */
-	vector< array<6,unsigned short > > unknownClodShorts1;
+	vector< NiArray<6,unsigned short > > unknownClodShorts1;
 	/*! Unknown. */
 	vector<unsigned short > unknownClodShorts2;
 	/*! Unknown. */
-	vector< array<6,unsigned short > > unknownClodShorts3;
+	vector< NiArray<6,unsigned short > > unknownClodShorts3;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

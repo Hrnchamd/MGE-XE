@@ -105,7 +105,7 @@ protected:
 	/*! Unknown */
 	int unknown21;
 	/*! Unknown */
-	array<4,byte > unknown22;
+	NiArray<4,byte > unknown22;
 	/*! Unknown. */
 	int unknown27;
 	/*! Unknown. */

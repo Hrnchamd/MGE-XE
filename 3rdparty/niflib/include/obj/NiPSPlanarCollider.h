@@ -73,7 +73,7 @@ protected:
 	/*! Unknown. */
 	byte unknownByte4;
 	/*! Unknown. */
-	array<8,float > unknownFloats5;
+	NiArray<8,float > unknownFloats5;
 	/*! Unknown. */
 	Ref<NiNode > unknownLink6;
 public:

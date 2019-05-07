@@ -330,7 +330,7 @@ void NiGeometry::BindSkin( vector< Ref<NiNode> >& bone_nodes ) {
 void NiGeometry::BindSkinWith( vector< Ref<NiNode> >& bone_nodes,  NiObject * (*SkinInstConstructor)())
 {
    if (SkinInstConstructor == NULL) {
-      SkinInstConstructor = NiSkinInstance::Create;      
+      SkinInstConstructor = NiSkinInstance::Create;
    }
 
 	//Ensure skin is not aleady bound
@@ -384,7 +384,7 @@ void NiGeometry::ApplySkinOffset() {
 	if ( skinInstance->GetSkinData() == NULL ) {
 		throw runtime_error("Attempted to apply skin transforms on a shape with no skin data.");
 	}
-	
+
 	//Get ancestors
 	list<NiNodeRef> ancestors;
 	ancestors = ListAncestors( this );
@@ -406,7 +406,7 @@ void NiGeometry::ApplySkinOffset() {
 	this->ApplyTransforms();
 
 	//Set the skin overall transform to the identity
-	skinInstance->GetSkinData()->SetOverallTransform( Matrix44::IDENTITY );	
+	skinInstance->GetSkinData()->SetOverallTransform( Matrix44::IDENTITY );
 
 	//Reset skin offsets
 	skinInstance->GetSkinData()->ResetOffsets( this );
@@ -451,7 +451,7 @@ void NiGeometry::GetSkinDeformation( vector<Vector3> & vertices, vector<Vector3>
 	}
 
 	NiSkinInstanceRef skin_inst = GetSkinInstance();
-	
+
 
 	if ( skin_inst == NULL ) {
 		throw runtime_error("This NiGeometry is not influenced by a skin.");
@@ -589,7 +589,7 @@ static void CalcCenteredSphere(const vector<SkinWeight> & n, const vector<Vector
 }
 
 void NiGeometry::SetBoneWeights( unsigned int bone_index, const vector<SkinWeight> & n ) {
-	
+
 	if ( n.size() == 0 ) {
 		throw runtime_error( "You must specify at least one weight value." );
 	}
@@ -649,11 +649,11 @@ void NiGeometry::SetBSProperty(short index, Niflib::Ref<NiProperty> value) {
 	}
 }
 
-array<2,Ref<NiProperty > > Niflib::NiGeometry::GetBSProperties() {
+NiArray<2,Ref<NiProperty > > Niflib::NiGeometry::GetBSProperties() {
 	return this->bsProperties;
 }
 
-void Niflib::NiGeometry::SetBSProperties( array<2, Ref<NiProperty> > value ) {
+void Niflib::NiGeometry::SetBSProperties( NiArray<2, Ref<NiProperty> > value ) {
 	this->bsProperties = value;
 }
 

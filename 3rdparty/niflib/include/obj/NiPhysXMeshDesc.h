@@ -64,13 +64,13 @@ protected:
 	/*! Unknown */
 	short unknownShort2;
 	/*! NXS */
-	array<3,byte > unknownBytes0;
+	NiArray<3,byte > unknownBytes0;
 	/*! Unknown */
 	byte unknownByte1;
 	/*! MESH */
-	array<4,byte > unknownBytes1;
+	NiArray<4,byte > unknownBytes1;
 	/*! Unknown */
-	array<8,byte > unknownBytes2;
+	NiArray<8,byte > unknownBytes2;
 	/*! Unknown */
 	float unknownFloat2;
 	/*! Unknown */
@@ -84,11 +84,11 @@ protected:
 	/*! Vertices */
 	vector<Vector3 > vertices;
 	/*! Unknown */
-	array<982,byte > unknownBytes3;
+	NiArray<982,byte > unknownBytes3;
 	/*! Unknown */
-	array<368,short > unknownShorts1;
+	NiArray<368,short > unknownShorts1;
 	/*! Unknown */
-	array<3328,unsigned int > unknownInts1;
+	NiArray<3328,unsigned int > unknownInts1;
 	/*! Unknown */
 	byte unknownByte2;
 public:

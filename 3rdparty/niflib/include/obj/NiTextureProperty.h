@@ -74,13 +74,13 @@ public:
 	//--END CUSTOM CODE--//
 protected:
 	/*! Property flags. */
-	array<2,unsigned int > unknownInts1;
+	NiArray<2,unsigned int > unknownInts1;
 	/*! Property flags. */
 	unsigned short flags;
 	/*! Link to the texture image. */
 	Ref<NiImage > image;
 	/*! Unknown.  0? */
-	array<2,unsigned int > unknownInts2;
+	NiArray<2,unsigned int > unknownInts2;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

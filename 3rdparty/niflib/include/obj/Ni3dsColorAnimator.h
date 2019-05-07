@@ -58,7 +58,7 @@ public:
 	//--END CUSTOM CODE--//
 protected:
 	/*! Unknown. */
-	array<184,byte > unknown1;
+	NiArray<184,byte > unknown1;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

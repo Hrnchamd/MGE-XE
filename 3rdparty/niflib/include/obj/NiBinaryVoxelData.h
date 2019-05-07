@@ -62,9 +62,9 @@ protected:
 	/*! Unknown. Is this^3 the Unknown Bytes 1 size? */
 	unsigned short unknownShort3;
 	/*! Unknown. */
-	array<7,float > unknown7Floats;
+	NiArray<7,float > unknown7Floats;
 	/*! Unknown. Always a multiple of 7. */
-	array< 7, array<12,byte > > unknownBytes1;
+	NiArray< 7, NiArray<12,byte > > unknownBytes1;
 	/*! Unknown. */
 	mutable unsigned int numUnknownVectors;
 	/*! Vectors on the unit sphere. */
@@ -74,7 +74,7 @@ protected:
 	/*! Unknown. */
 	vector<byte > unknownBytes2;
 	/*! Unknown. */
-	array<5,unsigned int > unknown5Ints;
+	NiArray<5,unsigned int > unknown5Ints;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

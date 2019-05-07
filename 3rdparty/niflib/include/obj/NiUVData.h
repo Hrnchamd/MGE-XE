@@ -62,7 +62,7 @@ protected:
 	 * Four UV data groups. Appear to be U translation, V translation, U
 	 * scaling/tiling, V scaling/tiling.
 	 */
-	array<4,KeyGroup<float > > uvGroups;
+	NiArray<4,KeyGroup<float > > uvGroups;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

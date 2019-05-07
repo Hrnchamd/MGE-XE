@@ -87,22 +87,22 @@ public:
 	 * \return True if this object has an embedded bounding box, false otherwise.
 	 */
 	NIFLIB_API bool HasBoundingBox() const;
-	
-	/*! 
+
+	/*!
 	 * This is a conveniance function that allows you to retrieve the full 4x4 matrix transform of a node.  It accesses the "Rotation," "Translation," and "Scale" attributes and builds a complete 4x4 transformation matrix from them.
 	 * \return A 4x4 transformation matrix built from the node's transform attributes.
 	 * \sa INode::GetWorldTransform
 	 */
 	NIFLIB_API Matrix44 GetLocalTransform() const;
 
-	/*! 
+	/*!
 	 * This is a conveniance function that allows you to set the rotation, scale, and translation of an AV object with a 4x4 matrix transform.
 	 * \n A 4x4 transformation matrix to set the AVObject's transform attributes with.
 	 * \sa INode::GetLocalTransform
 	 */
 	NIFLIB_API void SetLocalTransform( const Matrix44 & n );
 
-	/*! 
+	/*!
 	 * This function will return a transform matrix that represents the location of this node in world space.  In other words, it concatenates all parent transforms up to the root of the scene to give the ultimate combined transform from the origin for this node.
 	 * \return The 4x4 world transform matrix of this node.
 	 * \sa INode::GetLocalTransform
@@ -284,7 +284,7 @@ protected:
 	/*! List of node properties. */
 	vector<Ref<NiProperty > > properties;
 	/*! Always 2,0,2,0. */
-	array<4,unsigned int > unknown1;
+	NiArray<4,unsigned int > unknown1;
 	/*! 0 or 1. */
 	byte unknown2;
 	/*! Do we have a bounding box? */

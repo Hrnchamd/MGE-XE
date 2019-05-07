@@ -28,7 +28,7 @@ struct ExtraMeshDataEpicMickey2 {
 	/*! Unknown. */
 	int end;
 	/*! Unknown. */
-	array<10,short > unknownShorts;
+	NiArray<10,short > unknownShorts;
 	//--BEGIN MISC CUSTOM CODE--//
 
 	//--END CUSTOM CODE--//

@@ -139,7 +139,7 @@ void ComplexShape::SetFaces( const vector< ComplexFace > & n ) {
 
 void ComplexShape::SetPropGroups( const vector< vector< Ref<NiProperty> > > & n ) {
 	propGroups = n;
-} 
+}
 
 void ComplexShape::SetSkinInfluences( const vector< Ref<NiNode> > & n ) {
 	skinInfluences = n;
@@ -254,22 +254,22 @@ void ComplexShape::Merge( NiAVObject * root ) {
 	propGroups.resize( shapes.size() );
 	unsigned int prop_group_index = 0;
 	for ( vector<NiTriBasedGeomRef>::iterator geom = shapes.begin(); geom != shapes.end(); ++geom ) {
-	
+
 		vector<NiPropertyRef> current_property_group =  (*geom)->GetProperties();
 
 		//Special code to handle the Bethesda Skyrim properties
-		array<2, NiPropertyRef> bs_properties = (*geom)->GetBSProperties();
+		NiArray<2, NiPropertyRef> bs_properties = (*geom)->GetBSProperties();
 		if(bs_properties[0] != NULL) {
 			current_property_group.push_back(bs_properties[0]);
 		}
 		if(bs_properties[1] != NULL) {
 			current_property_group.push_back(bs_properties[1]);
 		}
-	
+
 		//Get properties of this shape
 		propGroups[prop_group_index] = current_property_group;
-		
-		
+
+
 		NiTriBasedGeomDataRef geomData = DynamicCast<NiTriBasedGeomData>( (*geom)->GetData() );
 
 		if ( geomData == NULL ) {
@@ -277,7 +277,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 		}
 
 		//Get Data
-		vector<Vector3> shapeVerts;	
+		vector<Vector3> shapeVerts;
 		vector<Vector3> shapeNorms;
 		//If this is a skin influenced mesh, get vertices from niGeom
 		if ( (*geom)->GetSkinInstance() != NULL ) {
@@ -292,7 +292,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 			shapeNorms = geomData->GetNormals();
 		}
 
-		
+
 		vector<Color4> shapeColors = geomData->GetColors();
 		vector< vector<TexCoord> > shapeUVs( geomData->GetUVSetCount() );
 		for ( unsigned int i = 0; i < shapeUVs.size(); ++i ) {
@@ -423,7 +423,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 					if ( niTexingProp->HasTexture(tex) == true ) {
 						TexDesc td;
 						td = niTexingProp->GetTexture(tex);
-						
+
 						uvSets.push_back( pair<TexType, unsigned int>( TexType(tex), td.uvSet ) );
 					}
 				}
@@ -621,10 +621,10 @@ void ComplexShape::Merge( NiAVObject * root ) {
 								break;
 							}
 						}
-						
+
 						if(w - (faces.size() - shapeTris.size()) < shapeTris.size()) {
 							current_body_parts_faces[w - (faces.size() - shapeTris.size())] = y;
-						} 
+						}
 					}
 				}
 
@@ -632,7 +632,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 					int match_index = -1;
 
 					for(unsigned int z = 0; z < dismemberPartitionsBodyParts.size(); z++) {
-						if(dismemberPartitionsBodyParts[z].bodyPart == current_body_parts[y].bodyPart 
+						if(dismemberPartitionsBodyParts[z].bodyPart == current_body_parts[y].bodyPart
 							&& dismemberPartitionsBodyParts[z].partFlag == current_body_parts[y].partFlag) {
 								match_index = z;
 								break;
@@ -642,7 +642,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 					if(match_index < 0) {
 						dismemberPartitionsBodyParts.push_back(current_body_parts[y]);
 						match_index = dismemberPartitionsBodyParts.size() - 1;
-					} 
+					}
 
 					for(unsigned int z = 0; z < current_body_parts_faces.size(); z++) {
 						if(current_body_parts_faces[z] == y) {
@@ -676,7 +676,7 @@ void ComplexShape::Merge( NiAVObject * root ) {
 		skinInfluences[si_index] = si->first;
 		++si_index;
 	}
-	
+
 	//Copy vns data to vertices and normals
 	if ( has_any_verts ) {
 		vertices.resize( vns.size() );
@@ -722,7 +722,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 
 		use_dismember_partitions = true;
 	}
-	
+
 	//There will be one NiTriShape per property group
 	//with a minimum of 1
 	unsigned int num_shapes = (unsigned int)(propGroups.size());
@@ -775,7 +775,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 	for ( unsigned int shape_num = 0; shape_num < shapes.size(); ++shape_num ) {
 
 		NiTriBasedGeomDataRef niData;
-		
+
 		if ( stripify ) {
 			niData = new NiTriStripsData;
 		} else {
@@ -845,7 +845,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 						cv.texCoords[ set.texType ] = set.texCoords[ point->texCoordIndices[i].texCoordIndex ];
 					}
 				}
-				
+
 				bool found_match = false;
 				//Search for an identical vertex in the list
 				for ( unsigned short cv_index = 0; cv_index < compVerts.size(); ++cv_index ) {
@@ -863,7 +863,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 					//put the new vertex into the face point list
 					shapeFacePoints.push_back( (unsigned int)(compVerts.size()) - 1 );
 				}
-				
+
 				//Next Point
 			}
 
@@ -907,7 +907,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 			for(unsigned int x = 0; x < current_dismember_partitions_faces.size(); x++) {
 				if(used_dismember_groups[current_dismember_partitions_faces[x]] == false) {
 					used_dismember_groups[current_dismember_partitions_faces[x]] = true;
-				}	
+				}
 			}
 
 			vector<BodyPartList> cleaned_up_dismember_partitions;
@@ -920,7 +920,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 					}
 				} else {
 					cleaned_up_dismember_partitions.push_back(current_dismember_partitions[x]);
-				} 
+				}
 			}
 			current_dismember_partitions = cleaned_up_dismember_partitions;
 		}
@@ -940,16 +940,16 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 
 			if(shader_property == NULL) {
 				for ( vector<NiPropertyRef>::const_iterator prop = propGroups[shape_num].begin(); prop != propGroups[shape_num].end(); ++prop ) {
-					shapes[shape_num]->AddProperty( *prop );						
+					shapes[shape_num]->AddProperty( *prop );
 				}
 			} else {
 				NiAlphaPropertyRef alpha_property = NULL;
 				for ( vector<NiPropertyRef>::const_iterator prop = propGroups[shape_num].begin(); prop != propGroups[shape_num].end(); ++prop ) {
 					if ((*prop)->GetType().IsSameType(NiAlphaProperty::TYPE)) {
 						alpha_property = DynamicCast<NiAlphaProperty>((*prop));
-					}						
+					}
 				}
-				array<2, NiPropertyRef> bs_properties;
+				NiArray<2, NiPropertyRef> bs_properties;
 				bs_properties[0] = shader_property;
 				bs_properties[1] = alpha_property;
 				shapes[shape_num]->SetBSProperties(bs_properties);
@@ -957,7 +957,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 		}
 
 		//--Set Shape Data--//
-		
+
 		//lists to hold data
 		vector<Vector3> shapeVerts( compVerts.size() );
 		vector<Vector3> shapeNorms( compVerts.size() );
@@ -1055,7 +1055,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 				BSDismemberSkinInstanceRef dismember_skin = DynamicCast<BSDismemberSkinInstance>(shapes[shape_num]->GetSkinInstance());
 				dismember_skin->SetPartitions(current_dismember_partitions);
 			}
-			
+
 
 			for ( unsigned int inf = 0; inf < shapeInfluences.size(); ++inf ) {
 				shapes[shape_num]->SetBoneWeights( inf, shapeWeights[ shapeInfluences[inf] ] );
@@ -1102,7 +1102,7 @@ Ref<NiAVObject> ComplexShape::Split( NiNode * parent, Matrix44 & transform, int 
 				}
 			}
 		}
-		
+
 		//Next Shape
 	}
 

@@ -58,7 +58,7 @@ public:
 	//--END CUSTOM CODE--//
 protected:
 	/*! unknown */
-	array<6,unsigned int > unknown1;
+	NiArray<6,unsigned int > unknown1;
 	/*! unknown */
 	unsigned short unknown2;
 	/*! unknown */
@@ -68,13 +68,13 @@ protected:
 	/*! unknown */
 	Vector3 vector2;
 	/*! unknown */
-	array<4,short > unknown3;
+	NiArray<4,short > unknown3;
 	/*! unknown */
 	byte unknown4;
 	/*! unknown */
 	unsigned int unknown5;
 	/*! unknown */
-	array<24,short > unknown6;
+	NiArray<24,short > unknown6;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

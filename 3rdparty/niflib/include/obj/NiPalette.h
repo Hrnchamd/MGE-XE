@@ -78,7 +78,7 @@ protected:
 	/*! The number of palette entries.  Always = 256. */
 	unsigned int numEntries;
 	/*! The color palette. */
-	array<256,ByteColor4 > palette;
+	NiArray<256,ByteColor4 > palette;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );

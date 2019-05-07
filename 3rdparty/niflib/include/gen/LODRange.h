@@ -28,7 +28,7 @@ struct LODRange {
 	/*! End of Range. */
 	float farExtent;
 	/*! Unknown (0,0,0). */
-	array<3,unsigned int > unknownInts;
+	NiArray<3,unsigned int > unknownInts;
 	//--BEGIN MISC CUSTOM CODE--//
 	//--END CUSTOM CODE--//
 };

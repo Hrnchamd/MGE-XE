@@ -65,7 +65,7 @@ protected:
 	/*! Unknown. */
 	Ref<NiNode > root;
 	/*! Unknown. */
-	array<5,byte > unknownBytes;
+	NiArray<5,byte > unknownBytes;
 public:
 	/*! NIFLIB_HIDDEN function.  For internal use only. */
 	NIFLIB_HIDDEN virtual void Read( istream& in, list<unsigned int> & link_stack, const NifInfo & info );
