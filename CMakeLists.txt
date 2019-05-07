@@ -35,7 +35,7 @@ set_target_properties (d3d8 dinput8 MGEfuncs PROPERTIES INTERPROCEDURAL_OPTIMIZA
 
 if (CMAKE_COMPILER_IS_GNUCXX)
     # Compile options; optimize, strip symbols and kill stdcall decoration
-    set (CMAKE_CXX_FLAGS "-O2 -mstackrealign -ffast-math -fgcse-after-reload -march=pentium4 -Wformat")
+    set (CMAKE_CXX_FLAGS "-std=gnu++11 -O2 -mstackrealign -ffast-math -fgcse-after-reload -march=pentium4 -Wformat")
     set (CMAKE_SHARED_LINKER_FLAGS "-Wl,-s,--kill-at,--enable-stdcall-fixup")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 

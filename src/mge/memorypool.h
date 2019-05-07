@@ -1,11 +1,11 @@
 #ifndef _MEMORY_POOL_H_
 #define _MEMORY_POOL_H_
 
-#include <stddef.h>
+#include <cstddef>
 
 class MemoryPool {
 public:
-    MemoryPool(size_t object_size, size_t objects_per_block);
+    MemoryPool(std::size_t object_size, std::size_t objects_per_block);
     void * Alloc();
     void Flush();
     ~MemoryPool();
@@ -21,9 +21,9 @@ private:
 
     private:
         MemoryPool *owner;
-        size_t next_alloc;
-        size_t obj_count;
-        unsigned char *data;
+        std::size_t next_alloc;
+        std::size_t obj_count;
+        char *data;
     };
 
     void AllocFirstBlock();
@@ -31,9 +31,9 @@ private:
 
     MemoryBlock *first_block;
     MemoryBlock *last_block;
-    size_t obj_size;
-    size_t blk_size;
-    size_t objs_per_block;
+    std::size_t obj_size;
+    std::size_t blk_size;
+    std::size_t objs_per_block;
 };
 
 #endif

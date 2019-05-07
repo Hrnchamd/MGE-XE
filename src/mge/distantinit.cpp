@@ -339,7 +339,7 @@ bool DistantLand::initShader()
 
     D3DVIEWPORT9 vp;
     device->GetViewport(&vp);
-    float rcpres[2] = { 1.0 / vp.Width, 1.0 / vp.Height };
+    float rcpres[2] = { 1.0f / vp.Width, 1.0f / vp.Height };
     effect->SetFloatArray(ehRcpRes, rcpres, 2);
     effect->SetFloat(ehShadowRcpRes, 1.0 / Configuration.DL.ShadowResolution);
 
@@ -462,7 +462,7 @@ bool DistantLand::initWater()
     vbWater->Lock(0, 0, (void**)&v, 0);
 
     // Water plane lies at water level - 1.0 (not -4.0, which is the fog transition)
-    const float dS = (2.0*M_PI) / resS;
+    const float dS = 6.28318530717958647692 / resS;
     int s, t;
     float r, w = -1.0f;
 

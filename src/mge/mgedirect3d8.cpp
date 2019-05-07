@@ -39,7 +39,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
         else
         {
             // Move window to top, with client area centred on one axis
-            RECT rect = { wx, wy, e->BackBufferWidth, e->BackBufferHeight };
+            RECT rect = { wx, wy, int(e->BackBufferWidth), int(e->BackBufferHeight) };
             AdjustWindowRect(&rect, GetWindowLong(hMainWnd, GWL_STYLE), FALSE);
             SetWindowPos(hMainWnd, NULL, rect.left, 0, 0, 0, SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
         }

@@ -1,6 +1,6 @@
 
 #include "memorypool.h"
-#include <assert.h>
+#include <cassert>
 
 //-----------------------------------------------------------------------------
 
@@ -11,7 +11,7 @@ MemoryPool::MemoryBlock::MemoryBlock( MemoryPool* owner_pool ) :
 {
 
     //Allocate the memory block
-    data = new unsigned char[ owner->blk_size ];
+    data = new char[ owner->blk_size ];
     assert( data != 0 );
 }
 
