@@ -1,5 +1,4 @@
-#ifndef _MW_BRIDGE_H_
-#define _MW_BRIDGE_H_
+#pragma once
 
 #include "proxydx/d3d8header.h"
 
@@ -193,6 +192,3 @@ inline bool MWBridge::IsLoaded() {
 }
 
 //-----------------------------------------------------------------------------
-
-
-#endif

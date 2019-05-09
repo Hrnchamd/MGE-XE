@@ -1,3 +1,4 @@
+#pragma once
 
 #include "d3d8interface.h"
 

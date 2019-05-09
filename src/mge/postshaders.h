@@ -1,3 +1,4 @@
+#pragma once
 
 #include "doublesurface.h"
 #include <vector>

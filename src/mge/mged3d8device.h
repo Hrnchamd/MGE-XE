@@ -1,3 +1,4 @@
+#pragma once
 
 #include "proxydx/d3d8device.h"
 

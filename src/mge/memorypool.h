@@ -1,5 +1,4 @@
-#ifndef _MEMORY_POOL_H_
-#define _MEMORY_POOL_H_
+#pragma once
 
 #include <cstddef>
 
@@ -35,5 +34,3 @@ private:
     std::size_t blk_size;
     std::size_t objs_per_block;
 };
-
-#endif

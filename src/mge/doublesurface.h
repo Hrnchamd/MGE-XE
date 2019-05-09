@@ -1,6 +1,4 @@
-
-#ifndef _DOUBLESURFACE_H
-#define _DOUBLESURFACE_H
+#pragma once
 
 #include "proxydx/d3d8header.h"
 #include <algorithm>
@@ -40,5 +38,3 @@ public:
         std::swap(s[i], *ppsurf);
     }
 };
-
-#endif

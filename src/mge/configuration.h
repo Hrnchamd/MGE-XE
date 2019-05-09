@@ -77,6 +77,7 @@
 
 typedef unsigned long DWORD;
 typedef unsigned char BYTE;
+#pragma once
 
 struct ConfigurationStruct
 {

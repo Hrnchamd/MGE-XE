@@ -1,5 +1,6 @@
 #ifndef _DL_MATH_H_
 #define _DL_MATH_H_
+#pragma once
 
 #define D3DXFX_LARGEADDRESS_HANDLE
 

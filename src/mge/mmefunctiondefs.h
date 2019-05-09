@@ -1,3 +1,4 @@
+#pragma once
 
 const size_t MGEINPUT_MAXMACROS = 256 + 10;
 const size_t MGEINPUT_MAXTRIGGERS = 4;

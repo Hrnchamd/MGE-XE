@@ -1,3 +1,4 @@
+#pragma once
 
 void BSAInit();
 IDirect3DTexture9 * BSALoadTexture(IDirect3DDevice9 *dev, const char *filename);

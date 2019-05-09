@@ -1,5 +1,4 @@
-#ifndef _D3D8_HEADER_H_
-#define _D3D8_HEADER_H_
+#pragma once
 
 #ifdef DEBUG
 #define D3D_DEBUG_INFO
@@ -229,5 +228,3 @@ typedef struct _D3DCAPS8 {
     float   MaxPixelShaderValue;        // max value of pixel shader arithmetic component
 
 } D3DCAPS8;
-
-#endif

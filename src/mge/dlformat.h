@@ -1,3 +1,4 @@
+#pragma once
 
 enum StaticType {
     STATIC_AUTO = 0,

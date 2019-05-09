@@ -1,5 +1,6 @@
 
 #include "d3d8interface.h"
+#pragma once
 
 class ProxyD3D : public IDirect3D8
 {

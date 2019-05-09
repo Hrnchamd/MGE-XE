@@ -1,3 +1,4 @@
+#pragma once
 
 #include "proxydx/direct3d8.h"
 

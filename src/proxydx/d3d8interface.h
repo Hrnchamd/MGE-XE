@@ -1,4 +1,3 @@
-
 #pragma once
 
 #include "d3d8header.h"

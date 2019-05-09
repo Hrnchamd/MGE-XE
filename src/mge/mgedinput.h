@@ -1,3 +1,4 @@
+#pragma once
 
 #include "proxydx/directin8.h"
 
