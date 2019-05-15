@@ -469,7 +469,7 @@ public:
         if(hr != DI_OK) return hr;
 
         // Don't run combat input mode when a menu is up
-        DECLARE_MWBRIDGE
+        auto mwBridge = MWBridge::get();
         if(!mwBridge->IsLoaded() || mwBridge->IsMenu())
             return DI_OK;
 
@@ -521,7 +521,7 @@ public:
         if(hr != DI_OK) return hr;
 
         // Don't run combat input mode when a menu is up
-        DECLARE_MWBRIDGE
+        auto mwBridge = MWBridge::get();
         if(!mwBridge->IsLoaded() || mwBridge->IsMenu())
             return DI_OK;
 

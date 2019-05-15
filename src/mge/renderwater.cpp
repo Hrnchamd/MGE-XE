@@ -9,7 +9,7 @@
 
 void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // Switch to render target
     RenderTargetSwitcher rtsw(texReflection, surfReflectionZ);
@@ -168,7 +168,7 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRI
 
 void DistantLand::clearReflection()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     IDirect3DSurface9 *target;
     DWORD baseColour;
 
@@ -193,7 +193,7 @@ void DistantLand::clearReflection()
 
 void DistantLand::simulateDynamicWaves()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     static bool resetRippleSurface = true;
     static float remainingWaveTime = 0;
@@ -394,12 +394,10 @@ void DistantLand::simulateDynamicWaves()
 
 void DistantLand::renderWaterPlane()
 {
-    DECLARE_MWBRIDGE
     D3DXMATRIX m;
-
     IDirect3DTexture9 *texRefract = PostShaders::borrowBuffer(0);
 
-    D3DXMatrixTranslation(&m, eyePos.x, eyePos.y, mwBridge->WaterLevel());
+    D3DXMatrixTranslation(&m, eyePos.x, eyePos.y, MWBridge::get()->WaterLevel());
     effect->SetMatrix(ehWorld, &m);
     effect->SetTexture(ehTex0, texReflection);
     effect->SetTexture(ehTex1, texWater);

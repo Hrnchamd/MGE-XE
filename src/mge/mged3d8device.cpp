@@ -80,7 +80,7 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9 *real, ProxyD3D *d3d) : ProxyDev
 // MGE end of frame processing
 HRESULT _stdcall MGEProxyDevice::Present(const RECT *a, const RECT *b, HWND c, const RGNDATA *d)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // Load Morrowind's dynamic memory pointers
     if(!mwBridge->IsLoaded() && mwBridge->CanLoad())
@@ -208,7 +208,7 @@ HRESULT _stdcall MGEProxyDevice::SetRenderTarget(IDirect3DSurface8 *a, IDirect3D
 // Fogging needs to be set for Morrowind rendering at start of scene
 HRESULT _stdcall MGEProxyDevice::BeginScene()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     HRESULT hr = ProxyDevice::BeginScene();
     if(hr != D3D_OK)
@@ -668,10 +668,9 @@ float calcFPS()
 {
     static int lastMillis, framesSinceUpdate;
     static float fps;
-    DECLARE_MWBRIDGE
 
     ++framesSinceUpdate;
-    int millis = mwBridge->getFrameBeginMillis();
+    int millis = MWBridge::get()->getFrameBeginMillis();
     int diff = millis - lastMillis;
 
     if(diff >= 500)

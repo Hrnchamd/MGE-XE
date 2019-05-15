@@ -13,8 +13,7 @@ bool mwseGetGS::execute(mwseInstruction *_this)
 
     if(!_this->vmPop(&Arg1)) return false;
 
-    DECLARE_MWBRIDGE
-    ret = *(VMREGTYPE *)mwBridge->getGMSTPointer(Arg1);
+    ret = *(VMREGTYPE *)MWBridge::get()->getGMSTPointer(Arg1);
 
     return _this->vmPush(ret);
 }
@@ -31,8 +30,7 @@ bool mwseSetGS::execute(mwseInstruction *_this)
     if(!_this->vmPop(&Arg1)) return false;
     if(!_this->vmPop(&Arg2)) return false;
 
-    DECLARE_MWBRIDGE
-    void *gmst = mwBridge->getGMSTPointer(Arg1);
+    void *gmst = MWBridge::get()->getGMSTPointer(Arg1);
     *(VMLONG *)gmst = Arg2;
 
     return true;

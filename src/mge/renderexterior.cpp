@@ -126,9 +126,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
 
 void DistantLand::renderDistantStatics()
 {
-    DECLARE_MWBRIDGE
-
-    if(!mwBridge->IsExterior())
+    if(!MWBridge::get()->IsExterior())
     {
         // Set clipping to stop large architectural meshes (that don't match exactly)
         // from visible overdrawing and causing z-buffer occlusion

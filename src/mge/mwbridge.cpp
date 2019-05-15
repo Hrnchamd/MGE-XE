@@ -42,7 +42,7 @@ MWBridge::~MWBridge()
 
 //-----------------------------------------------------------------------------
 
-MWBridge* MWBridge::Inst()
+MWBridge* MWBridge::get()
 {
     return &m_instance;
 }
@@ -96,23 +96,23 @@ void MWBridge::Load()
     eMaster1 = read_dword(eMaster);
     eMaster2 = read_dword(eMaster + 0x500);
 
-    eFPS = eMaster1 + 0x14;  //0x14
-    eTimer = eFPS + 0xC;       //0x20
-    eD3D = eTimer + 0x10;    //0x30
-    ePCRef = eD3D + 0x2C;            //0x5C
-    eTruRenderWidth = eD3D + dwTruRenderWidthOff;   //0x78
-    eShadowSlider = eTruRenderWidth + 0xC;        //0x84
-    eCrosshair1 = eShadowSlider + 0x10;         //0x94
-    eAI = eCrosshair1 + 0x4;            //0x98
-    eMenu = eMaster1 + 0xd6;
-    eView0 = eAI + dwHRotScaleOff + 0x5C;  //0xF4
-    eRenderWidth = eView0 + 0x4;                 //0xF8
-    eView1 = eRenderWidth + 0x188;         //0x280
-    eCombat = eView1 + 0x80;                //0x300
+    eFPS = eMaster1 + 0x14;
+    eTimer = eFPS + 0xC;
+    eD3D = eTimer + 0x10;
+    ePCRef = eD3D + 0x2C;
+    eTruRenderWidth = eD3D + dwTruRenderWidthOff;
+    eShadowSlider = eTruRenderWidth + 0xC;
+    eCrosshair1 = eShadowSlider + 0x10;
+    eAI = eCrosshair1 + 0x4;
+    eMenu = eMaster1 + 0xD6;
+    eView0 = eAI + dwHRotScaleOff + 0x5C;
+    eRenderWidth = eView0 + 0x4;
+    eView1 = eRenderWidth + 0x188;
+    eCombat = eView1 + 0x80;
 
-    eGamma = eMaster2 + 0x3C;  //0x3C  //00D1E090
-    eView4 = eGamma + 0x10;   //0x4C  //00D1E0A0
-    eLookMenu = eView4 + 0x9C;    //0xE8  //00D1E090
+    eGamma = eMaster2 + 0x3C;
+    eView4 = eGamma + 0x10;
+    eLookMenu = eView4 + 0x9C;
 
     eX = read_dword(eView0 - 0x10) + 0x1C;
     eCos = eX + 0xD4;

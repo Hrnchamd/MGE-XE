@@ -2,8 +2,6 @@
 
 #include "proxydx/d3d8header.h"
 
-#define DECLARE_MWBRIDGE MWBridge* mwBridge = MWBridge::Inst();
-
 //-----------------------------------------------------------------------------
 
 class MWBridge {
@@ -11,7 +9,7 @@ public:
     ~MWBridge();
 
     // Singleton access
-    static MWBridge* Inst();
+    static MWBridge* get();
 
     // Connect to Morrowind memory
     void Load();

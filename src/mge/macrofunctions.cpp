@@ -26,12 +26,10 @@ static int nextScreenshotOrdinal(const char *path);
 
 void MacroFunctions::TakeScreenshot()
 {
-    DECLARE_MWBRIDGE
-
     // Requires distant land to be loaded
     if(!DistantLand::ready) return;
 
-    if(mwBridge->IsMenu())
+    if(MWBridge::get()->IsMenu())
     {
         // Save screen including UI
         IDirect3DSurface9 *surface = DistantLand::captureScreen();
@@ -96,9 +94,8 @@ static void saveScreenshot(IDirect3DSurface9 *surface)
         break;
     case SuffixFormatting_NameOrdinal:
         {
-            DECLARE_MWBRIDGE
             int nextOrdinal = nextScreenshotOrdinal(dir);
-            const char *name = mwBridge->getPlayerName();
+            const char *name = MWBridge::get()->getPlayerName();
             if(!name) name = "Menu";
 
             std::snprintf(filename, sizeof(filename), "%s%s %04d", Configuration.SSName, name, nextOrdinal);
@@ -107,7 +104,7 @@ static void saveScreenshot(IDirect3DSurface9 *surface)
         break;
     case SuffixFormatting_NameGameTimeOrdinal:
         {
-            DECLARE_MWBRIDGE
+            auto mwBridge = MWBridge::get();
             int nextOrdinal = nextScreenshotOrdinal(dir);
             const char *name = mwBridge->getPlayerName();
             const char *dayLocalized = *(const char **)mwBridge->getGMSTPointer(0x1e1);
@@ -261,13 +258,13 @@ void MacroFunctions::ToggleTransparencyAA() {
 }
 
 void MacroFunctions::IncreaseViewRange() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     float r = mwBridge->GetViewDistance();
     mwBridge->SetViewDistance(std::min(7168.0, r + 512.0));
 }
 
 void MacroFunctions::DecreaseViewRange() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     float r = mwBridge->GetViewDistance();
     mwBridge->SetViewDistance(std::max(2500.0, r - 512.0));
 }
@@ -294,18 +291,15 @@ void MacroFunctions::DecreaseZoom() {
 }
 
 void MacroFunctions::ToggleCrosshair() {
-    DECLARE_MWBRIDGE
-    mwBridge->ToggleCrosshair();
+    MWBridge::get()->ToggleCrosshair();
 }
 
 void MacroFunctions::NextTrack() {
-    DECLARE_MWBRIDGE
-    mwBridge->SkipToNextTrack();
+    MWBridge::get()->SkipToNextTrack();
 }
 
 void MacroFunctions::DisableMusic() {
-    DECLARE_MWBRIDGE
-    mwBridge->DisableMusic();
+    MWBridge::get()->DisableMusic();
 }
 
 void MacroFunctions::IncreaseFOV() {
@@ -316,17 +310,17 @@ void MacroFunctions::DecreaseFOV() {
     Configuration.ScreenFOV = std::max(60.0, Configuration.ScreenFOV - 1.0);
 }
 
-void MacroFunctions::HaggleMore1() { DECLARE_MWBRIDGE  mwBridge->HaggleMore(1); }
-void MacroFunctions::HaggleMore10() { DECLARE_MWBRIDGE  mwBridge->HaggleMore(10); }
-void MacroFunctions::HaggleMore100() { DECLARE_MWBRIDGE  mwBridge->HaggleMore(100); }
-void MacroFunctions::HaggleMore1000() { DECLARE_MWBRIDGE  mwBridge->HaggleMore(1000); }
-void MacroFunctions::HaggleMore10000() { DECLARE_MWBRIDGE  mwBridge->HaggleMore(10000); }
+void MacroFunctions::HaggleMore1() { MWBridge::get()->HaggleMore(1); }
+void MacroFunctions::HaggleMore10() { MWBridge::get()->HaggleMore(10); }
+void MacroFunctions::HaggleMore100() { MWBridge::get()->HaggleMore(100); }
+void MacroFunctions::HaggleMore1000() { MWBridge::get()->HaggleMore(1000); }
+void MacroFunctions::HaggleMore10000() { MWBridge::get()->HaggleMore(10000); }
 
-void MacroFunctions::HaggleLess1() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(1); }
-void MacroFunctions::HaggleLess10() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(10); }
-void MacroFunctions::HaggleLess100() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(100); }
-void MacroFunctions::HaggleLess1000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(1000); }
-void MacroFunctions::HaggleLess10000() { DECLARE_MWBRIDGE  mwBridge->HaggleLess(10000); }
+void MacroFunctions::HaggleLess1() { MWBridge::get()->HaggleLess(1); }
+void MacroFunctions::HaggleLess10() { MWBridge::get()->HaggleLess(10); }
+void MacroFunctions::HaggleLess100() { MWBridge::get()->HaggleLess(100); }
+void MacroFunctions::HaggleLess1000() { MWBridge::get()->HaggleLess(1000); }
+void MacroFunctions::HaggleLess10000() { MWBridge::get()->HaggleLess(10000); }
 
 static void displayCamPosition()
 {
@@ -337,7 +331,7 @@ static void displayCamPosition()
 }
 
 void MacroFunctions::MoveForward3PCam() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
     {
         Configuration.Offset3rdPerson.y = std::min(-25.0, Configuration.Offset3rdPerson.y * 0.96);
@@ -346,7 +340,7 @@ void MacroFunctions::MoveForward3PCam() {
 }
 
 void MacroFunctions::MoveBack3PCam() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
     {
         Configuration.Offset3rdPerson.y = std::max(-2500.0, Configuration.Offset3rdPerson.y * 1.04);
@@ -355,7 +349,7 @@ void MacroFunctions::MoveBack3PCam() {
 }
 
 void MacroFunctions::MoveLeft3PCam() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
     {
         Configuration.Offset3rdPerson.x = std::max(-125.0, Configuration.Offset3rdPerson.x - 1.0);
@@ -364,7 +358,7 @@ void MacroFunctions::MoveLeft3PCam() {
 }
 
 void MacroFunctions::MoveRight3PCam() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
     {
         Configuration.Offset3rdPerson.x = std::min(125.0, Configuration.Offset3rdPerson.x + 1.0);
@@ -373,7 +367,7 @@ void MacroFunctions::MoveRight3PCam() {
 }
 
 void MacroFunctions::MoveDown3PCam() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
     {
         Configuration.Offset3rdPerson.z = std::max(-125.0, Configuration.Offset3rdPerson.z - 1.0);
@@ -382,7 +376,7 @@ void MacroFunctions::MoveDown3PCam() {
 }
 
 void MacroFunctions::MoveUp3PCam() {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     if(mwBridge->is3rdPerson() && !mwBridge->IsMenu())
     {
         Configuration.Offset3rdPerson.z = std::min(125.0, Configuration.Offset3rdPerson.z + 1.0);

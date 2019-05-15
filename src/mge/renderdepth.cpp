@@ -10,7 +10,7 @@
 
 void DistantLand::renderDepth()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // Switch to render target
     RenderTargetSwitcher rtsw(texDepthFrame, surfDepthDepth);

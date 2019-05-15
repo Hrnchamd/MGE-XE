@@ -15,7 +15,7 @@ using std::unordered_map;
 // renderStage0 - Render distant land at beginning of scene 0, after sky
 void DistantLand::renderStage0()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     IDirect3DStateBlock9 *stateSaved;
     UINT passes;
 
@@ -147,7 +147,7 @@ void DistantLand::renderStage0()
 // renderStage1 - Render grass and shadows over near features, and write depth texture for scene 0
 void DistantLand::renderStage1()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     IDirect3DStateBlock9 *stateSaved;
     UINT passes;
 
@@ -205,7 +205,7 @@ void DistantLand::renderStage1()
 // renderStage2 - Render shadows and depth texture for scenes 1+ (post-stencil redraw/alpha/1st person)
 void DistantLand::renderStage2()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     IDirect3DStateBlock9 *stateSaved;
     UINT passes;
 
@@ -252,7 +252,7 @@ void DistantLand::renderStage2()
 // renderStageBlend - Blend between MGE distant land and Morrowind, rendering caustics first so it blends out
 void DistantLand::renderStageBlend()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     IDirect3DStateBlock9 *stateSaved;
     UINT passes;
 
@@ -302,7 +302,7 @@ void DistantLand::renderStageBlend()
 // renderStageWater - Render replacement water plane
 void DistantLand::renderStageWater()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     IDirect3DStateBlock9 *stateSaved;
     UINT passes;
 
@@ -342,7 +342,7 @@ void DistantLand::renderStageWater()
 // setupCommonEffect - Set shared shader variables for this frame
 void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *proj)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // View position
     effect->SetMatrix(ehView, view);
@@ -425,7 +425,7 @@ static float saturate(float x)
 // adjustFog - Set fog distance, wind speed adjust and fog colour for this frame
 void DistantLand::adjustFog()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     nearViewRange = mwBridge->GetViewDistance();
 
@@ -602,7 +602,7 @@ void DistantLand::postProcess()
 {
     if(!isRenderCached)
     {
-        DECLARE_MWBRIDGE
+        auto mwBridge = MWBridge::get();
 
         // Save state block
         IDirect3DStateBlock9 *stateSaved;
@@ -662,7 +662,7 @@ void DistantLand::postProcess()
 // updatePostShader - callback for setting post shader variables based on environment
 void DistantLand::updatePostShader(MGEShader *shader)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // Internal textures
     // TODO: Should be set once at init time
@@ -708,7 +708,7 @@ void DistantLand::updatePostShader(MGEShader *shader)
 // selectDistantCell - Select the correct set of distant land meshes for the current cell
 bool DistantLand::selectDistantCell()
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     if(Configuration.MGEFlags & USE_DISTANT_LAND)
     {
@@ -743,7 +743,7 @@ bool DistantLand::isDistantCell()
 // setView - Called once per frame to setup view dependent data
 void DistantLand::setView(const D3DMATRIX *m)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // Calculate eyePos, eyeVec for shaders
     D3DXVECTOR4 origin(0.0, 0.0, 0.0, 1.0);
@@ -801,7 +801,7 @@ void DistantLand::setAmbientColour(const RGBVECTOR& c)
 
 void DistantLand::setSunLight(const D3DLIGHT8 *s)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     if(mwBridge->CellHasWeather())
     {
@@ -826,7 +826,7 @@ void DistantLand::setSunLight(const D3DLIGHT8 *s)
 // Can also replace selected fixed function calls with an augmented shader
 bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, LightState *lightrs)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     // Capture all writes to z-buffer
     // Only capture alpha blends in alpha scene, otherwise we record extraneous land splatting tiles

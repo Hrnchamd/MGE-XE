@@ -38,8 +38,7 @@ bool mwseSetSkyColour::execute(mwseInstruction *_this)
     if(!_this->vmPop(&g)) return false;
     if(!_this->vmPop(&b)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     if(w && time_enum >= 0 && time_enum <= 3)
     {
         MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
@@ -64,8 +63,7 @@ bool mwseSetFogColour::execute(mwseInstruction *_this)
     if(!_this->vmPop(&g)) return false;
     if(!_this->vmPop(&b)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     if(w && time_enum >= 0 && time_enum <= 3)
     {
         MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
@@ -90,8 +88,7 @@ bool mwseSetAmbientColour::execute(mwseInstruction *_this)
     if(!_this->vmPop(&g)) return false;
     if(!_this->vmPop(&b)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     if(w && time_enum >= 0 && time_enum <= 3)
     {
         MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
@@ -116,8 +113,7 @@ bool mwseSetSunColour::execute(mwseInstruction *_this)
     if(!_this->vmPop(&g)) return false;
     if(!_this->vmPop(&b)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     if(w && time_enum >= 0 && time_enum <= 3)
     {
         MWWeather::RGBfloat col = { r / 255.0f , g / 255.0f , b / 255.0f };
@@ -140,8 +136,7 @@ bool mwseSetSunriseSunset::execute(mwseInstruction *_this)
     if(!_this->vmPop(&set_time)) return false;
     if(!_this->vmPop(&set_dur)) return false;
 
-    DECLARE_MWBRIDGE
-    mwBridge->setSunriseSunset(rise_time, rise_dur, set_time, set_dur);
+    MWBridge::get()->setSunriseSunset(rise_time, rise_dur, set_time, set_dur);
     return true;
 }
 
@@ -178,8 +173,7 @@ bool mwseSetWeatherGlare::execute(mwseInstruction *_this)
     if(!_this->vmPop(&weather_id)) return false;
     if(!_this->vmPop(&x)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     w->glareView = x;
 
     return true;
@@ -197,8 +191,7 @@ bool mwseSetWeatherCloudSpeed::execute(mwseInstruction *_this)
     if(!_this->vmPop(&weather_id)) return false;
     if(!_this->vmPop(&x)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     w->cloudSpeed = x;
 
     return true;
@@ -216,8 +209,7 @@ bool mwseSetWeatherWindSpeed::execute(mwseInstruction *_this)
     if(!_this->vmPop(&weather_id)) return false;
     if(!_this->vmPop(&x)) return false;
 
-    DECLARE_MWBRIDGE
-    MWWeather *w = (MWWeather *)mwBridge->GetWthrStruct(weather_id);
+    MWWeather *w = (MWWeather *)MWBridge::get()->GetWthrStruct(weather_id);
     w->windSpeed = x;
 
     return true;

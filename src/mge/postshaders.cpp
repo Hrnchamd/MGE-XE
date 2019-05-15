@@ -113,8 +113,7 @@ bool PostShaders::initShaderChain()
 
     if(Configuration.MGEFlags & NO_MW_SUNGLARE)
     {
-        DECLARE_MWBRIDGE
-        mwBridge->disableSunglare();
+        MWBridge::get()->disableSunglare();
         LOG::logline("-- Shader chain replaces standard Morrowind sun glare");
     }
 

@@ -82,7 +82,7 @@ void DistantLand::renderShadowMap()
 // renderShadowLayer - Calculates projection for, and renders, one shadow layer
 void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *inverseCameraProj)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
     D3DXVECTOR3 lookAt, lookAtEye, shadowCameraPos, up(0, 0, 1);
     D3DXMATRIX *view = &smView[layer], *proj = &smProj[layer], *viewproj = &smViewproj[layer];
 

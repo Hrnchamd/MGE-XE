@@ -118,7 +118,7 @@ void VideoBackground::end()
 
 void VideoPatch::monitor(IDirect3DDevice9 *device)
 {
-    DECLARE_MWBRIDGE
+    auto mwBridge = MWBridge::get();
 
     if(state == 0 && mwBridge->isIntroDone())
     {

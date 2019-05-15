@@ -373,8 +373,7 @@ bool DistantLand::initShader()
         ehInscatter = effect->GetParameterByName(0, "inscatter");
 
         // Mark moon geometry for detection
-        DECLARE_MWBRIDGE
-        mwBridge->markMoonNodes(kMoonTag);
+        MWBridge::get()->markMoonNodes(kMoonTag);
     }
 
     return true;
@@ -519,8 +518,7 @@ bool DistantLand::initWater()
             return false;
 
         // Disable Morrowind generated ripples
-        DECLARE_MWBRIDGE
-        mwBridge->toggleRipples(false);
+        MWBridge::get()->toggleRipples(false);
     }
 
     return true;
