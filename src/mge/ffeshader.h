@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include "proxydx/d3d8header.h"
 
 struct RenderedState
@@ -59,8 +59,8 @@ struct LightState
     };
 
     D3DCOLORVALUE globalAmbient;
-    std::tr1::unordered_map<DWORD, Light> lights;
-    std::tr1::unordered_map<DWORD, bool> lightsTransformed;
+    std::unordered_map<DWORD, Light> lights;
+    std::unordered_map<DWORD, bool> lightsTransformed;
     std::vector<DWORD> active;
 };
 
@@ -110,7 +110,7 @@ class FixedFunctionShader
 
     static IDirect3DDevice *device;
     static ID3DXEffectPool *constantPool;
-    static std::tr1::unordered_map<ShaderKey, ID3DXEffect *, ShaderKey::hasher> cacheEffects;
+    static std::unordered_map<ShaderKey, ID3DXEffect *, ShaderKey::hasher> cacheEffects;
     static ShaderLRU shaderLRU;
     static ID3DXEffect *effectDefaultPurple;
 

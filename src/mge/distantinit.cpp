@@ -16,7 +16,7 @@
 
 using std::string;
 using std::vector;
-using std::tr1::unordered_map;
+using std::unordered_map;
 
 bool DistantLand::ready = false;
 bool DistantLand::isRenderCached = false;

@@ -1,13 +1,13 @@
 
 #include <cstdio>
 #include <cstring>
-#include <tr1/unordered_map>
+#include <unordered_map>
 #include "proxydx/d3d8header.h"
 #include "morrowindbsa.h"
 
 
 
-using std::tr1::unordered_map;
+using std::unordered_map;
 
 struct BSAEntry
 {

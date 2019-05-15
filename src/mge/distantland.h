@@ -5,7 +5,7 @@
 #include "specificrender.h"
 #include <string>
 #include <vector>
-#include <tr1/unordered_map>
+#include <unordered_map>
 
 
 
@@ -48,7 +48,7 @@ public:
 
     static VendorSpecificRendering vsr;
 
-    static std::tr1::unordered_map<std::string, WorldSpace> mapWorldSpaces;
+    static std::unordered_map<std::string, WorldSpace> mapWorldSpaces;
     static const WorldSpace *currentWorldSpace;
     static QuadTree LandQuadTree;
     static VisibleSet visLand;

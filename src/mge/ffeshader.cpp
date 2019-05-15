@@ -7,7 +7,7 @@
 
 using std::string;
 using std::stringstream;
-using std::tr1::unordered_map;
+using std::unordered_map;
 
 IDirect3DDevice *FixedFunctionShader::device;
 ID3DXEffectPool *FixedFunctionShader::constantPool;
@@ -108,7 +108,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState *rs, const Fragmen
     else
     {
         // Read from shader cache / generate
-        unordered_map<ShaderKey, ID3DXEffect*>::const_iterator iEffect = cacheEffects.find(sk);
+        decltype(cacheEffects)::const_iterator iEffect = cacheEffects.find(sk);
 
         if(iEffect != cacheEffects.end())
             effectFFE = iEffect->second;

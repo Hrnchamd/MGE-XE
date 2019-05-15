@@ -10,7 +10,7 @@
 
 
 using std::string;
-using std::tr1::unordered_map;
+using std::unordered_map;
 
 // renderStage0 - Render distant land at beginning of scene 0, after sky
 void DistantLand::renderStage0()
