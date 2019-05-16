@@ -1,6 +1,6 @@
 #pragma once
 
-#include <d3d9.h>
+#include "proxydx/d3d9header.h"
 
 struct Bink;
 
