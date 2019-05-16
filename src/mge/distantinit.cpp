@@ -23,20 +23,20 @@ bool DistantLand::isRenderCached = false;
 bool DistantLand::isPPLActive = false;
 int DistantLand::numWaterVerts, DistantLand::numWaterTris;
 
-IDirect3DDevice9 *DistantLand::device;
-ID3DXEffect *DistantLand::effect;
-ID3DXEffect *DistantLand::effectShadow;
-ID3DXEffect *DistantLand::effectDepth;
-ID3DXEffectPool *DistantLand::effectPool;
-IDirect3DVertexDeclaration9 *DistantLand::LandDecl;
-IDirect3DVertexDeclaration9 *DistantLand::StaticDecl;
-IDirect3DVertexDeclaration9 *DistantLand::WaterDecl;
-IDirect3DVertexDeclaration9 *DistantLand::GrassDecl;
+IDirect3DDevice9* DistantLand::device;
+ID3DXEffect* DistantLand::effect;
+ID3DXEffect* DistantLand::effectShadow;
+ID3DXEffect* DistantLand::effectDepth;
+ID3DXEffectPool* DistantLand::effectPool;
+IDirect3DVertexDeclaration9* DistantLand::LandDecl;
+IDirect3DVertexDeclaration9* DistantLand::StaticDecl;
+IDirect3DVertexDeclaration9* DistantLand::WaterDecl;
+IDirect3DVertexDeclaration9* DistantLand::GrassDecl;
 
 VendorSpecificRendering DistantLand::vsr;
 
 unordered_map<string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
-const DistantLand::WorldSpace *DistantLand::currentWorldSpace;
+const DistantLand::WorldSpace* DistantLand::currentWorldSpace;
 QuadTree DistantLand::LandQuadTree;
 VisibleSet DistantLand::visLand;
 VisibleSet DistantLand::visDistant;
@@ -46,30 +46,30 @@ vector<RenderedState> DistantLand::recordMW;
 vector<RenderedState> DistantLand::recordSky;
 vector< std::pair<const QuadTreeMesh*, int> > DistantLand::batchedGrass;
 
-IDirect3DTexture9 *DistantLand::texWorldColour, *DistantLand::texWorldNormals, *DistantLand::texWorldDetail;
-IDirect3DTexture9 *DistantLand::texDepthFrame;
-IDirect3DSurface9 *DistantLand::surfDepthDepth;
-IDirect3DTexture9 *DistantLand::texDistantBlend;
-IDirect3DTexture9 *DistantLand::texReflection;
-IDirect3DSurface9 *DistantLand::surfReflectionZ;
-IDirect3DVolumeTexture9 *DistantLand::texWater;
-IDirect3DVertexBuffer9 *DistantLand::vbWater;
-IDirect3DIndexBuffer9 *DistantLand::ibWater;
-IDirect3DVertexBuffer9 *DistantLand::vbGrassInstances;
+IDirect3DTexture9* DistantLand::texWorldColour, *DistantLand::texWorldNormals, *DistantLand::texWorldDetail;
+IDirect3DTexture9* DistantLand::texDepthFrame;
+IDirect3DSurface9* DistantLand::surfDepthDepth;
+IDirect3DTexture9* DistantLand::texDistantBlend;
+IDirect3DTexture9* DistantLand::texReflection;
+IDirect3DSurface9* DistantLand::surfReflectionZ;
+IDirect3DVolumeTexture9* DistantLand::texWater;
+IDirect3DVertexBuffer9* DistantLand::vbWater;
+IDirect3DIndexBuffer9* DistantLand::ibWater;
+IDirect3DVertexBuffer9* DistantLand::vbGrassInstances;
 
-IDirect3DTexture9 *DistantLand::texRain;
-IDirect3DTexture9 *DistantLand::texRipples;
-IDirect3DTexture9 *DistantLand::texRippleBuffer;
-IDirect3DSurface9 *DistantLand::surfRain;
-IDirect3DSurface9 *DistantLand::surfRipples;
-IDirect3DSurface9 *DistantLand::surfRippleBuffer;
-IDirect3DVertexBuffer9 *DistantLand::vbWaveSim;
+IDirect3DTexture9* DistantLand::texRain;
+IDirect3DTexture9* DistantLand::texRipples;
+IDirect3DTexture9* DistantLand::texRippleBuffer;
+IDirect3DSurface9* DistantLand::surfRain;
+IDirect3DSurface9* DistantLand::surfRipples;
+IDirect3DSurface9* DistantLand::surfRippleBuffer;
+IDirect3DVertexBuffer9* DistantLand::vbWaveSim;
 
-IDirect3DTexture9 *DistantLand::texShadow;
-IDirect3DTexture9 *DistantLand::texSoftShadow;
-IDirect3DSurface9 *DistantLand::surfShadowZ;
-IDirect3DVertexBuffer9 *DistantLand::vbFullFrame;
-IDirect3DVertexBuffer9 *DistantLand::vbClipCube;
+IDirect3DTexture9* DistantLand::texShadow;
+IDirect3DTexture9* DistantLand::texSoftShadow;
+IDirect3DSurface9* DistantLand::surfShadowZ;
+IDirect3DVertexBuffer9* DistantLand::vbFullFrame;
+IDirect3DVertexBuffer9* DistantLand::vbClipCube;
 
 D3DXMATRIX DistantLand::mwView, DistantLand::mwProj;
 D3DXMATRIX DistantLand::smView[2], DistantLand::smProj[2];
@@ -127,19 +127,18 @@ D3DXHANDLE DistantLand::ehTime;
 D3DXHANDLE DistantLand::ehRippleOrigin;
 D3DXHANDLE DistantLand::ehWaveHeight;
 
-void (*DistantLand::captureScreenFunc)(IDirect3DSurface9 *);
+void (*DistantLand::captureScreenFunc)(IDirect3DSurface9*);
 
 
 static vector<DistantStatic> DistantStatics;
 static unordered_map< string, vector<UsedDistantStatic> > UsedDistantStatics;
 
-struct MeshResources
-{
-    IDirect3DVertexBuffer9 *vb;
-    IDirect3DIndexBuffer9 *ib;
-    IDirect3DTexture9 *tex;
+struct MeshResources {
+    IDirect3DVertexBuffer9* vb;
+    IDirect3DIndexBuffer9* ib;
+    IDirect3DTexture9* tex;
 
-    MeshResources(IDirect3DVertexBuffer9 *_vb, IDirect3DIndexBuffer9 *_ib, IDirect3DTexture9 *_tex) : vb(_vb), ib(_ib), tex(_tex) {}
+    MeshResources(IDirect3DVertexBuffer9* _vb, IDirect3DIndexBuffer9* _ib, IDirect3DTexture9* _tex) : vb(_vb), ib(_ib), tex(_tex) {}
 };
 static vector<MeshResources> meshCollectionLand;
 static vector<MeshResources> meshCollectionStatics;
@@ -170,8 +169,7 @@ const D3DVERTEXELEMENT9 StaticElem[] = {
 };
 
 // Instanced grass vertex declaration
-const D3DVERTEXELEMENT9 GrassElem[] =
-{
+const D3DVERTEXELEMENT9 GrassElem[] = {
     {0, 0,  D3DDECLTYPE_FLOAT16_4, D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_POSITION, 0},
     {0, 8,  D3DDECLTYPE_UBYTE4N,   D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_NORMAL,   0},
     {0, 12, D3DDECLTYPE_D3DCOLOR,  D3DDECLMETHOD_DEFAULT, D3DDECLUSAGE_COLOR,    0},
@@ -184,10 +182,13 @@ const D3DVERTEXELEMENT9 GrassElem[] =
 
 
 
-bool DistantLand::init(IDirect3DDevice9 *realDevice)
-{
-    if(ready) return true;
-    if(device) return false;
+bool DistantLand::init(IDirect3DDevice9* realDevice) {
+    if (ready) {
+        return true;
+    }
+    if (device) {
+        return false;
+    }
 
     device = realDevice;
     LOG::logline(">> Distant Land init");
@@ -197,40 +198,49 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
     BSAInit();
 
     LOG::logline(">> Distant Land init shader");
-    if(!initShader())
+    if (!initShader()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init fixed function emu");
-    if(!FixedFunctionShader::init(device, effectPool))
+    if (!FixedFunctionShader::init(device, effectPool)) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init post shaders");
-    if(!PostShaders::init(device))
+    if (!PostShaders::init(device)) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init depth");
-    if(!initDepth())
+    if (!initDepth()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init shadow");
-    if(!initShadow())
+    if (!initShadow()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init water");
-    if(!initWater())
+    if (!initWater()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init world");
-    if (!initLandscape())
+    if (!initLandscape()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init statics");
-    if(!initDistantStatics())
+    if (!initDistantStatics()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land init grass");
-    if(!initGrass())
+    if (!initGrass()) {
         return false;
+    }
 
     LOG::logline("<< Distant Land init");
     ready = true;
@@ -238,25 +248,24 @@ bool DistantLand::init(IDirect3DDevice9 *realDevice)
     return true;
 }
 
-bool DistantLand::reloadShaders()
-{
+bool DistantLand::reloadShaders() {
     LOG::logline(">> Distant Land reload shader");
-    if(!initShader())
+    if (!initShader()) {
         return false;
+    }
 
     LOG::logline(">> Distant Land reload fixed function emu");
     FixedFunctionShader::release();
-    if(!FixedFunctionShader::init(device, effectPool))
+    if (!FixedFunctionShader::init(device, effectPool)) {
         return false;
+    }
 
     return true;
 }
 
-static void logShaderError(const char *shaderID, ID3DXBuffer *errors)
-{
+static void logShaderError(const char* shaderID, ID3DXBuffer* errors) {
     LOG::logline("!! %s shader error", shaderID);
-    if(errors)
-    {
+    if (errors) {
         LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
         errors->Release();
     }
@@ -268,36 +277,36 @@ static const D3DXMACRO macroFilterReflection = { "FILTER_WATER_REFLECTION", "" }
 static const D3DXMACRO macroDynamicRipples = { "DYNAMIC_RIPPLES", "" };
 static const D3DXMACRO macroTerminator = { 0, 0 };
 
-bool DistantLand::initShader()
-{
-    ID3DXBuffer *errors;
+bool DistantLand::initShader() {
+    ID3DXBuffer* errors;
     std::vector<D3DXMACRO> features;
     HRESULT hr;
 
     // Set shader defines corresponding to required features
-    if(Configuration.MGEFlags & EXP_FOG)
+    if (Configuration.MGEFlags & EXP_FOG) {
         features.push_back(macroExpFog);
-    if(Configuration.MGEFlags & USE_ATM_SCATTER)
+    }
+    if (Configuration.MGEFlags & USE_ATM_SCATTER) {
         features.push_back(macroScattering);
-    if(Configuration.MGEFlags & BLUR_REFLECTIONS)
+    }
+    if (Configuration.MGEFlags & BLUR_REFLECTIONS) {
         features.push_back(macroFilterReflection);
-    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
+    }
+    if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
         features.push_back(macroDynamicRipples);
+    }
     features.push_back(macroTerminator);
 
-    if(!effectPool)
-    {
+    if (!effectPool) {
         hr = D3DXCreateEffectPool(&effectPool);
-        if(hr != D3D_OK)
-        {
+        if (hr != D3D_OK) {
             LOG::logline("!! Effect pool creation failure");
             return false;
         }
     }
 
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         logShaderError("XE Main", errors);
         return false;
     }
@@ -346,8 +355,7 @@ bool DistantLand::initShader()
     LOG::logline("-- Shader compiled OK");
 
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         logShaderError("XE Shadowmap", errors);
         return false;
     }
@@ -355,16 +363,14 @@ bool DistantLand::initShader()
     LOG::logline("-- Shadow map shader compiled OK");
 
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         logShaderError("XE Depth", errors);
         return false;
     }
 
     LOG::logline("-- Depth shader compiled OK");
 
-    if(Configuration.MGEFlags & USE_ATM_SCATTER)
-    {
+    if (Configuration.MGEFlags & USE_ATM_SCATTER) {
         // Default scatter coefficients
         atmOutscatter = RGBVECTOR(0.07, 0.36, 0.76);
         atmInscatter = RGBVECTOR(0.25, 0.38, 0.48);
@@ -379,8 +385,7 @@ bool DistantLand::initShader()
     return true;
 }
 
-bool DistantLand::initDepth()
-{
+bool DistantLand::initDepth() {
     HRESULT hr;
     D3DVIEWPORT9 vp;
 
@@ -388,15 +393,13 @@ bool DistantLand::initDepth()
     device->GetViewport(&vp);
 
     hr = device->CreateTexture(vp.Width, vp.Height, 1, D3DUSAGE_RENDERTARGET, D3DFMT_R32F, D3DPOOL_DEFAULT, &texDepthFrame, NULL);
-    if (hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create depth frame render target");
         return false;
     }
 
     hr = device->CreateDepthStencilSurface(vp.Width, vp.Height, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, FALSE, &surfDepthDepth, NULL);
-    if (hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create depth target z-buffer");
         return false;
     }
@@ -404,23 +407,20 @@ bool DistantLand::initDepth()
     return true;
 }
 
-bool DistantLand::initWater()
-{
+bool DistantLand::initWater() {
     HRESULT hr;
     const UINT reflRes = 1024;
 
     // Reflection render target
     hr = device->CreateTexture(reflRes, reflRes, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A8R8G8B8, D3DPOOL_DEFAULT, &texReflection, NULL);
-    if (hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create reflection render target");
         return false;
     }
 
     // Reflection Z-buffer
     hr = device->CreateDepthStencilSurface(reflRes, reflRes, D3DFMT_D24X8, D3DMULTISAMPLE_NONE, 0, TRUE, &surfReflectionZ, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create reflection Z buffer");
         return false;
     }
@@ -432,32 +432,28 @@ bool DistantLand::initWater()
     numWaterTris = 2 * resS * resT - resS;
 
     hr = D3DXCreateVolumeTextureFromFile(device, "Data Files\\textures\\MGE\\water_NRM.dds", &texWater);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to load water texture");
         return false;
     }
     hr = device->CreateVertexDeclaration(WaterElem, &WaterDecl);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create water decl");
         return false;
     }
     hr = device->CreateVertexBuffer(numWaterVerts * 12, 0, 0, D3DPOOL_MANAGED, &vbWater, 0);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create water verts");
         return false;
     }
     hr = device->CreateIndexBuffer(numWaterTris * 6, 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &ibWater, 0);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create water indices");
         return false;
     }
 
     // Build radial water mesh
-    D3DXVECTOR3 *v;
+    D3DXVECTOR3* v;
     vbWater->Lock(0, 0, (void**)&v, 0);
 
     // Water plane lies at water level - 1.0 (not -4.0, which is the fog transition)
@@ -466,56 +462,58 @@ bool DistantLand::initWater()
     float r, w = -1.0f;
 
     *v++ = D3DXVECTOR3(0, 0, w);
-    for(t = 0; t < resT; ++t)
-    {
-        if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
-        {
+    for (t = 0; t < resT; ++t) {
+        if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
             // Higher mesh density near player
             // The mesh requires density past 8192 units to cover the z discontinuity at distant land
             r = float(t) / float(resT);
             r = 9600.0f * (0.9f * powf(r, 3) + 0.1f * r);
             // Extend last ring past horizon
-            if((t+1) == resT) r = 500000.0f;
-        }
-        else
-        {
+            if ((t+1) == resT) {
+                r = 500000.0f;
+            }
+        } else {
             r = 4096.0f * (1.0f + t * t);
         }
 
-        for(s = 0; s < resS; ++s)
+        for (s = 0; s < resS; ++s) {
             *v++ = D3DXVECTOR3(r * cos(dS * s), r * sin(dS * s), w);
+        }
     }
 
     vbWater->Unlock();
 
-    USHORT *i;
+    USHORT* i;
     ibWater->Lock(0, 0, (void**)&i, 0);
 
     // Centre triangles
-    for(s = 0; s < resS; ++s)
-    {
-        *i++ = 0; *i++ = 1 + s; *i++ = 1 + (s+1) % resS;
+    for (s = 0; s < resS; ++s) {
+        *i++ = 0;
+        *i++ = 1 + s;
+        *i++ = 1 + (s+1) % resS;
     }
     // Rings
-    for(t = 1; t < resT; ++t)
-    {
-        for(s = 0; s < resS; ++s)
-        {
+    for (t = 1; t < resT; ++t) {
+        for (s = 0; s < resS; ++s) {
             USHORT tbase = 1 + resS*(t-1), s2 = (s+1) % resS;
-            *i++ = tbase + s; *i++ = resS + tbase + s; *i++ = tbase + s2;
-            *i++ = resS + tbase+ s; *i++ = resS + tbase + s2; *i++ = tbase + s2;
+            *i++ = tbase + s;
+            *i++ = resS + tbase + s;
+            *i++ = tbase + s2;
+            *i++ = resS + tbase+ s;
+            *i++ = resS + tbase + s2;
+            *i++ = tbase + s2;
         }
     }
 
     ibWater->Unlock();
 
-    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
-    {
+    if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
         LOG::logline("-- Distant Land init dynamic water");
 
         // Setup water simulation
-        if(!initDynamicWaves())
+        if (!initDynamicWaves()) {
             return false;
+        }
 
         // Disable Morrowind generated ripples
         MWBridge::get()->toggleRipples(false);
@@ -524,13 +522,11 @@ bool DistantLand::initWater()
     return true;
 }
 
-bool DistantLand::initDynamicWaves()
-{
+bool DistantLand::initDynamicWaves() {
     HRESULT hr;
 
     hr = device->CreateTexture(waveTexResolution, waveTexResolution, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A16B16G16R16F, D3DPOOL_DEFAULT, &texRain, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create rain simulation texture");
         return false;
     }
@@ -538,8 +534,7 @@ bool DistantLand::initDynamicWaves()
     device->ColorFill(surfRain, 0, 0);
 
     hr = device->CreateTexture(waveTexResolution, waveTexResolution, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A16B16G16R16F, D3DPOOL_DEFAULT, &texRipples, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create ripple simulation texture");
         return false;
     }
@@ -547,8 +542,7 @@ bool DistantLand::initDynamicWaves()
     device->ColorFill(surfRipples, 0, 0);
 
     hr = device->CreateTexture(waveTexResolution, waveTexResolution, 1, D3DUSAGE_RENDERTARGET, D3DFMT_A16B16G16R16F, D3DPOOL_DEFAULT, &texRippleBuffer, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create ripple simulation texture");
         return false;
     }
@@ -557,10 +551,10 @@ bool DistantLand::initDynamicWaves()
 
     // Vertex buffer for wave texture
     static float waveVertices[] = {
-/*     -0.5f,                    -0.5f,                                               0,1,   0,0,0,0,
-        -0.5f,                    waveTexResolution-0.5f,                 0,1,   0,1,0,1,
-        waveTexResolution-0.5f,    -0.5f,                                  0,1,   1,0,1,0,
-        waveTexResolution-0.5f,    waveTexResolution-0.5f,    0,1,   1,1,1,1 */
+        /*     -0.5f,                    -0.5f,                                               0,1,   0,0,0,0,
+                -0.5f,                    waveTexResolution-0.5f,                 0,1,   0,1,0,1,
+                waveTexResolution-0.5f,    -0.5f,                                  0,1,   1,0,1,0,
+                waveTexResolution-0.5f,    waveTexResolution-0.5f,    0,1,   1,1,1,1 */
 
         // Use only one tri over the whole texture to prevent simulation seams at tri edges
         // Rendering to a surface that is bound as a source texture updates the texture after
@@ -570,15 +564,13 @@ bool DistantLand::initDynamicWaves()
         waveTexResolution        -0.5f,    -waveTexResolution    -0.5f,  0,  1,     1.0, -1.0,     1,1
     };
 
-    void *vp;
+    void* vp;
     hr = device->CreateVertexBuffer(3 * 32, D3DUSAGE_WRITEONLY, fvfWave, D3DPOOL_DEFAULT, &vbWaveSim, 0);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create wave simulation vb");
         return false;
     }
-    if(vbWaveSim->Lock(0, 0, (void**)&vp, 0) != D3D_OK)
-    {
+    if (vbWaveSim->Lock(0, 0, (void**)&vp, 0) != D3D_OK) {
         LOG::logline("!! Failed to lock wave simulation vb");
         return false;
     }
@@ -594,46 +586,40 @@ bool DistantLand::initDynamicWaves()
     return true;
 }
 
-bool DistantLand::initShadow()
-{
+bool DistantLand::initShadow() {
     const D3DFORMAT shadowFormat = D3DFMT_R16F, shadowZFormat = D3DFMT_D24S8;
     const UINT shadowSize = Configuration.DL.ShadowResolution, cascades = 2;
     HRESULT hr;
 
     // The shadow texture holds a horizontal-packed shadow atlas
     hr = device->CreateTexture(cascades * shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texShadow, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create shadow render target");
         return false;
     }
     hr = device->CreateTexture(cascades * shadowSize, shadowSize, 1, D3DUSAGE_RENDERTARGET, shadowFormat, D3DPOOL_DEFAULT, &texSoftShadow, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create shadow render target");
         return false;
     }
     hr = device->CreateDepthStencilSurface(cascades * shadowSize, shadowSize, shadowZFormat, D3DMULTISAMPLE_NONE, 0, TRUE, &surfShadowZ, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create shadow Z buffer");
         return false;
     }
     hr = device->CreateVertexBuffer(4 * 12, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vbFullFrame, 0);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create shadow processing verts");
         return false;
     }
     hr = device->CreateVertexBuffer(14 * 12, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vbClipCube, 0);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create shadow processing verts");
         return false;
     }
 
     // Used to cover an entire render target of any dimension
-    D3DXVECTOR3 *v;
+    D3DXVECTOR3* v;
     vbFullFrame->Lock(0, 0, (void**)&v, 0);
     v[0] = D3DXVECTOR3( -1.0f, 1.0f,  1.0f);
     v[1] = D3DXVECTOR3(-1.0f, -1.0f,  1.0f);
@@ -664,25 +650,24 @@ bool DistantLand::initShadow()
     return true;
 }
 
-bool DistantLand::initDistantStatics()
-{
-    if(FAILED(device->CreateVertexDeclaration(StaticElem, &StaticDecl)))
-    {
+bool DistantLand::initDistantStatics() {
+    if (FAILED(device->CreateVertexDeclaration(StaticElem, &StaticDecl))) {
         LOG::logline("!! Failed to to create static vertex declaration");
         return false;
     }
 
-    if(!loadDistantStatics())
+    if (!loadDistantStatics()) {
         return false;
+    }
 
-    if(!initDistantStaticsBVH())
+    if (!initDistantStaticsBVH()) {
         return false;
+    }
 
     // Remove UsedDistantStatic, DistantStatic, and DistantStaticSubset objects
     UsedDistantStatics.clear();
 
-    for(auto& i : DistantStatics)
-    {
+    for (auto& i : DistantStatics) {
         delete [] i.subsets;
         i.subsets = 0;
     }
@@ -693,34 +678,29 @@ bool DistantLand::initDistantStatics()
     return true;
 }
 
-bool DistantLand::loadDistantStatics()
-{
+bool DistantLand::loadDistantStatics() {
     DWORD unused;
     HANDLE h;
 
-    if(GetFileAttributes("Data Files\\distantland\\statics") == INVALID_FILE_ATTRIBUTES)
-    {
+    if (GetFileAttributes("Data Files\\distantland\\statics") == INVALID_FILE_ATTRIBUTES) {
         LOG::logline("!! Distant statics have not been generated");
         return true;
     }
 
     h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
-    if (h == INVALID_HANDLE_VALUE)
-    {
+    if (h == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics data is missing or corrupted");
         return false;
     }
     BYTE version = 0;
     ReadFile(h, &version, sizeof(version), &unused, 0);
-    if(version != MGE_DL_VERSION)
-    {
+    if (version != MGE_DL_VERSION) {
         LOG::logline("!! Distant land data is from an old version and needs to be regenerated");
         return false;
     }
 
     h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
-    if (h == INVALID_HANDLE_VALUE)
-    {
+    if (h == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics data is missing or corrupted");
         return false;
     }
@@ -730,30 +710,28 @@ bool DistantLand::loadDistantStatics()
     DistantStatics.resize(DistantStaticCount);
 
     HANDLE h2 = CreateFile("Data Files\\distantland\\statics\\static_meshes", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
-    if (h2 == INVALID_HANDLE_VALUE)
-    {
+    if (h2 == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics data is missing or corrupted");
         return false;
     }
 
     // Bright yellow error texture
-    IDirect3DTexture9 *errorTexture;
+    IDirect3DTexture9* errorTexture;
     device->CreateTexture(1, 1, 1, 0, D3DFMT_A8R8G8B8, D3DPOOL_MANAGED, &errorTexture, NULL);
 
     D3DLOCKED_RECT yellow;
     errorTexture->LockRect(0, &yellow, NULL, 0);
-    *(DWORD *)yellow.pBits = 0xffffff00;
+    *(DWORD*)yellow.pBits = 0xffffff00;
     errorTexture->UnlockRect(0);
 
     // Read entire file into one big memory buffer
     DWORD file_size = GetFileSize(h2, NULL);
-    unsigned char *file_buffer = new unsigned char[file_size];
-    unsigned char *pos = file_buffer;
+    unsigned char* file_buffer = new unsigned char[file_size];
+    unsigned char* pos = file_buffer;
     ReadFile(h2, file_buffer, file_size, &unused, NULL);
     CloseHandle(h2);
 
-    for(auto& i : DistantStatics)
-    {
+    for (auto& i : DistantStatics) {
         READ_FROM_BUFFER(pos, &i.numSubsets, 4);
         READ_FROM_BUFFER(pos, &i.sphere.radius, 4);
         READ_FROM_BUFFER(pos, &i.sphere.center, 12);
@@ -763,9 +741,8 @@ bool DistantLand::loadDistantStatics()
         i.aabbMin = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
         i.aabbMax = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-        for(int j = 0; j != i.numSubsets; j++)
-        {
-            DistantSubset *subset = &i.subsets[j];
+        for (int j = 0; j != i.numSubsets; j++) {
+            DistantSubset* subset = &i.subsets[j];
 
             // Get bounding sphere
             READ_FROM_BUFFER(pos, &subset->sphere.radius, 4);
@@ -788,9 +765,9 @@ bool DistantLand::loadDistantStatics()
             i.aabbMax.z = std::max(i.aabbMax.z, subset->aabbMax.z);
 
             // Load mesh data
-            IDirect3DVertexBuffer9 *vb;
-            IDirect3DIndexBuffer9 *ib;
-            void *lockdata;
+            IDirect3DVertexBuffer9* vb;
+            IDirect3DIndexBuffer9* ib;
+            void* lockdata;
 
             device->CreateVertexBuffer(subset->verts * SIZEOFSTATICVERT, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vb, 0);
             vb->Lock(0, 0, &lockdata, 0);
@@ -808,12 +785,11 @@ bool DistantLand::loadDistantStatics()
             // Load referenced texture
             unsigned short pathsize;
             READ_FROM_BUFFER(pos, &pathsize, 2);
-            const char *texname = (const char *)pos;
+            const char* texname = (const char*)pos;
             pos += pathsize;
 
-            IDirect3DTexture9 *tex = BSALoadTexture(device, texname);
-            if(!tex)
-            {
+            IDirect3DTexture9* tex = BSALoadTexture(device, texname);
+            if (!tex) {
                 LOG::logline("Cannot load texture %s", texname);
                 errorTexture->AddRef();
                 tex = errorTexture;
@@ -838,37 +814,36 @@ bool DistantLand::loadDistantStatics()
 
     // Load statics references
     mapWorldSpaces.clear();
-    for(size_t nWorldSpace = 0; true; ++nWorldSpace)
-    {
+    for (size_t nWorldSpace = 0; true; ++nWorldSpace) {
         size_t UsedDistantStaticCount;
         decltype(UsedDistantStatics)::iterator iCell;
 
         ReadFile(h, &UsedDistantStaticCount, 4, &unused, 0);
-        if(nWorldSpace != 0 && UsedDistantStaticCount == 0) break;
+        if (nWorldSpace != 0 && UsedDistantStaticCount == 0) {
+            break;
+        }
 
-        if(nWorldSpace == 0)
-        {
+        if (nWorldSpace == 0) {
             mapWorldSpaces.insert(make_pair(string(), WorldSpace()));
             iCell = UsedDistantStatics.insert(make_pair(string(), vector<UsedDistantStatic>())).first;
-            if(UsedDistantStaticCount == 0) continue;
-        }
-        else
-        {
+            if (UsedDistantStaticCount == 0) {
+                continue;
+            }
+        } else {
             char cellname[64];
             ReadFile(h, &cellname, 64, &unused, 0);
             iCell = UsedDistantStatics.insert(make_pair(string(cellname), vector<UsedDistantStatic>())).first;
             mapWorldSpaces.insert(make_pair(string(cellname), WorldSpace()));
         }
 
-        unsigned char *UsedDistantStaticData = new unsigned char[UsedDistantStaticCount * 32];
-        unsigned char *dataPos = UsedDistantStaticData;
+        unsigned char* UsedDistantStaticData = new unsigned char[UsedDistantStaticCount * 32];
+        unsigned char* dataPos = UsedDistantStaticData;
         ReadFile(h, UsedDistantStaticData, UsedDistantStaticCount * 32, &unused, 0);
 
         vector<UsedDistantStatic>& ThisWorldStatics = iCell->second;
         ThisWorldStatics.reserve(UsedDistantStaticCount);
 
-        for(size_t i = 0; i < UsedDistantStaticCount; ++i)
-        {
+        for (size_t i = 0; i < UsedDistantStaticCount; ++i) {
             UsedDistantStatic NewUsedStatic;
             float yaw, pitch, roll, scale;
 
@@ -879,8 +854,10 @@ bool DistantLand::loadDistantStatics()
             READ_FROM_BUFFER(dataPos, &roll, 4);
             READ_FROM_BUFFER(dataPos, &scale, 4);
 
-            DistantStatic *stat = &DistantStatics[NewUsedStatic.staticRef];
-            if(scale == 0.0f) scale = 1.0f;
+            DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
+            if (scale == 0.0f) {
+                scale = 1.0f;
+            }
             NewUsedStatic.scale = scale;
 
             D3DXMATRIX transmat, rotmatx, rotmaty, rotmatz, scalemat;
@@ -904,25 +881,22 @@ bool DistantLand::loadDistantStatics()
     return true;
 }
 
-bool DistantLand::initDistantStaticsBVH()
-{
-    for(auto& iWS : mapWorldSpaces)
-    {
+bool DistantLand::initDistantStaticsBVH() {
+    for (auto& iWS : mapWorldSpaces) {
         vector<UsedDistantStatic>& uds = UsedDistantStatics.find(iWS.first)->second;
 
         // Initialize quadtrees
-        QuadTree *NQTR = iWS.second.NearStatics = new QuadTree();
-        QuadTree *FQTR = iWS.second.FarStatics = new QuadTree();
-        QuadTree *VFQTR = iWS.second.VeryFarStatics = new QuadTree();
-        QuadTree *GQTR = iWS.second.GrassStatics = new QuadTree();
+        QuadTree* NQTR = iWS.second.NearStatics = new QuadTree();
+        QuadTree* FQTR = iWS.second.FarStatics = new QuadTree();
+        QuadTree* VFQTR = iWS.second.VeryFarStatics = new QuadTree();
+        QuadTree* GQTR = iWS.second.GrassStatics = new QuadTree();
 
         // Calclulate optimal initial quadtree size
         D3DXVECTOR2 aabbMax = D3DXVECTOR2(-FLT_MAX, -FLT_MAX);
         D3DXVECTOR2 aabbMin = D3DXVECTOR2(FLT_MAX, FLT_MAX);
 
         // Find xyz bounds
-        for(const auto& i : uds)
-        {
+        for (const auto& i : uds) {
             float x = i.pos.x, y = i.pos.y, r = i.sphere.radius;
 
             aabbMax.x = std::max(x + r, aabbMax.x);
@@ -939,31 +913,31 @@ bool DistantLand::initDistantStaticsBVH()
         VFQTR->SetBox(box_size, box_center);
         GQTR->SetBox(box_size, box_center);
 
-        for(const auto& i : uds)
-        {
-            DistantStatic *stat = &DistantStatics[i.staticRef];
-            QuadTree *targetQTR;
+        for (const auto& i : uds) {
+            DistantStatic* stat = &DistantStatics[i.staticRef];
+            QuadTree* targetQTR;
 
             // Use transformed radius
             float radius = i.sphere.radius;
 
             // Buildings are treated as larger objects, as they are typically
             // smaller component meshes combined to make a single building
-            if(stat->type == STATIC_BUILDING)
+            if (stat->type == STATIC_BUILDING) {
                 radius *= 2.0f;
+            }
 
             // Select quadtree to place object in
-            switch(stat->type)
-            {
+            switch (stat->type) {
             case STATIC_AUTO:
             case STATIC_TREE:
             case STATIC_BUILDING:
-                if(radius <= Configuration.DL.FarStaticMinSize)
+                if (radius <= Configuration.DL.FarStaticMinSize) {
                     targetQTR = NQTR;
-                else if(radius <= Configuration.DL.VeryFarStaticMinSize)
+                } else if (radius <= Configuration.DL.VeryFarStaticMinSize) {
                     targetQTR = FQTR;
-                else
+                } else {
                     targetQTR = VFQTR;
+                }
                 break;
 
             case STATIC_GRASS:
@@ -987,11 +961,9 @@ bool DistantLand::initDistantStaticsBVH()
             }
 
             // Add sub-meshes to appropriate quadtree
-            if(stat->type == STATIC_BUILDING)
-            {
+            if (stat->type == STATIC_BUILDING) {
                 // Use model bound so that all building parts have coherent visibility
-                for(int s = 0; s != stat->numSubsets; ++s)
-                {
+                for (int s = 0; s != stat->numSubsets; ++s) {
                     targetQTR->AddMesh(
                         i.sphere,
                         i.box,
@@ -1003,12 +975,9 @@ bool DistantLand::initDistantStaticsBVH()
                         stat->subsets[s].ibuffer
                     );
                 }
-            }
-            else
-            {
+            } else {
                 // Use individual mesh bounds
-                for(int s = 0; s != stat->numSubsets; ++s)
-                {
+                for (int s = 0; s != stat->numSubsets; ++s) {
                     targetQTR->AddMesh(
                         i.GetBoundingSphere(stat->subsets[s].sphere),
                         i.GetBoundingBox(stat->subsets[s].aabbMin, stat->subsets[s].aabbMax),
@@ -1023,10 +992,14 @@ bool DistantLand::initDistantStaticsBVH()
             }
         }
 
-        NQTR->Optimize(); NQTR->CalcVolume();
-        FQTR->Optimize(); FQTR->CalcVolume();
-        VFQTR->Optimize(); VFQTR->CalcVolume();
-        GQTR->Optimize(); GQTR->CalcVolume();
+        NQTR->Optimize();
+        NQTR->CalcVolume();
+        FQTR->Optimize();
+        FQTR->CalcVolume();
+        VFQTR->Optimize();
+        VFQTR->CalcVolume();
+        GQTR->Optimize();
+        GQTR->CalcVolume();
 
         uds.clear();
     }
@@ -1034,41 +1007,35 @@ bool DistantLand::initDistantStaticsBVH()
     return true;
 }
 
-bool DistantLand::initLandscape()
-{
+bool DistantLand::initLandscape() {
     HRESULT hr;
     LOG::logline(">> Landscape Load");
 
     hr = device->CreateVertexDeclaration(LandElem, &LandDecl);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to to create world vertex declaration");
         return false;
     }
 
-    if(GetFileAttributes("Data Files\\distantland\\world") == INVALID_FILE_ATTRIBUTES)
-    {
+    if (GetFileAttributes("Data Files\\distantland\\world") == INVALID_FILE_ATTRIBUTES) {
         LOG::logline("!! Distant land has not been generated");
         return true;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Could not load world texture for distant land");
         return false;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world_n.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Could not load world normal map texture for distant land");
         return false;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\textures\\MGE\\world_detail.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldDetail);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Could not load world detail texture for distant land");
         return false;
     }
@@ -1076,7 +1043,9 @@ bool DistantLand::initLandscape()
     LOG::logline("-- Landscape textures loaded");
 
     HANDLE file = CreateFile("Data Files\\distantland\\world", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
-    if(file == INVALID_HANDLE_VALUE) return false;
+    if (file == INVALID_HANDLE_VALUE) {
+        return false;
+    }
 
     DWORD mesh_count, unused;
     ReadFile(file, &mesh_count, 4, &unused, 0);
@@ -1084,15 +1053,13 @@ bool DistantLand::initLandscape()
     vector<LandMesh> meshesLand;
     meshesLand.resize(mesh_count);
 
-    if(!meshesLand.empty())
-    {
+    if (!meshesLand.empty()) {
         D3DXVECTOR2 qtmin(FLT_MAX, FLT_MAX), qtmax(-FLT_MAX, -FLT_MAX);
         D3DXMATRIX world;
         D3DXMatrixIdentity(&world);
 
         // Load meshes and calculate max size of quadtree
-        for(auto& i : meshesLand)
-        {
+        for (auto& i : meshesLand) {
             ReadFile(file, &i.sphere.radius, 4, &unused,0);
             ReadFile(file, &i.sphere.center, 12, &unused,0);
 
@@ -1105,9 +1072,9 @@ bool DistantLand::initLandscape()
             ReadFile(file, &i.faces, 4, &unused, 0);
 
             bool large = (i.verts > 0xFFFF || i.faces > 0xFFFF);
-            IDirect3DVertexBuffer9 *vb;
-            IDirect3DIndexBuffer9 *ib;
-            void *lockdata;
+            IDirect3DVertexBuffer9* vb;
+            IDirect3DIndexBuffer9* ib;
+            void* lockdata;
 
             device->CreateVertexBuffer(i.verts * SIZEOFLANDVERT, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vb, 0);
             vb->Lock(0, 0, &lockdata, 0);
@@ -1131,8 +1098,7 @@ bool DistantLand::initLandscape()
         LandQuadTree.SetBox(std::max(qtmax.x - qtmin.x, qtmax.y - qtmin.y), 0.5 * (qtmax + qtmin));
 
         // Add meshes to the quadtree
-        for(auto& i : meshesLand)
-        {
+        for (auto& i : meshesLand) {
             meshCollectionLand.push_back(MeshResources(i.vbuffer, i.ibuffer, 0));
             LandQuadTree.AddMesh(i.sphere, i.box, world, texWorldColour, i.verts, i.vbuffer, i.faces, i.ibuffer);
         }
@@ -1145,20 +1111,17 @@ bool DistantLand::initLandscape()
     return true;
 }
 
-bool DistantLand::initGrass()
-{
+bool DistantLand::initGrass() {
     HRESULT hr;
 
     hr = device->CreateVertexDeclaration(GrassElem, &GrassDecl);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create grass decl");
         return false;
     }
 
     hr = device->CreateVertexBuffer(MaxGrassElements * GrassInstStride, D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vbGrassInstances, NULL);
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! Failed to create grass instance buffer");
         return false;
     }
@@ -1166,17 +1129,17 @@ bool DistantLand::initGrass()
     return true;
 }
 
-void DistantLand::release()
-{
-    if(!ready) return;
+void DistantLand::release() {
+    if (!ready) {
+        return;
+    }
 
     LOG::logline(">> Distant Land release");
 
     PostShaders::release();
     FixedFunctionShader::release();
 
-    for(auto& iWS : mapWorldSpaces)
-    {
+    for (auto& iWS : mapWorldSpaces) {
         WorldSpace& w = iWS.second;
         delete w.NearStatics;
         delete w.FarStatics;
@@ -1185,8 +1148,7 @@ void DistantLand::release()
     }
     mapWorldSpaces.clear();
 
-    for(auto& iM : meshCollectionStatics)
-    {
+    for (auto& iM : meshCollectionStatics) {
         iM.vb->Release();
         iM.ib->Release();
         iM.tex->Release();
@@ -1194,58 +1156,85 @@ void DistantLand::release()
     meshCollectionStatics.clear();
 
     LandQuadTree.Clear();
-    for(auto& iM : meshCollectionLand)
-    {
+    for (auto& iM : meshCollectionLand) {
         iM.vb->Release();
         iM.ib->Release();
         // A shared texture is used for land, and is released below
     }
     meshCollectionLand.clear();
 
-    if(texWorldColour)
-    {
-        texWorldColour->Release(); texWorldColour = 0;
-        texWorldNormals->Release(); texWorldNormals = 0;
-        texWorldDetail->Release(); texWorldDetail = 0;
+    if (texWorldColour) {
+        texWorldColour->Release();
+        texWorldColour = 0;
+        texWorldNormals->Release();
+        texWorldNormals = 0;
+        texWorldDetail->Release();
+        texWorldDetail = 0;
     }
 
     BSAClearTextureCache();
 
-    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
-    {
-        surfRain->Release(); surfRain = 0;
-        texRain->Release(); texRain = 0;
-        surfRipples->Release(); surfRipples = 0;
-        texRipples->Release(); texRipples = 0;
-        surfRippleBuffer->Release(); surfRippleBuffer = 0;
-        texRippleBuffer->Release(); texRippleBuffer = 0;
-        vbWaveSim->Release(); vbWaveSim = 0;
+    if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
+        surfRain->Release();
+        surfRain = 0;
+        texRain->Release();
+        texRain = 0;
+        surfRipples->Release();
+        surfRipples = 0;
+        texRipples->Release();
+        texRipples = 0;
+        surfRippleBuffer->Release();
+        surfRippleBuffer = 0;
+        texRippleBuffer->Release();
+        texRippleBuffer = 0;
+        vbWaveSim->Release();
+        vbWaveSim = 0;
     }
 
-    LandDecl->Release(); LandDecl = 0;
-    StaticDecl->Release(); StaticDecl = 0;
-    WaterDecl->Release(); WaterDecl = 0;
-    GrassDecl->Release(); GrassDecl = 0;
+    LandDecl->Release();
+    LandDecl = 0;
+    StaticDecl->Release();
+    StaticDecl = 0;
+    WaterDecl->Release();
+    WaterDecl = 0;
+    GrassDecl->Release();
+    GrassDecl = 0;
 
-    texShadow->Release(); texShadow = 0;
-    texSoftShadow->Release(); texSoftShadow = 0;
-    surfShadowZ->Release(); surfShadowZ = 0;
+    texShadow->Release();
+    texShadow = 0;
+    texSoftShadow->Release();
+    texSoftShadow = 0;
+    surfShadowZ->Release();
+    surfShadowZ = 0;
 
-    texWater->Release(); texWater = 0;
-    texReflection->Release(); texReflection = 0;
-    surfReflectionZ->Release(); surfReflectionZ = 0;
-    vbWater->Release(); vbWater = 0;
-    ibWater->Release(); ibWater = 0;
-    vbGrassInstances->Release(); vbGrassInstances = 0;
-    vbFullFrame->Release(); vbFullFrame = 0;
+    texWater->Release();
+    texWater = 0;
+    texReflection->Release();
+    texReflection = 0;
+    surfReflectionZ->Release();
+    surfReflectionZ = 0;
+    vbWater->Release();
+    vbWater = 0;
+    ibWater->Release();
+    ibWater = 0;
+    vbGrassInstances->Release();
+    vbGrassInstances = 0;
+    vbFullFrame->Release();
+    vbFullFrame = 0;
 
-    texDepthFrame->Release(); texDepthFrame = 0;
-    surfDepthDepth->Release(); surfDepthDepth = 0;
+    texDepthFrame->Release();
+    texDepthFrame = 0;
+    surfDepthDepth->Release();
+    surfDepthDepth = 0;
 
-    effectPool->Release(); effectPool = 0;
-    effectShadow->Release(); effectShadow = 0;
-    effectDepth->Release(); effectDepth = 0;
-    effect->Release(); effect = 0;
+    effectPool->Release();
+    effectPool = 0;
+    effectShadow->Release();
+    effectShadow = 0;
+    effectDepth->Release();
+    effectDepth = 0;
+    effect->Release();
+    effect = 0;
 
     LOG::logline("<< Distant Land release");
 

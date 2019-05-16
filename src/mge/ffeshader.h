@@ -4,12 +4,11 @@
 #include <unordered_map>
 #include "proxydx/d3d8header.h"
 
-struct RenderedState
-{
-    IDirect3DTexture9 *texture;
-    IDirect3DVertexBuffer9 *vb;
+struct RenderedState {
+    IDirect3DTexture9* texture;
+    IDirect3DVertexBuffer9* vb;
     UINT vbOffset, vbStride;
-    IDirect3DIndexBuffer9 *ib;
+    IDirect3DIndexBuffer9* ib;
     DWORD ibBase;
     DWORD fvf;
     DWORD zWrite, cullMode;
@@ -24,10 +23,8 @@ struct RenderedState
     UINT baseIndex, minIndex, vertCount, startIndex, primCount;
 };
 
-struct FragmentState
-{
-    struct Stage
-    {
+struct FragmentState {
+    struct Stage {
         BYTE colorOp, colorArg1, colorArg2;
         BYTE alphaOp, alphaArg1, alphaArg2;
         BYTE colorArg0, alphaArg0, resultArg;
@@ -37,22 +34,18 @@ struct FragmentState
         float bumpLumiScale, bumpLumiBias;
     } stage[8];
 
-    struct Material
-    {
+    struct Material {
         D3DCOLORVALUE diffuse, ambient, emissive;
     } material;
 };
 
-struct LightState
-{
-    struct Light
-    {
+struct LightState {
+    struct Light {
         D3DLIGHTTYPE type;
         D3DCOLORVALUE diffuse;
         D3DVECTOR position;     // position / normalized direction
         D3DVECTOR viewspacePos;
-        union
-        {
+        union {
             D3DVECTOR falloff;  // constant, linear, quadratic
             D3DVECTOR ambient;  // for directional lights
         };
@@ -64,10 +57,8 @@ struct LightState
     std::vector<DWORD> active;
 };
 
-class FixedFunctionShader
-{
-    struct ShaderKey
-    {
+class FixedFunctionShader {
+    struct ShaderKey {
         DWORD uvSets : 2;
         DWORD usesSkinning : 1;
         DWORD vertexColour : 1;
@@ -80,8 +71,7 @@ class FixedFunctionShader
         DWORD usesTexgen : 1;
         DWORD texgenStage : 3;
 
-        struct Stage
-        {
+        struct Stage {
             DWORD colorOp : 6;
             DWORD colorArg1 : 6;
             DWORD colorArg2 : 6;
@@ -91,28 +81,26 @@ class FixedFunctionShader
         } stage[8];
 
         ShaderKey() {}
-        ShaderKey(const RenderedState *rs, const FragmentState *frs, const LightState *lightrs);
+        ShaderKey(const RenderedState* rs, const FragmentState* frs, const LightState* lightrs);
         bool operator<(const ShaderKey& other) const;
         bool operator==(const ShaderKey& other) const;
         void log() const;
 
-        struct hasher
-        {
+        struct hasher {
             std::size_t operator()(const ShaderKey& k) const;
         };
     };
 
-    struct ShaderLRU
-    {
-        ID3DXEffect *effect;
+    struct ShaderLRU {
+        ID3DXEffect* effect;
         FixedFunctionShader::ShaderKey last_sk;
     };
 
-    static IDirect3DDevice *device;
-    static ID3DXEffectPool *constantPool;
-    static std::unordered_map<ShaderKey, ID3DXEffect *, ShaderKey::hasher> cacheEffects;
+    static IDirect3DDevice* device;
+    static ID3DXEffectPool* constantPool;
+    static std::unordered_map<ShaderKey, ID3DXEffect*, ShaderKey::hasher> cacheEffects;
     static ShaderLRU shaderLRU;
-    static ID3DXEffect *effectDefaultPurple;
+    static ID3DXEffect* effectDefaultPurple;
 
     static D3DXHANDLE ehWorld, ehWorldView;
     static D3DXHANDLE ehVertexBlendState, ehVertexBlendPalette;
@@ -125,11 +113,11 @@ class FixedFunctionShader
 
     static float sunMultiplier, ambMultiplier;
 
-    static ID3DXEffect * generateMWShader(const ShaderKey& sk);
+    static ID3DXEffect* generateMWShader(const ShaderKey& sk);
 
 public:
-    static bool init(IDirect3DDevice *d, ID3DXEffectPool *pool);
+    static bool init(IDirect3DDevice* d, ID3DXEffectPool* pool);
     static void updateLighting(float sunMult, float ambMult);
-    static void renderMorrowind(const RenderedState *rs, const FragmentState *frs, LightState *lightrs);
+    static void renderMorrowind(const RenderedState* rs, const FragmentState* frs, LightState* lightrs);
     static void release();
 };

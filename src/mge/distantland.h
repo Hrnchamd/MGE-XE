@@ -11,15 +11,13 @@
 
 struct MGEShader;
 
-class DistantLand
-{
+class DistantLand {
 public:
-    struct WorldSpace
-    {
-        QuadTree *NearStatics;
-        QuadTree *FarStatics;
-        QuadTree *VeryFarStatics;
-        QuadTree *GrassStatics;
+    struct WorldSpace {
+        QuadTree* NearStatics;
+        QuadTree* FarStatics;
+        QuadTree* VeryFarStatics;
+        QuadTree* GrassStatics;
     };
 
     static constexpr DWORD fvfWave = D3DFVF_XYZRHW | D3DFVF_TEX2;
@@ -36,20 +34,20 @@ public:
     static bool isPPLActive;
     static int numWaterVerts, numWaterTris;
 
-    static IDirect3DDevice9 *device;
-    static ID3DXEffect *effect;
-    static ID3DXEffect *effectShadow;
-    static ID3DXEffect *effectDepth;
-    static ID3DXEffectPool *effectPool;
-    static IDirect3DVertexDeclaration9 *LandDecl;
-    static IDirect3DVertexDeclaration9 *StaticDecl;
-    static IDirect3DVertexDeclaration9 *WaterDecl;
-    static IDirect3DVertexDeclaration9 *GrassDecl;
+    static IDirect3DDevice9* device;
+    static ID3DXEffect* effect;
+    static ID3DXEffect* effectShadow;
+    static ID3DXEffect* effectDepth;
+    static ID3DXEffectPool* effectPool;
+    static IDirect3DVertexDeclaration9* LandDecl;
+    static IDirect3DVertexDeclaration9* StaticDecl;
+    static IDirect3DVertexDeclaration9* WaterDecl;
+    static IDirect3DVertexDeclaration9* GrassDecl;
 
     static VendorSpecificRendering vsr;
 
     static std::unordered_map<std::string, WorldSpace> mapWorldSpaces;
-    static const WorldSpace *currentWorldSpace;
+    static const WorldSpace* currentWorldSpace;
     static QuadTree LandQuadTree;
     static VisibleSet visLand;
     static VisibleSet visDistant;
@@ -59,24 +57,24 @@ public:
     static std::vector<RenderedState> recordSky;
     static std::vector< std::pair<const QuadTreeMesh*, int> > batchedGrass;
 
-    static IDirect3DTexture9 *texWorldColour, *texWorldNormals, *texWorldDetail;
-    static IDirect3DTexture9 *texDepthFrame;
-    static IDirect3DSurface9 *surfDepthDepth;
-    static IDirect3DTexture9 *texDistantBlend;
-    static IDirect3DTexture9 *texReflection;
-    static IDirect3DSurface9 *surfReflectionZ;
-    static IDirect3DVolumeTexture9 *texWater;
-    static IDirect3DVertexBuffer9 *vbWater;
-    static IDirect3DIndexBuffer9 *ibWater;
-    static IDirect3DVertexBuffer9 *vbGrassInstances;
+    static IDirect3DTexture9* texWorldColour, *texWorldNormals, *texWorldDetail;
+    static IDirect3DTexture9* texDepthFrame;
+    static IDirect3DSurface9* surfDepthDepth;
+    static IDirect3DTexture9* texDistantBlend;
+    static IDirect3DTexture9* texReflection;
+    static IDirect3DSurface9* surfReflectionZ;
+    static IDirect3DVolumeTexture9* texWater;
+    static IDirect3DVertexBuffer9* vbWater;
+    static IDirect3DIndexBuffer9* ibWater;
+    static IDirect3DVertexBuffer9* vbGrassInstances;
 
-    static IDirect3DTexture9 *texRain, *texRipples, *texRippleBuffer;
-    static IDirect3DSurface9 *surfRain, *surfRipples, *surfRippleBuffer;
-    static IDirect3DVertexBuffer9 *vbWaveSim;
+    static IDirect3DTexture9* texRain, *texRipples, *texRippleBuffer;
+    static IDirect3DSurface9* surfRain, *surfRipples, *surfRippleBuffer;
+    static IDirect3DVertexBuffer9* vbWaveSim;
 
-    static IDirect3DTexture9 *texShadow, *texSoftShadow;
-    static IDirect3DSurface9 *surfShadowZ;
-    static IDirect3DVertexBuffer9 *vbFullFrame, *vbClipCube;
+    static IDirect3DTexture9* texShadow, *texSoftShadow;
+    static IDirect3DSurface9* surfShadowZ;
+    static IDirect3DVertexBuffer9* vbFullFrame, *vbClipCube;
 
     static D3DXMATRIX mwView, mwProj;
     static D3DXMATRIX smView[2], smProj[2], smViewproj[2];
@@ -112,9 +110,9 @@ public:
     static D3DXHANDLE ehRippleOrigin;
     static D3DXHANDLE ehWaveHeight;
 
-    static void (*captureScreenFunc)(IDirect3DSurface9 *);
+    static void (*captureScreenFunc)(IDirect3DSurface9*);
 
-    static bool init(IDirect3DDevice9 *realDevice);
+    static bool init(IDirect3DDevice9* realDevice);
     static bool initShader();
     static bool initDepth();
     static bool initWater();
@@ -128,18 +126,18 @@ public:
     static bool reloadShaders();
     static void release();
 
-    static void editProjectionZ(D3DMATRIX *m, float zn, float zf);
+    static void editProjectionZ(D3DMATRIX* m, float zn, float zf);
     static bool selectDistantCell();
     static bool isDistantCell();
 
-    static void setView(const D3DMATRIX *m);
-    static void setProjection(D3DMATRIX *proj);
+    static void setView(const D3DMATRIX* m);
+    static void setProjection(D3DMATRIX* proj);
     static void setHorizonColour(const RGBVECTOR& c);
     static void setAmbientColour(const RGBVECTOR& c);
-    static void setSunLight(const D3DLIGHT8 *s);
+    static void setSunLight(const D3DLIGHT8* s);
     static void setScattering(const RGBVECTOR& out, const RGBVECTOR& in);
     static void adjustFog();
-    static bool inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, LightState *lightrs);
+    static bool inspectIndexedPrimitive(int sceneCount, const RenderedState* rs, const FragmentState* frs, LightState* lightrs);
 
     static void renderSky();
     static void renderStage0();
@@ -148,21 +146,21 @@ public:
     static void renderStageBlend();
     static void renderStageWater();
 
-    static void setupCommonEffect(const D3DXMATRIX *view,const  D3DXMATRIX *proj);
+    static void setupCommonEffect(const D3DXMATRIX* view,const  D3DXMATRIX* proj);
 
-    static void renderDistantLand(ID3DXEffect *e, const D3DXMATRIX *view, const D3DXMATRIX *proj);
+    static void renderDistantLand(ID3DXEffect* e, const D3DXMATRIX* view, const D3DXMATRIX* proj);
     static void renderDistantLandZ();
-    static void cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *proj);
+    static void cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj);
     static void renderDistantStatics();
-    static void cullGrass(const D3DXMATRIX *view, const D3DXMATRIX *proj);
+    static void cullGrass(const D3DXMATRIX* view, const D3DXMATRIX* proj);
     static void buildGrassInstanceVB();
     static void renderGrassInst();
     static void renderGrassInstZ();
-    static void renderGrassCommon(ID3DXEffect *e);
+    static void renderGrassCommon(ID3DXEffect* e);
 
-    static void renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX *proj);
+    static void renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX* proj);
     static void renderReflectedSky();
-    static void renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRIX *proj);
+    static void renderReflectedStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj);
     static void clearReflection();
     static void simulateDynamicWaves();
     static void renderWaterPlane();
@@ -172,24 +170,23 @@ public:
     static void renderDepthRecorded();
 
     static void renderShadowMap();
-    static void renderShadowLayer(int layer, float radius, const D3DXMATRIX *inverseCameraProj);
+    static void renderShadowLayer(int layer, float radius, const D3DXMATRIX* inverseCameraProj);
     static void renderShadow();
     static void renderShadowDebug();
 
     static void postProcess();
-    static void updatePostShader(MGEShader *shader);
+    static void updatePostShader(MGEShader* shader);
 
-    static IDirect3DSurface9 * captureScreen();
-    static void requestCaptureNoUI(void (*func)(IDirect3DSurface9 *));
+    static IDirect3DSurface9* captureScreen();
+    static void requestCaptureNoUI(void (*func)(IDirect3DSurface9*));
 };
 
-class RenderTargetSwitcher
-{
-    IDirect3DSurface9 *savedTarget, *savedDepthStencil;
-    void init(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil);
+class RenderTargetSwitcher {
+    IDirect3DSurface9* savedTarget, *savedDepthStencil;
+    void init(IDirect3DSurface9* target, IDirect3DSurface9* targetDepthStencil);
 
 public:
-    RenderTargetSwitcher(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil);
-    RenderTargetSwitcher(IDirect3DTexture9 *targetTex, IDirect3DSurface9 *targetDepthStencil);
+    RenderTargetSwitcher(IDirect3DSurface9* target, IDirect3DSurface9* targetDepthStencil);
+    RenderTargetSwitcher(IDirect3DTexture9* targetTex, IDirect3DSurface9* targetDepthStencil);
     ~RenderTargetSwitcher();
 };

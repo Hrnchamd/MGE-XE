@@ -10,23 +10,22 @@ enum StaticType {
     STATIC_BUILDING = 6
 };
 
-struct LandMesh
-{
+struct LandMesh {
     BoundingSphere sphere;
     BoundingBox box;
     DWORD verts;
     DWORD faces;
-    IDirect3DVertexBuffer9 *vbuffer;
-    IDirect3DIndexBuffer9 *ibuffer;
+    IDirect3DVertexBuffer9* vbuffer;
+    IDirect3DIndexBuffer9* ibuffer;
 };
 
 struct DistantSubset {
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
-    IDirect3DTexture9 *tex;
+    IDirect3DTexture9* tex;
     bool hasalpha;                      // texture has alpha transparency
-    IDirect3DVertexBuffer9 *vbuffer;
-    IDirect3DIndexBuffer9 *ibuffer;
+    IDirect3DVertexBuffer9* vbuffer;
+    IDirect3DIndexBuffer9* ibuffer;
     int verts;
     int faces;
 };
@@ -36,7 +35,7 @@ struct DistantStatic {
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
     int numSubsets;
-    DistantSubset *subsets;
+    DistantSubset* subsets;
 };
 
 struct UsedDistantStatic {
@@ -47,8 +46,7 @@ struct UsedDistantStatic {
     BoundingSphere sphere;      // post-transform
     BoundingBox box;            // post-transform
 
-    BoundingSphere GetBoundingSphere(const BoundingSphere& base) const
-    {
+    BoundingSphere GetBoundingSphere(const BoundingSphere& base) const {
         BoundingSphere sphere;
         D3DXVec3TransformCoord(&sphere.center, &base.center, &transform);
         sphere.radius = base.radius * scale;
@@ -56,8 +54,7 @@ struct UsedDistantStatic {
         return sphere;
     }
 
-    BoundingBox GetBoundingBox(const D3DXVECTOR3& aabbMin, const D3DXVECTOR3& aabbMax) const
-    {
+    BoundingBox GetBoundingBox(const D3DXVECTOR3& aabbMin, const D3DXVECTOR3& aabbMax) const {
         BoundingBox box;
         box.Set(aabbMin, aabbMax);
         box.Transform(transform);

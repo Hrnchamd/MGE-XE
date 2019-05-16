@@ -44,8 +44,7 @@ namespace Niflib {
         bool removeduplicate;
     };
 
-    class ProgMesh
-    {
+    class ProgMesh {
     public:
         ProgMesh(DWORD vertCount, DWORD faceCount, DXVertex* verts, WORD* faces);
         ~ProgMesh(void);
@@ -60,28 +59,26 @@ namespace Niflib {
         int GetTriangleCount(void);
 
         // Control vertices
-        bool HasVertex(CollapseVertex *);
-        bool HasVertex(CollapseVertex *,
-            std::vector<CollapseVertex *>::iterator &);
-        void RemoveVertex(CollapseVertex *);
+        bool HasVertex(CollapseVertex*);
+        bool HasVertex(CollapseVertex*, std::vector<CollapseVertex*>::iterator&);
+        void RemoveVertex(CollapseVertex*);
 
         // Control triangles
-        bool HasTriangle(CollapseTriangle *);
-        bool HasTriangle(CollapseTriangle *,
-            std::vector<CollapseTriangle *>::iterator &);
-        void RemoveTriangle(CollapseTriangle *);
+        bool HasTriangle(CollapseTriangle*);
+        bool HasTriangle(CollapseTriangle*, std::vector<CollapseTriangle*>::iterator&);
+        void RemoveTriangle(CollapseTriangle*);
 
         // Expose the collapse arguments
         PMarg Arguments;
 
         // Get some mesh data
-        Triangle    GetFace(unsigned int);
-        DXVertex    GetVert(unsigned int);
+        Triangle GetFace(unsigned int);
+        DXVertex GetVert(unsigned int);
 
     private:
         // The containers that hold the meshes data
-        std::vector<CollapseVertex *> vertices;
-        std::vector<CollapseTriangle *> triangles;
+        std::vector<CollapseVertex*> vertices;
+        std::vector<CollapseTriangle*> triangles;
 
         // The actual collapsing information
         std::vector<int> CollapseOrder;
@@ -94,12 +91,12 @@ namespace Niflib {
         std::vector<DXVertex> Verts;
 
         // check for duplicate vertices
-        bool CheckDuplicate(CollapseVertex * &);
+        bool CheckDuplicate(CollapseVertex*&);
 
         // collapsing methods
-        void ComputeEdgeCostAtVertex(CollapseVertex *);
+        void ComputeEdgeCostAtVertex(CollapseVertex*);
         void ComputeAllEdgeCollapseCosts(void);
-        void Collapse(CollapseVertex *, CollapseVertex*, bool);
+        void Collapse(CollapseVertex*, CollapseVertex*, bool);
     };
 
 }; //namespace Niflib

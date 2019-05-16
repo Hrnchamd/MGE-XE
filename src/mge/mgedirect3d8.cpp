@@ -5,8 +5,7 @@
 #include "configuration.h"
 #include "support/log.h"
 
-MGEProxyD3D::MGEProxyD3D(IDirect3D9 *real) : ProxyD3D(real, 120) // Morrowind requires D3D version 120
-{
+MGEProxyD3D::MGEProxyD3D(IDirect3D9* real) : ProxyD3D(real, 120) { // Morrowind requires D3D version 120
     // Force pixel shaders off, to simplify water override
     d3d8Caps.VertexShaderVersion = 0;
     d3d8Caps.PixelShaderVersion = 0;
@@ -19,25 +18,20 @@ MGEProxyD3D::MGEProxyD3D(IDirect3D9 *real) : ProxyD3D(real, 120) // Morrowind re
                  HIWORD(adapter.DriverVersion.LowPart), LOWORD(adapter.DriverVersion.LowPart));
 }
 
-HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d, D3DPRESENT_PARAMETERS8 *e, IDirect3DDevice8 **f)
-{
+HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d, D3DPRESENT_PARAMETERS8* e, IDirect3DDevice8** f) {
     LOG::logline(">> D3D Proxy CreateDevice");
 
     // Window positioning
-    if(e->Windowed)
-    {
+    if (e->Windowed) {
         HWND hMainWnd = GetParent(c);
         int wx = std::max(0, (GetSystemMetrics(SM_CXSCREEN) - (int)e->BackBufferWidth) / 2);
         int wy = std::max(0, (GetSystemMetrics(SM_CYSCREEN) - (int)e->BackBufferHeight) / 2);
 
-        if(Configuration.Borderless)
-        {
+        if (Configuration.Borderless) {
             // Remove non-client window parts and move window flush to screen edge / centre if smaller than display
             SetWindowLong(hMainWnd, GWL_STYLE, WS_VISIBLE);
             SetWindowPos(hMainWnd, NULL, wx, wy, e->BackBufferWidth, e->BackBufferHeight, SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
-        }
-        else
-        {
+        } else {
             // Move window to top, with client area centred on one axis
             RECT rect = { wx, wy, int(e->BackBufferWidth), int(e->BackBufferHeight) };
             AdjustWindowRect(&rect, GetWindowLong(hMainWnd, GWL_STYLE), FALSE);
@@ -45,8 +39,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
         }
 
         // Windowed mode does not allow multiple frame vsync
-        if(Configuration.VWait >= D3DPRESENT_INTERVAL_TWO && Configuration.VWait <= D3DPRESENT_INTERVAL_FOUR)
-        {
+        if (Configuration.VWait >= D3DPRESENT_INTERVAL_TWO && Configuration.VWait <= D3DPRESENT_INTERVAL_FOUR) {
             Configuration.VWait = D3DPRESENT_INTERVAL_ONE;
             LOG::logline("VWait greater than one is not supported in windowed mode.");
         }
@@ -58,8 +51,9 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 
     // Override device parameters
     // Note that Morrowind will look at the modified parameters
-    if(e->Flags & D3DPRESENTFLAG_LOCKABLE_BACKBUFFER)
+    if (e->Flags & D3DPRESENTFLAG_LOCKABLE_BACKBUFFER) {
         e->Flags ^= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
+    }
 
     e->MultiSampleType = msaaSamples;
     e->AutoDepthStencilFormat = (D3DFORMAT)Configuration.ZBufFormat;
@@ -85,11 +79,10 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     pp.PresentationInterval = e->FullScreen_PresentationInterval;
 
     // Create device in the same manner as the proxy
-    IDirect3DDevice9 *realDevice = NULL;
+    IDirect3DDevice9* realDevice = NULL;
     HRESULT hr = realD3D->CreateDevice(a, b, c, d, &pp, &realDevice);
 
-    if(hr != D3D_OK)
-    {
+    if (hr != D3D_OK) {
         LOG::logline("!! D3D Proxy CreateDevice failure");
         return hr;
     }
@@ -99,8 +92,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     // Set up default render states
     Configuration.ScaleFilter = (Configuration.AnisoLevel > 0) ? D3DTEXF_ANISOTROPIC : D3DTEXF_LINEAR;
 
-    for(int i = 0; i != 8; ++i)
-    {
+    for (int i = 0; i != 8; ++i) {
         realDevice->SetSamplerState(i, D3DSAMP_MINFILTER, Configuration.ScaleFilter);
         realDevice->SetSamplerState(i, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
         realDevice->SetSamplerState(i, D3DSAMP_MAXANISOTROPY, Configuration.AnisoLevel);
@@ -108,20 +100,15 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 
     // Set variables dependent on configuration
     DWORD FogPixelMode, FogVertexMode, RangedFog;
-    if(Configuration.FogMode == 2)
-    {
+    if (Configuration.FogMode == 2) {
         FogVertexMode = D3DFOG_LINEAR;
         FogPixelMode = D3DFOG_NONE;
         RangedFog = 1;
-    }
-    else if(Configuration.FogMode == 1)
-    {
+    } else if (Configuration.FogMode == 1) {
         FogVertexMode = D3DFOG_LINEAR;
         FogPixelMode = D3DFOG_NONE;
         RangedFog = 0;
-    }
-    else
-    {
+    } else {
         FogVertexMode = D3DFOG_NONE;
         FogPixelMode = D3DFOG_LINEAR;
         RangedFog = 0;
@@ -136,8 +123,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     return D3D_OK;
 }
 
-IDirect3DDevice8* MGEProxyD3D::factoryProxyDevice(IDirect3DDevice9 *d)
-{
+IDirect3DDevice8* MGEProxyD3D::factoryProxyDevice(IDirect3DDevice9* d) {
     LOG::logline("-- D3D Proxy Factory OK");
     return new MGEProxyDevice(d, this);
 }

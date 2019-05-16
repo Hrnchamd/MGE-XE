@@ -8,16 +8,13 @@
 
 
 // renderSky - Render atmosphere scattering sky layer and other recorded draw calls on top
-void DistantLand::renderSky()
-{
+void DistantLand::renderSky() {
     // Recorded renders
     const auto& recordSky_const = recordSky;
-    for(const auto& i : recordSky_const)
-    {
+    for (const auto& i : recordSky_const) {
         // Set variables in main effect; variables are shared via effect pool
         effect->SetTexture(ehTex0, i.texture);
-        if(i.texture)
-        {
+        if (i.texture) {
             // Textured object; draw as normal in shader,
             // except moon shadow (prevents stars shining through moons) which
             // requires colour to be replaced with atmosphere scattering colour
@@ -28,9 +25,7 @@ void DistantLand::renderSky()
             device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
             device->SetRenderState(D3DRS_SRCBLEND, i.srcBlend);
             device->SetRenderState(D3DRS_DESTBLEND, i.destBlend);
-        }
-        else
-        {
+        } else {
             // Sky; perform atmosphere scattering in shader
             effect->SetBool(ehHasAlpha, false);
             effect->SetBool(ehHasBones, true);
@@ -47,8 +42,7 @@ void DistantLand::renderSky()
     }
 }
 
-void DistantLand::renderDistantLand(ID3DXEffect *e, const D3DXMATRIX *view, const D3DXMATRIX *proj)
-{
+void DistantLand::renderDistantLand(ID3DXEffect* e, const D3DXMATRIX* view, const D3DXMATRIX* proj) {
     D3DXMATRIX world, viewproj = (*view) * (*proj);
     D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, Configuration.DL.DrawDist * kCellSize);
 
@@ -69,8 +63,7 @@ void DistantLand::renderDistantLand(ID3DXEffect *e, const D3DXMATRIX *view, cons
     visLand.Render(device, 0, 0, 0, 0, 0, SIZEOFLANDVERT);
 }
 
-void DistantLand::renderDistantLandZ()
-{
+void DistantLand::renderDistantLandZ() {
     D3DXMATRIX world;
 
     D3DXMatrixIdentity(&world);
@@ -82,8 +75,7 @@ void DistantLand::renderDistantLandZ()
     visLand.Render(device, 0, 0, 0, 0, 0, SIZEOFLANDVERT);
 }
 
-void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *proj)
-{
+void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
     D3DXMATRIX ds_proj = *proj, ds_viewproj;
     D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, 0);
     float zn = nearViewRange - 768.0, zf = zn;
@@ -92,8 +84,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
     visDistant.RemoveAll();
 
     zf = std::min(Configuration.DL.NearStaticEnd * kCellSize, cullDist);
-    if(zn < zf)
-    {
+    if (zn < zf) {
         editProjectionZ(&ds_proj, zn, zf);
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
@@ -102,8 +93,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
     }
 
     zf = std::min(Configuration.DL.FarStaticEnd * kCellSize, cullDist);
-    if(zn < zf)
-    {
+    if (zn < zf) {
         editProjectionZ(&ds_proj, zn, zf);
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
@@ -112,8 +102,7 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
     }
 
     zf = std::min(Configuration.DL.VeryFarStaticEnd * kCellSize, cullDist);
-    if(zn < zf)
-    {
+    if (zn < zf) {
         editProjectionZ(&ds_proj, zn, zf);
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
@@ -124,10 +113,8 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX *view, const D3DXMATRIX *p
     visDistant.SortByState();
 }
 
-void DistantLand::renderDistantStatics()
-{
-    if(!MWBridge::get()->IsExterior())
-    {
+void DistantLand::renderDistantStatics() {
+    if (!MWBridge::get()->IsExterior()) {
         // Set clipping to stop large architectural meshes (that don't match exactly)
         // from visible overdrawing and causing z-buffer occlusion
         float clipAt = nearViewRange - 768.0;

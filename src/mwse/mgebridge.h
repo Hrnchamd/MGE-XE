@@ -2,8 +2,7 @@
 
 #include "VMTYPES.H"
 
-class MWSE_MGEPlugin
-{
+class MWSE_MGEPlugin {
 public:
     static void init(HMODULE dll);
 };

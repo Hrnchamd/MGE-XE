@@ -2,74 +2,83 @@
 
 #include "mwseinstruction.h"
 
-struct mwseRayTest : public mwseInstruction
-{
-    mwseRayTest(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseRayTest : public mwseInstruction {
+    mwseRayTest(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseRayTestFrom : public mwseInstruction
-{
-    mwseRayTestFrom(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseRayTestFrom : public mwseInstruction {
+    mwseRayTestFrom(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseRayHitPosition : public mwseInstruction
-{
-    mwseRayHitPosition(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseRayHitPosition : public mwseInstruction {
+    mwseRayHitPosition(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseRayHitNormal : public mwseInstruction
-{
-    mwseRayHitNormal(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseRayHitNormal : public mwseInstruction {
+    mwseRayHitNormal(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseRayHitRef : public mwseInstruction
-{
-    mwseRayHitRef(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseRayHitRef : public mwseInstruction {
+    mwseRayHitRef(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseModelBounds : public mwseInstruction
-{
-    mwseModelBounds(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseModelBounds : public mwseInstruction {
+    mwseModelBounds(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseTransformVec : public mwseInstruction
-{
-    mwseTransformVec(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseTransformVec : public mwseInstruction {
+    mwseTransformVec(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseIsAirborne : public mwseInstruction
-{
-    mwseIsAirborne(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseIsAirborne : public mwseInstruction {
+    mwseIsAirborne(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };
 
-struct mwseSetAirVelocity : public mwseInstruction
-{
-    mwseSetAirVelocity(TES3MACHINE& mach) : mwseInstruction(mach) { vptr = &vtable; }
-    static __thiscall bool execute(mwseInstruction *_this);
+struct mwseSetAirVelocity : public mwseInstruction {
+    mwseSetAirVelocity(TES3MACHINE& mach) : mwseInstruction(mach) {
+        vptr = &vtable;
+    }
+    static __thiscall bool execute(mwseInstruction* _this);
 private:
     static vtable_t vtable;
 };

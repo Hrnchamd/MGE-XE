@@ -16,9 +16,8 @@ static const float shadowFarRadius = 4000.0;
 // Renders multiple shadow map layers to channels in one texture
 // Applies filtering to soften shadow edges
 // This *must* restore render state on return
-void DistantLand::renderShadowMap()
-{
-    IDirect3DSurface9 *target, *targetSoft;
+void DistantLand::renderShadowMap() {
+    IDirect3DSurface9* target, *targetSoft;
     texShadow->GetSurfaceLevel(0, &target);
     texSoftShadow->GetSurfaceLevel(0, &targetSoft);
 
@@ -80,11 +79,10 @@ void DistantLand::renderShadowMap()
 }
 
 // renderShadowLayer - Calculates projection for, and renders, one shadow layer
-void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *inverseCameraProj)
-{
+void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* inverseCameraProj) {
     auto mwBridge = MWBridge::get();
     D3DXVECTOR3 lookAt, lookAtEye, shadowCameraPos, up(0, 0, 1);
-    D3DXMATRIX *view = &smView[layer], *proj = &smProj[layer], *viewproj = &smViewproj[layer];
+    D3DXMATRIX* view = &smView[layer], *proj = &smProj[layer], *viewproj = &smViewproj[layer];
 
     // Select light vector, sunPos during daytime, sunVec during night
     D3DXVECTOR4 lightVec = (sunPos.z > 0) ? -sunPos : sunVec;
@@ -150,8 +148,9 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *i
     // Render land and statics
     effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
 
-    if(mwBridge->IsExterior())
+    if (mwBridge->IsExterior()) {
         renderDistantLand(effectShadow, view, proj);
+    }
 
     device->SetVertexDeclaration(StaticDecl);
     visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehWorld, SIZEOFSTATICVERT);
@@ -160,8 +159,7 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX *i
 }
 
 // renderShadow - Renders shadows (using blending) over Morrowind shadow receivers
-void DistantLand::renderShadow()
-{
+void DistantLand::renderShadow() {
     // Supply view space -> shadow clip space matrix
     D3DXMATRIX inverseView, viewToShadow[2];
     D3DXMatrixInverse(&inverseView, NULL, &mwView);
@@ -173,21 +171,18 @@ void DistantLand::renderShadow()
     effect->SetTexture(ehTex3, texSoftShadow);
 
     const auto& recordMW_const = recordMW;
-    for(const auto& i : recordMW_const)
-    {
+    for (const auto& i : recordMW_const) {
         // Additive alphas do not receive shadows
-        if(i.blendEnable && i.destBlend == D3DBLEND_ONE)
+        if (i.blendEnable && i.destBlend == D3DBLEND_ONE) {
             continue;
+        }
 
         // Only bind texture for alphas
-        if((i.alphaTest || i.blendEnable) && i.texture)
-        {
+        if ((i.alphaTest || i.blendEnable) && i.texture) {
             effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
             effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : 0.01f);
-        }
-        else
-        {
+        } else {
             effect->SetTexture(ehTex0, 0);
             effect->SetBool(ehHasAlpha, false);
             effect->SetFloat(ehAlphaRef, -1.0f);
@@ -196,8 +191,9 @@ void DistantLand::renderShadow()
         // Skin using worldview matrices for numerical accuracy
         D3DXMATRIX worldView[4];
         const int count = (i.vertexBlendState <= 3) ? i.vertexBlendState + 1 : 1;
-        for(int n = 0; n != count; ++n)
+        for (int n = 0; n != count; ++n) {
             worldView[n] = i.worldTransforms[n] * mwView;
+        }
 
         effect->SetBool(ehHasBones, i.vertexBlendState != 0);
         effect->SetInt(ehVertexBlendState, i.vertexBlendState);
@@ -216,8 +212,7 @@ void DistantLand::renderShadow()
 }
 
 // renderShadowDebug - display shadow layers
-void DistantLand::renderShadowDebug()
-{
+void DistantLand::renderShadowDebug() {
     UINT passes;
 
     // Create shadow clip space -> camera clip space matrices

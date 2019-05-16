@@ -1,4 +1,3 @@
-//VmTypes.h
 #pragma once
 
 #include <wtypes.h>
@@ -14,14 +13,7 @@ typedef short VMSHORT;      // any consistent size
 typedef long VMLONG;        // any consistent size > VMSHORT
 typedef DWORD VMFLAGSTYPE;  // how many flags do you need?
 
-// 'ui32' is the pre-Visual C++ 2005 suffix, equivalent to 'll'.
-#define VMSIZE_MAX (1ui64<<32)
-#define VMBYTE_MAX (1<<8)
-#define VMSHORT_MAX (1<<16)
-#define VMLONG_MAX (1ui64<<32)
-
-enum MWRecordTag
-{
+enum MWRecordTag {
     MWTag_Activator = 0x49544341,
     MWTag_Apparatus = 0x41505041,
     MWTag_Armor = 0x4f4d5241,
@@ -48,25 +40,26 @@ enum MWRecordTag
     MWTag_Ammo = 0x4f4d4d41
 };
 
-struct MWRecord
-{
-    const void **vtbl;
-    union { char tag[4]; unsigned int tagCode; };
+struct MWRecord {
+    const void** vtbl;
+    union {
+        char tag[4];
+        unsigned int tagCode;
+    };
     unsigned int flags;
-    void *sourceMod;
+    void* sourceMod;
 };
 
-struct MWReference : MWRecord
-{
-    void *visual;
-    void *cellList;
-    MWReference *lastCloneRefr;
-    MWReference *nextListRefr;
-    MWReference *prevListRefr;
-    void *unknown;
-    MWRecord *baseEntity;
+struct MWReference : MWRecord {
+    void* visual;
+    void* cellList;
+    MWReference* lastCloneRefr;
+    MWReference* nextListRefr;
+    MWReference* prevListRefr;
+    void* unknown;
+    MWRecord* baseEntity;
     float orientation[3];
     float position[3];
-    void *extraData;
+    void* extraData;
     unsigned int sourceID, targetID;
 };

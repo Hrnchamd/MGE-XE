@@ -5,7 +5,7 @@
 class MemoryPool {
 public:
     MemoryPool(std::size_t object_size, std::size_t objects_per_block);
-    void * Alloc();
+    void* Alloc();
     void Flush();
     ~MemoryPool();
 
@@ -14,22 +14,22 @@ private:
     public:
         MemoryBlock(MemoryPool* owner);
         ~MemoryBlock();
-        void * Alloc();
+        void* Alloc();
 
-        MemoryBlock *next_block;
+        MemoryBlock* next_block;
 
     private:
-        MemoryPool *owner;
+        MemoryPool* owner;
         std::size_t next_alloc;
         std::size_t obj_count;
-        char *data;
+        char* data;
     };
 
     void AllocFirstBlock();
     void FreeAllBlocks();
 
-    MemoryBlock *first_block;
-    MemoryBlock *last_block;
+    MemoryBlock* first_block;
+    MemoryBlock* last_block;
     std::size_t obj_size;
     std::size_t blk_size;
     std::size_t objs_per_block;

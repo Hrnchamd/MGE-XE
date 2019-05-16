@@ -7,8 +7,7 @@
 #include "mwbridge.h"
 
 
-void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX *proj)
-{
+void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
     auto mwBridge = MWBridge::get();
 
     // Switch to render target
@@ -35,8 +34,9 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
 
     // If using dynamic ripples, the water level can be lowered by up to 0.5 * waveheight
     // so move clip plane downwards at the cost of some reflection errors
-    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
+    if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
         plane.d += 0.5 * Configuration.DL.WaterWaveHeight;
+    }
 
     // Doing inverses separately is a lot more numerically stable
     D3DXMatrixInverse(&clipMat, 0, &reflView);
@@ -47,8 +47,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     D3DXMatrixTranspose(&clipMat, &clipMat);
     D3DXPlaneTransform(&plane, &plane, &clipMat);
 
-    if(visDistant.size() == 0)
-    {
+    if (visDistant.size() == 0) {
         // Workaround for a Direct3D bug with clipping planes, where SetClipPlane
         // has no effect on the shader pipeline if the last rendered draw call was using
         // the fixed function pipeline. This is usually covered by distant statics, but
@@ -65,8 +64,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     device->SetRenderState(D3DRS_CLIPPLANEENABLE, 1);
 
     // Rendering
-    if(mwBridge->IsExterior() && (Configuration.MGEFlags & REFLECTIVE_WATER))
-    {
+    if (mwBridge->IsExterior() && (Configuration.MGEFlags & REFLECTIVE_WATER)) {
         // Draw land reflection, with opposite culling
         effect->BeginPass(PASS_RENDERLANDREFL);
         device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -74,8 +72,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
         effect->EndPass();
     }
 
-    if(isDistantCell() && (Configuration.MGEFlags & REFLECT_NEAR))
-    {
+    if (isDistantCell() && (Configuration.MGEFlags & REFLECT_NEAR)) {
         // Draw statics reflection, with opposite culling and no dissolve
         DWORD p = (mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z)) ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
         effect->SetFloat(ehNearViewRange, 0);
@@ -86,8 +83,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
         effect->SetFloat(ehNearViewRange, nearViewRange);
     }
 
-    if((Configuration.MGEFlags & REFLECT_SKY) && !recordSky.empty() && !mwBridge->IsUnderwater(eyePos.z))
-    {
+    if ((Configuration.MGEFlags & REFLECT_SKY) && !recordSky.empty() && !mwBridge->IsUnderwater(eyePos.z)) {
         // Draw sky reflection, with opposite culling
         effect->BeginPass(PASS_RENDERSKY);
         device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
@@ -101,20 +97,17 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX *view, const D3DXMATRIX
     effect->SetMatrix(ehProj, proj);
 }
 
-void DistantLand::renderReflectedSky()
-{
+void DistantLand::renderReflectedSky() {
     // Sky objects are not correctly positioned at infinity, so correction is required
     const float adjustZ = -2.0 * eyePos.z;
 
     const auto& recordSky_const = recordSky;
-    for(const auto& i : recordSky_const)
-    {
+    for (const auto& i : recordSky_const) {
         // Adjust world transform, as skydome objects are positioned relative to the viewer
         D3DXMATRIX worldTransform = i.worldTransforms[0];
         worldTransform._43 += adjustZ;
 
-        if(i.texture == 0)
-        {
+        if (i.texture == 0) {
             // Inflate sky mesh towards infinity, makes skypos in shader calculate correctly
             D3DXMATRIX scale;
             D3DXMatrixScaling(&scale, 1e6, 1e6, 1e6);
@@ -137,16 +130,16 @@ void DistantLand::renderReflectedSky()
     }
 }
 
-void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRIX *proj)
-{
+void DistantLand::renderReflectedStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
     // Select appropriate static clipping distance
     D3DXMATRIX ds_proj = *proj, ds_viewproj;
     float zn = 4.0f, zf = Configuration.DL.NearStaticEnd * kCellSize;
 
     // Don't draw beyond fully fogged distance; early out if frustum is empty
     zf = std::min(fogEnd, zf);
-    if(zf <= zn)
+    if (zf <= zn) {
         return;
+    }
 
     // Create a clipping frustum for visibility determination
     editProjectionZ(&ds_proj, zn, zf);
@@ -166,23 +159,19 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX *view, const D3DXMATRI
     visReflected.Render(device, effect, effect, &ehTex0, 0, &ehWorld, SIZEOFSTATICVERT);
 }
 
-void DistantLand::clearReflection()
-{
+void DistantLand::clearReflection() {
     auto mwBridge = MWBridge::get();
-    IDirect3DSurface9 *target;
+    IDirect3DSurface9* target;
     DWORD baseColour;
 
     texReflection->GetSurfaceLevel(0, &target);
-    if(mwBridge->CellHasWeather() || mwBridge->IsUnderwater(eyePos.z))
-    {
+    if (mwBridge->CellHasWeather() || mwBridge->IsUnderwater(eyePos.z)) {
         // Use fog colour as reflection
         baseColour = (DWORD)horizonCol;
-    }
-    else
-    {
+    } else {
         // Interior fog colour is typically too bright
         // Guess a reflection colour based on cell lighting parameters
-        const BYTE *sun = mwBridge->getInteriorSun();
+        const BYTE* sun = mwBridge->getInteriorSun();
         RGBVECTOR c(sun[0] / 255.0, sun[1] / 255.0, sun[2] / 255.0);
         c += ambCol;
         baseColour = (DWORD)c;
@@ -191,8 +180,7 @@ void DistantLand::clearReflection()
     target->Release();
 }
 
-void DistantLand::simulateDynamicWaves()
-{
+void DistantLand::simulateDynamicWaves() {
     auto mwBridge = MWBridge::get();
 
     static bool resetRippleSurface = true;
@@ -200,8 +188,9 @@ void DistantLand::simulateDynamicWaves()
     static const float waveStep = 0.0125f;  // time per wave simulation step (1/80 sec)
 
     // Simulation paused in menu mode
-    if(mwBridge->IsMenu())
+    if (mwBridge->IsMenu()) {
         return;
+    }
 
     device->SetFVF(fvfWave);
     device->SetStreamSource(0, vbWaveSim, 0, 32);
@@ -213,8 +202,7 @@ void DistantLand::simulateDynamicWaves()
     remainingWaveTime -= numWaveSteps * waveStep;
 
     // Preciptation (rain/snow) ripples
-    if(mwBridge->CellHasWeather())
-    {
+    if (mwBridge->CellHasWeather()) {
         static float remainingRipples = 0;
 
         // Reset surface when not needed next time
@@ -232,8 +220,7 @@ void DistantLand::simulateDynamicWaves()
         float precipitation = (1.0 - mwBridge->GetWeatherRatio()) * precipitation0 + mwBridge->GetWeatherRatio() * precipitation1;
         float rippleFrequency = 150.0 * precipitation;
 
-        if(rippleFrequency > 0)
-        {
+        if (rippleFrequency > 0) {
             static double randomizer = 0.546372819;
             int ripplePos[2];
             RECT drop;
@@ -242,11 +229,9 @@ void DistantLand::simulateDynamicWaves()
             int n = floor(remainingRipples);
             remainingRipples -= n;
 
-            while(n-- > 0)
-            {
+            while (n-- > 0) {
                 // Place rain ripple at random location
-                for(int i = 0; i != 2; ++i)
-                {
+                for (int i = 0; i != 2; ++i) {
                     randomizer = randomizer * (1337.134511337451 + 0.0001 * rand()) + 0.12351523;
                     randomizer -= floor(randomizer);
                     ripplePos[i] = (int)(randomizer * waveTexResolution);
@@ -279,8 +264,7 @@ void DistantLand::simulateDynamicWaves()
         doublebuffer.init(texRain, surfRain, texRippleBuffer, surfRippleBuffer);
 
         effect->BeginPass(PASS_WAVESTEP);
-        for(int i = 0; i != numWaveSteps; ++i)
-        {
+        for (int i = 0; i != numWaveSteps; ++i) {
             device->SetRenderTarget(0, doublebuffer.sinkSurface());
             effect->SetTexture(ehTex4, doublebuffer.sourceTexture());
             effect->CommitChanges();
@@ -290,11 +274,10 @@ void DistantLand::simulateDynamicWaves()
         }
         effect->EndPass();
 
-        if(doublebuffer.sourceSurface() != surfRain)
+        if (doublebuffer.sourceSurface() != surfRain) {
             device->StretchRect(surfRippleBuffer, 0, surfRain, 0, D3DTEXF_NONE);
-    }
-    else if(resetRippleSurface)
-    {
+        }
+    } else if (resetRippleSurface) {
         // No weather - clear rain ripples
         device->ColorFill(surfRain, NULL, 0);
         resetRippleSurface = false;
@@ -302,7 +285,7 @@ void DistantLand::simulateDynamicWaves()
 
     // Player local ripples
     // Move ripple texture with player; lock to texel alignment to prevent visible jitter
-    const D3DXVECTOR3 *playerPos = (const D3DXVECTOR3 *)mwBridge->PlayerPositionPointer();
+    const D3DXVECTOR3* playerPos = (const D3DXVECTOR3*)mwBridge->PlayerPositionPointer();
     static int lastXpos = (int)floor(playerPos->x / waveTexWorldRes);
     static int lastYpos = (int)floor(playerPos->y / waveTexWorldRes);
 
@@ -344,12 +327,10 @@ void DistantLand::simulateDynamicWaves()
 
     float rippleOrigin[2];
     float dz = playerPos->z - mwBridge->WaterLevel();
-    if(dz < 0 && dz > -128.0f * mwBridge->PlayerHeight())
-    {
+    if (dz < 0 && dz > -128.0f * mwBridge->PlayerHeight()) {
         // Create waves around the player
         effect->BeginPass(PASS_PLAYERWAVE);
-        for(int i = 0; i != numWaveSteps; ++i)
-        {
+        for (int i = 0; i != numWaveSteps; ++i) {
             // Interpolate between starting and ending point, so that low framerates do not cause less waves
             float w = -(float)i / (float)numWaveSteps / (float)waveTexResolution;
             rippleOrigin[0] = w * shiftX + 0.5f;
@@ -368,8 +349,7 @@ void DistantLand::simulateDynamicWaves()
 
     // Apply wave equation numWaveSteps times
     effect->BeginPass(PASS_WAVESTEP);
-    for(int i = 0; i != numWaveSteps; ++i)
-    {
+    for (int i = 0; i != numWaveSteps; ++i) {
         device->SetRenderTarget(0, doublebuffer.sinkSurface());
         effect->SetTexture(ehTex4, doublebuffer.sourceTexture());
         effect->CommitChanges();
@@ -379,8 +359,9 @@ void DistantLand::simulateDynamicWaves()
     }
     effect->EndPass();
 
-    if(doublebuffer.sourceSurface() != surfRipples)
+    if (doublebuffer.sourceSurface() != surfRipples) {
         device->StretchRect(surfRippleBuffer, 0, surfRipples, 0, D3DTEXF_NONE);
+    }
 
     // Set wave texture world origin
     static float halfWaveTexWorldSize = 0.5f * waveTexWorldRes * waveTexResolution;
@@ -392,10 +373,9 @@ void DistantLand::simulateDynamicWaves()
     effect->SetFloat(ehWaveHeight, (float)Configuration.DL.WaterWaveHeight);
 }
 
-void DistantLand::renderWaterPlane()
-{
+void DistantLand::renderWaterPlane() {
     D3DXMATRIX m;
-    IDirect3DTexture9 *texRefract = PostShaders::borrowBuffer(0);
+    IDirect3DTexture9* texRefract = PostShaders::borrowBuffer(0);
 
     D3DXMatrixTranslation(&m, eyePos.x, eyePos.y, MWBridge::get()->WaterLevel());
     effect->SetMatrix(ehWorld, &m);
@@ -403,8 +383,7 @@ void DistantLand::renderWaterPlane()
     effect->SetTexture(ehTex1, texWater);
     effect->SetTexture(ehTex2, texRefract);
     effect->SetTexture(ehTex3, texDepthFrame);
-    if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
-    {
+    if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
         effect->SetTexture(ehTex4, texRain);
         effect->SetTexture(ehTex5, texRipples);
     }

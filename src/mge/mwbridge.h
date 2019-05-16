@@ -41,12 +41,12 @@ public:
     DWORD GetCurrentWeather();
     DWORD GetNextWeather();
     float GetWeatherRatio();
-    const RGBVECTOR * getCurrentWeatherSkyCol();
-    const RGBVECTOR * getCurrentWeatherFogCol();
+    const RGBVECTOR* getCurrentWeatherSkyCol();
+    const RGBVECTOR* getCurrentWeatherFogCol();
     DWORD getScenegraphFogCol();
     void setScenegraphFogCol(DWORD c);
     bool CellHasWeather();
-    float * GetWindVector();
+    float* GetWindVector();
     DWORD GetWthrStruct(int wthr);
     int GetWthrString(int wthr, int offset, char str[]);
     void SetWthrString(int wthr, int offset, char str[]);
@@ -56,7 +56,7 @@ public:
     float simulationTime();
     float frameTime();
 
-    float * getMouseSensitivityYX();
+    float* getMouseSensitivityYX();
     float GetViewDistance();
     void SetViewDistance(float dist);
     float GetAIDistance();
@@ -74,10 +74,10 @@ public:
     bool IntHasWater();
     float WaterLevel();
 
-    const char * getInteriorName();
-    const BYTE * getInteriorAmb();
-    const BYTE * getInteriorSun();
-    const BYTE * getInteriorFog();
+    const char* getInteriorName();
+    const BYTE* getInteriorAmb();
+    const BYTE* getInteriorSun();
+    const BYTE* getInteriorFog();
     float getInteriorFogDens();
 
     DWORD PlayerPositionPointer();
@@ -86,7 +86,7 @@ public:
     float PlayerPositionZ();
     float PlayerHeight();
     bool IsPlayerWaiting();
-    D3DXVECTOR3 * PCam3Offset();
+    D3DXVECTOR3* PCam3Offset();
     DWORD getPlayerMACP();
     bool is3rdPerson();
     DWORD getPlayerTarget();
@@ -105,14 +105,14 @@ public:
     void disableIntroMovies();
     bool isIntroDone();
     bool isLoadingSplash();
-    void redirectMenuBackground(void (__stdcall *func)(int));
+    void redirectMenuBackground(void (__stdcall* func)(int));
     void setUIScale(float scale);
-    void patchUIConfigure(void (__stdcall *newfunc)());
-    void patchFrameTimer(int (__cdecl *newfunc)());
+    void patchUIConfigure(void (__stdcall* newfunc)());
+    void patchFrameTimer(int (__cdecl* newfunc)());
 
-    void * getGMSTPointer(DWORD id);
+    void* getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
-    const char * getPlayerName();
+    const char* getPlayerName();
     float getGameHour();
     int getDaysPassed();
     int getFrameBeginMillis();
@@ -135,47 +135,47 @@ protected:
     void write_word(const DWORD dwAddress, WORD word);
     void write_byte(const DWORD dwAddress, BYTE byte);
     void write_float(const DWORD dwAddress, float f);
-    void write_ptr(const DWORD dwAddress, void *ptr);
+    void write_ptr(const DWORD dwAddress, void* ptr);
 
     /// Pointers to Morrowind Memory
     DWORD
-        eMaster, eEnviro, eMaster1, eMaster2,
-        eFPS, eTimer, eD3D, eTruRenderWidth, eShadowSlider,
-        eCrosshair1, eAI, eView0, eRenderWidth,
-        eView1, eCombat, ePCRef,
+    eMaster, eEnviro, eMaster1, eMaster2,
+             eFPS, eTimer, eD3D, eTruRenderWidth, eShadowSlider,
+             eCrosshair1, eAI, eView0, eRenderWidth,
+             eView1, eCombat, ePCRef,
 
-        eGamma, eView4, eLookMenu,
+             eGamma, eView4, eLookMenu,
 
-        eX, eCos, eWorldFOV, eView2,
+             eX, eCos, eWorldFOV, eView2,
 
-        eSkyFOV, eMenuFOV, eView3, eExt, eMenu, eMouseLim,
+             eSkyFOV, eMenuFOV, eView3, eExt, eMenu, eMouseLim,
 
-        eLoad,
+             eLoad,
 
-        eWthrArray, eCurWthrStruct, eNextWthrStruct,
-        eCurSkyCol, eCurFogCol,
-        eWindVector,
-        eSunriseHour, eSunsetHour, eSunriseDuration, eSunsetDuration,
-        eSunDir, eSunVis, //real sun direction, sun(glare) alpha value
-        eWeatherRatio;
+             eWthrArray, eCurWthrStruct, eNextWthrStruct,
+             eCurSkyCol, eCurFogCol,
+             eWindVector,
+             eSunriseHour, eSunsetHour, eSunriseDuration, eSunsetDuration,
+             eSunDir, eSunVis, // Real sun direction, sun(glare) alpha value
+             eWeatherRatio;
 
     // floating point variables
     DWORD eNextTrack, eMusicVol,
-        eAlwaysRun, eAutoRun,
-        eShadowToggle, eShadowReal, eShadowFOV,
-        eCrosshair2;
+          eAlwaysRun, eAutoRun,
+          eShadowToggle, eShadowReal, eShadowFOV,
+          eCrosshair2;
 
     // Pointers to Morrowind code
     DWORD eNoMusicBreak,
-        eGammaFunc,
-        eMusicVolFunc,
-        eHaggleMore, eHaggleLess,
-        eMenuMouseMove,
-        eTruform, eGetMouseState,
-        eXMenuHudIn, eXMenuHudOut, eXMenuNoMouse, eXMenuNoFOV,
-        eXMenuWnds, eXMenuPopups, eXMenuLoWnds, eXMenuSubtitles, eXMenuFPS,
-        eNoWorldFOV, eXRotSpeed, eYRotSpeed,
-        eScrollScale, eBookScale, eJournalScale, eRipplesSwitch;
+          eGammaFunc,
+          eMusicVolFunc,
+          eHaggleMore, eHaggleLess,
+          eMenuMouseMove,
+          eTruform, eGetMouseState,
+          eXMenuHudIn, eXMenuHudOut, eXMenuNoMouse, eXMenuNoFOV,
+          eXMenuWnds, eXMenuPopups, eXMenuLoWnds, eXMenuSubtitles, eXMenuFPS,
+          eNoWorldFOV, eXRotSpeed, eYRotSpeed,
+          eScrollScale, eBookScale, eJournalScale, eRipplesSwitch;
 
     // Other values
     DWORD dwAlwaysRunOffset;

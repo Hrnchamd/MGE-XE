@@ -5,8 +5,7 @@
 #define UnusedFunction() D3DERR_INVALIDCALL
 
 // DX8 interface declarations
-DECLARE_INTERFACE_(IDirect3DSurface8, IUnknown)
-{
+DECLARE_INTERFACE_(IDirect3DSurface8, IUnknown) {
     /*** IUnknown methods ***/
     STDMETHOD(QueryInterface)(REFIID riid, void** ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)() PURE;
@@ -23,8 +22,7 @@ DECLARE_INTERFACE_(IDirect3DSurface8, IUnknown)
     STDMETHOD(UnlockRect)() PURE;
 };
 
-DECLARE_INTERFACE_(IDirect3DTexture8, IUnknown)
-{
+DECLARE_INTERFACE_(IDirect3DTexture8, IUnknown) {
     /*** IUnknown methods ***/
     STDMETHOD(QueryInterface)(REFIID riid, void** ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)() PURE;
@@ -49,8 +47,7 @@ DECLARE_INTERFACE_(IDirect3DTexture8, IUnknown)
     STDMETHOD(AddDirtyRect)(CONST RECT* pDirtyRect) PURE;
 };
 
-DECLARE_INTERFACE_(IDirect3DDevice8, IUnknown)
-{
+DECLARE_INTERFACE_(IDirect3DDevice8, IUnknown) {
     /*** IUnknown methods ***/
     STDMETHOD(QueryInterface)(REFIID riid, void** ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)() PURE;
@@ -153,8 +150,7 @@ DECLARE_INTERFACE_(IDirect3DDevice8, IUnknown)
     STDMETHOD(DeletePatch)(UINT Handle) PURE;
 };
 
-DECLARE_INTERFACE_(IDirect3D8, IUnknown)
-{
+DECLARE_INTERFACE_(IDirect3D8, IUnknown) {
     /*** IUnknown methods ***/
     STDMETHOD(QueryInterface)(REFIID riid, void** ppvObj) PURE;
     STDMETHOD_(ULONG,AddRef)() PURE;

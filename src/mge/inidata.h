@@ -5,9 +5,9 @@
 
 #include "configinternal.h"
 
-const char *mgeini = "MGE3/MGE.ini";
+const char* mgeini = "MGE3/MGE.ini";
 
-const char *sections[] = {
+const char* sections[] = {
     "Global Graphics",
     "Render State",
     "Input",
@@ -22,17 +22,17 @@ const char *sections[] = {
     "InputRemap"
 };
 
-const char *siniGlobGraph = sections[0];
-const char *siniRendState = sections[1];
-const char *siniInput = sections[2];
-const char *siniMisc = sections[3];
-const char *siniDL = sections[4];
-const char *siniDLWeather = sections[5];
-const char *siniShaders = sections[6];
-const char *siniPPLighting = sections[7];
-const char *siniMacros = sections[8];
-const char *siniTriggers = sections[10];
-const char *siniRemap = sections[11];
+const char* siniGlobGraph = sections[0];
+const char* siniRendState = sections[1];
+const char* siniInput = sections[2];
+const char* siniMisc = sections[3];
+const char* siniDL = sections[4];
+const char* siniDLWeather = sections[5];
+const char* siniShaders = sections[6];
+const char* siniPPLighting = sections[7];
+const char* siniMacros = sections[8];
+const char* siniTriggers = sections[10];
+const char* siniRemap = sections[11];
 
 const tdictent dictentBool [] = {
     {False, 0},

@@ -15,7 +15,9 @@ struct BoundingSphere {
     BoundingSphere();
     BoundingSphere(const BoundingSphere& sphere);
     BoundingSphere& operator=(const BoundingSphere& sphere);
-    bool empty() const { return radius == 0.0f; }
+    bool empty() const {
+        return radius == 0.0f;
+    }
 
     BoundingSphere& operator+=(const BoundingSphere& rh);
     BoundingSphere operator+(const BoundingSphere& rh);
@@ -41,7 +43,7 @@ struct ViewFrustum {
     D3DXPLANE frustum[6];
     enum Containment { INSIDE, OUTSIDE, INTERSECTS };
 
-    ViewFrustum(const D3DXMATRIX *viewProj);
+    ViewFrustum(const D3DXMATRIX* viewProj);
 
     Containment ContainsSphere(const BoundingSphere& sphere) const;
     Containment ContainsBox(const BoundingBox& box) const;

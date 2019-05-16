@@ -7,15 +7,13 @@
 
 static double reciprocalFreq;
 
-void HighResolutionTimer::init()
-{
+void HighResolutionTimer::init() {
     LARGE_INTEGER frequency;
     QueryPerformanceFrequency(&frequency);
     reciprocalFreq = 1.0 / frequency.QuadPart;
 }
 
-int HighResolutionTimer::getMicroseconds()
-{
+int HighResolutionTimer::getMicroseconds() {
     LARGE_INTEGER t;
     QueryPerformanceCounter(&t);
 
@@ -23,8 +21,7 @@ int HighResolutionTimer::getMicroseconds()
     return int(int64_t(x));
 }
 
-int HighResolutionTimer::getMilliseconds()
-{
+int HighResolutionTimer::getMilliseconds() {
     LARGE_INTEGER t;
     QueryPerformanceCounter(&t);
 

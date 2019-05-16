@@ -1,21 +1,20 @@
 #pragma once
 
-class QPF
-{
+class QPF {
     static LARGE_INTEGER t0, t1;
     static double freq;
 
 public:
-    static void init()
-    {
+    static void init() {
         QueryPerformanceFrequency(&t0);
         freq = t0.QuadPart;
         QueryPerformanceCounter(&t0);
     }
 
-    static double deltat()
-    {
-        if(freq == 0) init();
+    static double deltat() {
+        if (freq == 0) {
+            init();
+        }
         QueryPerformanceCounter(&t1);
         double dt = (t1.QuadPart - t0.QuadPart) / freq;
         t1 = t0;

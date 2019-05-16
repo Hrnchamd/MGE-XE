@@ -8,8 +8,7 @@
 #include "mwbridge.h"
 
 
-void DistantLand::renderDepth()
-{
+void DistantLand::renderDepth() {
     auto mwBridge = MWBridge::get();
 
     // Switch to render target
@@ -36,13 +35,10 @@ void DistantLand::renderDepth()
     renderDepthRecorded();
     effectDepth->EndPass();
 
-    if(isDistantCell())
-    {
-        if(!mwBridge->IsUnderwater(eyePos.z))
-        {
+    if (isDistantCell()) {
+        if (!mwBridge->IsUnderwater(eyePos.z)) {
             // Distant land
-            if(mwBridge->IsExterior())
-            {
+            if (mwBridge->IsExterior()) {
                 effectDepth->BeginPass(PASS_RENDERLANDDEPTH);
                 renderDistantLandZ();
                 effectDepth->EndPass();
@@ -55,8 +51,7 @@ void DistantLand::renderDepth()
             effectDepth->EndPass();
         }
 
-        if(Configuration.MGEFlags & USE_GRASS)
-        {
+        if (Configuration.MGEFlags & USE_GRASS) {
             // Grass
             effectDepth->BeginPass(PASS_RENDERGRASSDEPTHINST);
             renderGrassInstZ();
@@ -68,8 +63,7 @@ void DistantLand::renderDepth()
     effect->SetMatrix(ehProj, &mwProj);
 }
 
-void DistantLand::renderDepthAdditional()
-{
+void DistantLand::renderDepthAdditional() {
     // Switch to render target
     RenderTargetSwitcher rtsw(texDepthFrame, surfDepthDepth);
 
@@ -90,23 +84,18 @@ void DistantLand::renderDepthAdditional()
     effect->SetMatrix(ehProj, &mwProj);
 }
 
-void DistantLand::renderDepthRecorded()
-{
+void DistantLand::renderDepthRecorded() {
     // Recorded renders
     const auto& recordMW_const = recordMW;
-    for(const auto& i : recordMW_const)
-    {
+    for (const auto& i : recordMW_const) {
         // Set variables in main effect; variables are shared via effect pool
 
         // Only bind texture for alphas
-        if((i.alphaTest || i.blendEnable) && i.texture)
-        {
+        if ((i.alphaTest || i.blendEnable) && i.texture) {
             effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
             effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : 0.5f);
-        }
-        else
-        {
+        } else {
             effect->SetTexture(ehTex0, 0);
             effect->SetBool(ehHasAlpha, false);
             effect->SetFloat(ehAlphaRef, -1.0f);
@@ -115,8 +104,9 @@ void DistantLand::renderDepthRecorded()
         // Skin using worldview matrices for numerical accuracy
         D3DXMATRIX worldView[4];
         const int count = (i.vertexBlendState <= 3) ? i.vertexBlendState + 1 : 1;
-        for(int n = 0; n != count; ++n)
+        for (int n = 0; n != count; ++n) {
             worldView[n] = i.worldTransforms[n] * mwView;
+        }
 
         effect->SetBool(ehHasBones, i.vertexBlendState != 0);
         effect->SetInt(ehVertexBlendState, i.vertexBlendState);

@@ -9,26 +9,23 @@
 #include "ProgMesh.h"
 #include "CollapseVertex.h"
 
-#define sqrt2 1.41421356
-
 namespace Niflib {
 
     class ProgMesh;
     class CollapseVertex;
     class CollapseTriangle;
 
-    class CollapseTriangle
-    {
+    class CollapseTriangle {
     public:
-        CollapseTriangle(CollapseVertex *, CollapseVertex *, CollapseVertex *);
+        CollapseTriangle(CollapseVertex*, CollapseVertex*, CollapseVertex*);
         ~CollapseTriangle(void);
 
-        unsigned int HasVertex(CollapseVertex *);
-        void ReplaceVertex(CollapseVertex *, CollapseVertex *);
+        unsigned int HasVertex(CollapseVertex*);
+        void ReplaceVertex(CollapseVertex*, CollapseVertex*);
 
         void ComputeNormal(void);
 
-        CollapseVertex * vertex[3];
+        CollapseVertex* vertex[3];
         Vector3 normal;
     };
 

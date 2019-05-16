@@ -3,8 +3,7 @@
 const size_t MGEINPUT_MAXMACROS = 256 + 10;
 const size_t MGEINPUT_MAXTRIGGERS = 4;
 
-class MacroFunctions
-{
+class MacroFunctions {
 public:
     static void TakeScreenshot();
     static void ToggleStatusText();
@@ -71,10 +70,9 @@ enum MacroType {
 };
 
 const struct MacroTypeLabel {
-    const char *label;
+    const char* label;
     MacroType type;
-} macroTypeLabels[] =
-{
+} macroTypeLabels[] = {
     "Console1", MT_Console1,
     "Console2", MT_Console2,
     "Hammer1", MT_Hammer1,

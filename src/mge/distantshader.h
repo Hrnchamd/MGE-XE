@@ -1,7 +1,6 @@
 #pragma once
 
-enum RenderPassID
-{
+enum RenderPassID {
     PASS_SETUP = 0,
     PASS_RENDERGRASSINST,
     PASS_RENDERSHADOW,
@@ -20,16 +19,14 @@ enum RenderPassID
     PASS_WORKAROUND
 };
 
-enum RenderShadowMapID
-{
+enum RenderShadowMapID {
     PASS_CLEARSHADOWMAP = 0,
     PASS_SHADOWSTENCIL,
     PASS_RENDERSHADOWMAP,
     PASS_SOFTENSHADOWMAP
 };
 
-enum RenderDepthID
-{
+enum RenderDepthID {
     PASS_CLEARDEPTH = 0,
     PASS_RENDERMWDEPTH,
     PASS_RENDERLANDDEPTH,

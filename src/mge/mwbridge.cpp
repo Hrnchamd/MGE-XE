@@ -7,27 +7,23 @@
 static MWBridge m_instance;
 
 
-class VirtualMemWriteAccessor
-{
-    void *address;
+class VirtualMemWriteAccessor {
+    void* address;
     size_t length;
     DWORD oldProtect;
 
 public:
-    VirtualMemWriteAccessor(void *addr, size_t len) : address(addr), length(len)
-    {
+    VirtualMemWriteAccessor(void* addr, size_t len) : address(addr), length(len) {
         VirtualProtect(address, length, PAGE_EXECUTE_READWRITE, &oldProtect);
     }
-    ~VirtualMemWriteAccessor()
-    {
+    ~VirtualMemWriteAccessor() {
         VirtualProtect(address, length, oldProtect, &oldProtect);
     }
 };
 
 //-----------------------------------------------------------------------------
 
-MWBridge::MWBridge()
-{
+MWBridge::MWBridge() {
     memset(this, 0, sizeof(*this));
     m_loaded = false;
     m_version = 0;
@@ -36,21 +32,18 @@ MWBridge::MWBridge()
 
 //-----------------------------------------------------------------------------
 
-MWBridge::~MWBridge()
-{
+MWBridge::~MWBridge() {
 }
 
 //-----------------------------------------------------------------------------
 
-MWBridge* MWBridge::get()
-{
+MWBridge* MWBridge::get() {
     return &m_instance;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::InitStaticMemory()
-{
+void MWBridge::InitStaticMemory() {
     // Bloodmoon v. 1080
     eNoMusicBreak = 0x00403659;
     eMusicVolFunc = 0x00403a10;
@@ -87,8 +80,7 @@ void MWBridge::InitStaticMemory()
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::Load()
-{
+void MWBridge::Load() {
     // Standard Morrowind
     DWORD dwTruRenderWidthOff = 0x48;
     DWORD dwHRotScaleOff = 0x50;
@@ -148,95 +140,82 @@ void MWBridge::Load()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::read_dword(const DWORD dwAddress)
-{
+DWORD MWBridge::read_dword(const DWORD dwAddress) {
     return *reinterpret_cast<DWORD*>(dwAddress);
 }
 
 //-----------------------------------------------------------------------------
 
-WORD MWBridge::read_word(const DWORD dwAddress)
-{
+WORD MWBridge::read_word(const DWORD dwAddress) {
     return *reinterpret_cast<WORD*>(dwAddress);
 }
 
 //-----------------------------------------------------------------------------
 
-BYTE MWBridge::read_byte(const DWORD dwAddress)
-{
+BYTE MWBridge::read_byte(const DWORD dwAddress) {
     return *reinterpret_cast<BYTE*>(dwAddress);
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::read_float(const DWORD dwAddress)
-{
+float MWBridge::read_float(const DWORD dwAddress) {
     return *reinterpret_cast<float*>(dwAddress);
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::write_dword(const DWORD dwAddress, DWORD dword)
-{
+void MWBridge::write_dword(const DWORD dwAddress, DWORD dword) {
     *reinterpret_cast<DWORD*>(dwAddress) = dword;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::write_word(const DWORD dwAddress, WORD word)
-{
+void MWBridge::write_word(const DWORD dwAddress, WORD word) {
     *reinterpret_cast<WORD*>(dwAddress) = word;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::write_byte(const DWORD dwAddress, BYTE byte)
-{
+void MWBridge::write_byte(const DWORD dwAddress, BYTE byte) {
     *reinterpret_cast<BYTE*>(dwAddress) = byte;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::write_float(const DWORD dwAddress, float f)
-{
+void MWBridge::write_float(const DWORD dwAddress, float f) {
     *reinterpret_cast<float*>(dwAddress) = f;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::write_ptr(const DWORD dwAddress, void *ptr)
-{
+void MWBridge::write_ptr(const DWORD dwAddress, void* ptr) {
     *reinterpret_cast<void**>(dwAddress) = ptr;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::CanLoad()
-{
+bool MWBridge::CanLoad() {
     // reads static address, so game doesn't need to be loaded
     return read_dword(eEnviro) != 0;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetAlwaysRun()
-{
+DWORD MWBridge::GetAlwaysRun() {
     assert(m_loaded);
     return read_dword(read_dword(read_dword(eD3D + 0x2C) + 0x24)) + dwAlwaysRunOffset;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetAutoRun()
-{
+DWORD MWBridge::GetAutoRun() {
     assert(m_loaded);
     return GetAlwaysRun() + 4;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetShadowToggleAddr()
-{
+DWORD MWBridge::GetShadowToggleAddr() {
     assert(m_loaded);
     DWORD addr = read_dword(eView1 + 0xC);
     return addr ?  (addr + 0xC) : 0;
@@ -244,8 +223,7 @@ DWORD MWBridge::GetShadowToggleAddr()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetShadowRealAddr()
-{
+DWORD MWBridge::GetShadowRealAddr() {
     assert(m_loaded);
     DWORD addr = read_dword(eView1 + 0xC);
     return addr ?  (addr + 0x14) : 0;
@@ -253,40 +231,35 @@ DWORD MWBridge::GetShadowRealAddr()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetShadowFovAddr()
-{
+DWORD MWBridge::GetShadowFovAddr() {
     assert(m_loaded);
 
     eShadowFOV = read_dword (eView1 + 0xC);
-    if (eShadowFOV)
-    {
+    if (eShadowFOV) {
         eShadowFOV = read_dword (eShadowFOV + 0x8);
-        if (eShadowFOV) eShadowFOV += 0x100;
+        if (eShadowFOV) {
+            eShadowFOV += 0x100;
+        }
     }
     return eShadowFOV;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetCrosshair2()
-{
+DWORD MWBridge::GetCrosshair2() {
     assert(m_loaded);
     return read_dword(eView0 - 0x50) + 0x14;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SetCrosshairEnabled(bool enabled)
-{
+void MWBridge::SetCrosshairEnabled(bool enabled) {
     assert(m_loaded);
-    if (enabled)
-    {
+    if (enabled) {
         eCrosshair2 = GetCrosshair2();
         write_byte(eCrosshair2, read_byte(eCrosshair2) & 0xfe);
         write_byte(eCrosshair1, read_byte(eCrosshair1) & 0xfe);
-    }
-    else
-    {
+    } else {
         eCrosshair2 = GetCrosshair2();
         write_byte(eCrosshair2, read_byte(eCrosshair2) | 0x01);
         write_byte(eCrosshair1, read_byte(eCrosshair1) | 0x01);
@@ -295,8 +268,7 @@ void MWBridge::SetCrosshairEnabled(bool enabled)
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::ToggleCrosshair()
-{
+void MWBridge::ToggleCrosshair() {
     assert(m_loaded);
     eCrosshair2 = GetCrosshair2();
     BYTE b = read_byte(eCrosshair2);
@@ -307,84 +279,75 @@ void MWBridge::ToggleCrosshair()
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsExterior()
-{
+bool MWBridge::IsExterior() {
     assert(m_loaded);
     DWORD addr = read_dword(eEnviro);
-    if ( addr != 0 )
+    if ( addr != 0 ) {
         return read_dword(addr + 0xAC) == 0;
-    else
+    } else {
         return 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsMenu()
-{
+bool MWBridge::IsMenu() {
     assert(m_loaded);
     return read_byte(eMenu);
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsLoadScreen()
-{
+bool MWBridge::IsLoadScreen() {
     return (read_byte(eLoad) != 0);
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsCombat()
-{
+bool MWBridge::IsCombat() {
     assert(m_loaded);
     return (read_dword(eCombat) & 1) != 0;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsCrosshair()
-{
+bool MWBridge::IsCrosshair() {
     assert(m_loaded);
     return (read_dword(eCrosshair1) & 1) == 0;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsAlwaysRun()
-{
+bool MWBridge::IsAlwaysRun() {
     assert(m_loaded);
     return  read_byte(GetAlwaysRun()+3) != 0;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetNextTrack()
-{
+DWORD MWBridge::GetNextTrack() {
     assert(m_loaded);
     return read_dword(eD3D + 0x4) + 0x8;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetMusicVol()
-{
+DWORD MWBridge::GetMusicVol() {
     assert(m_loaded);
     return GetNextTrack() + 0x28C;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SkipToNextTrack()
-{
+void MWBridge::SkipToNextTrack() {
     assert(m_loaded);
-    BYTE *flags = (BYTE *)GetNextTrack();
+    BYTE* flags = (BYTE*)GetNextTrack();
     *flags &= ~2;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::DisableMusic()
-{
+void MWBridge::DisableMusic() {
     assert(m_loaded);
     eMusicVol = GetMusicVol();
     write_float(eMusicVol, 0.01f);
@@ -398,52 +361,50 @@ void MWBridge::DisableMusic()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetCurrentWeather()
-{
+DWORD MWBridge::GetCurrentWeather() {
     assert(m_loaded);
     DWORD weather = read_dword(eCurWthrStruct);
-    if (weather == 0) return 0;
+    if (weather == 0) {
+        return 0;
+    }
     return read_byte(weather + 4);
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetNextWeather()
-{
+DWORD MWBridge::GetNextWeather() {
     assert(m_loaded);
     DWORD weather = read_dword(eNextWthrStruct);
-    if (weather == 0) return GetCurrentWeather();
+    if (weather == 0) {
+        return GetCurrentWeather();
+    }
     return read_byte(weather + 4);
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::GetWeatherRatio()
-{
+float MWBridge::GetWeatherRatio() {
     assert(m_loaded);
     return read_float(eWeatherRatio);
 }
 
 //-----------------------------------------------------------------------------
 
-const RGBVECTOR * MWBridge::getCurrentWeatherSkyCol()
-{
+const RGBVECTOR* MWBridge::getCurrentWeatherSkyCol() {
     assert(m_loaded);
-    return (RGBVECTOR *)eCurSkyCol;
+    return (RGBVECTOR*)eCurSkyCol;
 }
 
 //-----------------------------------------------------------------------------
 
-const RGBVECTOR * MWBridge::getCurrentWeatherFogCol()
-{
+const RGBVECTOR* MWBridge::getCurrentWeatherFogCol() {
     assert(m_loaded);
-    return (RGBVECTOR *)eCurFogCol;
+    return (RGBVECTOR*)eCurFogCol;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::getScenegraphFogCol()
-{
+DWORD MWBridge::getScenegraphFogCol() {
     DWORD addr = read_dword(eEnviro) + 0x9c;
     addr = read_dword(addr) + 0x1c;
     return read_dword(addr);
@@ -451,8 +412,7 @@ DWORD MWBridge::getScenegraphFogCol()
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::setScenegraphFogCol(DWORD c)
-{
+void MWBridge::setScenegraphFogCol(DWORD c) {
     DWORD addr = read_dword(eEnviro) + 0x9c;
     addr = read_dword(addr) + 0x1c;
     write_dword(addr, c);
@@ -460,47 +420,46 @@ void MWBridge::setScenegraphFogCol(DWORD c)
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::CellHasWeather()
-{
+bool MWBridge::CellHasWeather() {
     assert(m_loaded);
     DWORD addr = read_dword(eEnviro);
-    if (addr == 0) return true;
+    if (addr == 0) {
+        return true;
+    }
     addr = read_dword(addr + 0xAC);
-    if (addr != 0) return ((read_byte(addr + 0x18) & 0xF3) == 0x93);
+    if (addr != 0) {
+        return ((read_byte(addr + 0x18) & 0xF3) == 0x93);
+    }
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-float * MWBridge::GetWindVector()
-{
+float* MWBridge::GetWindVector() {
     assert(m_loaded);
     return (float*)eWindVector;
 }
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::GetWthrStruct(int wthr)
-{
+DWORD MWBridge::GetWthrStruct(int wthr) {
     assert(m_loaded);
-    if(wthr >= 0 && wthr <= 9)
+    if (wthr >= 0 && wthr <= 9) {
         return read_dword(eWthrArray + 4*wthr);
+    }
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-int MWBridge::GetWthrString(int wthr, int offset, char str[])
-{
+int MWBridge::GetWthrString(int wthr, int offset, char str[]) {
     assert(m_loaded);
     DWORD addr = GetWthrStruct(wthr);
     int i = 0;
 
-    if(addr != 0)
-    {
+    if (addr != 0) {
         addr += offset;
-        while((str[i] = read_byte(addr)) != 0)
-        {
+        while ((str[i] = read_byte(addr)) != 0) {
             ++addr;
             ++i;
         }
@@ -511,47 +470,42 @@ int MWBridge::GetWthrString(int wthr, int offset, char str[])
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SetWthrString(int wthr, int offset, char str[])
-{
+void MWBridge::SetWthrString(int wthr, int offset, char str[]) {
     assert(m_loaded);
     DWORD addr = GetWthrStruct(wthr);
     int i = 0;
 
-    if(addr != 0)
-    {
+    if (addr != 0) {
         char c;
         addr += offset;
-        do
-        {
+        do {
             c = str[i++];
             write_byte(addr++, c);
-        }
-        while(c != 0);
+        } while (c != 0);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::CellHasWater()
-{
+bool MWBridge::CellHasWater() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return ((read_byte(addr + 0x18) & 0x73) == 0x13);
+    if (addr != 0) {
+        return ((read_byte(addr + 0x18) & 0x73) == 0x13);
+    }
     return true;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsUnderwater(float eyeZ)
-{
+bool MWBridge::IsUnderwater(float eyeZ) {
     assert(m_loaded);
     return (CellHasWater() && (eyeZ < WaterLevel() - 1.0f));
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::WaterReflects(float eyeZ)
-{
+bool MWBridge::WaterReflects(float eyeZ) {
     assert(m_loaded);
     return (CellHasWater() && (eyeZ > WaterLevel() - 1.0f));
 }
@@ -559,8 +513,7 @@ bool MWBridge::WaterReflects(float eyeZ)
 //-----------------------------------------------------------------------------
 
 // simulationTime - Total real time elapsed this session, does not advance in menus
-float MWBridge::simulationTime()
-{
+float MWBridge::simulationTime() {
     assert(m_loaded);
     return read_float(0x7c6708);
 }
@@ -568,8 +521,7 @@ float MWBridge::simulationTime()
 //-----------------------------------------------------------------------------
 
 // frameTime - Duration of last frame in seconds
-float MWBridge::frameTime()
-{
+float MWBridge::frameTime() {
     assert(m_loaded);
     return read_float(eMaster1 + 0x2c);
 }
@@ -578,23 +530,20 @@ float MWBridge::frameTime()
 
 // getMouseSensitivityYX() - Returns address of mouse sensitivity struct
 // data is float[2], Y sensitivity component is first
-float * MWBridge::getMouseSensitivityYX()
-{
-    return reinterpret_cast<float *>(eMaster1 + 0xe8);
+float* MWBridge::getMouseSensitivityYX() {
+    return reinterpret_cast<float*>(eMaster1 + 0xe8);
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::GetViewDistance()
-{
+float MWBridge::GetViewDistance() {
     assert(m_loaded);
     return read_float(eView0);
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SetViewDistance(float dist)
-{
+void MWBridge::SetViewDistance(float dist) {
     assert(m_loaded);
     write_float(eView0, dist);
     write_float(eView1, dist);
@@ -605,31 +554,27 @@ void MWBridge::SetViewDistance(float dist)
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::GetAIDistance()
-{
+float MWBridge::GetAIDistance() {
     assert(m_loaded);
     return read_float(eAI);
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SetAIDistance(float dist)
-{
+void MWBridge::SetAIDistance(float dist) {
     assert(m_loaded);
     write_float(eAI, dist);
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SetFOV(float screenFOV)
-{
+void MWBridge::SetFOV(float screenFOV) {
     assert(m_loaded);
 
-    //Recalculate FOV values
+    // Recalculate FOV values
     float fovtan = tanf(screenFOV*D3DX_PI/360.0f);
 
-    if ( fabs(read_float(eWorldFOV)+fovtan) > 0.001f )
-    {
+    if ( fabs(read_float(eWorldFOV)+fovtan) > 0.001f ) {
         float aspect = read_float(eWorldFOV+1*sizeof(float)) / read_float(eWorldFOV+2*sizeof(float));
         float fovtanaspect = fovtan / aspect;
 
@@ -643,10 +588,10 @@ void MWBridge::SetFOV(float screenFOV)
         write_float(eSkyFOV+2*sizeof(float),fovtanaspect);
         write_float(eSkyFOV+3*sizeof(float),-fovtanaspect);
 
-        if (!eShadowFOV)
+        if (!eShadowFOV) {
             GetShadowFovAddr();
-        if (eShadowFOV)
-        {
+        }
+        if (eShadowFOV) {
             write_float(eShadowFOV ,-fovtan);
             write_float(eShadowFOV+1*sizeof(float),fovtan);
             write_float(eShadowFOV+2*sizeof(float),fovtanaspect);
@@ -658,8 +603,7 @@ void MWBridge::SetFOV(float screenFOV)
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::GetSunDir(float& x, float& y, float& z)
-{
+void MWBridge::GetSunDir(float& x, float& y, float& z) {
     // Note: Previous method caused significant jitter with moving view
     // This now returns the exact offset which was in the same scenegraph node
     assert(m_loaded);
@@ -670,8 +614,7 @@ void MWBridge::GetSunDir(float& x, float& y, float& z)
 
 //-----------------------------------------------------------------------------
 
-BYTE MWBridge::GetSunVis()
-{
+BYTE MWBridge::GetSunVis() {
     assert(m_loaded);
     return read_byte(eSunVis);
 }
@@ -679,8 +622,7 @@ BYTE MWBridge::GetSunVis()
 //-----------------------------------------------------------------------------
 
 // setSunriseSunset - Sets sunrise and sunset time and duration
-void MWBridge::setSunriseSunset(float rise_time, float rise_dur, float set_time, float set_dur)
-{
+void MWBridge::setSunriseSunset(float rise_time, float rise_dur, float set_time, float set_dur) {
     write_float(eSunriseHour, rise_time);
     write_float(eSunriseDuration, rise_dur);
     write_float(eSunsetHour, set_time);
@@ -689,83 +631,87 @@ void MWBridge::setSunriseSunset(float rise_time, float rise_dur, float set_time,
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::IntCurCellAddr()
-{
+DWORD MWBridge::IntCurCellAddr() {
     assert(m_loaded);
 
     DWORD addr = read_dword(eEnviro);
-    if (addr != 0) return read_dword(addr + 0xAC);
+    if (addr != 0) {
+        return read_dword(addr + 0xAC);
+    }
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-const char * MWBridge::getInteriorName()
-{
+const char* MWBridge::getInteriorName() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
 
-    if(addr)
-        return (const char *)read_dword(addr + 0x10);
-    else
+    if (addr) {
+        return (const char*)read_dword(addr + 0x10);
+    } else {
         return 0;
+    }
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IntLikeExterior()
-{
+bool MWBridge::IntLikeExterior() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return ((read_byte(addr + 0x18) & 0xF3) == 0x93);
+    if (addr != 0) {
+        return ((read_byte(addr + 0x18) & 0xF3) == 0x93);
+    }
     return false;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IntIllegSleep()
-{
+bool MWBridge::IntIllegSleep() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return ((read_byte(addr + 0x18) & 0x75) == 0x15);
+    if (addr != 0) {
+        return ((read_byte(addr + 0x18) & 0x75) == 0x15);
+    }
     return false;
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IntHasWater()
-{
+bool MWBridge::IntHasWater() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return ((read_byte(addr + 0x18) & 0xF3) == 0x13);
+    if (addr != 0) {
+        return ((read_byte(addr + 0x18) & 0xF3) == 0x13);
+    }
     return false;
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::WaterLevel()
-{
+float MWBridge::WaterLevel() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0 && ((read_byte(addr + 0x18) & 0xF3) == 0x13)) return read_float(addr + 0x90);
+    if (addr != 0 && ((read_byte(addr + 0x18) & 0xF3) == 0x13)) {
+        return read_float(addr + 0x90);
+    }
     return 0.0f;
 }
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::HaggleMore(DWORD num)
-{
+void MWBridge::HaggleMore(DWORD num) {
     assert(m_loaded);
     typedef void (_stdcall *mmHaggleProc)();
     mmHaggleProc proc = (mmHaggleProc)eHaggleMore;
     num -= 1;
-    if (num != 0)
-    {
+    if (num != 0) {
         int d = (int)read_dword(0x7D287C);
-        if (d <= 0)
+        if (d <= 0) {
             d -= num;
-        else
+        } else {
             d += num;
+        }
 
         write_dword(0x7D287C, d);
     }
@@ -774,19 +720,18 @@ void MWBridge::HaggleMore(DWORD num)
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::HaggleLess(DWORD num)
-{
+void MWBridge::HaggleLess(DWORD num) {
     assert(m_loaded);
     typedef void (_stdcall *mmHaggleProc)();
     mmHaggleProc proc = (mmHaggleProc)eHaggleLess;
     num -= 1;
-    if (num != 0)
-    {
+    if (num != 0) {
         int d = (int)read_dword(0x7D287C);
-        if (d <= 0)
+        if (d <= 0) {
             d += num;
-        else
+        } else {
             d -= num;
+        }
 
         write_dword(0x7D287C, d);
     }
@@ -795,101 +740,107 @@ void MWBridge::HaggleLess(DWORD num)
 
 //-----------------------------------------------------------------------------
 
-const BYTE * MWBridge::getInteriorAmb()
-{
+const BYTE* MWBridge::getInteriorAmb() {
     assert(m_loaded);
     DWORD addr = IntCurCellAddr();
-    if (addr != 0) return (BYTE*)(addr + 0x1C);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-const BYTE * MWBridge::getInteriorSun()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return (BYTE*)(addr + 0x20);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-const BYTE * MWBridge::getInteriorFog()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return (BYTE*)(addr + 0x24);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-float MWBridge::getInteriorFogDens()
-{
-    assert(m_loaded);
-    DWORD addr = IntCurCellAddr();
-    if (addr != 0) return read_float(addr + 0x28);
-    return 0;
-}
-
-//-----------------------------------------------------------------------------
-
-DWORD MWBridge::PlayerPositionPointer()
-{
-    DWORD addr = eMaster1;
-    if (addr != 0)
-    {
-        addr = read_dword(addr + 0x34);
-        if (addr != 0) return addr + 0x2AC;
+    if (addr != 0) {
+        return (BYTE*)(addr + 0x1C);
     }
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::PlayerPositionX()
-{
-    DWORD addr = PlayerPositionPointer();
-    if (addr != 0) return read_float(addr + 0);
+const BYTE* MWBridge::getInteriorSun() {
+    assert(m_loaded);
+    DWORD addr = IntCurCellAddr();
+    if (addr != 0) {
+        return (BYTE*)(addr + 0x20);
+    }
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::PlayerPositionY()
-{
-    DWORD addr = PlayerPositionPointer();
-    if (addr != 0) return read_float(addr + 4);
+const BYTE* MWBridge::getInteriorFog() {
+    assert(m_loaded);
+    DWORD addr = IntCurCellAddr();
+    if (addr != 0) {
+        return (BYTE*)(addr + 0x24);
+    }
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::PlayerPositionZ()
-{
-    DWORD addr = PlayerPositionPointer();
-    if (addr != 0) return read_float(addr + 8);
+float MWBridge::getInteriorFogDens() {
+    assert(m_loaded);
+    DWORD addr = IntCurCellAddr();
+    if (addr != 0) {
+        return read_float(addr + 0x28);
+    }
     return 0;
 }
 
 //-----------------------------------------------------------------------------
 
-float MWBridge::PlayerHeight()   // player eyes height, in CS
-{
+DWORD MWBridge::PlayerPositionPointer() {
+    DWORD addr = eMaster1;
+    if (addr != 0) {
+        addr = read_dword(addr + 0x34);
+        if (addr != 0) {
+            return addr + 0x2AC;
+        }
+    }
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+
+float MWBridge::PlayerPositionX() {
+    DWORD addr = PlayerPositionPointer();
+    if (addr != 0) {
+        return read_float(addr + 0);
+    }
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+
+float MWBridge::PlayerPositionY() {
+    DWORD addr = PlayerPositionPointer();
+    if (addr != 0) {
+        return read_float(addr + 4);
+    }
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+
+float MWBridge::PlayerPositionZ() {
+    DWORD addr = PlayerPositionPointer();
+    if (addr != 0) {
+        return read_float(addr + 8);
+    }
+    return 0;
+}
+
+//-----------------------------------------------------------------------------
+
+float MWBridge::PlayerHeight() { // player eyes height, in CS
     float height = read_float(0x7D39F0); // like "Master", only read, in game PlayerHeight*125.0f
     return (height == 0 ? 1.0f : height);
 }
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::IsPlayerWaiting()   // wait/sleep menu
-{
+bool MWBridge::IsPlayerWaiting() { // wait/sleep menu
     DWORD addr = eMaster1;
-    if(addr != 0)
-    {
+    if (addr != 0) {
         addr = read_dword(addr + 0x354);
-        if(addr != 0) return (read_byte(addr) == 0x01);
+        if (addr != 0) {
+            return (read_byte(addr) == 0x01);
+        }
     }
     return false;
 }
@@ -897,8 +848,7 @@ bool MWBridge::IsPlayerWaiting()   // wait/sleep menu
 //-----------------------------------------------------------------------------
 
 // getPlayerMACP - Gets main game object holding the player state
-DWORD MWBridge::getPlayerMACP()
-{
+DWORD MWBridge::getPlayerMACP() {
     DWORD addr = read_dword(eMaster1 + 0x5c);
     addr = read_dword(addr + 0x24);
     return read_dword(addr);
@@ -906,13 +856,16 @@ DWORD MWBridge::getPlayerMACP()
 
 //-----------------------------------------------------------------------------
 
-D3DXVECTOR3 * MWBridge::PCam3Offset()
-{
+D3DXVECTOR3* MWBridge::PCam3Offset() {
     // Pointer resolve will fail during load screens
-    if(IsLoadScreen()) return 0;
+    if (IsLoadScreen()) {
+        return 0;
+    }
 
     DWORD macp = getPlayerMACP();
-    if(macp == 0) return 0;
+    if (macp == 0) {
+        return 0;
+    }
 
     // Camera control structure
     DWORD node = read_dword(macp + 0x244);
@@ -921,13 +874,16 @@ D3DXVECTOR3 * MWBridge::PCam3Offset()
 
 //-----------------------------------------------------------------------------
 
-bool MWBridge::is3rdPerson()
-{
+bool MWBridge::is3rdPerson() {
     // Pointer resolve will fail during load screens
-    if(IsLoadScreen()) return 0;
+    if (IsLoadScreen()) {
+        return 0;
+    }
 
     DWORD macp = getPlayerMACP();
-    if(macp == 0) return 0;
+    if (macp == 0) {
+        return 0;
+    }
 
     // Camera control structure
     DWORD node = read_dword(macp + 0x244);
@@ -936,22 +892,24 @@ bool MWBridge::is3rdPerson()
 
 //-----------------------------------------------------------------------------
 
-DWORD MWBridge::getPlayerTarget()
-{
+DWORD MWBridge::getPlayerTarget() {
     return read_dword(eLookMenu);
 }
 
 //-----------------------------------------------------------------------------
 
 // getPlayerWeapon - Gets player weapon type
-int MWBridge::getPlayerWeapon()
-{
+int MWBridge::getPlayerWeapon() {
     DWORD macp = getPlayerMACP();
-    if(macp == 0) return 0;
+    if (macp == 0) {
+        return 0;
+    }
 
     // Check active weapon
     DWORD weapon = read_dword(macp + 0x388);
-    if(weapon == 0) return -1;
+    if (weapon == 0) {
+        return -1;
+    }
 
     weapon = read_dword(weapon);
     return read_byte(weapon + 0x5c);
@@ -960,10 +918,11 @@ int MWBridge::getPlayerWeapon()
 //-----------------------------------------------------------------------------
 
 // isPlayerCasting - Tests is the player is currently casting
-bool MWBridge::isPlayerCasting()
-{
+bool MWBridge::isPlayerCasting() {
     DWORD macp = getPlayerMACP();
-    if(macp == 0) return 0;
+    if (macp == 0) {
+        return 0;
+    }
 
     // Check animation state machine for casting
     BYTE anim = read_byte(macp + 0xdd);
@@ -973,18 +932,23 @@ bool MWBridge::isPlayerCasting()
 //-----------------------------------------------------------------------------
 
 // isPlayerAimingWeapon - Tests if the player is in the drawing stage of attacking with a ranged weapon
-bool MWBridge::isPlayerAimingWeapon()
-{
+bool MWBridge::isPlayerAimingWeapon() {
     DWORD macp = getPlayerMACP();
-    if(macp == 0) return 0;
+    if (macp == 0) {
+        return 0;
+    }
 
     // Check animation state machine for weapon pullback
     BYTE anim = read_byte(macp + 0xdd);
-    if(anim != 2) return false;
+    if (anim != 2) {
+        return false;
+    }
 
     // Check weapon type (bow, crossbow, thrown)
     DWORD weapon = read_dword(macp + 0x388);
-    if(weapon == 0) return false;
+    if (weapon == 0) {
+        return false;
+    }
 
     weapon = read_dword(weapon);
     return read_byte(weapon + 0x5c) >= 9;
@@ -993,11 +957,12 @@ bool MWBridge::isPlayerAimingWeapon()
 //-----------------------------------------------------------------------------
 
 // toggleRipples - Turns off ripple generation from all sources
-void MWBridge::toggleRipples(BOOL enabled)
-{
+void MWBridge::toggleRipples(BOOL enabled) {
     DWORD addr = eRipplesSwitch;
     DWORD code = read_dword(addr);
-    if (enabled && code == 0x33504D8B || !enabled && code == 0x3390C931) return;
+    if (enabled && code == 0x33504D8B || !enabled && code == 0x3390C931) {
+        return;
+    }
     code = enabled ? 0x33504D8B : 0x3390C931;
 
     VirtualMemWriteAccessor vw((void*)addr, 4);
@@ -1008,8 +973,7 @@ void MWBridge::toggleRipples(BOOL enabled)
 
 // markWaterNode
 // Edits the water material to set (normally unused) specular power to a recognizable value
-void MWBridge::markWaterNode(float k)
-{
+void MWBridge::markWaterNode(float k) {
     // Get water node
     DWORD addr = read_dword(eEnviro);
     addr = read_dword(addr + 0xb4ec);
@@ -1017,23 +981,23 @@ void MWBridge::markWaterNode(float k)
 
     // Look for NiMaterialProperty in property list (skipping first property)
     DWORD linknode;
-    for(linknode = read_dword(addr + 0x8c); linknode; linknode = read_dword(linknode + 4))
-    {
-        if(read_dword(read_dword(linknode)) == 0x75036c)
+    for (linknode = read_dword(addr + 0x8c); linknode; linknode = read_dword(linknode + 4)) {
+        if (read_dword(read_dword(linknode)) == 0x75036c) {
             break;
+        }
     }
 
     // Write to specular power member
-    if(linknode)
+    if (linknode) {
         write_float(read_dword(linknode) + 0x4c, k);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 // markMoonNodes
 // Edits the material for both moons to set (normally unused) specular power to a recognizable value
-void MWBridge::markMoonNodes(float k)
-{
+void MWBridge::markMoonNodes(float k) {
     DWORD addr = read_dword(eMaster);
     addr = read_dword(addr + 0x58);
 
@@ -1045,8 +1009,9 @@ void MWBridge::markMoonNodes(float k)
     DWORD node = read_dword(moon + 0x88);
 
     // Write to specular power member
-    if(node && read_dword(node) == 0x75036c)
+    if (node && read_dword(node) == 0x75036c) {
         write_float(node + 0x4c, k);
+    }
 
     // Get secunda node
     moon = read_dword(addr + 0x44);
@@ -1056,16 +1021,16 @@ void MWBridge::markMoonNodes(float k)
     node = read_dword(moon + 0x88);
 
     // Write to specular power member
-    if(node && read_dword(node) == 0x75036c)
+    if (node && read_dword(node) == 0x75036c) {
         write_float(node + 0x4c, k);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 // disableScreenshotFunc
 // Stops Morrowind from taking its own screenshots, or displaying an error message, when PrtScr is pressed
-void MWBridge::disableScreenshotFunc()
-{
+void MWBridge::disableScreenshotFunc() {
     DWORD addr = 0x41b08a;
 
     // Replace jz short with jmp (74 -> eb)
@@ -1076,8 +1041,7 @@ void MWBridge::disableScreenshotFunc()
 //-----------------------------------------------------------------------------
 
 // disableSunglare - Turns off the sunglare billboard and fullscreen glare that appears when looking at the sun
-void MWBridge::disableSunglare()
-{
+void MWBridge::disableSunglare() {
     DWORD addr = 0x4404fb;
 
     // Replace jz short with nop (74 xx -> 90 90)
@@ -1089,40 +1053,36 @@ void MWBridge::disableSunglare()
 //-----------------------------------------------------------------------------
 
 // disableIntroMovies - Skips playing both intro movies
-void MWBridge::disableIntroMovies()
-{
+void MWBridge::disableIntroMovies() {
     DWORD addr = 0x418ef0;
     BYTE patch[] = { 0xeb, 0x16 };
 
     VirtualMemWriteAccessor vw0((void*)addr, 2);
-    memcpy((void *)addr, patch, sizeof(patch));
+    memcpy((void*)addr, patch, sizeof(patch));
 
     addr = 0x5fc8f7;
     VirtualMemWriteAccessor vw1((void*)addr, 2);
-    memcpy((void *)addr, patch, sizeof(patch));
+    memcpy((void*)addr, patch, sizeof(patch));
 }
 
 //-----------------------------------------------------------------------------
 
 // isIntroDone - Tests if both intro movies are finished, and main menu is about to display
-bool MWBridge::isIntroDone()
-{
+bool MWBridge::isIntroDone() {
     return read_byte(0x7d5005) != 0;
 }
 
 //-----------------------------------------------------------------------------
 
 // isLoadingSplash - Tests if a splash screen is shown (as a proxy for post-main menu loading)
-bool MWBridge::isLoadingSplash()
-{
+bool MWBridge::isLoadingSplash() {
     return read_byte(0x7d4294) != 0;
 }
 
 //-----------------------------------------------------------------------------
 
 // redirectMenuBackground - Redirects splash screen scenegraph draw call to another function
-void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
-{
+void MWBridge::redirectMenuBackground(void (_stdcall* func)(int)) {
     DWORD addr = 0x04589fb;
 
     // Reset to original if null is passed
@@ -1137,8 +1097,7 @@ void MWBridge::redirectMenuBackground(void (_stdcall *func)(int))
 
 // setUIScale - Configures the scaling of Morrowind's UI system, must be called early before main menu
 //              MWBridge is not required to be loaded for this function.
-void MWBridge::setUIScale(float scale)
-{
+void MWBridge::setUIScale(float scale) {
     DWORD addr = read_dword(eMaster);
     int w, h;
 
@@ -1175,15 +1134,14 @@ void MWBridge::setUIScale(float scale)
     };
 
     VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
-    memcpy((void *)addr, patch, sizeof(patch));
+    memcpy((void*)addr, patch, sizeof(patch));
 }
 
 //-----------------------------------------------------------------------------
 
 // patchUIConfigure - Patches the normal call to ui_configureUIScale to redirect to a new function.
 //                    MWBridge is not required to be loaded for this function.
-void MWBridge::patchUIConfigure(void (_stdcall *newfunc)())
-{
+void MWBridge::patchUIConfigure(void (_stdcall* newfunc)()) {
     DWORD addr = 0x40e554;
     BYTE patch[] = {
         0xb8, 0xff, 0xff, 0xff, 0xff,       // mov eax, newfunc
@@ -1192,23 +1150,21 @@ void MWBridge::patchUIConfigure(void (_stdcall *newfunc)())
     };
 
     VirtualMemWriteAccessor vw((void*)addr, sizeof(patch));
-    memcpy((void *)addr, patch, sizeof(patch));
+    memcpy((void*)addr, patch, sizeof(patch));
     write_ptr(addr + 1, reinterpret_cast<void*>(newfunc));
 }
 
 //-----------------------------------------------------------------------------
 
-static int (__cdecl *patchFrameTimerTarget)();
+static int (__cdecl* patchFrameTimerTarget)();
 
 // patchFrameTimer - Patches certain calls to timeGetTime to redirect to a new function.
-void MWBridge::patchFrameTimer(int (__cdecl *newfunc)())
-{
+void MWBridge::patchFrameTimer(int (__cdecl* newfunc)()) {
     DWORD addrs[] = { 0x403b52, 0x4535fd, 0x453615, 0x453638 };
 
     patchFrameTimerTarget = newfunc;
 
-    for(int i = 0; i != sizeof(addrs)/sizeof(addrs[0]); ++i)
-    {
+    for (int i = 0; i != sizeof(addrs)/sizeof(addrs[0]); ++i) {
         VirtualMemWriteAccessor vw((void*)addrs[i], sizeof(&patchFrameTimerTarget));
         write_dword(addrs[i], reinterpret_cast<DWORD>(&patchFrameTimerTarget));
     }
@@ -1217,21 +1173,19 @@ void MWBridge::patchFrameTimer(int (__cdecl *newfunc)())
 //-----------------------------------------------------------------------------
 
 // getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
-void * MWBridge::getGMSTPointer(DWORD id)
-{
+void* MWBridge::getGMSTPointer(DWORD id) {
     DWORD addr = read_dword(eEnviro);
     addr = read_dword(addr);
     addr = read_dword(addr + 0x18);
     addr = read_dword(addr + 4 * id);
-    return (void *)(addr + 0x10);
+    return (void*)(addr + 0x10);
 }
 
 //-----------------------------------------------------------------------------
 
 // getKeybindCode - Gets the scancode that an action is bound to
 // action -> the keybind order in the Morrowind controls menu
-DWORD MWBridge::getKeybindCode(DWORD action)
-{
+DWORD MWBridge::getKeybindCode(DWORD action) {
     DWORD addr = read_dword(eMaster1 + 0x4c) + 0x1b3c;
     return read_dword(addr + 16*action);
 }
@@ -1239,22 +1193,22 @@ DWORD MWBridge::getKeybindCode(DWORD action)
 //-----------------------------------------------------------------------------
 
 // getPlayerName - Returns the player's name, or null if not loaded
-const char * MWBridge::getPlayerName()
-{
+const char* MWBridge::getPlayerName() {
     DWORD macp = getPlayerMACP();
-    if(macp == 0) return 0;
+    if (macp == 0) {
+        return 0;
+    }
 
     // Get name from base NPC
     DWORD npcClone = read_dword(macp + 0x560);
     DWORD npcBase = read_dword(npcClone + 0x6c);
-    return reinterpret_cast<const char *>(read_dword(npcBase + 0x70));
+    return reinterpret_cast<const char*>(read_dword(npcBase + 0x70));
 }
 
 //-----------------------------------------------------------------------------
 
 // getGameHour - Returns the value of the script global GameHour
-float MWBridge::getGameHour()
-{
+float MWBridge::getGameHour() {
     DWORD gvar = read_dword(eMaster1 + 0xa8);
     return read_float(gvar + 0x34);
 }
@@ -1262,8 +1216,7 @@ float MWBridge::getGameHour()
 //-----------------------------------------------------------------------------
 
 // getDaysPassed - Returns the value of the script global DaysPassed
-int MWBridge::getDaysPassed()
-{
+int MWBridge::getDaysPassed() {
     DWORD gvar = read_dword(eMaster1 + 0xb8);
     return int(read_float(gvar + 0x34));
 }
@@ -1271,7 +1224,6 @@ int MWBridge::getDaysPassed()
 //-----------------------------------------------------------------------------
 
 // getFrameBeginMillis - Returns timer millis measured at start of frame
-int MWBridge::getFrameBeginMillis()
-{
+int MWBridge::getFrameBeginMillis() {
     return read_dword(eMaster1 + 0x20);
 }

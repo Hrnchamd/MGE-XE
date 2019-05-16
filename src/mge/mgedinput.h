@@ -2,8 +2,7 @@
 
 #include "proxydx/directin8.h"
 
-class MGEProxyDirectInput : public ProxyDirectInput
-{
+class MGEProxyDirectInput : public ProxyDirectInput {
 public:
     enum KeyBehavior { TAP, PUSH, HAMMER, AHAMMER, DISALLOW };
     static bool mouseClick;

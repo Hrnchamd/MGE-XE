@@ -1,7 +1,6 @@
 #pragma once
 
-class HighResolutionTimer
-{
+class HighResolutionTimer {
 public:
     static void init();
     static int getMicroseconds();

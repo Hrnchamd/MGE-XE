@@ -1,30 +1,28 @@
 #include "CollapseTriangle.h"
 
+const double sqrt2 = 1.41421356;
+
 namespace Niflib {
 
-    CollapseTriangle::CollapseTriangle(CollapseVertex * v1,
-                                       CollapseVertex * v2,
-                                       CollapseVertex * v3)
-    {
+    CollapseTriangle::CollapseTriangle(CollapseVertex* v1,
+                                       CollapseVertex* v2,
+                                       CollapseVertex* v3) {
         assert(v1 != v2 && v2 != v3 && v3 != v1);
 
         this->vertex[0] = v1;
         this->vertex[1] = v2;
         this->vertex[2] = v3;
 
-        for(int i = 0; i < 3; i++)
-        {
+        for (int i = 0; i < 3; i++) {
             this->vertex[i]->AddFace(this);
         }
 
         this->ComputeNormal();
     }
 
-    CollapseTriangle::~CollapseTriangle(void)
-    {
-        for(int i = 0; i < 3; i++)
-        {
-            if(!this->vertex[i]) {
+    CollapseTriangle::~CollapseTriangle(void) {
+        for (int i = 0; i < 3; i++) {
+            if (!this->vertex[i]) {
                 continue;
             }
 
@@ -32,18 +30,16 @@ namespace Niflib {
         }
     }
 
-    unsigned int CollapseTriangle::HasVertex(CollapseVertex * v)
-    {
-        for(int i = 0; i < 3; i++) {
-            if(vertex[i] == v) {
+    unsigned int CollapseTriangle::HasVertex(CollapseVertex* v) {
+        for (int i = 0; i < 3; i++) {
+            if (vertex[i] == v) {
                 return (i+1);
             }
         }
         return false;
     }
 
-    void CollapseTriangle::ReplaceVertex(CollapseVertex * u, CollapseVertex * v)
-    {
+    void CollapseTriangle::ReplaceVertex(CollapseVertex* u, CollapseVertex* v) {
         assert(u && v);
         assert(this->HasVertex(u));
         assert(!this->HasVertex(v));
@@ -58,9 +54,9 @@ namespace Niflib {
         v->AddFace(this);
 
         // update old vertices to have v as neighbor, not u
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             // just update the old ones...
-            if(this->vertex[i] == v) {
+            if (this->vertex[i] == v) {
                 continue;
             }
 
@@ -74,8 +70,7 @@ namespace Niflib {
         this->ComputeNormal();
     }
 
-    void CollapseTriangle::ComputeNormal(void)
-    {
+    void CollapseTriangle::ComputeNormal(void) {
         Vector3 v[3];
 
         v[0] = this->vertex[0]->Vert.Position;
@@ -89,21 +84,20 @@ namespace Niflib {
 
         this->normal = a.CrossProduct(b);
 
-        if(this->normal.Magnitude() < 1e-3) {
+        if (this->normal.Magnitude() < 1e-3) {
             return;
         }
 
         this->normal = this->normal.Normalized();
 
         float len = _normal.Magnitude();
-        if(len < 0.9f || len > 1.1f)
-        {
+        if (len < 0.9f || len > 1.1f) {
             _normal = normal;
         }
 
         len = this->normal.DotProduct(_normal);
 
-        if(len < 0) {
+        if (len < 0) {
 //            CollapseVertex * tmp = this->vertex[1];
 //            this->vertex[1] = this->vertex[2];
 //            this->vertex[2] = tmp;

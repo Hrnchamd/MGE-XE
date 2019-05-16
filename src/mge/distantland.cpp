@@ -13,10 +13,9 @@ using std::string;
 using std::unordered_map;
 
 // renderStage0 - Render distant land at beginning of scene 0, after sky
-void DistantLand::renderStage0()
-{
+void DistantLand::renderStage0() {
     auto mwBridge = MWBridge::get();
-    IDirect3DStateBlock9 *stateSaved;
+    IDirect3DStateBlock9* stateSaved;
     UINT passes;
 
     // Get Morrowind camera matrices
@@ -34,22 +33,18 @@ void DistantLand::renderStage0()
     isRenderCached &= (Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu();
     isPPLActive = (Configuration.MGEFlags & USE_FFESHADER) && !(Configuration.PerPixelLightFlags == 1 && !mwBridge->IntCurCellAddr());
 
-    if(!isRenderCached)
-    {
+    if (!isRenderCached) {
         ///LOG::logline("Sky prims: %d", recordSky.size());
 
-        if(isDistantCell())
-        {
+        if (isDistantCell()) {
             // Save state block manually since we can change FVF/decl
             device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
             effect->BeginPass(PASS_SETUP);
             effect->EndPass();
 
             // Shadow map early render
-            if(Configuration.MGEFlags & USE_SHADOWS)
-            {
-                if(mwBridge->CellHasWeather() && !mwBridge->IsMenu())
-                {
+            if (Configuration.MGEFlags & USE_SHADOWS) {
+                if (mwBridge->CellHasWeather() && !mwBridge->IsMenu()) {
                     effectShadow->Begin(&passes, D3DXFX_DONOTSAVESTATE);
                     renderShadowMap();
                     effectShadow->End();
@@ -64,11 +59,9 @@ void DistantLand::renderStage0()
 
             effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
 
-            if(!mwBridge->IsUnderwater(eyePos.z))
-            {
+            if (!mwBridge->IsUnderwater(eyePos.z)) {
                 // Draw distant landscape
-                if(mwBridge->IsExterior())
-                {
+                if (mwBridge->IsExterior()) {
                     effect->BeginPass(PASS_RENDERLAND);
                     renderDistantLand(effect, &mwView, &distProj);
                     effect->EndPass();
@@ -87,20 +80,21 @@ void DistantLand::renderStage0()
             }
 
             // Sky scattering and sky objects (should be drawn late as possible)
-            if((Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather())
-            {
+            if ((Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather()) {
                 effect->BeginPass(PASS_RENDERSKY);
                 renderSky();
                 effect->EndPass();
             }
 
             // Update reflection
-            if(mwBridge->CellHasWater())
+            if (mwBridge->CellHasWater()) {
                 renderWaterReflection(&mwView, &distProj);
+            }
 
             // Update water simulation
-            if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
+            if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
                 simulateDynamicWaves();
+            }
 
             effect->End();
 
@@ -109,22 +103,20 @@ void DistantLand::renderStage0()
             effect->SetMatrix(ehProj, &mwProj);
 
             // Save distant land only frame to texture
-            if(~Configuration.MGEFlags & NO_MW_MGE_BLEND)
+            if (~Configuration.MGEFlags & NO_MW_MGE_BLEND) {
                 texDistantBlend = PostShaders::borrowBuffer(1);
+            }
 
             // Restore render state
             stateSaved->Apply();
             stateSaved->Release();
-        }
-        else
-        {
+        } else {
             // Clear water reflection to avoid seeing previous cell environment reflected
             // Must be done every frame to react to lighting changes
             clearReflection();
 
             // Update water simulation
-            if(Configuration.MGEFlags & DYNAMIC_RIPPLES)
-            {
+            if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
                 // Save state block manually since we can change FVF/decl
                 device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
@@ -145,31 +137,28 @@ void DistantLand::renderStage0()
 }
 
 // renderStage1 - Render grass and shadows over near features, and write depth texture for scene 0
-void DistantLand::renderStage1()
-{
+void DistantLand::renderStage1() {
     auto mwBridge = MWBridge::get();
-    IDirect3DStateBlock9 *stateSaved;
+    IDirect3DStateBlock9* stateSaved;
     UINT passes;
 
     ///LOG::logline("Stage 1 prims: %d", recordMW.size());
 
-    if(!isRenderCached)
-    {
+    if (!isRenderCached) {
         // Save state block manually since we can change FVF/decl
         device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
         // TODO: Locate this properly
-        if(isDistantCell())
+        if (isDistantCell()) {
             cullGrass(&mwView, &mwProj);
+        }
 
-        if(isDistantCell())
-        {
+        if (isDistantCell()) {
             // Render over Morrowind domain
             effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
 
             // Draw grass with shadows
-            if(Configuration.MGEFlags & USE_GRASS)
-            {
+            if (Configuration.MGEFlags & USE_GRASS) {
                 effect->BeginPass(PASS_RENDERGRASSINST);
                 vsr.beginAlphaToCoverage(device);
                 renderGrassInst();
@@ -178,8 +167,7 @@ void DistantLand::renderStage1()
             }
 
             // Overlay shadow onto Morrowind objects
-            if((Configuration.MGEFlags & USE_SHADOWS) && mwBridge->CellHasWeather())
-            {
+            if ((Configuration.MGEFlags & USE_SHADOWS) && mwBridge->CellHasWeather()) {
                 effect->BeginPass(PASS_RENDERSHADOW);
                 renderShadow();
                 effect->EndPass();
@@ -203,28 +191,25 @@ void DistantLand::renderStage1()
 }
 
 // renderStage2 - Render shadows and depth texture for scenes 1+ (post-stencil redraw/alpha/1st person)
-void DistantLand::renderStage2()
-{
+void DistantLand::renderStage2() {
     auto mwBridge = MWBridge::get();
-    IDirect3DStateBlock9 *stateSaved;
+    IDirect3DStateBlock9* stateSaved;
     UINT passes;
 
     ///LOG::logline("Stage 2 prims: %d", recordMW.size());
 
     // Early out if nothing is happening
-    if(recordMW.empty())
+    if (recordMW.empty()) {
         return;
+    }
 
-    if(!isRenderCached)
-    {
+    if (!isRenderCached) {
         // Save state block manually since we can change FVF/decl
         device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
-        if(isDistantCell())
-        {
+        if (isDistantCell()) {
             // Shadowing onto recorded renders
-            if((Configuration.MGEFlags & USE_SHADOWS) && mwBridge->CellHasWeather())
-            {
+            if ((Configuration.MGEFlags & USE_SHADOWS) && mwBridge->CellHasWeather()) {
                 effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
 
                 effect->BeginPass(PASS_RENDERSHADOW);
@@ -250,24 +235,23 @@ void DistantLand::renderStage2()
 
 
 // renderStageBlend - Blend between MGE distant land and Morrowind, rendering caustics first so it blends out
-void DistantLand::renderStageBlend()
-{
+void DistantLand::renderStageBlend() {
     auto mwBridge = MWBridge::get();
-    IDirect3DStateBlock9 *stateSaved;
+    IDirect3DStateBlock9* stateSaved;
     UINT passes;
 
-    if(isRenderCached)
+    if (isRenderCached) {
         return;
+    }
 
     // Save state block manually since we can change FVF/decl
     device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
     effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
 
     // Render caustics
-    if(mwBridge->IsExterior() && Configuration.DL.WaterCaustics > 0)
-    {
+    if (mwBridge->IsExterior() && Configuration.DL.WaterCaustics > 0) {
         D3DXMATRIX m;
-        IDirect3DTexture9 *tex = PostShaders::borrowBuffer(0);
+        IDirect3DTexture9* tex = PostShaders::borrowBuffer(0);
         D3DXMatrixTranslation(&m, eyePos.x, eyePos.y, mwBridge->WaterLevel());
 
         effect->SetTexture(ehTex0, tex);
@@ -283,8 +267,7 @@ void DistantLand::renderStageBlend()
     }
 
     // Blend MW/MGE
-    if(isDistantCell() && (~Configuration.MGEFlags & NO_MW_MGE_BLEND))
-    {
+    if (isDistantCell() && (~Configuration.MGEFlags & NO_MW_MGE_BLEND)) {
         effect->SetTexture(ehTex0, texDistantBlend);
         effect->SetTexture(ehTex3, texDepthFrame);
         effect->CommitChanges();
@@ -300,17 +283,16 @@ void DistantLand::renderStageBlend()
 }
 
 // renderStageWater - Render replacement water plane
-void DistantLand::renderStageWater()
-{
+void DistantLand::renderStageWater() {
     auto mwBridge = MWBridge::get();
-    IDirect3DStateBlock9 *stateSaved;
+    IDirect3DStateBlock9* stateSaved;
     UINT passes;
 
-    if(isRenderCached)
+    if (isRenderCached) {
         return;
+    }
 
-    if(mwBridge->CellHasWater())
-    {
+    if (mwBridge->CellHasWater()) {
         // Save state block manually since we can change FVF/decl
         device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
         effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
@@ -319,8 +301,7 @@ void DistantLand::renderStageWater()
         bool u = mwBridge->IsUnderwater(eyePos.z);
         bool i = !mwBridge->IsExterior();
 
-        if(u || i)
-        {
+        if (u || i) {
             // Set up clip plane at fog end for certain environments to save fillrate
             float clipAt = Configuration.DL.InteriorFogEnd * kCellSize;
             D3DXPLANE clipPlane(0, 0, -clipAt, mwProj._33 * clipAt + mwProj._43);
@@ -340,8 +321,7 @@ void DistantLand::renderStageWater()
 }
 
 // setupCommonEffect - Set shared shader variables for this frame
-void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *proj)
-{
+void DistantLand::setupCommonEffect(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
     auto mwBridge = MWBridge::get();
 
     // View position
@@ -361,8 +341,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloatArray(ehSunPos, sunPos, 3);
     effect->SetFloat(ehSunVis, sunVis);
 
-    if(isPPLActive)
-    {
+    if (isPPLActive) {
         // Apply light multiplier settings to distant land
         RGBVECTOR s = lightSunMult * sunCol, a = lightAmbMult * totalAmb;
         effect->SetFloatArray(ehSunCol, s, 3);
@@ -372,7 +351,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
-    const RGBVECTOR *skyCol = mwBridge->CellHasWeather() ?  mwBridge->getCurrentWeatherSkyCol() : &horizonCol;
+    const RGBVECTOR* skyCol = mwBridge->CellHasWeather() ?  mwBridge->getCurrentWeatherSkyCol() : &horizonCol;
     effect->SetFloat(ehFogStart, fogS);
     effect->SetFloat(ehFogRange, fogE);
     effect->SetFloat(ehFogNearStart, fogNearStart);
@@ -383,18 +362,16 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
     effect->SetFloat(ehNearViewRange, nearViewRange);
     effect->SetFloat(ehNiceWeather, niceWeather);
 
-    if(Configuration.MGEFlags & USE_ATM_SCATTER)
-    {
+    if (Configuration.MGEFlags & USE_ATM_SCATTER) {
         effect->SetFloatArray(ehOutscatter, atmOutscatter, 3);
         effect->SetFloatArray(ehInscatter, atmInscatter, 3);
     }
 
     // Wind, requires smoothing as it is very noisy
     static float smoothWind[2];
-    if(!mwBridge->IsMenu())
-    {
+    if (!mwBridge->IsMenu()) {
         const float f = 0.02;
-        const float *wind = mwBridge->GetWindVector();
+        const float* wind = mwBridge->GetWindVector();
         smoothWind[0] += f * (windScaling * wind[0] - smoothWind[0]);
         smoothWind[1] += f * (windScaling * wind[1] - smoothWind[1]);
         effect->SetFloatArray(ehWindVec, smoothWind, 2);
@@ -406,40 +383,36 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX *view, const D3DXMATRIX *pr
 }
 
 // setScattering - Set scattering coefficients for atmospheric scattering shader
-void DistantLand::setScattering(const RGBVECTOR& out, const RGBVECTOR& in)
-{
+void DistantLand::setScattering(const RGBVECTOR& out, const RGBVECTOR& in) {
     atmOutscatter = out;
     atmInscatter = in;
 }
 
-static float lerp(float x0, float x1, float t)
-{
+static float lerp(float x0, float x1, float t) {
     return (1.0f-t) * x0 + t * x1;
 }
 
-static float saturate(float x)
-{
+static float saturate(float x) {
     return std::min(std::max(0.0f, x), 1.0f);
 }
 
 // adjustFog - Set fog distance, wind speed adjust and fog colour for this frame
-void DistantLand::adjustFog()
-{
+void DistantLand::adjustFog() {
     auto mwBridge = MWBridge::get();
 
     nearViewRange = mwBridge->GetViewDistance();
 
     // Morrowind does not update weather during menu mode, except when time is changed
     // Therefore always run adjustment during menu mode, except if background caching is used
-    if(isRenderCached)
+    if (isRenderCached) {
         return;
+    }
 
     // Get fog cell ranges based on environment and weather
-    if(mwBridge->IsUnderwater(eyePos.z)) {
+    if (mwBridge->IsUnderwater(eyePos.z)) {
         fogStart = Configuration.DL.BelowWaterFogStart;
         fogEnd = Configuration.DL.BelowWaterFogEnd;
-    }
-    else if(mwBridge->CellHasWeather()) {
+    } else if (mwBridge->CellHasWeather()) {
         int wthr1 = mwBridge->GetCurrentWeather(), wthr2 = mwBridge->GetNextWeather();
         float ratio = mwBridge->GetWeatherRatio(), ff = 1.0, fo = 0.0, ws = 0.0;
 
@@ -451,8 +424,7 @@ void DistantLand::adjustFog()
             niceWeather *= niceWeather;
             lightSunMult = lerp(Configuration.Lighting.SunMult[wthr1], Configuration.Lighting.SunMult[wthr2], ratio);
             lightAmbMult = lerp(Configuration.Lighting.AmbMult[wthr1], Configuration.Lighting.AmbMult[wthr2], ratio);
-        }
-        else if (wthr1 >= 0 && wthr1 <= 9) {
+        } else if (wthr1 >= 0 && wthr1 <= 9) {
             ff = Configuration.DL.FogD[wthr1];
             fo = Configuration.DL.FgOD[wthr1] / 100.0;
             ws = Configuration.DL.Wind[wthr1];
@@ -464,8 +436,7 @@ void DistantLand::adjustFog()
         fogStart = ff * (Configuration.DL.AboveWaterFogStart - fo * Configuration.DL.AboveWaterFogEnd);
         fogEnd = ff * (1 - fo) * Configuration.DL.AboveWaterFogEnd;
         windScaling = ws;
-    }
-    else {
+    } else {
         // Avoid density == 0, as when fogstart and fogend are equal, the fog equation denominator goes to infinity
         float density = std::max(0.01f, mwBridge->getInteriorFogDens());
         fogStart = lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, density);
@@ -480,19 +451,14 @@ void DistantLand::adjustFog()
     fogStart *= kCellSize;
     fogEnd *= kCellSize;
 
-    if(Configuration.MGEFlags & USE_DISTANT_LAND)
-    {
+    if (Configuration.MGEFlags & USE_DISTANT_LAND) {
         // Set hardware fog for Morrowind's use
-        if(Configuration.MGEFlags & EXP_FOG)
-        {
-            if(mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather())
-            {
+        if (Configuration.MGEFlags & EXP_FOG) {
+            if (mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather()) {
                 // Leave fog ranges as set, shaders use all linear fogging in this case
                 fogNearStart = fogStart;
                 fogNearEnd = fogEnd;
-            }
-            else
-            {
+            } else {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
                 // Linear density matched to exp fog at dist = 1280 and dist = viewrange (or fog end if closer)
                 fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
@@ -504,39 +470,33 @@ void DistantLand::adjustFog()
                 fogNearStart = 1280.0 + (farIntercept - 1280.0) * (1 - expStart) / (expEnd - expStart);
                 fogNearEnd = 1280.0 + (farIntercept - 1280.0) * -expStart / (expEnd - expStart);
             }
-        }
-        else
-        {
+        } else {
             fogNearStart = fogStart;
             fogNearEnd = fogEnd;
         }
 
-        device->SetRenderState(D3DRS_FOGSTART, *(DWORD *)&fogNearStart);
-        device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
-    }
-    else
-    {
+        device->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogNearStart);
+        device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
+    } else {
         // Read Morrowind-set fog range
-        device->GetRenderState(D3DRS_FOGSTART, (DWORD *)&fogNearStart);
-        device->GetRenderState(D3DRS_FOGEND, (DWORD *)&fogNearEnd);
+        device->GetRenderState(D3DRS_FOGSTART, (DWORD*)&fogNearStart);
+        device->GetRenderState(D3DRS_FOGEND, (DWORD*)&fogNearEnd);
 
         // Reset fog end on toggling distant land as Morrowind assumes it doesn't get changed
-        if(fogNearEnd > nearViewRange)
-        {
+        if (fogNearEnd > nearViewRange) {
             fogNearEnd = nearViewRange;
-            device->SetRenderState(D3DRS_FOGEND, *(DWORD *)&fogNearEnd);
+            device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
         }
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
-    if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z))
-    {
+    if ((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather() && !mwBridge->IsUnderwater(eyePos.z)) {
         // Read unadjusted colour, as the scenegraph fog colour may not be updated during menu transitions
         RGBVECTOR c0 = *mwBridge->getCurrentWeatherFogCol();
         RGBVECTOR c1 = c0;
 
         // Simplified version of scattering from the shader
-        const RGBVECTOR *skyCol = mwBridge->getCurrentWeatherSkyCol();
+        const RGBVECTOR* skyCol = mwBridge->getCurrentWeatherSkyCol();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
         const float sunaltitude = powf(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
@@ -570,7 +530,9 @@ void DistantLand::adjustFog()
 
         D3DXVECTOR3 k0 = mie * D3DXVECTOR3(0.125, 0.125, 0.125) + rayl * newSkyCol;
         D3DXVECTOR3 k1 = att * (1.1*atmdep + 0.5) * sunaltitude_b;
-        c1.r = k0.x * k1.x; c1.g = k0.y * k1.y; c1.b = k0.z * k1.z;
+        c1.r = k0.x * k1.x;
+        c1.g = k0.y * k1.y;
+        c1.b = k0.z * k1.z;
 
         // Convert from additive inscatter to Direct3D fog model
         // The correction factor is clamped to avoid creating infinities
@@ -589,65 +551,71 @@ void DistantLand::adjustFog()
 
         // Set device fog colour to propagate change immediately
         device->SetRenderState(D3DRS_FOGCOLOR, fc);
-    }
-    else
-    {
+    } else {
         // Save current fog colour for matching near fog in shaders
         nearFogCol = RGBVECTOR(mwBridge->getScenegraphFogCol());
     }
 }
 
 // postProcess - Calls post process module, or captures and applies frame cache to avoid rendering
-void DistantLand::postProcess()
-{
-    if(!isRenderCached)
-    {
+void DistantLand::postProcess() {
+    if (!isRenderCached) {
         auto mwBridge = MWBridge::get();
 
         // Save state block
-        IDirect3DStateBlock9 *stateSaved;
+        IDirect3DStateBlock9* stateSaved;
         device->CreateStateBlock(D3DSBT_ALL, &stateSaved);
 
-        if(Configuration.MGEFlags & USE_HW_SHADER)
-        {
+        if (Configuration.MGEFlags & USE_HW_SHADER) {
             // Set flags to reflect cell environment
             int envFlags = 0;
 
-            if(!mwBridge->CellHasWeather()) envFlags |= 1;
-            if(mwBridge->IsExterior()) envFlags |= 2;
-            if(mwBridge->IntLikeExterior()) envFlags |= 4;
-            if(mwBridge->IsUnderwater(eyePos.z)) envFlags |= 8; else envFlags |= 16;
-            if(sunVis >= 0.001) envFlags |= 32; else envFlags |= 64;
+            if (!mwBridge->CellHasWeather()) {
+                envFlags |= 1;
+            }
+            if (mwBridge->IsExterior()) {
+                envFlags |= 2;
+            }
+            if (mwBridge->IntLikeExterior()) {
+                envFlags |= 4;
+            }
+            if (mwBridge->IsUnderwater(eyePos.z)) {
+                envFlags |= 8;
+            } else {
+                envFlags |= 16;
+            }
+            if (sunVis >= 0.001) {
+                envFlags |= 32;
+            } else {
+                envFlags |= 64;
+            }
 
             // Run all shaders (with callback to set changed vars)
             PostShaders::shaderTime(&updatePostShader, envFlags, mwBridge->frameTime());
         }
 
         // Cache render for first frame of menu mode
-        if((Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu())
-        {
+        if ((Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu()) {
             texDistantBlend = PostShaders::borrowBuffer(0);
             isRenderCached = true;
-        }
-        else if(captureScreenFunc)
-        {
-            IDirect3DSurface9 *surface = captureScreen();
+        } else if (captureScreenFunc) {
+            IDirect3DSurface9* surface = captureScreen();
             (*captureScreenFunc)(surface);
-            if(surface) surface->Release();
+            if (surface) {
+                surface->Release();
+            }
             captureScreenFunc = NULL;
         }
 
         // Shadow map inset
-        ///if(!mwBridge->IsMenu()) renderShadowDebug();
+        ///if(!mwBridge->IsMenu()) { renderShadowDebug(); }
 
         // Restore state
         stateSaved->Apply();
         stateSaved->Release();
-    }
-    else
-    {
+    } else {
         // Blit cached frame to screen
-        IDirect3DSurface9 *backbuffer, *surfDistant;
+        IDirect3DSurface9* backbuffer, *surfDistant;
         device->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
         texDistantBlend->GetSurfaceLevel(0, &surfDistant);
         device->StretchRect(surfDistant, 0, backbuffer, 0, D3DTEXF_NONE);
@@ -660,8 +628,7 @@ void DistantLand::postProcess()
 }
 
 // updatePostShader - callback for setting post shader variables based on environment
-void DistantLand::updatePostShader(MGEShader *shader)
-{
+void DistantLand::updatePostShader(MGEShader* shader) {
     auto mwBridge = MWBridge::get();
 
     // Internal textures
@@ -706,24 +673,19 @@ void DistantLand::updatePostShader(MGEShader *shader)
 //------------------------------------------------------------
 
 // selectDistantCell - Select the correct set of distant land meshes for the current cell
-bool DistantLand::selectDistantCell()
-{
+bool DistantLand::selectDistantCell() {
     auto mwBridge = MWBridge::get();
 
-    if(Configuration.MGEFlags & USE_DISTANT_LAND)
-    {
-        if(mwBridge->IsExterior())
-        {
+    if (Configuration.MGEFlags & USE_DISTANT_LAND) {
+        if (mwBridge->IsExterior()) {
             currentWorldSpace = &mapWorldSpaces.find(string())->second;
             return true;
         }
 
-        if(mwBridge->CellHasWeather() || (Configuration.MGEFlags & REFLECT_INTERIOR))
-        {
+        if (mwBridge->CellHasWeather() || (Configuration.MGEFlags & REFLECT_INTERIOR)) {
             string cellname = mwBridge->getInteriorName();
             unordered_map<string, WorldSpace>::const_iterator iWS = mapWorldSpaces.find(cellname);
-            if(iWS != mapWorldSpaces.end())
-            {
+            if (iWS != mapWorldSpaces.end()) {
                 currentWorldSpace = &iWS->second;
                 return true;
             }
@@ -735,14 +697,12 @@ bool DistantLand::selectDistantCell()
 }
 
 // isDistantCell - Check if there is distant land selected for this cell
-bool DistantLand::isDistantCell()
-{
+bool DistantLand::isDistantCell() {
     return currentWorldSpace != 0;
 }
 
 // setView - Called once per frame to setup view dependent data
-void DistantLand::setView(const D3DMATRIX *m)
-{
+void DistantLand::setView(const D3DMATRIX* m) {
     auto mwBridge = MWBridge::get();
 
     // Calculate eyePos, eyeVec for shaders
@@ -751,11 +711,12 @@ void DistantLand::setView(const D3DMATRIX *m)
 
     D3DXMatrixInverse(&invView, 0, &view);
     D3DXVec4Transform(&eyePos, &origin, &invView);
-    eyeVec.x = m->_13; eyeVec.y = m->_23; eyeVec.z = m->_33;
+    eyeVec.x = m->_13;
+    eyeVec.y = m->_23;
+    eyeVec.z = m->_33;
 
     // Set sun disc position
-    if(mwBridge->IsLoaded() && mwBridge->CellHasWeather())
-    {
+    if (mwBridge->IsLoaded() && mwBridge->CellHasWeather()) {
         mwBridge->GetSunDir(sunPos.x, sunPos.y, sunPos.z);
         sunPos.w = 1;
         sunPos /= sqrt(sunPos.x * sunPos.x + sunPos.y * sunPos.y + sunPos.z * sunPos.z);
@@ -763,55 +724,48 @@ void DistantLand::setView(const D3DMATRIX *m)
         // Sun position "bounces" at the horizon to follow night lighting instead of setting
         // Sun visibility goes to zero at night, so use this to correct the sun position so it sets
         sunVis = mwBridge->GetSunVis() / 255.0;
-        if(sunVis == 0) sunPos.z = -sunPos.z;
-    }
-    else
-    {
+        if (sunVis == 0) {
+            sunPos.z = -sunPos.z;
+        }
+    } else {
         sunPos = D3DXVECTOR4(0, 0, -1, 1);
         sunVis = 0;
     }
 }
 
 // setProjection - Called when a D3D projection matrix is set, and edits it
-void DistantLand::setProjection(D3DMATRIX *proj)
-{
+void DistantLand::setProjection(D3DMATRIX* proj) {
     // Move near plane from 1.0 to 4.0 for more z accuracy
     // Move far plane back to edge of draw distance
-    if(Configuration.MGEFlags & USE_DISTANT_LAND)
+    if (Configuration.MGEFlags & USE_DISTANT_LAND) {
         editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * kCellSize);
+    }
 }
 
 // editProjectionZ - Alter the near and far clip planes of a projection matrix
-void DistantLand::editProjectionZ(D3DMATRIX *m, float zn, float zf)
-{
+void DistantLand::editProjectionZ(D3DMATRIX* m, float zn, float zf) {
     // Override near and far clip planes
     m->_33 = zf / (zf - zn);
     m->_43 = -zn * zf / (zf - zn);
 }
 
-void DistantLand::setHorizonColour(const RGBVECTOR& c)
-{
+void DistantLand::setHorizonColour(const RGBVECTOR& c) {
     horizonCol = c;
 }
 
-void DistantLand::setAmbientColour(const RGBVECTOR& c)
-{
+void DistantLand::setAmbientColour(const RGBVECTOR& c) {
     ambCol = c;
 }
 
-void DistantLand::setSunLight(const D3DLIGHT8 *s)
-{
+void DistantLand::setSunLight(const D3DLIGHT8* s) {
     auto mwBridge = MWBridge::get();
 
-    if(mwBridge->CellHasWeather())
-    {
+    if (mwBridge->CellHasWeather()) {
         sunVec.x = s->Direction.x;
         sunVec.y = s->Direction.y;
         sunVec.z = s->Direction.z;
-        D3DXVec3Normalize((D3DXVECTOR3 *)&sunVec, (D3DXVECTOR3 *)&sunVec);
-    }
-    else
-    {
+        D3DXVec3Normalize((D3DXVECTOR3*)&sunVec, (D3DXVECTOR3*)&sunVec);
+    } else {
         sunVec.x = 0.0f;
         sunVec.y = 0.0f;
         sunVec.z = 1.0f;
@@ -824,37 +778,35 @@ void DistantLand::setSunLight(const D3DLIGHT8 *s)
 // inspectIndexedPrimitive
 // Filters and records DIP calls for later use; returning false should cause the draw call to be skipped
 // Can also replace selected fixed function calls with an augmented shader
-bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *rs, const FragmentState *frs, LightState *lightrs)
-{
+bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* rs, const FragmentState* frs, LightState* lightrs) {
     auto mwBridge = MWBridge::get();
 
     // Capture all writes to z-buffer
     // Only capture alpha blends in alpha scene, otherwise we record extraneous land splatting tiles
     // Interiors are okay to record everything, though technically alpha blending in scene 0 causes some artifacts
-    if(rs->zWrite && !(rs->blendEnable && !rs->alphaTest && sceneCount == 0 && mwBridge->IsExterior()))
-    {
+    if (rs->zWrite && !(rs->blendEnable && !rs->alphaTest && sceneCount == 0 && mwBridge->IsExterior())) {
         recordMW.push_back(*rs);
 
         // Unify alpha test operator/reference to be equivalent to GREATEREQUAL
-        if(rs->alphaFunc == D3DCMP_GREATER)
+        if (rs->alphaFunc == D3DCMP_GREATER) {
             recordMW.back().alphaRef++;
+        }
     }
 
     // Special case, capture sky
-    if(recordMW.empty() && rs->blendEnable && sceneCount == 0 && mwBridge->CellHasWeather())
-    {
+    if (recordMW.empty() && rs->blendEnable && sceneCount == 0 && mwBridge->CellHasWeather()) {
         recordSky.push_back(*rs);
 
         // Check for moon geometry, and mark those records by setting lighting off
-        if(frs->material.emissive.a == kMoonTag)
+        if (frs->material.emissive.a == kMoonTag) {
             recordSky.back().useLighting = false;
+        }
 
         // If using atmosphere scattering, draw sky later in stage 0
-        if((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER))
+        if ((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & USE_ATM_SCATTER)) {
             return false;
-    }
-    else if(isPPLActive)
-    {
+        }
+    } else if (isPPLActive) {
         // Render Morrowind with replacement shaders
         FixedFunctionShader::renderMorrowind(rs, frs, lightrs);
         return false;
@@ -865,16 +817,14 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState *r
 
 // requestCaptureNoUI - Set a function to be called with a screen capture
 // just after post-processing and before the UI is drawn
-void DistantLand::requestCaptureNoUI(void (*func)(IDirect3DSurface9 *))
-{
+void DistantLand::requestCaptureNoUI(void (*func)(IDirect3DSurface9*)) {
     captureScreenFunc = func;
 }
 
 // captureScreen - Capture a screenshot, fixing any alpha channel issue
-IDirect3DSurface9 * DistantLand::captureScreen()
-{
-    IDirect3DTexture9 *t;
-    IDirect3DSurface9 *s;
+IDirect3DSurface9* DistantLand::captureScreen() {
+    IDirect3DTexture9* t;
+    IDirect3DSurface9* s;
 
     // Resolve multisampled back buffer
     t = PostShaders::borrowBuffer(0);
@@ -885,25 +835,34 @@ IDirect3DSurface9 * DistantLand::captureScreen()
 
     // Set alpha channel to opaque in case something with alpha write was rendered
     D3DVIEWPORT9 vp;
-    IDirect3DSurface9 *surfSS;
+    IDirect3DSurface9* surfSS;
     D3DLOCKED_RECT rect;
 
     device->GetViewport(&vp);
     DWORD hr = device->CreateOffscreenPlainSurface(vp.Width, vp.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfSS, NULL);
-    if(hr != D3D_OK) { s->Release(); return 0; }
+    if (hr != D3D_OK) {
+        s->Release();
+        return 0;
+    }
 
     hr = device->GetRenderTargetData(s, surfSS);
     s->Release();
-    if(hr != D3D_OK) { surfSS->Release(); return 0; }
+    if (hr != D3D_OK) {
+        surfSS->Release();
+        return 0;
+    }
 
     surfSS->LockRect(&rect, 0, 0);
-    if(hr != D3D_OK) { surfSS->Release(); return 0; }
+    if (hr != D3D_OK) {
+        surfSS->Release();
+        return 0;
+    }
 
-    DWORD *c = (DWORD*)rect.pBits;
-    for(int y = 0; y != vp.Height; ++y)
-    {
-        for(int x = 0; x != rect.Pitch >> 2; ++x)
+    DWORD* c = (DWORD*)rect.pBits;
+    for (int y = 0; y != vp.Height; ++y) {
+        for (int x = 0; x != rect.Pitch >> 2; ++x) {
             *c++ |= D3DCOLOR_ARGB(0xff, 0, 0, 0);
+        }
     }
 
     surfSS->UnlockRect();
@@ -913,23 +872,20 @@ IDirect3DSurface9 * DistantLand::captureScreen()
 
 
 // RenderTargetSwitcher - Switch to a render target, restoring state at end of scope
-RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil)
-{
+RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DSurface9* target, IDirect3DSurface9* targetDepthStencil) {
     init(target, targetDepthStencil);
 }
 
 // RenderTargetSwitcher - Switch to a render surface belonging to a texture, restoring state at end of scope
-RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DTexture9 *targetTex, IDirect3DSurface9 *targetDepthStencil)
-{
+RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DTexture9* targetTex, IDirect3DSurface9* targetDepthStencil) {
     // Note the device still holds a reference to the target while it's active
-    IDirect3DSurface9 *target;
+    IDirect3DSurface9* target;
     targetTex->GetSurfaceLevel(0, &target);
     init(target, targetDepthStencil);
     target->Release();
 }
 
-void RenderTargetSwitcher::init(IDirect3DSurface9 *target, IDirect3DSurface9 *targetDepthStencil)
-{
+void RenderTargetSwitcher::init(IDirect3DSurface9* target, IDirect3DSurface9* targetDepthStencil) {
     DistantLand::device->GetRenderTarget(0, &savedTarget);
     DistantLand::device->GetDepthStencilSurface(&savedDepthStencil);
 
@@ -937,11 +893,14 @@ void RenderTargetSwitcher::init(IDirect3DSurface9 *target, IDirect3DSurface9 *ta
     DistantLand::device->SetDepthStencilSurface(targetDepthStencil);
 }
 
-RenderTargetSwitcher::~RenderTargetSwitcher()
-{
+RenderTargetSwitcher::~RenderTargetSwitcher() {
     DistantLand::device->SetRenderTarget(0, savedTarget);
     DistantLand::device->SetDepthStencilSurface(savedDepthStencil);
 
-    if(savedTarget) savedTarget->Release();
-    if(savedDepthStencil) savedDepthStencil->Release();
+    if (savedTarget) {
+        savedTarget->Release();
+    }
+    if (savedDepthStencil) {
+        savedDepthStencil->Release();
+    }
 }

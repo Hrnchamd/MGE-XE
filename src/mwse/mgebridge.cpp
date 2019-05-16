@@ -14,53 +14,51 @@
 
 
 struct TES3MACHINE;
-typedef TES3MACHINE * (*MWSEGetVM_t)();
+typedef TES3MACHINE* (*MWSEGetVM_t)();
 typedef bool (*MWSEAddInstruction_t)(OPCODE, mwseInstruction*);
-typedef bool (__thiscall *addInstruction_t)(TES3MACHINE*, OPCODE, mwseInstruction*);
+typedef bool (__thiscall* addInstruction_t)(TES3MACHINE*, OPCODE, mwseInstruction*);
 
-static TES3MACHINE *vm;
+static TES3MACHINE* vm;
 static addInstruction_t memberAddInstr;
 
 
 // Perform MSVC thiscall vm->AddInstruction(op, instr) (MWSE 0.9.4a specific)
-static bool MWSE94aAddInstruction(OPCODE op, mwseInstruction *instr)
-{
+static bool MWSE94aAddInstruction(OPCODE op, mwseInstruction* instr) {
     return memberAddInstr(vm, op, instr);
 }
 
 // Bug: MWSE dynamically creates patch functions using memory allocated on the heap,
 // where memory pages are not normally executable.
 // Fix: Read MWSE structures and set executable flag on patch functions. (MWSE 0.9.4a specific)
-static void fixMWSE94Problems(HMODULE dll)
-{
+static void fixMWSE94Problems(HMODULE dll) {
     // BreakpointData struct from MWSE source/Breakpoint.cpp
     // Dynamic allocated code is pointed to by overwritten
-    struct BreakpointData { void *addr; DWORD len; void *overwritten, *func; bool active; };
+    struct BreakpointData {
+        void* addr;
+        DWORD len;
+        void* overwritten, *func;
+        bool active;
+    };
     const int num_bps = 9;
 
-    BreakpointData *bpData = reinterpret_cast<BreakpointData*>((char*)(dll) + 0x56900);
-    for(int i = 0; i != num_bps; ++i, ++bpData)
-    {
-        void *patch = bpData->overwritten;
+    BreakpointData* bpData = reinterpret_cast<BreakpointData*>((char*)(dll) + 0x56900);
+    for (int i = 0; i != num_bps; ++i, ++bpData) {
+        void* patch = bpData->overwritten;
         DWORD trueLen = bpData->len + 7, oldProtect;
 
         VirtualProtect(patch, trueLen, PAGE_EXECUTE_READWRITE, &oldProtect);
     }
 }
 
-void MWSE_MGEPlugin::init(HMODULE dll)
-{
+void MWSE_MGEPlugin::init(HMODULE dll) {
     // Test MWSE for extensibility
     MWSEGetVM_t MWSEGetVM = (MWSEGetVM_t)GetProcAddress(dll, "MWSEGetVM");
     MWSEAddInstruction_t MWSEAddInstruction = (MWSEAddInstruction_t)GetProcAddress(dll, "MWSEAddInstruction");
 
-    if(MWSEGetVM && MWSEAddInstruction)
-    {
+    if (MWSEGetVM && MWSEAddInstruction) {
         // Newer, extensible MWSE version
         vm = MWSEGetVM();
-    }
-    else
-    {
+    } else {
         // Assume MWSE 0.9.4a, as packaged
         // Hackery; steal MWSE 0.9.4a VM global pointer and VM::AddInstruction member function
         vm = *reinterpret_cast<TES3MACHINE**>((char*)(dll) + 0x595cc);

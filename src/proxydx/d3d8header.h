@@ -19,7 +19,7 @@ interface IDirect3DDevice8;
 interface IDirect3DTexture8;
 interface IDirect3DSurface8;
 
-//DX8 enums
+// DX8 D3DTEXTURESTAGESTATETYPE enum
 #define D3DTSS_ADDRESSU       13
 #define D3DTSS_ADDRESSV       14
 #define D3DTSS_BORDERCOLOR    15
@@ -31,9 +31,8 @@ interface IDirect3DSurface8;
 #define D3DTSS_MAXANISOTROPY  21
 #define D3DTSS_ADDRESSW       25
 
-//DX8 structs
-typedef struct _D3DADAPTER_IDENTIFIER8
-{
+// DX8 structs
+typedef struct _D3DADAPTER_IDENTIFIER8 {
     char            Driver[MAX_DEVICE_IDENTIFIER_STRING];
     char            Description[MAX_DEVICE_IDENTIFIER_STRING];
 
@@ -49,8 +48,8 @@ typedef struct _D3DADAPTER_IDENTIFIER8
     DWORD           WHQLLevel;
 
 } D3DADAPTER_IDENTIFIER8;
-typedef struct _D3DPRESENT_PARAMETERS8_
-{
+
+typedef struct _D3DPRESENT_PARAMETERS8 {
     UINT                BackBufferWidth;
     UINT                BackBufferHeight;
     D3DFORMAT           BackBufferFormat;
@@ -70,8 +69,8 @@ typedef struct _D3DPRESENT_PARAMETERS8_
     UINT                FullScreen_PresentationInterval;
 
 } D3DPRESENT_PARAMETERS8;
-typedef struct _D3DSURFACE_DESC8
-{
+
+typedef struct _D3DSURFACE_DESC8 {
     D3DFORMAT           Format;
     D3DRESOURCETYPE     Type;
     DWORD               Usage;
@@ -94,18 +93,16 @@ typedef D3DMATERIAL9 D3DMATERIAL8;
 typedef D3DVIEWPORT9 D3DVIEWPORT8;
 typedef D3DCLIPSTATUS9 D3DCLIPSTATUS8;
 
-typedef struct RGBVECTOR
-{
-#ifdef __cplusplus
+typedef struct RGBVECTOR {
 public:
     RGBVECTOR() {}
     RGBVECTOR( DWORD rgb );
-    RGBVECTOR( CONST FLOAT * );
-    RGBVECTOR( CONST D3DXFLOAT16 * );
-    RGBVECTOR( CONST RGBVECTOR * );
-    RGBVECTOR( CONST RGBVECTOR& );
-    RGBVECTOR( CONST D3DCOLORVALUE& );
-    RGBVECTOR( CONST D3DXCOLOR& );
+    RGBVECTOR( CONST FLOAT*);
+    RGBVECTOR( CONST D3DXFLOAT16*);
+    RGBVECTOR( CONST RGBVECTOR*);
+    RGBVECTOR( CONST RGBVECTOR&);
+    RGBVECTOR( CONST D3DCOLORVALUE&);
+    RGBVECTOR( CONST D3DXCOLOR&);
     RGBVECTOR( FLOAT r, FLOAT g, FLOAT b );
 
     // casting
@@ -115,36 +112,36 @@ public:
     operator CONST FLOAT* () const;
 
     // assignment operators
-    RGBVECTOR& operator += ( CONST RGBVECTOR& );
-    RGBVECTOR& operator -= ( CONST RGBVECTOR& );
-    RGBVECTOR& operator += ( CONST D3DXCOLOR& );
-    RGBVECTOR& operator -= ( CONST D3DXCOLOR& );
-    RGBVECTOR& operator *= ( FLOAT );
-    RGBVECTOR& operator /= ( FLOAT );
+    RGBVECTOR& operator += (CONST RGBVECTOR&);
+    RGBVECTOR& operator -= (CONST RGBVECTOR&);
+    RGBVECTOR& operator += (CONST D3DXCOLOR&);
+    RGBVECTOR& operator -= (CONST D3DXCOLOR&);
+    RGBVECTOR& operator *= (FLOAT);
+    RGBVECTOR& operator /= (FLOAT);
 
     // unary operators
     RGBVECTOR operator + () const;
     RGBVECTOR operator - () const;
 
     // binary operators
-    RGBVECTOR operator + ( CONST RGBVECTOR& ) const;
-    RGBVECTOR operator - ( CONST RGBVECTOR& ) const;
-    RGBVECTOR operator + ( CONST D3DXCOLOR& ) const;
-    RGBVECTOR operator - ( CONST D3DXCOLOR& ) const;
-    RGBVECTOR operator * ( FLOAT ) const;
-    RGBVECTOR operator / ( FLOAT ) const;
+    RGBVECTOR operator + (CONST RGBVECTOR&) const;
+    RGBVECTOR operator - (CONST RGBVECTOR&) const;
+    RGBVECTOR operator + (CONST D3DXCOLOR&) const;
+    RGBVECTOR operator - (CONST D3DXCOLOR&) const;
+    RGBVECTOR operator * (FLOAT) const;
+    RGBVECTOR operator / (FLOAT) const;
 
-    friend RGBVECTOR operator * ( FLOAT, CONST RGBVECTOR& );
+    friend RGBVECTOR operator * (FLOAT, CONST RGBVECTOR&);
 
-    BOOL operator == ( CONST RGBVECTOR& ) const;
-    BOOL operator != ( CONST RGBVECTOR& ) const;
-    BOOL operator == ( CONST D3DXCOLOR& ) const;
-    BOOL operator != ( CONST D3DXCOLOR& ) const;
+    BOOL operator == (CONST RGBVECTOR&) const;
+    BOOL operator != (CONST RGBVECTOR&) const;
+    BOOL operator == (CONST D3DXCOLOR&) const;
+    BOOL operator != (CONST D3DXCOLOR&) const;
 
-#endif //__cplusplus
     FLOAT r, g, b;
 } RGBVECTOR, *LPRGBVECTOR;
 
+// RGBVECTOR method definitions
 #include "d3d8header.inl"
 
 typedef struct _D3DCAPS8 {

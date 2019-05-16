@@ -10,23 +10,24 @@ const GUID IID_IDirect3DTexture9 = { 0x85c31227, 0x3de5, 0x4f00, 0x9b, 0x3a, 0xf
 
 
 
-ProxySurface::ProxySurface(IDirect3DSurface9 *real, ProxyDevice *device) : realSurface(real), proxDevice(device)
-{
-    ProxySurface *proxy = this;
-    real->SetPrivateData(guid_proxydx, (void *)&proxy, sizeof(proxy), 0);
+ProxySurface::ProxySurface(IDirect3DSurface9* real, ProxyDevice* device) : realSurface(real), proxDevice(device) {
+    ProxySurface* proxy = this;
+    real->SetPrivateData(guid_proxydx, (void*)&proxy, sizeof(proxy), 0);
 }
 
 //-----------------------------------------------------------------------------
 /*** IUnknown methods ***/
 //-----------------------------------------------------------------------------
-HRESULT _stdcall ProxySurface::QueryInterface(REFIID riid, void **ppvObj) { return realSurface->QueryInterface(riid, ppvObj); }
-ULONG _stdcall ProxySurface::AddRef() { return realSurface->AddRef(); }
+HRESULT _stdcall ProxySurface::QueryInterface(REFIID riid, void** ppvObj) {
+    return realSurface->QueryInterface(riid, ppvObj);
+}
+ULONG _stdcall ProxySurface::AddRef() {
+    return realSurface->AddRef();
+}
 
-ULONG _stdcall ProxySurface::Release()
-{
+ULONG _stdcall ProxySurface::Release() {
     ULONG refcount = realSurface->Release();
-    if(!refcount)
-    {
+    if (!refcount) {
         delete this;
         return 0;
     }
@@ -37,22 +38,27 @@ ULONG _stdcall ProxySurface::Release()
 /*** IDirect3DSurface8 methods ***/
 //-----------------------------------------------------------------------------
 
-HRESULT _stdcall ProxySurface::GetDevice(IDirect3DDevice8 **ppDevice) { *ppDevice = proxDevice; return D3D_OK; }
-HRESULT _stdcall ProxySurface::SetPrivateData(REFGUID refguid, CONST void *pData, DWORD SizeOfData, DWORD Flags) { return realSurface->SetPrivateData(refguid, pData, SizeOfData, Flags); }
-HRESULT _stdcall ProxySurface::GetPrivateData(REFGUID refguid, void *pData, DWORD *pSizeOfData) { return realSurface->GetPrivateData(refguid, pData, pSizeOfData); }
-HRESULT _stdcall ProxySurface::FreePrivateData(REFGUID refguid) { return realSurface->FreePrivateData(refguid); }
+HRESULT _stdcall ProxySurface::GetDevice(IDirect3DDevice8** ppDevice) {
+    *ppDevice = proxDevice;
+    return D3D_OK;
+}
+HRESULT _stdcall ProxySurface::SetPrivateData(REFGUID refguid, CONST void* pData, DWORD SizeOfData, DWORD Flags) {
+    return realSurface->SetPrivateData(refguid, pData, SizeOfData, Flags);
+}
+HRESULT _stdcall ProxySurface::GetPrivateData(REFGUID refguid, void* pData, DWORD* pSizeOfData) {
+    return realSurface->GetPrivateData(refguid, pData, pSizeOfData);
+}
+HRESULT _stdcall ProxySurface::FreePrivateData(REFGUID refguid) {
+    return realSurface->FreePrivateData(refguid);
+}
 
-HRESULT _stdcall ProxySurface::GetContainer(REFIID riid, void **ppContainer)
-{
-    if(riid == IID_IDirect3DTexture8)
-    {
-        IDirect3DTexture9 *tex = NULL;
-        HRESULT hr = realSurface->GetContainer(IID_IDirect3DTexture9, (void **)&tex);
+HRESULT _stdcall ProxySurface::GetContainer(REFIID riid, void** ppContainer) {
+    if (riid == IID_IDirect3DTexture8) {
+        IDirect3DTexture9* tex = NULL;
+        HRESULT hr = realSurface->GetContainer(IID_IDirect3DTexture9, (void**)&tex);
         *ppContainer = (hr == D3D_OK) ? ProxyTexture::getProxyFromDX(tex) : NULL;
         return hr;
-    }
-    else if(riid == IID_IDirect3DDevice8)
-    {
+    } else if (riid == IID_IDirect3DDevice8) {
         proxDevice->AddRef();
         *ppContainer = proxDevice;
         return D3D_OK;
@@ -60,17 +66,15 @@ HRESULT _stdcall ProxySurface::GetContainer(REFIID riid, void **ppContainer)
     return D3DERR_INVALIDCALL;
 }
 
-HRESULT _stdcall ProxySurface::GetDesc(D3DSURFACE_DESC8 *pDesc)
-{
+HRESULT _stdcall ProxySurface::GetDesc(D3DSURFACE_DESC8* pDesc) {
     D3DSURFACE_DESC a2;
     HRESULT hr = realSurface->GetDesc(&a2);
-    if(hr == D3D_OK)
-    {
+    if (hr == D3D_OK) {
         pDesc->Format = a2.Format;
         pDesc->Height = a2.Height;
         pDesc->MultiSampleType = a2.MultiSampleType;
         pDesc->Pool = a2.Pool;
-        pDesc->Size = 0; //TODO: Fix;
+        pDesc->Size = 0; // TODO: Fix;
         pDesc->Type = a2.Type;
         pDesc->Usage = a2.Usage;
         pDesc->Width = a2.Width;
@@ -78,18 +82,22 @@ HRESULT _stdcall ProxySurface::GetDesc(D3DSURFACE_DESC8 *pDesc)
     return hr;
 }
 
-HRESULT _stdcall ProxySurface::LockRect(D3DLOCKED_RECT *pLockedRect, CONST RECT *pRect, DWORD Flags) { return realSurface->LockRect(pLockedRect, pRect, Flags); }
-HRESULT _stdcall ProxySurface::UnlockRect() { return realSurface->UnlockRect(); }
+HRESULT _stdcall ProxySurface::LockRect(D3DLOCKED_RECT* pLockedRect, CONST RECT* pRect, DWORD Flags) {
+    return realSurface->LockRect(pLockedRect, pRect, Flags);
+}
+HRESULT _stdcall ProxySurface::UnlockRect() {
+    return realSurface->UnlockRect();
+}
 
 // Proxy methods
-ProxySurface * ProxySurface::getProxyFromDX(IDirect3DSurface9 *real)
-{
-    ProxySurface *surface;
+ProxySurface* ProxySurface::getProxyFromDX(IDirect3DSurface9* real) {
+    ProxySurface* surface;
     DWORD data_sz = sizeof(surface);
 
-    HRESULT hr = real->GetPrivateData(guid_proxydx, (void *)&surface, &data_sz);
-    if(hr == D3D_OK)
+    HRESULT hr = real->GetPrivateData(guid_proxydx, (void*)&surface, &data_sz);
+    if (hr == D3D_OK) {
         return surface;
+    }
 
     return 0;
 }

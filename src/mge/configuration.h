@@ -79,8 +79,7 @@ typedef unsigned long DWORD;
 typedef unsigned char BYTE;
 #pragma once
 
-struct ConfigurationStruct
-{
+struct ConfigurationStruct {
     DWORD MGEFlags;
     BYTE AALevel;
     BYTE ZBufFormat;
@@ -100,12 +99,13 @@ struct ConfigurationStruct
     DWORD PerPixelLightFlags;
     int StatusTimeout;
     bool Force3rdPerson;
-    struct { float x, y, z; } Offset3rdPerson;
+    struct {
+        float x, y, z;
+    } Offset3rdPerson;
     bool CrosshairAutohide;
     float UIScale;
 
-    struct
-    {
+    struct {
         float zoom, zoomRate, zoomRateTarget;
         bool rotateUpdate;
         float rotation, rotationRate;
@@ -113,8 +113,7 @@ struct ConfigurationStruct
         float shakeMagnitude, shakeAccel;
     } CameraEffects;
 
-    struct
-    {
+    struct {
         float DrawDist;
         float NearStaticEnd;
         float FarStaticEnd;
@@ -137,14 +136,12 @@ struct ConfigurationStruct
         float FgOD[10];
     } DL;
 
-    struct
-    {
+    struct {
         float SunMult[10];
         float AmbMult[10];
     } Lighting;
 
-    struct
-    {
+    struct {
         bool AltCombat;
         char Macros[4096];
         char Triggers[4096];
