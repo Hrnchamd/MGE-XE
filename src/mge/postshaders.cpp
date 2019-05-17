@@ -491,7 +491,7 @@ MGEShader* PostShaders::findShader(const char* shaderName) {
             return &s;
         }
     }
-    return 0;
+    return nullptr;
 }
 
 bool PostShaders::setShaderVar(const char* shaderName, const char* varName, int x) {

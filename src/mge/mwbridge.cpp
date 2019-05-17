@@ -285,7 +285,7 @@ bool MWBridge::IsExterior() {
     if ( addr != 0 ) {
         return read_dword(addr + 0xAC) == 0;
     } else {
-        return 0;
+        return false;
     }
 }
 
@@ -650,7 +650,7 @@ const char* MWBridge::getInteriorName() {
     if (addr) {
         return (const char*)read_dword(addr + 0x10);
     } else {
-        return 0;
+        return nullptr;
     }
 }
 
@@ -768,7 +768,7 @@ const BYTE* MWBridge::getInteriorFog() {
     if (addr != 0) {
         return (BYTE*)(addr + 0x24);
     }
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -859,12 +859,12 @@ DWORD MWBridge::getPlayerMACP() {
 D3DXVECTOR3* MWBridge::PCam3Offset() {
     // Pointer resolve will fail during load screens
     if (IsLoadScreen()) {
-        return 0;
+        return nullptr;
     }
 
     DWORD macp = getPlayerMACP();
     if (macp == 0) {
-        return 0;
+        return nullptr;
     }
 
     // Camera control structure
@@ -877,12 +877,12 @@ D3DXVECTOR3* MWBridge::PCam3Offset() {
 bool MWBridge::is3rdPerson() {
     // Pointer resolve will fail during load screens
     if (IsLoadScreen()) {
-        return 0;
+        return false;
     }
 
     DWORD macp = getPlayerMACP();
     if (macp == 0) {
-        return 0;
+        return false;
     }
 
     // Camera control structure
@@ -921,7 +921,7 @@ int MWBridge::getPlayerWeapon() {
 bool MWBridge::isPlayerCasting() {
     DWORD macp = getPlayerMACP();
     if (macp == 0) {
-        return 0;
+        return false;
     }
 
     // Check animation state machine for casting
@@ -1196,7 +1196,7 @@ DWORD MWBridge::getKeybindCode(DWORD action) {
 const char* MWBridge::getPlayerName() {
     DWORD macp = getPlayerMACP();
     if (macp == 0) {
-        return 0;
+        return nullptr;
     }
 
     // Get name from base NPC

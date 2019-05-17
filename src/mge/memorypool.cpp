@@ -33,7 +33,7 @@ void* MemoryPool::MemoryBlock::Alloc() {
     }
 
     // We could not make the allocation from this block, return NULL
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

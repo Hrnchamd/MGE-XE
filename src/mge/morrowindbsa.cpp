@@ -182,7 +182,7 @@ static IDirect3DTexture9* BSALoadTexture2(IDirect3DDevice9* dev, const char* fil
     ed.release();
 
     // File not found
-    return 0;
+    return nullptr;
 }
 
 IDirect3DTexture9* BSALoadTexture(IDirect3DDevice9* dev, const char* filename) {

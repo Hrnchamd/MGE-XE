@@ -105,5 +105,5 @@ inline void* mwseInstruction::vmGetTargetActor() {
         const resolveActor_t resolveActor = reinterpret_cast<resolveActor_t>(0x4E5750);
         return resolveActor(refr);
     }
-    return 0;
+    return nullptr;
 }

@@ -842,20 +842,20 @@ IDirect3DSurface9* DistantLand::captureScreen() {
     DWORD hr = device->CreateOffscreenPlainSurface(vp.Width, vp.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfSS, NULL);
     if (hr != D3D_OK) {
         s->Release();
-        return 0;
+        return nullptr;
     }
 
     hr = device->GetRenderTargetData(s, surfSS);
     s->Release();
     if (hr != D3D_OK) {
         surfSS->Release();
-        return 0;
+        return nullptr;
     }
 
     surfSS->LockRect(&rect, 0, 0);
     if (hr != D3D_OK) {
         surfSS->Release();
-        return 0;
+        return nullptr;
     }
 
     DWORD* c = (DWORD*)rect.pBits;

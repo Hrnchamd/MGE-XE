@@ -1205,8 +1205,8 @@ public:
     static RoamVarianceNode* Create() {
         // Make sure pool can hold this object
         if (last_used_index + 1 >= pool.size()) {
-            // No more room RoamVarianceNode objects to hand out.  return NULL
-            return 0;
+            // No more room RoamVarianceNode objects to hand out.
+            return nullptr;
         }
 
         // increment the last used index and return the object at that position
