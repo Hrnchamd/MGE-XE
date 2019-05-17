@@ -34,14 +34,14 @@ set_target_properties (d3d8 dinput8 MGEfuncs PROPERTIES PREFIX "")
 set_target_properties (d3d8 dinput8 MGEfuncs PROPERTIES INTERPROCEDURAL_OPTIMIZATION TRUE)
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-    # Compile options; optimize, strip symbols and kill stdcall decoration
-    set (CMAKE_CXX_FLAGS "-std=gnu++11 -O2 -mstackrealign -ffast-math -fgcse-after-reload -march=pentium4 -Wformat")
+    # Compile options; C++17, optimize, strip symbols and kill stdcall decoration
+    set (CMAKE_CXX_FLAGS "-std=gnu++17 -O2 -mstackrealign -ffast-math -fgcse-after-reload -march=pentium4 -Wformat")
     set (CMAKE_SHARED_LINKER_FLAGS "-Wl,-s,--kill-at,--enable-stdcall-fixup")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 if (MSVC_VERSION)
-    # Compile options; optimize
-    set (CMAKE_CXX_FLAGS "/O2 /fp:fast /arch:SSE2")
+    # Compile options; C++17, optimize
+    set (CMAKE_CXX_FLAGS "/std:c++17 /O2 /fp:fast /arch:SSE2")
 endif (MSVC_VERSION)
 
 # TODO: MGEXEgui build (install to Morrowind directory)
