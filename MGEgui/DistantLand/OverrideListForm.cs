@@ -5,10 +5,8 @@ using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
 
-namespace MGEgui.DistantLand
-{
-    partial class OverrideListForm : Form
-    {
+namespace MGEgui.DistantLand {
+    partial class OverrideListForm : Form {
         private ListBox lbStaticOverrideList;
         private Label lStaticOverrideList;
 
@@ -20,7 +18,9 @@ namespace MGEgui.DistantLand
             this.openStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             lStaticOverrideList = lList;
             lbStaticOverrideList = lbList;
-            if (lbList != null) lbOverrideList.Items.AddRange(lbList.Items);
+            if (lbList != null) {
+                lbOverrideList.Items.AddRange(lbList.Items);
+            }
         }
 
         private void bClear_Click(object sender, EventArgs e) {
@@ -29,7 +29,9 @@ namespace MGEgui.DistantLand
 
         private void bRemove_Click(object sender, EventArgs e) {
             int index = lbOverrideList.SelectedIndex;
-            if (index != -1) lbOverrideList.Items.RemoveAt(index);
+            if (index != -1) {
+                lbOverrideList.Items.RemoveAt(index);
+            }
         }
 
         private void bUp_Click(object sender, EventArgs e) {
@@ -56,13 +58,17 @@ namespace MGEgui.DistantLand
             if (lbStaticOverrideList != null) {
                 lbStaticOverrideList.Items.Clear();
                 lbStaticOverrideList.Items.AddRange(lbOverrideList.Items);
-                if (lStaticOverrideList != null) lStaticOverrideList.Visible = (lbStaticOverrideList.Items.Count == 0);
+                if (lStaticOverrideList != null) {
+                    lStaticOverrideList.Visible = (lbStaticOverrideList.Items.Count == 0);
+                }
             }
             Close();
         }
 
         private void bAdd_Click(object sender, EventArgs e) {
-            if (openStaticListDialog.ShowDialog() != DialogResult.OK) return;
+            if (openStaticListDialog.ShowDialog() != DialogResult.OK) {
+                return;
+            }
             lbOverrideList.Items.AddRange(openStaticListDialog.FileNames);
         }
 

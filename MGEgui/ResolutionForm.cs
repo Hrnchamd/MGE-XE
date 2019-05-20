@@ -20,7 +20,7 @@ namespace MGEgui {
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -93,8 +93,8 @@ namespace MGEgui {
             // 
             // lArbRes
             // 
-            this.lArbRes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lArbRes.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.lArbRes.AutoSize = true;
             this.lArbRes.Location = new System.Drawing.Point(12, 108);
             this.lArbRes.MaximumSize = new System.Drawing.Size(370, 0);
@@ -197,42 +197,49 @@ namespace MGEgui {
             Point res;
             public int X { get { return res.X; } }
             public int Y { get { return res.Y; } }
-            
-            public Resolution(Point r) { res = r; }
-            public override string ToString() { return res.X.ToString() + " x " + res.Y.ToString(); }
+
+            public Resolution(Point r) {
+                res = r;
+            }
+            public override string ToString() {
+                return res.X.ToString() + " x " + res.Y.ToString();
+            }
         }
-        
+
         static int sWidth, sHeight, sRefresh;
         static bool Fullscreen;
         static int Adaptor;
         static List<Resolution> Resolutions;
-        
+
         public ResolutionForm() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
-            
+
             cmbRes.ContextMenu = DudMenu;
-            
-            if(Fullscreen) {
+
+            if (Fullscreen) {
                 tbWidth.Enabled = false;
                 tbHeight.Enabled = false;
             } else {
                 lArbRes.Visible = false;
             }
-            
+
             tbWidth.Text = sWidth.ToString();
             tbHeight.Text = sHeight.ToString();
             cmbRefreshRate.Items.Add(Statics.strings["Default"]);
-            
-            foreach(Resolution p in Resolutions) {
+
+            foreach (Resolution p in Resolutions) {
                 cmbRes.Items.Add(p);
-                
-                if(p.X == sWidth && p.Y == sHeight)
+
+                if (p.X == sWidth && p.Y == sHeight) {
                     cmbRes.SelectedIndex = cmbRes.Items.Count - 1;
+                }
             }
 
             cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact(sRefresh.ToString());
-            if(cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
+            if (cmbRefreshRate.SelectedIndex == -1) {
+                cmbRefreshRate.SelectedIndex = 0;
+            }
         }
 
         public static bool ShowDialog(out Point p, out int refresh, bool Windowed) {
@@ -244,16 +251,16 @@ namespace MGEgui {
             Adaptor = DirectX.DXMain.Adapter;
             Fullscreen = !Windowed;
             key.Close();
-            
+
             // Get the list of valid resolutions
             Resolutions = new List<Resolution>();
-            foreach(Point r in DirectX.DXMain.GetResolutions()) {
+            foreach (Point r in DirectX.DXMain.GetResolutions()) {
                 Resolutions.Add(new Resolution(r));
             }
-            
+
             // Show the dialog
             ResolutionForm rf = new ResolutionForm();
-            if(rf.ShowDialog() == DialogResult.OK) {
+            if (rf.ShowDialog() == DialogResult.OK) {
                 // Write new data to the registry
                 try {
                     key = Registry.LocalMachine.OpenSubKey(@"Software\Bethesda Softworks\Morrowind", true);
@@ -278,7 +285,7 @@ namespace MGEgui {
 
         private void bOK_Click(object sender, EventArgs e) {
             int width, height, refresh;
-            
+
             try {
                 width = Convert.ToInt32(tbWidth.Text);
             } catch {
@@ -291,7 +298,7 @@ namespace MGEgui {
                 MessageBox.Show(strings["InvalidHeight"]);
                 return;
             }
-            if(width <= 0 || height <= 0) {
+            if (width <= 0 || height <= 0) {
                 MessageBox.Show(strings["DimensionError"]);
                 return;
             }
@@ -321,11 +328,14 @@ namespace MGEgui {
             string previousRefresh = cmbRefreshRate.Text;
             cmbRefreshRate.Items.Clear();
             cmbRefreshRate.Items.Add(Statics.strings["Default"]);
-            foreach (int i in DirectX.DXMain.GetRefreshRates(Convert.ToInt32(tbWidth.Text), Convert.ToInt32(tbHeight.Text)))
+            foreach (int i in DirectX.DXMain.GetRefreshRates(Convert.ToInt32(tbWidth.Text), Convert.ToInt32(tbHeight.Text))) {
                 cmbRefreshRate.Items.Add(i.ToString());
-            
+            }
+
             cmbRefreshRate.SelectedIndex = cmbRefreshRate.FindStringExact(previousRefresh);
-            if(cmbRefreshRate.SelectedIndex == -1) cmbRefreshRate.SelectedIndex = 0;
+            if (cmbRefreshRate.SelectedIndex == -1) {
+                cmbRefreshRate.SelectedIndex = 0;
+            }
         }
 
         private void cmbRes_KeyPress(object sender, KeyPressEventArgs e) {

@@ -22,7 +22,9 @@ namespace MGEgui.DistantLand {
             this.folderAdd.SelectedPath = Statics.runDir + "\\Data files";
             this.datafiles = datafiles;
             this.dirs = dirs;
-            while (dirs.IndexOf(datafiles) != -1) dirs.Remove(datafiles);
+            while (dirs.IndexOf(datafiles) != -1) {
+                dirs.Remove(datafiles);
+            }
             lbDirectories.Items.AddRange(dirs.ToArray());
         }
 
@@ -31,24 +33,33 @@ namespace MGEgui.DistantLand {
         }
 
         private void bAdd_Click(object sender, EventArgs e) {
-            if (folderAdd.ShowDialog() != DialogResult.OK) return;
+            if (folderAdd.ShowDialog() != DialogResult.OK) {
+                return;
+            }
             string s = folderAdd.SelectedPath.ToLower(Statics.Culture);
-            if (s.CompareTo(datafiles) == 0) return;
-            foreach(string d in lbDirectories.Items) {
-                if (s == d.ToLower(Statics.Culture))
+            if (s.CompareTo(datafiles) == 0) {
+                return;
+            }
+            foreach (string d in lbDirectories.Items) {
+                if (s == d.ToLower(Statics.Culture)) {
                     return;
+                }
             }
             lbDirectories.Items.Add(folderAdd.SelectedPath);
         }
 
         private void bRemove_Click(object sender, EventArgs e) {
             int index = lbDirectories.SelectedIndex;
-            if (index != -1) lbDirectories.Items.RemoveAt(index);
+            if (index != -1) {
+                lbDirectories.Items.RemoveAt(index);
+            }
         }
 
         private void bSave_Click(object sender, EventArgs e) {
             dirs.Clear();
-            foreach (string s in lbDirectories.Items) dirs.Add(s);
+            foreach (string s in lbDirectories.Items) {
+                dirs.Add(s);
+            }
             Close();
         }
 

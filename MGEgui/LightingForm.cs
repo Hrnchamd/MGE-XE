@@ -26,7 +26,7 @@ namespace MGEgui {
             Statics.Localizations.Apply(this);
             LoadSettings();
         }
-        
+
         private const string iniPPLighting = "Per Pixel Lighting";
         // Sun multiplier
         private static INIFile.INIVariableDef iniClearSun = new INIFile.INIVariableDef("ClearSun", iniPPLighting, "Clear Sun Brightness", INIFile.INIVariableType.Single, "1", 0, 10);
@@ -68,12 +68,16 @@ namespace MGEgui {
         private void LoadSettings() {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings);
             foreach (Control ctl in this.Controls["gbSun"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = (decimal)iniFile.getKeyValue(ud.Name.Substring(2));
             }
             foreach (Control ctl in this.Controls["gbAmbient"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = (decimal)iniFile.getKeyValue(ud.Name.Substring(2));
             }
@@ -85,28 +89,36 @@ namespace MGEgui {
 
         private void bReset_Click(object sender, EventArgs e) {
             foreach (Control ctl in this.Controls["gbSun"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = 1.0M;
             }
             foreach (Control ctl in this.Controls["gbAmbient"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = 1.0M;
             }
         }
-    
+
         private void bSave_Click(object sender, EventArgs e) {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings, true);
             iniFile.initialize();
-            
+
             foreach (Control ctl in this.Controls["gbSun"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 iniFile.setKey(ud.Name.Substring(2), (double)ud.Value);
             }
             foreach (Control ctl in this.Controls["gbAmbient"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 iniFile.setKey(ud.Name.Substring(2), (double)ud.Value);
             }

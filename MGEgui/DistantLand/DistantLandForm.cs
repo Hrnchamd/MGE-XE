@@ -17,7 +17,9 @@ namespace MGEgui.DistantLand {
 
             this.saveStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
             Exists = exists;
-            if (Exists) StaticsExist = File.Exists(Statics.fn_usagedata);
+            if (Exists) {
+                StaticsExist = File.Exists(Statics.fn_usagedata);
+            }
             LoadSettings();
             Directory.CreateDirectory(Statics.fn_dl);
 
@@ -51,12 +53,14 @@ namespace MGEgui.DistantLand {
             { "ExportOverrideList", new string [] { "bStatExportStatics" } },
         };
         #endregion
-        
+
         /* Static methods */
 
         private static void DumpError(Exception ex) {
             string str = ex.ToString();
-            while ((ex = ex.InnerException) != null) str += Environment.NewLine + Environment.NewLine + str.ToString();
+            while ((ex = ex.InnerException) != null) {
+                str += Environment.NewLine + Environment.NewLine + str.ToString();
+            }
             File.WriteAllText(Statics.fn_dllog, str);
         }
 
@@ -70,7 +74,7 @@ namespace MGEgui.DistantLand {
         private List<string> allWarnings;
         private string lastFileProcessed;
 
-        //Keeps track of map extents in terms of cells
+        // Keeps track of map extents in terms of cells
         private int MapSize = 0;
         private int MapMaxX = Int32.MinValue;
         private int MapMaxY = Int32.MinValue;
@@ -97,12 +101,17 @@ namespace MGEgui.DistantLand {
 
         private void UpdateProgress(object sender, System.ComponentModel.ProgressChangedEventArgs e) {
             statusProgress.Value = e.ProgressPercentage;
-            if (e.UserState != null) statusText.Text = (string)e.UserState;
+            if (e.UserState != null) {
+                statusText.Text = (string)e.UserState;
+            }
         }
 
         private void tabControl_Selecting(object sender, TabControlCancelEventArgs e) {
-            if (ChangingPage) ChangingPage = false;
-            else e.Cancel = true;
+            if (ChangingPage) {
+                ChangingPage = false;
+            } else {
+                e.Cancel = true;
+            }
         }
 
         private void DistantLandForm_FormClosing(object sender, FormClosingEventArgs e) {
@@ -111,7 +120,9 @@ namespace MGEgui.DistantLand {
                     e.Cancel = true;
                     MessageBox.Show(strings["PleaseWait"], Statics.strings["Error"]);
                 } else {
-                    if (MessageBox.Show(strings["ConfirmExit"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) e.Cancel = true;
+                    if (MessageBox.Show(strings["ConfirmExit"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) {
+                        e.Cancel = true;
+                    }
                 }
             }
         }
@@ -121,11 +132,18 @@ namespace MGEgui.DistantLand {
         private void saveWarnings(string source) {
             try {
                 File.AppendAllText(Statics.fn_dllog, "### " + source + " ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
-            } catch { }
+            } catch {
+            }
         }
 
         public static void ModCell(ref int cell, ref int tex) {
-            if (tex < 0) { cell--; tex += 16; } else if (tex >= 16) { cell++; tex -= 16; }
+            if (tex < 0) {
+                cell--;
+                tex += 16;
+            } else if (tex >= 16) {
+                cell++;
+                tex -= 16;
+            }
         }
 
         static public LTEX GetTex(int cellx, int celly, int texx, int texy) {
@@ -138,48 +156,48 @@ namespace MGEgui.DistantLand {
         }
 
         /* Configuration properties */
-        
+
         // INI dictionaries
-        
+
         private static Dictionary<string, double> sortOrder = new Dictionary<string, double> {
-            {"Name", 0},
-            {"Type", 1},
-            {"Load order", 2}
+            { "Name", 0 },
+            { "Type", 1 },
+            { "Load order", 2 }
         };
 
         private static Dictionary<string, double> texRes = new Dictionary<string, double> {
-            {"128", 0},
-            {"256", 1},
-            {"512", 2},
-            {"1024", 3},
-            {"2048", 4},
-            {"4096", 5},
-            {"8192", 6}
+            { "128", 0 },
+            { "256", 1 },
+            { "512", 2 },
+            { "1024", 3 },
+            { "2048", 4 },
+            { "4096", 5 },
+            { "8192", 6 }
         };
 
         private static Dictionary<string, double> wMeshDet = new Dictionary<string, double> {
-            {"Auto", -1},
-            {"Ultra High", 0},
-            {"Very High", 1},
-            {"High", 2},
-            {"Medium", 3},
-            {"Low", 4}
+            { "Auto", -1 },
+            { "Ultra High", 0 },
+            { "Very High", 1 },
+            { "High", 2 },
+            { "Medium", 3 },
+            { "Low", 4 }
         };
 
         private static Dictionary<string, double> sMeshDet = new Dictionary<string, double> {
-            {"Full", 0},
-            {"90%", 1},
-            {"75%", 2},
-            {"50%", 3},
-            {"25%", 4}
+            { "Full", 0 },
+            { "90%", 1 },
+            { "75%", 2 },
+            { "50%", 3 },
+            { "25%", 4 }
         };
-        
+
         // INI sections
         private const string iniDLWizardSets = "DLWizard Settings";
         private const string iniDLWizardPlugDirs = "DLWizard Plugin Dirs";
         private const string iniDLWizardPlugs = "DLWizard Plugins";
         private const string iniDLWizardStatOvr = "DLWizard Static Overrides";
-        
+
         // INI key definitions
         private static INIFile.INIVariableDef iniPlugSort = new INIFile.INIVariableDef("PlugSort", iniDLWizardSets, "Plugins view sort order", INIFile.INIVariableType.Dictionary, "Load order", sortOrder);
         private static INIFile.INIVariableDef iniTexRes = new INIFile.INIVariableDef("TexRes", iniDLWizardSets, "World texture resolution", INIFile.INIVariableType.Dictionary, "2048", texRes);
@@ -215,7 +233,7 @@ namespace MGEgui.DistantLand {
             iniStatIntWater
         };
 
-	// set of keys to write after plugin selection
+        // set of keys to write after plugin selection
         private static INIFile.INIVariableDef[] iniPlugsTab = {
             INIFile.iniDefEmpty,
             iniPlugSort
@@ -250,24 +268,24 @@ namespace MGEgui.DistantLand {
         };
 
         // configuration of setup steps
-        private Dictionary<string, bool> SetupFlags = new Dictionary<string, bool>(){
-            {"RunSetup", false},
-            {"AutoRun", false},
-            {"Debug", false},
-            {"ChkLandTex", true},
-            {"ChkLandMesh", true},
-            {"ChkLandAuto", true},
-            {"ChkStatics", true},
-            {"EnaLandTex", true},
-            {"EnaLandMesh", true},
-            {"EnaLandAuto", true},
-            {"EnaStatics", true},
+        private Dictionary<string, bool> SetupFlags = new Dictionary<string, bool>() {
+            { "RunSetup", false },
+            { "AutoRun", false },
+            { "Debug", false },
+            { "ChkLandTex", true },
+            { "ChkLandMesh", true },
+            { "ChkLandAuto", true },
+            { "ChkStatics", true },
+            { "EnaLandTex", true },
+            { "EnaLandMesh", true },
+            { "EnaLandAuto", true },
+            { "EnaStatics", true },
         };
 
         private bool configure;
 
         /* Configuration methods */
-        
+
         // loading all settings
         private void LoadSettings() {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniDLWizardVars, true);
@@ -281,18 +299,25 @@ namespace MGEgui.DistantLand {
             List<string> pluginDirsTmp = new List<string>(iniFile.getSectList(iniDLWizardPlugDirs));
             pluginDirsTmp.Sort();
             string lastDir = "";
-            foreach(string s in pluginDirsTmp) {
+            foreach (string s in pluginDirsTmp) {
                 string casefoldDir = s.ToLower(Statics.Culture);
-                if(casefoldDir != lastDir)
+                if (casefoldDir != lastDir) {
                     pluginDirs.Add(s);
+                }
                 lastDir = casefoldDir;
             }
 
             pluginList = new MWPlugins(Statics.fn_datafiles, pluginDirs);
             switch ((int)iniFile.getKeyValue("PlugSort")) {
-                case 0: rbPlugsName.Checked = true; break;
-                case 1: rbPlugsType.Checked = true; break;
-                case 2: rbPlugsLoad.Checked = true; break;
+                case 0:
+                    rbPlugsName.Checked = true;
+                    break;
+                case 1:
+                    rbPlugsType.Checked = true;
+                    break;
+                case 2:
+                    rbPlugsLoad.Checked = true;
+                    break;
             }
             pluginsSort(null, null);
             preselectedPlugins = iniFile.getSectList(iniDLWizardPlugs);
@@ -320,14 +345,21 @@ namespace MGEgui.DistantLand {
         private void SavePlugsSettings() {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniPlugsTab, true);
             double temp;
-            if (rbPlugsName.Checked) temp = 0;
-            else if (rbPlugsType.Checked) temp = 1;
-            else if (rbPlugsLoad.Checked) temp = 2;
-            else temp = 1;
+            if (rbPlugsName.Checked) {
+                temp = 0;
+            } else if (rbPlugsType.Checked) {
+                temp = 1;
+            } else if (rbPlugsLoad.Checked) {
+                temp = 2;
+            } else {
+                temp = 1;
+            }
             iniFile.setKey("PlugSort", temp);
             iniFile.setSectList(iniDLWizardPlugDirs, pluginDirs.ToArray());
             List<string> tempList = new List<string>();
-            foreach (string s in clbPlugsModList.CheckedItems) tempList.Add(s);
+            foreach (string s in clbPlugsModList.CheckedItems) {
+                tempList.Add(s);
+            }
             iniFile.setSectList(iniDLWizardPlugs, tempList.ToArray());
             iniFile.save();
         }
@@ -361,7 +393,9 @@ namespace MGEgui.DistantLand {
             iniFile.setKey("StatIntExt", cbStatIntExt.Checked);
             iniFile.setKey("StatIntWater", cbStatIntWater.Checked);
             List<string> tempList = new List<string>();
-            foreach (string s in lbStatOverrideList.Items) tempList.Add(s);
+            foreach (string s in lbStatOverrideList.Items) {
+                tempList.Add(s);
+            }
             iniFile.setSectOrderedList(iniDLWizardStatOvr, tempList.ToArray());
             iniFile.save();
         }
@@ -369,7 +403,10 @@ namespace MGEgui.DistantLand {
         /* Background workers */
 
         private void workerInitBSAs(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            try { File.Delete(Statics.fn_dllog); } catch { }
+            try {
+                File.Delete(Statics.fn_dllog);
+            } catch {
+            }
             BSA.InitBSAs();
         }
 
@@ -398,7 +435,13 @@ namespace MGEgui.DistantLand {
         }
 
         private void workerLoadPlugins(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            map = (LAND[,])Array.CreateInstance(typeof(LAND), new int[] { 501, 501 }, new int[] { -250, -250 });
+            map = (LAND[,])Array.CreateInstance(typeof(LAND), new int[] {
+                501,
+                501
+            }, new int[] {
+                -250,
+                -250
+            });
             DefaultTex = new LTEX();
             DefaultTex.FilePath = "_land_default.tga";
             DefaultTex.index = 0;
@@ -411,7 +454,9 @@ namespace MGEgui.DistantLand {
             int progress = 0;
             List<string> warnings = new List<string>();
             foreach (string file in files) {
-                if (DEBUG) allWarnings.Add("Loading plugin: " + file);
+                if (DEBUG) {
+                    allWarnings.Add("Loading plugin: " + file);
+                }
                 lastFileProcessed = file;
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 RecordReader rr = new RecordReader(br);
@@ -440,8 +485,12 @@ namespace MGEgui.DistantLand {
                                         for (int x = 1; x < 65; x++) {
                                             pos += br.ReadSByte();
                                             land.Heights[x, y] = pos;
-                                            if (pos > VeryHigh) VeryHigh = pos;
-                                            if (pos < VeryLow) VeryLow = pos;
+                                            if (pos > VeryHigh) {
+                                                VeryHigh = pos;
+                                            }
+                                            if (pos < VeryLow) {
+                                                VeryLow = pos;
+                                            }
                                         }
                                     }
                                     break;
@@ -477,14 +526,26 @@ namespace MGEgui.DistantLand {
                             }
                         }
                         if (lx != -999 && ly != -999) {
-                            //Keep track of map extents
-                            if (lx > MapMaxX) { MapMaxX = lx; }
-                            if (ly > MapMaxY) { MapMaxY = ly; }
-                            if (lx < MapMinX) { MapMinX = lx; }
-                            if (ly < MapMinY) { MapMinY = ly; }
+                            // Keep track of map extents
+                            if (lx > MapMaxX) {
+                                MapMaxX = lx;
+                            }
+                            if (ly > MapMaxY) {
+                                MapMaxY = ly;
+                            }
+                            if (lx < MapMinX) {
+                                MapMinX = lx;
+                            }
+                            if (ly < MapMinY) {
+                                MapMinY = ly;
+                            }
                             int max = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
-                            if (max > MapSize) MapSize = max;
-                            if (map[lx, ly] == null) CellCount++;
+                            if (max > MapSize) {
+                                MapSize = max;
+                            }
+                            if (map[lx, ly] == null) {
+                                CellCount++;
+                            }
                             map[lx, ly] = land;
                         }
                     } else if (rr.Tag == "LTEX") {
@@ -492,8 +553,7 @@ namespace MGEgui.DistantLand {
                         while (rr.NextSubrecord()) {
                             if (rr.SubTag == "INTV") {
                                 tex.index = br.ReadInt32() + 1;
-                            }
-                            else if (rr.SubTag == "DATA") {
+                            } else if (rr.SubTag == "DATA") {
                                 tex.FilePath = rr.ReadCString().ToLower(Statics.Culture);
                             }
                         }
@@ -513,7 +573,9 @@ namespace MGEgui.DistantLand {
                 br.Close();
                 backgroundWorker.ReportProgress(++progress);
             }
-            if (warnings.Count > 0) e.Result = warnings;
+            if (warnings.Count > 0) {
+                e.Result = warnings;
+            }
         }
 
         private void workerFLoadPlugins(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -534,15 +596,20 @@ namespace MGEgui.DistantLand {
                     statusWarnings.Enabled = true;
                 }
             }
-            if (DEBUG) allWarnings.Add("Plugin land data loaded");
+            if (DEBUG) {
+                allWarnings.Add("Plugin land data loaded");
+            }
             statusText.Text = strings["LoadLandStatus"];
             backgroundWorker.DoWork -= workerLoadPlugins;
             backgroundWorker.RunWorkerCompleted -= workerFLoadPlugins;
             SavePlugsSettings();
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(1);
-                if (SetupFlags["ChkLandTex"]) bTexRun_Click(null, null);
-                else bTexSkip_Click(null, null);
+                if (SetupFlags["ChkLandTex"]) {
+                    bTexRun_Click(null, null);
+                } else {
+                    bTexSkip_Click(null, null);
+                }
             } else {
                 bTexSkip.Enabled = true;
                 bTexRun.Enabled = true;
@@ -560,27 +627,30 @@ namespace MGEgui.DistantLand {
             DirectX.CellTexCreator ctc = new CellTexCreator(4);
             int count = 0;
             backgroundWorker.ReportProgress(count, strings["LandTextureCreate"]);
-            
-            //Render world texture
+
+            // Render world texture
             WorldTexCreator wtc = new WorldTexCreator(args.WorldRes, MapMinX, MapMaxX, MapMinY, MapMaxY);
             wtc.Begin();
             ctc.Begin();
             for (int y = MapMinY; y <= MapMaxY; y++) {
                 backgroundWorker.ReportProgress(++count);
                 for (int x = MapMinX; x <= MapMaxX; x++) {
-                    if (map[x, y] == null || map[x, y] == defaultland) ctc.SetDefaultCell(DefaultTex);
-                    //Set the colors and normals
-                    else ctc.SetCell(map[x, y]);
+                    if (map[x, y] == null || map[x, y] == defaultland) {
+                        ctc.SetDefaultCell(DefaultTex);
+                    } else {
+                        // Set the colors and normals
+                        ctc.SetCell(map[x, y]);
+                    }
                     float x_pos = (((float)(x - MapMinX) + 0.5f) * wtc.x_spacing) - 1.0f;
                     float y_pos = (((float)(y - MapMinY) + 0.5f) * wtc.y_spacing) - 1.0f;
                     ctc.Render(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                 }
             }
             ctc.End();
-            //Save the world texture.
+            // Save the world texture.
             wtc.FinishCompressed(Statics.fn_worldds, args.twoStep);
             wtc.Dispose();
-            
+
             // World normal map
             wtc = new WorldTexCreator(args.WorldNormal, MapMinX, MapMaxX, MapMinY, MapMaxY);
             wtc.Begin();
@@ -588,9 +658,12 @@ namespace MGEgui.DistantLand {
             for (int y = MapMinY; y <= MapMaxY; y++) {
                 backgroundWorker.ReportProgress(++count);
                 for (int x = MapMinX; x <= MapMaxX; x++) {
-                    if (map[x, y] == null || map[x, y] == defaultland) ctc.SetDefaultCell(DefaultTex);
-                    //Set the colors and normals
-                    else ctc.SetCell(map[x, y]);
+                    if (map[x, y] == null || map[x, y] == defaultland) {
+                        ctc.SetDefaultCell(DefaultTex);
+                    } else {
+                        // Set the colors and normals
+                        ctc.SetCell(map[x, y]);
+                    }
                     float x_pos = (((float)(x - MapMinX) + 0.5f) * wtc.x_spacing) - 1.0f;
                     float y_pos = (((float)(y - MapMinY) + 0.5f) * wtc.y_spacing) - 1.0f;
                     ctc.RenderNormalMap(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
@@ -599,7 +672,7 @@ namespace MGEgui.DistantLand {
             ctc.EndNormalMap();
             wtc.FinishUncompressed(Statics.fn_worldn);
             wtc.Dispose();
-            
+
             ctc.Dispose();
         }
 
@@ -621,14 +694,19 @@ namespace MGEgui.DistantLand {
                     statusWarnings.Enabled = true;
                 }
             }
-            if (DEBUG) allWarnings.Add("Landscape textures created");
+            if (DEBUG) {
+                allWarnings.Add("Landscape textures created");
+            }
             statusText.Text = strings["LandTextureStatus"];
             backgroundWorker.DoWork -= workerCreateTextures;
             backgroundWorker.RunWorkerCompleted -= workerFCreateTextures;
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(2);
-                if (SetupFlags["ChkLandMesh"]) bMeshRun_Click(null, null);
-                else bMeshSkip_Click(null, null);
+                if (SetupFlags["ChkLandMesh"]) {
+                    bMeshRun_Click(null, null);
+                } else {
+                    bMeshSkip_Click(null, null);
+                }
             } else {
                 SaveTexSettings();
                 bMeshSkip.Enabled = true;
@@ -669,14 +747,19 @@ namespace MGEgui.DistantLand {
                         statusWarnings.Enabled = true;
                     }
                 }
-                if (DEBUG) allWarnings.Add("Landscape meshes created");
+                if (DEBUG) {
+                    allWarnings.Add("Landscape meshes created");
+                }
                 statusText.Text = strings["LandMeshStatus"];
                 backgroundWorker.DoWork -= workerCreateMeshes;
                 backgroundWorker.RunWorkerCompleted -= workerFCreateMeshes;
                 if (SetupFlags["AutoRun"]) {
                     setFinishDesc(3);
-                    if (SetupFlags["ChkStatics"]) bStatRun_Click(null, null);
-                    else bStatSkip_Click(null, null);
+                    if (SetupFlags["ChkStatics"]) {
+                        bStatRun_Click(null, null);
+                    } else {
+                        bStatSkip_Click(null, null);
+                    }
                 } else {
                     SaveMeshSettings();
                     bStatExportStatics.Enabled = true;
@@ -697,13 +780,15 @@ namespace MGEgui.DistantLand {
             public bool oldSimplify;
         }
 
-        private void GrassDensityThreshold (float GrassDensity, KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics, KeyValuePair<string, StaticReference> pair, Random rnd, List<StaticToRemove> UsedStaticsToRemove) {
+        private void GrassDensityThreshold(float GrassDensity, KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics, KeyValuePair<string, StaticReference> pair, Random rnd, List<StaticToRemove> UsedStaticsToRemove) {
             if (GrassDensity < 1.0f) {
-                //remove some of the grass to improve performance
-                if (rnd.NextDouble () >= GrassDensity) UsedStaticsToRemove.Add (new StaticToRemove (cellStatics.Key, pair.Key));
+                // remove some of the grass to improve performance
+                if (rnd.NextDouble() >= GrassDensity) {
+                    UsedStaticsToRemove.Add(new StaticToRemove(cellStatics.Key, pair.Key));
+                }
             } else if (GrassDensity == 0.0f) {
-                //Remove all grass
-                UsedStaticsToRemove.Add (new StaticToRemove (cellStatics.Key, pair.Key));
+                // Remove all grass
+                UsedStaticsToRemove.Add(new StaticToRemove(cellStatics.Key, pair.Key));
             }
         }
 
@@ -716,136 +801,174 @@ namespace MGEgui.DistantLand {
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
-            if (args.useOverrideList && args.OverrideList.Count > 0) foreach (string overrideList in args.OverrideList) {
-                if (DEBUG) allWarnings.Add("Loading override: " + overrideList);
-                StreamReader sr = null;
-                try { sr = new StreamReader(File.OpenRead(overrideList)); }
-                catch { warnings.Add("Error: Could not import statics override list '" + overrideList + "'"); }
-                if (sr != null) {
-                    int index; string section = ""; string line; string escape;
-                    while (!sr.EndOfStream) switch (section) {
-                        case "":
-                            line = sr.ReadLine().ToLower(Statics.Culture);
-                            index = line.IndexOf(':');
-                            if (index != -1) line = line.Substring(0, index);
-                            line = line.Trim();
-                            if (line.Length > 0 && line[0] != '#') {
-                                if (line.StartsWith("[") && line.EndsWith("]")) {
-                                    section = line.Substring(1, line.Length - 2);
-                                    continue;
-                                }
-                                index = line.LastIndexOf('=');
-                                if (index != -1) {
-                                    string mesh = line.Substring(0, index);
-                                    string value = line.Substring(index + 1);
-                                    byte type;
-                                    if (byte.TryParse(value, out type)) {
-                                        if (type != 3 && type <= 6) OverrideList[line] = new staticOverride(type);
-                                        else if (type > 6) warnings.Add("Warning: Invalid type specified in statics list '" + overrideList + "' line '" + line + "'");
-                                    } else OverrideList[mesh] = new staticOverride(value);
-                                } else {
-                                	warnings.Add("Warning: Failed to parse line in statics list '" + overrideList + "': '" + line + "'");
-                                }
-                            }
-                            break;
-                        case "names":
-                            line = sr.ReadLine().ToLower(Statics.Culture);
-                            index = line.IndexOf(':');
-                            escape = line;
-                            if (index != -1) escape = escape.Substring(0, index);
-                            escape = escape.Trim();
-                            if (escape.Length > 0 && escape.StartsWith("[") && escape.EndsWith("]") && !escape.EndsWith("\\]")) {
-                                section = escape.Substring(1, escape.Length - 2);
-                                continue;
-                            }
-                            if (line.IndexOf('\u0001') != -1) continue;
-                            escape = "";
-                            while ((index = line.IndexOf('\\') + 1) != 0) {
-                                if (index == line.Length) break;
-                                escape += line[index];
-                                line = line.Substring(0, index - 1) + "\u0001" + (line.Length >= index ? line.Substring(index + 1) : "");
-                            }
-                            index = line.IndexOf(':');
-                            if (index != -1) line = line.Substring(0, index);
-                            line = line.Trim();
-                            int equals_index = line.LastIndexOf('=');
-                            for (var i = 0; (index = line.IndexOf ('\u0001')) != -1; i++) {
-                                line = line.Substring(0, index) + escape[i] + (line.Length >= index ? line.Substring(index + 1) : "");
-                            }
-                            if (line.Length > 0) {
-                                if (equals_index == -1) IgnoreList[line] = true;
-                                else {
-                                    string value = line.Substring(equals_index + 1);
-                                    line = line.Substring(0, equals_index);
-                                    switch (value) {
-                                        case "enable":
-                                            IgnoreList[line] = false;
-                                            break;
-                                        case "disable":
-                                            IgnoreList[line] = true;
-                                            break;
-                                        default:
-                                            warnings.Add("Warning: Invalid keyword in statics list line '" + line + "'");
-                                            break;
-                                    }
-                                }
-                            }
-                            break;
-                        case "interiors":
-                            line = sr.ReadLine().ToLower(Statics.Culture);
-                            index = line.IndexOf (':');
-                            escape = line;
-                            if (index != -1) escape = escape.Substring (0, index);
-                            escape = escape.Trim();
-                            if (escape.Length > 0 && escape.StartsWith("[") && escape.EndsWith("]") && !escape.EndsWith("\\]")) {
-                                section = escape.Substring(1, escape.Length - 2);
-                                continue;
-                            }
-                            if (line.IndexOf ('\u0001') != -1) continue;
-                            escape = "";
-                            while ((index = line.IndexOf('\\') + 1) != 0) {
-                                if (index == line.Length) break;
-                                escape += line[index];
-                                line = line.Substring(0, index - 1) + "\u0001" + (line.Length >= index ? line.Substring(index + 1) : "");
-                            }
-                            index = line.IndexOf(':');
-                            if (index != -1) line = line.Substring(0, index);
-                            line = line.Trim();
-                            equals_index = line.LastIndexOf('=');
-                            for (var i = 0; (index = line.IndexOf('\u0001')) != -1; i++) {
-                                line = line.Substring(0, index) + escape[i] + (line.Length >= index ? line.Substring(index + 1) : "");
-                            }
-                            if (line.Length > 0) {
-                                if (equals_index == -1) CellList[line] = true;
-                                else {
-                                    string value = line.Substring(equals_index + 1);
-                                    line = line.Substring(0, equals_index);
-                                    switch (value) {
-                                        case "enable":
-                                            CellList[line] = true;
-                                            break;
-                                        case "disable":
-                                            CellList[line] = false;
-                                            break;
-                                        default:
-                                            warnings.Add("Warning: Invalid keyword in statics cell list line '" + line + "'");
-                                            break;
-                                    }
-                                }
-                            }
-                            break;
+            if (args.useOverrideList && args.OverrideList.Count > 0) {
+                foreach (string overrideList in args.OverrideList) {
+                    if (DEBUG) {
+                        allWarnings.Add("Loading override: " + overrideList);
                     }
-                    sr.Close();
+                    StreamReader sr = null;
+                    try {
+                        sr = new StreamReader(File.OpenRead(overrideList));
+                    } catch {
+                        warnings.Add("Error: Could not import statics override list '" + overrideList + "'");
+                    }
+                    if (sr != null) {
+                        int index;
+                        string section = "";
+                        string line;
+                        string escape;
+                        while (!sr.EndOfStream) {
+                            switch (section) {
+                                case "":
+                                    line = sr.ReadLine().ToLower(Statics.Culture);
+                                    index = line.IndexOf(':');
+                                    if (index != -1) {
+                                        line = line.Substring(0, index);
+                                    }
+                                    line = line.Trim();
+                                    if (line.Length > 0 && line[0] != '#') {
+                                        if (line.StartsWith("[") && line.EndsWith("]")) {
+                                            section = line.Substring(1, line.Length - 2);
+                                            continue;
+                                        }
+                                        index = line.LastIndexOf('=');
+                                        if (index != -1) {
+                                            string mesh = line.Substring(0, index);
+                                            string value = line.Substring(index + 1);
+                                            byte type;
+                                            if (byte.TryParse(value, out type)) {
+                                                if (type != 3 && type <= 6) {
+                                                    OverrideList[line] = new staticOverride(type);
+                                                } else if (type > 6) {
+                                                    warnings.Add("Warning: Invalid type specified in statics list '" + overrideList + "' line '" + line + "'");
+                                                }
+                                            } else {
+                                                OverrideList[mesh] = new staticOverride(value);
+                                            }
+                                        } else {
+                                            warnings.Add("Warning: Failed to parse line in statics list '" + overrideList + "': '" + line + "'");
+                                        }
+                                    }
+                                    break;
+                                case "names":
+                                    line = sr.ReadLine().ToLower(Statics.Culture);
+                                    index = line.IndexOf(':');
+                                    escape = line;
+                                    if (index != -1) {
+                                        escape = escape.Substring(0, index);
+                                    }
+                                    escape = escape.Trim();
+                                    if (escape.Length > 0 && escape.StartsWith("[") && escape.EndsWith("]") && !escape.EndsWith("\\]")) {
+                                        section = escape.Substring(1, escape.Length - 2);
+                                        continue;
+                                    }
+                                    if (line.IndexOf('\u0001') != -1) {
+                                        continue;
+                                    }
+                                    escape = "";
+                                    while ((index = line.IndexOf('\\') + 1) != 0) {
+                                        if (index == line.Length) {
+                                            break;
+                                        }
+                                        escape += line[index];
+                                        line = line.Substring(0, index - 1) + "\u0001" + (line.Length >= index ? line.Substring(index + 1) : "");
+                                    }
+                                    index = line.IndexOf(':');
+                                    if (index != -1) {
+                                        line = line.Substring(0, index);
+                                    }
+                                    line = line.Trim();
+                                    int equals_index = line.LastIndexOf('=');
+                                    for (var i = 0; (index = line.IndexOf('\u0001')) != -1; i++) {
+                                        line = line.Substring(0, index) + escape[i] + (line.Length >= index ? line.Substring(index + 1) : "");
+                                    }
+                                    if (line.Length > 0) {
+                                        if (equals_index == -1) {
+                                            IgnoreList[line] = true;
+                                        } else {
+                                            string value = line.Substring(equals_index + 1);
+                                            line = line.Substring(0, equals_index);
+                                            switch (value) {
+                                                case "enable":
+                                                    IgnoreList[line] = false;
+                                                    break;
+                                                case "disable":
+                                                    IgnoreList[line] = true;
+                                                    break;
+                                                default:
+                                                    warnings.Add("Warning: Invalid keyword in statics list line '" + line + "'");
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                case "interiors":
+                                    line = sr.ReadLine().ToLower(Statics.Culture);
+                                    index = line.IndexOf(':');
+                                    escape = line;
+                                    if (index != -1) {
+                                        escape = escape.Substring(0, index);
+                                    }
+                                    escape = escape.Trim();
+                                    if (escape.Length > 0 && escape.StartsWith("[") && escape.EndsWith("]") && !escape.EndsWith("\\]")) {
+                                        section = escape.Substring(1, escape.Length - 2);
+                                        continue;
+                                    }
+                                    if (line.IndexOf('\u0001') != -1) {
+                                        continue;
+                                    }
+                                    escape = "";
+                                    while ((index = line.IndexOf('\\') + 1) != 0) {
+                                        if (index == line.Length) {
+                                            break;
+                                        }
+                                        escape += line[index];
+                                        line = line.Substring(0, index - 1) + "\u0001" + (line.Length >= index ? line.Substring(index + 1) : "");
+                                    }
+                                    index = line.IndexOf(':');
+                                    if (index != -1) {
+                                        line = line.Substring(0, index);
+                                    }
+                                    line = line.Trim();
+                                    equals_index = line.LastIndexOf('=');
+                                    for (var i = 0; (index = line.IndexOf('\u0001')) != -1; i++) {
+                                        line = line.Substring(0, index) + escape[i] + (line.Length >= index ? line.Substring(index + 1) : "");
+                                    }
+                                    if (line.Length > 0) {
+                                        if (equals_index == -1) {
+                                            CellList[line] = true;
+                                        } else {
+                                            string value = line.Substring(equals_index + 1);
+                                            line = line.Substring(0, equals_index);
+                                            switch (value) {
+                                                case "enable":
+                                                    CellList[line] = true;
+                                                    break;
+                                                case "disable":
+                                                    CellList[line] = false;
+                                                    break;
+                                                default:
+                                                    warnings.Add("Warning: Invalid keyword in statics cell list line '" + line + "'");
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                            }
+                        }
+                        sr.Close();
+                    }
                 }
             }
             Directory.CreateDirectory(Statics.fn_statics);
             foreach (string file in files) {
-                if (DEBUG) allWarnings.Add("Parsing for statics definitions: " + file);
+                if (DEBUG) {
+                    allWarnings.Add("Parsing for statics definitions: " + file);
+                }
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 try {
                     ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList);
-                }
-                catch (Exception ex) {
+                } catch (Exception ex) {
                     warnings.Add("Parse statics failed on " + file + "\n\n" + ex.ToString());
                 }
                 br.Close();
@@ -853,7 +976,9 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(1, strings["StaticsGenerate1"]);
             UsedStaticsList.Add("", new Dictionary<string, StaticReference>());
             foreach (string file in files) {
-                if (DEBUG) allWarnings.Add("Parsing for used statics: " + file);
+                if (DEBUG) {
+                    allWarnings.Add("Parsing for used statics: " + file);
+                }
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 FileInfo fi = new FileInfo(file);
                 try {
@@ -863,13 +988,15 @@ namespace MGEgui.DistantLand {
                 }
                 br.Close();
             }
-            //Generate a list of the NIF files we need to load
+            // Generate a list of the NIF files we need to load
             backgroundWorker.ReportProgress(2, strings["StaticsGenerate2"]);
             List<string> UsedNifList = new List<string>();
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
                 foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
                     string nif_name = StaticsList[pair.Value.name].mesh;
-                    if (!UsedNifList.Contains(nif_name)) UsedNifList.Add(nif_name);
+                    if (!UsedNifList.Contains(nif_name)) {
+                        UsedNifList.Add(nif_name);
+                    }
                 }
             }
             backgroundWorker.ReportProgress(3, strings["StaticsGenerate3"]);
@@ -878,111 +1005,141 @@ namespace MGEgui.DistantLand {
             }
             Random rnd = new Random();
             try {
-                //Try to load the NIFs and remove any from the list that fail or are too small
+                // Try to load the NIFs and remove any from the list that fail or are too small
                 for (int i = 0; i < UsedNifList.Count; i++) {
                     string name = UsedNifList[i];
                     var simplify = args.simplify;
                     byte[] data;
 
-                    //Try to load a version of the file that ends with '_dist' first.
+                    // Try to load a version of the file that ends with '_dist' first.
                     // This allows people to supply a different version of the NIF to be
                     // rendered by distant land.  For example, a low poly nif.
                     string file_name = name;
                     string extension = "";
-                    int dot_pos = file_name.LastIndexOf ('.');
+                    int dot_pos = file_name.LastIndexOf('.');
                     if (dot_pos != -1) {
-                        extension = file_name.Substring (dot_pos, file_name.Length - dot_pos);
-                        file_name = file_name.Substring (0, dot_pos);
+                        extension = file_name.Substring(dot_pos, file_name.Length - dot_pos);
+                        file_name = file_name.Substring(0, dot_pos);
                     }
                     string dist_name = file_name + "_dist" + extension;
                     try {
-                        data = BSA.GetNif (dist_name);
+                        data = BSA.GetNif(dist_name);
                         // Do not simplify '_dist' NIFs.
                         simplify = 1;
                     } catch {
                         // We didn't find a NIF file with '_dist' in its name,
                         // so search for the normal NIF file now.
                         try {
-                            data = BSA.GetNif (name);
+                            data = BSA.GetNif(name);
                         } catch {
                             data = null;
                         }
                     }
                     if (data == null) {
-                        UsedNifList.RemoveAt (i--);
+                        UsedNifList.RemoveAt(i--);
                     } else {
                         try {
                             statusText.Text = strings["StaticsGenerate3Nif"] + name;
                             if (DEBUG) {
-                                allWarnings.Add ("Processing NIF: " + name);
+                                allWarnings.Add("Processing NIF: " + name);
                             }
                             float size = -1;
-                            if (OverrideList.ContainsKey (name)) {
+                            if (OverrideList.ContainsKey(name)) {
                                 staticOverride so = OverrideList[name];
                                 if (!so.Ignore || so.NamesNoIgnore) {
-                                    size = NativeMethods.ProcessNif (data, data.Length, so.overrideSimplify ? so.Simplify : simplify, args.MinSize, (byte)so.Type, (so.OldSimplify ? (byte)1 : (byte)0));
+                                    size = NativeMethods.ProcessNif(data, data.Length, so.overrideSimplify ? so.Simplify : simplify, args.MinSize, (byte)so.Type, (so.OldSimplify ? (byte)1 : (byte)0));
                                 }
                             } else {
                                 // Set static classification based on the file path
                                 StaticType classifier = StaticType.Auto;
-                                if (name.StartsWith ("grass\\")) classifier = StaticType.Grass;
-                                else if (name.StartsWith ("trees\\")) classifier = StaticType.Tree;
-                                else if (name.StartsWith ("x\\")) classifier = StaticType.Building;
-                                
-                                size = NativeMethods.ProcessNif (data, data.Length, simplify, args.MinSize, (byte)classifier, 0);
+                                if (name.StartsWith("grass\\")) {
+                                    classifier = StaticType.Grass;
+                                } else if (name.StartsWith("trees\\")) {
+                                    classifier = StaticType.Tree;
+                                } else if (name.StartsWith("x\\")) {
+                                    classifier = StaticType.Building;
+                                }
+
+                                size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)classifier, 0);
                             }
-                            if (size < 0) UsedNifList.RemoveAt (i--);
+                            if (size < 0) {
+                                UsedNifList.RemoveAt(i--);
+                            }
                         } catch (Exception ex) {
-                            warnings.Add ("Failed to process NIF " + name + "\n    " + ex.ToString());
-                            UsedNifList.RemoveAt (i--);
+                            warnings.Add("Failed to process NIF " + name + "\n    " + ex.ToString());
+                            UsedNifList.RemoveAt(i--);
                         }
                     }
                 }
             } finally {
                 NativeMethods.EndStaticCreation();
             }
-            //Reset used distant static ID numbers to match NIF list order
+            // Reset used distant static ID numbers to match NIF list order
             Dictionary<string, uint> NifMap = new Dictionary<string, uint>();
             uint count = 0;
-            foreach (string name in UsedNifList) NifMap[name] = count++;
+            foreach (string name in UsedNifList) {
+                NifMap[name] = count++;
+            }
             List<StaticToRemove> UsedStaticsToRemove = new List<StaticToRemove>();
-            //Determine floating point grass density
+            // Determine floating point grass density
             float GrassDensity = (float)udStatGrassDensity.Value / 100.0f;
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
                 foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
                     string nif_name = StaticsList[pair.Value.name].mesh;
-                    if (NifMap.ContainsKey(nif_name)) pair.Value.staticID = NifMap[nif_name];
-                    else UsedStaticsToRemove.Add(new StaticToRemove(cellStatics.Key, pair.Key));
-                    if (nif_name.StartsWith("grass\\") || (OverrideList.ContainsKey (nif_name) && OverrideList[nif_name].Type == StaticType.Grass)) {
-                        if (OverrideList.ContainsKey (nif_name)) {
-                            if (OverrideList[nif_name].Density >= 0) GrassDensityThreshold (OverrideList[nif_name].Density, cellStatics, pair, rnd, UsedStaticsToRemove);
-                            else GrassDensityThreshold (GrassDensity, cellStatics, pair, rnd, UsedStaticsToRemove);
-                        } else GrassDensityThreshold (GrassDensity, cellStatics, pair, rnd, UsedStaticsToRemove);
+                    if (NifMap.ContainsKey(nif_name)) {
+                        pair.Value.staticID = NifMap[nif_name];
+                    } else {
+                        UsedStaticsToRemove.Add(new StaticToRemove(cellStatics.Key, pair.Key));
+                    }
+                    if (nif_name.StartsWith("grass\\") || (OverrideList.ContainsKey(nif_name) && OverrideList[nif_name].Type == StaticType.Grass)) {
+                        if (OverrideList.ContainsKey(nif_name)) {
+                            if (OverrideList[nif_name].Density >= 0) {
+                                GrassDensityThreshold(OverrideList[nif_name].Density, cellStatics, pair, rnd, UsedStaticsToRemove);
+                            } else {
+                                GrassDensityThreshold(GrassDensity, cellStatics, pair, rnd, UsedStaticsToRemove);
+                            }
+                        } else {
+                            GrassDensityThreshold(GrassDensity, cellStatics, pair, rnd, UsedStaticsToRemove);
+                        }
                     }
                 }
             }
-            foreach (StaticToRemove key in UsedStaticsToRemove) UsedStaticsList[key.worldspace].Remove(key.reference);
+            foreach (StaticToRemove key in UsedStaticsToRemove) {
+                UsedStaticsList[key.worldspace].Remove(key.reference);
+            }
             backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
             BinaryWriter bw = new BinaryWriter(File.Create(Statics.fn_usagedata), System.Text.Encoding.Default);
             bw.Write(UsedNifList.Count);
             bw.Write(UsedStaticsList[""].Count);
-            //uint UseRef = 0;
-            foreach (KeyValuePair<string, StaticReference> pair in UsedStaticsList[""]) pair.Value.Write(bw/*, UseRef++*/);
+            // uint UseRef = 0;
+            foreach (KeyValuePair<string, StaticReference> pair in UsedStaticsList[""]) {
+                pair.Value.Write(bw/*, UseRef++*/);
+            }
             UsedStaticsList[""].Clear();
             UsedStaticsList.Remove("");
             char[] cellName = new char[64];
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
                 bw.Write((int)(cellStatics.Value as Dictionary<string, StaticReference>).Count);
-                int i; for (i = 0; i < 64; ++i) cellName[i] = '\0'; i = 0;
-                foreach (char c in cellStatics.Key) cellName[i++] = c;
+                int i;
+                for (i = 0; i < 64; ++i) {
+                    cellName[i] = '\0';
+                }
+                i = 0;
+                foreach (char c in cellStatics.Key) {
+                    cellName[i++] = c;
+                }
                 bw.Write(cellName, 0, 64);
-                foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) pair.Value.Write(bw/*, UseRef++*/);
+                foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
+                    pair.Value.Write(bw/*, UseRef++*/);
+                }
             }
             bw.Write((int)0);
             bw.Write((float)Convert.ToSingle(udStatMinSize.Value));
             bw.Close();
-            
-            if (!File.Exists(Statics.fn_statmesh)) return;
+
+            if (!File.Exists(Statics.fn_statmesh)) {
+                return;
+            }
             setFinishDesc(4);
             backgroundWorker.ReportProgress(5, strings["StaticsGenerate5"]);
             {
@@ -990,10 +1147,10 @@ namespace MGEgui.DistantLand {
                 BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), System.Text.Encoding.Default);
                 foreach (string name in UsedNifList) {
                     int nodes = br.ReadInt32();
-                    br.BaseStream.Position += 16; //4 - radius, 12 - center
+                    br.BaseStream.Position += 16; // 4 - radius, 12 - center
                     int type = br.BaseStream.ReadByte();
                     for (int j = 0; j < nodes; j++) {
-                        br.BaseStream.Position += 40; //4 - radius, 12 - center, 12 - min, 12 - center
+                        br.BaseStream.Position += 40; // 4 - radius, 12 - center, 12 - min, 12 - center
                         int verts = br.ReadInt32();
                         int faces = br.ReadInt32();
                         int vert_size = NativeMethods.GetCompressedVertSize();
@@ -1002,20 +1159,23 @@ namespace MGEgui.DistantLand {
                         string path = new string(br.ReadChars(chars - 1));
                         br.BaseStream.Position += 1;
                         try {
-                            if (type != (int)StaticType.Grass && type != (int)StaticType.Tree)
-                            {
+                            if (type != (int)StaticType.Grass && type != (int)StaticType.Tree) {
                                 bool ok = stc.LoadTexture(path);
-                                if(!ok) warnings.Add("Warning: Texture '"+path+"' could not be converted to a distant texture, original texture will be used");
+                                if (!ok) {
+                                    warnings.Add("Warning: Texture '" + path + "' could not be converted to a distant texture, original texture will be used");
+                                }
                             }
                         } catch (ArgumentException) {
-                            //warnings.Add("Warning: Texture '"+path+"' on subset "+j+" of mesh '"+pair.Key+"' could not be found");
+                            // warnings.Add("Warning: Texture '"+path+"' on subset "+j+" of mesh '"+pair.Key+"' could not be found");
                         }
                     }
                 }
                 br.Close();
                 stc.Dispose();
             }
-            if (warnings.Count > 0) e.Result = warnings;
+            if (warnings.Count > 0) {
+                e.Result = warnings;
+            }
         }
 
         void workerFCreateStatics(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -1037,12 +1197,14 @@ namespace MGEgui.DistantLand {
                         statusWarnings.Enabled = true;
                     }
                 }
-                if (DEBUG) allWarnings.Add("Distant statics created");
+                if (DEBUG) {
+                    allWarnings.Add("Distant statics created");
+                }
                 statusText.Text = strings["StaticsStatus"];
                 backgroundWorker.DoWork -= workerCreateStatics;
                 backgroundWorker.RunWorkerCompleted -= workerFCreateStatics;
                 SaveStatSettings();
-                //Enable distant statics since the user generated them
+                // Enable distant statics since the user generated them
                 Statics.mf.cbDLDistantStatics.Checked = true;
             }
             if (!DEBUG && SetupFlags["AutoRun"] && allWarnings.Count > 0) {
@@ -1056,38 +1218,48 @@ namespace MGEgui.DistantLand {
                 statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                 statusWarnings.Enabled = true;
                 File.AppendAllText(Statics.fn_dllog, "### DEBUG ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
-                //File.AppendAllText(Statics.fn_dllog, SlimDX.ObjectTable.ReportLeaks());
+                // File.AppendAllText(Statics.fn_dllog, SlimDX.ObjectTable.ReportLeaks());
             }
             DirectoryInfo di = new DirectoryInfo(Statics.fn_dl);
             long fileSize = 0;
             int filecount = di.GetFiles().Length;
             int cells = ((filecount - 2) / 2);
             int statics;
-            foreach (FileInfo fi in di.GetFiles()) fileSize += fi.Length;
+            foreach (FileInfo fi in di.GetFiles()) {
+                fileSize += fi.Length;
+            }
             di = new DirectoryInfo(Statics.fn_statics);
             if (di.Exists) {
                 statics = di.GetFiles().Length;
-                foreach (FileInfo fi in di.GetFiles()) fileSize += fi.Length;
+                foreach (FileInfo fi in di.GetFiles()) {
+                    fileSize += fi.Length;
+                }
                 filecount += statics;
-            } else statics = 2;
+            } else {
+                statics = 2;
+            }
             di = new DirectoryInfo(Statics.fn_stattex);
             if (di.Exists) {
                 filecount += di.GetFiles().Length;
-                foreach (FileInfo fi in di.GetFiles()) fileSize += fi.Length;
+                foreach (FileInfo fi in di.GetFiles()) {
+                    fileSize += fi.Length;
+                }
             }
             string summary = strings["Complete"] + "\r\n"
-                + strings["TotalFiles"] + filecount + "\r\n"
-                + strings["TotalSize"] + (fileSize / (1024 * 1024)) + " MB";/* + "\r\n"
+                             + strings["TotalFiles"] + filecount + "\r\n"
+                             + strings["TotalSize"] + (fileSize / (1024 * 1024)) + " MB";/* + "\r\n"
                 + "Total processed cells: " + cells + "\r\n"
                 + "Total unique statics: " + (statics - 2);*/
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(5);
                 lFinishDesc.Text += "________________________________________\r\n" + summary;
+            } else {
+                lFinishDesc.Text = summary;
             }
-            else lFinishDesc.Text = summary;
             try {
                 File.AppendAllText(Statics.fn_dllog, "########################################\r\n" + summary);
-            } catch { }
+            } catch {
+            }
             bFinish.Enabled = true;
         }
 
@@ -1115,73 +1287,97 @@ namespace MGEgui.DistantLand {
             List<string> refsToRemove = new List<string>();
             foreach (KeyValuePair<string, Static> pair in StaticsList) {
                 byte[] data;
-                try { data = BSA.GetNif(pair.Value.mesh); } catch { data = null; }
-                if (data == null) refsToRemove.Add(pair.Key);
-                else {
+                try {
+                    data = BSA.GetNif(pair.Value.mesh);
+                } catch {
+                    data = null;
+                }
+                if (data == null) {
+                    refsToRemove.Add(pair.Key);
+                } else {
                     try {
                         float size = NativeMethods.ProcessNif(data, data.Length, 1, 1, 1, 0);
-                        if (size < 0) refsToRemove.Add(pair.Key);
-                        else pair.Value.size = size;
-                    } catch (Exception) { refsToRemove.Add(pair.Key); }
+                        if (size < 0) {
+                            refsToRemove.Add(pair.Key);
+                        } else {
+                            pair.Value.size = size;
+                        }
+                    } catch (Exception) {
+                        refsToRemove.Add(pair.Key);
+                    }
                 }
             }
-            foreach (string s in refsToRemove) StaticsList.Remove(s);
+            foreach (string s in refsToRemove) {
+                StaticsList.Remove(s);
+            }
             foreach (string file in files) {
                 BinaryReader br = new BinaryReader(File.OpenRead(file));
-                try { ParseFileForCells2(br); } catch { }
+                try {
+                    ParseFileForCells2(br);
+                } catch {
+                }
                 br.Close();
             }
             StreamWriter sw = new StreamWriter(args.filename, false);
             sw.WriteLine(": MGE distant statics list (for MGE 3.8.1 SVN rev.120 or later)\r\n"
-                + "\r\n"
-                + ": Syntax is <nif file name>=<keywords>\r\n"
-                + ": Use 'ignore', 'auto', 'near', 'far' or 'very_far', to override the normal cutoff rules\r\n"
-                + ": Use 'grass', 'grass_xxx' or 'tree' to force a mesh to render using the grass shader.  Meshes marked 'grass' and 'grass_xxx' will only render close by, and meshes marked with 'grass_xxx', where xxx is percentage of grass density, will be created with forced density, overriding global setting for this mesh during statics creation.  Note this will not keep Morrowind from drawing the mesh.  To do so, you will need to disable plugin using this grass or tree mesh in Morrowind Launcher.\r\n"
-                + ": Use 'building' to cause a mesh to be treated as being twice as large as it really is for the purpose of classifying it as a near, far, or very far static, and determining whether it meets the minimum size criteria to be generated.\r\n"
-                + ": Use 'no_script' to cause the disable script of objects using this mesh to be ignored\r\n"
-                + ": Use 'use_old_reduction' to use the old mesh simplification algorithm\r\n"
-                + ": Use 'reduction_xx' where xx is the desired percentage to override static simplification amount\r\n"
-                + ": e.g. 'x\\ex_vivec_ps_01.nif=very_far reduction_50' will cause the mesh 'x\\ex_vivec_ps_01.nif' to always be visible and be reduced by 50%\r\n"
-                + "\r\n"
-                + ": Colon character (':') is treated as an inline comment. It can be used on any position of line and is delimited by the end of line\r\n"
-                + ": Using old comment character '#' at the beginning of line is deprecated. Parser will try to process those lines, and eventually give warnings about deprecated use of comment\r\n"
-                + ": All comments and blank lines will be completely ignored by MGE\r\n"
-                + "\r\n"
-                + ": If the same mesh is specified multiple times, the entry closest towards the end of this file will be used\r\n"
-                + ": If a mesh is not specified at all, that static will obey the normal cutoff rules\r\n"
-                + "\r\n"
-                + ": Where multiple objects share the same mesh, individual objects can be enabled or disabled by adding the line [names] followed by a list of edid's, one per line\r\n"
-                + ": Syntax is <object edid>[=<keyword>]\r\n"
-                + ": Use 'enable' to make distant static of this object rendered even if its mesh is set to be ignored or it has disable script attached\r\n"
-                + ": You may use 'disable' keyword or leave only the object edid alone (without '=') in line to disable creation of its distant static\r\n"
-                + "\r\n"
-                + ": There is possibility of adding (or removing) distant statics to interiors through exception list (feature added in MGE 3.8.0 SVN rev.112)\r\n"
-                + ": To do it you need to add only cell name (for enabling) or cell name followed by keyword to [interiors] section\r\n"
-                + ": Syntax is <cell name>[=<keyword>]\r\n"
-                + ": Where keyword can be either 'enable' for enabling generation of distant statics for specified interior, or 'disable' for disabling generation of distant statics for previously enabled interior (also behaving like exterior)\r\n"
-                + "\r\n"
-                + ": The '\\' (backslash) character is treated specially in [names] and [interiors] sections. A character directly following it will have no special meaning, and won't be converted by MGE distant statics list parser\r\n"
-                + ": To use a ':' (colon) character as a part of object edid, and not a comment, you must precede it by '\\'. Then to use also a '\\' character in edid, you must precede it by another '\\' (this only applies to other than main sections)\r\n"
-                + "\r\n"
-                + ": NOTE: This file needs UTF-8 character encoding for non-ASCII characters that can be used in name of file or entity or interior\r\n"
-                + ": If you don't see here '«»' something like '<<>>' then your text editor's current character encoding is not set to UTF-8\r\n");
+            + "\r\n"
+            + ": Syntax is <nif file name>=<keywords>\r\n"
+            + ": Use 'ignore', 'auto', 'near', 'far' or 'very_far', to override the normal cutoff rules\r\n"
+            + ": Use 'grass', 'grass_xxx' or 'tree' to force a mesh to render using the grass shader.  Meshes marked 'grass' and 'grass_xxx' will only render close by, and meshes marked with 'grass_xxx', where xxx is percentage of grass density, will be created with forced density, overriding global setting for this mesh during statics creation.  Note this will not keep Morrowind from drawing the mesh.  To do so, you will need to disable plugin using this grass or tree mesh in Morrowind Launcher.\r\n"
+            + ": Use 'building' to cause a mesh to be treated as being twice as large as it really is for the purpose of classifying it as a near, far, or very far static, and determining whether it meets the minimum size criteria to be generated.\r\n"
+            + ": Use 'no_script' to cause the disable script of objects using this mesh to be ignored\r\n"
+            + ": Use 'use_old_reduction' to use the old mesh simplification algorithm\r\n"
+            + ": Use 'reduction_xx' where xx is the desired percentage to override static simplification amount\r\n"
+            + ": e.g. 'x\\ex_vivec_ps_01.nif=very_far reduction_50' will cause the mesh 'x\\ex_vivec_ps_01.nif' to always be visible and be reduced by 50%\r\n"
+            + "\r\n"
+            + ": Colon character (':') is treated as an inline comment. It can be used on any position of line and is delimited by the end of line\r\n"
+            + ": Using old comment character '#' at the beginning of line is deprecated. Parser will try to process those lines, and eventually give warnings about deprecated use of comment\r\n"
+            + ": All comments and blank lines will be completely ignored by MGE\r\n"
+            + "\r\n"
+            + ": If the same mesh is specified multiple times, the entry closest towards the end of this file will be used\r\n"
+            + ": If a mesh is not specified at all, that static will obey the normal cutoff rules\r\n"
+            + "\r\n"
+            + ": Where multiple objects share the same mesh, individual objects can be enabled or disabled by adding the line [names] followed by a list of edid's, one per line\r\n"
+            + ": Syntax is <object edid>[=<keyword>]\r\n"
+            + ": Use 'enable' to make distant static of this object rendered even if its mesh is set to be ignored or it has disable script attached\r\n"
+            + ": You may use 'disable' keyword or leave only the object edid alone (without '=') in line to disable creation of its distant static\r\n"
+            + "\r\n"
+            + ": There is possibility of adding (or removing) distant statics to interiors through exception list (feature added in MGE 3.8.0 SVN rev.112)\r\n"
+            + ": To do it you need to add only cell name (for enabling) or cell name followed by keyword to [interiors] section\r\n"
+            + ": Syntax is <cell name>[=<keyword>]\r\n"
+            + ": Where keyword can be either 'enable' for enabling generation of distant statics for specified interior, or 'disable' for disabling generation of distant statics for previously enabled interior (also behaving like exterior)\r\n"
+            + "\r\n"
+            + ": The '\\' (backslash) character is treated specially in [names] and [interiors] sections. A character directly following it will have no special meaning, and won't be converted by MGE distant statics list parser\r\n"
+            + ": To use a ':' (colon) character as a part of object edid, and not a comment, you must precede it by '\\'. Then to use also a '\\' character in edid, you must precede it by another '\\' (this only applies to other than main sections)\r\n"
+            + "\r\n"
+            + ": NOTE: This file needs UTF-8 character encoding for non-ASCII characters that can be used in name of file or entity or interior\r\n"
+            + ": If you don't see here '«»' something like '<<>>' then your text editor's current character encoding is not set to UTF-8\r\n");
             sw.Write(": This list was generated with 'min. static size' = ");
             sw.WriteLine(args.MinSize);
             sw.WriteLine();
             foreach (KeyValuePair<string, Static> pair in StaticsList) {
                 if (StaticMap.ContainsKey(pair.Key)) {
                     sw.Write(pair.Value.mesh);
-                    if (pair.Value.mesh.StartsWith("grass\\")) sw.Write("=grass\t\t: size: ");
-                    else if (pair.Value.mesh.StartsWith("trees\\")) sw.Write("=tree\t\t: size: ");
-                    else if (pair.Value.mesh.StartsWith("x\\")) {
-                        if (pair.Value.size * 2.0f >= args.MinSize) sw.Write("=building\t\t: size: ");
-                        else sw.Write("=ignore\t\t: size: ");
+                    if (pair.Value.mesh.StartsWith("grass\\")) {
+                        sw.Write("=grass\t\t: size: ");
+                    } else if (pair.Value.mesh.StartsWith("trees\\")) {
+                        sw.Write("=tree\t\t: size: ");
+                    } else if (pair.Value.mesh.StartsWith("x\\")) {
+                        if (pair.Value.size * 2.0f >= args.MinSize) {
+                            sw.Write("=building\t\t: size: ");
+                        } else {
+                            sw.Write("=ignore\t\t: size: ");
+                        }
                     } else {
                         if (pair.Value.size >= args.MinSize) {
-                            if (pair.Value.mesh == "f\\active_blight_large.nif") sw.Write("=ignore\t\t: exception, size: ");
-                            else sw.Write("=auto\t\t: size: ");
+                            if (pair.Value.mesh == "f\\active_blight_large.nif") {
+                                sw.Write("=ignore\t\t: exception, size: ");
+                            } else {
+                                sw.Write("=auto\t\t: size: ");
+                            }
+                        } else {
+                            sw.Write("=ignore\t\t: size: ");
                         }
-                        else sw.Write("=ignore\t\t: size: ");
                     }
                     sw.WriteLine(pair.Value.size);
                 }
@@ -1279,34 +1475,56 @@ namespace MGEgui.DistantLand {
             public MWPlugins(string main, List<string> dirs) {
                 DirectoryInfo dir = new DirectoryInfo(main);
                 datafiles = dir.FullName.ToLower(Statics.Culture);
-                while (dirs.IndexOf(datafiles) != -1) dirs.Remove(datafiles);
+                while (dirs.IndexOf(datafiles) != -1) {
+                    dirs.Remove(datafiles);
+                }
                 FileInfo[] files;
                 Plugins = new Dictionary<string, MWPlugin>();
                 Dirs = new List<string>(dirs);
                 files = dir.GetFiles("*.esm");
-                foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, true));
+                foreach (FileInfo file in files) {
+                    Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, true));
+                }
                 files = dir.GetFiles("*.esp");
-                foreach (FileInfo file in files) Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, false));
+                foreach (FileInfo file in files) {
+                    Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, false));
+                }
                 List<string> removeDirs = new List<string>();
                 foreach (string dirName in Dirs) {
-                    if(!addPluginsFromDir(dirName))
+                    if (!addPluginsFromDir(dirName)) {
                         removeDirs.Add(dirName);
+                    }
                 }
-                foreach (string dirName in removeDirs) dirs.Remove(dirName);
+                foreach (string dirName in removeDirs) {
+                    dirs.Remove(dirName);
+                }
             }
 
             public void SetDirs(List<string> dirs) {
-                foreach (string dirName in Dirs) if (dirs.IndexOf(dirName) == -1) {
-                    List<string> entries = new List<string>();
-                    foreach (KeyValuePair<string, MWPlugin> entry in Plugins) if (entry.Value.Dir != null && dirName.CompareTo(entry.Value.Dir) == 0) entries.Add(entry.Key);
-                    foreach (string entry in entries) Plugins.Remove(entry);
+                foreach (string dirName in Dirs) {
+                    if (dirs.IndexOf(dirName) == -1) {
+                        List<string> entries = new List<string>();
+                        foreach (KeyValuePair<string, MWPlugin> entry in Plugins) {
+                            if (entry.Value.Dir != null && dirName.CompareTo(entry.Value.Dir) == 0) {
+                                entries.Add(entry.Key);
+                            }
+                        }
+                        foreach (string entry in entries) {
+                            Plugins.Remove(entry);
+                        }
+                    }
                 }
                 List<string> removeDirs = new List<string>();
-                foreach (string dirName in dirs) if (Dirs.IndexOf(dirName) == -1) {
-                    if(!addPluginsFromDir(dirName))
-                        removeDirs.Add(dirName);
+                foreach (string dirName in dirs) {
+                    if (Dirs.IndexOf(dirName) == -1) {
+                        if (!addPluginsFromDir(dirName)) {
+                            removeDirs.Add(dirName);
+                        }
+                    }
                 }
-                foreach (string dirName in removeDirs) dirs.Remove(dirName);
+                foreach (string dirName in removeDirs) {
+                    dirs.Remove(dirName);
+                }
                 Dirs.Clear();
                 Dirs.AddRange(dirs);
             }
@@ -1316,16 +1534,18 @@ namespace MGEgui.DistantLand {
                 string casefoldDir = srcDir.ToLower(Statics.Culture);
                 if (dir.Exists) {
                     FileInfo[] files = dir.GetFiles("*.esm");
-                    foreach (FileInfo file in files)
+                    foreach (FileInfo file in files) {
                         Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + casefoldDir, new MWPlugin(file, srcDir, true));
+                    }
                     files = dir.GetFiles("*.esp");
-                    foreach (FileInfo file in files)
+                    foreach (FileInfo file in files) {
                         Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + casefoldDir, new MWPlugin(file, srcDir, false));
+                    }
                     return true;
                 }
                 return false;
             }
- 
+
             public KeyValuePair<string, MWPlugin>[] ByName {
                 get {
                     List<KeyValuePair<string, MWPlugin>> temp = new List<KeyValuePair<string, MWPlugin>>(Plugins);
@@ -1358,7 +1578,11 @@ namespace MGEgui.DistantLand {
 
             public string[] getSelected() {
                 List<string> s = new List<string>();
-                foreach (KeyValuePair<string, MWPlugin> temp in Plugins) if (temp.Value.Checked == CheckState.Checked) s.Add(temp.Key);
+                foreach (KeyValuePair<string, MWPlugin> temp in Plugins) {
+                    if (temp.Value.Checked == CheckState.Checked) {
+                        s.Add(temp.Key);
+                    }
+                }
                 return s.ToArray();
             }
         }
@@ -1371,9 +1595,13 @@ namespace MGEgui.DistantLand {
             List<string> ActivePlugins = new List<string>();
             while (!sr.EndOfStream) {
                 string s = sr.ReadLine().Trim().ToLower(Statics.Culture);
-                if (s.Length == 0) continue;
+                if (s.Length == 0) {
+                    continue;
+                }
                 if (!InModList) {
-                    if (s == "[game files]") InModList = true;
+                    if (s == "[game files]") {
+                        InModList = true;
+                    }
                 } else {
                     if (s[0] == '[' && s.EndsWith("]")) {
                         InModList = false;
@@ -1381,7 +1609,9 @@ namespace MGEgui.DistantLand {
                     }
                     if (s.StartsWith("gamefile")) {
                         int index = s.IndexOf(';');
-                        if (index != -1) s = s.Remove(index, s.Length - index);
+                        if (index != -1) {
+                            s = s.Remove(index, s.Length - index);
+                        }
                         index = s.IndexOf('=');
                         if (index != -1) {
                             s = s.Remove(0, index + 1).Trim();
@@ -1396,33 +1626,39 @@ namespace MGEgui.DistantLand {
         }
 
         private void bPlugsRun_Click(object sender, EventArgs e) {
-            //Check that at least one mod is selected
+            // Check that at least one mod is selected
             if (clbPlugsModList.CheckedItems.Count == 0) {
                 MessageBox.Show(strings["NoPluginsSelected"], Statics.strings["Error"]);
                 return;
             }
             int i;
-            //Create list of files
+            // Create list of files
             files = new string[clbPlugsModList.CheckedItems.Count];
-            if (files.Length != preselectedPlugins.Length) pluginListChanged = true;
-            else {
+            if (files.Length != preselectedPlugins.Length) {
+                pluginListChanged = true;
+            } else {
                 List<string> tmp1 = new List<string>(pluginList.getSelected());
                 List<string> tmp2 = new List<string>(preselectedPlugins);
                 tmp1.Sort();
                 tmp2.Sort();
-                for (i = 0; i < tmp1.Count; i++) if (tmp1[i].CompareTo(tmp2[i].ToLower(Statics.Culture)) != 0) {
-                    pluginListChanged = true;
-                    break;
+                for (i = 0; i < tmp1.Count; i++) {
+                    if (tmp1[i].CompareTo(tmp2[i].ToLower(Statics.Culture)) != 0) {
+                        pluginListChanged = true;
+                        break;
+                    }
                 }
             }
             KeyValuePair<string, MWPlugin>[] list = pluginList.ByLoadOrder;
             i = 0;
-            foreach (KeyValuePair<string, MWPlugin> item in list) if (item.Value.Checked == CheckState.Checked) {
-                files[i++] = item.Value.FullName;
+            foreach (KeyValuePair<string, MWPlugin> item in list) {
+                if (item.Value.Checked == CheckState.Checked) {
+                    files[i++] = item.Value.FullName;
+                }
             }
-            //Continue
-            if (configure) startSetup();
-            else {
+            // Continue
+            if (configure) {
+                startSetup();
+            } else {
                 SetupFlags["ChkLandAuto"] = pluginListChanged || cmbMeshWorldDetail.SelectedIndex == -1;
                 SetupFlags["EnaLandAuto"] = cmbMeshWorldDetail.SelectedIndex != -1;
                 SetupFlags["EnaLandTex"] = Exists;
@@ -1439,11 +1675,19 @@ namespace MGEgui.DistantLand {
         }
 
         private void bPlugsClear_Click(object sender, EventArgs e) {
-            if (clbPlugsModList.Items.Count > 0) for (int i = 0; i < clbPlugsModList.Items.Count; i++) clbPlugsModList.SetItemChecked(i, false);
+            if (clbPlugsModList.Items.Count > 0) {
+                for (int i = 0; i < clbPlugsModList.Items.Count; i++) {
+                    clbPlugsModList.SetItemChecked(i, false);
+                }
+            }
         }
 
         private void bPlugsAll_Click(object sender, EventArgs e) {
-            if (clbPlugsModList.Items.Count > 0) for (int i = 0; i < clbPlugsModList.Items.Count; i++) clbPlugsModList.SetItemChecked(i, true);
+            if (clbPlugsModList.Items.Count > 0) {
+                for (int i = 0; i < clbPlugsModList.Items.Count; i++) {
+                    clbPlugsModList.SetItemChecked(i, true);
+                }
+            }
         }
 
         private void bPlugsDirs_Click(object sender, EventArgs e) {
@@ -1460,19 +1704,29 @@ namespace MGEgui.DistantLand {
         private bool DEBUG = false;
 
         private void runSetupForm_FormClosed(object sender, EventArgs e) {
-            if (SetupFlags["AutoRun"]) pluginListChanged = SetupFlags["ChkLandAuto"];
+            if (SetupFlags["AutoRun"]) {
+                pluginListChanged = SetupFlags["ChkLandAuto"];
+            }
             DEBUG = SetupFlags["Debug"];
-            if (SetupFlags["RunSetup"]) startSetup();
+            if (SetupFlags["RunSetup"]) {
+                startSetup();
+            }
         }
 
         /* Plugins tab methods */
 
         private void pluginsSort(object sender, EventArgs e) {
-            if (pluginList == null) return;
+            if (pluginList == null) {
+                return;
+            }
             KeyValuePair<string, MWPlugin>[] list;
-            if (rbPlugsName.Checked) list = pluginList.ByName;
-            else if (rbPlugsType.Checked) list = pluginList.ByType;
-            else list = pluginList.ByLoadOrder;
+            if (rbPlugsName.Checked) {
+                list = pluginList.ByName;
+            } else if (rbPlugsType.Checked) {
+                list = pluginList.ByType;
+            } else {
+                list = pluginList.ByLoadOrder;
+            }
             clbPlugsModList.Items.Clear();
             foreach (KeyValuePair<string, MWPlugin> item in list) {
                 int index = clbPlugsModList.Items.Count;
@@ -1483,9 +1737,13 @@ namespace MGEgui.DistantLand {
 
         private void SelectPlugins(string[] plugins) {
             foreach (string s in plugins) {
-                if (!pluginList.Plugins.ContainsKey(s.ToLower(Statics.Culture))) continue;
+                if (!pluginList.Plugins.ContainsKey(s.ToLower(Statics.Culture))) {
+                    continue;
+                }
                 int index = clbPlugsModList.Items.IndexOf(pluginList.Plugins[s.ToLower(Statics.Culture)].Name);
-                if (index != -1) clbPlugsModList.SetItemChecked(index, true);
+                if (index != -1) {
+                    clbPlugsModList.SetItemChecked(index, true);
+                }
             }
         }
 
@@ -1494,9 +1752,12 @@ namespace MGEgui.DistantLand {
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(0);
                 tabControl.SelectedIndex = 4;
+            } else {
+                tabControl.SelectedIndex = 1;
             }
-            else tabControl.SelectedIndex = 1;
-            if (DEBUG) allWarnings.Add("Loading plugin land data");
+            if (DEBUG) {
+                allWarnings.Add("Loading plugin land data");
+            }
             statusText.Text = strings["LoadLandData"];
             statusProgress.Maximum = clbPlugsModList.Items.Count;
             backgroundWorker.WorkerReportsProgress = true;
@@ -1526,16 +1787,23 @@ namespace MGEgui.DistantLand {
                 cmbMeshWorldDetail.SelectedIndex = index;
                 cmbMeshWorldDetail.SelectedIndexChanged += new EventHandler(cmbMeshWorldDetail_SelectedIndexChanged);
                 lMeshAutoInfo.Visible = true;
-                if (DEBUG) allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
-            } else lMeshAutoInfo.Visible = false;
+                if (DEBUG) {
+                    allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
+                }
+            } else {
+                lMeshAutoInfo.Visible = false;
+            }
             LTEX.ReleaseCache();
             statusText.Text = strings["LandTextureSkip"];
             statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(2);
-                if (SetupFlags["ChkLandMesh"]) bMeshRun_Click(null, null);
-                else bMeshSkip_Click(null, null);
+                if (SetupFlags["ChkLandMesh"]) {
+                    bMeshRun_Click(null, null);
+                } else {
+                    bMeshSkip_Click(null, null);
+                }
             } else {
                 ChangingPage = true;
                 tabControl.SelectedIndex = 2;
@@ -1549,7 +1817,7 @@ namespace MGEgui.DistantLand {
                 MessageBox.Show(strings["TexResError"], Statics.strings["Error"]);
                 return;
             }
-            //Set max mesh detail here
+            // Set max mesh detail here
             int VertsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 + (MapSize * 2 + 1) * 128 + 1;
             int PrimsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 * 2;
             int index = 0;
@@ -1562,14 +1830,19 @@ namespace MGEgui.DistantLand {
                 cmbMeshWorldDetail.SelectedIndex = index;
                 cmbMeshWorldDetail.SelectedIndexChanged += new EventHandler(cmbMeshWorldDetail_SelectedIndexChanged);
                 lMeshAutoInfo.Visible = true;
-                if (DEBUG) allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
+                if (DEBUG) {
+                    allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
+                }
+            } else {
+                lMeshAutoInfo.Visible = false;
             }
-            else lMeshAutoInfo.Visible = false;
             if (!SetupFlags["AutoRun"]) {
                 ChangingPage = true;
                 tabControl.SelectedIndex = 2;
             }
-            if (DEBUG) allWarnings.Add("Creating world textures");
+            if (DEBUG) {
+                allWarnings.Add("Creating world textures");
+            }
             statusText.Text = strings["LandTextureCreate"];
             statusProgress.Maximum = (MapMaxY - MapMinY + 1) * 2;
             backgroundWorker.WorkerReportsProgress = true;
@@ -1596,12 +1869,16 @@ namespace MGEgui.DistantLand {
         }
 
         private void bMeshRun_Click(object sender, EventArgs e) {
-            if (lbStatOverrideList.Items.Count == 0) lStatOverrideList.Visible = true;
+            if (lbStatOverrideList.Items.Count == 0) {
+                lStatOverrideList.Visible = true;
+            }
             if (!SetupFlags["AutoRun"]) {
                 ChangingPage = true;
                 tabControl.SelectedIndex = 3;
             }
-            if (DEBUG) allWarnings.Add("Creating world meshes");
+            if (DEBUG) {
+                allWarnings.Add("Creating world meshes");
+            }
             statusText.Text = strings["LandMeshCreate"];
             statusProgress.Maximum = 100;
             backgroundWorker.WorkerReportsProgress = true;
@@ -1623,10 +1900,15 @@ namespace MGEgui.DistantLand {
             statusText.Text = strings["LandMeshSkip"];
             if (SetupFlags["AutoRun"]) {
                 setFinishDesc(3);
-                if (SetupFlags["ChkStatics"]) bStatRun_Click(null, null);
-                else bStatSkip_Click(null, null);
+                if (SetupFlags["ChkStatics"]) {
+                    bStatRun_Click(null, null);
+                } else {
+                    bStatSkip_Click(null, null);
+                }
             } else {
-                if (lbStatOverrideList.Items.Count == 0) lStatOverrideList.Visible = true;
+                if (lbStatOverrideList.Items.Count == 0) {
+                    lStatOverrideList.Visible = true;
+                }
                 ChangingPage = true;
                 tabControl.SelectedIndex = 3;
                 statusWarnings.Text = strings["NoWarnings"];
@@ -1648,13 +1930,21 @@ namespace MGEgui.DistantLand {
                     bw.Write(land.Normals[x, y].X);
                     bw.Write(land.Normals[x, y].Y);
                     bw.Write(land.Normals[x, y].Z);
-                    //Need to offset the border texcoords slightly to avoid lines between meshes
-                    if (x == 0) bw.Write(0.005f);
-                    else if (x == 64) bw.Write(0.997f);
-                    else bw.Write((float)x / 64.0f);
-                    if (y == 0) bw.Write(0.005f);
-                    else if (y == 64) bw.Write(0.997f);
-                    else bw.Write((float)y / 64.0f);
+                    // Need to offset the border texcoords slightly to avoid lines between meshes
+                    if (x == 0) {
+                        bw.Write(0.005f);
+                    } else if (x == 64) {
+                        bw.Write(0.997f);
+                    } else {
+                        bw.Write((float)x / 64.0f);
+                    }
+                    if (y == 0) {
+                        bw.Write(0.005f);
+                    } else if (y == 64) {
+                        bw.Write(0.997f);
+                    } else {
+                        bw.Write((float)y / 64.0f);
+                    }
                 }
             }
             bw.Close();
@@ -1671,7 +1961,7 @@ namespace MGEgui.DistantLand {
             int tVerts = VertsAcross * VertsDown;
             float texMultX = 1 / (float)VertsAcross;
             float texMultY = 1 / (float)VertsDown;
-            //Generate optimized landscape mesh
+            // Generate optimized landscape mesh
             int MapSpanX = MapMaxX - MapMinX + 1;
             int MapSpanY = MapMaxY - MapMinY + 1;
             int MapOffsetX = 0 - MapMinX;
@@ -1687,7 +1977,9 @@ namespace MGEgui.DistantLand {
                             int x = (x1 + MapOffsetX) * 64 + x2;
                             if (map[x1, y1] != null && x1 > map.GetLowerBound(0) && x1 < map.GetUpperBound(0) && y1 > map.GetLowerBound(1) && y1 < map.GetUpperBound(1)) {
                                 height_data[y * DataSpanX + x] = (float)map[x1, y1].Heights[x2, y2] * 8.0f;
-                            } else height_data[y * DataSpanX + x] = -2048.0f;
+                            } else {
+                                height_data[y * DataSpanX + x] = -2048.0f;
+                            }
                         }
                     }
                 }
@@ -1735,7 +2027,7 @@ namespace MGEgui.DistantLand {
             Grass = 4,
             Tree = 5,
             Building = 6
-        };
+        }
 
         private struct StaticToRemove {
 
@@ -1773,8 +2065,9 @@ namespace MGEgui.DistantLand {
 
             public void SetID(Dictionary<string, Static> StaticsList, Dictionary<string, uint> StaticMap) {
                 string file = StaticsList[name].mesh;
-                if (StaticMap.ContainsKey(file)) staticID = StaticMap[file];
-                else {
+                if (StaticMap.ContainsKey(file)) {
+                    staticID = StaticMap[file];
+                } else {
                     staticID = (uint)StaticMap.Count;
                     StaticMap[file] = staticID;
                 }
@@ -1853,29 +2146,43 @@ namespace MGEgui.DistantLand {
                 NamesNoIgnore = false;
                 string[] keys = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (string s in keys) {
-                    if (s == "ignore") Ignore = true;
-                    else if (s == "near") Type = StaticType.Near;
-                    else if (s == "auto") Type = StaticType.Auto;
-                    else if (s == "far") Type = StaticType.Far;
-                    else if (s == "very_far") Type = StaticType.VeryFar;
-                    else if (s.StartsWith ("grass")) {
+                    if (s == "ignore") {
+                        Ignore = true;
+                    } else if (s == "near") {
+                        Type = StaticType.Near;
+                    } else if (s == "auto") {
+                        Type = StaticType.Auto;
+                    } else if (s == "far") {
+                        Type = StaticType.Far;
+                    } else if (s == "very_far") {
+                        Type = StaticType.VeryFar;
+                    } else if (s.StartsWith("grass")) {
                         float percent;
                         Type = StaticType.Grass;
-                        if (s.Length > 6 && float.TryParse (s.Remove (0, 6), out percent) && percent >= 0) {
-                            if (percent > 100) Density = 1.0f;
-                            else Density = percent / 100.0f;
+                        if (s.Length > 6 && float.TryParse(s.Remove(0, 6), out percent) && percent >= 0) {
+                            if (percent > 100) {
+                                Density = 1.0f;
+                            } else {
+                                Density = percent / 100.0f;
+                            }
                         }
-                    } else if (s == "tree") Type = StaticType.Tree;
-                    else if (s == "building") Type = StaticType.Building;
-                    else if (s == "no_script") NoScript = true;
-                    else if (s == "use_old_reduction") OldSimplify = true;
-                    else if (s.StartsWith ("reduction_")) {
+                    } else if (s == "tree") {
+                        Type = StaticType.Tree;
+                    } else if (s == "building") {
+                        Type = StaticType.Building;
+                    } else if (s == "no_script") {
+                        NoScript = true;
+                    } else if (s == "use_old_reduction") {
+                        OldSimplify = true;
+                    } else if (s.StartsWith("reduction_")) {
                         float percent;
-                        if (float.TryParse (s.Remove (0, 10), out percent) && percent >= 0 && percent <= 100) {
+                        if (float.TryParse(s.Remove(0, 10), out percent) && percent >= 0 && percent <= 100) {
                             overrideSimplify = true;
                             Simplify = percent / 100.0f;
                         }
-                    } else if (s == "static_only") StaticsOnly = true;
+                    } else if (s == "static_only") {
+                        StaticsOnly = true;
+                    }
                 }
             }
 
@@ -1896,7 +2203,9 @@ namespace MGEgui.DistantLand {
         /* Statics tab handlers */
 
         private void bStatExportStatics_Click(object sender, EventArgs e) {
-            if (saveStaticListDialog.ShowDialog() != DialogResult.OK) return;
+            if (saveStaticListDialog.ShowDialog() != DialogResult.OK) {
+                return;
+            }
             bStatExportStatics.Enabled = false;
             bStatSkip.Enabled = false;
             bStatRun.Enabled = false;
@@ -1915,8 +2224,9 @@ namespace MGEgui.DistantLand {
 
         private void bStatSkip_Click(object sender, EventArgs e) {
             if (!SetupFlags["AutoRun"]) {
-                if (!StaticsExist && MessageBox.Show(strings["ConfirmSkipStatics"],
-                    Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                if (!StaticsExist && MessageBox.Show(strings["ConfirmSkipStatics"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) {
+                    return;
+                }
                 ChangingPage = true;
                 tabControl.SelectedIndex = 4;
             }
@@ -1928,14 +2238,15 @@ namespace MGEgui.DistantLand {
 
         private void bStatRun_Click(object sender, EventArgs e) {
             if (StaticsExist) {
-                if (!SetupFlags["AutoRun"] && MessageBox.Show(strings["ConfirmRecreate"],
-                    Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) return;
+                if (!SetupFlags["AutoRun"] && MessageBox.Show(strings["ConfirmRecreate"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) {
+                    return;
+                }
                 Directory.Delete(Statics.fn_statics, true);
             }
             ushort temp = (ushort)udStatMinSize.Value;
             CreateStaticsArgs csa = new CreateStaticsArgs();
             csa.MinSize = temp;
-            //Save the value of the minimum static size to the main screen
+            // Save the value of the minimum static size to the main screen
             Statics.mf.tbDLNearSize.Text = udStatMinSize.Text;
             switch (cmbStatSimplifyMeshes.SelectedIndex) {
                 case 1:
@@ -1961,12 +2272,16 @@ namespace MGEgui.DistantLand {
             csa.useOverrideList = cbStatOverrideList.Checked;
             csa.OverrideList = new List<string>();
             csa.OverrideList.Add(Statics.fn_dldefaultoverride);
-            foreach (string s in lbStatOverrideList.Items) csa.OverrideList.Add(s);
+            foreach (string s in lbStatOverrideList.Items) {
+                csa.OverrideList.Add(s);
+            }
             if (!SetupFlags["AutoRun"]) {
                 ChangingPage = true;
                 tabControl.SelectedIndex = 4;
             }
-            if (DEBUG) allWarnings.Add("Parsing plugins for possible statics");
+            if (DEBUG) {
+                allWarnings.Add("Parsing plugins for possible statics");
+            }
             statusText.Text = strings["StaticsGenerate1"];
             statusProgress.Style = ProgressBarStyle.Continuous;
             statusProgress.Maximum = 6;
@@ -2004,7 +2319,9 @@ namespace MGEgui.DistantLand {
                         if (name == "ghostfencescript") {
                             continue;
                         }
-                        if (text.Contains("disable")) DisableScripts[name] = true;
+                        if (text.Contains("disable")) {
+                            DisableScripts[name] = true;
+                        }
                     }
                 }
             }
@@ -2013,10 +2330,10 @@ namespace MGEgui.DistantLand {
         private void ParseFileForStatics(BinaryReader br, Dictionary<string, staticOverride> OverrideList, bool activators, bool includemisc, Dictionary<string, bool> IgnoreList) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
-            //Look for any scripts that might be disabling activators
+            // Look for any scripts that might be disabling activators
             if (activators) {
                 ParseFileForDisableScripts(br, OverrideList);
-                //Reset file position
+                // Reset file position
                 br.BaseStream.Position = 0;
             }
             RecordReader rr = new RecordReader(br);
@@ -2040,63 +2357,84 @@ namespace MGEgui.DistantLand {
                                 break;
                         }
                     }
-                    if (name != null && model != null && model.Trim () != null) {
-                        //Named exceptions
+                    if (name != null && model != null && model.Trim() != null) {
+                        // Named exceptions
                         if (IgnoreList != null && IgnoreList.ContainsKey(name)) {
                             if (!IgnoreList[name]) {
                                 StaticsList[name] = new Static(name, model);
                                 if (OverrideList != null && OverrideList.ContainsKey(model) && OverrideList[model].Ignore) {
                                     OverrideList[model] = new staticOverride(OverrideList[model], true);
-                                    if (DEBUG) { DEBUG_statics++; continue; }
+                                    if (DEBUG) {
+                                        DEBUG_statics++;
+                                        continue;
+                                    }
                                 }
                             }
-                            if (DEBUG) DEBUG_ignored++;
+                            if (DEBUG) {
+                                DEBUG_ignored++;
+                            }
                             continue;
                         }
-                        //NoScript override
+                        // NoScript override
                         if (script != null && OverrideList != null && OverrideList.ContainsKey(model) && OverrideList[model].NoScript) {
                             script = null;
                         }
-                        //Special exceptions
+                        // Special exceptions
                         if (name == "chargen boat" || name == "chargen_plank") {
-                            if (DEBUG) DEBUG_ignored++;
+                            if (DEBUG) {
+                                DEBUG_ignored++;
+                            }
                             continue;
                         }
-                        //Special model exceptions
+                        // Special model exceptions
                         if (model == "f\\active_blight_large.nif") {
                             if (OverrideList != null && !OverrideList.ContainsKey(model)) {
-                                if (DEBUG) DEBUG_ignored++;
+                                if (DEBUG) {
+                                    DEBUG_ignored++;
+                                }
                                 continue;
                             }
                         }
                         if ((misc && !includemisc) || activator && !activators) {
                             if (OverrideList != null && OverrideList.ContainsKey(model) && !OverrideList[model].Ignore) {
                                 if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script] == true) {
-                                    if (DEBUG) DEBUG_ignored++;
+                                    if (DEBUG) {
+                                        DEBUG_ignored++;
+                                    }
                                     continue;
                                 }
                                 StaticsList[name] = new Static(name, model);
-                                if (DEBUG) DEBUG_statics++;
+                                if (DEBUG) {
+                                    DEBUG_statics++;
+                                }
                             }
                         } else {
                             if (OverrideList == null || !OverrideList.ContainsKey(model) || !OverrideList[model].Ignore) {
                                 if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script] == true) {
-                                    if (DEBUG) DEBUG_ignored++;
+                                    if (DEBUG) {
+                                        DEBUG_ignored++;
+                                    }
                                     continue;
                                 }
                                 StaticsList[name] = new Static(name, model);
-                                if (DEBUG) DEBUG_statics++;
+                                if (DEBUG) {
+                                    DEBUG_statics++;
+                                }
                             }
                         }
                     }
                 }
             }
-            if (DEBUG) allWarnings.Add("Static definitions: " + DEBUG_statics + "; Ignored definitions: " + DEBUG_ignored);
+            if (DEBUG) {
+                allWarnings.Add("Static definitions: " + DEBUG_statics + "; Ignored definitions: " + DEBUG_ignored);
+            }
         }
 
         private void ParseFileForCells(BinaryReader br, string PluginName, Dictionary<string, bool> IgnoreList, Dictionary<string, bool> CellList) {
             List<string> Masters = new List<string>() { PluginName.ToLower(Statics.Culture) };
-            if (DEBUG) allWarnings.Add("PLUGIN=" + Masters[0]);
+            if (DEBUG) {
+                allWarnings.Add("PLUGIN=" + Masters[0]);
+            }
             int DEBUG_cells = 0;
             int DEBUG_refs = 0;
             int DEBUG_added = 0;
@@ -2109,12 +2447,16 @@ namespace MGEgui.DistantLand {
                         while (rr.NextSubrecord()) {
                             if (rr.SubTag == "MAST") {
                                 Masters.Add(rr.ReadSubrecordString().ToLower(Statics.Culture));
-                                if (DEBUG) allWarnings.Add("MASTER[" + (Masters.Count - 1) + "]=" + Masters[Masters.Count-1]);
+                                if (DEBUG) {
+                                    allWarnings.Add("MASTER[" + (Masters.Count - 1) + "]=" + Masters[Masters.Count - 1]);
+                                }
                             }
                         }
                         break;
                     case "CELL":
-                        if (DEBUG) DEBUG_cells++;
+                        if (DEBUG) {
+                            DEBUG_cells++;
+                        }
                         string CellName = "";
                         bool IsValidCell = false;
                         bool InReference = false;
@@ -2131,16 +2473,19 @@ namespace MGEgui.DistantLand {
                             switch (rr.SubTag) {
                                 case "DATA":
                                     if (!InReference) {
-                                        if (ReadData) break;
+                                        if (ReadData) {
+                                            break;
+                                        }
                                         uint flags = br.ReadUInt32();
                                         if ((flags & 0x01) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) {
                                             IsValidCell = true;
                                         }
                                         if ((flags & 0x01) != 0) {
                                             Interior = true;
-                                            if (CellList.ContainsKey(CellName.ToLower(Statics.Culture))) IsValidCell = CellList[CellName.ToLower(Statics.Culture)];
-                                        }
-                                        else {
+                                            if (CellList.ContainsKey(CellName.ToLower(Statics.Culture))) {
+                                                IsValidCell = CellList[CellName.ToLower(Statics.Culture)];
+                                            }
+                                        } else {
                                             Interior = false;
                                         }
                                         CellX = br.ReadInt32();
@@ -2156,25 +2501,38 @@ namespace MGEgui.DistantLand {
                                     }
                                     break;
                                 case "FRMR":
-                                    if (DEBUG) DEBUG_refs++;
-                                    if (!IsValidCell) break;
+                                    if (DEBUG) {
+                                        DEBUG_refs++;
+                                    }
+                                    if (!IsValidCell) {
+                                        break;
+                                    }
                                     if (InReference) {
-                                        if (!ReferenceHasScale) sr.scale = 1;
+                                        if (!ReferenceHasScale) {
+                                            sr.scale = 1;
+                                        }
                                         if (StaticsList.ContainsKey(sr.name) && (!IgnoreList.ContainsKey(sr.name) || !IgnoreList[sr.name])) {
                                             sr.SetID(StaticsList, StaticMap);
                                             string Worldspace = Interior ? CellName : "";
                                             string Reference = Masters[MastID] + "\u0001" + (Interior ? "" : CellX + "\u0002" + CellY + "\u0001") + RefID;
                                             if (ReferenceDeleted) {
-                                                if (UsedStaticsList.ContainsKey(Worldspace) && UsedStaticsList[Worldspace].ContainsKey(Reference)) UsedStaticsList[Worldspace].Remove(Reference);
-                                            }
-                                            else {
-                                                if (!UsedStaticsList.ContainsKey(Worldspace)) UsedStaticsList.Add(Worldspace, new Dictionary<string, StaticReference>());
+                                                if (UsedStaticsList.ContainsKey(Worldspace) && UsedStaticsList[Worldspace].ContainsKey(Reference)) {
+                                                    UsedStaticsList[Worldspace].Remove(Reference);
+                                                }
+                                            } else {
+                                                if (!UsedStaticsList.ContainsKey(Worldspace)) {
+                                                    UsedStaticsList.Add(Worldspace, new Dictionary<string, StaticReference>());
+                                                }
                                                 UsedStaticsList[Worldspace][Reference] = sr;
                                             }
                                             if (DEBUG) {
-                                                if (ReferenceDeleted) ++DEBUG_deleted;
-                                                else if (MastID > 0) ++DEBUG_moved;
-                                                else ++DEBUG_added;
+                                                if (ReferenceDeleted) {
+                                                    ++DEBUG_deleted;
+                                                } else if (MastID > 0) {
+                                                    ++DEBUG_moved;
+                                                } else {
+                                                    ++DEBUG_added;
+                                                }
                                             }
                                         }
                                     }
@@ -2190,40 +2548,56 @@ namespace MGEgui.DistantLand {
                                     ReferenceDeleted = true;
                                     break;
                                 case "NAME":
-                                    if (InReference) sr.name = rr.ReadSubrecordString().ToLower(Statics.Culture);
-                                    else CellName = rr.ReadSubrecordString();
+                                    if (InReference) {
+                                        sr.name = rr.ReadSubrecordString().ToLower(Statics.Culture);
+                                    } else {
+                                        CellName = rr.ReadSubrecordString();
+                                    }
                                     break;
                                 case "XSCL":
-                                    if (!InReference) break;
+                                    if (!InReference) {
+                                        break;
+                                    }
                                     sr.scale = br.ReadSingle();
                                     ReferenceHasScale = true;
                                     break;
                             }
                         }
                         if (InReference) {
-                            if (!ReferenceHasScale) sr.scale = 1;
+                            if (!ReferenceHasScale) {
+                                sr.scale = 1;
+                            }
                             if (StaticsList.ContainsKey(sr.name) && (!IgnoreList.ContainsKey(sr.name) || !IgnoreList[sr.name])) {
                                 sr.SetID(StaticsList, StaticMap);
                                 string Worldspace = Interior ? CellName : "";
                                 string Reference = Masters[MastID] + "\u0001" + (Interior ? "" : CellX + "\u0002" + CellY + "\u0001") + RefID;
                                 if (ReferenceDeleted) {
-                                    if (UsedStaticsList.ContainsKey(Worldspace) && UsedStaticsList[Worldspace].ContainsKey(Reference)) UsedStaticsList[Worldspace].Remove(Reference);
-                                }
-                                else {
-                                    if (!UsedStaticsList.ContainsKey(Worldspace)) UsedStaticsList.Add(Worldspace, new Dictionary<string, StaticReference>());
+                                    if (UsedStaticsList.ContainsKey(Worldspace) && UsedStaticsList[Worldspace].ContainsKey(Reference)) {
+                                        UsedStaticsList[Worldspace].Remove(Reference);
+                                    }
+                                } else {
+                                    if (!UsedStaticsList.ContainsKey(Worldspace)) {
+                                        UsedStaticsList.Add(Worldspace, new Dictionary<string, StaticReference>());
+                                    }
                                     UsedStaticsList[Worldspace][Reference] = sr;
                                 }
                                 if (DEBUG) {
-                                    if (ReferenceDeleted) ++DEBUG_deleted;
-                                    else if (MastID > 0) ++DEBUG_moved;
-                                    else ++DEBUG_added;
+                                    if (ReferenceDeleted) {
+                                        ++DEBUG_deleted;
+                                    } else if (MastID > 0) {
+                                        ++DEBUG_moved;
+                                    } else {
+                                        ++DEBUG_added;
+                                    }
                                 }
                             }
                         }
                         break;
                 }
             }
-            if (DEBUG) allWarnings.Add("Scanning summary for: " + PluginName + " : " + DEBUG_cells + " cells : " + DEBUG_refs + " refs : " + DEBUG_added + " added : " + DEBUG_moved + " moved : " + DEBUG_deleted + " deleted");
+            if (DEBUG) {
+                allWarnings.Add("Scanning summary for: " + PluginName + " : " + DEBUG_cells + " cells : " + DEBUG_refs + " refs : " + DEBUG_added + " added : " + DEBUG_moved + " moved : " + DEBUG_deleted + " deleted");
+            }
         }
 
         private void ParseFileForCells2(BinaryReader br) {
@@ -2252,12 +2626,15 @@ namespace MGEgui.DistantLand {
                             case "NAME":
                                 if (InReference) {
                                     string sname = rr.ReadCString().ToLower(Statics.Culture);
-                                    if (StaticsList.ContainsKey(sname)) StaticMap[sname] = 1;
+                                    if (StaticsList.ContainsKey(sname)) {
+                                        StaticMap[sname] = 1;
+                                    }
                                 }
                                 break;
                         }
-                        if (ReadData && !IsValidCell)
+                        if (ReadData && !IsValidCell) {
                             break;
+                        }
                     }
                 }
             }
@@ -2267,8 +2644,10 @@ namespace MGEgui.DistantLand {
 
         private void bFinish_Click(object sender, EventArgs e) {
             File.WriteAllBytes(Statics.fn_dlver, new byte[] { Statics.DistantLandVersion });
-            //If the user generated everything they need for distant land, go ahead and enable it
-            if (File.Exists(Statics.fn_dlver) && File.Exists(Statics.fn_world) && File.Exists(Statics.fn_worldds) && File.Exists(Statics.fn_worldn)) Statics.mf.cbDLDistantLand.Checked = true;
+            // If the user generated everything they need for distant land, go ahead and enable it
+            if (File.Exists(Statics.fn_dlver) && File.Exists(Statics.fn_world) && File.Exists(Statics.fn_worldds) && File.Exists(Statics.fn_worldn)) {
+                Statics.mf.cbDLDistantLand.Checked = true;
+            }
             ChangingPage = true;
             Statics.mf.tabControl.SelectedIndex = 7;
             Close();
@@ -2280,27 +2659,31 @@ namespace MGEgui.DistantLand {
             const string spc = "   ";
             const string mark = "» ";
             StringBuilder text = new StringBuilder();
-            
-            if (SetupFlags["ChkLandTex"])
+
+            if (SetupFlags["ChkLandTex"]) {
                 text.AppendLine((stage == 1 ? mark : spc) + (stage > 1 ? strings["SummaryStage1Complete"] : strings["SummaryStage1Working"]));
-            else
+            } else {
                 text.AppendLine((stage == 1 ? mark : spc) + strings["SummaryStage1Skip"]);
-            
-            if (SetupFlags["ChkLandMesh"])
+            }
+
+            if (SetupFlags["ChkLandMesh"]) {
                 text.AppendLine((stage == 2 ? mark : spc) + (stage > 2 ? strings["SummaryStage2Complete"] : strings["SummaryStage2Working"]));
-            else
+            } else {
                 text.AppendLine((stage == 2 ? mark : spc) + strings["SummaryStage2Skip"]);
-            
-            if (SetupFlags["ChkStatics"])
+            }
+
+            if (SetupFlags["ChkStatics"]) {
                 text.AppendLine((stage == 3 ? mark : spc) + (stage > 3 ? strings["SummaryStage3Complete"] : strings["SummaryStage3Working"]));
-            else
+            } else {
                 text.AppendLine((stage == 3 ? mark : spc) + strings["SummaryStage3Skip"]);
-            
-            if (SetupFlags["ChkStatics"])
+            }
+
+            if (SetupFlags["ChkStatics"]) {
                 text.AppendLine((stage == 4 ? mark : spc) + (stage > 4 ? strings["SummaryStage4Complete"] : strings["SummaryStage4Working"]));
-            else
+            } else {
                 text.AppendLine((stage == 4 ? mark : spc) + strings["SummaryStage4Skip"]);
-            
+            }
+
             Action update = () => lFinishDesc.Text = text.ToString();
             lFinishDesc.BeginInvoke(update);
         }
@@ -2309,15 +2692,15 @@ namespace MGEgui.DistantLand {
             // Calcuate usage for DXT1 texture with mip-maps
             Int64 extent = 128 << cmbTexWorldResolution.SelectedIndex;
             extent = (extent * extent * 1333 / 1000 + 1048576) / 2097152;
-            
+
             lTexWorldMemUse.Text = strings["VideoMemUse"] + extent.ToString() + "MB";
         }
-        
+
         void cmbTexWorldNormalRes_SelectedIndexChanged(object sender, EventArgs e) {
             // Calcuate usage for uncompressed texture with mip-maps
             Int64 extent = 128 << cmbTexWorldNormalRes.SelectedIndex;
             extent = (extent * extent * 1333 / 1000 + 131072) / 262144;
-            
+
             lTexNormalMemUse.Text = strings["VideoMemUse"] + extent.ToString() + "MB";
         }
     }

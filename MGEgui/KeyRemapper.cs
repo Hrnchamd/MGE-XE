@@ -2,23 +2,23 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using ArrayList=System.Collections.ArrayList;
+using ArrayList = System.Collections.ArrayList;
 
 namespace MGEgui {
-    
+
     public class KeyRemapper : Form {
-#region FormDesigner
+        #region FormDesigner
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components=null;
+        private System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing) {
-            if(disposing&&(components!=null)) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -1355,12 +1355,12 @@ namespace MGEgui {
         private System.Windows.Forms.Button b9c;
         private System.Windows.Forms.Button b53;
         private System.Windows.Forms.ContextMenu DudMenu;
-#endregion
+        #endregion
         private Button bClear;
         public byte Mapping;
 
         public static Dictionary<string, string> strings = new Dictionary<string, string>();
-        
+
         public KeyRemapper() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
@@ -1368,59 +1368,62 @@ namespace MGEgui {
         }
 
         private void StartRemap() {
-        	Text=strings["EditModeTitle"]+" 0x"+Mapping.ToString("x");
-            foreach(Control c in Controls) {
-                if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
-                    c.Enabled=false;
-                    if(Statics.Remapper[Mapping]==GetCode((Button)c)&&GetCode((Button)c)!=0) {
-                        c.BackColor=Color.Red;
-                    } else if(GetCode((Button)c)==Mapping) {
-                        c.BackColor=Color.LightBlue;
+            Text = strings["EditModeTitle"] + " 0x" + Mapping.ToString("x");
+            foreach (Control c in Controls) {
+                if (c is Button && c.Name.StartsWith("b") && (c.Name.Length == 3 || c.Name.Length == 4)) {
+                    c.Enabled = false;
+                    if (Statics.Remapper[Mapping] == GetCode((Button)c) && GetCode((Button)c) != 0) {
+                        c.BackColor = Color.Red;
+                    } else if (GetCode((Button)c) == Mapping) {
+                        c.BackColor = Color.LightBlue;
                     } else {
-                        c.BackColor=SystemColors.Control;
+                        c.BackColor = SystemColors.Control;
                     }
                 }
             }
-            RemapDialog rd=new RemapDialog();
-            if(rd.ShowDialog()==DialogResult.OK) {
-                Statics.Remapper[Mapping]=rd.result;
+            RemapDialog rd = new RemapDialog();
+            if (rd.ShowDialog() == DialogResult.OK) {
+                Statics.Remapper[Mapping] = rd.result;
             }
             EndRemap();
         }
 
         private void EndRemap() {
-        	Text=strings["NormalTitle"];
-            Mapping=0;
-            foreach(Control c in Controls) {
-                if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
-                    c.Enabled=true;
-                    if(Statics.Remapper[GetCode((Button)c)]!=0)
-                        c.BackColor=Color.LightBlue;
-                    else
-                        c.BackColor=SystemColors.Control;
+            Text = strings["NormalTitle"];
+            Mapping = 0;
+            foreach (Control c in Controls) {
+                if (c is Button && c.Name.StartsWith("b") && (c.Name.Length == 3 || c.Name.Length == 4)) {
+                    c.Enabled = true;
+                    if (Statics.Remapper[GetCode((Button)c)] != 0) {
+                        c.BackColor = Color.LightBlue;
+                    } else {
+                        c.BackColor = SystemColors.Control;
+                    }
                 }
             }
         }
 
         private Button GetButton(byte code) {
-            foreach(Button b in this.Controls) {
-                if(b.Name=="b"+code.ToString("x")) return b;
+            foreach (Button b in this.Controls) {
+                if (b.Name == "b" + code.ToString("x")) {
+                    return b;
+                }
             }
             return null;
         }
 
         private byte GetCode(Button b) {
-            return Convert.ToByte(b.Name.Remove(0,1),16);
+            return Convert.ToByte(b.Name.Remove(0, 1), 16);
         }
 
-        private void Keyboard_Click(object sender,EventArgs e) {
-            Mapping=GetCode((Button)sender);
+        private void Keyboard_Click(object sender, EventArgs e) {
+            Mapping = GetCode((Button)sender);
             StartRemap();
         }
 
         private void bClear_Click(object sender, EventArgs e) {
-            for(int i=0;i<256;i++) {
-                Statics.Remapper[i]=0;
+            for (int i = 0; i < 256; i++) {
+                Statics.Remapper[i] = 0;
             }
             EndRemap();
         }

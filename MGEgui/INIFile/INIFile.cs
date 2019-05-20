@@ -10,37 +10,37 @@ using System.Text;
  * Created from scratch by krzymar / krzymark (Krzysztof Markowski)
  *
  * Changelog:
- *	v.1.00 (2009-03-15):
- *	 - initial version
- *	v.1.01 (2009-03-16):
- *	 - fixed ini save function to truncate file before writing to it
- *	 - dictionary and boolean types are using only their dictionary entries
- *	v.1.02 (2009-03-21):
- *	 - added hasSection method for checking if given section is initialized
- *	 - changed ToLower functions to use predefined static instead of new Culture
- *	v.1.03 (2009-04-12):
- *	 - added variable intialization method
- *	 - added boolean overloaded method to set key
- *	 - fixed setting key to string
- *	v.1.04 (2009-04-16):
- *	 - fixed decimal separator conversion
- *	v.1.05 (2009-04-26):
- *	 - added string key type handling
- *	 - fixed key / value separator to be first spotted '=' instead of last one
- *	v.1.06 (2009-06-05):
- *	 - added support for file character encoding other than UTF-8
- *	v.1.07 (2009-07-07):
- *	 - added support for escape character in quoted strings and keys
- *	v.1.08 (2010-04-02):
- *	 - changed default encoding for saving files to UTF-8 without preable
- *	v.1.09 (2010-04-26):
- *	 - added Yes/No type boolean support
- *	v.1.10 (2010-05-14):
- *	 - added getSectionKeys that returns Dictionary of a pair <Key,qsValue>
- *	 - fixed qsValue to return unescaped string with removed quotes for undefined entry type
- *	v.1.11 (2010-05-19):
- *	 - added saving with selected precision for floating point variables
- *	 - fixed escaping and unescaping strings and made escape and unescape methods static
+ *    v.1.00 (2009-03-15):
+ *     - initial version
+ *    v.1.01 (2009-03-16):
+ *     - fixed ini save function to truncate file before writing to it
+ *     - dictionary and boolean types are using only their dictionary entries
+ *    v.1.02 (2009-03-21):
+ *     - added hasSection method for checking if given section is initialized
+ *     - changed ToLower functions to use predefined static instead of new Culture
+ *    v.1.03 (2009-04-12):
+ *     - added variable intialization method
+ *     - added boolean overloaded method to set key
+ *     - fixed setting key to string
+ *    v.1.04 (2009-04-16):
+ *     - fixed decimal separator conversion
+ *    v.1.05 (2009-04-26):
+ *     - added string key type handling
+ *     - fixed key / value separator to be first spotted '=' instead of last one
+ *    v.1.06 (2009-06-05):
+ *     - added support for file character encoding other than UTF-8
+ *    v.1.07 (2009-07-07):
+ *     - added support for escape character in quoted strings and keys
+ *    v.1.08 (2010-04-02):
+ *     - changed default encoding for saving files to UTF-8 without preable
+ *    v.1.09 (2010-04-26):
+ *     - added Yes/No type boolean support
+ *    v.1.10 (2010-05-14):
+ *     - added getSectionKeys that returns Dictionary of a pair <Key,qsValue>
+ *     - fixed qsValue to return unescaped string with removed quotes for undefined entry type
+ *    v.1.11 (2010-05-19):
+ *     - added saving with selected precision for floating point variables
+ *     - fixed escaping and unescaping strings and made escape and unescape methods static
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
@@ -54,18 +54,18 @@ namespace MGEgui.INI {
         public static char[] unescapedChars = { '\u0008', '\u0009', '\u000a', '\u000d' };
         public static char[] escapedChars = { 'b', 't', 'n', 'r' };
 
-        
+
         public static INIFile.INIVariableDef iniDefEmpty = new INIFile.INIVariableDef();
 
         public static Dictionary<string, double> INIBools = new Dictionary<string, double> {
-            {"True", 1},
-            {"False", 0},
-            {"On", 1},
-            {"Off", 0},
-            {"Yes", 1},
-            {"No", 0},
-            {"1", 1},
-            {"0", 0}
+            { "True", 1 },
+            { "False", 0 },
+            { "On", 1 },
+            { "Off", 0 },
+            { "Yes", 1 },
+            { "No", 0 },
+            { "1", 1 },
+            { "0", 0 }
         };
 
         public enum INIEntryType {
@@ -184,7 +184,7 @@ namespace MGEgui.INI {
                 this.useMinMax = true;
             }
 
-            public INIVariableDef (string var, string section, string variable, INIVariableType type, string defValue, double min, double max, sbyte precision) {
+            public INIVariableDef(string var, string section, string variable, INIVariableType type, string defValue, double min, double max, sbyte precision) {
                 this.var = var;
                 this.section = section;
                 this.key = variable;
@@ -198,7 +198,7 @@ namespace MGEgui.INI {
                 this.useMinMax = true;
             }
 
-            public INIVariableDef (string var, string section, string variable, INIVariableType type, string defValue, Dictionary<string, double> dict, double min, double max) {
+            public INIVariableDef(string var, string section, string variable, INIVariableType type, string defValue, Dictionary<string, double> dict, double min, double max) {
                 this.var = var;
                 this.section = section;
                 this.key = variable;
@@ -250,45 +250,58 @@ namespace MGEgui.INI {
             private static string escape(string value) {
                 List<char> unesc = new List<char>(unescapedChars);
                 List<char> esc = new List<char>(escapedChars);
-                unesc.AddRange(new char[] {INIEscape, INIQuotation});
-                esc.AddRange(new char[] {INIEscape, INIQuotation});
+                unesc.AddRange(new char[] { INIEscape, INIQuotation });
+                esc.AddRange(new char[] { INIEscape, INIQuotation });
                 string retstring = "";
                 foreach (char c in value) {
-                    if (unesc.Contains(c)) retstring += INIEscape.ToString () + esc[unesc.IndexOf(c)].ToString ();
-                    else retstring += c.ToString ();
+                    if (unesc.Contains(c)) {
+                        retstring += INIEscape.ToString() + esc[unesc.IndexOf(c)].ToString();
+                    } else {
+                        retstring += c.ToString();
+                    }
                 }
                 return retstring;
             }
 
-            private static string unescape (string value) {
+            private static string unescape(string value) {
                 List<char> unesc = new List<char>(unescapedChars);
                 List<char> esc = new List<char>(escapedChars);
-                unesc.AddRange(new char[] {INIEscape, INIQuotation});
-                esc.AddRange(new char[] {INIEscape, INIQuotation});
+                unesc.AddRange(new char[] { INIEscape, INIQuotation });
+                esc.AddRange(new char[] { INIEscape, INIQuotation });
                 bool escaped = false;
                 string retstring = "";
                 foreach (char c in value) {
                     if (escaped) {
                         escaped = false;
-                        if (esc.Contains(c)) retstring += unesc[esc.IndexOf(c)].ToString ();
-                        else retstring += c.ToString ();
+                        if (esc.Contains(c)) {
+                            retstring += unesc[esc.IndexOf(c)].ToString();
+                        } else {
+                            retstring += c.ToString();
+                        }
                     } else if (c == INIEscape) {
                         escaped = true;
-                    } else retstring += c.ToString ();
+                    } else {
+                        retstring += c.ToString();
+                    }
                 }
                 return retstring;
             }
 
             public string sValue {
                 set {
-                    if (this.varType == INIVariableType.String) this.value = INIQuotation + value + INIQuotation;
-                    else this.value = value;
+                    if (this.varType == INIVariableType.String) {
+                        this.value = INIQuotation + value + INIQuotation;
+                    } else {
+                        this.value = value;
+                    }
                     this.entry = this.key + "=" + this.value;
                 }
                 get {
                     if (this.varType == INIVariableType.String) {
-                        if (this.value.Length > 1 && this.value.StartsWith(INIQuotation.ToString()) && this.value.EndsWith(INIQuotation.ToString())) return this.value.Substring(1, this.value.Length - 2);
-                        //return this.value;
+                        if (this.value.Length > 1 && this.value.StartsWith(INIQuotation.ToString()) && this.value.EndsWith(INIQuotation.ToString())) {
+                            return this.value.Substring(1, this.value.Length - 2);
+                        }
+                        // return this.value;
                     }
                     return this.value;
                 }
@@ -296,14 +309,20 @@ namespace MGEgui.INI {
 
             public string qsValue {
                 set {
-                    if (this.varType == INIVariableType.String) this.value = INIQuotation + escape(value) + INIQuotation;
-                    else this.value = value;
+                    if (this.varType == INIVariableType.String) {
+                        this.value = INIQuotation + escape(value) + INIQuotation;
+                    } else {
+                        this.value = value;
+                    }
                     this.entry = this.key + "=" + this.value;
                 }
                 get {
                     if (this.varType == INIVariableType.String || this.varType == INIVariableType.None) {
-                        if (this.value.Length > 1 && this.value.StartsWith(INIQuotation.ToString()) && this.value.EndsWith(INIQuotation.ToString())) return unescape(this.value.Substring(1, this.value.Length - 2));
-                        else return unescape(this.value);
+                        if (this.value.Length > 1 && this.value.StartsWith(INIQuotation.ToString()) && this.value.EndsWith(INIQuotation.ToString())) {
+                            return unescape(this.value.Substring(1, this.value.Length - 2));
+                        } else {
+                            return unescape(this.value);
+                        }
                     }
                     return this.value;
                 }
@@ -312,69 +331,104 @@ namespace MGEgui.INI {
             public double dValue {
                 get {
                     double ret = 0;
-                    if (varDict != null) foreach (KeyValuePair<string, double> vd in varDict) {
-                        if (iValue.CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
-                            return vd.Value;
+                    if (varDict != null) {
+                        foreach (KeyValuePair<string, double> vd in varDict) {
+                            if (iValue.CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
+                                return vd.Value;
+                            }
                         }
                     }
                     if (varType == INIVariableType.Boolean) {
-                        if (varDict != null) foreach (KeyValuePair<string, double> vd in varDict) {
-                            if (defVal.ToLower(Statics.Culture).CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
-                                return vd.Value;
+                        if (varDict != null) {
+                            foreach (KeyValuePair<string, double> vd in varDict) {
+                                if (defVal.ToLower(Statics.Culture).CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
+                                    return vd.Value;
+                                }
                             }
                         }
                     } else if (varType == INIVariableType.Dictionary) {
-                        if (varDict != null) foreach (KeyValuePair<string, double> vd in varDict) {
-                            if (defVal.ToLower(Statics.Culture).CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
-                                return vd.Value;
+                        if (varDict != null) {
+                            foreach (KeyValuePair<string, double> vd in varDict) {
+                                if (defVal.ToLower(Statics.Culture).CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
+                                    return vd.Value;
+                                }
                             }
                         }
-                    }
-                    else try {
-                        ret = double.Parse(value, Statics.NumFormat);
-                    } catch {
-                        if (varDict == null) try { ret = double.Parse(defVal, Statics.NumFormat); } catch { ret = 0; }
-                        else foreach (KeyValuePair<string, double> vd in varDict) {
-                            if (defVal.ToLower(Statics.Culture).CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
-                                return vd.Value;
+                    } else {
+                        try {
+                            ret = double.Parse(value, Statics.NumFormat);
+                        } catch {
+                            if (varDict == null) {
+                                try {
+                                    ret = double.Parse(defVal, Statics.NumFormat);
+                                } catch {
+                                    ret = 0;
+                                }
+                            } else {
+                                foreach (KeyValuePair<string, double> vd in varDict) {
+                                    if (defVal.ToLower(Statics.Culture).CompareTo(vd.Key.ToLower(Statics.Culture)) == 0) {
+                                        return vd.Value;
+                                    }
+                                }
                             }
                         }
                     }
                     if (useMinMax) {
-                        if (ret < min) ret = min;
-                        else if (ret > max) ret = max;
+                        if (ret < min) {
+                            ret = min;
+                        } else if (ret > max) {
+                            ret = max;
+                        }
                     }
                     return ret;
                 }
                 set {
                     bool useDict = false;
                     int dictPos;
-                    if (varType == INIVariableType.Boolean) dictPos = (int)varBool * 2;
-                    else dictPos = 0;
-                    if (varDict != null) foreach (KeyValuePair<string, double> vd in varDict) {
-                        if (dictPos-- > 0) continue;
-                        if (vd.Value == value) {
-                            this.value = vd.Key;
-                            useDict = true;
-                            break;
+                    if (varType == INIVariableType.Boolean) {
+                        dictPos = (int)varBool * 2;
+                    } else {
+                        dictPos = 0;
+                    }
+                    if (varDict != null) {
+                        foreach (KeyValuePair<string, double> vd in varDict) {
+                            if (dictPos-- > 0) {
+                                continue;
+                            }
+                            if (vd.Value == value) {
+                                this.value = vd.Key;
+                                useDict = true;
+                                break;
+                            }
                         }
                     }
                     if (varType != INIVariableType.Dictionary) {
                         double temp = value;
                         if (!useDict && useMinMax) {
-                            if (temp < min) { temp = min; useDict = true; }
-                            else if (temp > max) { temp = max; useDict = true; }
+                            if (temp < min) {
+                                temp = min;
+                                useDict = true;
+                            } else if (temp > max) {
+                                temp = max;
+                                useDict = true;
+                            }
                             if (useDict && varDict != null) {
                                 useDict = false;
-                                foreach (KeyValuePair<string, double> vd in varDict) if (vd.Value == temp) {
-                                    this.value = vd.Key;
-                                    useDict = true;
-                                    break;
+                                foreach (KeyValuePair<string, double> vd in varDict) {
+                                    if (vd.Value == temp) {
+                                        this.value = vd.Key;
+                                        useDict = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
-                        if (!useDict) this.value = temp.ToString (Statics.NumFormat);
-                    } else if (!useDict) this.value = defVal;
+                        if (!useDict) {
+                            this.value = temp.ToString(Statics.NumFormat);
+                        }
+                    } else if (!useDict) {
+                        this.value = defVal;
+                    }
                     this.entry = this.key + "=" + this.value;
                 }
             }
@@ -383,7 +437,9 @@ namespace MGEgui.INI {
                 List<int> quots = new List<int>();
                 int beginning = -1;
                 while (line.Length > beginning + 1 && (beginning = line.IndexOf(INIQuotation, beginning + 1)) != -1) {
-                    if (quots.Count % 2 != 1 || line[beginning - 1] != '\\') quots.Add(beginning);
+                    if (quots.Count % 2 != 1 || line[beginning - 1] != '\\') {
+                        quots.Add(beginning);
+                    }
                 }
                 return quots.ToArray();
             }
@@ -397,22 +453,36 @@ namespace MGEgui.INI {
                 int quots = quot.Length / 2;
                 int index = -1;
                 int beginning = 0;
-                if (quots > 0) for (int i = 0; i < quots; ++i) {
-                    index = line.IndexOf(INIComment, beginning);
-                    if (index == -1) break;
-                    if (index > quot[i * 2] && index < quot[i * 2 + 1]) index = -1;
-                    beginning = quot[i * 2 + 1];
-                } else index = line.IndexOf(INIComment); 
+                if (quots > 0) {
+                    for (int i = 0; i < quots; ++i) {
+                        index = line.IndexOf(INIComment, beginning);
+                        if (index == -1) {
+                            break;
+                        }
+                        if (index > quot[i * 2] && index < quot[i * 2 + 1]) {
+                            index = -1;
+                        }
+                        beginning = quot[i * 2 + 1];
+                    }
+                } else {
+                    index = line.IndexOf(INIComment);
+                }
                 if (index != -1) {
-                    if (index > 0) entry = line.Substring(0, index).Trim();
+                    if (index > 0) {
+                        entry = line.Substring(0, index).Trim();
+                    }
                     comment = line.Substring(entry.Length);
-                } else entry = line.Trim();
+                } else {
+                    entry = line.Trim();
+                }
                 if (entry.Length > 0 && entry[0] == '[' && entry.EndsWith("]")) {
                     setSection = entry.Length > 2 ? entry.Substring(1, entry.Length - 2) : "";
                 }
                 index = entry.IndexOf('=');
                 if (index != -1) {
-                    if (index > 0) key = entry.Substring(0, index).Trim();
+                    if (index > 0) {
+                        key = entry.Substring(0, index).Trim();
+                    }
                     value = entry.Substring(index + 1).Trim();
                 }
                 section = curSection;
@@ -437,7 +507,7 @@ namespace MGEgui.INI {
                 }
                 section = curSection;
                 modified = true;
-    	    }
+            }
 
             public INILine(string stringVar, string stringVal) {
                 entry = "";
@@ -474,7 +544,9 @@ namespace MGEgui.INI {
             loadINI();
         }
 
-        public INIFile(string file, INIVariableDef[] varDefn) : this(file, varDefn, false) { }
+        public INIFile(string file, INIVariableDef[] varDefn)
+            : this(file, varDefn, false) {
+        }
 
         public INIFile(string file, INIVariableDef[] varDefn, Encoding encoding, bool saveDef) {
             this.fileName = file;
@@ -485,21 +557,27 @@ namespace MGEgui.INI {
             loadINI();
         }
 
-        public INIFile(string file, INIVariableDef[] varDefn, Encoding encoding) : this(file, varDefn, encoding, false) { }
+        public INIFile(string file, INIVariableDef[] varDefn, Encoding encoding)
+            : this(file, varDefn, encoding, false) {
+        }
 
         private INIVariableDef getVarDefn(string section, string key) {
             string iSection = section.ToLower(Statics.Culture);
             string iKey = key.ToLower(Statics.Culture);
-            foreach (INIVariableDef defn in varDefn) if (defn.section != null && iSection.CompareTo(defn.section.ToLower(Statics.Culture)) == 0 && iKey.CompareTo(defn.key.ToLower(Statics.Culture)) == 0) {
-                return defn;
+            foreach (INIVariableDef defn in varDefn) {
+                if (defn.section != null && iSection.CompareTo(defn.section.ToLower(Statics.Culture)) == 0 && iKey.CompareTo(defn.key.ToLower(Statics.Culture)) == 0) {
+                    return defn;
+                }
             }
             return varDefn[0];
         }
 
         private INIVariableDef getVarDefn(string variable) {
             INIVariableDef ret = varDefn[0];
-            foreach (INIVariableDef defn in varDefn) if (defn.var != null && variable.CompareTo(defn.var) == 0) {
-                return defn;
+            foreach (INIVariableDef defn in varDefn) {
+                if (defn.var != null && variable.CompareTo(defn.var) == 0) {
+                    return defn;
+                }
             }
             return varDefn[0];
         }
@@ -507,7 +585,10 @@ namespace MGEgui.INI {
         private void loadINI() {
             iniContent.Clear();
             StreamReader sr = null;
-            try { sr = new StreamReader(File.OpenRead(fileName), encoding); } catch { }
+            try {
+                sr = new StreamReader(File.OpenRead(fileName), encoding);
+            } catch {
+            }
             INILine.setSection = "";
             if (sr != null) {
                 while (!sr.EndOfStream) {
@@ -529,7 +610,9 @@ namespace MGEgui.INI {
         public void initialize() {
             int i = 0;
             foreach (INIVariableDef def in varDefn) {
-                if (i++ == 0 || isKeySet(def.var)) continue;
+                if (i++ == 0 || isKeySet(def.var)) {
+                    continue;
+                }
                 setKey(def.var, def.defValue);
             }
         }
@@ -537,7 +620,9 @@ namespace MGEgui.INI {
         public void reinitialize() {
             int i = 0;
             foreach (INIVariableDef def in varDefn) {
-                if (i++ == 0) continue;
+                if (i++ == 0) {
+                    continue;
+                }
                 setKey(def.var, def.defValue);
             }
         }
@@ -550,8 +635,10 @@ namespace MGEgui.INI {
         public bool isKeySet(string section, string key) {
             string iSection = section.ToLower(Statics.Culture);
             string iKey = key.ToLower(Statics.Culture);
-            foreach (INILine line in iniContent) if (iSection.CompareTo(line.section) == 0 && iKey.CompareTo(line.iKey.ToLower(Statics.Culture)) == 0) {
-                return true;
+            foreach (INILine line in iniContent) {
+                if (iSection.CompareTo(line.section) == 0 && iKey.CompareTo(line.iKey.ToLower(Statics.Culture)) == 0) {
+                    return true;
+                }
             }
             return false;
         }
@@ -559,11 +646,19 @@ namespace MGEgui.INI {
         public bool save() {
             if (modified) {
                 StreamWriter sw = null;
-                try { sw = new StreamWriter(File.Create(fileName), encoding); } catch { return false; }
+                try {
+                    sw = new StreamWriter(File.Create(fileName), encoding);
+                } catch {
+                    return false;
+                }
                 if (sw != null) {
-                    foreach (INILine line in iniContent) sw.WriteLine(line.entry + line.comment);
+                    foreach (INILine line in iniContent) {
+                        sw.WriteLine(line.entry + line.comment);
+                    }
                     sw.Close();
-                } else return false;
+                } else {
+                    return false;
+                }
             }
             return true;
         }
@@ -573,20 +668,30 @@ namespace MGEgui.INI {
             string iValue = sValue.ToLower(Statics.Culture);
             if (vd.defValue != null) {
                 string def = vd.defValue.ToLower(Statics.Culture);
-                if (iValue == def) return true;
+                if (iValue == def) {
+                    return true;
+                }
                 bool useDict = false;
                 double dVal = double.NegativeInfinity, dDef = double.PositiveInfinity;
                 if (vd.dict != null) {
-                    foreach (KeyValuePair<string, double> dict in vd.dict) if (dict.Key.ToLower(Statics.Culture) == iValue) {
-                        dVal = dict.Value;
-                        useDict = true;
-                        break;
+                    foreach (KeyValuePair<string, double> dict in vd.dict) {
+                        if (dict.Key.ToLower(Statics.Culture) == iValue) {
+                            dVal = dict.Value;
+                            useDict = true;
+                            break;
+                        }
                     }
-                    if (useDict) foreach (KeyValuePair<string, double> dict in vd.dict) if (dict.Key.ToLower(Statics.Culture) == def) {
-                        dDef = dict.Value;
-                        break;
+                    if (useDict) {
+                        foreach (KeyValuePair<string, double> dict in vd.dict) {
+                            if (dict.Key.ToLower(Statics.Culture) == def) {
+                                dDef = dict.Value;
+                                break;
+                            }
+                        }
                     }
-                    if (dVal == dDef) return true;
+                    if (dVal == dDef) {
+                        return true;
+                    }
                 }
             }
             return false;
@@ -599,18 +704,25 @@ namespace MGEgui.INI {
                 bool useDict = false;
                 double dDef = double.NaN;
                 if (vd.dict != null) {
-                    foreach (KeyValuePair<string, double> dict in vd.dict) if (dict.Key.ToLower(Statics.Culture) == def) {
-                        dDef = dict.Value;
-                        useDict = true;
-                        break;
+                    foreach (KeyValuePair<string, double> dict in vd.dict) {
+                        if (dict.Key.ToLower(Statics.Culture) == def) {
+                            dDef = dict.Value;
+                            useDict = true;
+                            break;
+                        }
                     }
-                    if (useDict && dValue == dDef) return true;
+                    if (useDict && dValue == dDef) {
+                        return true;
+                    }
                 }
                 try {
-                    //dDef = Convert.ToDouble(def);
+                    // dDef = Convert.ToDouble(def);
                     dDef = double.Parse(def, Statics.NumFormat);
-                    if (dValue == dDef) return true;
-                } catch { }
+                    if (dValue == dDef) {
+                        return true;
+                    }
+                } catch {
+                }
             }
             return false;
         }
@@ -623,13 +735,18 @@ namespace MGEgui.INI {
         public string getKeyString(string section, string key) {
             string iSection = section.ToLower(Statics.Culture);
             string iKey = key.ToLower(Statics.Culture);
-            foreach (INILine line in iniContent) if (iSection.CompareTo(line.section) == 0 && iKey.CompareTo(line.iKey.ToLower(Statics.Culture)) == 0) {
-                return line.sValue;
+            foreach (INILine line in iniContent) {
+                if (iSection.CompareTo(line.section) == 0 && iKey.CompareTo(line.iKey.ToLower(Statics.Culture)) == 0) {
+                    return line.sValue;
+                }
             }
             foreach (INIVariableDef def in varDefn) {
                 if (def.section != null && iSection.CompareTo(def.section.ToLower(Statics.Culture)) == 0 && iKey.CompareTo(def.key.ToLower(Statics.Culture)) == 0) {
-                    try { return def.defValue; }
-                    catch { break; }
+                    try {
+                        return def.defValue;
+                    } catch {
+                        break;
+                    }
                 }
             }
             return "";
@@ -643,23 +760,37 @@ namespace MGEgui.INI {
         public double getKeyValue(string section, string key) {
             string iSection = section.ToLower(Statics.Culture);
             string iKey = key.ToLower(Statics.Culture);
-            foreach (INILine line in iniContent) if (iSection.CompareTo(line.section) == 0 && iKey.CompareTo(line.iKey.ToLower(Statics.Culture)) == 0) {
-                return line.dValue;
+            foreach (INILine line in iniContent) {
+                if (iSection.CompareTo(line.section) == 0 && iKey.CompareTo(line.iKey.ToLower(Statics.Culture)) == 0) {
+                    return line.dValue;
+                }
             }
             foreach (INIVariableDef def in varDefn) {
                 if (def.section != null && iSection.CompareTo(def.section.ToLower(Statics.Culture)) == 0 && iKey.CompareTo(def.key.ToLower(Statics.Culture)) == 0) {
                     string defVal = def.defValue;
-                    if (def.dict != null) foreach (KeyValuePair<string, double> dict in def.dict) {
-                        if (def.defValue.ToLower(Statics.Culture) == dict.Key.ToLower(Statics.Culture)) return dict.Value;
+                    if (def.dict != null) {
+                        foreach (KeyValuePair<string, double> dict in def.dict) {
+                            if (def.defValue.ToLower(Statics.Culture) == dict.Key.ToLower(Statics.Culture)) {
+                                return dict.Value;
+                            }
+                        }
                     }
-                    try { return double.Parse(def.defValue, Statics.NumFormat); } catch { break; }
+                    try {
+                        return double.Parse(def.defValue, Statics.NumFormat);
+                    } catch {
+                        break;
+                    }
                 }
             }
             return 0;
         }
 
         public bool hasSection(string section) {
-            foreach (INILine line in iniContent) if (line.section.CompareTo(section.ToLower(Statics.Culture)) == 0) return true;
+            foreach (INILine line in iniContent) {
+                if (line.section.CompareTo(section.ToLower(Statics.Culture)) == 0) {
+                    return true;
+                }
+            }
             return false;
         }
 
@@ -710,13 +841,18 @@ namespace MGEgui.INI {
             tmp.useMinMax = vd.useMinMax;
             tmp.min = vd.min;
             tmp.max = vd.max;
-            if (useString) tmp.sValue = sValue;
-            else {
-                if (vd.precision != -1) dValue = double.Parse (dValue.ToString ("F" + vd.precision.ToString ()));
+            if (useString) {
+                tmp.sValue = sValue;
+            } else {
+                if (vd.precision != -1) {
+                    dValue = double.Parse(dValue.ToString("F" + vd.precision.ToString()));
+                }
                 tmp.dValue = dValue;
             }
             if (firstIndex == -1) {
-                if (!saveDef && isDef) return;
+                if (!saveDef && isDef) {
+                    return;
+                }
                 if (iniContent.Count > 0) {
                     INILine line = iniContent[iniContent.Count - 1];
                     if (line.entry != "" || line.comment != "") {
@@ -732,17 +868,26 @@ namespace MGEgui.INI {
             } else {
                 int index = keys.IndexOf(iKey, firstIndex, lastIndex - firstIndex);
                 if (index >= firstIndex && index <= lastIndex) {
-                    if (!saveDef && isDef && comments[index] == "") iniContent.RemoveAt(index);
-                    else if (useString && iniContent[index].value == sValue || !useString && iniContent[index].dValue == dValue) return;
-                    else if (useString) iniContent[index].sValue = sValue;
-                    else iniContent[index].dValue = dValue;
+                    if (!saveDef && isDef && comments[index] == "") {
+                        iniContent.RemoveAt(index);
+                    } else if (useString && iniContent[index].value == sValue || !useString && iniContent[index].dValue == dValue) {
+                        return;
+                    } else if (useString) {
+                        iniContent[index].sValue = sValue;
+                    } else {
+                        iniContent[index].dValue = dValue;
+                    }
                 } else {
-                    if (!saveDef && isDef) return;
+                    if (!saveDef && isDef) {
+                        return;
+                    }
                     INILine line = iniContent[lastIndex++];
                     if (line.entry != "" || line.comment != "") {
                         iniContent.Insert(lastIndex, new INILine(""));
                         iniContent.Insert(lastIndex, tmp);
-                    } else iniContent.Insert(lastIndex - 1, tmp);
+                    } else {
+                        iniContent.Insert(lastIndex - 1, tmp);
+                    }
                 }
             }
             modified = true;
@@ -750,7 +895,9 @@ namespace MGEgui.INI {
 
         public void setSectOrderedList(string section, string[] tab) {
             List<string> sections = new List<string>();
-            foreach (INILine line in iniContent) sections.Add(line.section);
+            foreach (INILine line in iniContent) {
+                sections.Add(line.section);
+            }
             string iSection = section.ToLower(Statics.Culture);
             int firstIndex = sections.IndexOf(iSection);
             int lastIndex = sections.LastIndexOf(iSection);
@@ -773,13 +920,15 @@ namespace MGEgui.INI {
                 INILine line = iniContent[firstIndex];
                 if (line.entry != "" && line.comment != "") {
                     line.entry = INIComment + line.entry;
-                }
-                else if (line.comment != "") continue;
-                else {
+                } else if (line.comment != "") {
+                    continue;
+                } else {
                     line.entry = tab[tabIndex++];
                 }
             }
-            while (firstIndex <= lastIndex) iniContent.RemoveAt(lastIndex--);
+            while (firstIndex <= lastIndex) {
+                iniContent.RemoveAt(lastIndex--);
+            }
             INILine.setSection = section;
             iniContent.Insert(firstIndex, new INILine(""));
             while (tabCount >= tabIndex) {
@@ -790,7 +939,9 @@ namespace MGEgui.INI {
 
         public void setSectList(string section, string[] tab) {
             List<string> sections = new List<string>();
-            foreach (INILine line in iniContent) sections.Add(line.section);
+            foreach (INILine line in iniContent) {
+                sections.Add(line.section);
+            }
             string iSection = section.ToLower(Statics.Culture);
             int firstIndex = sections.IndexOf(iSection);
             int lastIndex = sections.LastIndexOf(iSection);
@@ -829,7 +980,9 @@ namespace MGEgui.INI {
                 }
             }
             INILine.setSection = section;
-            if (iniContent[lastIndex].entry != "" || iniContent[lastIndex].comment != "") iniContent.Insert(++lastIndex, new INILine(""));
+            if (iniContent[lastIndex].entry != "" || iniContent[lastIndex].comment != "") {
+                iniContent.Insert(++lastIndex, new INILine(""));
+            }
             for (int i = lTab.Count - 1; i >= 0; i--) {
                 iniContent.Insert(lastIndex, new INILine(lTab[i]));
                 modified = true;
@@ -839,25 +992,37 @@ namespace MGEgui.INI {
         public string[] getSectList(string section) {
             List<string> ret = new List<string>();
             List<string> sections = new List<string>();
-            foreach (INILine line in iniContent) sections.Add(line.section);
+            foreach (INILine line in iniContent) {
+                sections.Add(line.section);
+            }
             string iSection = section.ToLower(Statics.Culture);
             int firstIndex = sections.IndexOf(iSection);
             int lastIndex = sections.LastIndexOf(iSection);
-            if (firstIndex != -1) while (++firstIndex <= lastIndex) {
-                if (iniContent[firstIndex].entry != "") ret.Add(iniContent[firstIndex].entry);
+            if (firstIndex != -1) {
+                while (++firstIndex <= lastIndex) {
+                    if (iniContent[firstIndex].entry != "") {
+                        ret.Add(iniContent[firstIndex].entry);
+                    }
+                }
             }
             return ret.ToArray();
         }
 
-        public Dictionary<string, string> getSectionKeys (string section) {
-            Dictionary<string, string> ret = new Dictionary<string, string> ();
-            List<string> sections = new List<string> ();
-            foreach (INILine line in iniContent) sections.Add (line.section);
-            string iSection = section.ToLower (Statics.Culture);
-            int firstIndex = sections.IndexOf (iSection);
-            int lastIndex = sections.LastIndexOf (iSection);
-            if (firstIndex != -1) while (++firstIndex <= lastIndex) {
-                if (iniContent [firstIndex].key != "") ret.Add (iniContent [firstIndex].key, iniContent [firstIndex].qsValue);
+        public Dictionary<string, string> getSectionKeys(string section) {
+            Dictionary<string, string> ret = new Dictionary<string, string>();
+            List<string> sections = new List<string>();
+            foreach (INILine line in iniContent) {
+                sections.Add(line.section);
+            }
+            string iSection = section.ToLower(Statics.Culture);
+            int firstIndex = sections.IndexOf(iSection);
+            int lastIndex = sections.LastIndexOf(iSection);
+            if (firstIndex != -1) {
+                while (++firstIndex <= lastIndex) {
+                    if (iniContent[firstIndex].key != "") {
+                        ret.Add(iniContent[firstIndex].key, iniContent[firstIndex].qsValue);
+                    }
+                }
             }
             return ret;
         }

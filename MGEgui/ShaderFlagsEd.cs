@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace MGEgui {
     public class ShaderFlagsEd : Form {
-#region form designer stuff
+        #region form designer stuff
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -206,12 +206,12 @@ namespace MGEgui {
         private System.Windows.Forms.CheckBox cbSFNotInt;
         private System.Windows.Forms.Button bOK;
 
-#endregion
+        #endregion
 
         private ShaderEditorForm _parent;
         private Button bCancel;
-    
-        public ShaderEditorForm parent{get{return _parent;} set {_parent = value;}}
+
+        public ShaderEditorForm parent{ get { return _parent; } set { _parent = value; } }
         private int flags;
 
         public ShaderFlagsEd() {
@@ -219,14 +219,14 @@ namespace MGEgui {
             Statics.Localizations.Apply(this);
         }
 
-        public void setCheckboxes(UInt32 flags){
-            cbSFNotInt.Checked          = ((flags &  1) ==  1);
-            cbSFNotExt.Checked          = ((flags &  2) ==  2);
-            cbSFNotIntExt.Checked       = ((flags &  4) ==  4);
-            cbSFNotUnderwater.Checked   = ((flags &  8) ==  8);
-            cbSFNotAboveWater.Checked   = ((flags & 16) == 16);
-            cbSFSunVis.Checked          = ((flags & 32) == 32);
-            cbSFNotSunVis.Checked       = ((flags & 64) == 64);
+        public void setCheckboxes(UInt32 flags) {
+            cbSFNotInt.Checked = ((flags & 1) == 1);
+            cbSFNotExt.Checked = ((flags & 2) == 2);
+            cbSFNotIntExt.Checked = ((flags & 4) == 4);
+            cbSFNotUnderwater.Checked = ((flags & 8) == 8);
+            cbSFNotAboveWater.Checked = ((flags & 16) == 16);
+            cbSFSunVis.Checked = ((flags & 32) == 32);
+            cbSFNotSunVis.Checked = ((flags & 64) == 64);
         }
 
         public int getFlags() {
@@ -235,15 +235,31 @@ namespace MGEgui {
 
         private void bClose_Click(object sender, EventArgs e) {
             flags = 0;
-            if (cbSFNotInt.Checked) flags += 1;
-            if (cbSFNotExt.Checked) flags += 2;
-            if (cbSFNotIntExt.Checked) flags += 4;
-            if (cbSFNotUnderwater.Checked) flags += 8;
-            if (cbSFNotAboveWater.Checked) flags += 16;
-            if (cbSFSunVis.Checked) flags += 32;
-            if (cbSFNotSunVis.Checked) flags += 64;
+            if (cbSFNotInt.Checked) {
+                flags += 1;
+            }
+            if (cbSFNotExt.Checked) {
+                flags += 2;
+            }
+            if (cbSFNotIntExt.Checked) {
+                flags += 4;
+            }
+            if (cbSFNotUnderwater.Checked) {
+                flags += 8;
+            }
+            if (cbSFNotAboveWater.Checked) {
+                flags += 16;
+            }
+            if (cbSFSunVis.Checked) {
+                flags += 32;
+            }
+            if (cbSFNotSunVis.Checked) {
+                flags += 64;
+            }
 
-            if (parent != null) parent.updateShaderFlags(flags);
+            if (parent != null) {
+                parent.updateShaderFlags(flags);
+            }
 
             this.Close();
         }

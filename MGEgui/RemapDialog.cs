@@ -20,7 +20,7 @@ namespace MGEgui {
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing) {
-            if(disposing && (components != null)) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -84,23 +84,23 @@ namespace MGEgui {
         private Button bCancel;
         private Button bClear;
         #endregion
-        
+
         public byte result;
 
         public RemapDialog() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
-            DialogResult=DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
         }
 
         private void bCancel_Click(object sender, EventArgs e) {
-            DialogResult=DialogResult.Cancel;
+            DialogResult = DialogResult.Cancel;
             Close();
         }
 
         private void bClear_Click(object sender, EventArgs e) {
-            DialogResult=DialogResult.OK;
-            result=0;
+            DialogResult = DialogResult.OK;
+            result = 0;
             Close();
         }
 

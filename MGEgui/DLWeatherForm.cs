@@ -31,15 +31,23 @@ namespace MGEgui {
             defaults = new Dictionary<string, float>();
             LoadSettings();
         }
-        
-        private void LocalizeDefaultButtons(string s)
-        {
-        	foreach(Control c in gbWind.Controls)
-        		if(c is Button) c.Text = s;
-        	foreach(Control c in gbFogDay.Controls)
-        		if(c is Button) c.Text = s;
-        	foreach(Control c in gbFogOffsDay.Controls)
-        		if(c is Button) c.Text = s;
+
+        private void LocalizeDefaultButtons(string s) {
+            foreach (Control c in gbWind.Controls) {
+                if (c is Button) {
+                    c.Text = s;
+                }
+            }
+            foreach (Control c in gbFogDay.Controls) {
+                if (c is Button) {
+                    c.Text = s;
+                }
+            }
+            foreach (Control c in gbFogOffsDay.Controls) {
+                if (c is Button) {
+                    c.Text = s;
+                }
+            }
         }
 
         private const string iniDLWeather = "Distant Land Weather";
@@ -94,35 +102,47 @@ namespace MGEgui {
         private void LoadSettings() {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings);
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = (decimal)iniFile.getKeyValue(ud.Name.Substring(2));
             }
             foreach (Control ctl in this.Controls["gbFogDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = (decimal)iniFile.getKeyValue(ud.Name.Substring(2));
             }
             foreach (Control ctl in this.Controls["gbFogOffsDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = (decimal)iniFile.getKeyValue(ud.Name.Substring(2));
             }
             iniFile = new INIFile("NUL", iniWeatherSettings);
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 string s = ud.Name.Substring(2);
                 defaults.Add(s, (float)iniFile.getKeyValue(s));
             }
             foreach (Control ctl in this.Controls["gbFogDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 string s = ud.Name.Substring(2);
                 defaults.Add(s, (float)iniFile.getKeyValue(s));
             }
             foreach (Control ctl in this.Controls["gbFogOffsDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 string s = ud.Name.Substring(2);
                 defaults.Add(s, (float)iniFile.getKeyValue(s));
@@ -135,31 +155,45 @@ namespace MGEgui {
 
         private void bReset_Click(object sender, EventArgs e) {
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 string s = ud.Name.Substring(2);
-                if (defaults.ContainsKey(s)) ud.Value = udValue(ud, defaults[s]);
+                if (defaults.ContainsKey(s)) {
+                    ud.Value = udValue(ud, defaults[s]);
+                }
             }
             foreach (Control ctl in this.Controls["gbFogDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 string s = ud.Name.Substring(2);
-                if (defaults.ContainsKey(s)) ud.Value = udValue(ud, defaults[s]);
+                if (defaults.ContainsKey(s)) {
+                    ud.Value = udValue(ud, defaults[s]);
+                }
             }
             foreach (Control ctl in this.Controls["gbFogOffsDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 string s = ud.Name.Substring(2);
-                if (defaults.ContainsKey(s)) ud.Value = udValue(ud, defaults[s]);
+                if (defaults.ContainsKey(s)) {
+                    ud.Value = udValue(ud, defaults[s]);
+                }
             }
         }
-    
+
         private void bDefault_Click(object sender, EventArgs e) {
             Control ctl = (Control)sender;
             string s = ctl.Name.Substring(1);
             if (defaults.ContainsKey(s)) {
                 NumericUpDown ud = (NumericUpDown)ctl.Parent.Controls["ud" + s];
-                if (defaults.ContainsKey(s)) ud.Value = udValue(ud, defaults[s]);
+                if (defaults.ContainsKey(s)) {
+                    ud.Value = udValue(ud, defaults[s]);
+                }
             }
         }
 
@@ -167,17 +201,23 @@ namespace MGEgui {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings, true);
             iniFile.initialize();
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 iniFile.setKey(ud.Name.Substring(2), (double)ud.Value);
             }
             foreach (Control ctl in this.Controls["gbFogDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 iniFile.setKey(ud.Name.Substring(2), (double)ud.Value);
             }
             foreach (Control ctl in this.Controls["gbFogOffsDay"].Controls) {
-                if (ctl.Name.Substring(0, 2) != "ud") continue;
+                if (ctl.Name.Substring(0, 2) != "ud") {
+                    continue;
+                }
                 NumericUpDown ud = (NumericUpDown)ctl;
                 iniFile.setKey(ud.Name.Substring(2), (double)ud.Value);
             }

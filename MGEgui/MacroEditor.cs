@@ -2,23 +2,23 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using System.Collections.Generic;
-using ArrayList=System.Collections.ArrayList;
+using ArrayList = System.Collections.ArrayList;
 
 namespace MGEgui {
-    
+
     public class MacroEditorForm : Form {
-#region FormDesigner
+        #region FormDesigner
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components=null;
+        private System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing) {
-            if(disposing&&(components!=null)) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -1204,21 +1204,22 @@ namespace MGEgui {
             // 
             this.cbMacroType.ContextMenu = this.DudMenu;
             this.cbMacroType.Items.AddRange(new object[] {
-                                    "Unused",
-                                    "Console1",
-                                    "Console2",
-                                    "Hammer1",
-                                    "Hammer2",
-                                    "Unhammer",
-                                    "AHammer1",
-                                    "AHammer2",
-                                    "AUnhammer",
-                                    "Press1",
-                                    "Press2",
-                                    "Unpress",
-                                    "Start Trigger",
-                                    "End Trigger",
-                                    "Function"});
+                "Unused",
+                "Console1",
+                "Console2",
+                "Hammer1",
+                "Hammer2",
+                "Unhammer",
+                "AHammer1",
+                "AHammer2",
+                "AUnhammer",
+                "Press1",
+                "Press2",
+                "Unpress",
+                "Start Trigger",
+                "End Trigger",
+                "Function"
+            });
             this.cbMacroType.Location = new System.Drawing.Point(12, 268);
             this.cbMacroType.Name = "cbMacroType";
             this.cbMacroType.Size = new System.Drawing.Size(184, 23);
@@ -1239,7 +1240,8 @@ namespace MGEgui {
             // cbFunction
             // 
             this.cbFunction.Items.AddRange(new object[] {
-                                    "See data source"});
+                "See data source"
+            });
             this.cbFunction.Location = new System.Drawing.Point(12, 295);
             this.cbFunction.Name = "cbFunction";
             this.cbFunction.Size = new System.Drawing.Size(184, 23);
@@ -1259,11 +1261,12 @@ namespace MGEgui {
             // 
             this.cbTrigger.ContextMenu = this.DudMenu;
             this.cbTrigger.Items.AddRange(new object[] {
-                                    "-- trigger--",
-                                    "1",
-                                    "2",
-                                    "3",
-                                    "4"});
+                "-- trigger--",
+                "1",
+                "2",
+                "3",
+                "4"
+            });
             this.cbTrigger.Location = new System.Drawing.Point(308, 270);
             this.cbTrigger.Name = "cbTrigger";
             this.cbTrigger.Size = new System.Drawing.Size(72, 23);
@@ -1773,32 +1776,32 @@ namespace MGEgui {
         private Button b107;
         private Button b108;
         private Button b109;
-#endregion
+        #endregion
         /// <summary>
         /// Which macro is being edited atm, or -1 if in selection mode
         /// </summary>
-        public int Editing=-1;
+        public int Editing = -1;
         public MacroType savedMacroType;
-        public MacroFormType formtype=MacroFormType.Editor;
-        public bool[] Active=new bool[Statics.MACROS];
-        public ArrayList ConsoleCommand=new ArrayList();
+        public MacroFormType formtype = MacroFormType.Editor;
+        public bool[] Active = new bool[Statics.MACROS];
+        public ArrayList ConsoleCommand = new ArrayList();
 
         private List<byte> macroOrdering = new List<byte> {
-        	0, 13, 14, 27, 7, 10, 8, 9, 11, 12, 21, 22, 28, 29, 36, 37, 38,
-        	39, 40, 5, 41, 42, 30, 43, 31, 44, 32, 33, 45, 34, 46, 35, 48,
-        	49, 50, 51, 52, 53
+            0, 13, 14, 27, 7, 10, 8, 9, 11, 12, 21, 22, 28, 29, 36, 37, 38,
+            39, 40, 5, 41, 42, 30, 43, 31, 44, 32, 33, 45, 34, 46, 35, 48,
+            49, 50, 51, 52, 53
         };
         private List<MacroFunc> macroFuncData = new List<MacroFunc>();
         public static Dictionary<string, string> strings = new Dictionary<string, string>();
-        
+
         public MacroEditorForm() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
-            
-            foreach(byte m in macroOrdering) {
-            	macroFuncData.Add(new MacroFunc(m, strings["Macro"+m.ToString("D3")]));
+
+            foreach (byte m in macroOrdering) {
+                macroFuncData.Add(new MacroFunc(m, strings["Macro" + m.ToString("D3")]));
             }
-            
+
             cbFunction.DataSource = macroFuncData;
             cbFunction.DisplayMember = "Description";
             cbFunction.ValueMember = "Id";
@@ -1811,10 +1814,11 @@ namespace MGEgui {
         /// </summary>
         public void ValidateMacros() {
             // Disable macros for deprecated functions
-            foreach(Macro m in Statics.Macros) {
-                if(m.Type == MacroType.Graphics) {
-                    if(!IsValidMacroFunction(m.Graphics.function))
+            foreach (Macro m in Statics.Macros) {
+                if (m.Type == MacroType.Graphics) {
+                    if (!IsValidMacroFunction(m.Graphics.function)) {
                         m.Type = MacroType.Unused;
+                    }
                 }
             }
         }
@@ -1825,32 +1829,33 @@ namespace MGEgui {
         /// </summary>
         /// <param name="Partial">true to not change any form properties</param>
         public void EndMacro() {
-            Text=strings["NormalTitle"];
-            formtype=MacroFormType.Editor;
-            cbFunction.Enabled=false;
-            cbMacroType.Enabled=false;
-            bSave.Enabled=false;
-            bCancel.Enabled=false;
-            rbDown.Enabled=false;
-            rbTap.Enabled=false;
-            rbUp.Enabled=false;
-            tbCDesc.Enabled=false;
-            cbTrigger.Enabled=true;
-            cbFunction.SelectedIndex=0;
-            cbTrigger.SelectedIndex=0;
-            cbTriggerEnabled.Enabled=false;
-            tbTimeDelay.Enabled=false;
-            tbCLen.Text="";
-            bClear.Enabled=false;
+            Text = strings["NormalTitle"];
+            formtype = MacroFormType.Editor;
+            cbFunction.Enabled = false;
+            cbMacroType.Enabled = false;
+            bSave.Enabled = false;
+            bCancel.Enabled = false;
+            rbDown.Enabled = false;
+            rbTap.Enabled = false;
+            rbUp.Enabled = false;
+            tbCDesc.Enabled = false;
+            cbTrigger.Enabled = true;
+            cbFunction.SelectedIndex = 0;
+            cbTrigger.SelectedIndex = 0;
+            cbTriggerEnabled.Enabled = false;
+            tbTimeDelay.Enabled = false;
+            tbCLen.Text = "";
+            bClear.Enabled = false;
             ConsoleCommand.Clear();
-            Editing=-1;
-            foreach(Control c in Controls) {
-                if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
-                    c.Enabled=true;
-                    if(Statics.Macros[GetCode((Button)c)].Type!=MacroType.Unused)
-                        c.BackColor=Color.LightBlue;
-                    else
-                        c.BackColor=SystemColors.Control;
+            Editing = -1;
+            foreach (Control c in Controls) {
+                if (c is Button && c.Name.StartsWith("b") && (c.Name.Length == 3 || c.Name.Length == 4)) {
+                    c.Enabled = true;
+                    if (Statics.Macros[GetCode((Button)c)].Type != MacroType.Unused) {
+                        c.BackColor = Color.LightBlue;
+                    } else {
+                        c.BackColor = SystemColors.Control;
+                    }
                 }
             }
         }
@@ -1860,266 +1865,310 @@ namespace MGEgui {
         /// </summary>
         /// <param name="Code">The macro to start editing</param>
         public void StartMacro(int Code) {
-            Text=strings["EditModeTitle"]+" 0x"+Code.ToString("x");
-            Editing=Code;
-            Active=new bool[Statics.MACROS];
-            Array.Copy(Statics.Macros[Code].Press.KeyStates,Active,Statics.MACROS);
+            Text = strings["EditModeTitle"] + " 0x" + Code.ToString("x");
+            Editing = Code;
+            Active = new bool[Statics.MACROS];
+            Array.Copy(Statics.Macros[Code].Press.KeyStates, Active, Statics.MACROS);
             ConsoleCommand.Clear();
-            for(int i=0;i<Statics.Macros[Code].Console.Length;i++) {
+            for (int i = 0; i < Statics.Macros[Code].Console.Length; i++) {
                 ConsoleCommand.Add(Statics.Macros[Code].Console.KeyCodes[i]);
             }
-            tbCLen.Text=ConsoleCommand.Count.ToString();
-            tbCDesc.Text=Statics.Macros[Code].Console.Description;
-            cbFunction.SelectedValue=Statics.Macros[Code].Graphics.function;
-            cbTriggerEnabled.Enabled=false;
-            tbTimeDelay.Enabled=false;
-            switch(Statics.Macros[Code].Type) {
-                case MacroType.Console1:case MacroType.Console2:
-                    formtype=MacroFormType.Console;
+            tbCLen.Text = ConsoleCommand.Count.ToString();
+            tbCDesc.Text = Statics.Macros[Code].Console.Description;
+            cbFunction.SelectedValue = Statics.Macros[Code].Graphics.function;
+            cbTriggerEnabled.Enabled = false;
+            tbTimeDelay.Enabled = false;
+            switch (Statics.Macros[Code].Type) {
+                case MacroType.Console1:
+                case MacroType.Console2:
+                    formtype = MacroFormType.Console;
                     break;
-                case MacroType.Hammer1:case MacroType.Hammer2:case MacroType.Unhammer:
-                case MacroType.AHammer1:case MacroType.AHammer2:case MacroType.AUnhammer:
-                case MacroType.Press1:case MacroType.Press2:case MacroType.Unpress:
-                    formtype=MacroFormType.Press;
+                case MacroType.Hammer1:
+                case MacroType.Hammer2:
+                case MacroType.Unhammer:
+                case MacroType.AHammer1:
+                case MacroType.AHammer2:
+                case MacroType.AUnhammer:
+                case MacroType.Press1:
+                case MacroType.Press2:
+                case MacroType.Unpress:
+                    formtype = MacroFormType.Press;
                     break;
-                case MacroType.BeginTimer:case MacroType.EndTimer:
-                    formtype=MacroFormType.Timer;
+                case MacroType.BeginTimer:
+                case MacroType.EndTimer:
+                    formtype = MacroFormType.Timer;
                     break;
                 case MacroType.Graphics:
-                    formtype=MacroFormType.Function;
+                    formtype = MacroFormType.Function;
                     break;
                 default:
-                    formtype=MacroFormType.Unknown;
+                    formtype = MacroFormType.Unknown;
                     break;
             }
-            //Have to put this down here, or it causes all sorts of problems
-            cbTrigger.SelectedIndex=Statics.Macros[Code].Timer.TimerID+1;
-            bSave.Enabled=true;
-            bCancel.Enabled=true;
-            cbMacroType.Enabled=true;
-            tbTimeDelay.Enabled=false;
-            cbMacroType.SelectedIndex=(int)Statics.Macros[Code].Type;
+            // Have to put this down here, or it causes all sorts of problems
+            cbTrigger.SelectedIndex = Statics.Macros[Code].Timer.TimerID + 1;
+            bSave.Enabled = true;
+            bCancel.Enabled = true;
+            cbMacroType.Enabled = true;
+            tbTimeDelay.Enabled = false;
+            cbMacroType.SelectedIndex = (int)Statics.Macros[Code].Type;
 
-            if(formtype==MacroFormType.Console||formtype==MacroFormType.Press||formtype==MacroFormType.Trigger) {
-                foreach(Control c in Controls) {
-                    if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
-                        int i=GetCode((Button)c);
-                        if(formtype==MacroFormType.Console) {
-                            c.BackColor=SystemColors.Control;
-                            if(i<256) { c.Enabled=true; } else { c.Enabled=false; }
+            if (formtype == MacroFormType.Console || formtype == MacroFormType.Press || formtype == MacroFormType.Trigger) {
+                foreach (Control c in Controls) {
+                    if (c is Button && c.Name.StartsWith("b") && (c.Name.Length == 3 || c.Name.Length == 4)) {
+                        int i = GetCode((Button)c);
+                        if (formtype == MacroFormType.Console) {
+                            c.BackColor = SystemColors.Control;
+                            if (i < 256) {
+                                c.Enabled = true;
+                            } else {
+                                c.Enabled = false;
+                            }
                         } else {
-                            if(i<264) { c.Enabled=true; } else { c.Enabled=false; }
-                            if(Active[GetCode((Button)c)])
-                                c.BackColor=Color.LightBlue;
-                            else
-                                c.BackColor=SystemColors.Control;
+                            if (i < 264) {
+                                c.Enabled = true;
+                            } else {
+                                c.Enabled = false;
+                            }
+                            if (Active[GetCode((Button)c)]) {
+                                c.BackColor = Color.LightBlue;
+                            } else {
+                                c.BackColor = SystemColors.Control;
+                            }
                         }
                     }
-                    
+
                 }
             } else {
-                foreach(Control c in Controls) {
-                    if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
-                        c.Enabled=false;
-                        c.BackColor=SystemColors.Control;
+                foreach (Control c in Controls) {
+                    if (c is Button && c.Name.StartsWith("b") && (c.Name.Length == 3 || c.Name.Length == 4)) {
+                        c.Enabled = false;
+                        c.BackColor = SystemColors.Control;
                     }
                 }
             }
-            if(formtype==MacroFormType.Console) {
-                rbDown.Enabled=true;
-                rbTap.Enabled=true;
-                rbUp.Enabled=true;
-                rbTap.Checked=true;
-                tbCDesc.Enabled=true;
-                bClear.Enabled=true;
+            if (formtype == MacroFormType.Console) {
+                rbDown.Enabled = true;
+                rbTap.Enabled = true;
+                rbUp.Enabled = true;
+                rbTap.Checked = true;
+                tbCDesc.Enabled = true;
+                bClear.Enabled = true;
             } else {
-                rbDown.Enabled=false;
-                rbTap.Enabled=false;
-                rbUp.Enabled=false;
-                tbCDesc.Enabled=false;
-                bClear.Enabled=false;
+                rbDown.Enabled = false;
+                rbTap.Enabled = false;
+                rbUp.Enabled = false;
+                tbCDesc.Enabled = false;
+                bClear.Enabled = false;
             }
-            if(formtype==MacroFormType.Function) {
-                cbFunction.Enabled=true;
+            if (formtype == MacroFormType.Function) {
+                cbFunction.Enabled = true;
             } else {
-                cbFunction.Enabled=false;
+                cbFunction.Enabled = false;
             }
-            if(formtype==MacroFormType.Timer) {
-                cbTrigger.Enabled=true;
+            if (formtype == MacroFormType.Timer) {
+                cbTrigger.Enabled = true;
             } else {
-                cbTrigger.Enabled=false;
+                cbTrigger.Enabled = false;
             }
         }
 
         private void StartTrigger(int Code) {
-            Editing=Code;
-            Text="Editing trigger "+Code.ToString();
-            formtype=MacroFormType.Trigger;
-            //Same as EndMacro() so probably not needed
-            cbFunction.Enabled=false;
-            cbMacroType.Enabled=false;
-            rbDown.Enabled=false;
-            rbTap.Enabled=false;
-            rbUp.Enabled=false;
-            tbCDesc.Enabled=false;
-            tbCLen.Text="";
-            //Changes
-            bSave.Enabled=true;
-            bCancel.Enabled=true;
-            cbTrigger.Enabled=false;
-            tbTimeDelay.Enabled=true;
-            cbTriggerEnabled.Enabled=true;
-            //Set up initial data
-            Array.Copy(Statics.Triggers[Code].data.KeyStates,Active,Statics.MACROS);
-            tbTimeDelay.Text=Statics.Triggers[Code].TimeInterval.ToString();
-            cbTriggerEnabled.Checked=Statics.Triggers[Code].Active;
-            //Setup the buttons
-            foreach(Control c in Controls) {
-                if(c is Button&&c.Name.StartsWith("b")&&(c.Name.Length==3||c.Name.Length==4)) {
-                    if(GetCode((Button)c)<264) {c.Enabled=true;} else {c.Enabled=false;}
-                    if(Active[GetCode((Button)c)])
-                        c.BackColor=Color.LightBlue;
-                    else
-                        c.BackColor=SystemColors.Control;
+            Editing = Code;
+            Text = "Editing trigger " + Code.ToString();
+            formtype = MacroFormType.Trigger;
+            // Same as EndMacro() so probably not needed
+            cbFunction.Enabled = false;
+            cbMacroType.Enabled = false;
+            rbDown.Enabled = false;
+            rbTap.Enabled = false;
+            rbUp.Enabled = false;
+            tbCDesc.Enabled = false;
+            tbCLen.Text = "";
+            // Changes
+            bSave.Enabled = true;
+            bCancel.Enabled = true;
+            cbTrigger.Enabled = false;
+            tbTimeDelay.Enabled = true;
+            cbTriggerEnabled.Enabled = true;
+            // Set up initial data
+            Array.Copy(Statics.Triggers[Code].data.KeyStates, Active, Statics.MACROS);
+            tbTimeDelay.Text = Statics.Triggers[Code].TimeInterval.ToString();
+            cbTriggerEnabled.Checked = Statics.Triggers[Code].Active;
+            // Setup the buttons
+            foreach (Control c in Controls) {
+                if (c is Button && c.Name.StartsWith("b") && (c.Name.Length == 3 || c.Name.Length == 4)) {
+                    if (GetCode((Button)c) < 264) {
+                        c.Enabled = true;
+                    } else {
+                        c.Enabled = false;
+                    }
+                    if (Active[GetCode((Button)c)]) {
+                        c.BackColor = Color.LightBlue;
+                    } else {
+                        c.BackColor = SystemColors.Control;
+                    }
                 }
             }
         }
 
         private Button GetButton(byte code) {
-            foreach(Button b in this.Controls) {
-                if(b.Name=="b"+code.ToString("x")) return b;
+            foreach (Button b in this.Controls) {
+                if (b.Name == "b" + code.ToString("x")) {
+                    return b;
+                }
             }
             return null;
         }
 
         private int GetCode(Button b) {
-            return Convert.ToInt32(b.Name.Remove(0,1),16);
+            return Convert.ToInt32(b.Name.Remove(0, 1), 16);
         }
 
-        private void Keyboard_Click(object sender,EventArgs e) {
-            Button button=(Button)sender;
-            switch(formtype) {
+        private void Keyboard_Click(object sender, EventArgs e) {
+            Button button = (Button)sender;
+            switch (formtype) {
                 case MacroFormType.Editor:
                     // Select function type for new macros, the most commonly used type
                     savedMacroType = Statics.Macros[GetCode(button)].Type;
-                    if(savedMacroType == MacroType.Unused)
+                    if (savedMacroType == MacroType.Unused) {
                         Statics.Macros[GetCode(button)].Type = MacroType.Graphics;
+                    }
                     StartMacro(GetCode(button));
                     return;
-                case MacroFormType.Press:case MacroFormType.Trigger:
-                    Active[GetCode(button)]=!Active[GetCode(button)];
-                    if(Active[GetCode(button)])
-                        button.BackColor=Color.LightBlue;
-                    else
-                        button.BackColor=SystemColors.Control;
+                case MacroFormType.Press:
+                case MacroFormType.Trigger:
+                    Active[GetCode(button)] = !Active[GetCode(button)];
+                    if (Active[GetCode(button)]) {
+                        button.BackColor = Color.LightBlue;
+                    } else {
+                        button.BackColor = SystemColors.Control;
+                    }
                     return;
                 case MacroFormType.Console:
-                    if(ConsoleCommand.Count>=255) {
-                    	MessageBox.Show(strings["CommandLengthExceeded"],Statics.strings["Error"]);
+                    if (ConsoleCommand.Count >= 255) {
+                        MessageBox.Show(strings["CommandLengthExceeded"], Statics.strings["Error"]);
                         break;
                     }
-                    if(rbDown.Checked) {
-                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button),true));
-                    } else if(rbUp.Checked) {
-                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button),false));
+                    if (rbDown.Checked) {
+                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button), true));
+                    } else if (rbUp.Checked) {
+                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button), false));
                     } else {
-                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button),true));
-                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button),false));
+                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button), true));
+                        ConsoleCommand.Add(new KeyPress((byte)GetCode(button), false));
                     }
-                    tbCLen.Text=ConsoleCommand.Count.ToString();
+                    tbCLen.Text = ConsoleCommand.Count.ToString();
                     return;
                 default:
-                    MessageBox.Show(strings["KeyboardError"],Statics.strings["Error"]);
+                    MessageBox.Show(strings["KeyboardError"], Statics.strings["Error"]);
                     return;
             }
         }
 
-        private void IgnoreKeypress(object sender,KeyPressEventArgs e) {
-            e.Handled=true;
+        private void IgnoreKeypress(object sender, KeyPressEventArgs e) {
+            e.Handled = true;
         }
 
         private void MacroEditorForm_Closing(object sender, FormClosingEventArgs e) {
-            if(Editing != -1)
+            if (Editing != -1) {
                 Statics.Macros[Editing].Type = savedMacroType;
+            }
         }
-        
-        private void bCancel_Click(object sender,EventArgs e) {
+
+        private void bCancel_Click(object sender, EventArgs e) {
             Statics.Macros[Editing].Type = savedMacroType;            
             EndMacro();
         }
 
-        private void bSave_Click(object sender,EventArgs e) {
-            if(formtype==MacroFormType.Trigger) {
-                Array.Copy(Active,Statics.Triggers[Editing].data.KeyStates,Statics.MACROS);
+        private void bSave_Click(object sender, EventArgs e) {
+            if (formtype == MacroFormType.Trigger) {
+                Array.Copy(Active, Statics.Triggers[Editing].data.KeyStates, Statics.MACROS);
                 try {
-                    Statics.Triggers[Editing].TimeInterval=Convert.ToUInt32(tbTimeDelay.Text);
+                    Statics.Triggers[Editing].TimeInterval = Convert.ToUInt32(tbTimeDelay.Text);
                 } catch {
-                    Statics.Triggers[Editing].TimeInterval=10;
+                    Statics.Triggers[Editing].TimeInterval = 10;
                 }
-                Statics.Triggers[Editing].Active=cbTriggerEnabled.Checked;
+                Statics.Triggers[Editing].Active = cbTriggerEnabled.Checked;
             } else {
                 ConsoleCommand.CopyTo(Statics.Macros[Editing].Console.KeyCodes);
-                Statics.Macros[Editing].Console.Length=(byte)ConsoleCommand.Count;
-                Statics.Macros[Editing].Console.Description=tbCDesc.Text;
-                Array.Copy(Active,Statics.Macros[Editing].Press.KeyStates,Statics.MACROS);
-                Statics.Macros[Editing].Graphics.function=(byte)cbFunction.SelectedValue;
-                if(cbTrigger.SelectedIndex>0) {
-                    Statics.Macros[Editing].Timer.TimerID=(byte)(cbTrigger.SelectedIndex-1);
+                Statics.Macros[Editing].Console.Length = (byte)ConsoleCommand.Count;
+                Statics.Macros[Editing].Console.Description = tbCDesc.Text;
+                Array.Copy(Active, Statics.Macros[Editing].Press.KeyStates, Statics.MACROS);
+                Statics.Macros[Editing].Graphics.function = (byte)cbFunction.SelectedValue;
+                if (cbTrigger.SelectedIndex > 0) {
+                    Statics.Macros[Editing].Timer.TimerID = (byte)(cbTrigger.SelectedIndex - 1);
                 } else {
-                    Statics.Macros[Editing].Timer.TimerID=0;
+                    Statics.Macros[Editing].Timer.TimerID = 0;
                 }
             }
             EndMacro();
         }
 
-        private void cbMacroType_SelectedIndexChanged(object sender,EventArgs e) {
-        	if(Editing == -1) return;
-            int i=Editing;
-            Statics.Macros[i].Type=(MacroType)(cbMacroType.SelectedIndex);
+        private void cbMacroType_SelectedIndexChanged(object sender, EventArgs e) {
+            if (Editing == -1) {
+                return;
+            }
+            int i = Editing;
+            Statics.Macros[i].Type = (MacroType)(cbMacroType.SelectedIndex);
             StartMacro(i);
         }
 
-        private void bClear_Click(object sender,EventArgs e) {
+        private void bClear_Click(object sender, EventArgs e) {
             ConsoleCommand.Clear();
-            tbCDesc.Text="";
-            tbCLen.Text="0";
+            tbCDesc.Text = "";
+            tbCLen.Text = "0";
         }
 
-        private void cbTrigger_SelectedIndexChanged(object sender,EventArgs e) {
-            if(cbTrigger.SelectedIndex==0) return;
-            if(formtype==MacroFormType.Editor) {
-                StartTrigger(cbTrigger.SelectedIndex-1);
+        private void cbTrigger_SelectedIndexChanged(object sender, EventArgs e) {
+            if (cbTrigger.SelectedIndex == 0) {
+                return;
+            }
+            if (formtype == MacroFormType.Editor) {
+                StartTrigger(cbTrigger.SelectedIndex - 1);
             }
         }
 
-        private void NumKeysOnly(object sender,KeyPressEventArgs e) {
-            switch(e.KeyChar) {
+        private void NumKeysOnly(object sender, KeyPressEventArgs e) {
+            switch (e.KeyChar) {
                 case '\b':
-                case '0':case '1':case '2':case '3':case '4':case '5':case '6':case '7':case '8':case '9':
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
                     return;
                 default:
-                    e.Handled=true;
+                    e.Handled = true;
                     return;
             }
         }
 
-        private struct MacroFunc
-        {
+        private struct MacroFunc {
             private byte id;
             private string description;
-            
-            public MacroFunc(byte i, string d) { id = i; description = d; }
+
+            public MacroFunc(byte i, string d) {
+                id = i;
+                description = d;
+            }
             public byte Id { get { return id; } }
             public string Description { get { return description; } }
         }
-        
-        private bool IsValidMacroFunction(byte f)
-        {
-            foreach(MacroFunc mf in macroFuncData) {
-                if(f == mf.Id) return true;
+
+        private bool IsValidMacroFunction(byte f) {
+            foreach (MacroFunc mf in macroFuncData) {
+                if (f == mf.Id) {
+                    return true;
+                }
             }
             return false;
         }
-        
+
     }
 }

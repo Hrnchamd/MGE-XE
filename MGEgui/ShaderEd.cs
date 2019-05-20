@@ -3,23 +3,23 @@ using System.Windows.Forms;
 using System.IO;
 using System.ComponentModel;
 using System.Collections.Generic;
-using ArrayList=System.Collections.ArrayList;
+using ArrayList = System.Collections.ArrayList;
 using System.Text.RegularExpressions;
 
 namespace MGEgui {
     public class ShaderEditorForm : Form {
-#region form designer stuff
+        #region form designer stuff
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        private System.ComponentModel.IContainer components=null;
+        private System.ComponentModel.IContainer components = null;
 
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing) {
-            if(disposing&&(components!=null)) {
+            if (disposing && (components != null)) {
                 components.Dispose();
             }
             base.Dispose(disposing);
@@ -193,10 +193,11 @@ namespace MGEgui {
             this.FileToolStrip.CanOverflow = false;
             this.FileToolStrip.ImageScalingSize = new System.Drawing.Size(22, 22);
             this.FileToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                                    this.bShaderNew,
-                                    this.bShaderOpen,
-                                    this.bShaderSave,
-                                    this.bShaderSaveAs});
+                this.bShaderNew,
+                this.bShaderOpen,
+                this.bShaderSave,
+                this.bShaderSaveAs
+            });
             this.FileToolStrip.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.HorizontalStackWithOverflow;
             this.FileToolStrip.Location = new System.Drawing.Point(0, 24);
             this.FileToolStrip.Name = "FileToolStrip";
@@ -264,8 +265,9 @@ namespace MGEgui {
             // 
             this.MenuStrip.GripMargin = new System.Windows.Forms.Padding(0);
             this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                                    this.fileToolStripMenuItem,
-                                    this.editToolStripMenuItem});
+                this.fileToolStripMenuItem,
+                this.editToolStripMenuItem
+            });
             this.MenuStrip.Location = new System.Drawing.Point(0, 0);
             this.MenuStrip.Name = "MenuStrip";
             this.MenuStrip.Padding = new System.Windows.Forms.Padding(0);
@@ -277,13 +279,14 @@ namespace MGEgui {
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                                    this.newToolStripMenuItem,
-                                    this.openToolStripMenuItem,
-                                    this.toolStripSeparator,
-                                    this.saveToolStripMenuItem,
-                                    this.saveAsToolStripMenuItem,
-                                    this.toolStripSeparator2,
-                                    this.exitToolStripMenuItem});
+                this.newToolStripMenuItem,
+                this.openToolStripMenuItem,
+                this.toolStripSeparator,
+                this.saveToolStripMenuItem,
+                this.saveAsToolStripMenuItem,
+                this.toolStripSeparator2,
+                this.exitToolStripMenuItem
+            });
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
             this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 24);
             this.fileToolStripMenuItem.Text = "&File";
@@ -327,8 +330,8 @@ namespace MGEgui {
             // 
             this.saveAsToolStripMenuItem.Image = ((System.Drawing.Image)(resources.GetObject("saveAsToolStripMenuItem.Image")));
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift) 
-                                    | System.Windows.Forms.Keys.S)));
+            this.saveAsToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+            | System.Windows.Forms.Keys.S)));
             this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
             this.saveAsToolStripMenuItem.Text = "Save &As";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.bShaderSaveAs_Click);
@@ -348,14 +351,15 @@ namespace MGEgui {
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-                                    this.undoToolStripMenuItem,
-                                    this.redoToolStripMenuItem,
-                                    this.toolStripSeparator3,
-                                    this.cutToolStripMenuItem,
-                                    this.copyToolStripMenuItem,
-                                    this.pasteToolStripMenuItem,
-                                    this.toolStripSeparator4,
-                                    this.selectAllToolStripMenuItem});
+                this.undoToolStripMenuItem,
+                this.redoToolStripMenuItem,
+                this.toolStripSeparator3,
+                this.cutToolStripMenuItem,
+                this.copyToolStripMenuItem,
+                this.pasteToolStripMenuItem,
+                this.toolStripSeparator4,
+                this.selectAllToolStripMenuItem
+            });
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
             this.editToolStripMenuItem.Size = new System.Drawing.Size(39, 24);
             this.editToolStripMenuItem.Text = "&Edit";
@@ -426,9 +430,9 @@ namespace MGEgui {
             // 
             // tableLayoutPanel1
             // 
-            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-                                    | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tableLayoutPanel1.ColumnCount = 1;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutPanel1.Controls.Add(this.tbMessage, 0, 2);
@@ -445,8 +449,8 @@ namespace MGEgui {
             // 
             // flowLayoutPanel1
             // 
-            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel1.Controls.Add(this.bValidate);
             this.flowLayoutPanel1.Controls.Add(this.bPreview);
             this.flowLayoutPanel1.Controls.Add(this.bPreviewChain);
@@ -458,8 +462,8 @@ namespace MGEgui {
             // 
             // flowLayoutPanel2
             // 
-            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.flowLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.flowLayoutPanel2.Controls.Add(this.bSetDepthImage);
             this.flowLayoutPanel2.Controls.Add(this.bSetImage);
             this.flowLayoutPanel2.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
@@ -540,21 +544,25 @@ namespace MGEgui {
         private ToolStripMenuItem pasteToolStripMenuItem;
         private ToolStripSeparator toolStripSeparator4;
         private ToolStripMenuItem selectAllToolStripMenuItem;
-#endregion
+        #endregion
 
         private string FramePath = null;
         private string DepthPath = null;
         private string FullFileName = null;
         private string EditingName = null;
         private bool ShaderModified = false;
-        
+
         public static Dictionary<string, string> strings = new Dictionary<string, string>();
 
         public ShaderEditorForm(string shaderfile) {
             InitializeComponent();
             Statics.Localizations.Apply(this);
-            Statics.Localizations.ApplyDialogs(this, new string[] { "OpenImage", "OpenShader", "SaveShader" });
-            
+            Statics.Localizations.ApplyDialogs(this, new string[] {
+                "OpenImage",
+                "OpenShader",
+                "SaveShader"
+            });
+
             // High DPI aware resizing of 22x22 icons
             using (var g = this.CreateGraphics()) {
                 double scale = Math.Max(g.DpiX, g.DpiY) / 96.0;
@@ -565,30 +573,32 @@ namespace MGEgui {
                 this.FileToolStrip.AutoSize = true;
                 this.FileToolStrip.PerformLayout();
             }
-            
+
             this.OpenImage.InitialDirectory = Statics.runDir + @"\mge3";
             this.OpenShader.InitialDirectory = this.SaveShader.InitialDirectory = Statics.runDir + @"\" + Statics.pathShaders;
             EditingName = strings["NewFile"];
 
-            if(shaderfile != null)
-            {
+            if (shaderfile != null) {
                 FullFileName = shaderfile;
                 EditingName = shaderfile.Substring(FullFileName.LastIndexOf('\\') + 1);
-                
+
                 StreamReader sr = new StreamReader(File.OpenRead(FullFileName));
-                rtbTechnique.Text = sr.ReadToEnd().Trim(new char[] { '\n', '\r' });
+                rtbTechnique.Text = sr.ReadToEnd().Trim(new char[] {
+                    '\n',
+                    '\r'
+                });
                 sr.Close();
-    
+
                 ShaderModified = false;
             }
-            
+
             this.Text = EditingName + " - " + strings["ShaderEditor"];
         }
 
-        private bool Validate(IntPtr handle,bool Render) {
+        private bool Validate(IntPtr handle, bool Render) {
             tbMessage.Text = strings["Compiling"];
             tbMessage.Refresh();
-            bool result=false;
+            bool result = false;
 
             string error = null;
 
@@ -608,9 +618,9 @@ namespace MGEgui {
                 error = DirectX.Shaders.CompileShader(Render, FramePath, DepthPath, FullFileName);
             }
 
-            if(error==null) {
+            if (error == null) {
                 tbMessage.Text = strings["CompileSuccess"];
-                result=true;
+                result = true;
             } else {
                 tbMessage.Text = error;
             }
@@ -626,7 +636,7 @@ namespace MGEgui {
         private void bPreview_Click(object sender, EventArgs e) {
             RenderWindow rw = new RenderWindow();
             DirectX.DXMain.CreateDevice(RenderWindow.panel);
-            if(Validate(RenderWindow.panel.Handle,true)) {
+            if (Validate(RenderWindow.panel.Handle, true)) {
                 rw.ShowDialog();
             }
             rw.Close();
@@ -638,12 +648,12 @@ namespace MGEgui {
         }
 
         private void IgnoreKeyPress(object sender, KeyPressEventArgs e) {
-            e.Handled=true;
+            e.Handled = true;
         }
 
         private void bSetImage_Click(object sender, EventArgs e) {
             OpenImage.FileName = (FramePath == null) ? Statics.runDir + @"\mge3\preview_frame.dds" : FramePath;
-            if(OpenImage.ShowDialog() == DialogResult.OK) {
+            if (OpenImage.ShowDialog() == DialogResult.OK) {
                 FramePath = OpenImage.FileName;
             }
         }
@@ -656,13 +666,13 @@ namespace MGEgui {
         }
 
         private void bPreviewChain_Click(object sender, EventArgs e) {
-            RenderWindow rw=new RenderWindow();
+            RenderWindow rw = new RenderWindow();
             DirectX.DXMain.CreateDevice(RenderWindow.panel);
-            string error=DirectX.Shaders.PreviewShaderChain(FramePath, DepthPath);
-            if(error==null) {
+            string error = DirectX.Shaders.PreviewShaderChain(FramePath, DepthPath);
+            if (error == null) {
                 rw.ShowDialog();
             } else {
-                MessageBox.Show(strings["PreviewChainError"]+"\n"+error, Statics.strings["Error"]);
+                MessageBox.Show(strings["PreviewChainError"] + "\n" + error, Statics.strings["Error"]);
             }
             rw.Close();
             DirectX.DXMain.CloseDevice();
@@ -677,7 +687,7 @@ namespace MGEgui {
             }
             return res;
         }
-        
+
         private void saveShader() {
             if (FullFileName == null) {
                 saveShaderAs();
@@ -690,14 +700,17 @@ namespace MGEgui {
             ShaderModified = false;
             this.Text = EditingName + " - " + strings["ShaderEditor"];
         }
-        
+
         private void bShaderNew_Click(object sender, EventArgs e) {
             if (ShaderModified) {
                 DialogResult res = MessageBox.Show(strings["SavePrompt"], strings["Save"], MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                if (res == DialogResult.Cancel) return;
-                else if (res == DialogResult.Yes) {
+                if (res == DialogResult.Cancel) {
+                    return;
+                } else if (res == DialogResult.Yes) {
                     if (FullFileName == null) {
-                        if (saveShaderAs() != DialogResult.OK) return;
+                        if (saveShaderAs() != DialogResult.OK) {
+                            return;
+                        }
                     } else {
                         saveShader();
                     }
@@ -715,10 +728,13 @@ namespace MGEgui {
         private void bShaderOpen_Click(object sender, EventArgs e) {
             if (ShaderModified) {
                 DialogResult res = MessageBox.Show(strings["SavePrompt"], strings["Save"], MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-                if (res == DialogResult.Cancel) return;
-                else if (res == DialogResult.Yes) {
+                if (res == DialogResult.Cancel) {
+                    return;
+                } else if (res == DialogResult.Yes) {
                     if (FullFileName == null) {
-                        if (saveShaderAs() != DialogResult.OK) return;
+                        if (saveShaderAs() != DialogResult.OK) {
+                            return;
+                        }
                     } else {
                         saveShader();
                     }
@@ -730,7 +746,10 @@ namespace MGEgui {
                 this.Text = EditingName + " - " + strings["ShaderEditor"];
 
                 StreamReader sr = new StreamReader(File.OpenRead(FullFileName));
-                rtbTechnique.Text = sr.ReadToEnd().Trim(new char[] { '\n', '\r' });
+                rtbTechnique.Text = sr.ReadToEnd().Trim(new char[] {
+                    '\n',
+                    '\r'
+                });
                 sr.Close();
 
                 ShaderModified = false;
@@ -779,9 +798,9 @@ namespace MGEgui {
         }
 
         private void bShaderFlags_Click(object sender, EventArgs e) {
-            //read current shader flags from code
+            // read current shader flags from code
             UInt32 flags = 0;
-            Match m = Regex.Match(rtbTechnique.Text, @".*int[ \t]*mgeflags[ \t]*=[ \t]*[0-9]*.*", RegexOptions.IgnoreCase);//RegexOptions.Singleline | 
+            Match m = Regex.Match(rtbTechnique.Text, @".*int[ \t]*mgeflags[ \t]*=[ \t]*[0-9]*.*", RegexOptions.IgnoreCase); // RegexOptions.Singleline | 
             if (m.Success) {
                 try {
                     flags = Convert.ToUInt32(Regex.Replace(m.ToString(), @".*int[ \t]*mgeflags[ \t]*=[ \t]*([0-9]*).*", @"$1", RegexOptions.IgnoreCase));
@@ -796,22 +815,22 @@ namespace MGEgui {
             shfled.ShowDialog();
             shfled.Dispose();
         }
-        
-        //Shader flags
-        //#define SFLAG_NOTINTERIOR        1
-        //#define SFLAG_NOTEXTERIOR        2
-        //#define SFLAG_NOTINTEXT        4
-        //#define SFLAG_NOTUNDERWATER    8
-        //#define SFLAG_NOTABOVEWATER    16
-        //#define SFLAG_SUNVIS            32
-        //#define SFLAG_NOTSUNVIS        64
+
+        // Shader flags
+        // #define SFLAG_NOTINTERIOR      1
+        // #define SFLAG_NOTEXTERIOR      2
+        // #define SFLAG_NOTINTEXT        4
+        // #define SFLAG_NOTUNDERWATER    8
+        // #define SFLAG_NOTABOVEWATER    16
+        // #define SFLAG_SUNVIS           32
+        // #define SFLAG_NOTSUNVIS        64
         public void updateShaderFlags(int flags) {
-            //Find "int mgeflags = xx" expression in code and replace it with the new shader flags
+            // Find "int mgeflags = xx" expression in code and replace it with the new shader flags
             Match m = Regex.Match(rtbTechnique.Text, @"int[ \t]*mgeflags[ \t]*=[ \t]*([0-9]*)", RegexOptions.IgnoreCase);
             if (m.Success) {
                 rtbTechnique.Text = Regex.Replace(rtbTechnique.Text, @"int[ \t]*mgeflags[ \t]*=[ \t]*([0-9]*)", @"int mgeflags = " + flags.ToString(), RegexOptions.IgnoreCase);
             } else {
-                //if the expression was not found, add a new line
+                // if the expression was not found, add a new line
                 rtbTechnique.Text = "int mgeflags = " + flags.ToString() + ";" + Environment.NewLine + rtbTechnique.Text;
             }
         }
@@ -845,8 +864,7 @@ namespace MGEgui {
         }
 
         private void rtbTechnique_KeyPress(object sender, KeyPressEventArgs e) {
-            if(e.KeyChar == '\t')
-            {
+            if (e.KeyChar == '\t') {
                 rtbTechnique.SelectedText = "    ";
                 e.Handled = true;
             }
