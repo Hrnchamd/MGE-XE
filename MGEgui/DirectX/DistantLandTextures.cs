@@ -891,33 +891,35 @@ namespace MGEgui.DirectX {
             DXMain.device.Clear(ClearFlags.Target, 0, 0.0f, 0);
         }
 
-        public void FinishCompressed(string path, bool twoStep) {
-            if (twoStep) {
-                Surface tmp = UncompressedTex.GetSurfaceLevel(0);
-                Surface.FromSurface(tmp, RenderTarget, Filter.None, 0);
+        public void FinishCompressed(string path, bool isSRGB) {
+            Surface tmp = UncompressedTex.GetSurfaceLevel(0);
+            Surface.FromSurface(tmp, RenderTarget, Filter.None, 0);
+            tmp.Dispose();
 
-                Surface output = CompressedTex.GetSurfaceLevel(0);
-                Surface.FromSurface(output, tmp, Filter.None, 0);
-                tmp.Dispose();
+            // Generate mips
+            Filter filter = Filter.Triangle | (isSRGB ? Filter.Srgb : 0);
+            UncompressedTex.FilterTexture(0, filter);
 
-                CompressedTex.FilterTexture(0, Filter.Box);
-                Texture.ToFile(CompressedTex, path, ImageFileFormat.Dds);
-                output.Dispose();
-            } else {
-                Surface output = CompressedTex.GetSurfaceLevel(0);
-                Surface.FromSurface(output, RenderTarget, Filter.None, 0);
-                CompressedTex.FilterTexture(0, Filter.Box);
-                Texture.ToFile(CompressedTex, path, ImageFileFormat.Dds);
-                output.Dispose();
+            // Compress mips
+            for (int i = 0; i < CompressedTex.LevelCount; i++) {
+                Surface dest = CompressedTex.GetSurfaceLevel(i);
+                Surface src = UncompressedTex.GetSurfaceLevel(i);
+                Surface.FromSurface(dest, src, Filter.None, 0);
             }
+
+            Texture.ToFile(CompressedTex, path, ImageFileFormat.Dds);
         }
 
-        public void FinishUncompressed(string path) {
-            Surface output = UncompressedTex.GetSurfaceLevel(0);
-            Surface.FromSurface(output, RenderTarget, Filter.None, 0);
-            UncompressedTex.FilterTexture(0, Filter.Box);
+        public void FinishUncompressed(string path, bool isSRGB) {
+            Surface tmp = UncompressedTex.GetSurfaceLevel(0);
+            Surface.FromSurface(tmp, RenderTarget, Filter.None, 0);
+            tmp.Dispose();
+
+            // Generate mips
+            Filter filter = Filter.Triangle | (isSRGB ? Filter.Srgb : 0);
+            UncompressedTex.FilterTexture(0, filter);
+
             Texture.ToFile(UncompressedTex, path, ImageFileFormat.Dds);
-            output.Dispose();
         }
 
         public void Dispose() {

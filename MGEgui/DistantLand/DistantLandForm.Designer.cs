@@ -212,6 +212,7 @@ namespace MGEgui.DistantLand {
             this.clbPlugsModList.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
                                     | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.clbPlugsModList.CheckOnClick = true;
             this.clbPlugsModList.ContextMenuStrip = this.DudMenu;
             this.clbPlugsModList.FormattingEnabled = true;
             this.clbPlugsModList.IntegralHeight = false;
@@ -471,7 +472,7 @@ namespace MGEgui.DistantLand {
             // 
             // bTexSkip
             // 
-            this.bTexSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bTexSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bTexSkip.Enabled = false;
             this.bTexSkip.Location = new System.Drawing.Point(430, 251);
             this.bTexSkip.Name = "bTexSkip";
@@ -483,7 +484,7 @@ namespace MGEgui.DistantLand {
             // 
             // bTexRun
             // 
-            this.bTexRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bTexRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bTexRun.Enabled = false;
             this.bTexRun.Location = new System.Drawing.Point(430, 282);
             this.bTexRun.Name = "bTexRun";
@@ -561,7 +562,7 @@ namespace MGEgui.DistantLand {
             // 
             // bMeshSkip
             // 
-            this.bMeshSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMeshSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bMeshSkip.Enabled = false;
             this.bMeshSkip.Location = new System.Drawing.Point(430, 251);
             this.bMeshSkip.Name = "bMeshSkip";
@@ -573,7 +574,7 @@ namespace MGEgui.DistantLand {
             // 
             // bMeshRun
             // 
-            this.bMeshRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bMeshRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bMeshRun.Enabled = false;
             this.bMeshRun.Location = new System.Drawing.Point(430, 282);
             this.bMeshRun.Name = "bMeshRun";
@@ -764,7 +765,7 @@ namespace MGEgui.DistantLand {
             // 
             // panelDPIScalingLimiter2
             // 
-            this.panelDPIScalingLimiter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.panelDPIScalingLimiter2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.panelDPIScalingLimiter2.Controls.Add(this.lStatOverrideList);
             this.panelDPIScalingLimiter2.Controls.Add(this.lbStatOverrideList);
@@ -867,7 +868,6 @@ namespace MGEgui.DistantLand {
             // 
             // bStatOverrideList
             // 
-            this.bStatOverrideList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.bStatOverrideList.Location = new System.Drawing.Point(11, 240);
             this.bStatOverrideList.Name = "bStatOverrideList";
             this.bStatOverrideList.Size = new System.Drawing.Size(56, 64);
@@ -878,7 +878,7 @@ namespace MGEgui.DistantLand {
             // 
             // bStatExportStatics
             // 
-            this.bStatExportStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bStatExportStatics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bStatExportStatics.Enabled = false;
             this.bStatExportStatics.Location = new System.Drawing.Point(430, 220);
             this.bStatExportStatics.Name = "bStatExportStatics";
@@ -890,7 +890,7 @@ namespace MGEgui.DistantLand {
             // 
             // bStatSkip
             // 
-            this.bStatSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bStatSkip.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bStatSkip.Enabled = false;
             this.bStatSkip.Location = new System.Drawing.Point(430, 251);
             this.bStatSkip.Name = "bStatSkip";
@@ -902,7 +902,7 @@ namespace MGEgui.DistantLand {
             // 
             // bStatRun
             // 
-            this.bStatRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bStatRun.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bStatRun.Enabled = false;
             this.bStatRun.Location = new System.Drawing.Point(430, 282);
             this.bStatRun.Name = "bStatRun";
@@ -914,7 +914,6 @@ namespace MGEgui.DistantLand {
             // 
             // cbStatOverrideList
             // 
-            this.cbStatOverrideList.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.cbStatOverrideList.AutoSize = true;
             this.cbStatOverrideList.Location = new System.Drawing.Point(11, 219);
             this.cbStatOverrideList.Name = "cbStatOverrideList";
@@ -945,7 +944,7 @@ namespace MGEgui.DistantLand {
             // 
             // bFinish
             // 
-            this.bFinish.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bFinish.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bFinish.Enabled = false;
             this.bFinish.Location = new System.Drawing.Point(453, 282);
             this.bFinish.Name = "bFinish";

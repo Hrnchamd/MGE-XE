@@ -325,7 +325,6 @@ namespace MGEgui.DistantLand {
 
             cmbTexWorldResolution.SelectedIndex = (int)iniFile.getKeyValue("TexRes");
             cmbTexWorldNormalRes.SelectedIndex = (int)iniFile.getKeyValue("NormRes");
-            cbTexTwoStep.Checked = (iniFile.getKeyValue("Tex2Step") == 1);
             cmbMeshWorldDetail.SelectedIndex = (int)iniFile.getKeyValue("WorldMesh");
             udStatMinSize.Value = (int)iniFile.getKeyValue("MinStat");
             udStatGrassDensity.Value = (int)iniFile.getKeyValue("GrassDens");
@@ -369,7 +368,6 @@ namespace MGEgui.DistantLand {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniTexTab, true);
             iniFile.setKey("TexRes", cmbTexWorldResolution.SelectedIndex);
             iniFile.setKey("NormRes", cmbTexWorldNormalRes.SelectedIndex);
-            iniFile.setKey("Tex2Step", cbTexTwoStep.Checked);
             iniFile.save();
         }
 
@@ -619,7 +617,6 @@ namespace MGEgui.DistantLand {
         private struct CreateTextureArgs {
             public int WorldRes;
             public int WorldNormal;
-            public bool twoStep;
         }
 
         void workerCreateTextures(object sender, System.ComponentModel.DoWorkEventArgs e) {
@@ -648,7 +645,7 @@ namespace MGEgui.DistantLand {
             }
             ctc.End();
             // Save the world texture.
-            wtc.FinishCompressed(Statics.fn_worldds, args.twoStep);
+            wtc.FinishCompressed(Statics.fn_worldds, true);
             wtc.Dispose();
 
             // World normal map
@@ -670,7 +667,7 @@ namespace MGEgui.DistantLand {
                 }
             }
             ctc.EndNormalMap();
-            wtc.FinishUncompressed(Statics.fn_worldn);
+            wtc.FinishUncompressed(Statics.fn_worldn, false);
             wtc.Dispose();
 
             ctc.Dispose();
@@ -1853,7 +1850,6 @@ namespace MGEgui.DistantLand {
             CreateTextureArgs args = new CreateTextureArgs();
             args.WorldRes = 128 << cmbTexWorldResolution.SelectedIndex;
             args.WorldNormal = 128 << cmbTexWorldNormalRes.SelectedIndex;
-            args.twoStep = cbTexTwoStep.Checked;
             backgroundWorker.RunWorkerAsync(args);
         }
 
