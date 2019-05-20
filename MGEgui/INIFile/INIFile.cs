@@ -53,6 +53,7 @@ namespace MGEgui.INI {
         public static char INIEscape = '\\';
         public static char[] unescapedChars = { '\u0008', '\u0009', '\u000a', '\u000d' };
         public static char[] escapedChars = { 'b', 't', 'n', 'r' };
+        public static Encoding LegacyEncoding = Encoding.GetEncoding(1252);
 
 
         public static INIFile.INIVariableDef iniDefEmpty = new INIFile.INIVariableDef();
@@ -584,12 +585,23 @@ namespace MGEgui.INI {
 
         private void loadINI() {
             iniContent.Clear();
-            StreamReader sr = null;
-            try {
-                sr = new StreamReader(File.OpenRead(fileName), encoding);
-            } catch {
+
+            // Open file and check for unwanted UTF-8 BOM
+            var f = File.OpenRead(fileName);
+            byte[] preamble = new byte[3];
+            f.Read(preamble, 0, 3);
+
+            // Mark for resaving without BOM if present, seek back to start if BOM not present            
+            if (preamble[0] == 0xEF && preamble[1] == 0xBB && preamble[2] == 0xBF) {
+                modified = true;
+            } else {
+                f.Seek(0, SeekOrigin.Begin);
             }
+            
+            // Switch to text stream
+            var sr = new StreamReader(f, encoding);
             INILine.setSection = "";
+
             if (sr != null) {
                 while (!sr.EndOfStream) {
                     INILine line = new INILine(sr.ReadLine());
