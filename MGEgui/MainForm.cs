@@ -1650,9 +1650,15 @@ namespace MGEgui {
         }
 
         private void bMWLightingReset_Click(object sender, EventArgs e) {
-            udLightingConst.Value = 0;
-            udLightingLinear.Value = 3.0M;
-            udLightingQuad.Value = 0;
+            if (cbPerPixelLighting.Checked) {
+                udLightingConst.Value = 0.36M;
+                udLightingLinear.Value = 0;
+                udLightingQuad.Value = 3.25M;
+            } else {
+                udLightingConst.Value = 0;
+                udLightingLinear.Value = 3.0M;
+                udLightingQuad.Value = 0;
+            }
         }
 
         private void cbPerPixelLighting_CheckedChanged(object sender, EventArgs e) {
@@ -1663,13 +1669,10 @@ namespace MGEgui {
 
             if (cbPerPixelLighting.Checked) {
                 MessageBox.Show(strings["LightOverrideOn"], Statics.strings["Warning"]);
-                udLightingConst.Value = 0.36M;
-                udLightingLinear.Value = 0;
-                udLightingQuad.Value = 3.25M;
             } else {
                 MessageBox.Show(strings["LightOverrideOff"], Statics.strings["Warning"]);
-                bMWLightingReset_Click(null, null);
             }
+            bMWLightingReset_Click(null, null);
         }
 
         private void bReportingShowLog_Click(object sender, EventArgs e) {

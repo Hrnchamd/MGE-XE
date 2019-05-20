@@ -389,6 +389,11 @@ namespace MGEgui {
                                     0,
                                     65536});
             this.udLightingConst.Location = new System.Drawing.Point(184, 39);
+            this.udLightingConst.Maximum = new decimal(new int[] {
+                                    1,
+                                    0,
+                                    0,
+                                    0});
             this.udLightingConst.Name = "udLightingConst";
             this.udLightingConst.Size = new System.Drawing.Size(64, 23);
             this.udLightingConst.TabIndex = 2;
@@ -402,6 +407,11 @@ namespace MGEgui {
                                     0,
                                     65536});
             this.udLightingLinear.Location = new System.Drawing.Point(99, 39);
+            this.udLightingLinear.Maximum = new decimal(new int[] {
+                                    30,
+                                    0,
+                                    0,
+                                    0});
             this.udLightingLinear.Name = "udLightingLinear";
             this.udLightingLinear.Size = new System.Drawing.Size(64, 23);
             this.udLightingLinear.TabIndex = 1;
@@ -420,6 +430,11 @@ namespace MGEgui {
                                     0,
                                     65536});
             this.udLightingQuad.Location = new System.Drawing.Point(14, 39);
+            this.udLightingQuad.Maximum = new decimal(new int[] {
+                                    30,
+                                    0,
+                                    0,
+                                    0});
             this.udLightingQuad.Name = "udLightingQuad";
             this.udLightingQuad.Size = new System.Drawing.Size(64, 23);
             this.udLightingQuad.TabIndex = 0;
