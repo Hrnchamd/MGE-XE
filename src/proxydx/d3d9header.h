@@ -12,3 +12,7 @@
 // Remove annoying defines from windows.h
 #undef near
 #undef far
+#undef NEAR
+#undef FAR
+#define NEAR
+#define FAR
