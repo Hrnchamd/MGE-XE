@@ -25,11 +25,11 @@ struct mwseInstruction {
 
     mwseInstruction(TES3MACHINE& mach) : vm(mach) {}
 
-    static __thiscall void deleting_destructor(mwseInstruction* _this, int delete_flags) {}
-    static __stdcall int getOperands(OPCODE opcode, VPVOID operanddata) {
+    static void __thiscall deleting_destructor(mwseInstruction* _this, int delete_flags) {}
+    static int __stdcall getOperands(OPCODE opcode, VPVOID operanddata) {
         return 0;
     }
-    static __thiscall bool execute(mwseInstruction* _this) {
+    static bool __thiscall execute(mwseInstruction* _this) {
         return false;
     }
 

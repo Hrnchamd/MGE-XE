@@ -5,9 +5,9 @@
 #include <windows.h>
 #include <objbase.h>
 
-typedef HRESULT (*MYPROC)(HINSTANCE,DWORD,REFIID,void**,void*);
+typedef HRESULT (__stdcall *MYPROC)(HINSTANCE,DWORD,REFIID,void**,void*);
 
-extern "C" HRESULT _stdcall FakeDirectInputCreate(HINSTANCE a, DWORD b, REFIID c, void **d, void *e)
+extern "C" HRESULT __stdcall FakeDirectInputCreate(HINSTANCE a, DWORD b, REFIID c, void **d, void *e)
 {
     HMODULE FakeD3Ddll = LoadLibrary("d3d8.dll");
     MYPROC func = (MYPROC)GetProcAddress(FakeD3Ddll, "DirectInput8Create");
