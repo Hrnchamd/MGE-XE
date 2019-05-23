@@ -1,7 +1,9 @@
 
-#include <sstream>
 #include "ffeshader.h"
 #include "support/log.h"
+
+#include <algorithm>
+#include <sstream>
 
 
 

@@ -1,10 +1,12 @@
 
-#include <cstdio>
 #include "direct3d8.h"
 #include "d3d8device.h"
 
-typedef IDirect3D8* (_stdcall* D3DProc8)(UINT);
+#include <cstdio>
 
+
+
+typedef IDirect3D8* (_stdcall* D3DProc8)(UINT);
 
 
 ProxyD3D::ProxyD3D(IDirect3D9* real, UINT d3d8version) : refcount(1), realD3D(real) {

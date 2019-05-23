@@ -4,6 +4,7 @@
 #include "support/log.h"
 
 
+
 struct MWEntity : MWRecord {
     char other[0x18];
     const float* bounds;

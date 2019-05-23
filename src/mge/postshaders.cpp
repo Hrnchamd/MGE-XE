@@ -1,12 +1,15 @@
 
-#include <cstdio>
-#include <cstring>
 #include "proxydx/d3d8header.h"
 #include "support/log.h"
-
 #include "configuration.h"
 #include "mwbridge.h"
 #include "postshaders.h"
+
+#include <algorithm>
+#include <cstdio>
+#include <cstring>
+
+
 
 // Must match enum EffectVariableID in postshaders.h
 const char* effectVariableList[] = {
@@ -334,7 +337,7 @@ void PostShaders::release() {
 }
 
 // evalAdaptHDR - Downsample and readback a frame to get an averaged luminance for HDR
-void PostShaders::evalAdaptHDR(IDirect3DSurface* source, int environmentFlags, float dt) {
+void PostShaders::evalAdaptHDR(IDirect3DSurface9* source, int environmentFlags, float dt) {
     D3DLOCKED_RECT lock;
     RECT rectSrc = { 0, 0, 0, 0 };
     RECT rectDownsample = { 0, 0, 0, 0 };

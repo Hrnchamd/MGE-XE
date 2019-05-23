@@ -1,9 +1,10 @@
 
+#include "morrowindbsa.h"
+#include "proxydx/d3d8header.h"
+
 #include <cstdio>
 #include <cstring>
 #include <unordered_map>
-#include "proxydx/d3d8header.h"
-#include "morrowindbsa.h"
 
 
 

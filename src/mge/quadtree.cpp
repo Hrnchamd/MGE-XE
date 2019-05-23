@@ -1,5 +1,6 @@
 
 #include "quadtree.h"
+
 #include <algorithm>
 
 

@@ -1,11 +1,11 @@
 
-#include "proxydx/d3d8header.h"
-#include "support/log.h"
-
 #include "configuration.h"
 #include "distantland.h"
 #include "distantshader.h"
 #include "mwbridge.h"
+#include "proxydx/d3d8header.h"
+#include "support/log.h"
+
 
 
 void DistantLand::renderDepth() {

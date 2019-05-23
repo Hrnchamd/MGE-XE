@@ -2,6 +2,8 @@
 
 #include "proxydx/d3d8device.h"
 
+
+
 class MGEProxyDevice : public ProxyDevice {
 public:
     MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d);

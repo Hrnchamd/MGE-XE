@@ -3,6 +3,8 @@
 #include "timing.h"
 #include "winheader.h"
 
+
+
 // Calculations use doubles, as int64 ops bring in an excessive amount of library code on a 32-bit target
 
 static double reciprocalFreq;

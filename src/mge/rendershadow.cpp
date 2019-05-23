@@ -1,11 +1,12 @@
 
+#include "distantland.h"
+#include "distantshader.h"
+#include "configuration.h"
+#include "mwbridge.h"
 #include "proxydx/d3d8header.h"
 #include "support/log.h"
 
-#include "configuration.h"
-#include "distantland.h"
-#include "distantshader.h"
-#include "mwbridge.h"
+
 
 static const float shadowNearRadius = 1000.0;
 static const float shadowFarRadius = 4000.0;

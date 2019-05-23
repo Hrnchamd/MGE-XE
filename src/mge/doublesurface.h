@@ -1,7 +1,10 @@
 #pragma once
 
-#include "proxydx/d3d8header.h"
+#include "proxydx/d3d9header.h"
+
 #include <algorithm>
+
+
 
 class SurfaceDoubleBuffer {
     int i;

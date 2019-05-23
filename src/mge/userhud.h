@@ -2,6 +2,8 @@
 
 #include <string>
 
+
+
 struct IDirect3DDevice9;
 struct IDirect3DTexture9;
 struct ID3DXEffect;

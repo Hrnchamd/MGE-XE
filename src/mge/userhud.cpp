@@ -1,13 +1,14 @@
 
-#include <vector>
-#include <string>
-#include <map>
-#include <cstdio>
-
-#include "proxydx/d3d8header.h"
-#include "support/log.h"
 #include "userhud.h"
 #include "morrowindbsa.h"
+#include "proxydx/d3d8header.h"
+#include "support/log.h"
+
+#include <cstdio>
+#include <map>
+#include <string>
+#include <vector>
+
 
 
 const DWORD fvfHUD = D3DFVF_XYZRHW | D3DFVF_TEX2;

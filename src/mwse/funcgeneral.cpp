@@ -1,11 +1,13 @@
 
-#include <string>
 #include "funcgeneral.h"
 #include "funchud.h"
-#include "support/log.h"
 #include "mge/mgeversion.h"
 #include "mge/distantland.h"
 #include "mge/userhud.h"
+#include "support/log.h"
+
+#include <string>
+
 
 
 MWSEINSTRUCTION_DECLARE_VTABLE(mwseWipeAll)

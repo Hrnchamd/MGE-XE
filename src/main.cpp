@@ -1,11 +1,12 @@
 
-#include <cstdio>
-#include "support/winheader.h"
-#include "support/log.h"
 #include "mge/configuration.h"
 #include "mge/mgeversion.h"
 #include "mge/mwinitpatch.h"
 #include "mwse/mgebridge.h"
+#include "support/winheader.h"
+#include "support/log.h"
+
+#include <cstdio>
 
 
 

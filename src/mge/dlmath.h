@@ -1,12 +1,10 @@
-#ifndef _DL_MATH_H_
-#define _DL_MATH_H_
 #pragma once
 
 #define D3DXFX_LARGEADDRESS_HANDLE
 
 #include "d3dx9math.h"
 
-//-----------------------------------------------------------------------------
+
 
 struct BoundingSphere {
     D3DXVECTOR3 center;
@@ -23,7 +21,6 @@ struct BoundingSphere {
     BoundingSphere operator+(const BoundingSphere& rh);
 };
 
-//-----------------------------------------------------------------------------
 
 struct BoundingBox {
     D3DXVECTOR3 center, vx, vy, vz;
@@ -37,7 +34,6 @@ struct BoundingBox {
     void Transform(const D3DXMATRIX& m);
 };
 
-//-----------------------------------------------------------------------------
 
 struct ViewFrustum {
     D3DXPLANE frustum[6];
@@ -48,7 +44,3 @@ struct ViewFrustum {
     Containment ContainsSphere(const BoundingSphere& sphere) const;
     Containment ContainsBox(const BoundingBox& box) const;
 };
-
-//-----------------------------------------------------------------------------
-
-#endif

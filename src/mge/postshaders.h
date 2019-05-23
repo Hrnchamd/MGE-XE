@@ -1,8 +1,11 @@
 #pragma once
 
 #include "doublesurface.h"
+
 #include <vector>
 #include <string>
+
+
 
 enum EffectVariableID {
     EV_lastshader, EV_lastpass, EV_depthframe, EV_watertexture,
@@ -57,7 +60,7 @@ public:
     static bool setShaderVar(const char* shaderName, const char* varName, float* v);
     static bool setShaderEnable(const char* shaderName, bool enable);
 
-    static void evalAdaptHDR(IDirect3DSurface* source, int environmentFlags, float dt);
+    static void evalAdaptHDR(IDirect3DSurface9* source, int environmentFlags, float dt);
     static void shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environmentFlags, float frameTime);
     static IDirect3DTexture9* borrowBuffer(int n);
     static void applyBlend();

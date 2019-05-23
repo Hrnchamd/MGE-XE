@@ -5,6 +5,8 @@
 
 #include "configinternal.h"
 
+
+
 const char* mgeini = "MGE3/MGE.ini";
 
 const char* sections[] = {

@@ -1,5 +1,9 @@
 #pragma once
 
+#include "proxydx/d3d9header.h"
+
+
+
 class StatusOverlay {
     static char statusText[512];
     static char fpsText[16];

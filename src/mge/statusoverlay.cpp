@@ -1,9 +1,9 @@
 
-#include <cstdio>
-
-#include "mged3d8device.h"
-#include "configuration.h"
 #include "statusoverlay.h"
+#include "configuration.h"
+#include "mged3d8device.h"
+
+#include <cstdio>
 
 
 

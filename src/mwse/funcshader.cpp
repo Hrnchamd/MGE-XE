@@ -1,7 +1,9 @@
 
-#include <string>
 #include "funcshader.h"
 #include "mge/postshaders.h"
+
+#include <string>
+
 
 
 MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetShaderLong)

@@ -3,6 +3,7 @@
 #include "funcgmst.h"
 
 
+
 MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetGS)
 
 // GetGS <long gmst_id> -> returns <long/float value>

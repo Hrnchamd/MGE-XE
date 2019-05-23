@@ -2,6 +2,8 @@
 #include "mgedirect3d8.h"
 #include "support/log.h"
 
+
+
 typedef IDirect3D9* (_stdcall* D3DProc9)(UINT);
 
 

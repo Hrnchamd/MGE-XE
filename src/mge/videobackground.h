@@ -2,6 +2,8 @@
 
 #include "proxydx/d3d9header.h"
 
+
+
 struct Bink;
 
 class VideoBackground {

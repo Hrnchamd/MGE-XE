@@ -1,9 +1,11 @@
 
-#include "proxydx/d3d8header.h"
 #include "distantland.h"
 #include "distantshader.h"
 #include "configuration.h"
 #include "mwbridge.h"
+#include "proxydx/d3d8header.h"
+
+#include <algorithm>
 
 
 

@@ -1,7 +1,8 @@
 
-#include <algorithm>
 #include "funccamera.h"
 #include "mge/configuration.h"
+
+#include <algorithm>
 
 
 
@@ -158,6 +159,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseStopCameraShakeAccel)
 // StopCameraShakeAccel
 bool mwseStopCameraShakeAccel::execute(mwseInstruction* _this) {
     Configuration.CameraEffects.shakeAccel = 0;
+	return true;
 }
 
 

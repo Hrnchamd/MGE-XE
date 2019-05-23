@@ -2,6 +2,8 @@
 
 #include <cstddef>
 
+
+
 class MemoryPool {
 public:
     MemoryPool(std::size_t object_size, std::size_t objects_per_block);

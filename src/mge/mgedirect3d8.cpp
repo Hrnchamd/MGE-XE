@@ -1,9 +1,12 @@
 
-#include <algorithm>
 #include "mgedirect3d8.h"
 #include "mged3d8device.h"
 #include "configuration.h"
 #include "support/log.h"
+
+#include <algorithm>
+
+
 
 MGEProxyD3D::MGEProxyD3D(IDirect3D9* real) : ProxyD3D(real, 120) { // Morrowind requires D3D version 120
     // Force pixel shaders off, to simplify water override

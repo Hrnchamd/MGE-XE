@@ -4,6 +4,7 @@
 #include "support/log.h"
 
 
+
 #define BINKSURFACE32       3
 #define BINKCOPYALL         0x80000000
 

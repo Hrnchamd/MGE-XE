@@ -1,8 +1,9 @@
 #pragma once
-#ifndef _CONFIGURATION_H_
-#define _CONFIGURATION_H_
 
 #include <basetyps.h>
+
+
+
 #define MASK(x) (1 << x)
 
 // MGE Generic flags
@@ -154,5 +155,3 @@ struct ConfigurationStruct {
 };
 
 extern ConfigurationStruct Configuration;
-
-#endif /* _CONFIGURATION_H_ */

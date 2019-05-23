@@ -4,6 +4,7 @@
 #include "funcweather.h"
 
 
+
 struct MWWeather {
     struct RGBfloat {
         float r, g, b;

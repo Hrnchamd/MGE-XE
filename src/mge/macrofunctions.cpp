@@ -1,6 +1,7 @@
 
 #include <cstdio>
 #include <cstring>
+#include <cctype>
 #include "proxydx/d3d8header.h"
 
 #include "configuration.h"

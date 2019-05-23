@@ -1,6 +1,5 @@
 
 #include "specificrender.h"
-
 #include "configuration.h"
 
 

@@ -2,6 +2,8 @@
 
 #include <cstddef>
 
+
+
 typedef void* HANDLE;
 
 struct LOG {

@@ -1,14 +1,15 @@
 
+#include "log.h"
+
 #include <cstdarg>
 #include <cctype>
 #include <cstring>
 #include <cstdio>
 #include "winheader.h"
 
-#include "log.h"
+
 
 HANDLE LOG::handle = INVALID_HANDLE_VALUE;
-
 
 
 bool LOG::open(const char* filename) {

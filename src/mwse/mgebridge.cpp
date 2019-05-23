@@ -1,6 +1,4 @@
 
-#include "support/winheader.h"
-#include "mgebridge.h"
 #include "funcgeneral.h"
 #include "funcgmst.h"
 #include "funchud.h"
@@ -11,6 +9,9 @@
 #include "funcentity.h"
 #include "funcmwui.h"
 #include "funcphysics.h"
+#include "mgebridge.h"
+#include "support/winheader.h"
+
 
 
 struct TES3MACHINE;
