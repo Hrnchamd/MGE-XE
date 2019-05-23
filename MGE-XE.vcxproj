@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>15.0</VCProjectVersion>
+    <ProjectGuid>{8753E3E7-2141-4A36-8B2D-A76485B8A9AE}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <ProjectName>d3d8</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)bin\MSVC-$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\MSVC-$(Configuration)\d3d\</IntDir>
+    <TargetName>d3d8</TargetName>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;</LibraryPath>
+    <TargetName>d3d8</TargetName>
+    <OutDir>$(SolutionDir)bin\MSVC-$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\MSVC-$(Configuration)\d3d\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>./src;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\include</AdditionalIncludeDirectories>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <ModuleDefinitionFile>src\exports.def</ModuleDefinitionFile>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <AdditionalIncludeDirectories>./src;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\include</AdditionalIncludeDirectories>
+      <EnforceTypeConversionRules>true</EnforceTypeConversionRules>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <PreprocessorDefinitions>WIN32;NOMINMAX;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <TargetMachine>MachineX86</TargetMachine>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>src\exports.def</ModuleDefinitionFile>
+      <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mge\configuration.cpp" />
+    <ClCompile Include="src\mge\distantinit.cpp" />
+    <ClCompile Include="src\mge\distantland.cpp" />
+    <ClCompile Include="src\mge\dlmath.cpp" />
+    <ClCompile Include="src\mge\ffeshader.cpp" />
+    <ClCompile Include="src\mge\macrofunctions.cpp" />
+    <ClCompile Include="src\mge\memorypool.cpp" />
+    <ClCompile Include="src\mge\mged3d8device.cpp" />
+    <ClCompile Include="src\mge\mgedinput.cpp" />
+    <ClCompile Include="src\mge\mgedirect3d8.cpp" />
+    <ClCompile Include="src\mge\mgedxwrap.cpp" />
+    <ClCompile Include="src\mge\morrowindbsa.cpp" />
+    <ClCompile Include="src\mge\mwbridge.cpp" />
+    <ClCompile Include="src\mge\mwinitpatch.cpp" />
+    <ClCompile Include="src\mge\postshaders.cpp" />
+    <ClCompile Include="src\mge\quadtree.cpp" />
+    <ClCompile Include="src\mge\renderdepth.cpp" />
+    <ClCompile Include="src\mge\renderexterior.cpp" />
+    <ClCompile Include="src\mge\rendergrass.cpp" />
+    <ClCompile Include="src\mge\rendershadow.cpp" />
+    <ClCompile Include="src\mge\renderwater.cpp" />
+    <ClCompile Include="src\mge\specificrender.cpp" />
+    <ClCompile Include="src\mge\statusoverlay.cpp" />
+    <ClCompile Include="src\mge\userhud.cpp" />
+    <ClCompile Include="src\mge\videobackground.cpp" />
+    <ClCompile Include="src\mwse\funccamera.cpp" />
+    <ClCompile Include="src\mwse\funcentity.cpp" />
+    <ClCompile Include="src\mwse\funcgeneral.cpp" />
+    <ClCompile Include="src\mwse\funcgmst.cpp" />
+    <ClCompile Include="src\mwse\funchud.cpp" />
+    <ClCompile Include="src\mwse\funcinput.cpp" />
+    <ClCompile Include="src\mwse\funcmwui.cpp" />
+    <ClCompile Include="src\mwse\funcphysics.cpp" />
+    <ClCompile Include="src\mwse\funcshader.cpp" />
+    <ClCompile Include="src\mwse\funcweather.cpp" />
+    <ClCompile Include="src\mwse\mgebridge.cpp" />
+    <ClCompile Include="src\mwse\mwseinstruction.cpp" />
+    <ClCompile Include="src\proxydx\d3d8device.cpp" />
+    <ClCompile Include="src\proxydx\d3d8surface.cpp" />
+    <ClCompile Include="src\proxydx\d3d8texture.cpp" />
+    <ClCompile Include="src\proxydx\dinput8.cpp" />
+    <ClCompile Include="src\proxydx\direct3d8.cpp" />
+    <ClCompile Include="src\proxydx\dxguid.cpp" />
+    <ClCompile Include="src\support\log.cpp" />
+    <ClCompile Include="src\support\timing.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\exports.def" />
+    <ClInclude Include="src\proxydx\d3d8header.inl">
+      <FileType>Document</FileType>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\mge\configinternal.h" />
+    <ClInclude Include="src\mge\configuration.h" />
+    <ClInclude Include="src\mge\distantland.h" />
+    <ClInclude Include="src\mge\distantshader.h" />
+    <ClInclude Include="src\mge\dlformat.h" />
+    <ClInclude Include="src\mge\dlmath.h" />
+    <ClInclude Include="src\mge\doublesurface.h" />
+    <ClInclude Include="src\mge\ffeshader.h" />
+    <ClInclude Include="src\mge\inidata.h" />
+    <ClInclude Include="src\mge\memorypool.h" />
+    <ClInclude Include="src\mge\mged3d8device.h" />
+    <ClInclude Include="src\mge\mgedinput.h" />
+    <ClInclude Include="src\mge\mgedirect3d8.h" />
+    <ClInclude Include="src\mge\mgeversion.h" />
+    <ClInclude Include="src\mge\mmefunctiondefs.h" />
+    <ClInclude Include="src\mge\morrowindbsa.h" />
+    <ClInclude Include="src\mge\mwbridge.h" />
+    <ClInclude Include="src\mge\mwinitpatch.h" />
+    <ClInclude Include="src\mge\postshaders.h" />
+    <ClInclude Include="src\mge\quadtree.h" />
+    <ClInclude Include="src\mge\specificrender.h" />
+    <ClInclude Include="src\mge\statusoverlay.h" />
+    <ClInclude Include="src\mge\userhud.h" />
+    <ClInclude Include="src\mge\videobackground.h" />
+    <ClInclude Include="src\mwse\funccamera.h" />
+    <ClInclude Include="src\mwse\funcentity.h" />
+    <ClInclude Include="src\mwse\funcgeneral.h" />
+    <ClInclude Include="src\mwse\funcgmst.h" />
+    <ClInclude Include="src\mwse\funchud.h" />
+    <ClInclude Include="src\mwse\funcinput.h" />
+    <ClInclude Include="src\mwse\funcmwui.h" />
+    <ClInclude Include="src\mwse\funcphysics.h" />
+    <ClInclude Include="src\mwse\funcshader.h" />
+    <ClInclude Include="src\mwse\funcweather.h" />
+    <ClInclude Include="src\mwse\mgebridge.h" />
+    <ClInclude Include="src\mwse\mwseinstruction.h" />
+    <ClInclude Include="src\mwse\VMTYPES.h" />
+    <ClInclude Include="src\proxydx\d3d8device.h" />
+    <ClInclude Include="src\proxydx\d3d8header.h" />
+    <ClInclude Include="src\proxydx\d3d8interface.h" />
+    <ClInclude Include="src\proxydx\d3d8surface.h" />
+    <ClInclude Include="src\proxydx\d3d8texture.h" />
+    <ClInclude Include="src\proxydx\d3d9header.h" />
+    <ClInclude Include="src\proxydx\direct3d8.h" />
+    <ClInclude Include="src\proxydx\directin8.h" />
+    <ClInclude Include="src\support\log.h" />
+    <ClInclude Include="src\support\timing.h" />
+    <ClInclude Include="src\support\winheader.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
