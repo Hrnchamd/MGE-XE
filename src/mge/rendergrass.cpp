@@ -1,9 +1,11 @@
 
-#include "mged3d8device.h"
-#include "configuration.h"
 #include "distantland.h"
 #include "distantshader.h"
+#include "configuration.h"
+#include "mged3d8device.h"
 #include "support/log.h"
+
+#include <algorithm>
 
 
 
@@ -35,6 +37,10 @@ void DistantLand::cullGrass(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
 
 void DistantLand::buildGrassInstanceVB() {
     batchedGrass.clear();
+
+	if (visGrass.visible_set.empty()) {
+		return;
+	}
 
     if (visGrass.visible_set.size() > MaxGrassElements) {
         static bool warnOnce = true;

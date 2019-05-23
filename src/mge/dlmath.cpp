@@ -1,6 +1,8 @@
 
 #include "dlmath.h"
 
+#include <cmath>
+
 //-----------------------------------------------------------------------------
 // BoundingSphere class
 //-----------------------------------------------------------------------------
@@ -196,7 +198,7 @@ ViewFrustum::Containment ViewFrustum::ContainsSphere(const BoundingSphere& spher
     }
 
     for (f = 0; f < 6; ++f) {
-        if (fabs(dist[f]) < sphere.radius) {
+        if (std::fabs(dist[f]) < sphere.radius) {
             return INTERSECTS;
         }
     }
@@ -211,9 +213,9 @@ ViewFrustum::Containment ViewFrustum::ContainsBox(const BoundingBox& box) const 
     for (size_t f = 0; f < 6; ++f) {
         D3DXVECTOR4 extent;
 
-        extent.x = abs(D3DXPlaneDotNormal(&frustum[f], &box.vx));
-        extent.y = abs(D3DXPlaneDotNormal(&frustum[f], &box.vy));
-        extent.z = abs(D3DXPlaneDotNormal(&frustum[f], &box.vz));
+        extent.x = std::fabs(D3DXPlaneDotNormal(&frustum[f], &box.vx));
+        extent.y = std::fabs(D3DXPlaneDotNormal(&frustum[f], &box.vy));
+        extent.z = std::fabs(D3DXPlaneDotNormal(&frustum[f], &box.vz));
         extent.w = D3DXPlaneDotCoord(&frustum[f], &box.center);
 
         // Fail if centre + projected extents is outside the halfspace
