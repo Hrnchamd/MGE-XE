@@ -174,7 +174,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState* rs, const Fragmen
                 bufferDiffuse[pointLightCount].x *= bufferFalloffConstant;
                 bufferDiffuse[pointLightCount].y *= bufferFalloffConstant;
                 bufferDiffuse[pointLightCount].z *= bufferFalloffConstant;
-                bufferAmbient[pointLightCount] = 1.0 + 1e-4 / sqrt(light->falloff.z);
+                bufferAmbient[pointLightCount] = 1.0f + 1e-4f / sqrt(light->falloff.z);
                 bufferFalloffQuadratic[pointLightCount] = bufferFalloffConstant * light->falloff.z;
             } else if (light->falloff.y == 0.10000001f) {
                 // Projectile light source, normally hard coded by Morrowind to { 0, 3 * (1/30), 0 }
@@ -188,12 +188,12 @@ void FixedFunctionShader::renderMorrowind(const RenderedState* rs, const Fragmen
                 // It is approximated with a half-lambert weight + quadratic falloff
                 // Light colour is altered to avoid variable brightness from Morrowind bugs
                 // The point source is moved up slightly as it is often embedded in the ground
-                float brightness = 0.25 + 1e-4 / light->falloff.y;
+                float brightness = 0.25f + 1e-4f / light->falloff.y;
                 bufferDiffuse[pointLightCount].x = brightness;
                 bufferDiffuse[pointLightCount].y = brightness;
                 bufferDiffuse[pointLightCount].z = brightness;
                 bufferAmbient[pointLightCount] = 1.0;
-                bufferFalloffQuadratic[pointLightCount] = 0.5555 * light->falloff.y * light->falloff.y;
+                bufferFalloffQuadratic[pointLightCount] = 0.5555f * light->falloff.y * light->falloff.y;
                 bufferPosition[pointLightCount + 2*MaxLights] += 25.0;
             }
             ++pointLightCount;

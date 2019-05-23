@@ -254,13 +254,13 @@ void MacroFunctions::ToggleTransparencyAA() {
 void MacroFunctions::IncreaseViewRange() {
     auto mwBridge = MWBridge::get();
     float r = mwBridge->GetViewDistance();
-    mwBridge->SetViewDistance(std::min(7168.0, r + 512.0));
+    mwBridge->SetViewDistance(std::min(7168.0f, r + 512.0f));
 }
 
 void MacroFunctions::DecreaseViewRange() {
     auto mwBridge = MWBridge::get();
     float r = mwBridge->GetViewDistance();
-    mwBridge->SetViewDistance(std::max(2500.0, r - 512.0));
+    mwBridge->SetViewDistance(std::max(2500.0f, r - 512.0f));
 }
 
 void MacroFunctions::ToggleZoom() {
@@ -276,12 +276,12 @@ void MacroFunctions::ResetEnableZoom() {
 
 void MacroFunctions::IncreaseZoom() {
     Configuration.MGEFlags |= ZOOM_ASPECT;
-    Configuration.CameraEffects.zoom = std::min(Configuration.CameraEffects.zoom * 1.0078125, 40.0);
+    Configuration.CameraEffects.zoom = std::min(Configuration.CameraEffects.zoom * 1.0078125f, 40.0f);
 }
 
 void MacroFunctions::DecreaseZoom() {
     Configuration.MGEFlags |= ZOOM_ASPECT;
-    Configuration.CameraEffects.zoom = std::max(1.0, Configuration.CameraEffects.zoom / 1.0078125);
+    Configuration.CameraEffects.zoom = std::max(1.0f, Configuration.CameraEffects.zoom / 1.0078125f);
 }
 
 void MacroFunctions::ToggleCrosshair() {
@@ -297,11 +297,11 @@ void MacroFunctions::DisableMusic() {
 }
 
 void MacroFunctions::IncreaseFOV() {
-    Configuration.ScreenFOV = std::min(Configuration.ScreenFOV + 1.0, 150.0);
+    Configuration.ScreenFOV = std::min(Configuration.ScreenFOV + 1.0f, 150.0f);
 }
 
 void MacroFunctions::DecreaseFOV() {
-    Configuration.ScreenFOV = std::max(60.0, Configuration.ScreenFOV - 1.0);
+    Configuration.ScreenFOV = std::max(60.0f, Configuration.ScreenFOV - 1.0f);
 }
 
 void MacroFunctions::HaggleMore1() {
@@ -346,7 +346,7 @@ static void displayCamPosition() {
 void MacroFunctions::MoveForward3PCam() {
     auto mwBridge = MWBridge::get();
     if (mwBridge->is3rdPerson() && !mwBridge->IsMenu()) {
-        Configuration.Offset3rdPerson.y = std::min(-25.0, Configuration.Offset3rdPerson.y * 0.96);
+        Configuration.Offset3rdPerson.y = std::min(-25.0f, Configuration.Offset3rdPerson.y * 0.96f);
         displayCamPosition();
     }
 }
@@ -354,7 +354,7 @@ void MacroFunctions::MoveForward3PCam() {
 void MacroFunctions::MoveBack3PCam() {
     auto mwBridge = MWBridge::get();
     if (mwBridge->is3rdPerson() && !mwBridge->IsMenu()) {
-        Configuration.Offset3rdPerson.y = std::max(-2500.0, Configuration.Offset3rdPerson.y * 1.04);
+        Configuration.Offset3rdPerson.y = std::max(-2500.0f, Configuration.Offset3rdPerson.y * 1.04f);
         displayCamPosition();
     }
 }
@@ -362,7 +362,7 @@ void MacroFunctions::MoveBack3PCam() {
 void MacroFunctions::MoveLeft3PCam() {
     auto mwBridge = MWBridge::get();
     if (mwBridge->is3rdPerson() && !mwBridge->IsMenu()) {
-        Configuration.Offset3rdPerson.x = std::max(-125.0, Configuration.Offset3rdPerson.x - 1.0);
+        Configuration.Offset3rdPerson.x = std::max(-125.0f, Configuration.Offset3rdPerson.x - 1.0f);
         displayCamPosition();
     }
 }
@@ -370,7 +370,7 @@ void MacroFunctions::MoveLeft3PCam() {
 void MacroFunctions::MoveRight3PCam() {
     auto mwBridge = MWBridge::get();
     if (mwBridge->is3rdPerson() && !mwBridge->IsMenu()) {
-        Configuration.Offset3rdPerson.x = std::min(125.0, Configuration.Offset3rdPerson.x + 1.0);
+        Configuration.Offset3rdPerson.x = std::min(125.0f, Configuration.Offset3rdPerson.x + 1.0f);
         displayCamPosition();
     }
 }
@@ -378,7 +378,7 @@ void MacroFunctions::MoveRight3PCam() {
 void MacroFunctions::MoveDown3PCam() {
     auto mwBridge = MWBridge::get();
     if (mwBridge->is3rdPerson() && !mwBridge->IsMenu()) {
-        Configuration.Offset3rdPerson.z = std::max(-125.0, Configuration.Offset3rdPerson.z - 1.0);
+        Configuration.Offset3rdPerson.z = std::max(-125.0f, Configuration.Offset3rdPerson.z - 1.0f);
         displayCamPosition();
     }
 }
@@ -386,7 +386,7 @@ void MacroFunctions::MoveDown3PCam() {
 void MacroFunctions::MoveUp3PCam() {
     auto mwBridge = MWBridge::get();
     if (mwBridge->is3rdPerson() && !mwBridge->IsMenu()) {
-        Configuration.Offset3rdPerson.z = std::min(125.0, Configuration.Offset3rdPerson.z + 1.0);
+        Configuration.Offset3rdPerson.z = std::min(125.0f, Configuration.Offset3rdPerson.z + 1.0f);
         displayCamPosition();
     }
 }

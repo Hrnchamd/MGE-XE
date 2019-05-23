@@ -17,7 +17,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX
 
     // Calculate reflected view matrix, mirror plane at water mesh level
     D3DXMATRIX reflView;
-    D3DXPLANE plane(0, 0, 1.0, -(mwBridge->WaterLevel() - 1.0));
+    D3DXPLANE plane(0, 0, 1.0f, -(mwBridge->WaterLevel() - 1.0f));
     D3DXMatrixReflect(&reflView, &plane);
     D3DXMatrixMultiply(&reflView, &reflView, view);
     effect->SetMatrix(ehView, &reflView);
@@ -31,12 +31,12 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX
     D3DXMATRIX clipMat;
 
     // Clip geometry on opposite side of water plane
-    plane *= mwBridge->IsUnderwater(eyePos.z) ? -1.0 : 1.0;
+    plane *= mwBridge->IsUnderwater(eyePos.z) ? -1.0f : 1.0f;
 
     // If using dynamic ripples, the water level can be lowered by up to 0.5 * waveheight
     // so move clip plane downwards at the cost of some reflection errors
     if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
-        plane.d += 0.5 * Configuration.DL.WaterWaveHeight;
+        plane.d += 0.5f * Configuration.DL.WaterWaveHeight;
     }
 
     // Doing inverses separately is a lot more numerically stable
@@ -100,7 +100,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX
 
 void DistantLand::renderReflectedSky() {
     // Sky objects are not correctly positioned at infinity, so correction is required
-    const float adjustZ = -2.0 * eyePos.z;
+    const float adjustZ = -2.0f * eyePos.z;
 
     const auto& recordSky_const = recordSky;
     for (const auto& i : recordSky_const) {
@@ -173,7 +173,7 @@ void DistantLand::clearReflection() {
         // Interior fog colour is typically too bright
         // Guess a reflection colour based on cell lighting parameters
         const BYTE* sun = mwBridge->getInteriorSun();
-        RGBVECTOR c(sun[0] / 255.0, sun[1] / 255.0, sun[2] / 255.0);
+        RGBVECTOR c(sun[0] / 255.0f, sun[1] / 255.0f, sun[2] / 255.0f);
         c += ambCol;
         baseColour = (DWORD)c;
     }
@@ -212,14 +212,14 @@ void DistantLand::simulateDynamicWaves() {
         // Weather types: rain = 4; thunderstorm = 5; snow = 8; blizzard = 9
         // Thunderstorm causes 50% more ripples
         int w0 = mwBridge->GetCurrentWeather(), w1 = mwBridge->GetNextWeather();
-        float precipitation0 = (w0 == 4 || w0 == 5 || w0 == 8 || w0 == 9) ? 1.0 : -1.5;
-        float precipitation1 = (w1 == 4 || w1 == 5 || w1 == 8 || w1 == 9) ? 1.0 : -1.5;
-        precipitation0 += (w0 == 5) ? 0.5 : 0;
-        precipitation1 += (w1 == 5) ? 0.5 : 0;
+        float precipitation0 = (w0 == 4 || w0 == 5 || w0 == 8 || w0 == 9) ? 1.0f : -1.5f;
+        float precipitation1 = (w1 == 4 || w1 == 5 || w1 == 8 || w1 == 9) ? 1.0f : -1.5f;
+        precipitation0 += (w0 == 5) ? 0.5f : 0;
+        precipitation1 += (w1 == 5) ? 0.5f : 0;
 
         // 150 drops per second for normal precipitation
-        float precipitation = (1.0 - mwBridge->GetWeatherRatio()) * precipitation0 + mwBridge->GetWeatherRatio() * precipitation1;
-        float rippleFrequency = 150.0 * precipitation;
+        float precipitation = (1.0f - mwBridge->GetWeatherRatio()) * precipitation0 + mwBridge->GetWeatherRatio() * precipitation1;
+        float rippleFrequency = 150.0f * precipitation;
 
         if (rippleFrequency > 0) {
             static double randomizer = 0.546372819;
@@ -227,7 +227,7 @@ void DistantLand::simulateDynamicWaves() {
             RECT drop;
 
             remainingRipples += rippleFrequency * frameTime;
-            int n = floor(remainingRipples);
+            int n = int(std::floor(remainingRipples));
             remainingRipples -= n;
 
             while (n-- > 0) {

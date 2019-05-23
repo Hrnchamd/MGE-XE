@@ -6,6 +6,8 @@
 #include "proxydx/d3d8header.h"
 #include "support/log.h"
 
+#include <cmath>
+
 
 
 static const float shadowNearRadius = 1000.0;
@@ -94,12 +96,12 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* i
     // and a texel-quantized view rotation part with small magnitude
     lookAt.x = eyePos.x + radius * eyeVec.x;
     lookAt.y = eyePos.y + radius * eyeVec.y;
-    lookAt.z = eyePos.z + 0.5 * radius * eyeVec.z;
+    lookAt.z = eyePos.z + 0.5f * radius * eyeVec.z;
 
     // Quantize eye position to partially reduce texture swimming during camera movement
-    lookAtEye.x = 16.0 * floor(0.0625 * eyePos.x);
-    lookAtEye.y = 16.0 * floor(0.0625 * eyePos.y);
-    lookAtEye.z = 16.0 * floor(0.0625 * eyePos.z);
+    lookAtEye.x = float(16.0 * std::floor(0.0625 * eyePos.x));
+    lookAtEye.y = float(16.0 * std::floor(0.0625 * eyePos.y));
+    lookAtEye.z = float(16.0 * std::floor(0.0625 * eyePos.z));
 
     // Create shadow frustum centred on lookAtEye, looking along lightVec
     const float zrange = kCellSize;
@@ -108,7 +110,7 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* i
     shadowCameraPos.z = lookAtEye.z - zrange * lightVec.z;
 
     D3DXMatrixLookAtRH(view, &shadowCameraPos, &lookAtEye, &up);
-    D3DXMatrixOrthoRH(proj, 2 * radius, (1 + fabs(lightVec.z)) * radius, 0, 2.0 * zrange);
+    D3DXMatrixOrthoRH(proj, 2 * radius, (1 + std::fabs(lightVec.z)) * radius, 0, 2.0 * zrange);
     *viewproj = (*view) * (*proj);
 
     // Transform remainder into shadow clip space and quantize
@@ -117,7 +119,7 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* i
     D3DXVec3TransformNormal(&dv, &deltaLookAt, viewproj);
 
     // Quantize clip space range [-1, +1] over ShadowResolution texels
-    const float quantizer = 2.0 / Configuration.DL.ShadowResolution;
+    const float quantizer = 2.0f / Configuration.DL.ShadowResolution;
     viewproj->_41 += quantizer * floor(dv.x / quantizer);
     viewproj->_42 += quantizer * floor(dv.y / quantizer);
     viewproj->_43 += dv.z;

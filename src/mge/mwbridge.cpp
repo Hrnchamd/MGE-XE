@@ -4,6 +4,10 @@
 #include "mwbridge.h"
 #include "assert.h"
 
+#include <cmath>
+
+
+
 static MWBridge m_instance;
 
 
@@ -572,9 +576,9 @@ void MWBridge::SetFOV(float screenFOV) {
     assert(m_loaded);
 
     // Recalculate FOV values
-    float fovtan = tanf(screenFOV*D3DX_PI/360.0f);
+    float fovtan = std::tan(screenFOV*D3DX_PI/360.0f);
 
-    if ( fabs(read_float(eWorldFOV)+fovtan) > 0.001f ) {
+    if ( std::fabs(read_float(eWorldFOV)+fovtan) > 0.001f ) {
         float aspect = read_float(eWorldFOV+1*sizeof(float)) / read_float(eWorldFOV+2*sizeof(float));
         float fovtanaspect = fovtan / aspect;
 

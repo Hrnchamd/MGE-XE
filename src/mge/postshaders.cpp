@@ -250,8 +250,8 @@ bool PostShaders::initBuffers() {
     device->GetViewport(&vp);
 
     // Shaders need to know rcpres
-    rcpRes[0] = 1.0 / vp.Width;
-    rcpRes[1] = 1.0 / vp.Height;
+    rcpRes[0] = 1.0f / vp.Width;
+    rcpRes[1] = 1.0f / vp.Height;
 
     // Set up texture buffers
     IDirect3DTexture9* texDoubleBuffer[2];
@@ -353,7 +353,7 @@ void PostShaders::evalAdaptHDR(IDirect3DSurface9* source, int environmentFlags, 
 
     // Convert to environment-weighted luminance and average over time
     // x = normalized weighted lumi, y = unweighted lumi, z = unnormalized weighted lumi, w = immediate unweighted lumi
-    float environmentScaling = (environmentFlags & 6) ? 2.5 : 1.0;
+    float environmentScaling = (environmentFlags & 6) ? 2.5f : 1.0f;
     float lambda = exp(-dt / Configuration.HDRReactionSpeed);
     adaptPoint.w = 0.27f*r + 0.67f*g + 0.06f*b;
     adaptPoint.z = adaptPoint.w * environmentScaling + (adaptPoint.z - adaptPoint.w * environmentScaling) * lambda;

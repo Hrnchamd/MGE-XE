@@ -121,10 +121,10 @@ BoundingBox::BoundingBox(const D3DXVECTOR3& min, const D3DXVECTOR3& max) {
 //-----------------------------------------------------------------------------
 
 void BoundingBox::Set(const D3DXVECTOR3& min, const D3DXVECTOR3& max) {
-    center = 0.5 * (min + max);
-    vx = D3DXVECTOR3(0.5 * (max.x - min.x), 0, 0);
-    vy = D3DXVECTOR3(0, 0.5 * (max.y - min.y), 0);
-    vz = D3DXVECTOR3(0, 0, 0.5 * (max.z - min.z));
+    center = 0.5f * (min + max);
+    vx = D3DXVECTOR3(0.5f * (max.x - min.x), 0, 0);
+    vy = D3DXVECTOR3(0, 0.5f * (max.y - min.y), 0);
+    vz = D3DXVECTOR3(0, 0, 0.5f * (max.z - min.z));
 }
 
 //-----------------------------------------------------------------------------

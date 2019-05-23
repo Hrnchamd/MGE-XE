@@ -97,7 +97,7 @@ static bool invokeRayTest(mwseInstruction* _this, const D3DXVECTOR3* pos, const 
         void* spWorldRoot = *reinterpret_cast<void**>(reinterpret_cast<BYTE*>(*pWorldController) + 0x9c);
         pick->spRoot = spWorldRoot;
 
-        float inv_length = 1.0 / D3DXVec3Length(dir);
+        float inv_length = 1.0f / D3DXVec3Length(dir);
         D3DXVECTOR3 dir_norm;
         D3DXVec3Scale(&dir_norm, dir, inv_length);
         if (pickObjects(pick, *pos, dir_norm, false, 0.0f)) {

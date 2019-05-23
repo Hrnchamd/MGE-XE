@@ -388,12 +388,12 @@ void DistantLand::setScattering(const RGBVECTOR& out, const RGBVECTOR& in) {
     atmInscatter = in;
 }
 
-static float lerp(float x0, float x1, float t) {
-    return (1.0f-t) * x0 + t * x1;
+static double lerp(double x0, double x1, double t) {
+    return (1.0 - t) * x0 + t * x1;
 }
 
-static float saturate(float x) {
-    return std::min(std::max(0.0f, x), 1.0f);
+static double saturate(double x) {
+    return std::min(std::max(0.0, x), 1.0);
 }
 
 // adjustFog - Set fog distance, wind speed adjust and fog colour for this frame
@@ -417,18 +417,18 @@ void DistantLand::adjustFog() {
         float ratio = mwBridge->GetWeatherRatio(), ff = 1.0, fo = 0.0, ws = 0.0;
 
         if (ratio != 0 && wthr2 >= 0 && wthr2 <= 9) {
-            ff = lerp(Configuration.DL.FogD[wthr1], Configuration.DL.FogD[wthr2], ratio);
-            fo = lerp(Configuration.DL.FgOD[wthr1], Configuration.DL.FgOD[wthr2], ratio) / 100.0;
-            ws = lerp(Configuration.DL.Wind[wthr1], Configuration.DL.Wind[wthr2], ratio);
-            niceWeather = lerp((wthr1 <= 1) ? 1.0 : 0.0, (wthr2 <= 1) ? 1.0 : 0.0, ratio);
+            ff = float(lerp(Configuration.DL.FogD[wthr1], Configuration.DL.FogD[wthr2], ratio));
+            fo = float(0.01 * lerp(Configuration.DL.FgOD[wthr1], Configuration.DL.FgOD[wthr2], ratio));
+            ws = float(lerp(Configuration.DL.Wind[wthr1], Configuration.DL.Wind[wthr2], ratio));
+            niceWeather = float(lerp((wthr1 <= 1) ? 1.0 : 0.0, (wthr2 <= 1) ? 1.0 : 0.0, ratio));
             niceWeather *= niceWeather;
-            lightSunMult = lerp(Configuration.Lighting.SunMult[wthr1], Configuration.Lighting.SunMult[wthr2], ratio);
-            lightAmbMult = lerp(Configuration.Lighting.AmbMult[wthr1], Configuration.Lighting.AmbMult[wthr2], ratio);
+            lightSunMult = float(lerp(Configuration.Lighting.SunMult[wthr1], Configuration.Lighting.SunMult[wthr2], ratio));
+            lightAmbMult = float(lerp(Configuration.Lighting.AmbMult[wthr1], Configuration.Lighting.AmbMult[wthr2], ratio));
         } else if (wthr1 >= 0 && wthr1 <= 9) {
             ff = Configuration.DL.FogD[wthr1];
-            fo = Configuration.DL.FgOD[wthr1] / 100.0;
+            fo = Configuration.DL.FgOD[wthr1] / 100.0f;
             ws = Configuration.DL.Wind[wthr1];
-            niceWeather = (wthr1 <= 1) ? 1.0 : 0.0;
+            niceWeather = (wthr1 <= 1) ? 1.0f : 0.0f;
             lightSunMult = Configuration.Lighting.SunMult[wthr1];
             lightAmbMult = Configuration.Lighting.AmbMult[wthr1];
         }
@@ -439,7 +439,7 @@ void DistantLand::adjustFog() {
     } else {
         // Avoid density == 0, as when fogstart and fogend are equal, the fog equation denominator goes to infinity
         float density = std::max(0.01f, mwBridge->getInteriorFogDens());
-        fogStart = lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, density);
+        fogStart = float(lerp(Configuration.DL.InteriorFogEnd, Configuration.DL.InteriorFogStart, density));
         fogEnd = Configuration.DL.InteriorFogEnd;
         niceWeather = 0;
         windScaling = 0;
@@ -465,10 +465,10 @@ void DistantLand::adjustFog() {
                 fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
 
                 float farIntercept = std::min(fogEnd, nearViewRange);
-                float expStart = exp(-(1280.0 - fogNearStart) / (fogNearEnd - fogNearStart));
+                float expStart = exp(-(1280.0f - fogNearStart) / (fogNearEnd - fogNearStart));
                 float expEnd = exp(-(farIntercept - fogNearStart) / (fogNearEnd - fogNearStart));
-                fogNearStart = 1280.0 + (farIntercept - 1280.0) * (1 - expStart) / (expEnd - expStart);
-                fogNearEnd = 1280.0 + (farIntercept - 1280.0) * -expStart / (expEnd - expStart);
+                fogNearStart = 1280.0f + (farIntercept - 1280.0f) * (1.0f - expStart) / (expEnd - expStart);
+                fogNearEnd = 1280.0f + (farIntercept - 1280.0f) * -expStart / (expEnd - expStart);
             }
         } else {
             fogNearStart = fogStart;
@@ -499,29 +499,29 @@ void DistantLand::adjustFog() {
         const RGBVECTOR* skyCol = mwBridge->getCurrentWeatherSkyCol();
         const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
         const float sunaltitude = powf(1 + sunPos.z, 10);
-        const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
-        const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
-        const float sunaltitude2 = saturate(exp(-2 * sunPos.z)) * saturate(sunaltitude);
+        const float sunaltitude_a = 2.8f + 4.3f / sunaltitude;
+        const float sunaltitude_b = float(saturate(1.0 - exp2(-1.9 * sunaltitude)));
+        const float sunaltitude2 = float(saturate(exp(-2.0 * sunPos.z)) * saturate(sunaltitude));
 
         // Calculate scatter colour at Morrowind draw distance boundary
         float fogS = fogStart / Configuration.DL.ExpFogDistMult;
         float fogE = fogEnd / Configuration.DL.ExpFogDistMult;
         float fogdist = (nearViewRange - fogS) / (fogE - fogS);
-        float fog = saturate(exp(-fogdist));
-        fogdist = saturate(0.21 * fogdist);
+        float fog = float(saturate(exp(-fogdist)));
+        fogdist = float(saturate(0.21 * fogdist));
 
         D3DXVECTOR2 horizonDir(eyeVec.x, eyeVec.y);
         D3DXVec2Normalize(&horizonDir, &horizonDir);
         float suncos =  horizonDir.x * sunPos.x + horizonDir.y * sunPos.y;
-        float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
-        float rayl = 1 - 0.09 * mie;
-        float atmdep = 1.33;
+        float mie = (1.62f / (1.3f - suncos)) * sunaltitude2;
+        float rayl = 1.0f - 0.09f * mie;
+        float atmdep = 1.33f;
 
         RGBVECTOR midscatter = 0.5f * (atmInscatter + atmOutscatter);
         D3DXVECTOR3 scatter;
-        scatter.x = lerp(midscatter.r, atmOutscatter.r, suncos);
-        scatter.y = lerp(midscatter.g, atmOutscatter.g, suncos);
-        scatter.z = lerp(midscatter.b, atmOutscatter.b, suncos);
+        scatter.x = float(lerp(midscatter.r, atmOutscatter.r, suncos));
+        scatter.y = float(lerp(midscatter.g, atmOutscatter.g, suncos));
+        scatter.z = float(lerp(midscatter.b, atmOutscatter.b, suncos));
 
         D3DXVECTOR3 att = atmdep * scatter * (sunaltitude_a + mie);
         att.x = (1 - exp(-fogdist * att.x)) / att.x;
@@ -529,14 +529,14 @@ void DistantLand::adjustFog() {
         att.z = (1 - exp(-fogdist * att.z)) / att.z;
 
         D3DXVECTOR3 k0 = mie * D3DXVECTOR3(0.125, 0.125, 0.125) + rayl * newSkyCol;
-        D3DXVECTOR3 k1 = att * (1.1*atmdep + 0.5) * sunaltitude_b;
+        D3DXVECTOR3 k1 = att * (1.1f * atmdep + 0.5f) * sunaltitude_b;
         c1.r = k0.x * k1.x;
         c1.g = k0.y * k1.y;
         c1.b = k0.z * k1.z;
 
         // Convert from additive inscatter to Direct3D fog model
         // The correction factor is clamped to avoid creating infinities
-        c1 /= std::max(0.02, 1.0 - fog);
+        c1 /= std::max(0.02f, 1.0f - fog);
 
         // Scattering fog only occurs in nice weather
         c0 = (1.0f - niceWeather) * c0 + niceWeather * c1;
@@ -637,7 +637,7 @@ void DistantLand::updatePostShader(MGEShader* shader) {
     shader->SetTexture(EV_watertexture, texWater);
 
     // View position
-    float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.CameraEffects.zoom : 1.0;
+    float zoom = (Configuration.MGEFlags & ZOOM_ASPECT) ? Configuration.CameraEffects.zoom : 1.0f;
     shader->SetMatrix(EV_mview, &mwView);
     shader->SetMatrix(EV_mproj, &mwProj);
     shader->SetFloatArray(EV_eyevec, eyeVec, 3);
@@ -650,7 +650,7 @@ void DistantLand::updatePostShader(MGEShader* shader) {
     shader->SetFloatArray(EV_suncol, sunCol, 3);
     shader->SetFloatArray(EV_sunamb, totalAmb, 3);
     shader->SetFloatArray(EV_sunpos, sunPos, 3);
-    shader->SetFloat(EV_sunvis, lerp(sunVis, 1.0, 0.333 * niceWeather));
+    shader->SetFloat(EV_sunvis, float(lerp(sunVis, 1.0, 0.333 * niceWeather)));
 
     // Sky/fog
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
@@ -663,7 +663,7 @@ void DistantLand::updatePostShader(MGEShader* shader) {
 
     // Other
     // In cells without water, set very low waterlevel for shaders that clip against water
-    float water = mwBridge->CellHasWater() ? mwBridge->WaterLevel() : -1e9;
+    float water = mwBridge->CellHasWater() ? mwBridge->WaterLevel() : -1e9f;
     shader->SetFloat(EV_time, mwBridge->simulationTime());
     shader->SetFloat(EV_waterlevel, water);
     shader->SetBool(EV_isinterior, !mwBridge->CellHasWeather());
@@ -723,7 +723,7 @@ void DistantLand::setView(const D3DMATRIX* m) {
 
         // Sun position "bounces" at the horizon to follow night lighting instead of setting
         // Sun visibility goes to zero at night, so use this to correct the sun position so it sets
-        sunVis = mwBridge->GetSunVis() / 255.0;
+        sunVis = mwBridge->GetSunVis() / 255.0f;
         if (sunVis == 0) {
             sunPos.z = -sunPos.z;
         }

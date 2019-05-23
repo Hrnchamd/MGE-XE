@@ -104,12 +104,12 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT* a, const RECT* b, HWND c, c
 
             // Turn on if Morrowind ray cast picks up a target
             if (mwBridge->getPlayerTarget()) {
-                crosshairTimeout = t + 1.5;
+                crosshairTimeout = t + 1.5f;
             }
 
             // Turn on short duration if the player requires aim
             if (mwBridge->isPlayerCasting() || mwBridge->isPlayerAimingWeapon()) {
-                crosshairTimeout = t + 0.5;
+                crosshairTimeout = t + 0.5f;
             }
 
             // Turn off in menu mode
@@ -125,7 +125,7 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT* a, const RECT* b, HWND c, c
 
         if (Configuration.CameraEffects.zoomRateTarget != 0 && !mwBridge->IsMenu()) {
             // Update zoom controller
-            Configuration.CameraEffects.zoomRate += 0.25 * Configuration.CameraEffects.zoomRateTarget * mwBridge->frameTime();
+            Configuration.CameraEffects.zoomRate += 0.25f * Configuration.CameraEffects.zoomRateTarget * mwBridge->frameTime();
             if (Configuration.CameraEffects.zoomRate / Configuration.CameraEffects.zoomRateTarget > 1.0) {
                 Configuration.CameraEffects.zoomRate = Configuration.CameraEffects.zoomRateTarget;
             }
@@ -689,14 +689,14 @@ void captureMaterial(const D3DMATERIAL8* a) {
 
 float calcFPS() {
     static int lastMillis, framesSinceUpdate;
-    static float fps;
+    float fps;
 
     ++framesSinceUpdate;
     int millis = MWBridge::get()->getFrameBeginMillis();
     int diff = millis - lastMillis;
 
     if (diff >= 500) {
-        fps = 1000 * framesSinceUpdate / diff;
+        fps = 1000.0f * framesSinceUpdate / diff;
         lastMillis = millis;
         framesSinceUpdate = 0;
     }

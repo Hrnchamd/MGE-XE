@@ -273,8 +273,8 @@ void MGEhud::setTexture(hud_id hud, const char* texturePath) {
         D3DSURFACE_DESC desc;
         tex->GetLevelDesc(0, &desc);
 
-        e->w = desc.Width;
-        e->h = desc.Height;
+        e->w = float(desc.Width);
+        e->h = float(desc.Height);
         e->texture = tex;
 
         // As the BSA cache cannot reload a texture after it is released, (it returns a pointer to the released texture)
