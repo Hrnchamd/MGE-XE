@@ -7,7 +7,7 @@
 #include "support/log.h"
 
 #include <cstdio>
-
+#include <filesystem>
 
 
 extern void* CreateD3DWrapper(UINT);
@@ -64,6 +64,13 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
 
         if (Configuration.MGEFlags & SKIP_INTRO) {
             MWInitPatch::disableIntroMovies();
+        }
+
+        // Ensure that distant land files exist. This fixes a crash when managing an install or
+        // opening the game outside of Mod Organizer 2, after generating the files through it.
+        if (Configuration.MGEFlags & USE_DISTANT_LAND && !std::filesystem::exists("Data Files\\distantland")) {
+            Configuration.MGEFlags ^= USE_DISTANT_LAND;
+            LOG::logline("!! Distant land files are missing!");
         }
     }
 
