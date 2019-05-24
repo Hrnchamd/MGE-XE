@@ -689,7 +689,7 @@ void captureMaterial(const D3DMATERIAL8* a) {
 
 float calcFPS() {
     static int lastMillis, framesSinceUpdate;
-    float fps;
+    static float fps = 0.0f;
 
     ++framesSinceUpdate;
     int millis = MWBridge::get()->getFrameBeginMillis();
