@@ -692,13 +692,13 @@ bool DistantLand::selectDistantCell() {
         }
     }
 
-    currentWorldSpace = 0;
+    currentWorldSpace = nullptr;
     return false;
 }
 
 // isDistantCell - Check if there is distant land selected for this cell
 bool DistantLand::isDistantCell() {
-    return currentWorldSpace != 0;
+    return currentWorldSpace != nullptr;
 }
 
 // setView - Called once per frame to setup view dependent data
