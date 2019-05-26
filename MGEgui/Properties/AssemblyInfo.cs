@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Graphical interface for changing MGE settings")]
 [assembly: AssemblyCompany("MGE Developers")]
 [assembly: AssemblyProduct("MGEXEgui")]
-[assembly: AssemblyCopyright("Copyright ©  2006 - 2014")]
+[assembly: AssemblyCopyright("Copyright © 2006 - 2019")]
 
 [assembly: AssemblyVersion(MGEgui.Statics.versionNumber)]
 [assembly: AssemblyFileVersion(MGEgui.Statics.versionNumber)]
