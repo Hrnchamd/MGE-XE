@@ -2858,25 +2858,21 @@ namespace MGEgui {
             // bImport
             // 
             this.bImport.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.bImport.Enabled = false;
             this.bImport.Location = new System.Drawing.Point(260, 40);
             this.bImport.Name = "bImport";
             this.bImport.Size = new System.Drawing.Size(160, 25);
             this.bImport.TabIndex = 3;
             this.bImport.Text = "Import settings";
-            this.bImport.Visible = false;
             this.bImport.Click += new System.EventHandler(this.bImport_Click);
             // 
             // bExport
             // 
             this.bExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bExport.Enabled = false;
             this.bExport.Location = new System.Drawing.Point(514, 40);
             this.bExport.Name = "bExport";
             this.bExport.Size = new System.Drawing.Size(160, 25);
             this.bExport.TabIndex = 4;
             this.bExport.Text = "Export settings";
-            this.bExport.Visible = false;
             this.bExport.Click += new System.EventHandler(this.bExport_Click);
             // 
             // cbClearINI
