@@ -79,7 +79,8 @@ D3DXVECTOR4 DistantLand::sunVec, DistantLand::sunPos;
 float DistantLand::sunVis;
 RGBVECTOR DistantLand::sunCol, DistantLand::sunAmb, DistantLand::ambCol;
 RGBVECTOR DistantLand::nearFogCol, DistantLand::horizonCol;
-RGBVECTOR DistantLand::atmOutscatter, DistantLand::atmInscatter;
+RGBVECTOR DistantLand::atmOutscatter(0.07, 0.36, 0.76);
+RGBVECTOR DistantLand::atmInscatter(0.25, 0.38, 0.48);
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
 float DistantLand::nearViewRange;
@@ -371,10 +372,6 @@ bool DistantLand::initShader() {
     LOG::logline("-- Depth shader compiled OK");
 
     if (Configuration.MGEFlags & USE_ATM_SCATTER) {
-        // Default scatter coefficients
-        atmOutscatter = RGBVECTOR(0.07, 0.36, 0.76);
-        atmInscatter = RGBVECTOR(0.25, 0.38, 0.48);
-
         ehOutscatter = effect->GetParameterByName(0, "outscatter");
         ehInscatter = effect->GetParameterByName(0, "inscatter");
 
