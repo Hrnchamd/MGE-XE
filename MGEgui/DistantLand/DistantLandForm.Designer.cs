@@ -54,8 +54,6 @@ namespace MGEgui.DistantLand {
             this.lTexWorldResolution = new System.Windows.Forms.Label();
             this.cmbTexWorldNormalRes = new System.Windows.Forms.ComboBox();
             this.lTexWorldNormalRes = new System.Windows.Forms.Label();
-            this.lTexTwoStepDesc = new System.Windows.Forms.Label();
-            this.cbTexTwoStep = new System.Windows.Forms.CheckBox();
             this.bTexSkip = new System.Windows.Forms.Button();
             this.bTexRun = new System.Windows.Forms.Button();
             this.tabMesh = new System.Windows.Forms.TabPage();
@@ -355,8 +353,6 @@ namespace MGEgui.DistantLand {
             this.tabTex.Controls.Add(this.lTexWorldResolution);
             this.tabTex.Controls.Add(this.cmbTexWorldNormalRes);
             this.tabTex.Controls.Add(this.lTexWorldNormalRes);
-            this.tabTex.Controls.Add(this.lTexTwoStepDesc);
-            this.tabTex.Controls.Add(this.cbTexTwoStep);
             this.tabTex.Controls.Add(this.bTexSkip);
             this.tabTex.Controls.Add(this.bTexRun);
             this.tabTex.Location = new System.Drawing.Point(4, 27);
@@ -450,25 +446,6 @@ namespace MGEgui.DistantLand {
             this.lTexWorldNormalRes.Size = new System.Drawing.Size(160, 15);
             this.lTexWorldNormalRes.TabIndex = 0;
             this.lTexWorldNormalRes.Text = "World normalmap resolution";
-            // 
-            // lTexTwoStepDesc
-            // 
-            this.lTexTwoStepDesc.AutoSize = true;
-            this.lTexTwoStepDesc.Location = new System.Drawing.Point(11, 146);
-            this.lTexTwoStepDesc.Name = "lTexTwoStepDesc";
-            this.lTexTwoStepDesc.Size = new System.Drawing.Size(433, 15);
-            this.lTexTwoStepDesc.TabIndex = 0;
-            this.lTexTwoStepDesc.Text = "Check this option to reduce vram consumption when creating very large textures";
-            // 
-            // cbTexTwoStep
-            // 
-            this.cbTexTwoStep.AutoSize = true;
-            this.cbTexTwoStep.Location = new System.Drawing.Point(15, 176);
-            this.cbTexTwoStep.Name = "cbTexTwoStep";
-            this.cbTexTwoStep.Size = new System.Drawing.Size(198, 19);
-            this.cbTexTwoStep.TabIndex = 2;
-            this.cbTexTwoStep.Text = "Create world texture in two steps";
-            this.cbTexTwoStep.UseVisualStyleBackColor = true;
             // 
             // bTexSkip
             // 
@@ -1042,8 +1019,6 @@ namespace MGEgui.DistantLand {
         private System.Windows.Forms.Label lTexWorldResolution;
         private System.Windows.Forms.ComboBox cmbTexWorldNormalRes;
         private System.Windows.Forms.Label lTexWorldNormalRes;
-        private System.Windows.Forms.Label lTexTwoStepDesc;
-        private System.Windows.Forms.CheckBox cbTexTwoStep;
         private System.Windows.Forms.Button bTexSkip;
         private System.Windows.Forms.Button bTexRun;
         private System.Windows.Forms.Label lMeshDesc;
