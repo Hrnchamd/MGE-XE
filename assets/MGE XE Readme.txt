@@ -1,7 +1,7 @@
 
-MGE XE 0.11.0
+MGE XE 0.11.2
 -------------
-Released 2019-05-06
+Released 2019-05-27
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -29,6 +29,9 @@ Install
 
 4. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires high quality sky scattering enabled, and MWSE installed.
 
+As a complement to the UI scaling, you may also want to use Better Dialogue Font for sharper menu text.
+Download at: https://www.nexusmods.com/morrowind/mods/36873
+
 
 Upgrading
 ---------
@@ -47,7 +50,7 @@ Uninstall by running uninstall_MGEXE.exe. If you installed manually, delete MGEX
 You might want to know
 ----------------------
 
-MGE XE includes an install option for MWSE 2.1 beta by NullCascade. (https://github.com/MWSE/MWSE/) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
+MGE XE includes an install option for MWSE 2.1 beta by NullCascade. ( https://github.com/MWSE/MWSE/ ) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
 
 Standard MGE (3.8) shaders and HUD mods are not compatible due to design differences. You will not be able to use them with MGE XE without modification. Incompatible shaders will be detected and will not load.
 
@@ -73,6 +76,15 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.11.2
+- Distant land texture generation stability fixes. Outdated two-stage option removed.
+- Dynamic lighting coefficients reset button is now aware of per-pixel lighting defaults.
+- MGEXEgui handles modifying morrowind.ini correctly, not writing a BOM when running latest .NET versions.
+- Some code quality upgrades. May slightly lower the chance of crashes in-game.
+
+0.11.1
+- Forgot to include XE Sky Variations.
+
 0.11.0
 - Installer added. Optionally downloads MWSE 2.1. Sets registry so that Morrowind settings will not randomly reset.
 - 4GB patch applied to MGEXEgui.
