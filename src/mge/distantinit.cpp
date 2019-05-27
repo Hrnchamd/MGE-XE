@@ -681,7 +681,7 @@ bool DistantLand::loadDistantStatics() {
 
     if (GetFileAttributes("Data Files\\distantland\\statics") == INVALID_FILE_ATTRIBUTES) {
         LOG::logline("!! Distant statics have not been generated");
-        return false;
+        return !(Configuration.MGEFlags & USE_DISTANT_LAND);
     }
 
     h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
@@ -1016,7 +1016,7 @@ bool DistantLand::initLandscape() {
 
     if (GetFileAttributes("Data Files\\distantland\\world") == INVALID_FILE_ATTRIBUTES) {
         LOG::logline("!! Distant land files have not been generated");
-        return false;
+        return !(Configuration.MGEFlags & USE_DISTANT_LAND);
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);

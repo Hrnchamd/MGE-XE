@@ -211,6 +211,11 @@ void MacroFunctions::ToggleShaders() {
 }
 
 void MacroFunctions::ToggleDistantLand() {
+    // Ignore if distant land is not loaded
+    if (DistantLand::mapWorldSpaces.empty()) {
+        return;
+    }
+
     Configuration.MGEFlags ^= USE_DISTANT_LAND;
     displayFlag(USE_DISTANT_LAND, "Distant land enabled", "Distant land disabled");
 
