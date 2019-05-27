@@ -1134,9 +1134,6 @@ namespace MGEgui {
         }
 
         private void cmbFogMode_SelectedIndexChanged(object sender, EventArgs e) {
-            if (cmbFogMode.SelectedIndex != 0 && cbDLDistantLand.Checked && !loading) {
-                MessageBox.Show(strings["DLVertexFog"], Statics.strings["Warning"]);
-            }
         }
 
         private void cmbAlias_SelectedIndexChanged(object sender, EventArgs e) {
