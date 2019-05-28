@@ -101,6 +101,8 @@ namespace MGEgui {
 
         private void LoadSettings() {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings);
+
+            // Load settings into controls
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
                 if (ctl.Name.Substring(0, 2) != "ud") {
                     continue;
@@ -122,7 +124,9 @@ namespace MGEgui {
                 NumericUpDown ud = (NumericUpDown)ctl;
                 ud.Value = (decimal)iniFile.getKeyValue(ud.Name.Substring(2));
             }
-            iniFile = new INIFile("NUL", iniWeatherSettings);
+            
+            // Load settings for default buttons
+            iniFile = new INIFile(Statics.fn_nul, iniWeatherSettings);
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
                 if (ctl.Name.Substring(0, 2) != "ud") {
                     continue;
@@ -200,6 +204,7 @@ namespace MGEgui {
         private void bSave_Click(object sender, EventArgs e) {
             INIFile iniFile = new INIFile(Statics.fn_inifile, iniWeatherSettings, true);
             iniFile.initialize();
+            
             foreach (Control ctl in this.Controls["gbWind"].Controls) {
                 if (ctl.Name.Substring(0, 2) != "ud") {
                     continue;
@@ -221,6 +226,7 @@ namespace MGEgui {
                 NumericUpDown ud = (NumericUpDown)ctl;
                 iniFile.setKey(ud.Name.Substring(2), (double)ud.Value);
             }
+            
             iniFile.save();
             Close();
         }

@@ -586,36 +586,44 @@ namespace MGEgui.INI {
         private void loadINI() {
             iniContent.Clear();
 
-            // Open file and check for unwanted UTF-8 BOM
-            var f = File.OpenRead(fileName);
-            byte[] preamble = new byte[3];
-            f.Read(preamble, 0, 3);
-
-            // Mark for resaving without BOM if present, seek back to start if BOM not present            
-            if (preamble[0] == 0xEF && preamble[1] == 0xBB && preamble[2] == 0xBF) {
-                modified = true;
-            } else {
-                f.Seek(0, SeekOrigin.Begin);
+            // Explicitly test for NUL instead of catching exceptions
+            if (string.Equals(fileName, "NUL", StringComparison.OrdinalIgnoreCase)) {
+                return;
             }
-            
-            // Switch to text stream
-            var sr = new StreamReader(f, encoding);
-            INILine.setSection = "";
 
-            if (sr != null) {
-                while (!sr.EndOfStream) {
-                    INILine line = new INILine(sr.ReadLine());
-                    INIVariableDef vd = getVarDefn(line.section, line.key);
-                    line.defVal = vd.defValue;
-                    line.varType = vd.type;
-                    line.varDict = vd.dict;
-                    line.varBool = vd.boolType;
-                    line.useMinMax = vd.useMinMax;
-                    line.max = vd.max;
-                    line.min = vd.min;
-                    iniContent.Add(line);
+            // Open file and check for unwanted UTF-8 BOM
+            try {
+                using (var f = File.OpenRead(fileName)) {
+                    byte[] preamble = new byte[3];
+                    f.Read(preamble, 0, 3);
+        
+                    // Mark for resaving without BOM if present, seek back to start if BOM not present            
+                    if (preamble[0] == 0xEF && preamble[1] == 0xBB && preamble[2] == 0xBF) {
+                        modified = true;
+                    } else {
+                        f.Seek(0, SeekOrigin.Begin);
+                    }
+                    
+                    // Switch to text stream
+                    using (var sr = new StreamReader(f, encoding)) {
+                        INILine.setSection = "";
+        
+                        while (!sr.EndOfStream) {
+                            INILine line = new INILine(sr.ReadLine());
+                            INIVariableDef vd = getVarDefn(line.section, line.key);
+                            line.defVal = vd.defValue;
+                            line.varType = vd.type;
+                            line.varDict = vd.dict;
+                            line.varBool = vd.boolType;
+                            line.useMinMax = vd.useMinMax;
+                            line.max = vd.max;
+                            line.min = vd.min;
+                            iniContent.Add(line);
+                        }
+                    }
                 }
-                sr.Close();
+            } catch (FileNotFoundException) {
+                // Assume generating new INI
             }
         }
 
@@ -657,18 +665,13 @@ namespace MGEgui.INI {
 
         public bool save() {
             if (modified) {
-                StreamWriter sw = null;
                 try {
-                    sw = new StreamWriter(File.Create(fileName), encoding);
-                } catch {
-                    return false;
-                }
-                if (sw != null) {
-                    foreach (INILine line in iniContent) {
-                        sw.WriteLine(line.entry + line.comment);
+                    using (var sw = new StreamWriter(File.Create(fileName), encoding)) {
+                        foreach (INILine line in iniContent) {
+                            sw.WriteLine(line.entry + line.comment);
+                        }
                     }
-                    sw.Close();
-                } else {
+                } catch {
                     return false;
                 }
             }
