@@ -1,10 +1,11 @@
 
-MGE XE 0.11.2
+MGE XE 0.11.3
 -------------
-Released 2019-05-27
+Released 2019-05-28
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
+
 
 Summary
 -------
@@ -76,6 +77,9 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.11.3
+- Fixed being unable to start MGEXEgui on a fresh install.
+
 0.11.2
 - Distant land texture generation stability fixes. Outdated two-stage option removed.
 - Dynamic lighting coefficients reset button is now aware of per-pixel lighting defaults.
