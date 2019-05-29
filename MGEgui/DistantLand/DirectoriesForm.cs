@@ -19,7 +19,7 @@ namespace MGEgui.DistantLand {
             Statics.Localizations.Apply(this);
             Statics.Localizations.ApplyDialogs(this, new string[] { "folderAdd" });
 
-            this.folderAdd.SelectedPath = Statics.runDir + "\\Data files";
+            this.folderAdd.SelectedPath = Statics.runDir + @"\Data Files";
             this.datafiles = datafiles;
             this.dirs = dirs;
             while (dirs.IndexOf(datafiles) != -1) {
@@ -36,12 +36,12 @@ namespace MGEgui.DistantLand {
             if (folderAdd.ShowDialog() != DialogResult.OK) {
                 return;
             }
-            string s = folderAdd.SelectedPath.ToLower(Statics.Culture);
-            if (s.CompareTo(datafiles) == 0) {
+            string s = folderAdd.SelectedPath;
+            if (string.Equals(s, datafiles, StringComparison.OrdinalIgnoreCase)) {
                 return;
             }
             foreach (string d in lbDirectories.Items) {
-                if (s == d.ToLower(Statics.Culture)) {
+                if (string.Equals(s, d, StringComparison.OrdinalIgnoreCase)) {
                     return;
                 }
             }

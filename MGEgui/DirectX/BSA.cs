@@ -11,27 +11,27 @@ namespace MGEgui.DistantLand {
         public readonly int size;
 
         public int CompareTo(BSAEntry entry) {
-            return string.Compare(entryname, entry.entryname);
+            return string.Compare(entryname, entry.entryname, StringComparison.Ordinal);
         }
 
         public BSAEntry(BinaryReader file, string ename, int _offset, int _size) {
             bsafile = file;
-            entryname = ename.ToLower();
+            entryname = ename.ToLowerInvariant();
             offset = _offset;
             size = _size;
         }
 
         public static bool operator==(BSAEntry a, BSAEntry b) {
-            return a.entryname == b.entryname;
+            return string.Equals(a.entryname, b.entryname, StringComparison.Ordinal);
         }
         public static bool operator==(BSAEntry a, string b) {
-            return a.entryname == b.ToLower();
+            return string.Equals(a.entryname, b, StringComparison.OrdinalIgnoreCase);
         }
         public static bool operator!=(BSAEntry a, BSAEntry b) {
-            return a.entryname != b.entryname;
+            return !string.Equals(a.entryname, b.entryname, StringComparison.Ordinal);
         }
         public static bool operator!=(BSAEntry a, string b) {
-            return a.entryname != b.ToLower();
+            return !string.Equals(a.entryname, b, StringComparison.OrdinalIgnoreCase);
         }
         public override bool Equals(object obj) {
             if (obj is string) {
@@ -77,7 +77,7 @@ namespace MGEgui.DistantLand {
                             }
                             name += (char)b;
                         }
-                        entries.Add(new BSAEntry(br, "Data Files\\" + name, offset, size));
+                        entries.Add(new BSAEntry(br, @"Data Files\" + name, offset, size));
                     }
                     files.Add(br);
                 } catch (IOException ex) {
@@ -89,14 +89,9 @@ namespace MGEgui.DistantLand {
         }
 
         public static byte[] GetTexture(string name) {
-            name = name.ToLower();
-
-            int index;
             if (Path.IsPathRooted(name)) {
                 throw new ArgumentException("Something tried to load a texture using an absolute path.");
             }
-
-            name = name.ToLower();
 
             if (name[0] != '\\') {
                 name = "\\" + name;
@@ -104,10 +99,10 @@ namespace MGEgui.DistantLand {
             string dds_name = Path.ChangeExtension(name, ".dds");
 
             List<string> search_paths = new List<string>();
-            search_paths.Add("data files\\textures" + dds_name);
-            search_paths.Add("data files" + dds_name);
-            search_paths.Add("data files\\textures" + name);
-            search_paths.Add("data files" + name);
+            search_paths.Add(@"Data Files\Textures" + dds_name);
+            search_paths.Add(@"Data Files" + dds_name);
+            search_paths.Add(@"Data Files\Textures" + name);
+            search_paths.Add(@"Data Files" + name);
 
             // Search file system
             foreach (string file_path in search_paths) {
@@ -118,7 +113,7 @@ namespace MGEgui.DistantLand {
 
             // Search BSA files
             foreach (string file_path in search_paths) {
-                index = entries.BinarySearch(new BSAEntry(null, file_path, 0, 0));
+                int index = entries.BinarySearch(new BSAEntry(null, file_path, 0, 0));
                 if (index < 0) {
                     continue;
                 }
@@ -132,12 +127,11 @@ namespace MGEgui.DistantLand {
         }
 
         public static byte[] GetNif(string name) {
-            name = name.ToLower();
             if (Path.IsPathRooted(name)) {
                 throw new ArgumentException("Something tried to load a nif using an absolute path.");
             }
 
-            string path = Path.Combine(@"data files\meshes\", name);
+            string path = Path.Combine(@"Data Files\Meshes\", name);
             if (File.Exists(path)) {
                 return File.ReadAllBytes(path);
             }

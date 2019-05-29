@@ -23,7 +23,7 @@ namespace MGEgui.DirectX {
 
         private string filePath;
         public string FilePath {
-            set { filePath = value.ToLower(); }
+            set { filePath = value.ToLowerInvariant(); }
             get { return filePath; }
         }
         public int index;

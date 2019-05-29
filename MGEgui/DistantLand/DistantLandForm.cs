@@ -300,7 +300,7 @@ namespace MGEgui.DistantLand {
             pluginDirsTmp.Sort();
             string lastDir = "";
             foreach (string s in pluginDirsTmp) {
-                string casefoldDir = s.ToLower(Statics.Culture);
+                string casefoldDir = s.ToLowerInvariant();
                 if (casefoldDir != lastDir) {
                     pluginDirs.Add(s);
                 }
@@ -552,7 +552,7 @@ namespace MGEgui.DistantLand {
                             if (rr.SubTag == "INTV") {
                                 tex.index = br.ReadInt32() + 1;
                             } else if (rr.SubTag == "DATA") {
-                                tex.FilePath = rr.ReadCString().ToLower(Statics.Culture);
+                                tex.FilePath = rr.ReadCString().ToLowerInvariant();
                             }
                         }
                         try {
@@ -560,7 +560,7 @@ namespace MGEgui.DistantLand {
                         } catch (Exception ex) {
                             // Log texture errors, except for known errors in morrowind.esm
                             FileInfo fi = new FileInfo(file);
-                            if (fi.Name.ToLower() != "morrowind.esm") {
+                            if (fi.Name.ToLowerInvariant() != "morrowind.esm") {
                                 warnings.Add("Texture '" + tex.FilePath + "' in plugin '" + file + "' failed to load (" + ex.Message + ")");
                             }
                             tex.tex = DefaultTex.tex;
@@ -1427,8 +1427,8 @@ namespace MGEgui.DistantLand {
             public MWPlugin(FileInfo file) {
                 ShortName = file.Name;
                 Name = file.Name;
-                FullName = file.FullName.ToLower(Statics.Culture);
-                ESM = file.Extension.ToLower(Statics.Culture) == ".esm";
+                FullName = file.FullName.ToLowerInvariant();
+                ESM = file.Extension.ToLowerInvariant() == ".esm";
                 LoadOrder = file.LastWriteTimeUtc;
                 Checked = CheckState.Unchecked;
             }
@@ -1436,9 +1436,9 @@ namespace MGEgui.DistantLand {
             public MWPlugin(FileInfo file, string dir) {
                 ShortName = file.Name;
                 Name = file.Name + " > " + dir;
-                FullName = file.FullName.ToLower(Statics.Culture);
+                FullName = file.FullName.ToLowerInvariant();
                 Dir = dir;
-                ESM = file.Extension.ToLower(Statics.Culture) == ".esm";
+                ESM = file.Extension.ToLowerInvariant() == ".esm";
                 LoadOrder = file.LastWriteTimeUtc;
                 Checked = CheckState.Unchecked;
             }
@@ -1446,7 +1446,7 @@ namespace MGEgui.DistantLand {
             public MWPlugin(FileInfo file, bool ESM) {
                 ShortName = file.Name;
                 Name = file.Name;
-                FullName = file.FullName.ToLower(Statics.Culture);
+                FullName = file.FullName.ToLowerInvariant();
                 this.ESM = ESM;
                 LoadOrder = file.LastWriteTimeUtc;
                 Checked = CheckState.Unchecked;
@@ -1455,7 +1455,7 @@ namespace MGEgui.DistantLand {
             public MWPlugin(FileInfo file, string dir, bool ESM) {
                 ShortName = file.Name;
                 Name = file.Name + " > " + dir;
-                FullName = file.FullName.ToLower(Statics.Culture);
+                FullName = file.FullName.ToLowerInvariant();
                 Dir = dir;
                 this.ESM = ESM;
                 LoadOrder = file.LastWriteTimeUtc;
@@ -1471,7 +1471,7 @@ namespace MGEgui.DistantLand {
 
             public MWPlugins(string main, List<string> dirs) {
                 DirectoryInfo dir = new DirectoryInfo(main);
-                datafiles = dir.FullName.ToLower(Statics.Culture);
+                datafiles = dir.FullName.ToLowerInvariant();
                 while (dirs.IndexOf(datafiles) != -1) {
                     dirs.Remove(datafiles);
                 }
@@ -1480,11 +1480,11 @@ namespace MGEgui.DistantLand {
                 Dirs = new List<string>(dirs);
                 files = dir.GetFiles("*.esm");
                 foreach (FileInfo file in files) {
-                    Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, true));
+                    Plugins.Add(file.Name.ToLowerInvariant(), new MWPlugin(file, true));
                 }
                 files = dir.GetFiles("*.esp");
                 foreach (FileInfo file in files) {
-                    Plugins.Add(file.Name.ToLower(Statics.Culture), new MWPlugin(file, false));
+                    Plugins.Add(file.Name.ToLowerInvariant(), new MWPlugin(file, false));
                 }
                 List<string> removeDirs = new List<string>();
                 foreach (string dirName in Dirs) {
@@ -1502,7 +1502,7 @@ namespace MGEgui.DistantLand {
                     if (dirs.IndexOf(dirName) == -1) {
                         List<string> entries = new List<string>();
                         foreach (KeyValuePair<string, MWPlugin> entry in Plugins) {
-                            if (entry.Value.Dir != null && dirName.CompareTo(entry.Value.Dir) == 0) {
+                            if (entry.Value.Dir != null && string.Equals(dirName, entry.Value.Dir, StringComparison.OrdinalIgnoreCase)) {
                                 entries.Add(entry.Key);
                             }
                         }
@@ -1528,15 +1528,15 @@ namespace MGEgui.DistantLand {
 
             private bool addPluginsFromDir(string srcDir) {
                 DirectoryInfo dir = new DirectoryInfo(srcDir);
-                string casefoldDir = srcDir.ToLower(Statics.Culture);
+                string casefoldDir = srcDir.ToLowerInvariant();
                 if (dir.Exists) {
                     FileInfo[] files = dir.GetFiles("*.esm");
                     foreach (FileInfo file in files) {
-                        Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + casefoldDir, new MWPlugin(file, srcDir, true));
+                        Plugins.Add(file.Name.ToLowerInvariant() + " > " + casefoldDir, new MWPlugin(file, srcDir, true));
                     }
                     files = dir.GetFiles("*.esp");
                     foreach (FileInfo file in files) {
-                        Plugins.Add(file.Name.ToLower(Statics.Culture) + " > " + casefoldDir, new MWPlugin(file, srcDir, false));
+                        Plugins.Add(file.Name.ToLowerInvariant() + " > " + casefoldDir, new MWPlugin(file, srcDir, false));
                     }
                     return true;
                 }
@@ -1547,7 +1547,7 @@ namespace MGEgui.DistantLand {
                 get {
                     List<KeyValuePair<string, MWPlugin>> temp = new List<KeyValuePair<string, MWPlugin>>(Plugins);
                     temp.Sort(delegate(KeyValuePair<string, MWPlugin> firstPair, KeyValuePair<string, MWPlugin> nextPair) {
-                        return firstPair.Value.ShortName.CompareTo(nextPair.Value.ShortName);
+                        return string.Compare(firstPair.Value.ShortName, nextPair.Value.ShortName, StringComparison.CurrentCulture);
                     });
                     return temp.ToArray();
                 }
@@ -1557,7 +1557,13 @@ namespace MGEgui.DistantLand {
                 get {
                     List<KeyValuePair<string, MWPlugin>> temp = new List<KeyValuePair<string, MWPlugin>>(Plugins);
                     temp.Sort(delegate(KeyValuePair<string, MWPlugin> firstPair, KeyValuePair<string, MWPlugin> nextPair) {
-                        return ((firstPair.Value.ESM != nextPair.Value.ESM && firstPair.Value.ESM) ? -1 : (firstPair.Value.Dir == nextPair.Value.Dir ? firstPair.Value.ShortName.CompareTo(nextPair.Value.ShortName) : (firstPair.Value.Dir == null ? -1 : firstPair.Value.FullName.CompareTo(nextPair.Value.FullName))));
+                        if (firstPair.Value.ESM != nextPair.Value.ESM) {
+                            return firstPair.Value.ESM ? -1 : 1;
+                        }
+                        if (firstPair.Value.Dir != nextPair.Value.Dir) {
+                            return string.Compare(firstPair.Value.FullName, nextPair.Value.FullName, StringComparison.CurrentCulture);
+                        }
+                        return string.Compare(firstPair.Value.ShortName, nextPair.Value.ShortName, StringComparison.CurrentCulture);
                     });
                     return temp.ToArray();
                 }
@@ -1567,7 +1573,10 @@ namespace MGEgui.DistantLand {
                 get {
                     List<KeyValuePair<string, MWPlugin>> temp = new List<KeyValuePair<string, MWPlugin>>(Plugins);
                     temp.Sort(delegate(KeyValuePair<string, MWPlugin> firstPair, KeyValuePair<string, MWPlugin> nextPair) {
-                        return (firstPair.Value.ESM != nextPair.Value.ESM && firstPair.Value.ESM) ? -1 : firstPair.Value.LoadOrder.CompareTo(nextPair.Value.LoadOrder);
+                        if (firstPair.Value.ESM != nextPair.Value.ESM) {
+                            return firstPair.Value.ESM ? -1 : 1;
+                        }
+                        return firstPair.Value.LoadOrder.CompareTo(nextPair.Value.LoadOrder);
                     });
                     return temp.ToArray();
                 }
@@ -1628,7 +1637,7 @@ namespace MGEgui.DistantLand {
                 MessageBox.Show(strings["NoPluginsSelected"], Statics.strings["Error"]);
                 return;
             }
-            int i;
+
             // Create list of files
             files = new string[clbPlugsModList.CheckedItems.Count];
             if (files.Length != preselectedPlugins.Length) {
@@ -1638,20 +1647,22 @@ namespace MGEgui.DistantLand {
                 List<string> tmp2 = new List<string>(preselectedPlugins);
                 tmp1.Sort();
                 tmp2.Sort();
-                for (i = 0; i < tmp1.Count; i++) {
-                    if (tmp1[i].CompareTo(tmp2[i].ToLower(Statics.Culture)) != 0) {
+                for (int i = 0; i < tmp1.Count; i++) {
+                    if (!string.Equals(tmp1[i], tmp2[i], StringComparison.OrdinalIgnoreCase)) {
                         pluginListChanged = true;
                         break;
                     }
                 }
             }
+            
             KeyValuePair<string, MWPlugin>[] list = pluginList.ByLoadOrder;
-            i = 0;
+            int j = 0;
             foreach (KeyValuePair<string, MWPlugin> item in list) {
                 if (item.Value.Checked == CheckState.Checked) {
-                    files[i++] = item.Value.FullName;
+                    files[j++] = item.Value.FullName;
                 }
             }
+            
             // Continue
             if (configure) {
                 startSetup();
@@ -1668,7 +1679,7 @@ namespace MGEgui.DistantLand {
 
         private void clbPlugsModList_ItemCheck(object sender, System.Windows.Forms.ItemCheckEventArgs e) {
             string s = clbPlugsModList.Items[e.Index].ToString();
-            pluginList.Plugins[s.ToLower(Statics.Culture)].Checked = e.NewValue;
+            pluginList.Plugins[s.ToLowerInvariant()].Checked = e.NewValue;
         }
 
         private void bPlugsClear_Click(object sender, EventArgs e) {
@@ -1734,10 +1745,10 @@ namespace MGEgui.DistantLand {
 
         private void SelectPlugins(string[] plugins) {
             foreach (string s in plugins) {
-                if (!pluginList.Plugins.ContainsKey(s.ToLower(Statics.Culture))) {
+                if (!pluginList.Plugins.ContainsKey(s.ToLowerInvariant())) {
                     continue;
                 }
-                int index = clbPlugsModList.Items.IndexOf(pluginList.Plugins[s.ToLower(Statics.Culture)].Name);
+                int index = clbPlugsModList.Items.IndexOf(pluginList.Plugins[s.ToLowerInvariant()].Name);
                 if (index != -1) {
                     clbPlugsModList.SetItemChecked(index, true);
                 }
