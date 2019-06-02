@@ -117,38 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="backgroundWorker.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  <metadata name="backgroundWorker.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>102, 17</value>
-  </data>
-  <data name="statusBar.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  </metadata>
+  <metadata name="statusBar.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>249, 17</value>
-  </data>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="statusWarnings.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAIASURBVDhPxU/fS1NxFD/3e3c3HQ6SxJqBRFEjC2IFWbMn
-        HzJKEZXqrT+g/gWDEEIwLeipPRTJSjBKi4wy0EH6UA9Tt7mZ26Wr8+YvFmM6Mdu999PX7YpRjKyXPnDg
-        nM85nw+fQ4UAkGC2/471VaFf22BoaBAbTWrnyKQk9/cMw2KCjOkAW+GU469SZb7aYqpMBuBEdoVws1Vs
-        N1d/Nkkvl9WvLREG+hyG270LWtoKJSKCr8p2lGIuztKJsKB3dO7hIgmABymFcK9DfGSeFDZZCNquL08R
-        Nlb3ofd2EUpKXUCyAknFji/hXApX/rIA1ICIyIikQz2AD49340jVUSBSjvXkfsyPER7eFQbN099TxN/b
-        2pVRwppaCT1UhcWRQzhXexyIuaBFj2FpugRzH9lmipq84id4vSTFhhmC/mLdiNdA+3QGmPEgNlQNyNXQ
-        pjzIzp6APEzwdbEglzBe2ylCryw90deEb/Jp6HId8Pk8ou/Oor62HEhcQDZeB0O+iIWAE8qQgMMH2RVT
-        SjTaU1wRfiFg3L+X/34JRqIJmG9B/4NTcJRWAqmr0GabON8MqM2YfEl4cseicqk1ZzB439Id5QahZ4SJ
-        p9s1+ZygvCGM9/7C9zHMvGUokswUdjs5vTckv6/NGvS1MbM2+615q8/P3bdY6NplaYBLT+YM/iOIfgDV
-        liz6OaQIBAAAAABJRU5ErkJggg==
+        YQUAAAAJcEhZcwAAFiUAABYlAUlSJPAAAAIASURBVDhPxU/fS1NxFD/3e3c3HQ6SxJqBRFEjC2IFWbMn
+        HzJKCY3qrT+g/gWDEEKwX9BTeyiSlWBkFhZloAPzoR5m7jpn7o6uczeXshjTidnuvZ++bleMYmS99IED
+        53zO+Xz4HCoFgASr/XesLAn9+ipDS4t4xqI2j1xG8n7PMaQSZE6H2CKnXH+VKvfVEUsqZAJu5BcJV9vF
+        Tmv1Z5PsQlXz8jxhoM9ler1boGftUCdF8FXVplIkFZZNyILRdWMbF0kAfMiohDtd4gPrpLRJKuy4vDBF
+        WF3agd7rZaio9ADpGqRVJz5PFFJ4ipcloIVEREYkA9ouvHu4Ffvq9gOT1VhJ78TcGOH+bWHQOv09hTLi
+        6FRHCctaLQy5Dl/e7sGJxoNAzAM9egDz0xVIvmdrKRqKip/g95MUG2YYD5YbptIA/eMxYMaH2FA9EK+H
+        PuVDPnEI8WFC4CYLcwnjtZFCHrD1RF8SvsWPwog3AZ9OIvrmOJobq4HZU8grTTDjp5EKuaEOCdi7m12w
+        pESjPeU1E88EjAW389/PwZxtBebOov/eEbgqa4HMReiJVs63AVobIs8Jj27ZNC61FwwG79q6o9xAfkIY
+        f7xRkT6C+orwofcX/inDzGuGMslK4XSS239FCgY67OFAB7NqrV+f1/vi3H2NyZfOSy+49HDB4D+C6Ae1
+        ySzucTMbfQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="DudMenu.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  <metadata name="DudMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>348, 17</value>
-  </data>
+  </metadata>
   <data name="lMeshAutoInfo.Text" xml:space="preserve">
     <value>World mesh detail is auto-calculated based on the size of the world resulting from the selected plugins list - this value may change from what you had set previously if you choose different set of plugins.</value>
   </data>
-  <data name="saveStaticListDialog.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  <metadata name="saveStaticListDialog.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>448, 17</value>
-  </data>
-  <data name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing">
+  </metadata>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </data>
+  </metadata>
 </root>
