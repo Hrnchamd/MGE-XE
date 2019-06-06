@@ -1,7 +1,7 @@
 
-MGE XE 0.11.3
+MGE XE 0.11.4
 -------------
-Released 2019-05-28
+Released 2019-06-06
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -77,6 +77,12 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.11.4
+- Fixed broken replacement water rendering when distant land is off. It also now receives fog correctly.
+- Fixed "Unable to sort..." exception in the Distant Land generator.
+- Fixed system-specific possibility of hanging on the first frame of loading the game.
+- Added MWSE weather commands for fog and PPL lighting.
+
 0.11.3
 - Fixed being unable to start MGEXEgui on a fresh install.
 
