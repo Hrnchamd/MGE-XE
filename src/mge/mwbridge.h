@@ -47,6 +47,7 @@ public:
     const RGBVECTOR* getCurrentWeatherFogCol();
     DWORD getScenegraphFogCol();
     void setScenegraphFogCol(DWORD c);
+    float getScenegraphFogDensity();
     bool CellHasWeather();
     float* GetWindVector();
     DWORD GetWthrStruct(int wthr);

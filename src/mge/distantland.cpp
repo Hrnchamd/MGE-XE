@@ -478,15 +478,17 @@ void DistantLand::adjustFog() {
         device->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogNearStart);
         device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
     } else {
-        // Read Morrowind-set fog range
-        device->GetRenderState(D3DRS_FOGSTART, (DWORD*)&fogNearStart);
-        device->GetRenderState(D3DRS_FOGEND, (DWORD*)&fogNearEnd);
-
         // Reset fog end on toggling distant land as Morrowind assumes it doesn't get changed
         if (fogNearEnd > nearViewRange) {
             fogNearEnd = nearViewRange;
             device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
         }
+
+        // Read Morrowind-set fog range
+        fogNearEnd = nearViewRange;
+        fogNearStart = fogNearEnd * std::min(1.0f - mwBridge->getScenegraphFogDensity(), 0.99f);
+        fogStart = fogNearStart;
+        fogEnd = fogNearEnd;
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary

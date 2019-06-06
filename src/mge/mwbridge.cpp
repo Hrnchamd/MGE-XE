@@ -424,6 +424,14 @@ void MWBridge::setScenegraphFogCol(DWORD c) {
 
 //-----------------------------------------------------------------------------
 
+float MWBridge::getScenegraphFogDensity() {
+    DWORD addr = read_dword(eEnviro) + 0x9c;
+    addr = read_dword(addr) + 0x18;
+    return read_float(addr);
+}
+
+//-----------------------------------------------------------------------------
+
 bool MWBridge::CellHasWeather() {
     assert(m_loaded);
     DWORD addr = read_dword(eEnviro);
