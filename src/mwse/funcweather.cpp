@@ -1,7 +1,8 @@
 
-#include "mge/mwbridge.h"
-#include "mge/distantland.h"
 #include "funcweather.h"
+#include "mge/mwbridge.h"
+#include "mge/configuration.h"
+#include "mge/distantland.h"
 
 
 
@@ -134,6 +135,21 @@ bool mwseSetSunriseSunset::execute(mwseInstruction* _this) {
 }
 
 
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetScattering)
+
+// GetWeatherScattering -> <float outscatter_red> <float outscatter_green> <float outscatter_blue> <float inscatter_red> <float inscatter_geen> <float inscatter_blue>
+bool mwseGetScattering::execute(mwseInstruction* _this) {
+    _this->vmPush(DistantLand::atmOutscatter.r);
+    _this->vmPush(DistantLand::atmOutscatter.g);
+    _this->vmPush(DistantLand::atmOutscatter.b);
+    _this->vmPush(DistantLand::atmInscatter.r);
+    _this->vmPush(DistantLand::atmInscatter.g);
+    _this->vmPush(DistantLand::atmInscatter.b);
+
+    return true;
+}
+
+
 MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetScattering)
 
 // SetWeatherScattering <float outscatter_red> <float outscatter_green> <float outscatter_blue> <float inscatter_red> <float inscatter_geen> <float inscatter_blue>
@@ -200,6 +216,81 @@ bool mwseSetWeatherWindSpeed::execute(mwseInstruction* _this) {
 
     MWWeather* w = (MWWeather*)MWBridge::get()->GetWthrStruct(weather_id);
     w->windSpeed = x;
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetWeatherDLFog)
+
+// GetWeatherDLFog <byte weatherID> -> <float fogDistMultiplier> <float fogOffsetPercent>
+bool mwseGetWeatherDLFog::execute(mwseInstruction* _this) {
+    VMREGTYPE weather_id;
+
+    if (!_this->vmPop(&weather_id)) { return false; }
+
+    if (weather_id >= 0 && weather_id <= 9) {
+        _this->vmPush(Configuration.DL.FogD[weather_id]);
+        _this->vmPush(Configuration.DL.FgOD[weather_id]);
+    }
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetWeatherDLFog)
+
+// SetWeatherDLFog <byte weatherID> <float fogDistMultiplier> <float fogOffsetPercent>
+bool mwseSetWeatherDLFog::execute(mwseInstruction* _this) {
+    VMREGTYPE weather_id;
+    VMFLOAT dist, offset;
+
+    if (!_this->vmPop(&weather_id)) { return false; }
+    if (!_this->vmPop(&dist)) { return false; }
+    if (!_this->vmPop(&offset)) { return false; }
+
+    if (weather_id >= 0 && weather_id <= 9) {
+        Configuration.DL.FogD[weather_id] = dist;
+        Configuration.DL.FgOD[weather_id] = offset;
+    }
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetWeatherPPLLight)
+
+// GetWeatherPPLLight <byte weatherID> -> <float sunMultiplier> <float ambientMultiplier>
+bool mwseGetWeatherPPLLight::execute(mwseInstruction* _this) {
+    VMREGTYPE weather_id;
+    VMFLOAT x;
+
+    if (!_this->vmPop(&weather_id)) { return false; }
+
+    if (weather_id >= 0 && weather_id <= 9) {
+        _this->vmPush(Configuration.Lighting.SunMult[weather_id]);
+        _this->vmPush(Configuration.Lighting.AmbMult[weather_id]);
+    }
+
+    return true;
+}
+
+
+MWSEINSTRUCTION_DECLARE_VTABLE(mwseSetWeatherPPLLight)
+
+// SetWeatherPPLLight <byte weatherID> <float sunMultiplier> <float ambientMultiplier>
+bool mwseSetWeatherPPLLight::execute(mwseInstruction* _this) {
+    VMREGTYPE weather_id;
+    VMFLOAT sun, amb;
+
+    if (!_this->vmPop(&weather_id)) { return false; }
+    if (!_this->vmPop(&sun)) { return false; }
+    if (!_this->vmPop(&amb)) { return false; }
+
+    if (weather_id >= 0 && weather_id <= 9) {
+        Configuration.Lighting.SunMult[weather_id] = sun;
+        Configuration.Lighting.AmbMult[weather_id] = amb;
+    }
 
     return true;
 }

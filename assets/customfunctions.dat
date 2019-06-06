@@ -125,11 +125,27 @@ function
 	Opcode = 0x3833
 end
 function
+	Name = XArcTan2
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float
+	Param1 = Float
+	Param2 = Float
+	Opcode = 0x382F
+end
+function
 	Name = XContentList
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = Short | Long | Float | String | Many
 	Param1 = Long
 	Opcode = 0x3f03
+end
+function
+	Name = XContentListFiltered
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long
+	Param2 = Long
+	Opcode = 0x3f07
 end
 function
 	Name = XCos
@@ -166,6 +182,15 @@ function
 	Return = None
 	Param1 = Long | String
 	Opcode = 0x3f0e
+end
+function
+	Name = xEquipmentList
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long | String | Float | Many
+	Param1 = Long
+	Param2 = Long
+	Param3 = Long
+	Opcode = 0x3e53
 end
 function
 	Name = XFileReadFloat
@@ -383,6 +408,19 @@ function
 	Opcode = 0x3f66
 end
 function
+	Name = xGetMCPFeatureState
+	Options = MWSE
+	Return = Short
+	Param1 = Long
+	Opcode = 0x3f41
+end
+function
+	Name = xGetModel
+	Options = MWSE
+	Return = Long | String
+	Opcode = 0x3f40
+end
+function
 	Name = XGetName
 	Options = MWSE
 	Return = Long | String
@@ -419,6 +457,19 @@ function
 	Return = Long
 	Param1 = Long
 	Opcode = 0x3f04
+end
+function
+	Name = XGetStackSize
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long
+	Opcode = 0x3c35
+end
+function
+	Name = xGetItemCount
+	Options = MWSE
+	Return = Long
+	Param1 = Long | String
+	Opcode = 0x3f42
 end
 function
 	Name = XGetValue
@@ -595,6 +646,13 @@ function
 	Opcode = 0x3c29
 end
 function
+	Name = XScriptRunning
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3E52
+end
+function
 	Name = XSetBaseGold
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = None
@@ -649,6 +707,20 @@ function
 	Return = None
 	Param1 = Long | String
 	Opcode = 0x3c21
+end
+function
+	Name = XStartScript
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3e50
+end
+function
+	Name = XStopScript
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+	Param1 = Long | String
+	Opcode = 0x3e51
 end
 function
 	Name = XStringBuild
@@ -952,6 +1024,15 @@ function
 	Param1 = Long | String
 	Param2 = Long | String
 	Opcode = 0x3e68
+end
+function
+	Name = XStringCapture
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Long | String | Many
+	Param1 = Long | String
+	Param2 = Long | String
+	Param3 = Long
+	Opcode = 0x3e69
 end
 
 # New MWSE-WIP functions
@@ -1325,6 +1406,14 @@ function
 end
 
 function
+	Name = XGetAlchemyInfo
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Many
+	Param1 = Long | String
+	Opcode = 0x395F
+end
+
+function
 	Name = XGetArrayValue
 	Options = MWSE | AllowGlobal | ShortVar | AllowVar
 	Return = Long
@@ -1679,6 +1768,105 @@ function
 	Param1 = Float
 	Param2 = Float
 	Opcode = 0x3956
+end
+
+function
+	Name = XGetEncumbrance
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Param1 = Short
+	Param2 = Short
+	Opcode = 0x3957
+end
+
+function
+	Name = XGetMaxMagicka
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Opcode = 0x3958
+end
+
+function
+	Name = XGetMaxFatigue
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Float
+	Opcode = 0x3959
+end
+
+function
+	Name = XGetRace
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Short
+	Opcode = 0x395A
+end
+
+function
+	Name = XGetArraySize
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x395B
+end
+
+function
+	Name = XClearArray
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Long
+	Opcode = 0x395C
+end
+
+function
+	Name = xGetIngredientEffect
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long | Many
+	Param1 = Long | String
+	Param2 = Long
+	Opcode = 0x395D
+end
+
+function
+	Name = xSetIngredientEffect
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long
+	Param1 = Long | String
+	Param2 = Long
+	Param3 = Long
+	Param4 = Long
+	Opcode = 0x395E
+end
+
+function
+	Name = xGetKeyBind
+	Options = MWSE | AllowGlobal | AllowVar
+	Return = Long | Many
+	Param1 = Long
+	Opcode = 0x3C36
+end
+
+function
+	Name = xActivate
+	Options = MWSE
+	Return = Long
+	Param1 = Long
+	Opcode = 0x3C37
+end
+
+function
+	Name = xMyRef
+	Options = MWSE
+	Return = Long
+	Opcode = 0x3C38
+end
+
+function
+	Name = xLuaRunScript
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Short | Long | Float | String | Many
+	Param1 = Long | String
+	Param2 = Short | Long | Float | String | Many | Optional
+	Opcode = 0x3FB0
 end
 
 
@@ -3224,6 +3412,44 @@ function
     Param1 = Short
     Param2 = Float
 	Opcode = 0x3a88
+end
+function
+	Name = XGetWeatherScattering
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float | Many
+	Opcode = 0x3a89
+end
+function
+	Name = MGEGetWeatherDLFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float | Many
+    Param1 = Short
+	Opcode = 0x3a8a
+end
+function
+	Name = MGESetWeatherDLFog
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Short
+    Param2 = Float
+    Param3 = Float
+	Opcode = 0x3a8b
+end
+function
+	Name = MGEGetWeatherPPLLight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = Float | Many
+    Param1 = Short
+	Opcode = 0x3a8c
+end
+function
+	Name = MGESetWeatherPPLLight
+	Options = MWSE | AllowGlobal | ShortVar | AllowVar
+	Return = None
+    Param1 = Short
+    Param2 = Float
+    Param3 = Float
+	Opcode = 0x3a8d
 end
 
 function

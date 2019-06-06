@@ -97,6 +97,11 @@ void MWSE_MGEPlugin::init(HMODULE dll) {
     MWSEAddInstruction(0x3a86, new mwseSetWeatherGlare(*vm));
     MWSEAddInstruction(0x3a87, new mwseSetWeatherCloudSpeed(*vm));
     MWSEAddInstruction(0x3a88, new mwseSetWeatherWindSpeed(*vm));
+    MWSEAddInstruction(0x3a89, new mwseGetScattering(*vm));
+    MWSEAddInstruction(0x3a8a, new mwseGetWeatherDLFog(*vm));
+    MWSEAddInstruction(0x3a8b, new mwseSetWeatherDLFog(*vm));
+    MWSEAddInstruction(0x3a8c, new mwseGetWeatherPPLLight(*vm));
+    MWSEAddInstruction(0x3a8d, new mwseSetWeatherPPLLight(*vm));
 
     MWSEAddInstruction(0x3700, new mwseWipeAll(*vm));
     MWSEAddInstruction(0x3701, new mwseOutputDebugString(*vm));
