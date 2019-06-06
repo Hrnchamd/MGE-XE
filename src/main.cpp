@@ -65,6 +65,8 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
         if (Configuration.MGEFlags & SKIP_INTRO) {
             MWInitPatch::disableIntroMovies();
         }
+
+        MWInitPatch::patchFrameTimer();
     }
 
     return true;

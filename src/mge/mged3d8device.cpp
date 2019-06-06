@@ -2,7 +2,6 @@
 #include "mged3d8device.h"
 #include "proxydx/d3d8texture.h"
 #include "proxydx/d3d8surface.h"
-#include "support/timing.h"
 
 #include <algorithm>
 #include "mgeversion.h"
@@ -39,8 +38,6 @@ static float calcFPS();
 
 
 MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d) : ProxyDevice(real, d3d) {
-    HighResolutionTimer::init();
-
     // Initialize state here, as the device is released and recreated on fullscreen Alt-Tab
     sceneCount = -1;
     rendertargetNormal = true;
@@ -82,7 +79,6 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT* a, const RECT* b, HWND c, c
     // Load Morrowind's dynamic memory pointers
     if (!mwBridge->IsLoaded() && mwBridge->CanLoad()) {
         mwBridge->Load();
-        mwBridge->patchFrameTimer(&HighResolutionTimer::getMilliseconds);
         mwBridge->disableScreenshotFunc();
         mwBridge->markWaterNode(99999.0f);
     }
