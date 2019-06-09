@@ -102,15 +102,9 @@ void DistantLand::renderDepthRecorded() {
         }
 
         // Skin using worldview matrices for numerical accuracy
-        D3DXMATRIX worldView[4];
-        const int count = (i.vertexBlendState <= 3) ? i.vertexBlendState + 1 : 1;
-        for (int n = 0; n != count; ++n) {
-            worldView[n] = i.worldTransforms[n] * mwView;
-        }
-
         effect->SetBool(ehHasBones, i.vertexBlendState != 0);
         effect->SetInt(ehVertexBlendState, i.vertexBlendState);
-        effect->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
+        effect->SetMatrixArray(ehVertexBlendPalette, i.worldViewTransforms, 4);
         effectDepth->CommitChanges();
 
         device->SetRenderState(D3DRS_CULLMODE, i.cullMode);

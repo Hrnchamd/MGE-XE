@@ -632,15 +632,19 @@ void captureTransform(D3DTRANSFORMSTATETYPE a, const D3DMATRIX* b) {
     switch (a) {
     case D3DTS_WORLDMATRIX(0):
         rs.worldTransforms[0] = *b;
+        D3DXMatrixMultiply(&rs.worldViewTransforms[0], static_cast<const D3DXMATRIX*>(b), &rs.viewTransform);
         break;
     case D3DTS_WORLDMATRIX(1):
         rs.worldTransforms[1] = *b;
+        D3DXMatrixMultiply(&rs.worldViewTransforms[1], static_cast<const D3DXMATRIX*>(b), &rs.viewTransform);
         break;
     case D3DTS_WORLDMATRIX(2):
         rs.worldTransforms[2] = *b;
+        D3DXMatrixMultiply(&rs.worldViewTransforms[2], static_cast<const D3DXMATRIX*>(b), &rs.viewTransform);
         break;
     case D3DTS_WORLDMATRIX(3):
         rs.worldTransforms[3] = *b;
+        D3DXMatrixMultiply(&rs.worldViewTransforms[3], static_cast<const D3DXMATRIX*>(b), &rs.viewTransform);
         break;
     case D3DTS_VIEW:
         rs.viewTransform = *b;

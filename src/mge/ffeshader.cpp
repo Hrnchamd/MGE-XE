@@ -259,16 +259,10 @@ void FixedFunctionShader::renderMorrowind(const RenderedState* rs, const Fragmen
     // Set common state and render
     effectFFE->SetInt(ehVertexBlendState, rs->vertexBlendState);
     if (rs->vertexBlendState) {
-        D3DXMATRIX worldView[4];
-        for (n = 0; n != 4; ++n) {
-            worldView[n] = rs->worldTransforms[n] * rs->viewTransform;
-        }
-
-        effectFFE->SetMatrixArray(ehVertexBlendPalette, worldView, 4);
+        effectFFE->SetMatrixArray(ehVertexBlendPalette, rs->worldViewTransforms, 4);
     } else {
-        D3DXMATRIX worldView = rs->worldTransforms[0] * rs->viewTransform;
         effectFFE->SetMatrix(ehWorld, &rs->worldTransforms[0]);
-        effectFFE->SetMatrix(ehWorldView, &worldView);
+        effectFFE->SetMatrix(ehWorldView, &rs->worldViewTransforms[0]);
     }
 
     UINT passes;

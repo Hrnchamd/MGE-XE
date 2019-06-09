@@ -18,6 +18,7 @@ struct RenderedState {
     DWORD vertexBlendState;
     D3DXMATRIX worldTransforms[4];
     D3DXMATRIX viewTransform;
+    D3DXMATRIX worldViewTransforms[4];
     BYTE blendEnable, srcBlend, destBlend;
     BYTE alphaTest, alphaFunc, alphaRef;
     BYTE useLighting, useFog, matSrcDiffuse, matSrcEmissive;
