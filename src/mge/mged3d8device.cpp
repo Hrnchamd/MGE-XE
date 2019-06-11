@@ -699,6 +699,8 @@ float calcFPS() {
         fps = 1000.0f * framesSinceUpdate / diff;
         lastMillis = millis;
         framesSinceUpdate = 0;
+    } else if (diff < 0) {
+        lastMillis = millis;
     }
 
     return fps;
