@@ -308,6 +308,10 @@ Sets characteristic weather colours.
 xSetSunriseSunset <float rise_time> <float rise_duration> <float set_time> <float set_duration>
 Sets the daylight cycle. All times are in hours.
 
+xGetWeatherScattering
+Returns: <float outscatter_red> <float outscatter_green> <float outscatter_blue> <float inscatter_red> <float inscatter_geen> <float inscatter_blue>
+Gets distant land atmospheric scattering colours.
+
 xSetWeatherScattering <float outscatter_red> <float outscatter_green> <float outscatter_blue> <float inscatter_red> <float inscatter_geen> <float inscatter_blue>
 Sets distant land atmospheric scattering colours.
 
@@ -319,6 +323,19 @@ Sets cloud speed for a weather type. See morrowind.ini for standard values.
 
 xSetWeatherWindSpeed <byte weatherID> <float speed>
 Sets wind speed for a weather type. See morrowind.ini for standard values.
+
+MGEGetWeatherDLFog <byte weatherID>
+Returns: <float fogDistMultiplier> <float fogOffsetPercent>
+Gets distant land fog parameters for a specific weather. See MGESetWeatherDLFog.
+
+MGESetWeatherDLFog <byte weatherID> <float fogDistMultiplier> <float fogOffsetPercent>
+Sets distant land fog parameters for a specific weather. fogDistMultiplier is multiplied by the "Above water fog" distance to get the fog distance for that weather. It has a range of [0, 2]. fogOffsetPercent is the percentage of fog applied at zero distance from the camera. It has a range of [0, 90].
+
+MGEGetWeatherPPLLight <byte weatherID> -> <float sunMultiplier> <float ambientMultiplier>
+Gets per-pixel lighting parameters for a specific weather. See MGESetWeatherPPLLight.
+
+MGESetWeatherPPLLight <byte weatherID> <float sunMultiplier> <float ambientMultiplier>
+Sets light multipliers used in per-pixel lighting for a specific weather. sunMultiplier affects sunlight, ambientMultiplier affects ambient lighting.
 
 MGEEnableShader <string shader_name>
 MGEDisableShader <string shader_name>
