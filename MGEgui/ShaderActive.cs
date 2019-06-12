@@ -295,7 +295,7 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.Controls.Add(this.lbSelected, 0, 3);
             this.tableLayoutPanelAdv.Controls.Add(this.panelActions, 1, 1);
             this.tableLayoutPanelAdv.Controls.Add(this.panelActiveListActions, 1, 3);
-            this.tableLayoutPanelAdv.Location = new System.Drawing.Point(304, 0);
+            this.tableLayoutPanelAdv.Location = new System.Drawing.Point(300, 0);
             this.tableLayoutPanelAdv.Name = "tableLayoutPanelAdv";
             this.tableLayoutPanelAdv.Padding = new System.Windows.Forms.Padding(6, 8, 6, 8);
             this.tableLayoutPanelAdv.RowCount = 5;
@@ -682,7 +682,7 @@ namespace MGEgui {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(650, 1000);
+            this.MaximumSize = new System.Drawing.Size(660, 500);
             this.MinimumSize = new System.Drawing.Size(305, 440);
             this.Name = "ShaderActive";
             this.Text = "Set active shaders";
