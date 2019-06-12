@@ -177,14 +177,9 @@
     <ClCompile Include="src\mge\configuration.cpp">
       <Filter>Source Files\mge</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="src\exports.def">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="src\proxydx\d3d8header.inl">
-      <Filter>Header Files\proxydx</Filter>
-    </None>
+    <ClCompile Include="src\support\pngsave.cpp">
+      <Filter>Source Files\support</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\proxydx\d3d8device.h">
@@ -330,6 +325,15 @@
     </ClInclude>
     <ClInclude Include="src\mwse\mgebridge.h">
       <Filter>Header Files\mwse</Filter>
+    </ClInclude>
+    <ClInclude Include="src\exports.def">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\proxydx\d3d8header.inl">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\support\pngsave.h">
+      <Filter>Header Files\support</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

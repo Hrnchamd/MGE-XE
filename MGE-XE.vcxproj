@@ -148,6 +148,7 @@
     <ClCompile Include="src\proxydx\direct3d8.cpp" />
     <ClCompile Include="src\proxydx\dxguid.cpp" />
     <ClCompile Include="src\support\log.cpp" />
+    <ClCompile Include="src\support\pngsave.cpp" />
     <ClCompile Include="src\support\timing.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -203,6 +204,7 @@
     <ClInclude Include="src\proxydx\direct3d8.h" />
     <ClInclude Include="src\proxydx\directin8.h" />
     <ClInclude Include="src\support\log.h" />
+    <ClInclude Include="src\support\pngsave.h" />
     <ClInclude Include="src\support\timing.h" />
     <ClInclude Include="src\support\winheader.h" />
   </ItemGroup>

@@ -1,15 +1,16 @@
 
-#include <cstdio>
-#include <cstring>
-#include <cctype>
 #include "proxydx/d3d8header.h"
-
+#include "mmefunctiondefs.h"
 #include "configuration.h"
 #include "mwbridge.h"
 #include "statusoverlay.h"
 #include "distantland.h"
 #include "postshaders.h"
-#include "mmefunctiondefs.h"
+#include "support/pngsave.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstring>
 
 
 
@@ -135,12 +136,29 @@ static void saveScreenshot(IDirect3DSurface9* surface) {
     }
 
     // Save screenshot to desired format
-    HRESULT hr = D3DXSaveSurfaceToFile(path, formats[Configuration.SSFormat], surface, NULL, NULL);
-    if (SUCCEEDED(hr)) {
-        StatusOverlay::setStatus(filename);
-    } else {
-        std::snprintf(filename, sizeof(filename), "Screenshot failed - D3DX Error %lx", hr);
-        StatusOverlay::setStatus(filename);
+    if (Configuration.SSFormat == D3DXIFF_PNG) {
+        // D3DX PNG support does full compression which takes >1 sec to save an image
+        // Use a non-compressing PNG encoder for reasonable screenshot times
+        bool success = false;
+        D3DSURFACE_DESC desc;
+        D3DLOCKED_RECT rect;
+        surface->GetDesc(&desc);
+
+        if (surface->LockRect(&rect, NULL, D3DLOCK_READONLY) == D3D_OK) {
+            success = pngSaveBGRA(path, rect.pBits, desc.Width, desc.Height, rect.Pitch);
+            surface->UnlockRect();
+        }
+
+        StatusOverlay::setStatus(success ? filename : "Screenshot failed");
+    }
+    else {
+        HRESULT hr = D3DXSaveSurfaceToFile(path, formats[Configuration.SSFormat], surface, NULL, NULL);
+        if (SUCCEEDED(hr)) {
+            StatusOverlay::setStatus(filename);
+        } else {
+            std::snprintf(filename, sizeof(filename), "Screenshot failed - D3DX Error %lx", hr);
+            StatusOverlay::setStatus(filename);
+        }
     }
 }
 

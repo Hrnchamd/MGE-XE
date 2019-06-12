@@ -825,7 +825,7 @@ void DistantLand::requestCaptureNoUI(void (*func)(IDirect3DSurface9*)) {
     captureScreenFunc = func;
 }
 
-// captureScreen - Capture a screenshot, fixing any alpha channel issue
+// captureScreen - Capture a screenshot
 IDirect3DSurface9* DistantLand::captureScreen() {
     IDirect3DTexture9* t;
     IDirect3DSurface9* s;
@@ -837,10 +837,9 @@ IDirect3DSurface9* DistantLand::captureScreen() {
     // Cancel render cache, borrowBuffer just overwrote it
     isRenderCached = false;
 
-    // Set alpha channel to opaque in case something with alpha write was rendered
+    // Copy buffer to system memory surface
     D3DVIEWPORT9 vp;
     IDirect3DSurface9* surfSS;
-    D3DLOCKED_RECT rect;
 
     device->GetViewport(&vp);
     DWORD hr = device->CreateOffscreenPlainSurface(vp.Width, vp.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfSS, NULL);
@@ -856,20 +855,6 @@ IDirect3DSurface9* DistantLand::captureScreen() {
         return nullptr;
     }
 
-    surfSS->LockRect(&rect, 0, 0);
-    if (hr != D3D_OK) {
-        surfSS->Release();
-        return nullptr;
-    }
-
-    DWORD* c = (DWORD*)rect.pBits;
-    for (int y = 0; y != vp.Height; ++y) {
-        for (int x = 0; x != rect.Pitch >> 2; ++x) {
-            *c++ |= D3DCOLOR_ARGB(0xff, 0, 0, 0);
-        }
-    }
-
-    surfSS->UnlockRect();
     return surfSS;
 }
 
