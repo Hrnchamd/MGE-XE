@@ -1,7 +1,7 @@
 
-MGE XE 0.11.4
+MGE XE 0.11.5
 -------------
-Released 2019-06-06
+Released 2019-06-12
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -77,6 +77,12 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.11.5
+- Neutralized nearly all performance loss caused by changes to rendering since 0.10.1, mainly in dense environments like cities. The frame rate in cities is a significant improvement over 0.11.4, and within -4 to +1% of 0.10.1.
+- Saving PNG screenshots now take around 0.1 seconds instead of 1 to 2 seconds.
+- Possibly fixed random and rare pixelated rendering appearing in screenshots.
+- Fixed frame rate display possibly stuck on 0.
+
 0.11.4
 - Fixed broken replacement water rendering when distant land is off. It also now receives fog correctly.
 - Fixed "Unable to sort..." exception in the Distant Land generator.
