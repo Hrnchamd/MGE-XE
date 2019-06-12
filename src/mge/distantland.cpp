@@ -838,11 +838,11 @@ IDirect3DSurface9* DistantLand::captureScreen() {
     isRenderCached = false;
 
     // Copy buffer to system memory surface
-    D3DVIEWPORT9 vp;
     IDirect3DSurface9* surfSS;
+    D3DSURFACE_DESC desc;
 
-    device->GetViewport(&vp);
-    DWORD hr = device->CreateOffscreenPlainSurface(vp.Width, vp.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfSS, NULL);
+    s->GetDesc(&desc);
+    DWORD hr = device->CreateOffscreenPlainSurface(desc.Width, desc.Height, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfSS, NULL);
     if (hr != D3D_OK) {
         s->Release();
         return nullptr;
