@@ -98,11 +98,12 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
         return false;
     }
 
+    DWORD bytesWritten;
     CRC32 crc;
     Adler adler;
 
     // PNG header.
-    if (!WriteFile(hFile, PNGheader.data(), PNGheader.size(), NULL, NULL)) {
+    if (!WriteFile(hFile, PNGheader.data(), PNGheader.size(), &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
@@ -115,7 +116,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
     crc.update(&IHDR[4], 0x11);
     writeUint32BE(&IHDR[0x15], crc.get());
 
-    if (!WriteFile(hFile, IHDR.data(), IHDR.size(), NULL, NULL)) {
+    if (!WriteFile(hFile, IHDR.data(), IHDR.size(), &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
@@ -132,7 +133,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
         CloseHandle(hFile);
         return false;
     }
-    if (!WriteFile(hFile, IDATstart.data(), IDATstart.size(), NULL, NULL)) {
+    if (!WriteFile(hFile, IDATstart.data(), IDATstart.size(), &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
@@ -180,7 +181,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
                 adler.update(&deflateBlock[deflateBlockHeader.size()], deflateBlock.size() - deflateBlockHeader.size());
                 deflateBlockWriteIter = deflateBlock.begin() + deflateBlockHeader.size();
 
-                if (!WriteFile(hFile, deflateBlock.data(), deflateBlock.size(), NULL, NULL)) {
+                if (!WriteFile(hFile, deflateBlock.data(), deflateBlock.size(), &bytesWritten, NULL)) {
                     CloseHandle(hFile);
                     return false;
                 }
@@ -201,7 +202,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
     crc.update(deflateBlock.data(), bytesRemain);
     adler.update(&deflateBlock[deflateBlockHeader.size()], blockRemain);
 
-    if (!WriteFile(hFile, deflateBlock.data(), bytesRemain, NULL, NULL)) {
+    if (!WriteFile(hFile, deflateBlock.data(), bytesRemain, &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
@@ -214,7 +215,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
     IDATsize += 4;
     writeUint32BE(&IDATchecksums[4], crc.get());
 
-    if (!WriteFile(hFile, IDATchecksums.data(), IDATchecksums.size(), NULL, NULL)) {
+    if (!WriteFile(hFile, IDATchecksums.data(), IDATchecksums.size(), &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
@@ -226,7 +227,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
         CloseHandle(hFile);
         return false;
     }
-    if (!WriteFile(hFile, IDATstart.data(), sizeof(uint32_t), NULL, NULL)) {
+    if (!WriteFile(hFile, IDATstart.data(), sizeof(uint32_t), &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
@@ -236,7 +237,7 @@ bool pngSaveBGRA(const char* path, const void* imageData, unsigned int width, un
     }
 
     // Write IEND chunk.
-    if (!WriteFile(hFile, IENDfilled.data(), IENDfilled.size(), NULL, NULL)) {
+    if (!WriteFile(hFile, IENDfilled.data(), IENDfilled.size(), &bytesWritten, NULL)) {
         CloseHandle(hFile);
         return false;
     }
