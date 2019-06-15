@@ -49,11 +49,15 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             MWInitPatch::patchUIScale();
         }
 
-        if (~Configuration.MGEFlags & MWSE_DISABLED && ~Configuration.MGEFlags & MGE_DISABLED) {
+        if (~Configuration.MGEFlags & MWSE_DISABLED) {
             // Load MWSE dll, it injects by itself
             HMODULE dll = LoadLibraryA("MWSE.dll");
+
             if (dll) {
-                MWSE_MGEPlugin::init(dll);
+                if (~Configuration.MGEFlags & MGE_DISABLED) {
+                    // MWSE-MGE integration
+                    MWSE_MGEPlugin::init(dll);
+                }
                 LOG::logline("MWSE.dll injected.");
             } else {
                 LOG::logline("MWSE.dll failed to load.");
