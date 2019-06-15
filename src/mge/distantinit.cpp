@@ -686,19 +686,19 @@ bool DistantLand::loadDistantStatics() {
 
     h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
-        LOG::logline("!! Required distant statics data is missing or corrupted");
+        LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/version");
         return false;
     }
     BYTE version = 0;
     ReadFile(h, &version, sizeof(version), &unused, 0);
     if (version != MGE_DL_VERSION) {
-        LOG::logline("!! Distant land data is from an old version and needs to be regenerated");
+        LOG::logline("!! Distant statics data is from an old version and needs to be regenerated");
         return false;
     }
 
     h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
-        LOG::logline("!! Required distant statics data is missing or corrupted");
+        LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/statics/usage.data");
         return false;
     }
 
@@ -708,7 +708,7 @@ bool DistantLand::loadDistantStatics() {
 
     HANDLE h2 = CreateFile("Data Files\\distantland\\statics\\static_meshes", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h2 == INVALID_HANDLE_VALUE) {
-        LOG::logline("!! Required distant statics data is missing or corrupted");
+        LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/statics/static_meshes");
         return false;
     }
 
@@ -1021,19 +1021,19 @@ bool DistantLand::initLandscape() {
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
     if (hr != D3D_OK) {
-        LOG::logline("!! Could not load world texture for distant land");
+        LOG::logline("!! Could not load world texture for distant land - distantland/world.dds");
         return false;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world_n.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
     if (hr != D3D_OK) {
-        LOG::logline("!! Could not load world normal map texture for distant land");
+        LOG::logline("!! Could not load world normal map texture for distant land - distantland/world_n.dds");
         return false;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\textures\\MGE\\world_detail.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldDetail);
     if (hr != D3D_OK) {
-        LOG::logline("!! Could not load world detail texture for distant land");
+        LOG::logline("!! Could not load world detail texture for distant land - textures/MGE/world_detail.dds");
         return false;
     }
 
