@@ -1,7 +1,7 @@
 
-MGE XE 0.11.5
+MGE XE 0.11.6
 -------------
-Released 2019-06-12
+Released 2019-06-15
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -77,6 +77,11 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.11.6
+- Fixed possible crash when saving PNG screenshots.
+- Sunshafts sun disc has its sharpness reduced slightly.
+- MWSE will be loaded if not specifically disabled, even when MGE is disabled. This is returning to how it behaved in 0.10.
+
 0.11.5
 - Neutralized nearly all performance loss caused by changes to rendering since 0.10.1, mainly in dense environments like cities. The frame rate in cities is a significant improvement over 0.11.4, and within -4 to +1% of 0.10.1.
 - Saving PNG screenshots now take around 0.1 seconds instead of 1 to 2 seconds.
@@ -243,11 +248,16 @@ SetFogColour
 SetAmbientColour
 SetSunColour
 SetSunriseSunset
-SetScattering
+GetWeatherScattering
+SetWeatherScattering
 SetWeatherGlare
 SetWeatherCloudSpeed
 SetWeatherWindSpeed
-    
+GetWeatherDLFog
+SetWeatherDLFog
+GetWeatherPPLLight
+SetWeatherPPLLight
+
 EnableShader
 DisableShader
 SetShaderFloat
