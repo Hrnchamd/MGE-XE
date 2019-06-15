@@ -56,7 +56,7 @@ static const float2 sunview = (0.5).xx + sunview_v.xy * texproj;
 static const float2 sunviewhalf = 0.5 * sunview;
 
 static const float light = 1 - pow(1 - sunvis, 2);
-static const float sharpness = lerp(60, 900 + 600 * sundir.z, saturate(fogstart / 480));
+static const float sharpness = lerp(60, 660 + 360 * sundir.z, saturate(fogstart / 480));
 
 static const float strength = raystrength * light * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.x-0.5)) * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.y-0.5));
 static const float oneminuscentervis = 1-centervis;
