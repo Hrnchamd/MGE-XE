@@ -18,7 +18,7 @@ Requirements
 
 Morrowind GOTY or Bloodmoon fully patched.
 Any graphics card made since 2009 or so.
-
+Windows Vista SP2 or later (Windows XP is not supported since MGE XE 0.11.2).
 
 Install
 -------
