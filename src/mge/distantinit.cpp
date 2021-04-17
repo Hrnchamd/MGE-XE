@@ -695,6 +695,7 @@ bool DistantLand::loadDistantStatics() {
         LOG::logline("!! Distant statics data is from an old version and needs to be regenerated");
         return false;
     }
+    CloseHandle(h);
 
     h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
