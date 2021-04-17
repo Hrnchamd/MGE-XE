@@ -246,13 +246,13 @@ namespace MGEgui.DirectX {
             for (int y = 0; y <= 64; y++) {
                 for (int x = 0; x <= 64; x++) {
                     // Figure out which index to use
-                    int i = x * 65 + y;
+                    int i = y * 65 + x;
 
                     // Figure out which texture is used here
                     int cell_x = cell.xpos;
                     int cell_y = cell.ypos;
-                    int tex_x = (int)Math.Floor(((float)y - 1.0f) / 4.0f); // -2.0f
-                    int tex_y = (int)Math.Floor(((float)x - 3.0f) / 4.0f); // -2.0f
+                    int tex_x = (int)Math.Floor(((float)x - 2.0f) / 4.0f);
+                    int tex_y = (int)Math.Floor(((float)y - 2.0f) / 4.0f);
 
                     DistantLandForm.ModCell(ref cell_x, ref tex_x);
                     DistantLandForm.ModCell(ref cell_y, ref tex_y);
@@ -300,10 +300,10 @@ namespace MGEgui.DirectX {
             // float bf4 = 0.47442968f;
 
             // Reduced center influence
-            float bf1 = 0.1f;
-            float bf2 = 0.15f;
-            float bf3 = 0.2f;
-            float bf4 = 0.1f;
+            const float bf1 = 0.1f;
+            const float bf2 = 0.15f;
+            const float bf3 = 0.2f;
+            const float bf4 = 0.1f;
 
             // Horizontal Pass
             WeightVertex[] FirstPassWD = new WeightVertex[65 * 65];
@@ -636,14 +636,14 @@ namespace MGEgui.DirectX {
 
             // Group the unique textures in this cell in fours
 
-            // Find all te uniqe textures in this cell
+            // Find all the unique textures in this cell
             System.Collections.Generic.Dictionary<string, LTEX> tex_dict = new System.Collections.Generic.Dictionary<string, LTEX>();
-            for (int x = 0; x <= 64; ++x) {
-                for (int y = 0; y <= 64; ++y) {
+            for (int y = 0; y <= 64; ++y) {
+                for (int x = 0; x <= 64; ++x) {
                     int cell_x = cell.xpos;
                     int cell_y = cell.ypos;
-                    int tex_x = (int)Math.Floor(((float)y - 1.0f) / 4.0f); // -2.0f
-                    int tex_y = (int)Math.Floor(((float)x - 3.0f) / 4.0f); // -2.0f
+                    int tex_x = (int)Math.Floor(((float)x - 1.0f) / 4.0f); // -2.0f
+                    int tex_y = (int)Math.Floor(((float)y - 3.0f) / 4.0f); // -2.0f
 
                     DistantLandForm.ModCell(ref cell_x, ref tex_x);
                     DistantLandForm.ModCell(ref cell_y, ref tex_y);
@@ -682,12 +682,6 @@ namespace MGEgui.DirectX {
 
             if (index != 0) {
                 texBanks.Add(tb);
-            }
-
-            if (texBanks.Count > 1) {
-                int blah = 4;
-                int blu = 7;
-                int blablu = blah + blu;
             }
 
             // Calculate weights for all banks
