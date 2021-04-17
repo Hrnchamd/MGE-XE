@@ -19,6 +19,7 @@ struct RenderedState {
     D3DXMATRIX worldTransforms[4];
     D3DXMATRIX viewTransform;
     D3DXMATRIX worldViewTransforms[4];
+    D3DCOLORVALUE diffuseMaterial;
     BYTE blendEnable, srcBlend, destBlend;
     BYTE alphaTest, alphaFunc, alphaRef;
     BYTE useLighting, useFog, matSrcDiffuse, matSrcEmissive;

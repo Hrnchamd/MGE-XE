@@ -13,8 +13,8 @@ shared float shadowRcpRes;
 shared matrix world, view, proj;
 shared matrix vertexblendpalette[4];
 shared matrix shadowviewproj[2];
-shared bool hasalpha, hasbones;
-shared float alpharef;
+shared bool hasalpha, hasbones, hasVCol;
+shared float alpharef, materialAlpha;
 shared int vertexblendstate;
 
 shared float3 EyePos, FootPos;
@@ -85,13 +85,14 @@ struct DeferredOut
 };
 
 //------------------------------------------------------------
-// Morrowind FVF (sans vertex colour)
+// Morrowind FVF
 
 struct MorrowindVertIn
 {
     float4 pos : POSITION;
     float4 normal : NORMAL;
     float4 blendweights : BLENDWEIGHT;
+    float4 color : COLOR0;
     float2 texcoords : TEXCOORD0;
 };
 

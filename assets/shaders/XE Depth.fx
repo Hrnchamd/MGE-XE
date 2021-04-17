@@ -26,6 +26,7 @@ float4 DepthClearPS (float4 pos : POSITION) : COLOR0
 struct DepthVertOut
 {
 	float4 pos : POSITION;
+    float alpha : COLOR0;
 	half2 texcoords : TEXCOORD0;
     float depth : TEXCOORD1;
 };
@@ -40,7 +41,13 @@ DepthVertOut DepthMWVS (in MorrowindVertIn IN)
         viewpos = skin(IN.pos, IN.blendweights);
     else
         viewpos = mul(IN.pos, vertexblendpalette[0]);
-    
+
+    // Fragment colour routing
+    if (hasVCol)
+        OUT.alpha = IN.color.a;
+    else
+        OUT.alpha = materialAlpha;
+
     // Transform and output depth
     OUT.pos = mul(viewpos, proj);
     OUT.depth = OUT.pos.w;
@@ -59,8 +66,9 @@ DepthVertOut DepthLandVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
     OUT.pos = mul(pos, world);
     OUT.pos = mul(OUT.pos, view);
     OUT.pos = mul(OUT.pos, proj);
-    
+
     OUT.depth = OUT.pos.w;
+    OUT.alpha = 1;
     OUT.texcoords = texcoord;
 
     return OUT;
@@ -73,8 +81,9 @@ DepthVertOut DepthStaticVS (StatVertIn IN)
     OUT.pos = mul(IN.pos, world);
     OUT.pos = mul(OUT.pos, view);
     OUT.pos = mul(OUT.pos, proj);
-    
+
     OUT.depth = OUT.pos.w;
+    OUT.alpha = 1;
     OUT.texcoords = IN.texcoords;
 
     return OUT;
@@ -91,6 +100,7 @@ DepthVertOut DepthGrassVS (StatVertIn IN)
     OUT.pos = mul(OUT.pos, proj);
 
     OUT.depth = OUT.pos.w;
+    OUT.alpha = 1;
     OUT.texcoords = IN.texcoords;
 
     return OUT;
@@ -109,6 +119,7 @@ DepthVertOut DepthGrassInstVS (StatVertInstIn IN)
     OUT.pos = mul(OUT.pos, proj);
 
     OUT.depth = OUT.pos.w;
+    OUT.alpha = 1;
     OUT.texcoords = IN.texcoords;
 
     return OUT;
@@ -139,7 +150,7 @@ float4 DepthNearPS (DepthVertOut IN) : COLOR0
     // Respect alpha test
     if(hasalpha)
     {
-        float alpha = tex2D(sampBaseTex, IN.texcoords).a;
+        float alpha = IN.alpha * tex2D(sampBaseTex, IN.texcoords).a;
         clip(alpha - alpharef);
     }
 

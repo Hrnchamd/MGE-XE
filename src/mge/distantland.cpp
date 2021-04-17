@@ -785,10 +785,13 @@ void DistantLand::setSunLight(const D3DLIGHT8* s) {
 bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* rs, const FragmentState* frs, LightState* lightrs) {
     auto mwBridge = MWBridge::get();
 
-    // Capture all writes to z-buffer
-    // Only capture alpha blends in alpha scene, otherwise we record extraneous land splatting tiles
-    // Interiors are okay to record everything, though technically alpha blending in scene 0 causes some artifacts
-    if (rs->zWrite && !(rs->blendEnable && !rs->alphaTest && sceneCount == 0 && mwBridge->IsExterior())) {
+    // Avoid recording landscape alpha blend drawcalls, a form of multi-pass splatting
+    static IDirect3DVertexBuffer9* lastVB = nullptr;
+    bool isLandSplat = sceneCount == 0 && rs->vb == lastVB && rs->blendEnable && (rs->fvf & D3DFVF_DIFFUSE) && mwBridge->IsExterior();
+    lastVB = rs->vb;
+
+    // Capture all writes to z-buffer, except detectable second passes of multi-pass rendering
+    if (rs->zWrite && !isLandSplat) {
         recordMW.push_back(*rs);
 
         // Unify alpha test operator/reference to be equivalent to GREATEREQUAL

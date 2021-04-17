@@ -66,6 +66,7 @@ struct RenderShadowVertOut
     float4 pos: POSITION;
     half2 texcoords: TEXCOORD0;
     float light: COLOR0;
+    float alpha: COLOR1;
     
     float4 shadow0pos: TEXCOORD1;
     float4 shadow1pos: TEXCOORD2;
@@ -95,6 +96,12 @@ RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
     OUT.pos.z *= 1 - 2e-6;
     OUT.pos.z -= clamp(0.5 / OUT.pos.w, 0, 1e-2);
     
+    // Fragment colour routing
+    if (hasVCol)
+        OUT.alpha = IN.color.a;
+    else
+        OUT.alpha = materialAlpha;
+
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
     OUT.light = shadowSunEstimate(saturate(dot(normal.xyz, -SunVecView)));
 
@@ -122,10 +129,10 @@ float4 RenderShadowsPS (RenderShadowVertOut IN): COLOR0
     clip(IN.light - 2.0/255.0);
     
     // Respect alpha test
-    float alpha = 1.0;
+    float alpha = IN.alpha;
     if(hasalpha)
     {
-        alpha = tex2D(sampBaseTex, IN.texcoords).a;
+        alpha *= tex2D(sampBaseTex, IN.texcoords).a;
         clip(alpha - alpharef);
     }
 

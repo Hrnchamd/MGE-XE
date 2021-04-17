@@ -173,6 +173,12 @@ void DistantLand::renderShadow() {
     // Bind filtered ESM
     effect->SetTexture(ehTex3, texSoftShadow);
 
+    // Use an alpha threshold for solidity that isn't precisely equal to a commonly used value (such as 0.5).
+    // Vertex interpolators can be slightly inaccurate and cause a value that should be constant across a triangle
+    // to have interpolated fragment values that vary either side of the threshold and cause noise.
+    const float alphaThreshold = 0.0101f;
+
+    // Draw shadows over recorded renders
     const auto& recordMW_const = recordMW;
     for (const auto& i : recordMW_const) {
         // Additive alphas do not receive shadows
@@ -180,11 +186,15 @@ void DistantLand::renderShadow() {
             continue;
         }
 
+        // Fragment colour routing
+        effect->SetBool(ehHasVCol, (i.alphaTest || i.blendEnable) && (i.fvf & D3DFVF_DIFFUSE) != 0);
+        effect->SetFloat(ehMaterialAlpha, i.diffuseMaterial.a);
+
         // Only bind texture for alphas
         if ((i.alphaTest || i.blendEnable) && i.texture) {
             effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
-            effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : 0.01f);
+            effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : alphaThreshold);
         } else {
             effect->SetTexture(ehTex0, 0);
             effect->SetBool(ehHasAlpha, false);

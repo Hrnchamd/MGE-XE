@@ -85,16 +85,25 @@ void DistantLand::renderDepthAdditional() {
 }
 
 void DistantLand::renderDepthRecorded() {
+    // Use an alpha threshold for solidity that isn't precisely equal to a commonly used value (such as 0.5).
+    // Vertex interpolators can be slightly inaccurate and cause a value that should be constant across a triangle
+    // to have interpolated fragment values that vary either side of the threshold and cause noise.
+    const float solidThreshold = 0.499f;
+
     // Recorded renders
     const auto& recordMW_const = recordMW;
     for (const auto& i : recordMW_const) {
         // Set variables in main effect; variables are shared via effect pool
 
+        // Fragment colour routing
+        effect->SetBool(ehHasVCol, (i.alphaTest || i.blendEnable) && (i.fvf & D3DFVF_DIFFUSE) != 0);
+        effect->SetFloat(ehMaterialAlpha, i.diffuseMaterial.a);
+
         // Only bind texture for alphas
         if ((i.alphaTest || i.blendEnable) && i.texture) {
             effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
-            effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : 0.5f);
+            effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : solidThreshold);
         } else {
             effect->SetTexture(ehTex0, 0);
             effect->SetBool(ehHasAlpha, false);

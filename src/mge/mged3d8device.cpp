@@ -53,8 +53,13 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d) : ProxyDev
     // Initialize state recorder to D3D defaults
     memset(&rs, 0, sizeof(rs));
     rs.zWrite = true;
+    rs.diffuseMaterial.r = 1.0f;
+    rs.diffuseMaterial.g = 1.0f;
+    rs.diffuseMaterial.b = 1.0f;
+    rs.diffuseMaterial.a = 1.0f;
     rs.cullMode = D3DCULL_CCW;
     rs.useLighting = true;
+
     rs.matSrcDiffuse = D3DMCS_COLOR1;
     rs.matSrcEmissive = D3DMCS_MATERIAL;
 
@@ -554,7 +559,6 @@ void captureRenderState(D3DRENDERSTATETYPE a, DWORD b) {
     case D3DRS_ALPHAREF:
         rs.alphaRef = (BYTE)b;
         break;
-
     case D3DRS_LIGHTING:
         rs.useLighting = (BYTE)b;
         break;
@@ -678,6 +682,7 @@ void captureLight(DWORD a, const D3DLIGHT8* b) {
 
 void captureMaterial(const D3DMATERIAL8* a) {
     // Morrowind does not use specular lighting
+    rs.diffuseMaterial = a->Diffuse;
     frs.material.diffuse = a->Diffuse;
     frs.material.ambient = a->Ambient;
     frs.material.emissive = a->Emissive;
