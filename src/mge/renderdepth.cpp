@@ -96,11 +96,12 @@ void DistantLand::renderDepthRecorded() {
         // Set variables in main effect; variables are shared via effect pool
 
         // Fragment colour routing
-        effect->SetBool(ehHasVCol, (i.alphaTest || i.blendEnable) && (i.fvf & D3DFVF_DIFFUSE) != 0);
+        bool alphaDependent = i.alphaTest || i.blendEnable;
+        effect->SetBool(ehHasVCol, alphaDependent && (i.fvf & D3DFVF_DIFFUSE) != 0);
         effect->SetFloat(ehMaterialAlpha, i.diffuseMaterial.a);
 
         // Only bind texture for alphas
-        if ((i.alphaTest || i.blendEnable) && i.texture) {
+        if (alphaDependent && i.texture) {
             effect->SetTexture(ehTex0, i.texture);
             effect->SetBool(ehHasAlpha, true);
             effect->SetFloat(ehAlphaRef, i.alphaTest ? (i.alphaRef / 255.0f) : solidThreshold);
