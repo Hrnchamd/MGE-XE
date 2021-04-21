@@ -81,7 +81,8 @@ class FixedFunctionShader {
             DWORD colorArg1 : 6;
             DWORD colorArg2 : 6;
             DWORD colorArg0 : 6;
-            DWORD texcoordIndex : 4;
+            DWORD alphaOpMatched : 1;
+            DWORD texcoordIndex : 3;
             DWORD texcoordGen : 4;
         } stage[8];
 

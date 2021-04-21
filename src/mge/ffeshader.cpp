@@ -233,9 +233,9 @@ void FixedFunctionShader::renderMorrowind(const RenderedState* rs, const Fragmen
 
     // Bump mapping state
     if (sk.usesBumpmap) {
-        const FragmentState::Stage* bumpStage = &frs->stage[sk.bumpmapStage];
-        effectFFE->SetFloatArray(ehBumpMatrix, &bumpStage->bumpEnvMat[0][0], 4);
-        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &bumpStage->bumpLumiScale, 2);
+        const FragmentState::Stage& bumpStage = frs->stage[sk.bumpmapStage];
+        effectFFE->SetFloatArray(ehBumpMatrix, &bumpStage.bumpEnvMat[0][0], 4);
+        effectFFE->SetFloatArray(ehBumpLumiScaleBias, &bumpStage.bumpLumiScale, 2);
     }
 
     // Texgen texture matrix
@@ -438,14 +438,14 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     string arg1, arg2, arg3;
 
     for (int i = 0; i != sk.activeStages; ++i) {
-        const ShaderKey::Stage* s = &sk.stage[i];
-        const string dest = (i > 0) ? "c.rgb = " : "c = ";
-        const string mask = (i > 0) ? ".rgb" : "";
+        const ShaderKey::Stage& s = sk.stage[i];
+        const string dest = s.alphaOpMatched ? "c = " : "c.rgb = ";
+        const string mask = s.alphaOpMatched ? "" : ".rgb";
 
-        arg1 = buildArgString(s->colorArg1, mask, texSamplers[i]);
-        arg2 = buildArgString(s->colorArg2, mask, texSamplers[i]);
+        arg1 = buildArgString(s.colorArg1, mask, texSamplers[i]);
+        arg2 = buildArgString(s.colorArg2, mask, texSamplers[i]);
 
-        switch (s->colorOp) {
+        switch (s.colorOp) {
         case D3DTOP_SELECTARG1:
             buf << dest << arg1 << ";";
             break;
@@ -504,15 +504,15 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
             break;
 
         case D3DTOP_DOTPRODUCT3:
-            arg1 = buildArgString(s->colorArg1, ".rgb", texSamplers[i]);
-            arg2 = buildArgString(s->colorArg2, ".rgb", texSamplers[i]);
+            arg1 = buildArgString(s.colorArg1, ".rgb", texSamplers[i]);
+            arg2 = buildArgString(s.colorArg2, ".rgb", texSamplers[i]);
             buf << "c.rgb = dot(" << arg1 << ", " << arg2 << ");";
             break;
 
         case D3DTOP_MULTIPLYADD:
-            arg1 = buildArgString(s->colorArg1, ".rgb", texSamplers[i]);
-            arg2 = buildArgString(s->colorArg2, ".rgb", texSamplers[i]);
-            arg3 = buildArgString(s->colorArg0, ".rgb", texSamplers[i]);
+            arg1 = buildArgString(s.colorArg1, ".rgb", texSamplers[i]);
+            arg2 = buildArgString(s.colorArg2, ".rgb", texSamplers[i]);
+            arg3 = buildArgString(s.colorArg0, ".rgb", texSamplers[i]);
             buf << "c.rgb = " << arg1 << " * " << arg2 << " + " << arg3 << ";";
             break;
 
@@ -648,21 +648,22 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
     }
 
     for (int i = 0; i != 8; ++i) {
-        const FragmentState::Stage* s = &frs->stage[i];
+        const FragmentState::Stage& s = frs->stage[i];
 
-        if (s->colorOp == D3DTOP_DISABLE) {
+        if (s.colorOp == D3DTOP_DISABLE) {
             activeStages = i;
             break;
         }
 
-        stage[i].colorOp = s->colorOp;
-        stage[i].colorArg1 = s->colorArg1;
-        stage[i].colorArg2 = s->colorArg2;
-        stage[i].colorArg0 = s->colorArg0;
-        stage[i].texcoordIndex = s->texcoordIndex & 3;
-        stage[i].texcoordGen = s->texcoordIndex >> 16;
+        stage[i].colorOp = s.colorOp;
+        stage[i].colorArg1 = s.colorArg1;
+        stage[i].colorArg2 = s.colorArg2;
+        stage[i].colorArg0 = s.colorArg0;
+        stage[i].alphaOpMatched = (s.colorOp == s.alphaOp);
+        stage[i].texcoordIndex = s.texcoordIndex & 3;
+        stage[i].texcoordGen = s.texcoordIndex >> 16;
 
-        if (s->colorOp == D3DTOP_BUMPENVMAP || s->colorOp == D3DTOP_BUMPENVMAPLUMINANCE) {
+        if (s.colorOp == D3DTOP_BUMPENVMAP || s.colorOp == D3DTOP_BUMPENVMAPLUMINANCE) {
             usesBumpmap = 1;
             bumpmapStage = i;
         }
@@ -688,20 +689,23 @@ std::size_t FixedFunctionShader::ShaderKey::hasher::operator()(const ShaderKey& 
 }
 
 void FixedFunctionShader::ShaderKey::log() const {
-    const char* opsymbols[] = { "?", "disable", "select1", "select2", "mul", "mul2x", "mul4x", "add", "addsigned", "addsigned2x", "sub", "?", "blend.diffuse", "blend.texture", "?", "?", "?", "?", "?", "?", "?", "?", "bump", "bump.l", "dp3", "mad", "?" };
-    const char* argsymbols[] = { "diffuse", "current", "texture", "tfactor", "specular", "temp", "constant" };
+    const char* opSymbols[] = { "?", "disable", "select1", "select2", "mul", "mul2x", "mul4x", "add", "addsigned", "addsigned2x", "sub", "?", "blend.diffuse", "blend.texture", "?", "?", "?", "?", "?", "?", "?", "?", "bump", "bump.l", "dp3", "mad", "?" };
+    const char* argSymbols[] = { "diffuse", "current", "texture", "tfactor", "specular", "temp", "constant" };
 
     LOG::logline("   Input state: UVs:%d skin:%d vcol:%d lights:%d vmat:%d fogm:%d", uvSets, usesSkinning, vertexColour, vertexMaterial ? (heavyLighting ? 8 : 4) : 0, vertexMaterial, fogMode);
     LOG::logline("   Texture stages:");
     for (int i = 0; i != activeStages; ++i) {
-        if (stage[i].colorOp != D3DTOP_MULTIPLYADD) { // or D3DTOP_LERP (unused)
-            LOG::logline("    [%d] % 12s    %s, %s            uv %d texgen %d", i,
-                         opsymbols[stage[i].colorOp], argsymbols[stage[i].colorArg1], argsymbols[stage[i].colorArg2],
-                         stage[i].texcoordIndex, stage[i].texcoordGen);
+        const auto& s = stage[i];
+        if (s.colorOp != D3DTOP_MULTIPLYADD) { // or D3DTOP_LERP (unused)
+            LOG::logline("    [%d] %s % 12s    %s, %s            uv %d texgen %d", i,
+                         s.alphaOpMatched ? "RGBA" : "RGB ",
+                         opSymbols[s.colorOp], argSymbols[s.colorArg1], argSymbols[s.colorArg2],
+                         s.texcoordIndex, s.texcoordGen);
         } else {
-            LOG::logline("    [%d] % 12s    %s, %s, %s   uv %d texgen %d", i,
-                         opsymbols[stage[i].colorOp], argsymbols[stage[i].colorArg1], argsymbols[stage[i].colorArg2], argsymbols[stage[i].colorArg0],
-                         stage[i].texcoordIndex, stage[i].texcoordGen);
+            LOG::logline("    [%d] %s % 12s    %s, %s, %s   uv %d texgen %d", i,
+                         s.alphaOpMatched ? "RGBA" : "RGB ",
+                         opSymbols[s.colorOp], argSymbols[s.colorArg1], argSymbols[s.colorArg2], argSymbols[s.colorArg0],
+                         s.texcoordIndex, s.texcoordGen);
         }
     }
     LOG::logline("");
