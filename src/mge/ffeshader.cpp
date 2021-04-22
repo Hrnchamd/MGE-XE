@@ -520,6 +520,21 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
             buf << "unsupported";
             break;
         }
+
+        if (s.alphaOpSelect1) {
+            // Alpha Select1 op, assumes alpha args are the same as color args
+            switch (s.colorArg1) {
+            case D3DTA_DIFFUSE:
+                buf << "c.a = diffuse.a";
+                break;
+
+            case D3DTA_TEXTURE:
+                // The HLSL compiler is able to optimize this repeated sampler use and does not generate an extra texld.
+                buf << "c.a = " << texSamplers[i] << ".a;";
+                break;
+            }
+        }
+
         buf << " \\\n";
     }
 
@@ -659,7 +674,8 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
         stage[i].colorArg1 = s.colorArg1;
         stage[i].colorArg2 = s.colorArg2;
         stage[i].colorArg0 = s.colorArg0;
-        stage[i].alphaOpMatched = (s.colorOp == s.alphaOp);
+        stage[i].alphaOpMatched = (s.alphaOp == s.colorOp);
+        stage[i].alphaOpSelect1 = (s.alphaOp == D3DTOP_SELECTARG1 && s.alphaArg1 == s.colorArg1);
         stage[i].texcoordIndex = s.texcoordIndex & 3;
         stage[i].texcoordGen = s.texcoordIndex >> 16;
 
@@ -706,6 +722,9 @@ void FixedFunctionShader::ShaderKey::log() const {
                          s.alphaOpMatched ? "RGBA" : "RGB ",
                          opSymbols[s.colorOp], argSymbols[s.colorArg1], argSymbols[s.colorArg2], argSymbols[s.colorArg0],
                          s.texcoordIndex, s.texcoordGen);
+        }
+        if (s.alphaOpSelect1) {
+            LOG::logline("           A % 12s    %s", opSymbols[D3DTOP_SELECTARG1], argSymbols[s.colorArg1]);
         }
     }
     LOG::logline("");
