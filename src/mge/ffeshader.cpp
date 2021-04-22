@@ -281,11 +281,15 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     stringstream buf;
 
     // Identify output texcoords and check for texgen; supports max. one per shader
-    int texGen = 0, texGenSrcIndex = 0, totalOutputCoords = sk.uvSets;
+    int texGen = 0, texGenSrcIndex = 0, texGenOutputIndex = sk.uvSets, totalOutputCoords = sk.uvSets;
     if (sk.usesTexgen) {
         texGen = sk.stage[sk.texgenStage].texcoordGen;
         texGenSrcIndex = sk.stage[sk.texgenStage].texcoordIndex;
+
         ++totalOutputCoords;
+        if (sk.projectiveTexgen) {
+            ++totalOutputCoords;
+        }
     }
 
     if (totalOutputCoords > 4) {
@@ -303,13 +307,17 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     string texcoordNames[8], texSamplers[8];
 
     for (int i = 0; i != sk.activeStages; ++i) {
-        int x = sk.stage[i].texcoordGen ? sk.uvSets : sk.stage[i].texcoordIndex;
+        bool isTexGen = bool(sk.stage[i].texcoordGen);
+        int x = isTexGen ? texGenOutputIndex : sk.stage[i].texcoordIndex;
 
         buf.str(string());
-        buf << "texcoord" << strInterpolators[x >> 1] << strTexcoordPacking[x & 1];
+        buf << "IN.texcoord" << strInterpolators[x >> 1] << strTexcoordPacking[x & 1];
+        if (isTexGen && sk.projectiveTexgen) {
+            buf << " / IN.texcoord" << strInterpolators[(x+1) >> 1] << strTexcoordPacking[(x+1) & 1];
+        }
         texcoordNames[i] = buf.str();
         buf.str(string());
-        buf << "tex2D(sampFFE" << i << ", IN." << texcoordNames[i] << ")";
+        buf << "tex2D(sampFFE" << i << ", " << texcoordNames[i] << ")";
         texSamplers[i] = buf.str();
     }
 
@@ -385,7 +393,10 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
             break;
         }
         buf << "texgen = mul(float4(texgen, 1), texgenTransform).xyz; ";
-        texRouting[sk.uvSets] = "texgen.xy";
+        texRouting[texGenOutputIndex] = "texgen.xy";
+        if (sk.projectiveTexgen) {
+            texRouting[texGenOutputIndex + 1] = "texgen.zz";
+        }
     }
 
     if (totalOutputCoords == 1) {
@@ -493,13 +504,13 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
 
         case D3DTOP_BUMPENVMAP:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
-            buf << "float4 bump = bumpmapStage(sampFFE" << i+1 << ", IN." << texcoordNames[i+1] << ", " << arg3 << ");";
+            buf << "float4 bump = bumpmapStage(sampFFE" << i+1 << ", " << texcoordNames[i+1] << ", " << arg3 << ");";
             texSamplers[i+1] = "bump";
             break;
 
         case D3DTOP_BUMPENVMAPLUMINANCE:
             arg3 = buildArgString(D3DTA_TEXTURE, "", texSamplers[i]);
-            buf << "float4 bump = bumpmapLumiStage(sampFFE" << i+1 << ", IN." << texcoordNames[i+1] << ", " << arg3 << ");";
+            buf << "float4 bump = bumpmapLumiStage(sampFFE" << i+1 << ", " << texcoordNames[i+1] << ", " << arg3 << ");";
             texSamplers[i+1] = "bump";
             break;
 
@@ -685,6 +696,7 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
         }
         if (stage[i].texcoordGen) {
             usesTexgen = 1;
+            projectiveTexgen = (s.texTransformFlags == (D3DTTFF_COUNT3 | D3DTTFF_PROJECTED)) ? 1 : 0;
             texgenStage = i;
         }
     }
@@ -707,21 +719,22 @@ std::size_t FixedFunctionShader::ShaderKey::hasher::operator()(const ShaderKey& 
 void FixedFunctionShader::ShaderKey::log() const {
     const char* opSymbols[] = { "?", "disable", "select1", "select2", "mul", "mul2x", "mul4x", "add", "addsigned", "addsigned2x", "sub", "?", "blend.diffuse", "blend.texture", "?", "?", "?", "?", "?", "?", "?", "?", "bump", "bump.l", "dp3", "mad", "?" };
     const char* argSymbols[] = { "diffuse", "current", "texture", "tfactor", "specular", "temp", "constant" };
+    const char* texgenSymbols[] = { "none", "normal", "position", "reflection", "sphere" };
 
     LOG::logline("   Input state: UVs:%d skin:%d vcol:%d lights:%d vmat:%d fogm:%d", uvSets, usesSkinning, vertexColour, vertexMaterial ? (heavyLighting ? 8 : 4) : 0, vertexMaterial, fogMode);
     LOG::logline("   Texture stages:");
     for (int i = 0; i != activeStages; ++i) {
         const auto& s = stage[i];
         if (s.colorOp != D3DTOP_MULTIPLYADD) { // or D3DTOP_LERP (unused)
-            LOG::logline("    [%d] %s % 12s    %s, %s            uv %d texgen %d", i,
+            LOG::logline("    [%d] %s % 12s    %s, %s            uv %d texgen %s", i,
                          s.alphaOpMatched ? "RGBA" : "RGB ",
                          opSymbols[s.colorOp], argSymbols[s.colorArg1], argSymbols[s.colorArg2],
-                         s.texcoordIndex, s.texcoordGen);
+                         s.texcoordIndex, texgenSymbols[s.texcoordGen]);
         } else {
-            LOG::logline("    [%d] %s % 12s    %s, %s, %s   uv %d texgen %d", i,
+            LOG::logline("    [%d] %s % 12s    %s, %s, %s   uv %d texgen %s", i,
                          s.alphaOpMatched ? "RGBA" : "RGB ",
                          opSymbols[s.colorOp], argSymbols[s.colorArg1], argSymbols[s.colorArg2], argSymbols[s.colorArg0],
-                         s.texcoordIndex, s.texcoordGen);
+                         s.texcoordIndex, texgenSymbols[s.texcoordGen]);
         }
         if (s.alphaOpSelect1) {
             LOG::logline("           A % 12s    %s", opSymbols[D3DTOP_SELECTARG1], argSymbols[s.colorArg1]);

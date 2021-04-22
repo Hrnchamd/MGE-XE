@@ -74,6 +74,7 @@ class FixedFunctionShader {
         DWORD usesBumpmap : 1;
         DWORD bumpmapStage : 3;
         DWORD usesTexgen : 1;
+        DWORD projectiveTexgen : 1;
         DWORD texgenStage : 3;
 
         struct Stage {
