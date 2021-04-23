@@ -798,6 +798,7 @@ namespace MGEgui.DistantLand {
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
+
             if (args.useOverrideList && args.OverrideList.Count > 0) {
                 foreach (string overrideList in args.OverrideList) {
                     if (DEBUG) {
@@ -966,7 +967,7 @@ namespace MGEgui.DistantLand {
                 try {
                     ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList);
                 } catch (Exception ex) {
-                    warnings.Add("Parse statics failed on " + file + "\n\n" + ex.ToString());
+                    warnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
                 br.Close();
             }
@@ -979,9 +980,11 @@ namespace MGEgui.DistantLand {
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 FileInfo fi = new FileInfo(file);
                 try {
+                    ParseFileForInteriors(br, CellList);
+                    br.BaseStream.Position = 0;
                     ParseFileForCells(br, fi.Name, IgnoreList, CellList);
                 } catch (Exception ex) {
-                    warnings.Add("ParseFileForCells(\"" + file + "\") failed\n\n" + ex.ToString());
+                    warnings.Add("Parsing cells failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
                 br.Close();
             }
@@ -1159,7 +1162,7 @@ namespace MGEgui.DistantLand {
                             if (type != (int)StaticType.Grass && type != (int)StaticType.Tree) {
                                 bool ok = stc.LoadTexture(path);
                                 if (!ok) {
-                                    warnings.Add("Warning: Texture '" + path + "' could not be converted to a distant texture, original texture will be used");
+                                    warnings.Add("Warning: Texture '" + path + "' used in '" + name + "' could not be converted to a distant texture, original texture will be used");
                                 }
                             }
                         } catch (ArgumentException) {
@@ -1269,13 +1272,17 @@ namespace MGEgui.DistantLand {
 
         void workerExportStatics(object sender, System.ComponentModel.DoWorkEventArgs e) {
             ExportStaticsArgs args = (ExportStaticsArgs)e.Argument;
+            Dictionary<string, bool> CellList = new Dictionary<string, bool>();
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
+
             foreach (string file in files) {
                 lastFileProcessed = file;
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 ParseFileForStatics(br, null, args.activators, args.misc, null);
+                br.BaseStream.Position = 0;
+                ParseFileForInteriors(br, CellList);
                 br.Close();
             }
             unsafe {
@@ -1310,7 +1317,7 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 BinaryReader br = new BinaryReader(File.OpenRead(file));
                 try {
-                    ParseFileForCells2(br);
+                    ParseFileForCellsExport(br, CellList);
                 } catch {
                 }
                 br.Close();
@@ -1380,6 +1387,12 @@ namespace MGEgui.DistantLand {
                 }
             }
             sw.WriteLine("\r\n[names]\r\nchargen boat\r\nchargen_plank");
+            sw.WriteLine("\r\n[interiors]");
+            foreach (var interior in CellList) {
+                // Escape comment character
+                sw.WriteLine(interior.Key.Replace(":", "\\:"));
+            }
+
             sw.Close();
         }
 
@@ -2475,6 +2488,7 @@ namespace MGEgui.DistantLand {
                         int MastID = 0;
                         int CellX = 0;
                         int CellY = 0;
+
                         StaticReference sr = new StaticReference();
                         while (rr.NextSubrecord()) {
                             switch (rr.SubTag) {
@@ -2484,16 +2498,14 @@ namespace MGEgui.DistantLand {
                                             break;
                                         }
                                         uint flags = br.ReadUInt32();
-                                        if ((flags & 0x01) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) {
+                                        bool isInteriorExterior = (flags & 0x81) == 0x81;
+                                        bool isInteriorWater = (flags & 0x83) == 0x03;
+                                        Interior = (flags & 0x1) == 0x1;
+                                        if (!Interior || (cbStatIntExt.Checked && isInteriorExterior) || (cbStatIntWater.Checked && isInteriorWater)) {
                                             IsValidCell = true;
                                         }
-                                        if ((flags & 0x01) != 0) {
-                                            Interior = true;
-                                            if (CellList.ContainsKey(CellName.ToLower(Statics.Culture))) {
-                                                IsValidCell = CellList[CellName.ToLower(Statics.Culture)];
-                                            }
-                                        } else {
-                                            Interior = false;
+                                        if (Interior && CellList.ContainsKey(CellName.ToLower(Statics.Culture))) {
+                                            IsValidCell = CellList[CellName.ToLower(Statics.Culture)];
                                         }
                                         CellX = br.ReadInt32();
                                         CellY = br.ReadInt32();
@@ -2607,28 +2619,28 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForCells2(BinaryReader br) {
+        private void ParseFileForCellsExport(BinaryReader br, Dictionary<string, bool> CellList) {
             RecordReader rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 if (rr.Tag == "CELL") {
+                    string CellName = "";
                     bool IsValidCell = false;
+                    bool IsInterior = false;
                     bool InReference = false;
                     bool ReadData = false;
+
                     while (rr.NextSubrecord()) {
                         switch (rr.SubTag) {
                             case "DATA":
                                 if (!InReference && !ReadData) {
                                     uint flags = br.ReadUInt32();
+                                    IsInterior = (flags & 0x1) == 0x1;
                                     ReadData = true;
-                                    if ((flags & 0x1) == 0 || (cbStatIntExt.Checked && (flags & 0x81) == 0x81) || (cbStatIntWater.Checked && (flags & 0x83) == 0x03)) {
-                                        IsValidCell = true;
-                                    }
                                 }
                                 break;
                             case "FRMR":
-                                if (IsValidCell) {
-                                    InReference = true;
-                                }
+                                IsValidCell = !IsInterior || CellList.ContainsKey(CellName.ToLower(Statics.Culture));
+                                InReference = true;
                                 break;
                             case "NAME":
                                 if (InReference) {
@@ -2636,11 +2648,75 @@ namespace MGEgui.DistantLand {
                                     if (StaticsList.ContainsKey(sname)) {
                                         StaticMap[sname] = 1;
                                     }
+                                } else {
+                                    CellName = rr.ReadSubrecordString();
                                 }
                                 break;
                         }
-                        if (ReadData && !IsValidCell) {
+                        if (InReference && !IsValidCell) {
                             break;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ParseFileForInteriors(BinaryReader br, Dictionary<string, bool> CellList) {
+            RecordReader rr = new RecordReader(br);
+            while (rr.NextRecord()) {
+                if (rr.Tag == "CELL") {
+                    string CellName = "";
+                    bool InReference = false;
+                    bool ReadData = false;
+                    bool IsInterior = false;
+                    uint cellFlags = 0;
+                    float cellMinX = float.MaxValue, cellMinY = float.MaxValue, cellMinZ = float.MaxValue;
+                    float cellMaxX = float.MinValue, cellMaxY = float.MinValue, cellMaxZ = float.MinValue;
+
+                    while (rr.NextSubrecord()) {
+                        switch (rr.SubTag) {
+                            case "DATA":
+                                if (!InReference && !ReadData) {
+                                    cellFlags = br.ReadUInt32();
+                                    ReadData = true;
+                                    IsInterior = (cellFlags & 0x1) == 0x1;
+                                } else if (InReference) {
+                                    float x = br.ReadSingle();
+                                    float y = br.ReadSingle();
+                                    float z = br.ReadSingle();
+                                    cellMinX = Math.Min(cellMinX, x);
+                                    cellMinY = Math.Min(cellMinY, y);
+                                    cellMinZ = Math.Min(cellMinZ, z);
+                                    cellMaxX = Math.Max(cellMaxX, x);
+                                    cellMaxY = Math.Max(cellMaxY, y);
+                                    cellMaxZ = Math.Max(cellMaxZ, z);
+                                }
+                                break;
+                            case "FRMR":
+                                InReference = true;
+                                break;
+                            case "NAME":
+                                if (!InReference) {
+                                    CellName = rr.ReadSubrecordString();
+                                }
+                                break;
+                        }
+                        
+                        if (ReadData && !IsInterior) {
+                            break;
+                        }
+                    }
+                    
+                    if (IsInterior) {
+                        const float largeCellSpan = 10000.0f;
+                        bool isInteriorExterior = (cellFlags & 0x81) == 0x81;
+                        bool isInteriorWater = (cellFlags & 0x83) == 0x03;
+                        float span = cellMaxX - cellMinX;
+                        span = Math.Max(span, cellMaxY - cellMinY);
+                        span = Math.Max(span, cellMaxZ - cellMinZ);
+                        
+                        if ((cbStatIntExt.Checked && isInteriorExterior) || (cbStatIntWater.Checked && isInteriorWater) || span >= largeCellSpan) {
+                            CellList[CellName.ToLower(Statics.Culture)] = true;
                         }
                     }
                 }
