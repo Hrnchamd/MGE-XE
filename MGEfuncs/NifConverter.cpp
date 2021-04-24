@@ -122,12 +122,12 @@ struct ExportedNode {
 
         if (verts) {
             vBuffer = std::make_unique<DXVertex[]>(verts);
-            memcpy( vBuffer.get(), src.vBuffer.get(), verts * sizeof(DXVertex) );
+            memcpy(vBuffer.get(), src.vBuffer.get(), verts * sizeof(DXVertex));
         }
 
         if (faces) {
             iBuffer = std::make_unique<unsigned short[]>(faces * 3);
-            memcpy( iBuffer.get(), src.iBuffer.get(), faces * 3 * sizeof(unsigned short) );
+            memcpy(iBuffer.get(), src.iBuffer.get(), faces * 3 * sizeof(unsigned short));
         }
 
         return *this;
@@ -279,10 +279,10 @@ struct ExportedNode {
             cv.texCoord[1] = FloatToHalf(v.texCoord.v);
 
             // Compress normals
-            cv.Normal[0] = (unsigned char)( 255.0f * (v.Normal.x * 0.5 + 0.5) );
-            cv.Normal[1] = (unsigned char)( 255.0f * (v.Normal.y * 0.5 + 0.5) );
-            cv.Normal[2] = (unsigned char)( 255.0f * (v.Normal.z * 0.5 + 0.5) );
-            cv.Normal[3] = (unsigned char)( 255.0f * emissive );
+            cv.Normal[0] = (unsigned char)(255.0f * (v.Normal.x * 0.5 + 0.5));
+            cv.Normal[1] = (unsigned char)(255.0f * (v.Normal.y * 0.5 + 0.5));
+            cv.Normal[2] = (unsigned char)(255.0f * (v.Normal.z * 0.5 + 0.5));
+            cv.Normal[3] = (unsigned char)(255.0f * emissive);
         }
 
         // Write vertex and index buffers
@@ -363,7 +363,7 @@ public:
             }
         }
 
-        radius = sqrt( radius_squared );
+        radius = sqrt(radius_squared);
     }
 
     void CalcNodeBounds() {
@@ -384,11 +384,11 @@ private:
         auto i_buf = std::make_unique<unsigned short[]>(faces*3);
 
         // Copy data from previous buffers into new ones
-        memcpy( v_buf.get(), dst->vBuffer.get(), dst->verts * sizeof(DXVertex) );
-        memcpy( v_buf.get() + dst->verts, src->vBuffer.get(), src->verts * sizeof(DXVertex) );
+        memcpy(v_buf.get(), dst->vBuffer.get(), dst->verts * sizeof(DXVertex));
+        memcpy(v_buf.get() + dst->verts, src->vBuffer.get(), src->verts * sizeof(DXVertex));
 
-        memcpy( i_buf.get(), dst->iBuffer.get(), dst->faces * 3 * sizeof(unsigned short) );
-        memcpy( i_buf.get() + dst->faces * 3, src->iBuffer.get(), src->faces * 3 * sizeof(unsigned short) );
+        memcpy(i_buf.get(), dst->iBuffer.get(), dst->faces * 3 * sizeof(unsigned short));
+        memcpy(i_buf.get() + dst->faces * 3, src->iBuffer.get(), src->faces * 3 * sizeof(unsigned short));
 
         // Account for the offset in the indices copied from src
         for (int i = dst->faces * 3; i < faces * 3; ++i) {
@@ -404,33 +404,33 @@ private:
         return true;
     }
 
-    void SearchShapes( NiAVObjectRef rootObj, vector<NiTriBasedGeomRef>* SubsetNodes) {
+    void SearchShapes(NiAVObjectRef rootObj, vector<NiTriBasedGeomRef>* SubsetNodes) {
         // Check if this object is derived from NiTriBasedGeom
-        NiTriBasedGeomRef niGeom = DynamicCast<NiTriBasedGeom>( rootObj );
+        NiTriBasedGeomRef niGeom = DynamicCast<NiTriBasedGeom>(rootObj);
         if (niGeom) {
             SubsetNodes->push_back(niGeom);
         } else {
             // Check if this object derives from NiNode and, thus, may have children
             // Follow switch index for NiSwitchNodes, ignore RootCollisionNodes
-            NiNodeRef niNode = DynamicCast<NiNode>( rootObj );
-            NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>( rootObj );
-            RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>( rootObj );
+            NiNodeRef niNode = DynamicCast<NiNode>(rootObj);
+            NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>(rootObj);
+            RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>(rootObj);
             if (niSwitch) {
                 // Search just the selected child
-                SearchShapes( niSwitch->GetActiveChild(), SubsetNodes );
+                SearchShapes(niSwitch->GetActiveChild(), SubsetNodes);
             } else if (niNode && !collision) {
                 // Call this function for any children
                 vector<NiAVObjectRef> children = niNode->GetChildren();
                 for (size_t i = 0; i < children.size(); i++) {
-                    SearchShapes( children[i], SubsetNodes );
+                    SearchShapes(children[i], SubsetNodes);
                 }
             }
         }
     }
 
-    bool ExportShape( NiTriBasedGeomRef niGeom, ExportedNode* node) {
+    bool ExportShape(NiTriBasedGeomRef niGeom, ExportedNode* node) {
         // Check that an external texture exists
-        NiTexturingPropertyRef niTexProp = DynamicCast<NiTexturingProperty>(niGeom->GetPropertyByType( NiTexturingProperty::TYPE ));
+        NiTexturingPropertyRef niTexProp = DynamicCast<NiTexturingProperty>(niGeom->GetPropertyByType(NiTexturingProperty::TYPE));
         if (!niTexProp || niTexProp->GetTextureCount() == 0) {
             // log_file << "External texture does not exist" << endl;
             return false;
@@ -450,15 +450,15 @@ private:
         }
 
         // Get material object (NiMaterialProperty) from geometry node (NiTriBasedGeom)
-        NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(niGeom->GetPropertyByType( NiMaterialProperty::TYPE ));
+        NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(niGeom->GetPropertyByType(NiMaterialProperty::TYPE));
 
         // Get Diffuse color (will be baked into vertices
-        Color3 diffuse( 1.0f, 1.0f, 1.0f );
+        Color3 diffuse(1.0f, 1.0f, 1.0f);
         if (niMatProp) {
             diffuse = niMatProp->GetDiffuseColor();
         }
         // Get the emissive color (will be averaged and stored in alpha chanel of vertices)
-        Color3 emissive( 0.0f, 0.0f, 0.0f );
+        Color3 emissive(0.0f, 0.0f, 0.0f);
         if (niMatProp) {
             emissive = niMatProp->GetEmissiveColor();
         }
@@ -508,7 +508,7 @@ private:
         vector<Vector3> positions;
         vector<Vector3> normals;
         if (niGeom->IsSkin()) {
-            niGeom->GetSkinDeformation( positions, normals );
+            niGeom->GetSkinDeformation(positions, normals);
         } else {
             positions = niGeomData->GetVertices();
             normals = niGeomData->GetNormals();
@@ -561,9 +561,9 @@ private:
         }
 
         // If the path starts with "textures" or "\textures" remove it
-        size_t pos = s.find( "textures" );
+        size_t pos = s.find("textures");
         if (pos <= 1) {
-            s = s.substr( pos + 8, string::npos );
+            s = s.substr(pos + 8, string::npos);
         }
 
         // Remove any leading forward slashes that remain
@@ -585,25 +585,24 @@ public:
 
         for (size_t i = 0; i < nodes.size(); ++i) {
             // Check if this node has already been found
-            map<string, ExportedNode*>::iterator it = node_tex.find( nodes[i].tex );
+            map<string, ExportedNode*>::iterator it = node_tex.find(nodes[i].tex);
 
             if (it == node_tex.end()) {
                 // Nothing with this texture has been found yet.  Store the node's pointer in the map
                 node_tex[ nodes[i].tex ] = &nodes[i];
             } else {
                 // A shape with this texture has been found already.  Merge this one into it.
-                MergeShape( it->second, &nodes[i] );
+                MergeShape(it->second, &nodes[i]);
             }
         }
 
         size_t count = 0;
         if (node_tex.size() < nodes.size() && node_tex.size() != 0) {
             // We reduced the number of nodes, so create a new list to save
-            vector<ExportedNode> merged_nodes( node_tex.size() );
+            vector<ExportedNode> merged_nodes(node_tex.size());
 
             for (map<string, ExportedNode*>::iterator it = node_tex.begin(); it != node_tex.end(); ++it) {
                 merged_nodes[count] = *(it->second);
-
                 ++count;
             }
 
@@ -622,7 +621,7 @@ public:
         NiAVObjectRef rootObj;
 
         try {
-            rootObj = DynamicCast<NiAVObject>( ReadNifTree(s, 0) );
+            rootObj = DynamicCast<NiAVObject>(ReadNifTree(s, 0));
         } catch (std::runtime_error& e) {
             std::fstream error_log("mge3\\distant-land-niflib-error.log", std::ios_base::out | std::ios_base::app);
             error_log << e.what() << std::endl;
@@ -635,10 +634,10 @@ public:
         }
 
         // Object root transform should not affect results
-        rootObj->SetLocalTransform( Matrix44::IDENTITY );
+        rootObj->SetLocalTransform(Matrix44::IDENTITY);
 
         vector<NiTriBasedGeomRef> SubsetNodes;
-        SearchShapes( rootObj, &SubsetNodes );
+        SearchShapes(rootObj, &SubsetNodes);
 
         if (SubsetNodes.size() == 0) {
             // log_file << "SubsetNodes size is zero." << endl;
@@ -648,7 +647,7 @@ public:
         for (size_t i = 0; i < SubsetNodes.size(); ++i) {
             ExportedNode tmp_node;
             if (ExportShape(SubsetNodes[i], &tmp_node)) {
-                nodes.push_back( tmp_node );
+                nodes.push_back(tmp_node);
             }
         }
 
@@ -749,7 +748,7 @@ public:
     Vector3 min;
     Vector3 max;
 
-    void CalcBounds( const Vector3& new_min, const Vector3& new_max) {
+    void CalcBounds(const Vector3& new_min, const Vector3& new_max) {
 
         min = new_min;
         max = new_max;
@@ -773,10 +772,10 @@ public:
             }
         }
 
-        radius = sqrt( radius_sqared );
+        radius = sqrt(radius_sqared);
     }
 
-    static bool SaveMeshes( LPCSTR file_path, vector<LandMesh>& meshes) {
+    static bool SaveMeshes(LPCSTR file_path, vector<LandMesh>& meshes) {
         DWORD mesh_count, unused;
         HANDLE file = CreateFile(file_path,GENERIC_WRITE,0,0,CREATE_ALWAYS,0,0);
         if (file == INVALID_HANDLE_VALUE) {
@@ -796,7 +795,7 @@ public:
         return true;
     }
 
-    bool Save( HANDLE& file) {
+    bool Save(HANDLE& file) {
         DWORD verts, faces, unused;
         bool large;
         verts = vertices.size();
@@ -847,17 +846,17 @@ public:
 
 class HeightFieldSampler {
 public:
-    HeightFieldSampler( float* d, size_t dh, size_t dw, float t, float l, float b, float r) :
+    HeightFieldSampler(float* d, size_t dh, size_t dw, float t, float l, float b, float r) :
         top(t), left(l), bottom(b), right(r), data(d), data_height(dh), data_width(dw) {}
     ~HeightFieldSampler() {}
 
-    TexCoord SampleTexCoord( float x, float y) {
+    TexCoord SampleTexCoord(float x, float y) {
         float tx = (0.0f - left + x) / (right - left);
         float ty = 1.0f - ((0.0f - bottom + y) / (top - bottom));
-        return TexCoord( tx, ty );
+        return TexCoord(tx, ty);
     }
 
-    float SampleHeight( float x, float y) {
+    float SampleHeight(float x, float y) {
         // Figure which height values to sample.
         size_t low_x, high_x, low_y, high_y;
 
@@ -881,15 +880,15 @@ public:
         }
 
         // horizontal
-        float bottom_val = GetHeightValue(low_x, low_y) * (1.0f - x_interp) + GetHeightValue( high_x, low_y) * x_interp;
-        float top_val = GetHeightValue(low_x, high_y) * (1.0f - x_interp) + GetHeightValue( high_x, high_y) * x_interp;
+        float bottom_val = GetHeightValue(low_x, low_y) * (1.0f - x_interp) + GetHeightValue(high_x, low_y) * x_interp;
+        float top_val = GetHeightValue(low_x, high_y) * (1.0f - x_interp) + GetHeightValue(high_x, high_y) * x_interp;
 
         // vertical
         float result = top_val * (1.0f - y_interp) + bottom_val * y_interp;
         return result;
     }
 
-    float GetHeightValue( size_t x, size_t y) {
+    float GetHeightValue(size_t x, size_t y) {
         if (x < 0) {
             x = 0;
         }
@@ -915,7 +914,7 @@ public:
 class SplitTriangle {
 public:
     Vector3 left, right, top;
-    SplitTriangle( const Vector3& left, const Vector3& right, const Vector3& top) {
+    SplitTriangle(const Vector3& left, const Vector3& right, const Vector3& top) {
         this->left = left;
         this->right = right;
         this->top = top;
@@ -926,12 +925,12 @@ public:
         return (right + left) / 2.0f;
     }
 
-    SplitTriangle LeftSplit( const Vector3& new_vert) const {
-        return SplitTriangle( right, top, new_vert );
+    SplitTriangle LeftSplit(const Vector3& new_vert) const {
+        return SplitTriangle(right, top, new_vert);
     }
 
-    SplitTriangle RightSplit( const Vector3& new_vert) const {
-        return SplitTriangle( top, left, new_vert );
+    SplitTriangle RightSplit(const Vector3& new_vert) const {
+        return SplitTriangle(top, left, new_vert);
     }
 };
 
@@ -978,13 +977,13 @@ public:
 
     ~RoamVarianceNode() {}
 
-    void CalculateVariance( HeightFieldSampler* sampler, const SplitTriangle& tri, size_t depth) {
+    void CalculateVariance(HeightFieldSampler* sampler, const SplitTriangle& tri, size_t depth) {
         // On the downward pass, calculate the variance as the difference in height between the
         // average of left and right, and the the real height value as given by the sampler
         Vector3 avg = tri.GetHypoCenter();
-        float samp_height = sampler->SampleHeight( avg.x, avg.y );
+        float samp_height = sampler->SampleHeight(avg.x, avg.y);
 
-        variance = abs( avg.z - samp_height );
+        variance = abs(avg.z - samp_height);
 
         // Give extra weight to the split if it causes the vertex to switch from being above the water to being below the water or vice versa
         // Water level is zero
@@ -1009,13 +1008,13 @@ public:
         if (!right_child) {
             right_child = Create();
         }
-        right_child->CalculateVariance( sampler, tri.RightSplit(avg), depth - 1 );
+        right_child->CalculateVariance(sampler, tri.RightSplit(avg), depth - 1);
 
 
         if (!left_child) {
             left_child = Create();
         }
-        left_child->CalculateVariance( sampler, tri.LeftSplit(avg), depth - 1 );
+        left_child->CalculateVariance(sampler, tri.LeftSplit(avg), depth - 1);
 
         // We want the variance of this node to represent the maximum variance of all children nodes, so choose the highest of
         // the variances as the new variance
@@ -1039,7 +1038,7 @@ public:
     unsigned int left_index, right_index, top_index;
     RoamTriangleNode* rt;
 
-    RenderTriangle( const SplitTriangle& s_tri, RoamTriangleNode* r_tri) : st(s_tri), rt(r_tri) {
+    RenderTriangle(const SplitTriangle& s_tri, RoamTriangleNode* r_tri) : st(s_tri), rt(r_tri) {
         left_index = 0xFFFFFFFF;
         right_index = 0xFFFFFFFF;
         top_index = 0xFFFFFFFF;
@@ -1106,15 +1105,15 @@ private:
         left_child->left_neighbor = right_child;
         left_child->right_neighbor = 0;
 
-        RelinkNeighbor( left_child->left_neighbor, this, left_child );
-        RelinkNeighbor( left_child->base_neighbor, this, left_child );
+        RelinkNeighbor(left_child->left_neighbor, this, left_child);
+        RelinkNeighbor(left_child->base_neighbor, this, left_child);
 
         right_child->base_neighbor = right_neighbor;
         right_child->left_neighbor = 0;
         right_child->right_neighbor = left_child;
 
-        RelinkNeighbor( right_child->left_neighbor, this, right_child );
-        RelinkNeighbor( right_child->base_neighbor, this, right_child );
+        RelinkNeighbor(right_child->left_neighbor, this, right_child);
+        RelinkNeighbor(right_child->base_neighbor, this, right_child);
 
         // Clear neighbors of this object since it now just represents a node, not a real triangle
         // Don't clear base_neighbor since it should either already be null or cleared by the DiamondSplit function
@@ -1122,7 +1121,7 @@ private:
         left_neighbor = 0;
     }
 
-    void RelinkNeighbor( RoamTriangleNode* neighbor, RoamTriangleNode* old_link, RoamTriangleNode* new_link) {
+    void RelinkNeighbor(RoamTriangleNode* neighbor, RoamTriangleNode* old_link, RoamTriangleNode* new_link) {
         if (neighbor) {
             if (neighbor->base_neighbor == old_link) {
                 neighbor->base_neighbor = new_link;
@@ -1135,7 +1134,7 @@ private:
     }
 
     void DiamondSplit() {
-        assert( base_neighbor != 0 && base_neighbor->base_neighbor == this );
+        assert(base_neighbor != 0 && base_neighbor->base_neighbor == this);
 
         // Start with an edge split for both triangles
         EdgeSplit();
@@ -1154,7 +1153,7 @@ private:
 
     }
 public:
-    void Tesselate( RoamVarianceNode* v_tri, float max_variance) {
+    void Tesselate(RoamVarianceNode* v_tri, float max_variance) {
         // Determine if the variance of this triangle is enough that we want to split it
         if (v_tri->variance < max_variance) {
             // The variance is within tolerable levels, so end the recursion of this branch
@@ -1171,27 +1170,27 @@ public:
         }
 
         // The variance triangle has children so call this function on the newly created children of this roam triangle node
-        left_child->Tesselate( v_tri->left_child, max_variance );
-        right_child->Tesselate( v_tri->right_child, max_variance );
+        left_child->Tesselate(v_tri->left_child, max_variance);
+        right_child->Tesselate(v_tri->right_child, max_variance);
     }
 
-    void GatherTriangles( HeightFieldSampler* sampler, const SplitTriangle& s_tri, vector<RenderTriangle>& triangles) {
+    void GatherTriangles(HeightFieldSampler* sampler, const SplitTriangle& s_tri, vector<RenderTriangle>& triangles) {
 
         Vector3 hc = s_tri.GetHypoCenter();
-        hc.z = sampler->SampleHeight( hc.x, hc.y );
+        hc.z = sampler->SampleHeight(hc.x, hc.y);
 
         if (!left_child || !right_child) {
             // This node has no children, so add the triangle to the list and return
-            triangles.push_back( RenderTriangle(s_tri, this) );
+            triangles.push_back(RenderTriangle(s_tri, this));
             return;
         }
 
         // This node has children, so call this function on them
-        left_child->GatherTriangles( sampler, s_tri.LeftSplit(hc), triangles );
-        right_child->GatherTriangles( sampler, s_tri.RightSplit(hc), triangles );
+        left_child->GatherTriangles(sampler, s_tri.LeftSplit(hc), triangles);
+        right_child->GatherTriangles(sampler, s_tri.RightSplit(hc), triangles);
     }
 
-    // void DebugPrint( size_t depth = 0) {
+    // void DebugPrint(size_t depth = 0) {
     //    for (size_t i = 0; i < depth; ++i) {
     //        log_file << "  ";
     //    }
@@ -1199,10 +1198,10 @@ public:
     //    log_file << depth << " - rn: " << right_neighbor << " ln: " << left_neighbor << " bn: " << base_neighbor << " lc:" << left_child << " rc: " << right_child << endl;
 
     //    if (left_child) {
-    //        left_child->DebugPrint( depth + 1 );
+    //        left_child->DebugPrint(depth + 1);
     //    }
     //    if (right_child) {
-    //        right_child->DebugPrint( depth + 1 );
+    //        right_child->DebugPrint(depth + 1);
     //    }
     // }
 };
@@ -1215,7 +1214,7 @@ public:
         z = v.z;
     }
 
-    CmpVec3& operator=( const Vector3& rh) {
+    CmpVec3& operator=(const Vector3& rh) {
         x = rh.x;
         y = rh.y;
         z = rh.z;
@@ -1226,19 +1225,19 @@ public:
         return Vector3(x,y,z);
     }
 
-    static bool FltEq( float lh, float rh) {
+    static bool FltEq(float lh, float rh) {
         return abs(lh - rh) < 0.0001f;
     }
 
-    static bool FltLt( float lh, float rh) {
+    static bool FltLt(float lh, float rh) {
         return lh - 0.0001f < rh;
     }
 
-    bool operator==( const CmpVec3& rh) const {
+    bool operator==(const CmpVec3& rh) const {
         return FltEq(x, rh.x) && FltEq(y, rh.y) && FltEq(z, rh.z);
     }
 
-    friend bool operator<( const CmpVec3& lh, const CmpVec3& rh) {
+    friend bool operator<(const CmpVec3& lh, const CmpVec3& rh) {
         if (lh == rh) {
             return false;
         }
@@ -1265,12 +1264,12 @@ public:
         t1.base_neighbor = &t2;
         t2.base_neighbor = &t1;
     }
-    RoamLandPatch( float t, float l, float b, float r, HeightFieldSampler* s) : top(t), left(l), bottom(b), right(r), sampler(s) {
+    RoamLandPatch(float t, float l, float b, float r, HeightFieldSampler* s) : top(t), left(l), bottom(b), right(r), sampler(s) {
         t1.base_neighbor = &t2;
         t2.base_neighbor = &t1;
     }
 
-    RoamLandPatch( const RoamLandPatch& patch) {
+    RoamLandPatch(const RoamLandPatch& patch) {
         sampler = patch.sampler;
         top = patch.top;
         left = patch.left;
@@ -1284,59 +1283,59 @@ public:
     ~RoamLandPatch() {}
 
     Vector3 GetTopLeft() {
-        return Vector3( left, top, sampler->SampleHeight(left,top) );
+        return Vector3(left, top, sampler->SampleHeight(left,top));
     }
     Vector3 GetBottomLeft() {
-        return Vector3( left, bottom, sampler->SampleHeight(left,bottom) );
+        return Vector3(left, bottom, sampler->SampleHeight(left,bottom));
     }
     Vector3 GetTopRight() {
-        return Vector3( right, top, sampler->SampleHeight(right,top) );
+        return Vector3(right, top, sampler->SampleHeight(right,top));
     }
     Vector3 GetBottomRight() {
-        return Vector3( right, bottom, sampler->SampleHeight(right,bottom) );
+        return Vector3(right, bottom, sampler->SampleHeight(right,bottom));
     }
 
-    void ConnectRightNeighbor( RoamLandPatch& neighbor) {
+    void ConnectRightNeighbor(RoamLandPatch& neighbor) {
         t2.right_neighbor = &neighbor.t1;
         neighbor.t1.right_neighbor = &t2;
     }
 
-    void ConnectLeftNeighbor( RoamLandPatch& neighbor) {
+    void ConnectLeftNeighbor(RoamLandPatch& neighbor) {
         t1.right_neighbor = &neighbor.t2;
         neighbor.t2.right_neighbor = &t1;
     }
 
-    void ConnectTopNeighbor( RoamLandPatch& neighbor) {
+    void ConnectTopNeighbor(RoamLandPatch& neighbor) {
         t2.left_neighbor = &neighbor.t1;
         neighbor.t1.left_neighbor = &t2;
     }
 
-    void ConnectBottomNeighbor( RoamLandPatch& neighbor) {
+    void ConnectBottomNeighbor(RoamLandPatch& neighbor) {
         t1.left_neighbor = &neighbor.t2;
         neighbor.t2.left_neighbor = &t1;
     }
 
-    void Tesselate( float max_variance, size_t tree_depth) {
+    void Tesselate(float max_variance, size_t tree_depth) {
         Vector3 top_left = GetTopLeft();
         Vector3 bottom_left = GetBottomLeft();
         Vector3 top_right = GetTopRight();
         Vector3 bottom_right = GetBottomRight();
 
         RoamVarianceNode* variance_root = RoamVarianceNode::Create();
-        variance_root->CalculateVariance( sampler, SplitTriangle(bottom_right, top_left, bottom_left), tree_depth );
-        t1.Tesselate( variance_root, max_variance );
+        variance_root->CalculateVariance(sampler, SplitTriangle(bottom_right, top_left, bottom_left), tree_depth);
+        t1.Tesselate(variance_root, max_variance);
         variance_root = 0;
         RoamVarianceNode::ResetPool();
 
         variance_root = RoamVarianceNode::Create();
-        variance_root->CalculateVariance( sampler, SplitTriangle(top_left, bottom_right, top_right), tree_depth );
-        t2.Tesselate( variance_root, max_variance );
+        variance_root->CalculateVariance(sampler, SplitTriangle(top_left, bottom_right, top_right), tree_depth);
+        t2.Tesselate(variance_root, max_variance);
         variance_root = 0;
 
         RoamVarianceNode::ResetPool();
     }
 
-    LandMesh GenerateMesh( unsigned int cache_size) {
+    LandMesh GenerateMesh(unsigned int cache_size) {
         LandMesh mesh;
         Vector3 top_left = GetTopLeft();
         Vector3 bottom_left = GetBottomLeft();
@@ -1345,8 +1344,8 @@ public:
 
         vector<RenderTriangle> render_triangles;
 
-        t1.GatherTriangles( sampler, SplitTriangle(bottom_right, top_left, bottom_left), render_triangles );
-        t2.GatherTriangles( sampler, SplitTriangle(top_left, bottom_right, top_right), render_triangles );
+        t1.GatherTriangles(sampler, SplitTriangle(bottom_right, top_left, bottom_left), render_triangles);
+        t2.GatherTriangles(sampler, SplitTriangle(top_left, bottom_right, top_right), render_triangles);
 
         // Walk through the triangles that were gathered, adding their vertices and indices to a map
         Vector3 max = Vector3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
@@ -1358,7 +1357,7 @@ public:
             size_t right_index, left_index, top_index;
             map<CmpVec3, size_t>::iterator it;
 
-            it = vert_map.find( render_triangles[i].st.left );
+            it = vert_map.find(render_triangles[i].st.left);
             if (it == vert_map.end()) {
                 // Add new index
                 left_index = mesh.vertices.size();
@@ -1378,7 +1377,7 @@ public:
                 left_index = it->second;
             }
 
-            it = vert_map.find( render_triangles[i].st.right );
+            it = vert_map.find(render_triangles[i].st.right);
             if (it == vert_map.end()) {
                 // Add new index
                 right_index = mesh.vertices.size();
@@ -1398,7 +1397,7 @@ public:
                 right_index = it->second;
             }
 
-            it = vert_map.find( render_triangles[i].st.top );
+            it = vert_map.find(render_triangles[i].st.top);
             if (it == vert_map.end()) {
                 // Add new index
                 top_index = mesh.vertices.size();
@@ -1418,7 +1417,7 @@ public:
                 top_index = it->second;
             }
 
-            mesh.triangles.push_back( LargeTriangle(right_index, top_index, left_index) );
+            mesh.triangles.push_back(LargeTriangle(right_index, top_index, left_index));
         }
 
         if (abs(min.z + 2048.0f) <= 0.001f && abs(max.z + 2048.0f) <= 0.001f) {
@@ -1427,7 +1426,7 @@ public:
         }
 
         // Calculate mesh bounds
-        mesh.CalcBounds( min, max );
+        mesh.CalcBounds(min, max);
 
         // Cache optimize triangle and vertex order
         unsigned int* iBuffer = (unsigned int*)&mesh.triangles[0];
@@ -1436,14 +1435,14 @@ public:
         unsigned int faces = (unsigned int)mesh.triangles.size();
         unsigned int stride = 3 * sizeof(float);
 
-        TootleResult result = TootleOptimizeVCache( iBuffer, faces, verts, cache_size, iBuffer, NULL, TOOTLE_VCACHE_AUTO);
+        TootleResult result = TootleOptimizeVCache(iBuffer, faces, verts, cache_size, iBuffer, NULL, TOOTLE_VCACHE_AUTO);
 
         if (result != TOOTLE_OK) {
             // log_file << "TootleOptimizeVCache returned an error" << endl;
             return LandMesh();
         }
 
-        result = TootleOptimizeVertexMemory( vBuffer, iBuffer, verts, faces, stride, vBuffer, iBuffer, NULL );
+        result = TootleOptimizeVertexMemory(vBuffer, iBuffer, verts, faces, stride, vBuffer, iBuffer, NULL);
 
         if (result != TOOTLE_OK) {
             // log_file << "TootleOptimizeVertexMemory returned an error" << endl;
@@ -1452,7 +1451,7 @@ public:
 
         // Now that all the vertices have been found, figure out the UVs for them
         for (size_t i = 0; i < mesh.vertices.size(); ++i) {
-            mesh.uvs.push_back( sampler->SampleTexCoord( mesh.vertices[i].x, mesh.vertices[i].y) );
+            mesh.uvs.push_back(sampler->SampleTexCoord(mesh.vertices[i].x, mesh.vertices[i].y));
         }
 
         return mesh;
@@ -1464,14 +1463,14 @@ public:
     // }
 };
 
-extern "C" void TessellateLandscape( char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float top, float left, float bottom, float right, float error_tolerance) {
+extern "C" void TessellateLandscape(char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float top, float left, float bottom, float right, float error_tolerance) {
 
     // Create sampler
-    HeightFieldSampler sampler( height_data, data_height, data_width, top, left, bottom, right );
+    HeightFieldSampler sampler(height_data, data_height, data_width, top, left, bottom, right);
 
     // Create patches
-    size_t patches_across = (size_t)floor( ((float)data_width) / 256.0f + 0.5f );
-    size_t patches_down = (size_t)floor( ((float)data_height) / 256.0f + 0.5f );
+    size_t patches_across = (size_t)floor(((float)data_width) / 256.0f + 0.5f);
+    size_t patches_down = (size_t)floor(((float)data_height) / 256.0f + 0.5f);
 
     float patch_width = (right - left) / (float)patches_across;
     float patch_height = (top - bottom) / (float)patches_down;
@@ -1481,7 +1480,7 @@ extern "C" void TessellateLandscape( char* file_path, float* height_data, unsign
     Vector3 corner(left, bottom, 0.0f);
 
     // Fill in patch data
-    patches.resize( patches_across * patches_down );
+    patches.resize(patches_across * patches_down);
 
     for (size_t y = 0; y < patches_down; ++y) {
         for (size_t x = 0; x < patches_across; ++x) {
@@ -1522,7 +1521,7 @@ extern "C" void TessellateLandscape( char* file_path, float* height_data, unsign
 
     // Tesselate patches
     for (size_t i = 0; i < patches.size(); ++i) {
-        patches[i].Tesselate( error_tolerance, 14 );
+        patches[i].Tesselate(error_tolerance, 14);
     }
 
     // patch.DebugPrint();
@@ -1534,7 +1533,7 @@ extern "C" void TessellateLandscape( char* file_path, float* height_data, unsign
         LandMesh mesh = patches[i].GenerateMesh(16);
 
         if (mesh.vertices.size() > 0) {
-            meshes.push_back( mesh );
+            meshes.push_back(mesh);
         }
     }
 
@@ -1547,7 +1546,7 @@ extern "C" void TessellateLandscape( char* file_path, float* height_data, unsign
     }
 
     // Save the Meshes
-    LandMesh::SaveMeshes( file_path, meshes );
+    LandMesh::SaveMeshes(file_path, meshes);
 }
 
 
