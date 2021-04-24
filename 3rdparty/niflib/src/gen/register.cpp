@@ -258,6 +258,7 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/obj/NiWireframeProperty.h"
 #include "../../include/obj/NiZBufferProperty.h"
 #include "../../include/obj/RootCollisionNode.h"
+#include "../../include/obj/NiCollisionSwitch.h"
 #include "../../include/obj/NiRawImageData.h"
 #include "../../include/obj/NiSortAdjustNode.h"
 #include "../../include/obj/NiSourceCubeMap.h"
@@ -653,6 +654,7 @@ namespace Niflib {
 		ObjectRegistry::RegisterObject( "NiWireframeProperty", NiWireframeProperty::Create );
 		ObjectRegistry::RegisterObject( "NiZBufferProperty", NiZBufferProperty::Create );
 		ObjectRegistry::RegisterObject( "RootCollisionNode", RootCollisionNode::Create );
+		ObjectRegistry::RegisterObject( "NiCollisionSwitch", NiCollisionSwitch::Create );
 		ObjectRegistry::RegisterObject( "NiRawImageData", NiRawImageData::Create );
 		ObjectRegistry::RegisterObject( "NiSortAdjustNode", NiSortAdjustNode::Create );
 		ObjectRegistry::RegisterObject( "NiSourceCubeMap", NiSourceCubeMap::Create );

@@ -820,7 +820,7 @@ public:
         try {
             rootObj = DynamicCast<NiAVObject>( ReadNifTree(s, 0) );
         } catch (std::runtime_error& e) {
-            std::fstream error_log("distant-land-niflib-error.log", std::ios_base::out | std::ios_base::app);
+            std::fstream error_log("mge3\\distant-land-niflib-error.log", std::ios_base::out | std::ios_base::app);
             error_log << e.what() << std::endl;
             return false;
         }
