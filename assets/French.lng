@@ -2,6 +2,8 @@
 Name = Français (French)
 Translator = Papill6n, Mordicus
 
+
+
 [.Strings]
 DSound = "Des éléments d'une ancienne version de MGE ont été détectés.\nVous devez supprimer le fichier dsound.dll de votre répertoire Morrowind afin que cette version de MGE fonctionne."
 Error = "Erreur"
@@ -519,12 +521,13 @@ lStatSimplifyMeshes = "Niveau de détail des meshes"
 lStatSkipMipLevels = "Niveaux des mipmaps à ignorer"
 lStatSkipMipDesc = "Ignorer des niveaux de mipmaps réduit la VRAM requise dans le jeu"
 cmbStatSimplifyMeshes = "Complet;90%;75%;50%;25%"
+cbStatLargeInt = "Inclure les intérieurs grands"
+cbStatIntExt = "Inclure les intérieurs se comportant comme \ndes extérieurs (ex: extension officielle Tribunal)"
+cbStatIntWater = "Inclure la réflexion de l'eau dans les intérieurs \n(augmente les temps de chargement)"
 cbStatActivators = "Inclure les activateurs"
 cbStatIncludeMisc = "Inclure les objets divers"
-cbStatIntWater = "Inclure la réflexion de l'eau dans les intérieurs \n(augmente les temps de chargement)"
 bStatOverrideList = "Éditer\nla liste"
 lStatOverrideList = "AUCUNE LISTE D'OUTREPASSEMENT DE STATIQUES PRÉSENTE"
-cbStatIntExt = "Inclure les intérieurs se comportant comme \ndes extérieurs (ex: extension officielle Tribunal)"
 bStatExportStatics = "Exporter liste statiques"
 bStatSkip = "Ignorer cette étape"
 bStatRun = "Créer les statiques"

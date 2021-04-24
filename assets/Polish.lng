@@ -3,6 +3,7 @@ Name = Polski (Polish)
 Translator = Minamir
 
 
+
 [.Strings]
 DSound = "Wygląda na to, że masz fragmenty starszej wersji MGE.\nMusisz usunąć plik dsound.dll z folderu Morrowind aby MGE funkcjonował."
 Error = "Błąd"
@@ -559,12 +560,13 @@ lStatSimplifyMeshes = "Detale siatki"
 lStatSkipMipLevels = "Poziomy mipmap do pominięcia"
 lStatSkipMipDesc = "Pominięcie poziomów mipmap redukuje wymagany VRAM w grze"
 cmbStatSimplifyMeshes = "Pełn.;90%;75%;50%;25%"
+cbStatLargeInt = "Dołącz duże wnętrza"
+cbStatIntExt = "Dołącz wnętrza udające otwarte tereny"
+cbStatIntWater = "Dołącz wodę z odbiciami we wnętrzach\n(wydłuża czas ładowania)"
 cbStatActivators = "Dołącz aktywatory"
 cbStatIncludeMisc = "Dołącz rozmaite obiekty"
-cbStatIntWater = "Dołącz wodę z odbiciami we wnętrzach\n(wydłuża czas ładowania)"
 bStatOverrideList = "Edytuj\nlistę"
 lStatOverrideList = "BRAK LISTY NADPISYWANIA OBIEKTOW STATYCZNYCH"
-cbStatIntExt = "Dołącz wnętrza udające otwarte tereny"
 bStatExportStatics = "Eksportuj listę obiektów statycznych"
 bStatSkip = "Pomiń generowanie obiektów statycznych"
 bStatRun = "Utwórz obiekty statyczne"

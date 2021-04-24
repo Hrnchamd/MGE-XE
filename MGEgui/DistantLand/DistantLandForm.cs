@@ -45,10 +45,11 @@ namespace MGEgui.DistantLand {
             { "StaticGrassDensity", new string [] { "lStatGrassDensity", "cmbStatGrassDensity" } },
             { "StaticSimplifyMesh", new string [] { "lStatSimplifyMeshes", "cmbStatSimplifyMeshes" } },
             { "StaticSkipMips", new string [] { "lStatSkipMipLevels", "cmbStatSkipMipLevels" } },
-            { "IncludeActivators", new string [] { "cbStatActivators" } },
-            { "IncludeMisc", new string [] { "cbStatIncludeMisc" } },
+            { "IncludeLargeInt", new string [] { "cbStatLargeInt" } },
             { "IncludeIntExt", new string [] { "cbStatIntExt" } },
             { "IncludeIntWater", new string [] { "cbStatIntWater" } },
+            { "IncludeActivators", new string [] { "cbStatActivators" } },
+            { "IncludeMisc", new string [] { "cbStatIncludeMisc" } },
             { "EditOverrideList", new string [] { "bStatOverrideList" } },
             { "ExportOverrideList", new string [] { "bStatExportStatics" } },
         };
@@ -208,11 +209,12 @@ namespace MGEgui.DistantLand {
         private static INIFile.INIVariableDef iniGrassDens = new INIFile.INIVariableDef("GrassDens", iniDLWizardSets, "Grass density", INIFile.INIVariableType.Byte, "100", 0, 100);
         private static INIFile.INIVariableDef iniStatMesh = new INIFile.INIVariableDef("StatMesh", iniDLWizardSets, "Mesh detail", INIFile.INIVariableType.Dictionary, "Full", sMeshDet);
         private static INIFile.INIVariableDef iniSkipMip = new INIFile.INIVariableDef("SkipMip", iniDLWizardSets, "Skip mipmap levels", INIFile.INIVariableType.Byte, "1", 0, 3);
+        private static INIFile.INIVariableDef iniStatLargeInt = new INIFile.INIVariableDef("StatLargeInt", iniDLWizardSets, "Statics for large interiors", INIFile.INIBoolType.OnOff, "On");
+        private static INIFile.INIVariableDef iniStatIntExt = new INIFile.INIVariableDef("StatIntExt", iniDLWizardSets, "Statics for behave like exterior cells", INIFile.INIBoolType.OnOff, "On");
+        private static INIFile.INIVariableDef iniStatIntWater = new INIFile.INIVariableDef("StatIntWater", iniDLWizardSets, "Statics for interiors with water", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniActivators = new INIFile.INIVariableDef("Activators", iniDLWizardSets, "Include activators", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniMiscObj = new INIFile.INIVariableDef("MiscObj", iniDLWizardSets, "Include misc objects", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniUseStatOvr = new INIFile.INIVariableDef("UseStatOvr", iniDLWizardSets, "Use static overrides", INIFile.INIBoolType.Text, "True");
-        private static INIFile.INIVariableDef iniStatIntExt = new INIFile.INIVariableDef("StatIntExt", iniDLWizardSets, "Statics for behave like exterior cells", INIFile.INIBoolType.OnOff, "On");
-        private static INIFile.INIVariableDef iniStatIntWater = new INIFile.INIVariableDef("StatIntWater", iniDLWizardSets, "Statics for interiors with water", INIFile.INIBoolType.OnOff, "Off");
 
         // set of keys to read at form creation
         private static INIFile.INIVariableDef[] iniDLWizardVars = {
@@ -226,11 +228,12 @@ namespace MGEgui.DistantLand {
             iniGrassDens, 
             iniStatMesh, 
             iniSkipMip,
+            iniStatLargeInt,
+            iniStatIntExt,
+            iniStatIntWater,
             iniActivators, 
             iniMiscObj, 
-            iniUseStatOvr,
-            iniStatIntExt,
-            iniStatIntWater
+            iniUseStatOvr
         };
 
         // set of keys to write after plugin selection
@@ -260,11 +263,12 @@ namespace MGEgui.DistantLand {
             iniGrassDens,
             iniStatMesh,
             iniSkipMip,
-            iniActivators,
-            iniMiscObj,
-            iniUseStatOvr,
+            iniStatLargeInt,
             iniStatIntExt,
-            iniStatIntWater
+            iniStatIntWater,
+            iniActivators, 
+            iniMiscObj, 
+            iniUseStatOvr
         };
 
         // configuration of setup steps
@@ -330,11 +334,12 @@ namespace MGEgui.DistantLand {
             udStatGrassDensity.Value = (int)iniFile.getKeyValue("GrassDens");
             cmbStatSimplifyMeshes.SelectedIndex = (int)iniFile.getKeyValue("StatMesh");
             cmbStatSkipMipLevels.SelectedIndex = (int)iniFile.getKeyValue("SkipMip");
+            cbStatLargeInt.Checked = (iniFile.getKeyValue("StatLargeInt") == 1);
+            cbStatIntExt.Checked = (iniFile.getKeyValue("StatIntExt") == 1);
+            cbStatIntWater.Checked = (iniFile.getKeyValue("StatIntWater") == 1);
             cbStatActivators.Checked = (iniFile.getKeyValue("Activators") == 1);
             cbStatIncludeMisc.Checked = (iniFile.getKeyValue("MiscObj") == 1);
             cbStatOverrideList.Checked = (iniFile.getKeyValue("UseStatOvr") == 1);
-            cbStatIntExt.Checked = (iniFile.getKeyValue("StatIntExt") == 1);
-            cbStatIntWater.Checked = (iniFile.getKeyValue("StatIntWater") == 1);
             lbStatOverrideList.Items.Clear();
             lbStatOverrideList.Items.AddRange(iniFile.getSectList(iniDLWizardStatOvr));
             lStatOverrideList.Enabled = (lbStatOverrideList.Items.Count == 0);
@@ -385,11 +390,12 @@ namespace MGEgui.DistantLand {
             iniFile.setKey("GrassDens", (double)udStatGrassDensity.Value);
             iniFile.setKey("StatMesh", cmbStatSimplifyMeshes.SelectedIndex);
             iniFile.setKey("SkipMip", cmbStatSkipMipLevels.SelectedIndex);
+            iniFile.setKey("StatLargeInt", cbStatLargeInt.Checked);
+            iniFile.setKey("StatIntExt", cbStatIntExt.Checked);
+            iniFile.setKey("StatIntWater", cbStatIntWater.Checked);
             iniFile.setKey("Activators", cbStatActivators.Checked);
             iniFile.setKey("MiscObj", cbStatIncludeMisc.Checked);
             iniFile.setKey("UseStatOvr", cbStatOverrideList.Checked);
-            iniFile.setKey("StatIntExt", cbStatIntExt.Checked);
-            iniFile.setKey("StatIntWater", cbStatIntWater.Checked);
             List<string> tempList = new List<string>();
             foreach (string s in lbStatOverrideList.Items) {
                 tempList.Add(s);
@@ -2715,7 +2721,9 @@ namespace MGEgui.DistantLand {
                         span = Math.Max(span, cellMaxY - cellMinY);
                         span = Math.Max(span, cellMaxZ - cellMinZ);
                         
-                        if ((cbStatIntExt.Checked && isInteriorExterior) || (cbStatIntWater.Checked && isInteriorWater) || span >= largeCellSpan) {
+                        if ((cbStatIntExt.Checked && isInteriorExterior)
+                            || (cbStatIntWater.Checked && isInteriorWater)
+                            || (cbStatLargeInt.Checked && span >= largeCellSpan)) {
                             CellList[CellName.ToLower(Statics.Culture)] = true;
                         }
                     }

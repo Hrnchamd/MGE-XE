@@ -3,6 +3,8 @@ Name = Русский (Russian)
 Translator = Europop&Sylvius
 0:31 01.06.2013
 
+
+
 [.Strings]
 Close = "&Закрыть"
 DSound = "Вероятно, у вас осталась установлена часть старой версии MGE.\nВы должны удалить dsound.dll из папки Morrowind для корректной работы этой версии MGE."
@@ -503,12 +505,13 @@ lStatSimplifyMeshes = "Детал. моделей"
 lStatSkipMipLevels = "Пропускаемые MIP-уровни"
 lStatSkipMipDesc = "Пропуск мип-уровней снижает потребеление видеопамяти игрой, но ухудшает внешний вид текстуры"
 cmbStatSimplifyMeshes = "100%;90%;75%;50%;25%"
+cbStatLargeInt = "Большие интерьеры"
+cbStatIntExt = "Интерьеры, похожие на экстерьер"
+cbStatIntWater = "Отражения на воде в интерьерах\n(увеличит время их загрузки)"
 cbStatActivators = "Активаторы"
 cbStatIncludeMisc = "Прочие объекты"
-cbStatIntWater = "Отражения на воде в интерьерах\n(увеличит время их загрузки)"
 bStatOverrideList = "List"
 lStatOverrideList = "Нет объектов-исключений"
-cbStatIntExt = "Интерьеры, похожие на экстерьер"
 bStatExportStatics = "Экспорт"
 bStatSkip = "Пропуск"
 bStatRun = "Создать объекты"
