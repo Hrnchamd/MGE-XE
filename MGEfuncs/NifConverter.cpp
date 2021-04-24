@@ -22,6 +22,7 @@
 #include <vector>
 #include <float.h>
 #include <map>
+#include <memory>
 
 #include <d3d9.h>
 #include <d3dx9.h>
@@ -34,7 +35,6 @@
 
 using namespace Niflib;
 
-#define SAFERELEASEP(a) { if(a) { delete[] a; } a = 0; }
 
 static IDirect3DDevice9* device;
 static HANDLE staticFile;
@@ -88,8 +88,8 @@ struct ExportedNode {
     Vector3 min;
     int verts;
     int faces;
-    DXVertex* vBuffer;
-    unsigned short* iBuffer;
+    std::unique_ptr<DXVertex[]> vBuffer;
+    std::unique_ptr<unsigned short[]> iBuffer;
     string tex;
     float emissive;
 
@@ -98,8 +98,6 @@ struct ExportedNode {
         radius = 0;
         verts = 0;
         faces = 0;
-        vBuffer = 0;
-        iBuffer = 0;
         emissive = 0.0f;
     }
 
@@ -108,16 +106,14 @@ struct ExportedNode {
         radius = 0;
         verts = 0;
         faces = 0;
-        vBuffer = 0;
-        iBuffer = 0;
         emissive = 0.0f;
 
         *this = src;
     }
 
     ExportedNode& operator=(const ExportedNode& src) {
-        SAFERELEASEP(vBuffer);
-        SAFERELEASEP(iBuffer);
+        vBuffer.reset();
+        iBuffer.reset();
 
         verts = src.verts;
         faces = src.faces;
@@ -125,13 +121,13 @@ struct ExportedNode {
         emissive = src.emissive;
 
         if (verts) {
-            vBuffer = new DXVertex[verts];
-            memcpy( vBuffer, src.vBuffer, verts * sizeof(DXVertex) );
+            vBuffer = std::make_unique<DXVertex[]>(verts);
+            memcpy( vBuffer.get(), src.vBuffer.get(), verts * sizeof(DXVertex) );
         }
 
         if (faces) {
-            iBuffer = new unsigned short[faces * 3];
-            memcpy( iBuffer, src.iBuffer, faces * 6 );
+            iBuffer = std::make_unique<unsigned short[]>(faces * 3);
+            memcpy( iBuffer.get(), src.iBuffer.get(), faces * 3 * sizeof(unsigned short) );
         }
 
         return *this;
@@ -186,195 +182,52 @@ struct ExportedNode {
         radius = sqrt(radius_squared);
     }
 
-    /*int CanRemoveTriangle(WORD i, WORD a, WORD b, int* adj, Vector3* norm) {
-        int j = -1;
-        if(adj[a*3+0] != i && adj[a*3+0] != -1 && (adj[a*3+0] == adj[b*3+0] || adj[a*3+0] == adj[b*3+1] || adj[a*3+0] == adj[b*3+2])) j = adj[a*3+0];
-        if(adj[a*3+1] != i && adj[a*3+1] != -1 && (adj[a*3+1] == adj[b*3+0] || adj[a*3+1] == adj[b*3+1] || adj[a*3+1] == adj[b*3+2])) j = adj[a*3+1];
-        if(adj[a*3+2] != i && adj[a*3+2] != -1 && (adj[a*3+2] == adj[b*3+0] || adj[a*3+2] == adj[b*3+1] || adj[a*3+2] == adj[b*3+2])) j = adj[a*3+2];
-        if(j == -1) return -1;
-        if(norm[i].DotProduct(norm[a])>0.1f || norm[i].DotProduct(norm[b])>0.1f || norm[i].DotProduct(norm[j])>0.1f) return -1;
-        return j;
-    }
-    bool MergeTriangles(WORD a, WORD b, int vert) {
-
-    }
-    bool ContaintsVert(WORD face, int vert) {
-        return iBuffer[face*3+0] == vert || iBuffer[face*3+1] == vert || iBuffer[face*3+2] == vert;
-    }
-    bool RemoveTriangle(WORD a, WORD b, WORD c, WORD d) {
-        int removedVertex = -1, sharedVertex = -1;
-        for(int i = 0;i < 3;i++) {
-            if(ContaintsVert(b, iBuffer[a*3+i]) && ContaintsVert(b, iBuffer[a*3+i]) && ContaintsVert(b, iBuffer[a*3+i])) {
-                removedVertex = iBuffer[a*3+i];
-                break;
-            }
-        }
-        if(removedVertex == -1) return false;
-        return MergeTriangles(a,b,removedVertex) || MergeTriangles(c,d,removedVertex);
-        return true;
-    }
-    void ShrinkMesh() {
-        ID3DXMesh *mesh;
-            int *adj = new int[faces*3];
-            Vector3 *norm = new Vector3[faces];
-            void* data;
-
-            D3DXCreateMeshFVF(faces, verts, D3DXMESH_SYSTEMMEM, D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1, device, &mesh);
-            mesh->LockVertexBuffer(0,&data);
-            memcpy(data, vBuffer, verts*stride);
-            mesh->UnlockVertexBuffer();
-            mesh->LockIndexBuffer(0,&data);
-            memcpy(data, iBuffer, faces*6);
-            mesh->UnlockIndexBuffer();
-
-            mesh->GenerateAdjacency(0.0f, (DWORD*)adj);
-            Triangle* tris = (Triangle*)iBuffer;
-
-            bool removed;
-            int removedCount = 0;
-            // Repeat until no more triangles can be removed
-            do {
-                removed = false;
-                // Generate normals
-                for(int i = 0; i < faces; i++) {
-                    Vector3 v0 = vBuffer[tris[i][0]].Position;
-                    Vector3 v1 = vBuffer[tris[i][1]].Position;
-                    Vector3 v2 = vBuffer[tris[i][2]].Position;
-
-                    Vector3 a = v1 - v0;
-                    Vector3 b = v2 - v0;
-
-                    norm[i] = a.CrossProduct(b).Normalized();
-                }
-                // Loop through and remove faces
-                for(int i = 0; i < faces; i++) {
-                    int j;
-                    if(adj[i*3+0] != -1 && adj[i+3+1] != -1 && ((j = CanRemoveTriangle(i, adj[i*3+0], adj[i+3+1], adj, norm)) != -1)) {
-                        RemoveTriangle(i, adj[i*3+0], j, adj[i*3+1], adj, norm);
-                        removed = true;
-                        removedCount++;
-                    } else if(adj[i*3+0] != -1 && adj[i+3+2] != -1 && ((j = CanRemoveTriangle(i, adj[i*3+0], adj[i+3+2], adj, norm)) != -1))) {
-                        RemoveTriangle(i, adj[i*3+0], j, adj[i*3+2], adj, norm);
-                        removed = true;
-                        removedCount++;
-                    } else if(adj[i*3+1] != -1 && adj[i+3+2] != -1 && ((j = CanRemoveTriangle(i, adj[i*3+1], adj[i+3+2], adj, norm)) != -1))) {
-                        RemoveTriangle(i, adj[i*3+1], j, adj[i*3+2], adj, norm);
-                        removed = true;
-                        removedCount++;
-                    }
-                }
-            } while(removed);
-
-            // Now remove any unreferences verticies
-    }*/
-    void Optimize( unsigned int cache_size, float simplify, bool old) {
+    void Optimize(unsigned int cache_size, float simplify, bool old) {
         const unsigned int stride = 36;
 
+        // Reduce vertex count by scaling factor simplify
         if (simplify < 1 && faces > 8) {
+            ProgMesh pmesh(verts, faces, vBuffer.get(), iBuffer.get());
+            pmesh.ComputeProgressiveMesh();
 
-            if (!old) {
+            DXVertex* newVerts;
+            WORD* newFaces;
 
-                ProgMesh pmesh(verts, faces, vBuffer, iBuffer);
-                pmesh.ComputeProgressiveMesh();
+            if (pmesh.DoProgressiveMesh(simplify, (DWORD*)&verts, (DWORD*)&faces, &newVerts, &newFaces) > 0) {
+                vBuffer.reset(newVerts);
+                iBuffer.reset(newFaces);
 
-                DXVertex* newVerts;
-                WORD* newFaces;
-
-                if (pmesh.DoProgressiveMesh(simplify, (DWORD*)&verts, (DWORD*)&faces, &newVerts, &newFaces)>0) {
-                    delete[] iBuffer;
-                    delete[] vBuffer;
-                    iBuffer = newFaces;
-                    vBuffer = newVerts;
-
-                    /*char buf[260];
-                    sprintf(buf, "Mesh simplified from %d to %d", debugVerts, verts);
-                    OutputDebugStringA(buf);*/
-                }
-
-            } else {
-
-                ID3DXMesh* mesh, *nmesh;
-                DWORD* adjacency1 = new DWORD[faces*3];
-                DWORD* adjacency2 = new DWORD[faces*3];
-                void* data;
-
-                D3DXATTRIBUTEWEIGHTS weights;
-                memset(&weights, 0, sizeof(weights));
-                weights.Boundary = 2;
-                weights.Position = 1;
-                weights.Normal = 1;
-
-                // TODO: Check HRESULT
-                D3DXCreateMeshFVF(faces, verts, D3DXMESH_SYSTEMMEM, D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_TEX1, device, &mesh);
-                mesh->LockVertexBuffer(0,&data);
-                memcpy(data, vBuffer, verts*stride);
-                mesh->UnlockVertexBuffer();
-                mesh->LockIndexBuffer(0,&data);
-                memcpy(data, iBuffer, faces*6);
-                mesh->UnlockIndexBuffer();
-
-                mesh->GenerateAdjacency(0.0f, adjacency1);
-
-                D3DXCleanMesh(D3DXCLEAN_SIMPLIFICATION, mesh, adjacency1, &nmesh, adjacency2, 0);
-                mesh->Release();
-                D3DXSimplifyMesh(nmesh, adjacency2, &weights, 0, (int)(faces*simplify), D3DXMESHSIMP_FACE, &mesh);
-                nmesh->Release();
-
-                delete [] adjacency1;
-                delete [] adjacency2;
-
-                verts = mesh->GetNumVertices();
-                faces = mesh->GetNumFaces();
-
-                delete [] vBuffer;
-                delete [] iBuffer;
-
-                vBuffer = new DXVertex[verts];
-                iBuffer = new unsigned short[faces*3];
-
-                mesh->LockVertexBuffer(D3DLOCK_READONLY,&data);
-                memcpy(vBuffer, data, verts*stride);
-                mesh->UnlockVertexBuffer();
-                mesh->LockIndexBuffer(D3DLOCK_READONLY,&data);
-                memcpy(iBuffer, data, faces*6);
-                mesh->UnlockIndexBuffer();
-
-                mesh->Release();
-
+                /*char buf[260];
+                sprintf(buf, "Mesh simplified from %d to %d", debugVerts, verts);
+                OutputDebugStringA(buf);*/
             }
-
         }
 
         // Create temporary 32-bit index buffer
-        unsigned int* iBuffer32 = new unsigned int[faces * 3];
-        for (int j = 0; j < faces * 3; ++j) {
+        size_t iBufferSize = faces * 3;
+        std::vector<unsigned int> iBuffer32(iBufferSize);
+        for (size_t j = 0; j < iBufferSize; ++j) {
             iBuffer32[j] = iBuffer[j];
         }
 
-
-        TootleResult result = TootleOptimizeVCache( iBuffer32, faces, verts, cache_size, iBuffer32, NULL, TOOTLE_VCACHE_AUTO);
+        TootleResult result = TootleOptimizeVCache(&*iBuffer32.begin(), faces, verts, cache_size, &*iBuffer32.begin(), NULL, TOOTLE_VCACHE_AUTO);
 
         if (result != TOOTLE_OK) {
             // log_file << "TootleOptimizeVCache returned an error" << endl;
-            delete [] iBuffer32;
             return;
         }
 
-        result = TootleOptimizeVertexMemory( vBuffer, iBuffer32, verts, faces, stride, vBuffer, iBuffer32, NULL );
+        result = TootleOptimizeVertexMemory(vBuffer.get(), &*iBuffer32.begin(), verts, faces, stride, vBuffer.get(), &*iBuffer32.begin(), NULL);
 
         if (result != TOOTLE_OK) {
             // log_file << "TootleOptimizeVertexMemory returned an error" << endl;
-            delete [] iBuffer32;
             return;
         }
 
         // Copy 32-bit index buffer back into 16-bit indices
-        for (int j = 0; j < faces * 3; ++j) {
+        for (size_t j = 0; j < iBufferSize; ++j) {
             iBuffer[j] = (unsigned short)iBuffer32[j];
         }
-
-        // free temporary buffer
-        delete [] iBuffer32;
     }
 
 
@@ -403,7 +256,8 @@ struct ExportedNode {
         WriteFile(file, &faces, 4, &unused, 0);
 
         // Compress vertex buffer
-        DXCompressedVertex* compVBuf = new DXCompressedVertex[verts];
+        std::vector<DXCompressedVertex> compVBuf(verts);
+
         for (int i = 0; i < verts; ++i) {
             DXCompressedVertex& cv = compVBuf[i];
             DXVertex& v = vBuffer[i];
@@ -432,57 +286,12 @@ struct ExportedNode {
         }
 
         // Write vertex and index buffers
-        WriteFile(file, compVBuf, verts*sizeof(DXCompressedVertex), &unused, 0);
-        WriteFile(file, iBuffer, faces*6, &unused, 0);
-
-        // Delete compressed vertices
-        delete [] compVBuf;
+        WriteFile(file, &*compVBuf.begin(), verts * sizeof(DXCompressedVertex), &unused, 0);
+        WriteFile(file, iBuffer.get(), faces * 3 * sizeof(unsigned short), &unused, 0);
 
         // Write texture name
         WriteFile(file, &slen, 2, &unused, 0);
         WriteFile(file, tex.c_str(), slen, &unused, 0);
-    }
-
-    void Load(HANDLE& file) {
-        DWORD unused;
-
-        // Read radius and center
-        ReadFile(file, &radius, 4, &unused, 0);
-
-        ReadFile(file, &center.x, 4, &unused, 0);
-        ReadFile(file, &center.y, 4, &unused, 0);
-        ReadFile(file, &center.z, 4, &unused, 0);
-
-        // Read min and max (bounding box)
-        ReadFile(file, &min.x, 4, &unused, 0);
-        ReadFile(file, &min.y, 4, &unused, 0);
-        ReadFile(file, &min.z, 4, &unused, 0);
-
-        ReadFile(file, &max.x, 4, &unused, 0);
-        ReadFile(file, &max.y, 4, &unused, 0);
-        ReadFile(file, &max.z, 4, &unused, 0);
-
-        // Read vert and face counts
-        ReadFile(file, &verts, 4, &unused, 0);
-        ReadFile(file, &faces, 4, &unused, 0);
-
-        // Read vertex and index buffers
-        ReadFile(file, vBuffer, verts*sizeof(DXCompressedVertex), &unused, 0);
-        ReadFile(file, iBuffer, faces*6, &unused, 0);
-
-        // Read texture name
-        short slen;
-        ReadFile(file, &slen, 2, &unused, 0);
-
-        char* tmp = new char[slen];
-        ReadFile(file, tmp, slen, &unused, 0);
-        tex = tmp;
-        delete [] tmp;
-    }
-
-    ~ExportedNode() {
-        SAFERELEASEP(vBuffer);
-        SAFERELEASEP(iBuffer);
     }
 };
 
@@ -565,35 +374,31 @@ public:
 
 private:
 
-    bool MergeShape( ExportedNode* dst, ExportedNode* src) {
+    bool MergeShape(ExportedNode* dst, ExportedNode* src) {
         // Sum vert and face counts
         int verts = src->verts + dst->verts;
         int faces = src->faces + dst->faces;
 
         // Create new buffers large enough to hold all vertices from original ones
-        DXVertex* v_buf = new DXVertex[verts];
-        unsigned short* i_buf = new unsigned short[faces*3];
+        auto v_buf = std::make_unique<DXVertex[]>(verts);
+        auto i_buf = std::make_unique<unsigned short[]>(faces*3);
 
         // Copy data from previous buffers into new ones
-        memcpy( v_buf, dst->vBuffer, dst->verts * sizeof(DXVertex) );
-        memcpy( v_buf + dst->verts, src->vBuffer, src->verts * sizeof(DXVertex) );
+        memcpy( v_buf.get(), dst->vBuffer.get(), dst->verts * sizeof(DXVertex) );
+        memcpy( v_buf.get() + dst->verts, src->vBuffer.get(), src->verts * sizeof(DXVertex) );
 
-        memcpy( i_buf, dst->iBuffer, dst->faces * 6 );
-        memcpy( i_buf + dst->faces * 3, src->iBuffer, src->faces * 6 );
+        memcpy( i_buf.get(), dst->iBuffer.get(), dst->faces * 3 * sizeof(unsigned short) );
+        memcpy( i_buf.get() + dst->faces * 3, src->iBuffer.get(), src->faces * 3 * sizeof(unsigned short) );
 
         // Account for the offset in the indices copied from src
         for (int i = dst->faces * 3; i < faces * 3; ++i) {
             i_buf[i] += dst->verts;
         }
 
-        // Delete old dst buffers
-        delete [] dst->vBuffer;
-        delete [] dst->iBuffer;
-
         // Set new values in dst
-        dst->vBuffer = v_buf;
+        dst->vBuffer.swap(v_buf);
+        dst->iBuffer.swap(i_buf);
         dst->verts = verts;
-        dst->iBuffer = i_buf;
         dst->faces = faces;
 
         return true;
@@ -692,7 +497,7 @@ private:
         // This will be used to transform normals
         Matrix44 rotation(transform.GetRotation());
 
-        node->iBuffer = new unsigned short[node->faces*3];
+        node->iBuffer = std::make_unique<unsigned short[]>(node->faces*3);
         for (int i = 0; i < node->faces; i++) {
             node->iBuffer[i*3+0] = tris[i].v1;
             node->iBuffer[i*3+1] = tris[i].v2;
@@ -711,17 +516,16 @@ private:
         vector<Color4> colors = niGeomData->GetColors();
         vector<TexCoord> texCoords = niGeomData->GetUVSet(0);
 
-        // Verticies
+        // Vertices
         node->verts = niGeomData->GetVertexCount();
 
-        node->vBuffer = new DXVertex[node->verts];
+        node->vBuffer = std::make_unique<DXVertex[]>(node->verts);
         for (int i = 0; i < node->verts; i++) {
             // Push the world transform into the verticies
             positions[i] = transform * positions[i];
 
-            normals[i] = rotation * normals[i];
-
             // Apply the world transform's rotation to the normals
+            normals[i] = rotation * normals[i];
 
             node->vBuffer[i].Position = positions[i];
             if (normals.size()>0) {
@@ -732,9 +536,9 @@ private:
                 node->vBuffer[i].Normal.z = 1;
             }
             if (colors.size()>0) {
-                node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f*colors[i].b * diffuse.b);
-                node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f*colors[i].g * diffuse.g);
-                node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f*colors[i].r * diffuse.r);
+                node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * colors[i].b * diffuse.b);
+                node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * colors[i].g * diffuse.g);
+                node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * colors[i].r * diffuse.r);
                 node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * colors[i].a * Alpha);
             } else {
                 node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * diffuse.b);
@@ -775,7 +579,7 @@ private:
 
 public:
 
-    void Optimize( unsigned int cache_size, float simplify, bool old) {
+    void Optimize(unsigned int cache_size, float simplify, bool old) {
         // Try to combine nodes that have the same texture path
         map<string, ExportedNode*> node_tex;
 
@@ -813,7 +617,7 @@ public:
         }
     }
 
-    bool LoadNifFromStream( const char* data, int size) {
+    bool LoadNifFromStream(const char* data, int size) {
         istrstream s(data, size);
         NiAVObjectRef rootObj;
 
@@ -935,54 +739,6 @@ struct LargeTriangle {
     }
 };
 
-bool LoadLandMesh( char* file_path, vector<Vector3>& vertices, vector<TexCoord>& uvs, vector<LargeTriangle>& triangles) {
-    HANDLE file = CreateFile(file_path,GENERIC_READ,0,0,OPEN_EXISTING,0,0);
-    if (file == INVALID_HANDLE_VALUE) {
-        return false;
-    }
-    DWORD verts, faces, unused;
-    bool large;
-    ReadFile(file,&verts,4,&unused,0);
-    ReadFile(file,&faces,4,&unused,0);
-
-    if (verts > 0xFFFF || faces > 0xFFFF) {
-        large = true;
-    } else {
-        large = false;
-    }
-
-    vertices.resize(verts);
-    // normals.resize(verts);
-    uvs.resize(verts);
-    triangles.resize(faces);
-
-    for (size_t i = 0; i < verts; ++i) {
-        ReadFile(file,&vertices[i], 12, &unused, 0);
-        // ReadFile(file,&normals[i], 12, &unused, 0);
-        ReadFile(file,&uvs[i], 8, &unused, 0);
-    }
-
-    for (size_t i = 0; i < faces; ++i) {
-        if (large == true) {
-            unsigned int tmp[3];
-            ReadFile(file,tmp,4*3,&unused,0);
-            triangles[i].v1 = tmp[0];
-            triangles[i].v2 = tmp[1];
-            triangles[i].v3 = tmp[2];
-        } else {
-            unsigned short tmp[3];
-            ReadFile(file,tmp,2*3,&unused,0);
-            triangles[i].v1 = tmp[0];
-            triangles[i].v2 = tmp[1];
-            triangles[i].v3 = tmp[2];
-        }
-    }
-
-    CloseHandle(file);
-
-    return true;
-}
-
 class LandMesh {
 public:
     vector<Vector3> vertices;
@@ -1046,14 +802,12 @@ public:
         verts = vertices.size();
         faces = triangles.size();
 
-        WriteFile(file,&radius,4,&unused,0);
-        WriteFile(file,&center, 12, &unused, 0);
-
-        WriteFile(file,&min, 12, &unused, 0);
-        WriteFile(file,&max, 12, &unused, 0);
-
-        WriteFile(file,&verts,4,&unused,0);
-        WriteFile(file,&faces,4,&unused,0);
+        WriteFile(file, &radius, 4, &unused, 0);
+        WriteFile(file, &center, 12, &unused, 0);
+        WriteFile(file, &min, 12, &unused, 0);
+        WriteFile(file, &max, 12, &unused, 0);
+        WriteFile(file, &verts, 4, &unused, 0);
+        WriteFile(file, &faces, 4, &unused, 0);
 
         if (verts > 0xFFFF || faces > 0xFFFF) {
             large = true;
@@ -1061,27 +815,18 @@ public:
             large = false;
         }
 
-        DXCompressedLandVertex* compVerts = new DXCompressedLandVertex[verts];
+        std::vector<DXCompressedLandVertex> compVerts(verts);
 
         for (size_t i = 0; i < verts; ++i) {
             compVerts[i].Position = vertices[i];
-
-            // WriteFile(file,&vertices[i], 12, &unused, 0);
-            // WriteFile(file,&uvs[i], 8, &unused, 0);
-
-            // Compress UVs to a normalized 16-bit unsigned short
-            // short compUVs[2];
             compVerts[i].texCoord[0] = (short)(uvs[i].u * 32768.0f);
             compVerts[i].texCoord[1] = (short)(uvs[i].v * 32768.0f);
-            // WriteFile(file, compUVs, 4, &unused, 0);
         }
 
-        WriteFile(file, compVerts, sizeof(DXCompressedLandVertex) * verts, &unused, 0);
-
-        delete [] compVerts;
+        WriteFile(file, &*compVerts.begin(), sizeof(DXCompressedLandVertex) * verts, &unused, 0);
 
         for (size_t i = 0; i < faces; ++i) {
-            if (large == true) {
+            if (large) {
                 unsigned int tmp[3];
                 tmp[0] = triangles[i].v1;
                 tmp[1] = triangles[i].v2;
