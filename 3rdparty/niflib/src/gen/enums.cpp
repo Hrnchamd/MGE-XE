@@ -11,8 +11,6 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/gen/enums.h"
 #include "../../include/gen/enums_intl.h"
 
-using namespace std;
-
 namespace Niflib {
 
 

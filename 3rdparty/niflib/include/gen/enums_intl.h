@@ -9,7 +9,6 @@ All rights reserved.  Please see niflib.h for license. */
 #define _NIF_ENUMS_INTL_H_
 
 #include <iostream>
-using namespace std;
 
 #include "../nif_basic_types.h"
 

@@ -18,18 +18,18 @@ public:
 	 *	density.
 	 */
 	static void CalcMassPropertiesSphere(
-		float radius, 
-		float density, bool solid, 
+		float radius,
+		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
 	/*! Return mass and inertia matrix for a box of given size and
 	 *   density.
 	 */
 	static void CalcMassPropertiesBox(
-		Vector3 size, 
-		float density, bool solid, 
+		Vector3 size,
+		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
-	/*! Return mass and inertia matrix for a cylinder of given radius, 
+	/*! Return mass and inertia matrix for a cylinder of given radius,
 	 *   height and density.
 	 */
 	static void CalcMassPropertiesCylinder(
@@ -37,7 +37,7 @@ public:
 		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
-	/*! Return mass and inertia matrix for a capsule of given radius, 
+	/*! Return mass and inertia matrix for a capsule of given radius,
 	 *	height and density.
 	 */
 	static void CalcMassPropertiesCapsule(
@@ -48,18 +48,18 @@ public:
 	/*! Return mass and inertia matrix for a complex polyhedron
 	 */
 	static void CalcMassPropertiesPolyhedron(
-		const vector<Vector3>& vertices, 
-		const vector<Triangle>& triangles, 
+		const std::vector<Vector3>& vertices,
+		const std::vector<Triangle>& triangles,
 		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
 	/*! Combine mass properties for a number of objects */
 	static void CombineMassProperties(
-		vector<float> masses, 
-		vector<float> volumes, 
-		vector<Vector3> centers, 
-		vector<InertiaMatrix> inertias,
-		vector<Matrix44> transforms,
+		std::vector<float> masses,
+		std::vector<float> volumes,
+		std::vector<Vector3> centers,
+		std::vector<InertiaMatrix> inertias,
+		std::vector<Matrix44> transforms,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
 public:
@@ -77,19 +77,19 @@ public:
 	*	density.
 	*/
 	typedef void (NIFLIB_STDCALL * fnCalcMassPropertiesSphere)(
-		float radius, 
-		float density, bool solid, 
+		float radius,
+		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
 	/*! Return mass and inertia matrix for a box of given size and
 	*   density.
 	*/
 	typedef void (NIFLIB_STDCALL * fnCalcMassPropertiesBox)(
-		Vector3 size, 
-		float density, bool solid, 
+		Vector3 size,
+		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
-	/*! Return mass and inertia matrix for a cylinder of given radius, 
+	/*! Return mass and inertia matrix for a cylinder of given radius,
 	*   height and density.
 	*/
 	typedef void (NIFLIB_STDCALL * fnCalcMassPropertiesCylinder)(
@@ -97,19 +97,19 @@ public:
 		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
-	/*! Return mass and inertia matrix for a capsule of given radius, 
+	/*! Return mass and inertia matrix for a capsule of given radius,
 	*	height and density.
 	*/
 	typedef void (NIFLIB_STDCALL * fnCalcMassPropertiesCapsule)(
-		Vector3 startAxis, Vector3 endAxis, float radius,  
+		Vector3 startAxis, Vector3 endAxis, float radius,
 		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
 
-	/*! Return mass and inertia matrix for a capsule of given radius, 
+	/*! Return mass and inertia matrix for a capsule of given radius,
 	*	height and density.
 	*/
 	typedef void (NIFLIB_STDCALL * fnCalcMassPropertiesPolyhedron)(
-		int nVerts, Vector3 const* verts, 
+		int nVerts, Vector3 const* verts,
 		int nTris, Triangle const* tris,
 		float density, bool solid,
 		float& mass, float& volume, Vector3& center, InertiaMatrix &inertia);
@@ -137,7 +137,7 @@ public:
 
 	/*! Define external mass property combination routine */
 	static void SetCombineMassProperties(fnCombineMassProperties extRoutine);
-	
+
 
 private:
 	explicit Inertia();

@@ -26,8 +26,8 @@ All rights reserved.  Please see niflib.h for license. */
 #include <list>
 #include <map>
 #include <vector>
+
 namespace Niflib {
-using namespace std;
 
 class NiObject;
 typedef Ref<NiObject> NiObjectRef;
@@ -77,7 +77,7 @@ public:
 	 * \return A cloned copy of this object as a new object.
 	 */
 	NIFLIB_API Ref<NiObject> Clone( unsigned int version = 0xFFFFFFFF, unsigned int user_version = 0 );
-	
+
 public:
 	/*! Block number in the nif file. Only set when you read
             blocks from the file. */

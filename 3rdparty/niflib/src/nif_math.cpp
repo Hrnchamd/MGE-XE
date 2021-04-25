@@ -4,6 +4,9 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../include/nif_math.h"
 #include <iomanip>
 using namespace Niflib;
+using std::ostream;
+using std::setw;
+using std::endl;
 
 //Constants
 
@@ -19,7 +22,7 @@ const Matrix33 Matrix33::IDENTITY( 1.0f, 0.0f, 0.0f,
 const Matrix22 Matrix22::IDENTITY( 1.0f, 0.0f,
 								   0.0f, 1.0f );
 
-const InertiaMatrix InertiaMatrix::IDENTITY( 
+const InertiaMatrix InertiaMatrix::IDENTITY(
 								  1.0f, 0.0f, 0.0f, 0.0f,
 								  0.0f, 1.0f, 0.0f, 0.0f,
 								  0.0f, 0.0f, 1.0f, 0.0f );
@@ -200,7 +203,7 @@ Vector3 Vector3::CrossProduct( const Vector3 & rh) const {
 /*
 * Vector4 Methods
 */
-Vector4::Vector4( const Float4 & v) { 
+Vector4::Vector4( const Float4 & v) {
 	x = v[0]; y = v[1]; z = v[2]; w = v[3];
 }
 
@@ -295,7 +298,7 @@ float & Vector4::operator[](int n) {
 		case 1: return y;
 		case 2: return z;
 		case 3: return w;
-		default: throw runtime_error("Invalid index");
+		default: throw std::runtime_error("Invalid index");
 	}
 }
 
@@ -305,7 +308,7 @@ float Vector4::operator[](int n) const {
 		case 1: return y;
 		case 2: return z;
 		case 3: return w;
-		default: throw runtime_error("Invalid index");
+		default: throw std::runtime_error("Invalid index");
 	}
 }
 
@@ -460,7 +463,7 @@ float Matrix44::GetScale() const {
 		//Get scale for this row
 		scale[r] = Vector3( m[r][0], m[r][1], m[r][2] ).Magnitude();
 	}
-	 
+
 	//averate the scale since NIF doesn't support discreet scaling
 	return (scale[0] + scale[1] + scale[2]) / 3.0f;
 }
@@ -519,7 +522,7 @@ Vector3 Matrix44::operator*( const Vector3 & rh ) const {
 
 Matrix44 Matrix44::operator+( const Matrix44 & rh ) const {
 	return Matrix44(*this) += rh;
-} 
+}
 
 Matrix44 & Matrix44::operator+=( const Matrix44 & rh ) {
 	for (int i = 0; i < 4; i++) {
@@ -532,7 +535,7 @@ Matrix44 & Matrix44::operator+=( const Matrix44 & rh ) {
 
 Matrix44 Matrix44::operator-( const Matrix44 & rh ) const {
 	return Matrix44(*this) -= rh;
-} 
+}
 
 Matrix44 & Matrix44::operator-=( const Matrix44 & rh ) {
 	for (int i = 0; i < 4; i++) {
@@ -679,11 +682,11 @@ Matrix33 Quaternion::AsMatrix() {
 	m[0][0] = w2 + x2- y2 - z2;
 	m[0][1] = 2.0f*x*y - 2.0f*w*z;
 	m[0][2] = 2.0f*x*z + 2.0f*w*y;
-	
+
 	m[1][0] = 2.0f*x*y + 2.0f*w*z;
 	m[1][1] = w2 - x2 + y*y - z2;
 	m[1][2] = 2.0f*y*z - 2.0f*w*x;
-	
+
 	m[2][0] = 2.0f*x*z - 2.0f*w*y;
 	m[2][1] = 2.0f*y*z + 2.0f*w*x;
 	m[2][2] = w2 - x2 - y2 + z2;
@@ -759,7 +762,7 @@ Vector3 InertiaMatrix::operator*( const Vector3 & rh ) const {
 
 InertiaMatrix InertiaMatrix::operator+( const InertiaMatrix & rh ) const {
 	return InertiaMatrix(*this) += rh;
-} 
+}
 
 InertiaMatrix & InertiaMatrix::operator+=( const InertiaMatrix & rh ) {
 	for (int i = 0; i < _countof(rows); i++) {

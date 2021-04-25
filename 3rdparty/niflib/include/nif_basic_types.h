@@ -10,7 +10,6 @@ All rights reserved.  Please see niflib.h for license. */
 #include "nif_versions.h"
 
 namespace Niflib {
-using namespace std;
 
 struct HeaderString {
 	string header;

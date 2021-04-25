@@ -53,7 +53,6 @@ POSSIBILITY OF SUCH DAMAGE. */
 #include "Ref.h"
 #include "nif_basic_types.h"
 
-using namespace std;
 namespace Niflib {
 
 //Classes used
@@ -64,7 +63,7 @@ class NiControllerSequence;
 struct Header;
 
 #ifndef NULL
-#define NULL 0  /*!< Definition used to detect null pointers. */ 
+#define NULL 0  /*!< Definition used to detect null pointers. */
 #endif
 
 //--Constants--//
@@ -78,7 +77,7 @@ enum NifGame {
 };
 
 /*! Export options. */
-enum ExportOptions { 
+enum ExportOptions {
 	EXPORT_NIF = 0, /*!< NIF */
 	EXPORT_NIF_KF = 1, /*!< NIF + single KF + KFM */
 	EXPORT_NIF_KF_MULTI = 2, /*!< NIF + multiple KF + KFM */
@@ -95,8 +94,8 @@ enum ExportOptions {
  * before trying to read it.
  * \param file_name The name of the file to load, or the complete path if it is not in the working directory.
  * \return The NIF version of the file, in hexadecimal format. If the file is not a NIF file, it returns VER_INVALID.
- * 
- * <b>Example:</b> 
+ *
+ * <b>Example:</b>
  * \code
  * unsigned ver = GetNifVersion("test_in.nif");
  * if ( IsSupportedVersion(ver) == false ) {
@@ -117,7 +116,7 @@ NIFLIB_API unsigned int GetNifVersion( string const & file_name );
 NIFLIB_API NifInfo ReadHeaderInfo( string const & file_name );
 
 /*!
- * Returns the nif header without reading the entire file 
+ * Returns the nif header without reading the entire file
  * \param The full path to the nif file which includes the file name and the location of the nif file
  * \return The nif info structure which contains the nif header
  */
@@ -143,7 +142,7 @@ NIFLIB_API vector<Ref<NiObject> > ReadNifList( istream & in, list<Ref<NiObject> 
  * Reads the given file by file name and returns a vector of object references
  * \param file_name The name of the file to load, or the complete path if it is not in the working directory.
  * \param info Optionally, a NifInfo structure pointer can be passed in, and it will be filled with information from the header of the NIF file.
- * \return All the NIF objects read from the Nif file. 
+ * \return All the NIF objects read from the Nif file.
  * \sa ReadNifTree, WriteNifTree
  */
 NIFLIB_API vector< Ref<NiObject> > ReadNifList( string const & file_name, NifInfo * info = NULL );
@@ -237,7 +236,7 @@ NIFLIB_API Ref<NiObject> CloneNifTree( NiObject * root, unsigned version = 0xFFF
 //NIFLIB_API void MergeNifTrees( NiNodeRef target, NiAVObjectRef right, unsigned int version = 0xFFFFFFFF );
 NIFLIB_API void MergeNifTrees( NiNode * target, NiControllerSequence * right, unsigned version = 0xFFFFFFFF, unsigned user_version = 0  );
 
-/*! 
+/*!
  * Traverses a tree of NIF objects, attempting to move each skeleton root
  * to the natural bind position where no meshes are distorted by skin
  * influences.  This is not always successful and only affects nodes that
@@ -334,7 +333,7 @@ Configuration Properties > C/C++ > Code Generation = Multi-threaded (/MT)
 
 Configuration Properties > Linker > Additional Dependencies = niflib_static.lib
 
-Configuration Properties > Preprocessor > Preprocessor Definitions:  (Add this to the end of what is already there, separated by semicolons) NIFLIB_STATIC_LINK 
+Configuration Properties > Preprocessor > Preprocessor Definitions:  (Add this to the end of what is already there, separated by semicolons) NIFLIB_STATIC_LINK
 
 \subsection static_debug Static Debug:
 
@@ -342,7 +341,7 @@ Configuration Properties > C/C++ > Code Generation = Multi-threaded Debug (/MTd)
 
 Configuration Properties > Linker > Additional Dependencies = niflib_static_debug.lib
 
-Configuration Properties > Preprocessor > Preprocessor Definitions:  (Add this to the end of what is already there, separated by semicolons) NIFLIB_STATIC_LINK 
+Configuration Properties > Preprocessor > Preprocessor Definitions:  (Add this to the end of what is already there, separated by semicolons) NIFLIB_STATIC_LINK
 
 With that out of the way, you can start writing your source code and include the main Niflib header file:
 

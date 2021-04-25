@@ -8,7 +8,9 @@ All rights reserved.  Please see niflib.h for license. */
 #include <numeric>
 #define _USE_MATH_DEFINES
 #include <math.h>
+
 using namespace Niflib;
+using std::vector;
 
 static Inertia::fnCalcMassPropertiesSphere extCalcMassPropertiesSphereRoutine = NULL;
 static Inertia::fnCalcMassPropertiesBox extCalcMassPropertiesBoxRoutine = NULL;
