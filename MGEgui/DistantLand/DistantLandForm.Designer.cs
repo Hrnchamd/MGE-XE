@@ -768,6 +768,7 @@ namespace MGEgui.DistantLand {
             // lbStatOverrideList
             // 
             this.lbStatOverrideList.BackColor = System.Drawing.SystemColors.Control;
+            this.lbStatOverrideList.DisplayMember = "ShortName";
             this.lbStatOverrideList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbStatOverrideList.FormattingEnabled = true;
             this.lbStatOverrideList.HorizontalScrollbar = true;

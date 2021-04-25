@@ -128,6 +128,17 @@ namespace MGEgui.DistantLand {
             }
         }
 
+        // Used for override ListBox items
+        public class OverrideListItem {
+            public string FileName { get; set; }
+            public string ShortName { get; set; }
+
+            public OverrideListItem(string s) {
+                FileName = s;
+                ShortName = s.Substring(s.LastIndexOf('\\') + 1);
+            }
+        }
+
         /* Common methods */
 
         private void saveWarnings(string source) {
@@ -340,8 +351,13 @@ namespace MGEgui.DistantLand {
             cbStatActivators.Checked = (iniFile.getKeyValue("Activators") == 1);
             cbStatIncludeMisc.Checked = (iniFile.getKeyValue("MiscObj") == 1);
             cbStatOverrideList.Checked = (iniFile.getKeyValue("UseStatOvr") == 1);
+
             lbStatOverrideList.Items.Clear();
-            lbStatOverrideList.Items.AddRange(iniFile.getSectList(iniDLWizardStatOvr));
+            lbStatOverrideList.BeginUpdate();
+            foreach (string overrideFile in iniFile.getSectList(iniDLWizardStatOvr)) {
+                lbStatOverrideList.Items.Add(new OverrideListItem(overrideFile));
+            }
+            lbStatOverrideList.EndUpdate();
             lStatOverrideList.Enabled = (lbStatOverrideList.Items.Count == 0);
         }
 
@@ -397,8 +413,8 @@ namespace MGEgui.DistantLand {
             iniFile.setKey("MiscObj", cbStatIncludeMisc.Checked);
             iniFile.setKey("UseStatOvr", cbStatOverrideList.Checked);
             List<string> tempList = new List<string>();
-            foreach (string s in lbStatOverrideList.Items) {
-                tempList.Add(s);
+            foreach (OverrideListItem item in lbStatOverrideList.Items) {
+                tempList.Add(item.FileName);
             }
             iniFile.setSectOrderedList(iniDLWizardStatOvr, tempList.ToArray());
             iniFile.save();
@@ -2298,8 +2314,8 @@ namespace MGEgui.DistantLand {
             csa.useOverrideList = cbStatOverrideList.Checked;
             csa.OverrideList = new List<string>();
             csa.OverrideList.Add(Statics.fn_dldefaultoverride);
-            foreach (string s in lbStatOverrideList.Items) {
-                csa.OverrideList.Add(s);
+            foreach (OverrideListItem item in lbStatOverrideList.Items) {
+                csa.OverrideList.Add(item.FileName);
             }
             if (!SetupFlags["AutoRun"]) {
                 ChangingPage = true;

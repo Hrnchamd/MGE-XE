@@ -7,8 +7,8 @@ using System.Windows.Forms;
 
 namespace MGEgui.DistantLand {
     partial class OverrideListForm : Form {
-        private ListBox lbStaticOverrideList;
-        private Label lStaticOverrideList;
+        private ListBox lbParentStatOverrideList;
+        private Label lParentStatOverrideList;
 
         public OverrideListForm(ListBox lbList, Label lList) {
             InitializeComponent();
@@ -16,8 +16,8 @@ namespace MGEgui.DistantLand {
             Statics.Localizations.ApplyDialogs(this, new string[] { "openStaticListDialog" });
 
             this.openStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
-            lStaticOverrideList = lList;
-            lbStaticOverrideList = lbList;
+            lParentStatOverrideList = lList;
+            lbParentStatOverrideList = lbList;
             if (lbList != null) {
                 lbOverrideList.Items.AddRange(lbList.Items);
             }
@@ -55,11 +55,11 @@ namespace MGEgui.DistantLand {
         }
 
         private void bSave_Click(object sender, EventArgs e) {
-            if (lbStaticOverrideList != null) {
-                lbStaticOverrideList.Items.Clear();
-                lbStaticOverrideList.Items.AddRange(lbOverrideList.Items);
-                if (lStaticOverrideList != null) {
-                    lStaticOverrideList.Visible = (lbStaticOverrideList.Items.Count == 0);
+            if (lbParentStatOverrideList != null) {
+                lbParentStatOverrideList.Items.Clear();
+                lbParentStatOverrideList.Items.AddRange(lbOverrideList.Items);
+                if (lParentStatOverrideList != null) {
+                    lParentStatOverrideList.Visible = (lbOverrideList.Items.Count == 0);
                 }
             }
             Close();
@@ -69,7 +69,9 @@ namespace MGEgui.DistantLand {
             if (openStaticListDialog.ShowDialog() != DialogResult.OK) {
                 return;
             }
-            lbOverrideList.Items.AddRange(openStaticListDialog.FileNames);
+            foreach (string overrideFile in openStaticListDialog.FileNames) {
+                lbOverrideList.Items.Add(new DistantLandForm.OverrideListItem(overrideFile));
+            }
         }
 
     }
