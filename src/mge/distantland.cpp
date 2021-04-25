@@ -451,7 +451,7 @@ void DistantLand::adjustFog() {
     fogStart *= kCellSize;
     fogEnd *= kCellSize;
 
-    if (Configuration.MGEFlags & USE_DISTANT_LAND) {
+    if ((Configuration.MGEFlags & USE_DISTANT_LAND) && isDistantCell()) {
         // Set hardware fog for Morrowind's use
         if (Configuration.MGEFlags & EXP_FOG) {
             if (mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather()) {
@@ -762,18 +762,11 @@ void DistantLand::setAmbientColour(const RGBVECTOR& c) {
 }
 
 void DistantLand::setSunLight(const D3DLIGHT8* s) {
-    auto mwBridge = MWBridge::get();
-
-    if (mwBridge->CellHasWeather()) {
-        sunVec.x = s->Direction.x;
-        sunVec.y = s->Direction.y;
-        sunVec.z = s->Direction.z;
-        D3DXVec3Normalize((D3DXVECTOR3*)&sunVec, (D3DXVECTOR3*)&sunVec);
-    } else {
-        sunVec.x = 0.0f;
-        sunVec.y = 0.0f;
-        sunVec.z = 1.0f;
-    }
+    // Sun is used for both interiors and exteriors; the sun in interiors is a fixed light
+    sunVec.x = s->Direction.x;
+    sunVec.y = s->Direction.y;
+    sunVec.z = s->Direction.z;
+    D3DXVec3Normalize((D3DXVECTOR3*)&sunVec, (D3DXVECTOR3*)&sunVec);
 
     sunCol = s->Diffuse;
     sunAmb = s->Ambient;

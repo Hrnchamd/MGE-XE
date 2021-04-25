@@ -1353,7 +1353,7 @@ namespace MGEgui {
             udDLFogBStart.Value = -0.5M;
             udDLFogBEnd.Value = 0.3M;
             udDLFogIStart.Value = 0.0M;
-            udDLFogIEnd.Value = 2.0M;
+            udDLFogIEnd.Value = (decimal)(draw_distance * 0.5 + 0.5);
             udDLDistNear.Value = (decimal)(draw_distance * 0.3);
             udDLDistFar.Value = (decimal)(draw_distance * 0.7);
             udDLDistVeryFar.Value = (decimal)(draw_distance * 0.95);
