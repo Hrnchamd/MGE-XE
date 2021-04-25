@@ -93,12 +93,9 @@ namespace MGEgui.DirectX {
 
             byte[] data = MGEgui.DistantLand.BSA.GetTexture(path);
             if (data == null) {
-                if (MessageBox.Show("Missing texture: '" + path + "'\n"
-                    + "Continuing may result in texture glitches in game.\n"
-                    + "Do you wish to continue?", "Warning", MessageBoxButtons.YesNo) == DialogResult.Yes) {
-                    return false;
-                }
+                return false;
             }
+
             // Work around a loading issue with TGA headers
             // When ColorMapType == no_palette && ImageType == truecolor, set word ColorMapLength to 0
             if (data.Length > 6 && data[1] == 0 && (data[2] == 2 || data[2] == 10)) {

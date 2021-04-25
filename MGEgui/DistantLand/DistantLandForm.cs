@@ -1184,7 +1184,9 @@ namespace MGEgui.DistantLand {
                             if (type != (int)StaticType.Grass && type != (int)StaticType.Tree) {
                                 bool ok = stc.LoadTexture(path);
                                 if (!ok) {
-                                    warnings.Add("Warning: Texture '" + path + "' used in '" + name + "' could not be converted to a distant texture, original texture will be used");
+                                    String warn = String.Format(strings["MissingTexture"], path, name);
+                                    MessageBox.Show(warn, "Warning", MessageBoxButtons.OK);
+                                    warnings.Add(warn);
                                 }
                             }
                         } catch (ArgumentException) {
