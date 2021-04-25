@@ -34,6 +34,7 @@
 #include "../3rdparty/tootle/src/TootleLib/include/tootlelib.h"
 
 using namespace Niflib;
+using std::vector;
 
 
 static IDirect3DDevice9* device;
@@ -205,7 +206,7 @@ struct ExportedNode {
 
         // Create temporary 32-bit index buffer
         size_t iBufferSize = faces * 3;
-        std::vector<unsigned int> iBuffer32(iBufferSize);
+        vector<unsigned int> iBuffer32(iBufferSize);
         for (size_t j = 0; j < iBufferSize; ++j) {
             iBuffer32[j] = iBuffer[j];
         }
@@ -256,7 +257,7 @@ struct ExportedNode {
         WriteFile(file, &faces, 4, &unused, 0);
 
         // Compress vertex buffer
-        std::vector<DXCompressedVertex> compVBuf(verts);
+        vector<DXCompressedVertex> compVBuf(verts);
 
         for (int i = 0; i < verts; ++i) {
             DXCompressedVertex& cv = compVBuf[i];

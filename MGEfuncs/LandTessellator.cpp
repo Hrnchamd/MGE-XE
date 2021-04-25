@@ -6,6 +6,9 @@
 #include "progmesh/ProgMesh.h"
 #include "../3rdparty/tootle/src/TootleLib/include/tootlelib.h"
 
+using namespace Niflib;
+using std::vector;
+
 struct LargeTriangle {
     unsigned int v1; /*!< The index of the first vertex. */
     unsigned int v2; /*!< The index of the second vertex. */
