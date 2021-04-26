@@ -369,8 +369,8 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniAboveEnd = new INIFile.INIVariableDef("AboveEnd", siniDL, "Above Water Fog End", INIFile.INIVariableType.Single, "5", 0.1, 300, 1);
         private static INIFile.INIVariableDef iniBelowBeg = new INIFile.INIVariableDef("BelowBeg", siniDL, "Below Water Fog Start", INIFile.INIVariableType.Single, "-0.5", -99.9, 299.9, 1);
         private static INIFile.INIVariableDef iniBelowEnd = new INIFile.INIVariableDef("BelowEnd", siniDL, "Below Water Fog End", INIFile.INIVariableType.Single, "0.3", 0.1, 300, 1);
-        private static INIFile.INIVariableDef iniInterBeg = new INIFile.INIVariableDef("InterBeg", siniDL, "Interior Fog Start", INIFile.INIVariableType.Single, "0", -0.9, 9.9, 2);
-        private static INIFile.INIVariableDef iniInterEnd = new INIFile.INIVariableDef("InterEnd", siniDL, "Interior Fog End", INIFile.INIVariableType.Single, "2.0", 0.1, 10, 2);
+        private static INIFile.INIVariableDef iniInterBeg = new INIFile.INIVariableDef("InterBeg", siniDL, "Interior Fog Start", INIFile.INIVariableType.Single, "0", -0.9, 299.9, 2);
+        private static INIFile.INIVariableDef iniInterEnd = new INIFile.INIVariableDef("InterEnd", siniDL, "Interior Fog End", INIFile.INIVariableType.Single, "2.0", 0.1, 300, 2);
         private static INIFile.INIVariableDef iniReflLand = new INIFile.INIVariableDef("ReflLand", siniDL, "Water Reflects Land", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniReflNear = new INIFile.INIVariableDef("ReflNear", siniDL, "Water Reflects Near Statics", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniReflIntr = new INIFile.INIVariableDef("ReflIntr", siniDL, "Water Reflects Interiors", INIFile.INIBoolType.Text, "True");

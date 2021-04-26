@@ -2511,10 +2511,10 @@ namespace MGEgui {
             this.udDLFogIStart.Location = new System.Drawing.Point(225, 50);
             this.udDLFogIStart.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogIStart.Maximum = new decimal(new int[] {
-                                    990,
+                                    2999,
                                     0,
                                     0,
-                                    131072});
+                                    65536});
             this.udDLFogIStart.Minimum = new decimal(new int[] {
                                     90,
                                     0,
@@ -2539,7 +2539,7 @@ namespace MGEgui {
             this.udDLFogIEnd.Location = new System.Drawing.Point(285, 50);
             this.udDLFogIEnd.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogIEnd.Maximum = new decimal(new int[] {
-                                    10,
+                                    300,
                                     0,
                                     0,
                                     0});
