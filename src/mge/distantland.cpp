@@ -454,6 +454,7 @@ void DistantLand::adjustFog() {
     if ((Configuration.MGEFlags & USE_DISTANT_LAND) && isDistantCell()) {
         // Set hardware fog for Morrowind's use
         if (Configuration.MGEFlags & EXP_FOG) {
+            // Exponential mode
             if (mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather()) {
                 // Leave fog ranges as set, shaders use all linear fogging in this case
                 fogNearStart = fogStart;
@@ -471,6 +472,7 @@ void DistantLand::adjustFog() {
                 fogNearEnd = 1280.0f + (farIntercept - 1280.0f) * -expStart / (expEnd - expStart);
             }
         } else {
+            // Linear mode
             fogNearStart = fogStart;
             fogNearEnd = fogEnd;
         }
@@ -478,17 +480,19 @@ void DistantLand::adjustFog() {
         device->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogNearStart);
         device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
     } else {
-        // Reset fog end on toggling distant land as Morrowind assumes it doesn't get changed
-        if (fogNearEnd > nearViewRange) {
-            fogNearEnd = nearViewRange;
-            device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
-        }
+        // Update fog when near render distance changes, and on startup when fogNearEnd == 0
+        bool doFogUpdate = fogNearEnd != nearViewRange;
 
         // Read Morrowind-set fog range
         fogNearEnd = nearViewRange;
         fogNearStart = fogNearEnd * std::min(1.0f - mwBridge->getScenegraphFogDensity(), 0.99f);
         fogStart = fogNearStart;
         fogEnd = fogNearEnd;
+
+        if (doFogUpdate) {
+            device->SetRenderState(D3DRS_FOGSTART, *(DWORD*)&fogNearStart);
+            device->SetRenderState(D3DRS_FOGEND, *(DWORD*)&fogNearEnd);
+        }
     }
 
     // Adjust Morrowind fog colour towards scatter colour if necessary
