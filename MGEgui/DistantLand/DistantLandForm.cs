@@ -648,7 +648,7 @@ namespace MGEgui.DistantLand {
 
         void workerCreateTextures(object sender, System.ComponentModel.DoWorkEventArgs e) {
             CreateTextureArgs args = (CreateTextureArgs)e.Argument;
-            DirectX.CellTexCreator ctc = new CellTexCreator(4);
+            CellTexCreator ctc = new CellTexCreator(args.WorldRes);
             int count = 0;
             backgroundWorker.ReportProgress(count, strings["LandTextureCreate"]);
 

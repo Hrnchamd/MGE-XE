@@ -229,9 +229,8 @@ float4 LandscapePS (in LandVertOut IN) : COLOR0
     float3 result = tex2D(sampBaseTex, IN.texcoord).rgb;
 
     // Detail texture
-    float detail = tex2D(sampDetail, IN.texcoord * 1064).g + 0.5;
-    detail *= tex2D(sampDetail, IN.texcoord * 333).g + 0.5;
-    detail *= tex2D(sampDetail, IN.texcoord * 90).g + 0.5;
+    float detail = tex2D(sampDetail, IN.texcoord * 333).g + 0.5;
+    detail *= 0.5 * tex2D(sampDetail, IN.texcoord * 90).g + 0.75;
 
     // Lighting
     result *= SunCol * saturate(dot(-SunVec, normal)) + SunAmb;

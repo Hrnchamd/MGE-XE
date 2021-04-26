@@ -245,11 +245,11 @@ namespace MGEgui.DirectX {
                     // Figure out which index to use
                     int i = y * 65 + x;
 
-                    // Figure out which texture is used here
+                    // Figure out which texture is used here, match Morrowind rounding
                     int cell_x = cell.xpos;
                     int cell_y = cell.ypos;
                     int tex_x = (int)Math.Floor(((float)x - 2.0f) / 4.0f);
-                    int tex_y = (int)Math.Floor(((float)y - 2.0f) / 4.0f);
+                    int tex_y = (int)Math.Ceiling(((float)y - 2.0f) / 4.0f);
 
                     DistantLandForm.ModCell(ref cell_x, ref tex_x);
                     DistantLandForm.ModCell(ref cell_y, ref tex_y);
@@ -289,18 +289,8 @@ namespace MGEgui.DirectX {
             }
 
             // Blur the weights as we transfer them so the transitions aren't quite so blocky and horrible.
-
-            // // Normal Gaussian
-            // float bf1 = 0.00081723f;
-            // float bf2 = 0.02804153f;
-            // float bf3 = 0.23392642f;
-            // float bf4 = 0.47442968f;
-
-            // Reduced center influence
-            const float bf1 = 0.1f;
-            const float bf2 = 0.15f;
-            const float bf3 = 0.2f;
-            const float bf4 = 0.1f;
+            // Blur kernel
+            float[] blur = new float[] { 0.04f, 0.16f, 0.6f, 0.16f, 0.04f };
 
             // Horizontal Pass
             WeightVertex[] FirstPassWD = new WeightVertex[65 * 65];
@@ -317,55 +307,25 @@ namespace MGEgui.DirectX {
 
                     // We're not at the edge, so add some influence from the surrounding weights
                     // Additional incides
-                    WeightVertex wv0, wv1, wv2, wv3, wv4, wv5, wv6;
-
-                    wv0 = SampleWeightData(ref WeightData, x - 3, y);
-                    wv1 = SampleWeightData(ref WeightData, x - 2, y);
-                    wv2 = SampleWeightData(ref WeightData, x - 1, y);
-                    wv3 = SampleWeightData(ref WeightData, x, y);
-                    wv4 = SampleWeightData(ref WeightData, x + 1, y);
-                    wv5 = SampleWeightData(ref WeightData, x + 2, y);
-                    wv6 = SampleWeightData(ref WeightData, x + 3, y);
-
+                    WeightVertex wv0, wv1, wv2, wv3, wv4;
                     float value;
-                    value = 0.0f;
-                    value += (float)wv0.w1 * bf1;
-                    value += (float)wv1.w1 * bf2;
-                    value += (float)wv2.w1 * bf3;
-                    value += (float)wv3.w1 * bf4;
-                    value += (float)wv4.w1 * bf3;
-                    value += (float)wv5.w1 * bf2;
-                    value += (float)wv6.w1 * bf1;
+
+                    wv0 = SampleWeightData(ref WeightData, x - 2, y);
+                    wv1 = SampleWeightData(ref WeightData, x - 1, y);
+                    wv2 = SampleWeightData(ref WeightData, x, y);
+                    wv3 = SampleWeightData(ref WeightData, x + 1, y);
+                    wv4 = SampleWeightData(ref WeightData, x + 2, y);
+
+                    value = (float)wv0.w1 * blur[0] + (float)wv1.w1 * blur[1] + (float)wv2.w1 * blur[2] + (float)wv3.w1 * blur[3] + (float)wv4.w1 * blur[4];
                     FirstPassWD[i].w1 = (byte)value;
 
-                    value = 0.0f;
-                    value += (float)wv0.w2 * bf1;
-                    value += (float)wv1.w2 * bf2;
-                    value += (float)wv2.w2 * bf3;
-                    value += (float)wv3.w2 * bf4;
-                    value += (float)wv4.w2 * bf3;
-                    value += (float)wv5.w2 * bf2;
-                    value += (float)wv6.w2 * bf1;
+                    value = (float)wv0.w2 * blur[0] + (float)wv1.w2 * blur[1] + (float)wv2.w2 * blur[2] + (float)wv3.w2 * blur[3] + (float)wv4.w2 * blur[4];
                     FirstPassWD[i].w2 = (byte)value;
 
-                    value = 0.0f;
-                    value += (float)wv0.w3 * bf1;
-                    value += (float)wv1.w3 * bf2;
-                    value += (float)wv2.w3 * bf3;
-                    value += (float)wv3.w3 * bf4;
-                    value += (float)wv4.w3 * bf3;
-                    value += (float)wv5.w3 * bf2;
-                    value += (float)wv6.w3 * bf1;
+                    value = (float)wv0.w3 * blur[0] + (float)wv1.w3 * blur[1] + (float)wv2.w3 * blur[2] + (float)wv3.w3 * blur[3] + (float)wv4.w3 * blur[4];
                     FirstPassWD[i].w3 = (byte)value;
 
-                    value = 0.0f;
-                    value += (float)wv0.w4 * bf1;
-                    value += (float)wv1.w4 * bf2;
-                    value += (float)wv2.w4 * bf3;
-                    value += (float)wv3.w4 * bf4;
-                    value += (float)wv4.w4 * bf3;
-                    value += (float)wv5.w4 * bf2;
-                    value += (float)wv6.w4 * bf1;
+                    value = (float)wv0.w4 * blur[0] + (float)wv1.w4 * blur[1] + (float)wv2.w4 * blur[2] + (float)wv3.w4 * blur[3] + (float)wv4.w4 * blur[4];
                     FirstPassWD[i].w4 = (byte)value;
                 }
             }
@@ -384,54 +344,25 @@ namespace MGEgui.DirectX {
 
                     // We're not at the edge, so add some influence from the surrounding weights
                     // Additional incides
-                    WeightVertex wv0, wv1, wv2, wv3, wv4, wv5, wv6, wvfinal;
-                    wv0 = SampleWeightData(ref FirstPassWD, x, y - 3);
-                    wv1 = SampleWeightData(ref FirstPassWD, x, y - 2);
-                    wv2 = SampleWeightData(ref FirstPassWD, x, y - 1);
-                    wv3 = SampleWeightData(ref FirstPassWD, x, y);
-                    wv4 = SampleWeightData(ref FirstPassWD, x, y + 1);
-                    wv5 = SampleWeightData(ref FirstPassWD, x, y + 2);
-                    wv6 = SampleWeightData(ref FirstPassWD, x, y + 3);
-
+                    WeightVertex wv0, wv1, wv2, wv3, wv4, wvfinal;
                     float value;
-                    value = 0.0f;
-                    value += (float)wv0.w1 * bf1;
-                    value += (float)wv1.w1 * bf2;
-                    value += (float)wv2.w1 * bf3;
-                    value += (float)wv3.w1 * bf4;
-                    value += (float)wv4.w1 * bf3;
-                    value += (float)wv5.w1 * bf2;
-                    value += (float)wv6.w1 * bf1;
+                    
+                    wv0 = SampleWeightData(ref FirstPassWD, x, y - 2);
+                    wv1 = SampleWeightData(ref FirstPassWD, x, y - 1);
+                    wv2 = SampleWeightData(ref FirstPassWD, x, y);
+                    wv3 = SampleWeightData(ref FirstPassWD, x, y + 1);
+                    wv4 = SampleWeightData(ref FirstPassWD, x, y + 2);
+
+                    value = (float)wv0.w1 * blur[0] + (float)wv1.w1 * blur[1] + (float)wv2.w1 * blur[2] + (float)wv3.w1 * blur[3] + (float)wv4.w1 * blur[4];
                     wvfinal.w1 = (byte)value;
 
-                    value = 0.0f;
-                    value += (float)wv0.w2 * bf1;
-                    value += (float)wv1.w2 * bf2;
-                    value += (float)wv2.w2 * bf3;
-                    value += (float)wv3.w2 * bf4;
-                    value += (float)wv4.w2 * bf3;
-                    value += (float)wv5.w2 * bf2;
-                    value += (float)wv6.w2 * bf1;
+                    value = (float)wv0.w2 * blur[0] + (float)wv1.w2 * blur[1] + (float)wv2.w2 * blur[2] + (float)wv3.w2 * blur[3] + (float)wv4.w2 * blur[4];
                     wvfinal.w2 = (byte)value;
 
-                    value = 0.0f;
-                    value += (float)wv0.w3 * bf1;
-                    value += (float)wv1.w3 * bf2;
-                    value += (float)wv2.w3 * bf3;
-                    value += (float)wv3.w3 * bf4;
-                    value += (float)wv4.w3 * bf3;
-                    value += (float)wv5.w3 * bf2;
-                    value += (float)wv6.w3 * bf1;
+                    value = (float)wv0.w3 * blur[0] + (float)wv1.w3 * blur[1] + (float)wv2.w3 * blur[2] + (float)wv3.w3 * blur[3] + (float)wv4.w3 * blur[4];
                     wvfinal.w3 = (byte)value;
 
-                    value = 0.0f;
-                    value += (float)wv0.w4 * bf1;
-                    value += (float)wv1.w4 * bf2;
-                    value += (float)wv2.w4 * bf3;
-                    value += (float)wv3.w4 * bf4;
-                    value += (float)wv4.w4 * bf3;
-                    value += (float)wv5.w4 * bf2;
-                    value += (float)wv6.w4 * bf1;
+                    value = (float)wv0.w4 * blur[0] + (float)wv1.w4 * blur[1] + (float)wv2.w4 * blur[2] + (float)wv3.w4 * blur[3] + (float)wv4.w4 * blur[4];
                     wvfinal.w4 = (byte)value;
 
                     FinalWeightData.Write(wvfinal);
@@ -491,16 +422,14 @@ namespace MGEgui.DirectX {
             VertexElement.VertexDeclarationEnd
         };
 
-        private const string EffectPath = @"data files\shaders\CellTexBlend.fx";
+        private const string EffectPath = @"Data Files\shaders\CellTexBlend.fx";
         private VertexBuffer vBuffer;
         private VertexBuffer colorBuffer;
         private System.Collections.Generic.List<TextureBank> texBanks;
         private IndexBuffer iBuffer;
-        private Texture RenderTargetTex;
-        private Texture CompressedTex;
-        private Surface RenderTarget;
-        private Effect effect;
+        private float texelSize;
 
+        private Effect effect;
         private EffectHandle m1h;
         private EffectHandle t1h;
         private EffectHandle t2h;
@@ -509,22 +438,24 @@ namespace MGEgui.DirectX {
 
         public CellTexCreator(int Res) {
             texBanks = new System.Collections.Generic.List<TextureBank>();
+            texelSize = 1.0f / (float)Res;
 
             // Create basic vertex buffer that can be used for all cells which has positions and texture coordinates
             vBuffer = new VertexBuffer(DXMain.device, CellVertex.Stride * 65 * 65, Usage.WriteOnly, CellVertex.Format, Pool.Managed);
             DataStream CellData = vBuffer.Lock(0, 0, LockFlags.None);
 
-            float mult = (float)(Res / 64);
             for (int y = 0; y <= 64; y++) {
                 for (int x = 0; x <= 64; x++) {
                     CellVertex cv;
 
+                    // Vertex position
                     cv.x = ((float)x / 64.0f) * 2.0f - 1.0f;
                     cv.y = ((float)y / 64.0f) * 2.0f - 1.0f;
                     cv.z = 0.5f;
                     cv.w = 1.0f;
-                    cv.u = (float)x / 16.0f;
-                    cv.v = (float)y / 16.0f;
+                    // Textures repeat 16 times across a cell
+                    cv.u = (float)x / 4.0f;
+                    cv.v = (float)y / 4.0f;
 
                     CellData.Write(cv);
                 }
@@ -563,9 +494,6 @@ namespace MGEgui.DirectX {
 
             ResetColorsAndNormals();
 
-            RenderTargetTex = new Texture(DXMain.device, Res, Res, 0, Usage.RenderTarget, Format.X8R8G8B8, Pool.Default);
-            CompressedTex = new Texture(DXMain.device, Res, Res, 0, Usage.None, Format.Dxt1, Pool.SystemMemory);
-            RenderTarget = RenderTargetTex.GetSurfaceLevel(0);
             effect = Effect.FromFile(DXMain.device, EffectPath, ShaderFlags.None);
 
             m1h = effect.GetParameter(null, "transform");
@@ -631,14 +559,14 @@ namespace MGEgui.DirectX {
 
             // Group the unique textures in this cell in fours
 
-            // Find all the unique textures in this cell
-            System.Collections.Generic.Dictionary<string, LTEX> tex_dict = new System.Collections.Generic.Dictionary<string, LTEX>();
+            // Find all the unique textures in this cell, match Morrowind rounding
+            var tex_dict = new System.Collections.Generic.Dictionary<string, LTEX>();
             for (int y = 0; y <= 64; ++y) {
                 for (int x = 0; x <= 64; ++x) {
                     int cell_x = cell.xpos;
                     int cell_y = cell.ypos;
-                    int tex_x = (int)Math.Floor(((float)x - 1.0f) / 4.0f); // -2.0f
-                    int tex_y = (int)Math.Floor(((float)y - 3.0f) / 4.0f); // -2.0f
+                    int tex_x = (int)Math.Floor(((float)x - 2.0f) / 4.0f);
+                    int tex_y = (int)Math.Ceiling(((float)y - 2.0f) / 4.0f);
 
                     DistantLandForm.ModCell(ref cell_x, ref tex_x);
                     DistantLandForm.ModCell(ref cell_y, ref tex_y);
@@ -690,9 +618,6 @@ namespace MGEgui.DirectX {
             iBuffer.Dispose();
             colorBuffer.Dispose();
             texBanks.Clear();
-            RenderTarget.Dispose();
-            RenderTargetTex.Dispose();
-            CompressedTex.Dispose();
             effect.Dispose();
         }
 
@@ -721,9 +646,10 @@ namespace MGEgui.DirectX {
         }
 
         public void Render(float pos_x, float pos_y, float scale_x, float scale_y) {
+            // Modelview matrix corrects D3D half-texel offset (*2 here, as NDC space is from -1 to +1)
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
-            mat.M41 = pos_x;
-            mat.M42 = pos_y;
+            mat.M41 = pos_x - texelSize;
+            mat.M42 = pos_y + texelSize;
             mat.M11 = scale_x;
             mat.M22 = scale_y;
 
@@ -767,12 +693,11 @@ namespace MGEgui.DirectX {
             DXMain.device.EndScene();
         }
 
-
-
         public void RenderNormalMap(float pos_x, float pos_y, float scale_x, float scale_y) {
+            // Modelview matrix corrects D3D half-texel offset (*2 here, as NDC space is from -1 to +1)
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
-            mat.M41 = pos_x;
-            mat.M42 = pos_y;
+            mat.M41 = pos_x - texelSize;
+            mat.M42 = pos_y + texelSize;
             mat.M11 = scale_x;
             mat.M22 = scale_y;
 

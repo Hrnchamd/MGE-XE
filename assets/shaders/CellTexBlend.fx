@@ -19,28 +19,6 @@ vector c3;
 vector c4;
 
 
-// sRGB <-> linear RGB
-float toLinear1(float x) {
-    if (x > 0.04045)
-        return pow((x + 0.055) / 1.055, 2.4);
-    else
-        return x / 12.91;
-}
-
-float3 toLinear(float3 c) {
-    return float3(toLinear1(c.r), toLinear1(c.g), toLinear1(c.b));
-}
-
-float tosRGB1(float x) {
-    if (x > 0.0031308)
-        return 1.055 * pow(x, 1/2.4) - 0.055;
-    else
-        return 12.92 * x;
-}
-
-float3 tosRGB(float3 c) {
-    return float3(tosRGB1(c.r), tosRGB1(c.g), tosRGB1(c.b));
-}
 
 // Texture Blending
 struct VSOutput {
@@ -64,14 +42,13 @@ VSOutput CellTexBlendVS( float4 pos: POSITION0, float2 texcoords: TEXCOORD0, flo
 }
 
 float4 CellTexBlendPS( in VSOutput IN ) : COLOR0 {
-	
 	// Sample all 4 textures, multiplying associated weight
-	float3 color = toLinear(tex2D(s0, IN.texcoords).rgb) * IN.weights.b;
-	color += toLinear(tex2D(s1, IN.texcoords).rgb) * IN.weights.g;
-	color += toLinear(tex2D(s2, IN.texcoords).rgb) * IN.weights.r;
-	color += toLinear(tex2D(s3, IN.texcoords).rgb) * IN.weights.a;
+	float3 color = tex2D(s0, IN.texcoords).rgb * IN.weights.b;
+	color += tex2D(s1, IN.texcoords).rgb * IN.weights.g;
+	color += tex2D(s2, IN.texcoords).rgb * IN.weights.r;
+	color += tex2D(s3, IN.texcoords).rgb * IN.weights.a;
 
-	return float4(tosRGB(color), 1);
+	return float4(color, 1);
 }
 
 // Vertex Colors
@@ -110,7 +87,6 @@ VSNormalOutput CellNormalMapVS( float4 pos: POSITION0, float3 normal: NORMAL ) {
 }
 
 float4 CellNormalMapPS( in VSNormalOutput IN ) : COLOR0 {
-	
 	IN.normal = normalize(IN.normal);
 	IN.normal += 1;
 	IN.normal /= 2;
