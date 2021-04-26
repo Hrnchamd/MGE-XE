@@ -245,12 +245,18 @@ namespace MGEgui {
         public static bool ShowDialog(out Point p, out int refresh, bool Windowed) {
             // Fetch data from the registry
             RegistryKey key = Registry.LocalMachine.OpenSubKey(@"Software\Bethesda Softworks\Morrowind");
-            sWidth = (int)key.GetValue("Screen Width", 640);
-            sHeight = (int)key.GetValue("Screen Height", 480);
-            sRefresh = (int)key.GetValue("Refresh Rate", 0);
+            if (key != null) {
+                sWidth = (int)key.GetValue("Screen Width", 1280);
+                sHeight = (int)key.GetValue("Screen Height", 720);
+                sRefresh = (int)key.GetValue("Refresh Rate", 0);
+                key.Close();
+            } else {
+                sWidth = 1280;
+                sHeight = 720;
+                sRefresh = 0;
+            }
             Adaptor = DirectX.DXMain.Adapter;
             Fullscreen = !Windowed;
-            key.Close();
 
             // Get the list of valid resolutions
             Resolutions = new List<Resolution>();
