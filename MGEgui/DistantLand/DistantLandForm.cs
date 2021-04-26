@@ -1977,20 +1977,13 @@ namespace MGEgui.DistantLand {
                 MessageBox.Show(strings["CantSkipLand"], Statics.strings["Error"]);
                 return;
             }
-            int VertsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 + (MapSize * 2 + 1) * 128 + 1;
-            int PrimsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 * 2;
-            int index = 0;
-            while ((VertsRequired > DXMain.mCaps.MaxIndicies || PrimsRequired > DXMain.mCaps.MaxPrimitives) && ++index < cmbMeshWorldDetail.Items.Count - 1) {
-                VertsRequired /= 4;
-                PrimsRequired /= 4;
-            }
-            if (pluginListChanged || cmbMeshWorldDetail.SelectedIndex == -1) {
+            if (cmbMeshWorldDetail.SelectedIndex == -1) {
                 cmbMeshWorldDetail_auto = true;
-                cmbMeshWorldDetail.SelectedIndex = index;
+                cmbMeshWorldDetail.SelectedIndex = 2;
                 cmbMeshWorldDetail.SelectedIndexChanged += new EventHandler(cmbMeshWorldDetail_SelectedIndexChanged);
                 lMeshAutoInfo.Visible = true;
                 if (DEBUG) {
-                    allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
+                    allWarnings.Add("World mesh auto-set to " + cmbMeshWorldDetail.Text);
                 }
             } else {
                 lMeshAutoInfo.Visible = false;
@@ -2019,21 +2012,13 @@ namespace MGEgui.DistantLand {
                 MessageBox.Show(strings["TexResError"], Statics.strings["Error"]);
                 return;
             }
-            // Set max mesh detail here
-            int VertsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 + (MapSize * 2 + 1) * 128 + 1;
-            int PrimsRequired = (MapSize * 2 + 1) * (MapSize * 2 + 1) * 64 * 64 * 2;
-            int index = 0;
-            while ((VertsRequired > DXMain.mCaps.MaxIndicies || PrimsRequired > DXMain.mCaps.MaxPrimitives) && ++index < cmbMeshWorldDetail.Items.Count - 1) {
-                VertsRequired /= 4;
-                PrimsRequired /= 4;
-            }
-            if (pluginListChanged || cmbMeshWorldDetail.SelectedIndex == -1) {
+            if (cmbMeshWorldDetail.SelectedIndex == -1) {
                 cmbMeshWorldDetail_auto = true;
-                cmbMeshWorldDetail.SelectedIndex = index;
+                cmbMeshWorldDetail.SelectedIndex = 2;
                 cmbMeshWorldDetail.SelectedIndexChanged += new EventHandler(cmbMeshWorldDetail_SelectedIndexChanged);
                 lMeshAutoInfo.Visible = true;
                 if (DEBUG) {
-                    allWarnings.Add("World mesh auto-calculated to " + cmbMeshWorldDetail.Text);
+                    allWarnings.Add("World mesh auto-set to " + cmbMeshWorldDetail.Text);
                 }
             } else {
                 lMeshAutoInfo.Visible = false;
