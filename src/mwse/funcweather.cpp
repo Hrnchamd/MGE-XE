@@ -263,7 +263,6 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseGetWeatherPPLLight)
 // GetWeatherPPLLight <byte weatherID> -> <float sunMultiplier> <float ambientMultiplier>
 bool mwseGetWeatherPPLLight::execute(mwseInstruction* _this) {
     VMREGTYPE weather_id;
-    VMFLOAT x;
 
     if (!_this->vmPop(&weather_id)) { return false; }
 

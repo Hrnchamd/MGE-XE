@@ -8,7 +8,9 @@
 
 
 
-MGEProxyD3D::MGEProxyD3D(IDirect3D9* real) : ProxyD3D(real, 120) { // Morrowind requires D3D version 120
+const UINT MorrowindRequiredD3DVersion = 120;
+
+MGEProxyD3D::MGEProxyD3D(IDirect3D9* real) : ProxyD3D(real, MorrowindRequiredD3DVersion) {
     // Force pixel shaders off, to simplify water override
     d3d8Caps.VertexShaderVersion = 0;
     d3d8Caps.PixelShaderVersion = 0;

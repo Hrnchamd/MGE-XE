@@ -5,8 +5,8 @@
 //-----------------------------------------------------------------------------
 
 MemoryPool::MemoryBlock::MemoryBlock(MemoryPool* owner_pool) :
-    next_alloc(0),
     next_block(nullptr),
+    next_alloc(0),
     owner(owner_pool) {
 
     // Allocate the memory block

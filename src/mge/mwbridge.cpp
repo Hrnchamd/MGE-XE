@@ -972,7 +972,7 @@ bool MWBridge::isPlayerAimingWeapon() {
 void MWBridge::toggleRipples(BOOL enabled) {
     DWORD addr = eRipplesSwitch;
     DWORD code = read_dword(addr);
-    if (enabled && code == 0x33504D8B || !enabled && code == 0x3390C931) {
+    if ((enabled && code == 0x33504D8B) || (!enabled && code == 0x3390C931)) {
         return;
     }
     code = enabled ? 0x33504D8B : 0x3390C931;

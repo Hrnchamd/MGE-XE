@@ -23,7 +23,6 @@ private:
     private:
         MemoryPool* owner;
         std::size_t next_alloc;
-        std::size_t obj_count;
         char* data;
     };
 

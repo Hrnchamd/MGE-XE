@@ -136,7 +136,7 @@ void FixedFunctionShader::renderMorrowind(const RenderedState* rs, const Fragmen
     // Check each active light
     RGBVECTOR sunDiffuse(0, 0, 0), ambient = lightrs->globalAmbient;
     size_t n = std::min(lightrs->active.size(), MaxLights), pointLightCount = 0;
-    for (n; n --> 0; ) {
+    for (; n --> 0; ) {
         DWORD i = lightrs->active[n];
         const LightState::Light* light = &lightrs->lights.find(i)->second;
 

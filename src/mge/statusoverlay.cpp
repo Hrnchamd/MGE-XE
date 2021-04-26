@@ -46,7 +46,7 @@ void StatusOverlay::show(IDirect3DDevice9* device) {
             font->DrawTextA(NULL, fpsText, -1, &fpsRect, DT_NOCLIP, 0xffffffff);
         }
 
-        if (statusText) {
+        if (statusText[0] != 0) {
             if (GetTickCount() < statusTimeout) {
                 font->DrawTextA(NULL, statusText, -1, &statusRect, DT_NOCLIP, 0xffffffff);
             } else {
