@@ -168,14 +168,35 @@ public:
 
 class HeightFieldSampler {
 public:
-    HeightFieldSampler(float* d, size_t dh, size_t dw, float t, float l, float b, float r) :
-        top(t), left(l), bottom(b), right(r), data(d), data_height(dh), data_width(dw) {}
+    struct AtlasRegion {
+        float minX, maxX, minY, maxY;
+        float offsetX, offsetY;
+        float scaleX, scaleY;
+    };
+
+    float top, left, bottom, right;
+    float* data;
+    size_t data_height;
+    size_t data_width;
+    AtlasRegion* atlas_data;
+    size_t atlas_count;
+
+    HeightFieldSampler(float* d, size_t dh, size_t dw, float* adata, size_t ac, float t, float l, float b, float r) :
+        top(t), left(l), bottom(b), right(r), data(d), data_height(dh), data_width(dw),
+        atlas_data(reinterpret_cast<AtlasRegion*>(adata)), atlas_count(ac) {}
     ~HeightFieldSampler() {}
 
     TexCoord SampleTexCoord(float x, float y) {
-        float tx = (0.0f - left + x) / (right - left);
-        float ty = 1.0f - ((0.0f - bottom + y) / (top - bottom));
-        return TexCoord(tx, ty);
+        for (size_t n = 0; n < atlas_count; ++n) {
+            AtlasRegion* r = &atlas_data[n];
+
+            if (x >= r->minX && x <= r->maxX && y >= r->minY && y <= r->maxY) {
+                float tx = (x - r->minX + r->offsetX) / r->scaleX;
+                float ty = (y - r->minY + r->offsetY) / r->scaleY;
+                return TexCoord(tx, 1.0f - ty);
+            }
+        }
+        return TexCoord(0, 0);
     }
 
     float SampleHeight(float x, float y) {
@@ -226,11 +247,6 @@ public:
 
         return data[ y * data_width + x ];
     }
-
-    float top, left, bottom, right;
-    float* data;
-    size_t data_height;
-    size_t data_width;
 };
 
 class SplitTriangle {
@@ -763,10 +779,10 @@ public:
     }
 };
 
-extern "C" void TessellateLandscape(char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float top, float left, float bottom, float right, float error_tolerance) {
+extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float* atlas_data, unsigned int atlas_count, float top, float left, float bottom, float right, float error_tolerance) {
 
     // Create sampler
-    HeightFieldSampler sampler(height_data, data_height, data_width, top, left, bottom, right);
+    HeightFieldSampler sampler(height_data, data_height, data_width, atlas_data, atlas_count, top, left, bottom, right);
 
     // Create patches
     size_t patches_across = (size_t)floor(((float)data_width) / 256.0f + 0.5f);

@@ -511,7 +511,7 @@ namespace MGEgui.DirectX {
             texBanks = new System.Collections.Generic.List<TextureBank>();
 
             // Create basic vertex buffer that can be used for all cells which has positions and texture coordinates
-            vBuffer = new VertexBuffer(DXMain.device, CellVertex.Stride * 4225, Usage.WriteOnly, CellVertex.Format, Pool.Managed);
+            vBuffer = new VertexBuffer(DXMain.device, CellVertex.Stride * 65 * 65, Usage.WriteOnly, CellVertex.Format, Pool.Managed);
             DataStream CellData = vBuffer.Lock(0, 0, LockFlags.None);
 
             float mult = (float)(Res / 64);
@@ -559,7 +559,7 @@ namespace MGEgui.DirectX {
             iBuffer.Unlock();
 
             // Create the buffers that will contain different information during each render
-            colorBuffer = new VertexBuffer(DXMain.device, NormalColorVertex.Stride * 4225, Usage.WriteOnly, NormalColorVertex.Format, Pool.Managed);
+            colorBuffer = new VertexBuffer(DXMain.device, NormalColorVertex.Stride * 65 * 65, Usage.WriteOnly, NormalColorVertex.Format, Pool.Managed);
 
             ResetColorsAndNormals();
 
@@ -577,7 +577,6 @@ namespace MGEgui.DirectX {
         }
 
         public void ResetColorsAndNormals() {
-
             // By default, the normal will be up and the color will be white
             DataStream ColorNormalData = colorBuffer.Lock(0, 0, LockFlags.None);
             NormalColorVertex defaultncv;
@@ -607,7 +606,6 @@ namespace MGEgui.DirectX {
         }
 
         public void SetCell(LAND cell) {
-
             // Write the new colors and normals into the color buffer
             DataStream ColorNormalData = colorBuffer.Lock(0, 0, LockFlags.None);
             NormalColorVertex ncv;
@@ -688,7 +686,6 @@ namespace MGEgui.DirectX {
         }
 
         public void Dispose() {
-            // DXMain.device.SetRenderTarget(0, DXMain.BackBuffer);
             vBuffer.Dispose();
             iBuffer.Dispose();
             colorBuffer.Dispose();
@@ -701,52 +698,27 @@ namespace MGEgui.DirectX {
 
         public void Begin() {
             DXMain.device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
-            // DXMain.device.SetRenderState(RenderState.CullMode, Cull.None);
             DXMain.device.SetRenderState(RenderState.Clipping, true);
             DXMain.device.VertexFormat = CellVertex.Format;
 
             DXMain.device.SetStreamSource(0, vBuffer, 0, CellVertex.Stride);
             DXMain.device.SetStreamSource(1, colorBuffer, 0, NormalColorVertex.Stride);
             VertexDeclaration decl = new VertexDeclaration(DXMain.device, Elements);
-            // DXMain.device.RenderState.FillMode = FillMode.WireFrame;
             DXMain.device.Indices = iBuffer;
             DXMain.device.VertexDeclaration = decl;
-
-            /*DXMain.device.BeginScene();
-            effect.Begin(FX.None);
-            effect.BeginPass(0);*/
         }
 
         public void BeginNormalMap() {
             DXMain.device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
-            // DXMain.device.SetRenderState(RenderState.CullMode, Cull.None);
             DXMain.device.SetRenderState(RenderState.Clipping, true);
             DXMain.device.VertexFormat = CellVertex.Format;
 
             DXMain.device.SetStreamSource(0, vBuffer, 0, CellVertex.Stride);
             DXMain.device.SetStreamSource(1, colorBuffer, 0, NormalColorVertex.Stride);
             VertexDeclaration decl = new VertexDeclaration(DXMain.device, NormalElements);
-            // DXMain.device.RenderState.FillMode = FillMode.WireFrame;
             DXMain.device.Indices = iBuffer;
             DXMain.device.VertexDeclaration = decl;
-
-            /*DXMain.device.BeginScene();
-            effect.Begin(FX.None);
-            effect.BeginPass(1);*/
         }
-
-        /*public void BeginTexture() {
-            Begin();
-            if ( DXMain.device.GetRenderTarget(0) != RenderTarget ) {
-                DXMain.device.SetRenderTarget(0, RenderTarget);
-            }
-        }*/
-
-
-        /*public void RenderTexture() {
-            DXMain.device.Clear(ClearFlags.Target, 0, 0.0f, 0);
-            Render(0.0f, 0.0f, 1.0f, 1.0f);
-        }*/
 
         public void Render(float pos_x, float pos_y, float scale_x, float scale_y) {
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
@@ -817,28 +789,11 @@ namespace MGEgui.DirectX {
         }
 
         public void End() {
-            /*effect.EndPass();
-            effect.End();
-            DXMain.device.EndScene();*/
         }
 
         public void EndNormalMap() {
             End();
         }
-
-        /*public void EndTexture(string path) {
-
-            End();
-
-            Surface s1 = CompressedTex.GetSurfaceLevel(0);
-            SurfaceLoader.FromSurface(s1, RenderTarget, Filter.None, 0);
-            for (int i = 1; i < CompressedTex.LevelCount; i++) {
-                Surface s2 = CompressedTex.GetSurfaceLevel(i);
-                SurfaceLoader.FromSurface(s2, s1, Filter.Linear, 0);
-                s1 = s2;
-            }
-            TextureLoader.Save(path, ImageFileFormat.Dds, CompressedTex);
-        }*/
     }
 
     class WorldTexCreator {
@@ -849,22 +804,17 @@ namespace MGEgui.DirectX {
         private Texture RenderTargetTex;
         private Surface RenderTarget;
 
-        private int MapMinX, MapMaxX, MapMinY, MapMaxY, MapSpanX, MapSpanY;
+        private int MapSpanX, MapSpanY;
         public float x_scale, y_scale, x_spacing, y_spacing;
 
-        public WorldTexCreator(int Res, int map_min_x, int map_max_x, int map_min_y, int map_max_y) {
+        public WorldTexCreator(int Res, int map_span_x, int map_span_y) {
             RenderTargetTex = new Texture(DXMain.device, Res, Res, 0, Usage.RenderTarget, Format.X8R8G8B8, Pool.Default);
             CompressedTex = new Texture(DXMain.device, Res, Res, 0, Usage.None, Format.Dxt1, Pool.SystemMemory);
             UncompressedTex = new Texture(DXMain.device, Res, Res, 0, Usage.None, Format.X8R8G8B8, Pool.SystemMemory);
             RenderTarget = RenderTargetTex.GetSurfaceLevel(0);
 
-            MapMinX = map_min_x;
-            MapMaxX = map_max_x;
-            MapMinY = map_min_y;
-            MapMaxY = map_max_y;
-
-            MapSpanX = MapMaxX - MapMinX + 1;
-            MapSpanY = MapMaxY - MapMinY + 1;
+            MapSpanX = map_span_x;
+            MapSpanY = map_span_y;
 
             x_scale = 1.0f / (float)MapSpanX;
             y_scale = 1.0f / (float)MapSpanY;

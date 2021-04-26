@@ -89,6 +89,8 @@ namespace MGEgui.DistantLand {
         private static LAND[,] map;
         private readonly LAND defaultland = new LAND();
         private static LTEX DefaultTex;
+        private List<AtlasRegion> Atlas;
+        private int AtlasSpanX, AtlasSpanY;
 
         /* Common handlers */
 
@@ -596,6 +598,9 @@ namespace MGEgui.DistantLand {
             if (warnings.Count > 0) {
                 e.Result = warnings;
             }
+
+            // Calculate texture atlas for both texture and land gen texture UVs
+            AtlasSetup();
         }
 
         private void workerFLoadPlugins(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -648,21 +653,23 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(count, strings["LandTextureCreate"]);
 
             // Render world texture
-            WorldTexCreator wtc = new WorldTexCreator(args.WorldRes, MapMinX, MapMaxX, MapMinY, MapMaxY);
+            WorldTexCreator wtc = new WorldTexCreator(args.WorldRes, AtlasSpanX, AtlasSpanY);
             wtc.Begin();
             ctc.Begin();
-            for (int y = MapMinY; y <= MapMaxY; y++) {
-                backgroundWorker.ReportProgress(++count);
-                for (int x = MapMinX; x <= MapMaxX; x++) {
-                    if (map[x, y] == null || map[x, y] == defaultland) {
-                        ctc.SetDefaultCell(DefaultTex);
-                    } else {
-                        // Set the colors and normals
-                        ctc.SetCell(map[x, y]);
+            foreach (var r in Atlas) {
+                for (int y = r.minY; y <= r.maxY; y++) {
+                    backgroundWorker.ReportProgress(Math.Min(++count, statusProgress.Maximum));
+                    for (int x = r.minX; x <= r.maxX; x++) {
+                        if (map[x, y] == null || map[x, y] == defaultland) {
+                            ctc.SetDefaultCell(DefaultTex);
+                        } else {
+                            // Set the colors and normals
+                            ctc.SetCell(map[x, y]);
+                        }
+                        float x_pos = ((float)(x - r.minX + r.offsetX) + 0.5f) * wtc.x_spacing - 1.0f;
+                        float y_pos = ((float)(y - r.minY + r.offsetY) + 0.5f) * wtc.y_spacing - 1.0f;
+                        ctc.Render(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                     }
-                    float x_pos = (((float)(x - MapMinX) + 0.5f) * wtc.x_spacing) - 1.0f;
-                    float y_pos = (((float)(y - MapMinY) + 0.5f) * wtc.y_spacing) - 1.0f;
-                    ctc.Render(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                 }
             }
             ctc.End();
@@ -671,21 +678,23 @@ namespace MGEgui.DistantLand {
             wtc.Dispose();
 
             // World normal map
-            wtc = new WorldTexCreator(args.WorldNormal, MapMinX, MapMaxX, MapMinY, MapMaxY);
+            wtc = new WorldTexCreator(args.WorldNormal, AtlasSpanX, AtlasSpanY);
             wtc.Begin();
             ctc.BeginNormalMap();
-            for (int y = MapMinY; y <= MapMaxY; y++) {
-                backgroundWorker.ReportProgress(++count);
-                for (int x = MapMinX; x <= MapMaxX; x++) {
-                    if (map[x, y] == null || map[x, y] == defaultland) {
-                        ctc.SetDefaultCell(DefaultTex);
-                    } else {
-                        // Set the colors and normals
-                        ctc.SetCell(map[x, y]);
+            foreach (var r in Atlas) {
+                for (int y = r.minY; y <= r.maxY; y++) {
+                    backgroundWorker.ReportProgress(Math.Min(++count, statusProgress.Maximum));
+                    for (int x = r.minX; x <= r.maxX; x++) {
+                        if (map[x, y] == null || map[x, y] == defaultland) {
+                            ctc.SetDefaultCell(DefaultTex);
+                        } else {
+                            // Set the colors and normals
+                            ctc.SetCell(map[x, y]);
+                        }
+                        float x_pos = ((float)(x - r.minX + r.offsetX) + 0.5f) * wtc.x_spacing - 1.0f;
+                        float y_pos = ((float)(y - r.minY + r.offsetY) + 0.5f) * wtc.y_spacing - 1.0f;
+                        ctc.RenderNormalMap(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                     }
-                    float x_pos = (((float)(x - MapMinX) + 0.5f) * wtc.x_spacing) - 1.0f;
-                    float y_pos = (((float)(y - MapMinY) + 0.5f) * wtc.y_spacing) - 1.0f;
-                    ctc.RenderNormalMap(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                 }
             }
             ctc.EndNormalMap();
@@ -693,6 +702,154 @@ namespace MGEgui.DistantLand {
             wtc.Dispose();
 
             ctc.Dispose();
+        }
+        
+        private class AtlasRegion {
+            public int id;
+            public int minX, minY, maxX, maxY;
+            public int offsetX, offsetY;
+        }
+
+        void AtlasSetup() {
+            // Merge cells into atlas regions
+            var regions = new List<AtlasRegion>();
+            int currentAtlasId = 0;
+
+            for (int y = MapMinY; y <= MapMaxY; y++) {
+                for (int x = MapMinX; x <= MapMaxX; x++) {
+                    LAND land = map[x, y];
+                    if (land == null || land == defaultland || land.atlasId >= 0) {
+                        continue;
+                    }
+
+                    // Found new starting cell
+                    var r = new AtlasRegion();
+                    regions.Add(r);
+                    r.id = currentAtlasId;
+                    land.atlasId = currentAtlasId;
+
+                    // Search for connecting cells on the atlas border
+                    r.minX = r.maxX = x;
+                    r.minY = r.maxY = y;
+                    bool continueSearch = true, extend = false;
+
+                    while (continueSearch) {
+                        continueSearch = false;
+
+                        extend = false;
+                        for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
+                            LAND searchLand = map[searchX, r.minY - 1];
+                            if (searchLand != null) {
+                                searchLand.atlasId = currentAtlasId;
+                                extend = true;
+                            }
+                        }
+                        if (extend) {
+                            r.minY--;
+                            continueSearch = true;
+                        }
+
+                        extend = false;
+                        for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
+                            LAND searchLand = map[searchX, r.maxY + 1];
+                            if (searchLand != null) {
+                                searchLand.atlasId = currentAtlasId;
+                                extend = true;
+                            }
+                        }
+                        if (extend) {
+                            r.maxY++;
+                            continueSearch = true;
+                        }
+
+                        extend = false;
+                        for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
+                            LAND searchLand = map[r.minX - 1, searchY];
+                            if (searchLand != null) {
+                                searchLand.atlasId = currentAtlasId;
+                                extend = true;
+                            }
+                        }
+                        if (extend) {
+                            r.minX--;
+                            continueSearch = true;
+                        }
+
+                        extend = false;
+                        for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
+                            LAND searchLand = map[r.maxX + 1, searchY];
+                            if (searchLand != null) {
+                                searchLand.atlasId = currentAtlasId;
+                                extend = true;
+                            }
+                        }
+                        if (extend) {
+                            r.maxX++;
+                            continueSearch = true;
+                        }
+                    }
+
+                    currentAtlasId++;
+                }
+            }
+
+            // Pack regions closely into a square texture
+            int currentOffsetX = 0, currentOffsetY = 0;
+            Atlas = new List<AtlasRegion>();
+
+            // Sort regions by width, largest first
+            regions.Sort((a, b) => (b.maxX - b.minX).CompareTo(a.maxX - a.minX));
+            
+            // Pack first (widest) region
+            var first = regions[0];
+            Atlas.Add(first);
+            regions.RemoveAt(0);
+
+            AtlasSpanX = first.maxX - first.minX + 1;
+            AtlasSpanY = first.maxY - first.minY + 1;
+            currentOffsetY += AtlasSpanY;
+
+            // Pack wide regions
+            int widthLimit = AtlasSpanX * 3 / 4;
+
+            while (regions.Count > 0) {
+                var r = regions[0];
+                int width = r.maxX - r.minX + 1, height = r.maxY - r.minY + 1;
+                if (width < widthLimit) {
+                    break;
+                }
+
+                r.offsetX = 0;
+                r.offsetY = currentOffsetY;
+                currentOffsetY += height;
+                AtlasSpanY += height;
+
+                Atlas.Add(r);
+                regions.RemoveAt(0);
+            }
+
+            // Sort remaining regions by height, largest first
+            regions.Sort((a, b) => (b.maxY - b.minY).CompareTo(a.maxY - a.minY));
+
+            // Pack smaller regions
+            while (regions.Count > 0) {
+                var r = regions[0];
+                int width = r.maxX - r.minX + 1, height = r.maxY - r.minY + 1;
+                if (currentOffsetX + width > AtlasSpanX) {
+                    currentOffsetX = 0;
+                    currentOffsetY = AtlasSpanY;
+                }
+                if (currentOffsetX == 0) {
+                    AtlasSpanY += height;
+                }
+
+                r.offsetX = currentOffsetX;
+                r.offsetY = currentOffsetY;
+                currentOffsetX += width;
+                
+                Atlas.Add(r);
+                regions.RemoveAt(0);
+            }
         }
 
         void workerFCreateTextures(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -1997,22 +2154,26 @@ namespace MGEgui.DistantLand {
         /* Land mesh methods */
 
         private void GenerateWorldMesh(int detail, string path) {
+            // Generate optimized landscape mesh
+            int MapSpanX = MapMaxX - MapMinX + 1;
+            int MapSpanY = MapMaxY - MapMinY + 1;
+            int MapOffsetX = -MapMinX;
+            int MapOffsetY = -MapMinY;
+            int DataSpanX = MapSpanX * 64;
+            int DataSpanY = MapSpanY * 64;
+
             int vCount = 64 / (1 << detail);
             float vSpacing = 128f * (float)(1 << detail);
-            int VertsAcross = (MapMaxX - MapMinX + 1) * vCount;
-            int VertsDown = (MapMaxY - MapMinY + 1) * vCount;
+            int VertsAcross = MapSpanX * vCount;
+            int VertsDown = MapSpanY * vCount;
             int tFaces = (VertsAcross - 1) * (VertsDown - 1) * 2;
             int tVerts = VertsAcross * VertsDown;
             float texMultX = 1 / (float)VertsAcross;
             float texMultY = 1 / (float)VertsDown;
-            // Generate optimized landscape mesh
-            int MapSpanX = MapMaxX - MapMinX + 1;
-            int MapSpanY = MapMaxY - MapMinY + 1;
-            int MapOffsetX = 0 - MapMinX;
-            int MapOffsetY = 0 - MapMinY;
-            int DataSpanX = MapSpanX * 64;
-            int DataSpanY = MapSpanY * 64;
+
+            // Produce large heightmap array
             float[] height_data = new float[DataSpanX * DataSpanY];
+
             for (int y1 = MapMinY; y1 <= MapMaxY; y1++) {
                 for (int y2 = 0; y2 < 64; y2++) {
                     for (int x1 = MapMinX; x1 <= MapMaxX; x1++) {
@@ -2028,30 +2189,36 @@ namespace MGEgui.DistantLand {
                     }
                 }
             }
-            float left = ((float)MapMinX * 64) * 128.0f;
-            float right = ((float)(MapMaxX * 64 + 64)) * 128.0f;
-            float bottom = ((float)MapMinY * 64) * 128.0f;
-            float top = ((float)(MapMaxY * 64 + 64)) * 128.0f;
-            backgroundWorker.ReportProgress(10, strings["LandTessellating"]);
-            float et = 125.0f;
-            switch (detail) {
-                case 0:
-                    et = 15.0f;
-                    break;
-                case 1:
-                    et = 70.0f;
-                    break;
-                case 2:
-                    et = 125.0f;
-                    break;
-                case 3:
-                    et = 180.0f;
-                    break;
-                case 4:
-                    et = 235.0f;
-                    break;
+
+            // Produce packed atlas data
+            float[] atlas_data = new float[8 * Atlas.Count];
+            var iAtlas = 0;
+            foreach (var r in Atlas) {
+                atlas_data[iAtlas + 0] = r.minX * 8192.0f;
+                atlas_data[iAtlas + 1] = r.maxX * 8192.0f;
+                atlas_data[iAtlas + 2] = r.minY * 8192.0f;
+                atlas_data[iAtlas + 3] = r.maxY * 8192.0f;
+                atlas_data[iAtlas + 4] = r.offsetX * 8192.0f;
+                atlas_data[iAtlas + 5] = r.offsetY * 8192.0f;
+                atlas_data[iAtlas + 6] = AtlasSpanX * 8192.0f;
+                atlas_data[iAtlas + 7] = AtlasSpanY * 8192.0f;
+                iAtlas += 8;
             }
-            NativeMethods.TessellateLandscape(path, height_data, (uint)DataSpanY, (uint)DataSpanX, top, left, bottom, right, et);
+            
+            float left = (float)(MapMinX * 64) * 128.0f;
+            float right = (float)((MapMaxX + 1) * 64) * 128.0f;
+            float bottom = (float)(MapMinY * 64) * 128.0f;
+            float top = (float)((MapMaxY + 1) * 64) * 128.0f;
+            
+            // Landscape detail selection
+            float tolerance = 125.0f;
+            if (detail >= 0 && detail <= 4) {
+                var toleranceOptions = new float[] { 15.0f, 70.0f, 125.0f, 180.0f, 235.0f };
+                tolerance = toleranceOptions[detail];
+            }
+
+            backgroundWorker.ReportProgress(10, strings["LandTessellating"]);
+            NativeMethods.TessellateLandscapeAtlased(path, height_data, (uint)DataSpanY, (uint)DataSpanX, atlas_data, (uint)Atlas.Count, top, left, bottom, right, tolerance);
         }
 
         /* Statics tab properties */

@@ -63,6 +63,7 @@ namespace MGEgui.DistantLand {
 
         public int xpos = -999;
         public int ypos = -999;
+        public int atlasId = -1;
 
         public System.Collections.Generic.Dictionary<int, LTEX> Textures;
 

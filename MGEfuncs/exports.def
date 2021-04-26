@@ -4,7 +4,7 @@ EXPORTS
 BeginStaticCreation=BeginStaticCreation
 EndStaticCreation=EndStaticCreation
 ProcessNif=ProcessNif
-TessellateLandscape=TessellateLandscape
+TessellateLandscapeAtlased=TessellateLandscapeAtlased
 
 GetVertSize=GetVertSize
 GetCompressedVertSize=GetCompressedVertSize
