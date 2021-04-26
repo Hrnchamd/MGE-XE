@@ -739,7 +739,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
                             LAND searchLand = map[searchX, r.minY - 1];
-                            if (searchLand != null) {
+                            if (searchLand != null && searchLand != defaultland) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -752,7 +752,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
                             LAND searchLand = map[searchX, r.maxY + 1];
-                            if (searchLand != null) {
+                            if (searchLand != null && searchLand != defaultland) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -765,7 +765,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
                             LAND searchLand = map[r.minX - 1, searchY];
-                            if (searchLand != null) {
+                            if (searchLand != null && searchLand != defaultland) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -778,7 +778,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
                             LAND searchLand = map[r.maxX + 1, searchY];
-                            if (searchLand != null) {
+                            if (searchLand != null && searchLand != defaultland) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -2046,7 +2046,7 @@ namespace MGEgui.DistantLand {
                 allWarnings.Add("Creating world textures");
             }
             statusText.Text = strings["LandTextureCreate"];
-            statusProgress.Maximum = (MapMaxY - MapMinY + 1) * 2;
+            statusProgress.Maximum = AtlasSpanY * Atlas.Count;
             backgroundWorker.WorkerReportsProgress = true;
             backgroundWorker.DoWork += workerCreateTextures;
             backgroundWorker.RunWorkerCompleted += workerFCreateTextures;
