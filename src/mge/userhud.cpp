@@ -272,7 +272,7 @@ void MGEhud::setTexture(hud_id hud, const char* texturePath) {
         e->texture->Release();
     }
 
-    IDirect3DTexture9* tex = BSALoadTexture(device, texturePath);
+    IDirect3DTexture9* tex = BSA::loadTexture(device, texturePath);
 
     if (tex) {
         D3DSURFACE_DESC desc;

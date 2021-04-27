@@ -198,7 +198,7 @@ bool DistantLand::init(IDirect3DDevice9* realDevice) {
     vsr.init(device);
 
     LOG::logline(">> Distant Land init BSAs");
-    BSAInit();
+    BSA::init();
 
     LOG::logline(">> Distant Land init shader");
     if (!initShader()) {
@@ -790,7 +790,7 @@ bool DistantLand::loadDistantStatics() {
             const char* texname = (const char*)pos;
             pos += pathsize;
 
-            IDirect3DTexture9* tex = BSALoadTexture(device, texname);
+            IDirect3DTexture9* tex = BSA::loadTexture(device, texname);
             if (!tex) {
                 LOG::logline("Cannot load texture %s", texname);
                 errorTexture->AddRef();
@@ -808,7 +808,7 @@ bool DistantLand::loadDistantStatics() {
 
     // Texture memory reporting
     int texturesLoaded, texMemUsage;
-    BSACacheStats(&texturesLoaded, &texMemUsage);
+    BSA::cacheStats(&texturesLoaded, &texMemUsage);
 
     LOG::logline("-- Distant static textures loaded, %d textures", texturesLoaded);
     LOG::logline("-- Distant static texture memory use: %d MB", texMemUsage);
@@ -1174,7 +1174,7 @@ void DistantLand::release() {
         texWorldDetail = nullptr;
     }
 
-    BSAClearTextureCache();
+    BSA::clearTextureCache();
 
     if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
         surfRain->Release();
