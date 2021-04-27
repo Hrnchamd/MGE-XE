@@ -37,11 +37,16 @@ bool MGEhud::init(IDirect3DDevice9* d) {
         return false;
     }
 
-    ID3DXBuffer* errors;
+    ID3DXBuffer* errors = nullptr;
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE HUD.fx", 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &effectStandard, &errors);
     if (hr != D3D_OK) {
-        LOG::logline("!! HUD Shader errors: %s", errors->GetBufferPointer());
-        errors->Release();
+        if (errors) {
+            LOG::logline("!! HUD Shader errors: %s", errors->GetBufferPointer());
+            errors->Release();
+        } else {
+            LOG::logline("!! HUD Shader error: Could not create effect from Data Files\\shaders\\XE HUD.fx");
+            LOG::logline("!! Ensure that the file exists. Note: This file does not currently support Mod Organizer 2. Install it manually.");
+        }
         return false;
     }
 
