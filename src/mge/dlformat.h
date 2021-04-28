@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 enum StaticType {
     STATIC_AUTO = 0,
     STATIC_NEAR = 1,
@@ -34,8 +36,7 @@ struct DistantStatic {
     unsigned char type;
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
-    int numSubsets;
-    DistantSubset* subsets;
+    std::vector<DistantSubset> subsets;
 };
 
 struct UsedDistantStatic {

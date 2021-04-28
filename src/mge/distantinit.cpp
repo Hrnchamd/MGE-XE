@@ -9,8 +9,7 @@
 #include "morrowindbsa.h"
 #include "mwbridge.h"
 #include "mgeversion.h"
-
-#define READ_FROM_BUFFER(src, dest, size) memcpy((void*)dest, (void*)src, size); src += size;
+#include <memory>
 
 
 
@@ -35,7 +34,7 @@ IDirect3DVertexDeclaration9* DistantLand::GrassDecl;
 
 VendorSpecificRendering DistantLand::vsr;
 
-unordered_map<string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
+unordered_map<std::string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
 const DistantLand::WorldSpace* DistantLand::currentWorldSpace;
 QuadTree DistantLand::LandQuadTree;
 VisibleSet DistantLand::visLand;
@@ -665,19 +664,34 @@ bool DistantLand::initDistantStatics() {
         return false;
     }
 
-    // Remove UsedDistantStatic, DistantStatic, and DistantStaticSubset objects
+    // Remove UsedDistantStatic, DistantStatic, and DistantSubset objects
     UsedDistantStatics.clear();
-
-    for (auto& i : DistantStatics) {
-        delete [] i.subsets;
-        i.subsets = nullptr;
-    }
-
     DistantStatics.clear();
 
     currentWorldSpace = nullptr;
     return true;
 }
+
+class membuf_reader {
+    char* ptr;
+
+public:
+    membuf_reader(char* buf) : ptr(buf) {}
+
+    template <typename T>
+    inline void read(T* dest, size_t size) {
+        memcpy((char*)dest, ptr, size);
+        ptr += size;
+    }
+
+    inline char* get() {
+        return ptr;
+    }
+
+    inline void advance(size_t size) {
+        ptr += size;
+    }
+};
 
 bool DistantLand::loadDistantStatics() {
     DWORD unused;
@@ -728,67 +742,65 @@ bool DistantLand::loadDistantStatics() {
 
     // Read entire file into one big memory buffer
     DWORD file_size = GetFileSize(h2, NULL);
-    unsigned char* file_buffer = new unsigned char[file_size];
-    unsigned char* pos = file_buffer;
-    ReadFile(h2, file_buffer, file_size, &unused, NULL);
-    CloseHandle(h2);
+    auto file_buffer = std::make_unique<char[]>(file_size);
+    ReadFile(h2, file_buffer.get(), file_size, &unused, NULL);
+    membuf_reader reader(file_buffer.get());
 
     for (auto& i : DistantStatics) {
-        READ_FROM_BUFFER(pos, &i.numSubsets, 4);
-        READ_FROM_BUFFER(pos, &i.sphere.radius, 4);
-        READ_FROM_BUFFER(pos, &i.sphere.center, 12);
-        READ_FROM_BUFFER(pos, &i.type, 1);
+        int numSubsets;
+        reader.read(&numSubsets, 4);
+        reader.read(&i.sphere.radius, 4);
+        reader.read(&i.sphere.center, 12);
+        reader.read(&i.type, 1);
 
-        i.subsets = new DistantSubset[i.numSubsets];
+        i.subsets.resize(numSubsets);
         i.aabbMin = D3DXVECTOR3(FLT_MAX, FLT_MAX, FLT_MAX);
         i.aabbMax = D3DXVECTOR3(-FLT_MAX, -FLT_MAX, -FLT_MAX);
 
-        for (int j = 0; j != i.numSubsets; j++) {
-            DistantSubset* subset = &i.subsets[j];
-
+        for (auto& subset : i.subsets) {
             // Get bounding sphere
-            READ_FROM_BUFFER(pos, &subset->sphere.radius, 4);
-            READ_FROM_BUFFER(pos, &subset->sphere.center, 12);
+            reader.read(&subset.sphere.radius, 4);
+            reader.read(&subset.sphere.center, 12);
 
             // Get AABB min and max
-            READ_FROM_BUFFER(pos, &subset->aabbMin, 12);
-            READ_FROM_BUFFER(pos, &subset->aabbMax, 12);
+            reader.read(&subset.aabbMin, 12);
+            reader.read(&subset.aabbMax, 12);
 
             // Get vertex and face count
-            READ_FROM_BUFFER(pos, &subset->verts, 4);
-            READ_FROM_BUFFER(pos, &subset->faces, 4);
+            reader.read(&subset.verts, 4);
+            reader.read(&subset.faces, 4);
 
             // Update parent AABB
-            i.aabbMin.x = std::min(i.aabbMin.x, subset->aabbMin.x);
-            i.aabbMin.y = std::min(i.aabbMin.y, subset->aabbMin.y);
-            i.aabbMin.z = std::min(i.aabbMin.z, subset->aabbMin.z);
-            i.aabbMax.x = std::max(i.aabbMax.x, subset->aabbMax.x);
-            i.aabbMax.y = std::max(i.aabbMax.y, subset->aabbMax.y);
-            i.aabbMax.z = std::max(i.aabbMax.z, subset->aabbMax.z);
+            i.aabbMin.x = std::min(i.aabbMin.x, subset.aabbMin.x);
+            i.aabbMin.y = std::min(i.aabbMin.y, subset.aabbMin.y);
+            i.aabbMin.z = std::min(i.aabbMin.z, subset.aabbMin.z);
+            i.aabbMax.x = std::max(i.aabbMax.x, subset.aabbMax.x);
+            i.aabbMax.y = std::max(i.aabbMax.y, subset.aabbMax.y);
+            i.aabbMax.z = std::max(i.aabbMax.z, subset.aabbMax.z);
 
             // Load mesh data
             IDirect3DVertexBuffer9* vb;
             IDirect3DIndexBuffer9* ib;
             void* lockdata;
 
-            device->CreateVertexBuffer(subset->verts * SIZEOFSTATICVERT, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vb, 0);
+            device->CreateVertexBuffer(subset.verts * SIZEOFSTATICVERT, D3DUSAGE_WRITEONLY, 0, D3DPOOL_DEFAULT, &vb, 0);
             vb->Lock(0, 0, &lockdata, 0);
-            READ_FROM_BUFFER(pos, lockdata, subset->verts * SIZEOFSTATICVERT);
+            reader.read(lockdata, subset.verts * SIZEOFSTATICVERT);
             vb->Unlock();
 
-            device->CreateIndexBuffer(subset->faces * 6, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, 0);
+            device->CreateIndexBuffer(subset.faces * 6, D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &ib, 0);
             ib->Lock(0, 0, &lockdata, 0);
-            READ_FROM_BUFFER(pos, lockdata, subset->faces * 6); // Morrowind nifs don't support 32 bit indices?
+            reader.read(lockdata, subset.faces * 6); // Morrowind nifs don't support 32 bit indices?
             ib->Unlock();
 
-            subset->vbuffer = vb;
-            subset->ibuffer = ib;
+            subset.vbuffer = vb;
+            subset.ibuffer = ib;
 
             // Load referenced texture
             unsigned short pathsize;
-            READ_FROM_BUFFER(pos, &pathsize, 2);
-            const char* texname = (const char*)pos;
-            pos += pathsize;
+            reader.read(&pathsize, 2);
+            const char* texname = reader.get();
+            reader.advance(pathsize);
 
             IDirect3DTexture9* tex = BSA::loadTexture(device, texname);
             if (!tex) {
@@ -796,15 +808,14 @@ bool DistantLand::loadDistantStatics() {
                 errorTexture->AddRef();
                 tex = errorTexture;
             }
-            subset->tex = tex;
+            subset.tex = tex;
 
             // Keep resource pointers for deallocation
             meshCollectionStatics.push_back(MeshResources(vb, ib, tex));
         }
     }
+    file_buffer.reset();
 
-    // Finished with the meshes file
-    delete [] file_buffer;
 
     // Texture memory reporting
     int texturesLoaded, texMemUsage;
@@ -838,9 +849,10 @@ bool DistantLand::loadDistantStatics() {
             mapWorldSpaces.insert(make_pair(string(cellname), WorldSpace()));
         }
 
-        unsigned char* UsedDistantStaticData = new unsigned char[UsedDistantStaticCount * 32];
-        unsigned char* dataPos = UsedDistantStaticData;
-        ReadFile(h, UsedDistantStaticData, UsedDistantStaticCount * 32, &unused, 0);
+        size_t UsedDistantStaticDataSize = UsedDistantStaticCount * 32;
+        auto UsedDistantStaticData = std::make_unique<char[]>(UsedDistantStaticDataSize);
+        ReadFile(h, UsedDistantStaticData.get(), UsedDistantStaticDataSize, &unused, 0);
+        membuf_reader udsReader(UsedDistantStaticData.get());
 
         vector<UsedDistantStatic>& ThisWorldStatics = iCell->second;
         ThisWorldStatics.reserve(UsedDistantStaticCount);
@@ -849,12 +861,12 @@ bool DistantLand::loadDistantStatics() {
             UsedDistantStatic NewUsedStatic;
             float yaw, pitch, roll, scale;
 
-            READ_FROM_BUFFER(dataPos, &NewUsedStatic.staticRef, 4);
-            READ_FROM_BUFFER(dataPos, &NewUsedStatic.pos, 12);
-            READ_FROM_BUFFER(dataPos, &yaw, 4);
-            READ_FROM_BUFFER(dataPos, &pitch, 4);
-            READ_FROM_BUFFER(dataPos, &roll, 4);
-            READ_FROM_BUFFER(dataPos, &scale, 4);
+            udsReader.read(&NewUsedStatic.staticRef, 4);
+            udsReader.read(&NewUsedStatic.pos, 12);
+            udsReader.read(&yaw, 4);
+            udsReader.read(&pitch, 4);
+            udsReader.read(&roll, 4);
+            udsReader.read(&scale, 4);
 
             DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
             if (scale == 0.0f) {
@@ -874,8 +886,6 @@ bool DistantLand::loadDistantStatics() {
 
             ThisWorldStatics.push_back(NewUsedStatic);
         }
-
-        delete [] UsedDistantStaticData;
     }
 
     CloseHandle(h);
@@ -888,10 +898,14 @@ bool DistantLand::initDistantStaticsBVH() {
         vector<UsedDistantStatic>& uds = UsedDistantStatics.find(iWS.first)->second;
 
         // Initialize quadtrees
-        QuadTree* NQTR = iWS.second.NearStatics = new QuadTree();
-        QuadTree* FQTR = iWS.second.FarStatics = new QuadTree();
-        QuadTree* VFQTR = iWS.second.VeryFarStatics = new QuadTree();
-        QuadTree* GQTR = iWS.second.GrassStatics = new QuadTree();
+        iWS.second.NearStatics = std::make_unique<QuadTree>();
+        iWS.second.FarStatics = std::make_unique<QuadTree>();
+        iWS.second.VeryFarStatics = std::make_unique<QuadTree>();
+        iWS.second.GrassStatics = std::make_unique<QuadTree>();
+        QuadTree* NQTR = iWS.second.NearStatics.get();
+        QuadTree* FQTR = iWS.second.FarStatics.get();
+        QuadTree* VFQTR = iWS.second.VeryFarStatics.get();
+        QuadTree* GQTR = iWS.second.GrassStatics.get();
 
         // Calclulate optimal initial quadtree size
         D3DXVECTOR2 aabbMax = D3DXVECTOR2(-FLT_MAX, -FLT_MAX);
@@ -965,30 +979,30 @@ bool DistantLand::initDistantStaticsBVH() {
             // Add sub-meshes to appropriate quadtree
             if (stat->type == STATIC_BUILDING) {
                 // Use model bound so that all building parts have coherent visibility
-                for (int s = 0; s != stat->numSubsets; ++s) {
+                for (auto& s : stat->subsets) {
                     targetQTR->AddMesh(
                         i.sphere,
                         i.box,
                         i.transform,
-                        stat->subsets[s].tex,
-                        stat->subsets[s].verts,
-                        stat->subsets[s].vbuffer,
-                        stat->subsets[s].faces,
-                        stat->subsets[s].ibuffer
+                        s.tex,
+                        s.verts,
+                        s.vbuffer,
+                        s.faces,
+                        s.ibuffer
                     );
                 }
             } else {
                 // Use individual mesh bounds
-                for (int s = 0; s != stat->numSubsets; ++s) {
+                for (auto& s : stat->subsets) {
                     targetQTR->AddMesh(
-                        i.GetBoundingSphere(stat->subsets[s].sphere),
-                        i.GetBoundingBox(stat->subsets[s].aabbMin, stat->subsets[s].aabbMax),
+                        i.GetBoundingSphere(s.sphere),
+                        i.GetBoundingBox(s.aabbMin, s.aabbMax),
                         i.transform,
-                        stat->subsets[s].tex,
-                        stat->subsets[s].verts,
-                        stat->subsets[s].vbuffer,
-                        stat->subsets[s].faces,
-                        stat->subsets[s].ibuffer
+                        s.tex,
+                        s.verts,
+                        s.vbuffer,
+                        s.faces,
+                        s.ibuffer
                     );
                 }
             }
@@ -1065,10 +1079,10 @@ bool DistantLand::initLandscape() {
             ReadFile(file, &i.sphere.radius, 4, &unused,0);
             ReadFile(file, &i.sphere.center, 12, &unused,0);
 
-            D3DXVECTOR3 min, max;
-            ReadFile(file, &min, 12, &unused, 0);
-            ReadFile(file, &max, 12, &unused, 0);
-            i.box.Set(min, max);
+            D3DXVECTOR3 boxMin, boxMax;
+            ReadFile(file, &boxMin, 12, &unused, 0);
+            ReadFile(file, &boxMax, 12, &unused, 0);
+            i.box.Set(boxMin, boxMax);
 
             ReadFile(file, &i.verts, 4, &unused, 0);
             ReadFile(file, &i.faces, 4, &unused, 0);
@@ -1141,13 +1155,6 @@ void DistantLand::release() {
     PostShaders::release();
     FixedFunctionShader::release();
 
-    for (auto& iWS : mapWorldSpaces) {
-        WorldSpace& w = iWS.second;
-        delete w.NearStatics;
-        delete w.FarStatics;
-        delete w.VeryFarStatics;
-        delete w.GrassStatics;
-    }
     mapWorldSpaces.clear();
 
     for (auto& iM : meshCollectionStatics) {

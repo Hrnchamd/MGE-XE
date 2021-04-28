@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <memory>
 
 
 
@@ -15,10 +16,10 @@ struct MGEShader;
 class DistantLand {
 public:
     struct WorldSpace {
-        QuadTree* NearStatics;
-        QuadTree* FarStatics;
-        QuadTree* VeryFarStatics;
-        QuadTree* GrassStatics;
+        std::unique_ptr<QuadTree> NearStatics;
+        std::unique_ptr<QuadTree> FarStatics;
+        std::unique_ptr<QuadTree> VeryFarStatics;
+        std::unique_ptr<QuadTree> GrassStatics;
     };
 
     static constexpr DWORD fvfWave = D3DFVF_XYZRHW | D3DFVF_TEX2;
