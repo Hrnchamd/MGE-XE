@@ -673,6 +673,7 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
         }
     }
 
+    bool bumpStageFixup = false;
     for (int i = 0; i != 8; ++i) {
         const FragmentState::Stage& s = frs->stage[i];
 
@@ -693,7 +694,15 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
         if (s.colorOp == D3DTOP_BUMPENVMAP || s.colorOp == D3DTOP_BUMPENVMAPLUMINANCE) {
             usesBumpmap = 1;
             bumpmapStage = i;
+            stage[i].alphaOpMatched = false;
+            stage[i].alphaOpSelect1 = false;
+            bumpStageFixup = true;
+        } else if (bumpStageFixup) {
+            stage[i].alphaOpMatched = false;
+            stage[i].alphaOpSelect1 = false;
+            bumpStageFixup = false;
         }
+
         if (stage[i].texcoordGen) {
             usesTexgen = 1;
             projectiveTexgen = (s.texTransformFlags == (D3DTTFF_COUNT3 | D3DTTFF_PROJECTED)) ? 1 : 0;
