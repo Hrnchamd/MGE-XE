@@ -5,7 +5,7 @@
 #include "support/log.h"
 
 #include <cstdio>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <vector>
 
@@ -21,7 +21,7 @@ IDirect3DDevice9* MGEhud::device = 0;
 MGEhud::Element MGEhud::elements[MGEhud::max_elements];
 
 static std::vector<MGEhud::hud_id> elements_free;
-static std::map<std::string, MGEhud::hud_id> element_names;
+static std::unordered_map<std::string, MGEhud::hud_id> element_names;
 
 
 
@@ -209,7 +209,7 @@ MGEhud::hud_id MGEhud::load(const char* name, const char* texture) {
 }
 
 MGEhud::hud_id MGEhud::resolveName(const char* name) {
-    std::map<std::string, MGEhud::hud_id>::const_iterator i = element_names.find(name);
+    auto i = element_names.find(name);
     if (i != element_names.end()) {
         return i->second;
     }

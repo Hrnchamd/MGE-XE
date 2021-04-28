@@ -3,8 +3,6 @@
 #include "dlmath.h"
 #include "memorypool.h"
 #include <vector>
-#include <map>
-#include <deque>
 
 
 
@@ -64,7 +62,7 @@ public:
         return visible_set.size();
     }
 
-    std::deque<const QuadTreeMesh*> visible_set;
+    std::vector<const QuadTreeMesh*> visible_set;
 };
 
 //-----------------------------------------------------------------------------

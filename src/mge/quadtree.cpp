@@ -5,8 +5,6 @@
 
 
 
-using std::deque;
-
 static const size_t QUADTREE_MAX_DEPTH = 8;
 static const size_t QUADTREE_TARGET_LEAF_SIZE = 6;
 static const float QUADTREE_MIN_DIST = 20.0f;
