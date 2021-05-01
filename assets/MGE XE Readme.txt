@@ -22,13 +22,15 @@ Windows Vista SP2 or later (Windows XP is not supported since MGE XE 0.11.2).
 
 Install
 -------
-1. Update to DirectX 9.0c June 2010 at http://www.microsoft.com/download/en/details.aspx?id=35 (This is a required update for all Windows, and won't conflict with DX10+.).
+1. Update to or install DirectX 9.0c June 2010 at http://www.microsoft.com/download/en/details.aspx?id=35 (This is a required update for all Windows, and won't conflict with DX10+.).
 
-2. Run the MGE XE installer, and then configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. For a manual installation, extract the archive files to your Morrowind directory and run MWSE-Update.
+2. Ensure Microsoft Visual C++ 2015 Redistributable Update 3 RC is intalled, available at https://www.microsoft.com/en-us/download/details.aspx?id=52685
 
-3. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Responsive menu caching" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
+3. Run the MGE XE installer, and then configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. For a manual installation, extract the archive files to your Morrowind directory and run MWSE-Update.
 
-4. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires high quality sky scattering enabled, and MWSE installed.
+4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Responsive menu caching" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
+
+5. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires high quality sky scattering enabled, and MWSE installed.
 
 As a complement to the UI scaling, you may also want to use Better Dialogue Font for sharper menu text.
 Download at: https://www.nexusmods.com/morrowind/mods/36873
