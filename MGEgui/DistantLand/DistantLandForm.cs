@@ -1144,7 +1144,7 @@ namespace MGEgui.DistantLand {
                 }
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
                 try {
-                    ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList);
+                    ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList, null);
                 } catch (Exception ex) {
                     warnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
@@ -1453,7 +1453,8 @@ namespace MGEgui.DistantLand {
 
         void workerExportStatics(object sender, System.ComponentModel.DoWorkEventArgs e) {
             ExportStaticsArgs args = (ExportStaticsArgs)e.Argument;
-            Dictionary<string, bool> CellList = new Dictionary<string, bool>();
+            var CellList = new Dictionary<string, bool>();
+            var NoScriptList = new Dictionary<string, string>();
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
@@ -1461,7 +1462,7 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 lastFileProcessed = file;
                 BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
-                ParseFileForStatics(br, null, args.activators, args.misc, null);
+                ParseFileForStatics(br, null, args.activators, args.misc, null, NoScriptList);
                 br.BaseStream.Position = 0;
                 ParseFileForInteriors(br, CellList);
                 br.Close();
@@ -1498,7 +1499,7 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 BinaryReader br = new BinaryReader(File.OpenRead(file));
                 try {
-                    ParseFileForCellsExport(br, CellList);
+                    ParseFileForCellsExport(br, CellList, NoScriptList);
                 } catch {
                 }
                 br.Close();
@@ -1540,34 +1541,53 @@ namespace MGEgui.DistantLand {
             sw.Write(": This list was generated with 'min. static size' = ");
             sw.WriteLine(args.MinSize);
             sw.WriteLine();
-            foreach (KeyValuePair<string, Static> pair in StaticsList) {
+            
+            // Filter statics in use, merge duplicates and sort NIF paths
+            var meshList = new SortedDictionary<string, Static>();
+            foreach (var pair in StaticsList) {
                 if (StaticMap.ContainsKey(pair.Key)) {
-                    sw.Write(pair.Value.mesh);
-                    if (pair.Value.mesh.StartsWith("grass\\")) {
-                        sw.Write("=grass\t\t: size: ");
-                    } else if (pair.Value.mesh.StartsWith("trees\\")) {
-                        sw.Write("=tree\t\t: size: ");
-                    } else if (pair.Value.mesh.StartsWith("x\\")) {
-                        if (pair.Value.size * 2.0f >= args.MinSize) {
-                            sw.Write("=building\t\t: size: ");
-                        } else {
-                            sw.Write("=ignore\t\t: size: ");
-                        }
-                    } else {
-                        if (pair.Value.size >= args.MinSize) {
-                            if (pair.Value.mesh == "f\\active_blight_large.nif") {
-                                sw.Write("=ignore\t\t: exception, size: ");
-                            } else {
-                                sw.Write("=auto\t\t: size: ");
-                            }
-                        } else {
-                            sw.Write("=ignore\t\t: size: ");
-                        }
-                    }
-                    sw.WriteLine(pair.Value.size);
+                    meshList[pair.Value.mesh] = pair.Value;
                 }
             }
+            foreach (var pair in meshList) {
+                sw.Write(pair.Key);
+                if (pair.Key.StartsWith("grass\\")) {
+                    sw.Write("=grass\t\t: size: ");
+                } else if (pair.Key.StartsWith("trees\\")) {
+                    sw.Write("=tree\t\t: size: ");
+                } else if (pair.Key.StartsWith("x\\")) {
+                    if (pair.Value.size * 2.0f >= args.MinSize) {
+                        sw.Write("=building\t\t: size: ");
+                    } else {
+                        sw.Write("=ignore\t\t: size: ");
+                    }
+                } else {
+                    if (pair.Value.size >= args.MinSize) {
+                        if (pair.Key == "f\\active_blight_large.nif") {
+                            sw.Write("=ignore\t\t: exception, size: ");
+                        } else {
+                            sw.Write("=auto\t\t: size: ");
+                        }
+                    } else {
+                        sw.Write("=ignore\t\t: size: ");
+                    }
+                }
+                sw.WriteLine(pair.Value.size);
+            }
+            
+            // Filter no-script statics in use, merge duplicates and sort NIF paths
+            var noScriptLines = new SortedSet<string>();
+            foreach (var pair in NoScriptList) {
+                if (StaticMap.ContainsKey(pair.Key)) {
+                    noScriptLines.Add(pair.Value);
+                }
+            }
+            foreach (var key in noScriptLines) {
+                sw.WriteLine(":" + key + "=no_script\t\t: script contains disable, uncomment to ignore script");
+            }
+
             sw.WriteLine("\r\n[names]\r\nchargen boat\r\nchargen_plank");
+
             sw.WriteLine("\r\n[interiors]");
             foreach (var interior in CellList) {
                 // Escape comment character
@@ -2523,11 +2543,11 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForStatics(BinaryReader br, Dictionary<string, staticOverride> OverrideList, bool activators, bool includemisc, Dictionary<string, bool> IgnoreList) {
+        private void ParseFileForStatics(BinaryReader br, Dictionary<string, staticOverride> OverrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> IgnoreList, Dictionary<string, string> NoScriptList) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
             // Look for any scripts that might be disabling activators
-            if (activators) {
+            if (includeActivators) {
                 ParseFileForDisableScripts(br, OverrideList);
                 // Reset file position
                 br.BaseStream.Position = 0;
@@ -2553,7 +2573,7 @@ namespace MGEgui.DistantLand {
                                 break;
                         }
                     }
-                    if (name != null && model != null && model.Trim() != null) {
+                    if (name != null && model != null && model.Trim() != string.Empty) {
                         // Named exceptions
                         if (IgnoreList != null && IgnoreList.ContainsKey(name)) {
                             if (!IgnoreList[name]) {
@@ -2571,51 +2591,31 @@ namespace MGEgui.DistantLand {
                             }
                             continue;
                         }
-                        // NoScript override
+                        // no_script override
                         if (script != null && OverrideList != null && OverrideList.ContainsKey(model) && OverrideList[model].NoScript) {
                             script = null;
                         }
-                        // Special exceptions
-                        if (name == "chargen boat" || name == "chargen_plank") {
-                            if (DEBUG) {
-                                DEBUG_ignored++;
-                            }
-                            continue;
+
+                        bool ignore;
+                        if (OverrideList != null && OverrideList.ContainsKey(model)) {
+                            ignore = OverrideList[model].Ignore;
+                        } else {
+                            ignore = (misc && !includeMisc) || (activator && !includeActivators);
                         }
-                        // Special model exceptions
-                        if (model == "f\\active_blight_large.nif") {
-                            if (OverrideList != null && !OverrideList.ContainsKey(model)) {
+
+                        if (!ignore) {
+                            if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script] == true) {
+                                if (NoScriptList != null) {
+                                    NoScriptList[name] = model;
+                                }
                                 if (DEBUG) {
                                     DEBUG_ignored++;
                                 }
                                 continue;
                             }
-                        }
-                        if ((misc && !includemisc) || activator && !activators) {
-                            if (OverrideList != null && OverrideList.ContainsKey(model) && !OverrideList[model].Ignore) {
-                                if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script] == true) {
-                                    if (DEBUG) {
-                                        DEBUG_ignored++;
-                                    }
-                                    continue;
-                                }
-                                StaticsList[name] = new Static(name, model);
-                                if (DEBUG) {
-                                    DEBUG_statics++;
-                                }
-                            }
-                        } else {
-                            if (OverrideList == null || !OverrideList.ContainsKey(model) || !OverrideList[model].Ignore) {
-                                if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script] == true) {
-                                    if (DEBUG) {
-                                        DEBUG_ignored++;
-                                    }
-                                    continue;
-                                }
-                                StaticsList[name] = new Static(name, model);
-                                if (DEBUG) {
-                                    DEBUG_statics++;
-                                }
+                            StaticsList[name] = new Static(name, model);
+                            if (DEBUG) {
+                                DEBUG_statics++;
                             }
                         }
                     }
@@ -2795,7 +2795,7 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForCellsExport(BinaryReader br, Dictionary<string, bool> CellList) {
+        private void ParseFileForCellsExport(BinaryReader br, Dictionary<string, bool> CellList, Dictionary<string, string> NoScriptList) {
             RecordReader rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 if (rr.Tag == "CELL") {
@@ -2821,7 +2821,7 @@ namespace MGEgui.DistantLand {
                             case "NAME":
                                 if (InReference) {
                                     string sname = rr.ReadCString().ToLower(Statics.Culture);
-                                    if (StaticsList.ContainsKey(sname)) {
+                                    if (StaticsList.ContainsKey(sname) || NoScriptList.ContainsKey(sname)) {
                                         StaticMap[sname] = 1;
                                     }
                                 } else {
