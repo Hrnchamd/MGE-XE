@@ -745,6 +745,7 @@ bool DistantLand::loadDistantStatics() {
     auto file_buffer = std::make_unique<char[]>(file_size);
     ReadFile(h2, file_buffer.get(), file_size, &unused, NULL);
     membuf_reader reader(file_buffer.get());
+    CloseHandle(h2);
 
     for (auto& i : DistantStatics) {
         int numSubsets;
@@ -815,6 +816,7 @@ bool DistantLand::loadDistantStatics() {
         }
     }
     file_buffer.reset();
+    errorTexture->Release();
 
 
     // Texture memory reporting
@@ -1230,6 +1232,8 @@ void DistantLand::release() {
     vbGrassInstances = nullptr;
     vbFullFrame->Release();
     vbFullFrame = nullptr;
+    vbClipCube->Release();
+    vbClipCube = nullptr;
 
     texDepthFrame->Release();
     texDepthFrame = nullptr;
@@ -1247,6 +1251,7 @@ void DistantLand::release() {
 
     LOG::logline("<< Distant Land release");
 
+    fogNearEnd = 0;
     device = nullptr;
     ready = false;
 }

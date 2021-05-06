@@ -6,8 +6,8 @@
 
 MemoryPool::MemoryBlock::MemoryBlock(MemoryPool* owner_pool) :
     next_block(nullptr),
-    next_alloc(0),
-    owner(owner_pool) {
+    owner(owner_pool),
+    next_alloc(0) {
 
     // Allocate the memory block
     data = new char[owner->blk_size];
