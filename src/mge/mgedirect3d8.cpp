@@ -41,6 +41,10 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
             SetWindowPos(hMainWnd, NULL, rect.left, 0, 0, 0, SWP_NOSIZE|SWP_NOACTIVATE|SWP_NOCOPYBITS|SWP_NOZORDER);
         }
 
+        // Ensure that the render window appears on the taskbar, as it is a child window that may become hidden
+        LONG style = GetWindowLong(hMainWnd, GWL_EXSTYLE);
+        SetWindowLong(hMainWnd, GWL_EXSTYLE, style | WS_EX_APPWINDOW);
+
         // Windowed mode does not allow multiple frame vsync
         if (Configuration.VWait >= D3DPRESENT_INTERVAL_TWO && Configuration.VWait <= D3DPRESENT_INTERVAL_FOUR) {
             Configuration.VWait = D3DPRESENT_INTERVAL_ONE;
