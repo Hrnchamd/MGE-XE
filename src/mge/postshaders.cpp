@@ -40,7 +40,6 @@ float PostShaders::rcpRes[2];
 
 // init - Initialize post-processing shader system
 bool PostShaders::init(IDirect3DDevice9* realDevice) {
-    LOG::logline(">> Post Process shader init");
     device = realDevice;
 
     if (!initBuffers()) {
@@ -51,7 +50,6 @@ bool PostShaders::init(IDirect3DDevice9* realDevice) {
         return false;
     }
 
-    LOG::logline("<< Post Process shader init");
     return true;
 }
 
@@ -98,9 +96,12 @@ bool PostShaders::initShaderChain() {
         } else {
             LOG::logline("!! Post shader %s failed to load/compile", path);
             if (errors) {
-                LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
+                LOG::write("!! Shader compile errors:\n");
+                LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+                LOG::write("\n");
                 errors->Release();
             }
+            LOG::flush();
         }
     }
 
@@ -145,9 +146,12 @@ bool PostShaders::updateShaderChain() {
             } else {
                 LOG::logline("!! Post shader %s failed to load/compile", path);
                 if (errors) {
-                    LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
+                    LOG::write("!! Shader compile errors:\n");
+                    LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+                    LOG::write("\n");
                     errors->Release();
                 }
+                LOG::flush();
             }
         }
     }

@@ -29,8 +29,6 @@ bool MGEhud::init(IDirect3DDevice9* d) {
     device = d;
     device->GetViewport(&vp);
 
-    LOG::logline(">> HUD init");
-
     HRESULT hr = device->CreateVertexBuffer(max_elements * 4 * 32, D3DUSAGE_DYNAMIC|D3DUSAGE_WRITEONLY, fvfHUD, D3DPOOL_DEFAULT, &vbHUD, 0);
     if (hr != D3D_OK) {
         LOG::logline("!! Failed to create HUD verts");
@@ -41,12 +39,15 @@ bool MGEhud::init(IDirect3DDevice9* d) {
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE HUD.fx", 0, 0, D3DXFX_LARGEADDRESSAWARE, 0, &effectStandard, &errors);
     if (hr != D3D_OK) {
         if (errors) {
-            LOG::logline("!! HUD Shader errors: %s", errors->GetBufferPointer());
+            LOG::write("!! Shader compile errors:\n");
+            LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+            LOG::write("\n");
             errors->Release();
         } else {
-            LOG::logline("!! HUD Shader error: Could not create effect from Data Files\\shaders\\XE HUD.fx");
+            LOG::logline("!! HUD Shader error: Could not create effect from %s", "Data Files\\shaders\\XE HUD.fx");
             LOG::logline("!! Ensure that the file exists. Note: This file does not currently support Mod Organizer 2. Install it manually.");
         }
+        LOG::flush();
         return false;
     }
 
@@ -56,7 +57,6 @@ bool MGEhud::init(IDirect3DDevice9* d) {
         reload();
     }
 
-    LOG::logline("<< HUD init");
     return true;
 }
 
@@ -124,8 +124,6 @@ void MGEhud::draw() {
 }
 
 void MGEhud::release() {
-    LOG::logline(">> HUD release");
-
     // Only release D3D resources
     // HUD status must be remembered if the device restarts on alt-tab
     for (const auto& i : element_names) {
@@ -145,8 +143,6 @@ void MGEhud::release() {
 
     effectStandard->Release();
     vbHUD->Release();
-
-    LOG::logline("<< HUD release");
 }
 
 int MGEhud::getScreenWidth() {
@@ -319,9 +315,12 @@ void MGEhud::setEffect(hud_id hud, const char* effectPath) {
 
             LOG::logline("!! HUD shader %s failed to load/compile", path);
             if (errors) {
-                LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
+                LOG::write("!! Shader compile errors:\n");
+                LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+                LOG::write("\n");
                 errors->Release();
             }
+            LOG::flush();
         }
     }
 }

@@ -44,7 +44,9 @@ bool FixedFunctionShader::init(IDirect3DDevice* d, ID3DXEffectPool* pool) {
     HRESULT hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effect, &errors);
     if (hr != D3D_OK) {
         if (errors) {
-            LOG::logline("!! %s", errors->GetBufferPointer());
+            LOG::write("!! Shader compile errors:\n");
+            LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+            LOG::write("\n");
             errors->Release();
         }
         return false;
@@ -295,6 +297,7 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     if (totalOutputCoords > 4) {
         LOG::logline("!! Shader generator error: excessive texcoord usage (%d).", totalOutputCoords);
         sk.log();
+        LOG::flush();
 
         effectDefaultPurple->AddRef();
         cacheEffects[sk] = effectDefaultPurple;
@@ -593,10 +596,12 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     if (hr != D3D_OK) {
         LOG::logline("!! Generating FFE shader: compile error %xh", hr);
         if (errors) {
-            LOG::logline("!! %s", errors->GetBufferPointer());
+            LOG::write("!! Shader compile errors:\n");
+            LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+            LOG::write("\n");
             errors->Release();
         }
-        LOG::logline("");
+        LOG::write("\n");
         effectDefaultPurple->AddRef();
         effectFFE = effectDefaultPurple;
     }

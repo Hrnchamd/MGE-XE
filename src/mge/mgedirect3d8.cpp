@@ -24,8 +24,6 @@ MGEProxyD3D::MGEProxyD3D(IDirect3D9* real) : ProxyD3D(real, MorrowindRequiredD3D
 }
 
 HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d, D3DPRESENT_PARAMETERS8* e, IDirect3DDevice8** f) {
-    LOG::logline(">> D3D Proxy CreateDevice");
-
     // Window positioning
     if (e->Windowed) {
         HWND hMainWnd = GetParent(c);
@@ -89,6 +87,7 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
 
     if (hr != D3D_OK) {
         LOG::logline("!! D3D Proxy CreateDevice failure");
+        LOG::flush();
         return hr;
     }
 
@@ -124,11 +123,10 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     realDevice->SetRenderState(D3DRS_RANGEFOGENABLE, RangedFog);
     realDevice->SetRenderState(D3DRS_MULTISAMPLEANTIALIAS, (Configuration.AALevel > 0));
 
-    LOG::logline("<< D3D Proxy CreateDevice");
+    LOG::logline("-- D3D Proxy Device OK");
     return D3D_OK;
 }
 
 IDirect3DDevice8* MGEProxyD3D::factoryProxyDevice(IDirect3DDevice9* d) {
-    LOG::logline("-- D3D Proxy Factory OK");
     return new MGEProxyDevice(d, this);
 }

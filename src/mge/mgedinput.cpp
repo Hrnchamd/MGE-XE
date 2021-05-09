@@ -57,8 +57,6 @@ static void loadInputSettings();
 static void stub() {}
 
 void* CreateInputWrapper(void* real) {
-    LOG::logline(">> CreateInputWrapper");
-
     // Read macros and triggers
     loadInputSettings();
 
@@ -128,7 +126,6 @@ void* CreateInputWrapper(void* real) {
     FakeKeys[0xb7].type = MT_Graphics;
     FakeKeys[0xb7].Graphics.function = GF_Screenshot;
 
-    LOG::logline("<< CreateInputWrapper");
     return new MGEProxyDirectInput((IDirectInput8A*)real);
 }
 
@@ -590,11 +587,9 @@ IDirectInputDevice8* MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8*
         } else {
             device = new MGEProxyKeyboard(device);
         }
-        LOG::logline("-- Proxy Keyboard OK");
 
         if (Configuration.Input.Remap[0] != 0) {
             device = new RemapWrapper(device);
-            LOG::logline("-- Remapped keyboard");
         }
     } else if (g == GUID_SysMouse) {
         if (Configuration.Input.AltCombat) {
@@ -602,7 +597,6 @@ IDirectInputDevice8* MGEProxyDirectInput::factoryProxyInput(IDirectInputDevice8*
         } else {
             device = new MGEProxyMouse(device);
         }
-        LOG::logline("-- Proxy Mouse OK");
     }
 
     return device;

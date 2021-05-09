@@ -193,70 +193,58 @@ bool DistantLand::init(IDirect3DDevice9* realDevice) {
     }
 
     device = realDevice;
-    LOG::logline(">> Distant Land init");
+    LOG::logline(">> Starting Distant Land init");
     vsr.init(device);
-
-    LOG::logline(">> Distant Land init BSAs");
     BSA::init();
 
-    LOG::logline(">> Distant Land init shader");
     if (!initShader()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init fixed function emu");
     if (!FixedFunctionShader::init(device, effectPool)) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init post shaders");
     if (!PostShaders::init(device)) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init depth");
     if (!initDepth()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init shadow");
     if (!initShadow()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init water");
     if (!initWater()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init world");
     if (!initLandscape()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init statics");
     if (!initDistantStatics()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land init grass");
     if (!initGrass()) {
         return false;
     }
 
-    LOG::logline("<< Distant Land init");
+    LOG::logline("<< Completed Distant Land init");
     ready = true;
     isRenderCached = false;
     return true;
 }
 
 bool DistantLand::reloadShaders() {
-    LOG::logline(">> Distant Land reload shader");
+    LOG::logline(">> Distant Land reloading");
     if (!initShader()) {
         return false;
     }
 
-    LOG::logline(">> Distant Land reload fixed function emu");
     FixedFunctionShader::release();
     if (!FixedFunctionShader::init(device, effectPool)) {
         return false;
@@ -268,9 +256,12 @@ bool DistantLand::reloadShaders() {
 static void logShaderError(const char* shaderID, ID3DXBuffer* errors) {
     LOG::logline("!! %s shader error", shaderID);
     if (errors) {
-        LOG::logline("!! Shader errors: %s", errors->GetBufferPointer());
+        LOG::write("!! Shader compile errors:\n");
+        LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
+        LOG::write("\n");
         errors->Release();
     }
+    LOG::flush();
 }
 
 static const D3DXMACRO macroExpFog = { "USE_EXPFOG", "" };
@@ -356,23 +347,17 @@ bool DistantLand::initShader() {
     effect->SetFloatArray(ehRcpRes, rcpres, 2);
     effect->SetFloat(ehShadowRcpRes, 1.0f / Configuration.DL.ShadowResolution);
 
-    LOG::logline("-- Shader compiled OK");
-
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
     if (hr != D3D_OK) {
         logShaderError("XE Shadowmap", errors);
         return false;
     }
 
-    LOG::logline("-- Shadow map shader compiled OK");
-
     hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
     if (hr != D3D_OK) {
         logShaderError("XE Depth", errors);
         return false;
     }
-
-    LOG::logline("-- Depth shader compiled OK");
 
     if (Configuration.MGEFlags & USE_ATM_SCATTER) {
         ehOutscatter = effect->GetParameterByName(0, "outscatter");
@@ -508,8 +493,6 @@ bool DistantLand::initWater() {
     ibWater->Unlock();
 
     if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
-        LOG::logline("-- Distant Land init dynamic water");
-
         // Setup water simulation
         if (!initDynamicWaves()) {
             return false;
@@ -699,18 +682,21 @@ bool DistantLand::loadDistantStatics() {
 
     if (GetFileAttributes("Data Files\\distantland\\statics") == INVALID_FILE_ATTRIBUTES) {
         LOG::logline("!! Distant statics have not been generated");
+        LOG::flush();
         return !(Configuration.MGEFlags & USE_DISTANT_LAND);
     }
 
     h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/version");
+        LOG::flush();
         return false;
     }
     BYTE version = 0;
     ReadFile(h, &version, sizeof(version), &unused, 0);
     if (version != MGE_DL_VERSION) {
         LOG::logline("!! Distant statics data is from an old version and needs to be regenerated");
+        LOG::flush();
         return false;
     }
     CloseHandle(h);
@@ -718,6 +704,7 @@ bool DistantLand::loadDistantStatics() {
     h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/statics/usage.data");
+        LOG::flush();
         return false;
     }
 
@@ -728,6 +715,7 @@ bool DistantLand::loadDistantStatics() {
     HANDLE h2 = CreateFile("Data Files\\distantland\\statics\\static_meshes", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h2 == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/statics/static_meshes");
+        LOG::flush();
         return false;
     }
 
@@ -825,6 +813,7 @@ bool DistantLand::loadDistantStatics() {
 
     LOG::logline("-- Distant static textures loaded, %d textures", texturesLoaded);
     LOG::logline("-- Distant static texture memory use: %d MB", texMemUsage);
+    LOG::flush();
 
 
     // Load statics references
@@ -891,7 +880,6 @@ bool DistantLand::loadDistantStatics() {
     }
 
     CloseHandle(h);
-    LOG::logline("-- Distant Land finished loading distant statics");
     return true;
 }
 
@@ -1027,7 +1015,6 @@ bool DistantLand::initDistantStaticsBVH() {
 
 bool DistantLand::initLandscape() {
     HRESULT hr;
-    LOG::logline(">> Landscape Load");
 
     hr = device->CreateVertexDeclaration(LandElem, &LandDecl);
     if (hr != D3D_OK) {
@@ -1037,24 +1024,28 @@ bool DistantLand::initLandscape() {
 
     if (GetFileAttributes("Data Files\\distantland\\world") == INVALID_FILE_ATTRIBUTES) {
         LOG::logline("!! Distant land files have not been generated");
+        LOG::flush();
         return !(Configuration.MGEFlags & USE_DISTANT_LAND);
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldColour);
     if (hr != D3D_OK) {
         LOG::logline("!! Could not load world texture for distant land - distantland/world.dds");
+        LOG::flush();
         return false;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\distantland\\world_n.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldNormals);
     if (hr != D3D_OK) {
         LOG::logline("!! Could not load world normal map texture for distant land - distantland/world_n.dds");
+        LOG::flush();
         return false;
     }
 
     hr = D3DXCreateTextureFromFileEx(device, "Data Files\\textures\\MGE\\world_detail.dds", 0, 0, 0, 0, D3DFMT_UNKNOWN, D3DPOOL_DEFAULT, D3DX_DEFAULT, D3DX_DEFAULT, 0, 0, 0, &texWorldDetail);
     if (hr != D3D_OK) {
         LOG::logline("!! Could not load world detail texture for distant land - textures/MGE/world_detail.dds");
+        LOG::flush();
         return false;
     }
 
@@ -1125,7 +1116,6 @@ bool DistantLand::initLandscape() {
     CloseHandle(file);
     LandQuadTree.CalcVolume();
 
-    LOG::logline("<< Landscape Load");
     return true;
 }
 
@@ -1152,7 +1142,7 @@ void DistantLand::release() {
         return;
     }
 
-    LOG::logline(">> Distant Land release");
+    LOG::logline("-- Renderer unloading");
 
     PostShaders::release();
     FixedFunctionShader::release();
@@ -1249,7 +1239,8 @@ void DistantLand::release() {
     effect->Release();
     effect = nullptr;
 
-    LOG::logline("<< Distant Land release");
+    LOG::logline("-- Renderer unloaded");
+    LOG::flush();
 
     fogNearEnd = 0;
     device = nullptr;
