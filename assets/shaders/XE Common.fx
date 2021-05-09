@@ -126,6 +126,9 @@ float fogMWScalar(float dist)
   
 #endif
 
+// Suppress warning X3571: pow(f, e) will not work for negative f
+#pragma warning( disable : 3571 )
+
 #ifdef USE_SCATTERING
     static const float3 newskycol = 0.38 * SkyCol + float3(0.23, 0.39, 0.68);
     static const float sunaltitude = pow(1 + SunPos.z, 10);
@@ -223,7 +226,7 @@ float3 fogApply(float3 c, float4 f)
 float landBias(float dist)
 {
     float maxdist = nearViewRange - 1152;
-    return -16 + -10 * max(0, maxdist - dist);
+    return -40 + -10 * max(0, maxdist - dist);
 }
 
 //------------------------------------------------------------
