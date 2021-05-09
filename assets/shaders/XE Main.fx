@@ -378,7 +378,7 @@ Technique T0 {
         PixelShader = compile ps_3_0 GrassPS ();
     }
     //------------------------------------------------------------
-    // Used for rendering shadows
+    // Used for rendering shadows over fixed function output
     Pass P2 {
         ZEnable = true;
         ZWriteEnable = false;
@@ -391,6 +391,22 @@ Technique T0 {
         AlphaTestEnable = false;
 
         VertexShader = compile vs_3_0 RenderShadowsVS ();
+        PixelShader = compile ps_3_0 RenderShadowsPS ();
+    }
+    //------------------------------------------------------------
+    // Used for rendering shadows over FFE output
+    Pass P2ffe {
+        ZEnable = true;
+        ZWriteEnable = false;
+        StencilEnable = false;
+        CullMode = CW;
+
+        AlphaBlendEnable = true;
+        SrcBlend = Zero;
+        DestBlend = InvSrcColor;
+        AlphaTestEnable = false;
+
+        VertexShader = compile vs_3_0 RenderShadowsFFEVS ();
         PixelShader = compile ps_3_0 RenderShadowsPS ();
     }
     //------------------------------------------------------------
