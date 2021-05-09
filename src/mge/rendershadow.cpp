@@ -189,7 +189,7 @@ void DistantLand::renderShadow() {
         // Fragment colour routing
         bool alphaDependent = i.alphaTest || i.blendEnable;
         effect->SetBool(ehHasVCol, alphaDependent && (i.fvf & D3DFVF_DIFFUSE) != 0);
-        effect->SetFloat(ehMaterialAlpha, i.diffuseMaterial.a);
+        effect->SetFloat(ehMaterialAlpha, alphaDependent ? i.diffuseMaterial.a : 1.0f);
 
         // Only bind texture for alphas
         if (alphaDependent && i.texture) {
