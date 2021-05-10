@@ -13,11 +13,6 @@
     #endif
 #endif
 
-#ifdef __GNUC__
-    #define _isnan(x) isnan(x)
-    #define _finite(x) finite(x)
-#endif
-
 #ifdef __cplusplus
 
     #include <cstddef>

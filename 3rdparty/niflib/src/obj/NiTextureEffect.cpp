@@ -261,7 +261,7 @@ void NiTextureEffect::SetSourceTexture( Ref<NiSourceTexture > value ) {
 	sourceTexture = value;
 }
 
-byte NiTextureEffect::GetClippingPlane() const {
+Niflib::byte NiTextureEffect::GetClippingPlane() const {
 	return clippingPlane;
 }
 

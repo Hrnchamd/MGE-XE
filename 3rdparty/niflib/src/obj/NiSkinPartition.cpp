@@ -862,7 +862,7 @@ size_t indexOf(I begin, I end, const V& val) {
 namespace std
 {
    template<>
-   struct less<Triangle> : public binary_function<Triangle, Triangle, bool>
+   struct less<Triangle>
    {
       bool operator()(const Triangle& s1, const Triangle& s2) const{
          int d = 0;
@@ -873,7 +873,7 @@ namespace std
       }
    };
    template<>
-   struct less<BoneWeight> : public binary_function<BoneWeight, BoneWeight, bool>
+   struct less<BoneWeight>
    {
       bool operator()(const BoneWeight& lhs, const BoneWeight& rhs) {
          if ( lhs.second == rhs.second ) {

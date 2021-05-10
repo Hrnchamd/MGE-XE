@@ -580,7 +580,7 @@ void NiGeometryData::SetVertices( const vector<Vector3> & in ) {
 		radius = 0.0f;
 		return;
 	}
-	
+
 	//Set lows and highs to first vertex
 	Vector3 lows = vertices[0];
 	Vector3 highs = vertices[0];
@@ -684,7 +684,7 @@ void NiGeometryData::SetBound(Vector3 const & center, float radius)
 }
 
 
-byte NiGeometryData::GetTspaceFlag() const {
+Niflib::byte NiGeometryData::GetTspaceFlag() const {
    return (numUvSets | bsNumUvSets) >> 8;
 }
 

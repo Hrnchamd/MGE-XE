@@ -14,6 +14,7 @@ All rights reserved.  Please see niflib.h for license. */
 #include "../../include/ObjectRegistry.h"
 #include "../../include/NIF_IO.h"
 #include "../../include/obj/NiAlphaProperty.h"
+
 using namespace Niflib;
 
 //Definition of TYPE constant
@@ -117,7 +118,7 @@ void NiAlphaProperty::SetFlags( unsigned short n ) {
 	flags = n;
 }
 
-byte NiAlphaProperty::GetTestThreshold() const {
+Niflib::byte NiAlphaProperty::GetTestThreshold() const {
 	return threshold;
 }
 

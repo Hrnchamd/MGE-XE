@@ -1,14 +1,13 @@
 
 #include "mge/mwbridge.h"
 #include "funcentity.h"
+#include "tes3types.h"
 
 #include <cstdio>
 
 
 
-struct Node {
-    const void** vtbl;
-};
+using namespace TES3;
 
 static MWRecord* findEntity(const char* id) {
     typedef MWRecord * (__thiscall *findMWEntity_t)(void*, const char*);

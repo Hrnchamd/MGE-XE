@@ -96,7 +96,7 @@ std::list<NiObject *> NiBlendBoolInterpolator::GetPtrs() const {
 
 //--BEGIN MISC CUSTOM CODE--//
 
-byte NiBlendBoolInterpolator::GetBoolValue() const {
+Niflib::byte NiBlendBoolInterpolator::GetBoolValue() const {
 	return boolValue;
 }
 

@@ -29,8 +29,6 @@ struct IndexString : public std::string {
 	IndexString( const std::string & ref ) : std::string(ref) {}
 	IndexString& operator=( const IndexString & ref ) { assign((std::string const &)ref); return *this; }
 	IndexString& operator=( const std::string & ref ) { assign(ref); return *this; }
-	operator std::string const &() const { return *this; }
-	operator std::string &() { return *this; }
 };
 
 struct Char8String : public std::string {
@@ -39,8 +37,6 @@ struct Char8String : public std::string {
 	Char8String( const std::string & ref ) : std::string(ref) {}
 	Char8String& operator=( const Char8String & ref ) { assign((std::string const &)ref); return *this; }
 	Char8String& operator=( const std::string & ref ) { assign(ref); return *this; }
-	operator std::string const &() const { return *this; }
-	operator std::string &() { return *this; }
 };
 
 //--Non-mathematical Basic Types--//
