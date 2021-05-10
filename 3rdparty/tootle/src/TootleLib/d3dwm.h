@@ -6,6 +6,10 @@
 #ifndef D3DWM_H
 #define D3DWM_H
 
+#ifndef NOMINMAX
+#define NOMINMAX
+#endif
+
 #include <d3d9.h>
 #include <d3dx9.h>
 

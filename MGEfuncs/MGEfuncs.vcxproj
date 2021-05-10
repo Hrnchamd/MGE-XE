@@ -1,0 +1,1241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{93b48cb5-5617-41c3-82c2-c3cc9e12220c}</ProjectGuid>
+    <RootNamespace>MGEfuncs</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\include;</IncludePath>
+    <OutDir>$(SolutionDir)bin\MSVC-$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\MSVC-$(Configuration)\MGEfuncs\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <LibraryPath>$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\Lib\x86;</LibraryPath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\Program Files (x86)\Microsoft DirectX SDK (June 2010)\include;</IncludePath>
+    <OutDir>$(SolutionDir)bin\MSVC-$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)bin\MSVC-$(Configuration)\MGEfuncs\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILD_DLL;NIFLIB_STATIC_LINK;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>BUILD_DLL;NIFLIB_STATIC_LINK;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <FloatingPointModel>Fast</FloatingPointModel>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;d3d9.lib;d3dx9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <ModuleDefinitionFile>exports.def</ModuleDefinitionFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\3rdparty\niflib\NvTriStrip\NvTriStrip.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\NvTriStrip\NvTriStripObjects.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\NvTriStrip\VertexCache.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\AnimSequence.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\ComplexShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\AdditionalDataBlock.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\AdditionalDataInfo.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ArkTexture.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\AVObject.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BodyPartList.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BoneLOD.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BoundingBox.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BoundingVolume.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BoxBV.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSPackedAdditionalDataBlock.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSSegment.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSSegmentedTriangle.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSTreadTransfInfo.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSTreadTransform.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSTreadTransformData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\BSTreadTransfSubInfo.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ByteArray.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ByteColor3.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ByteColor4.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ByteMatrix.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\CapsuleBV.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ChannelData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ControllerLink.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\DecalVectorArray.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ElementReference.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\enums.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ExportInfo.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ExtraMeshDataEpicMickey.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ExtraMeshDataEpicMickey2.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Footer.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\FurniturePosition.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\HalfSpaceBV.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Header.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\HingeDescriptor.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\LimitedHingeDescriptor.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\LODRange.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MatchGroup.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MaterialData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MeshData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MipMap.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Morph.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MorphWeight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MotorDescriptor.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MTransform.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\MultiTextureElement.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\NodeGroup.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\OblivionColFilter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\OblivionSubShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\OldSkinData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Particle.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ParticleDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\physXMaterialRef.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Polygon.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\QTransform.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\QuaternionXYZW.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\RagdollDescriptor.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Region.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\register.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SemanticData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\ShaderTexDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinPartition.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinPartitionUnknownItem1.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinShapeGroup.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinTransform.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SkinWeight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\Sphere.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\SphereBV.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\StringPalette.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\TBC.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\TexDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\TexSource.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\UnionBV.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\gen\UnknownMatrix1.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\Inertia.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\kfm.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\MatTexCollection.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\niflib.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\NIF_IO.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\nif_math.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\ObjectRegistry.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\AbstractAdditionalGeometryData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\ATextureRenderData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\AvoidNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSAnimNotes.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSBehaviorGraphExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSBlastNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSBoneLODExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSBound.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSDamageStage.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSDebrisNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSDecalPlacementVectorExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSDismemberSkinInstance.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSDistantTreeShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSEffectShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSEffectShaderPropertyColorController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSEffectShaderPropertyFloatController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSFadeNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSFrustumFOVController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSFurnitureMarker.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSFurnitureMarkerNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSInvMarker.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSKeyframeController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSLagBoneController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSLeafAnimNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSLightingShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSLightingShaderPropertyColorController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSLightingShaderPropertyFloatController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSLODTriShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMasterParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMaterialEmittanceMultController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMultiBound.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMultiBoundAABB.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMultiBoundData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMultiBoundNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMultiBoundOBB.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSMultiBoundSphere.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSNiAlphaPropertyTestRefController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSOrderedNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPackedAdditionalGeometryData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSParentVelocityModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSProceduralLightningController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysArrayEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysHavokUpdateModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysInheritVelocityModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysLODModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysMultiTargetEmitterCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysRecycleBoundModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysScaleModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysSimpleColorModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysStripUpdateModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSPSysSubTexModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSRefractionFirePeriodController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSRefractionStrengthController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSRotAccumTransfInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSSegmentedTriShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSShaderLightingProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSShaderNoLightingProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSShaderPPLightingProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSShaderTextureSet.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSSkyShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSStripParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSStripPSysData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSTreadTransfInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSTreeNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSValueNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSWArray.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSWaterShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSWindModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\BSXFlags.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\CStreamableAssetData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\DistantLODShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\FxButton.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\FxRadioButton.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\FxWidget.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\HairShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Lighting30ShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Ni3dsAlphaAnimator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Ni3dsAnimationNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Ni3dsColorAnimator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Ni3dsMorphShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Ni3dsParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\Ni3dsPathController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAdditionalGeometryData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAlphaController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAlphaProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAmbientLight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiArkAnimationExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiArkImporterExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiArkShaderExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiArkTextureExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiArkViewportInfoExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAutoNormalParticles.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAutoNormalParticlesData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAVObject.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiAVObjectPalette.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBezierMesh.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBezierTriangle4.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBillboardNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBinaryExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBinaryVoxelData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBinaryVoxelExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBlendBoolInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBlendFloatInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBlendInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBlendPoint3Interpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBlendTransformInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBone.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBoneLODController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBoolData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBooleanExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBoolInterpController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBoolInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBoolTimelineInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSAnimationNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSBoneLODController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSPArrayController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSParticleNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineBasisData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineCompFloatInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineCompPoint3Interpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineCompTransformEvaluator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineCompTransformInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineFloatInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplinePoint3Interpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiBSplineTransformInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiCamera.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiClod.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiClodData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiClodSkinInstance.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiCollisionData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiCollisionObject.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiCollisionSwitch.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiColorData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiColorExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiControllerManager.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiControllerSequence.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiDataStream.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiDefaultAVObjectPalette.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiDirectionalLight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiDitherProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiDynamicEffect.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiEnvMappedTriShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiEnvMappedTriShapeData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiExtraDataController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFlipController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFloatData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFloatExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFloatExtraDataController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFloatInterpController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFloatInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFloatsExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFogProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiFurSpringController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiGeometry.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiGeometryData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiGeomMorpherController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiGravity.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiImage.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiInstancingMeshModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiIntegerExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiIntegersExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiInterpController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiKeyBasedInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiKeyframeController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiKeyframeData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLightColorController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLightDimmerController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLightIntensityController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLines.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLinesData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLODData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLODNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLookAtController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiLookAtInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMaterialColorController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMaterialProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMesh.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMeshHWInstance.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMeshModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMeshParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMeshPSysData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMorphController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMorphData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMorpherController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMorphMeshModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMorphWeightsController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMultiTargetTransformController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiMultiTextureProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiObject.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiObjectNET.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPalette.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleBomb.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleColorModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleGrowFade.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleMeshes.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleMeshesData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleMeshModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleRotation.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticles.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticlesData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiParticleSystemController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPathController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPathInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPersistentSrcTextureRendererData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXActorDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXBodyDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXD6JointDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXKinematicSrc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXMaterialDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXMeshDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXProp.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXPropDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXShapeDesc.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPhysXTransformDest.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPixelData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPlanarCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPoint3InterpController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPoint3Interpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPointLight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPortal.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPosData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSBombForce.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSBoundUpdater.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSBoxEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSCylinderEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSDragForce.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitParticlesCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterDeclinationCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterDeclinationVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterLifeSpanCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterPlanarAngleCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterPlanarAngleVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterRadiusCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterRotAngleCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterRotAngleVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterRotSpeedCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterRotSpeedVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSEmitterSpeedCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSFacingQuadGenerator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSForceActiveCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSGravityForce.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSGravityStrengthCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSMeshEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSMeshParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSParticleSystem.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSPlanarCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSResetOnLoopCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulatorCollidersStep.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulatorFinalStep.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulatorForcesStep.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulatorGeneralStep.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulatorMeshAlignStep.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSimulatorStep.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSpawner.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSphereEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSSphericalCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysAgeDeathModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysAirFieldAirFrictionCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysAirFieldInheritVelocityCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysAirFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysAirFieldSpreadCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysBombModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysBoundUpdateModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysBoxEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysColliderManager.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysColorModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysCylinderEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysDragFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysDragModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterCtlrData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterDeclinationCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterDeclinationVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterInitialRadiusCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterLifeSpanCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterPlanarAngleCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterPlanarAngleVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysEmitterSpeedCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysFieldAttenuationCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysFieldMagnitudeCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysFieldMaxDistanceCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysGravityFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysGravityModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysGravityStrengthCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysGrowFadeModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysInitialRotAngleCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysInitialRotAngleVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysInitialRotSpeedCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysInitialRotSpeedVarCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysMeshEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysMeshUpdateModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysModifierActiveCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysModifierBoolCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysModifierCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysModifierFloatCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysPlanarCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysPositionModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysRadialFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysResetOnLoopCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysRotationModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysSpawnModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysSphereEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysSphericalCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysTrailEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysTurbulenceFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysUpdateCtlr.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysVolumeEmitter.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiPSysVortexFieldModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRangeLODData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRawImageData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRenderObject.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRollController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRoom.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRoomGroup.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRotatingParticles.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiRotatingParticlesData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiScreenElements.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiScreenElementsData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiScreenLODData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSequence.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSequenceData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSequenceStreamHelper.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiShadeProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiShadowGenerator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSingleInterpController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSkinData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSkinInstance.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSkinningLODController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSkinningMeshModifier.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSkinPartition.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSortAdjustNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSourceCubeMap.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSourceTexture.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSpecularProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSphericalCollider.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSpotLight.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiStencilProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiStringExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiStringPalette.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiStringsExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiSwitchNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTextKeyExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTexture.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTextureEffect.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTextureModeProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTextureProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTextureTransformController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTexturingProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTimeController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTransformController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTransformData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTransformEvaluator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTransformInterpolator.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTransparentProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriBasedGeom.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriBasedGeomData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriShape.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriShapeData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriShapeSkinController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriStrips.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiTriStripsData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiUVController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiUVData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiVectorExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiVertexColorProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiVertWeightsExtraData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiVisController.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiVisData.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiWireframeProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\NiZBufferProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\RootCollisionNode.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\SkyShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\TallGrassShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\TileShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\VolumetricFogShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\obj\WaterShaderProperty.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\pch.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\RefObject.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\src\Type.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\TriStripper\connectivity_graph.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\TriStripper\policy.cpp" />
+    <ClCompile Include="..\3rdparty\niflib\TriStripper\tri_stripper.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\aligned_malloc.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\clustering.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\d3doverdrawwindow.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\d3dwm.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\error.c" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\feedback.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\fit.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\gdiwm.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\heap.c" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\overdraw.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTBoundingBox.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCamera.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCore.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCoreUtils.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTH2KDTreeBuilder.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTHeuristicKDTreeBuilder.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTKDTree.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTKDTreeBuilder.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTMesh.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTOrthoCamera.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTPPMImage.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTTriangleIntersection.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLFuncs.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\RayTracer\TootleRaytracer.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\soup.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\souptomesh.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\Stripifier.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\Timer.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\tootlelib.cpp" />
+    <ClCompile Include="..\3rdparty\tootle\src\TootleLib\triorder.cpp" />
+    <ClCompile Include="LandTessellator.cpp" />
+    <ClCompile Include="NifConverter.cpp" />
+    <ClCompile Include="progmesh\CollapseTriangle.cpp" />
+    <ClCompile Include="progmesh\CollapseVertex.cpp" />
+    <ClCompile Include="progmesh\ProgMesh.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\3rdparty\niflib\include\AnimSequence.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\ComplexShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\dll_export.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\FixLink.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\AdditionalDataBlock.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\AdditionalDataInfo.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ArkTexture.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\AVObject.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BodyPartList.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BoneLOD.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BoundingBox.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BoundingVolume.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BoxBV.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSPackedAdditionalDataBlock.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSSegment.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSSegmentedTriangle.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSTreadTransfInfo.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSTreadTransform.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSTreadTransformData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\BSTreadTransfSubInfo.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ByteArray.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ByteColor3.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ByteColor4.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ByteMatrix.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\CapsuleBV.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ChannelData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ControllerLink.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\DecalVectorArray.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ElementReference.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\enums.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\enums_intl.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ExportInfo.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ExtraMeshDataEpicMickey.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ExtraMeshDataEpicMickey2.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Footer.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\FurniturePosition.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\HalfSpaceBV.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Header.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\HingeDescriptor.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\KeyGroup.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\LimitedHingeDescriptor.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\LODRange.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MatchGroup.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MaterialData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MeshData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MipMap.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Morph.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MorphWeight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MotorDescriptor.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MTransform.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\MultiTextureElement.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\NodeGroup.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\OblivionColFilter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\OblivionSubShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\OldSkinData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Particle.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ParticleDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\physXMaterialRef.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Polygon.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\QTransform.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\QuaternionXYZW.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\RagdollDescriptor.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Region.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\RotationKeyArray.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SemanticData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\ShaderTexDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinPartition.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinPartitionUnknownItem1.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinShapeGroup.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinTransform.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SkinWeight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\Sphere.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\SphereBV.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\StringPalette.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\TBC.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\TexDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\TexSource.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\UnionBV.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\gen\UnknownMatrix1.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\Inertia.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\Key.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\kfm.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\MatTexCollection.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\niflib.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\nif_basic_types.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\NIF_IO.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\nif_math.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\nif_versions.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\ObjectRegistry.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\AbstractAdditionalGeometryData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\ATextureRenderData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\AvoidNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSAnimNotes.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSBehaviorGraphExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSBlastNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSBoneLODExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSBound.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSDamageStage.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSDebrisNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSDecalPlacementVectorExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSDismemberSkinInstance.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSDistantTreeShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSEffectShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSEffectShaderPropertyColorController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSEffectShaderPropertyFloatController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSFadeNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSFrustumFOVController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSFurnitureMarker.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSFurnitureMarkerNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSInvMarker.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSKeyframeController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSLagBoneController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSLeafAnimNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSLightingShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSLightingShaderPropertyColorController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSLightingShaderPropertyFloatController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSLODTriShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMasterParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMaterialEmittanceMultController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMultiBound.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMultiBoundAABB.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMultiBoundData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMultiBoundNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMultiBoundOBB.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSMultiBoundSphere.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSNiAlphaPropertyTestRefController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSOrderedNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPackedAdditionalGeometryData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSParentVelocityModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSProceduralLightningController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysArrayEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysHavokUpdateModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysInheritVelocityModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysLODModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysMultiTargetEmitterCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysRecycleBoundModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysScaleModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysSimpleColorModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysStripUpdateModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSPSysSubTexModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSRefractionFirePeriodController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSRefractionStrengthController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSRotAccumTransfInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSSegmentedTriShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSShaderLightingProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSShaderNoLightingProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSShaderPPLightingProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSShaderTextureSet.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSSkyShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSStripParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSStripPSysData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSTreadTransfInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSTreeNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSValueNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSWArray.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSWaterShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSWindModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\BSXFlags.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\CStreamableAssetData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\DistantLODShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\FxButton.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\FxRadioButton.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\FxWidget.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\HairShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Lighting30ShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Ni3dsAlphaAnimator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Ni3dsAnimationNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Ni3dsColorAnimator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Ni3dsMorphShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Ni3dsParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\Ni3dsPathController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAdditionalGeometryData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAlphaController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAlphaProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAmbientLight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiArkAnimationExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiArkImporterExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiArkShaderExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiArkTextureExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiArkViewportInfoExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAutoNormalParticles.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAutoNormalParticlesData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAVObject.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiAVObjectPalette.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBezierMesh.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBezierTriangle4.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBillboardNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBinaryExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBinaryVoxelData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBinaryVoxelExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBlendBoolInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBlendFloatInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBlendInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBlendPoint3Interpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBlendTransformInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBone.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBoneLODController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBoolData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBooleanExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBoolInterpController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBoolInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBoolTimelineInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSAnimationNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSBoneLODController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSPArrayController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSParticleNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineBasisData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineCompFloatInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineCompPoint3Interpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineCompTransformEvaluator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineCompTransformInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineFloatInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplinePoint3Interpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiBSplineTransformInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiCamera.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiClod.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiClodData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiClodSkinInstance.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiCollisionData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiCollisionObject.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiCollisionSwitch.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiColorData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiColorExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiControllerManager.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiControllerSequence.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiDataStream.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiDefaultAVObjectPalette.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiDirectionalLight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiDitherProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiDynamicEffect.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiEnvMappedTriShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiEnvMappedTriShapeData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiExtraDataController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFlipController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFloatData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFloatExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFloatExtraDataController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFloatInterpController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFloatInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFloatsExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFogProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiFurSpringController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiGeometry.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiGeometryData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiGeomMorpherController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiGravity.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiImage.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiInstancingMeshModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiIntegerExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiIntegersExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiInterpController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiKeyBasedInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiKeyframeController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiKeyframeData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLightColorController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLightDimmerController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLightIntensityController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLines.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLinesData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLODData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLODNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLookAtController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiLookAtInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMaterialColorController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMaterialProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMesh.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMeshHWInstance.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMeshModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMeshParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMeshPSysData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMorphController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMorphData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMorpherController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMorphMeshModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMorphWeightsController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMultiTargetTransformController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiMultiTextureProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiObject.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiObjectNET.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPalette.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleBomb.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleColorModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleGrowFade.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleMeshes.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleMeshesData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleMeshModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleRotation.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticles.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticlesData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiParticleSystemController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPathController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPathInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPersistentSrcTextureRendererData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXActorDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXBodyDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXD6JointDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXKinematicSrc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXMaterialDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXMeshDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXProp.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXPropDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXShapeDesc.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPhysXTransformDest.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPixelData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPlanarCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPoint3InterpController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPoint3Interpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPointLight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPortal.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPosData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSBombForce.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSBoundUpdater.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSBoxEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSCylinderEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSDragForce.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitParticlesCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterDeclinationCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterDeclinationVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterLifeSpanCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterPlanarAngleCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterPlanarAngleVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterRadiusCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterRotAngleCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterRotAngleVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterRotSpeedCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterRotSpeedVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSEmitterSpeedCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSFacingQuadGenerator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSForceActiveCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSGravityForce.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSGravityStrengthCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSMeshEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSMeshParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSParticleSystem.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSPlanarCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSResetOnLoopCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulatorCollidersStep.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulatorFinalStep.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulatorForcesStep.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulatorGeneralStep.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulatorMeshAlignStep.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSimulatorStep.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSpawner.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSphereEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSSphericalCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysAgeDeathModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysAirFieldAirFrictionCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysAirFieldInheritVelocityCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysAirFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysAirFieldSpreadCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysBombModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysBoundUpdateModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysBoxEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysColliderManager.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysColorModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysCylinderEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysDragFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysDragModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterCtlrData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterDeclinationCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterDeclinationVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterInitialRadiusCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterLifeSpanCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterPlanarAngleCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterPlanarAngleVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysEmitterSpeedCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysFieldAttenuationCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysFieldMagnitudeCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysFieldMaxDistanceCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysGravityFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysGravityModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysGravityStrengthCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysGrowFadeModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysInitialRotAngleCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysInitialRotAngleVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysInitialRotSpeedCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysInitialRotSpeedVarCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysMeshEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysMeshUpdateModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysModifierActiveCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysModifierBoolCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysModifierCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysModifierFloatCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysPlanarCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysPositionModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysRadialFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysResetOnLoopCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysRotationModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysSpawnModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysSphereEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysSphericalCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysTrailEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysTurbulenceFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysUpdateCtlr.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysVolumeEmitter.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiPSysVortexFieldModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRangeLODData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRawImageData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRenderObject.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRollController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRoom.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRoomGroup.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRotatingParticles.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiRotatingParticlesData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiScreenElements.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiScreenElementsData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiScreenLODData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSequence.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSequenceData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSequenceStreamHelper.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiShadeProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiShadowGenerator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSingleInterpController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSkinData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSkinInstance.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSkinningLODController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSkinningMeshModifier.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSkinPartition.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSortAdjustNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSourceCubeMap.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSourceTexture.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSpecularProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSphericalCollider.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSpotLight.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiStencilProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiStringExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiStringPalette.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiStringsExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiSwitchNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTextKeyExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTexture.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTextureEffect.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTextureModeProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTextureProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTextureTransformController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTexturingProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTimeController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTransformController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTransformData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTransformEvaluator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTransformInterpolator.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTransparentProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriBasedGeom.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriBasedGeomData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriShape.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriShapeData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriShapeSkinController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriStrips.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiTriStripsData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiUVController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiUVData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiVectorExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiVertexColorProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiVertWeightsExtraData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiVisController.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiVisData.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiWireframeProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\NiZBufferProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\RootCollisionNode.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\SkyShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\TallGrassShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\TileShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\VolumetricFogShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\obj\WaterShaderProperty.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\pch.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\Ref.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\RefObject.h" />
+    <ClInclude Include="..\3rdparty\niflib\include\Type.h" />
+    <ClInclude Include="..\3rdparty\niflib\NvTriStrip\NvTriStrip.h" />
+    <ClInclude Include="..\3rdparty\niflib\NvTriStrip\NvTriStripObjects.h" />
+    <ClInclude Include="..\3rdparty\niflib\NvTriStrip\VertexCache.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\detail\cache_simulator.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\detail\connectivity_graph.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\detail\graph_array.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\detail\heap_array.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\detail\policy.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\detail\types.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\public_types.h" />
+    <ClInclude Include="..\3rdparty\niflib\TriStripper\tri_stripper.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\aligned_malloc.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\bbox.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\cloud.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\clustering.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\color.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\d3doverdrawwindow.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\d3dwindow.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\d3dwm.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\error.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\feedback.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\fit.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\gdiwindow.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\gdiwm.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\heap.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\include\tootlelib.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\matrix.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\mesh.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\option.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\overdraw.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\quaternion.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTBoundingBox.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCamera.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCommon.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCore.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTCoreUtils.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTH2KDTreeBuilder.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTHeuristicKDTreeBuilder.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTKDTree.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTKDTreeBuilder.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTMesh.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTOrthoCamera.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTPPMImage.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\JRT\JRTTriangleIntersection.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JML.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLFuncs.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLMatrix.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLScalar.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLSSEVec.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLVec2.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\Math\JMLVec3.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\RayTracer\TootleRaytracer.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\scalar.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\soup.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\souptomesh.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\Stripifier.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\Timer.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\TootlePCH.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\triorder.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\vector.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\viewpoints.h" />
+    <ClInclude Include="..\3rdparty\tootle\src\TootleLib\window.h" />
+    <ClInclude Include="DXVertex.h" />
+    <ClInclude Include="progmesh\CollapseTriangle.h" />
+    <ClInclude Include="progmesh\CollapseVertex.h" />
+    <ClInclude Include="progmesh\ProgMesh.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
