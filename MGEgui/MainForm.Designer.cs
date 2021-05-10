@@ -90,6 +90,7 @@ namespace MGEgui {
             this.tbSShotDir = new System.Windows.Forms.TextBox();
             this.lSShotSuffix = new System.Windows.Forms.Label();
             this.cmbSShotSuffix = new System.Windows.Forms.ComboBox();
+            this.lScreenshotHelp = new System.Windows.Forms.Label();
             this.bSShotDirClear = new System.Windows.Forms.Button();
             this.bSShotDirBrowse = new System.Windows.Forms.Button();
             this.gbScene = new System.Windows.Forms.GroupBox();
@@ -985,15 +986,17 @@ namespace MGEgui {
             this.tableLayoutScreenshots.Controls.Add(this.tbSShotDir, 1, 4);
             this.tableLayoutScreenshots.Controls.Add(this.lSShotSuffix, 0, 2);
             this.tableLayoutScreenshots.Controls.Add(this.cmbSShotSuffix, 1, 2);
+            this.tableLayoutScreenshots.Controls.Add(this.lScreenshotHelp, 0, 5);
             this.tableLayoutScreenshots.Location = new System.Drawing.Point(6, 22);
             this.tableLayoutScreenshots.Name = "tableLayoutScreenshots";
-            this.tableLayoutScreenshots.RowCount = 5;
+            this.tableLayoutScreenshots.RowCount = 6;
+            this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutScreenshots.Size = new System.Drawing.Size(512, 128);
+            this.tableLayoutScreenshots.Size = new System.Drawing.Size(512, 142);
             this.tableLayoutScreenshots.TabIndex = 6;
             // 
             // lSShotName
@@ -1021,7 +1024,7 @@ namespace MGEgui {
             // 
             this.lSShotDir.AutoSize = true;
             this.lSShotDir.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lSShotDir.Location = new System.Drawing.Point(7, 99);
+            this.lSShotDir.Location = new System.Drawing.Point(7, 66);
             this.lSShotDir.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lSShotDir.Name = "lSShotDir";
             this.lSShotDir.Size = new System.Drawing.Size(95, 27);
@@ -1032,7 +1035,7 @@ namespace MGEgui {
             // tbSShotDir
             // 
             this.tbSShotDir.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSShotDir.Location = new System.Drawing.Point(108, 102);
+            this.tbSShotDir.Location = new System.Drawing.Point(108, 69);
             this.tbSShotDir.Name = "tbSShotDir";
             this.tbSShotDir.ReadOnly = true;
             this.tbSShotDir.Size = new System.Drawing.Size(401, 23);
@@ -1067,10 +1070,23 @@ namespace MGEgui {
             this.cmbSShotSuffix.TabIndex = 5;
             this.cmbSShotSuffix.Text = "Timestamp";
             // 
+            // lScreenshotHelp
+            // 
+            this.lScreenshotHelp.AutoSize = true;
+            this.tableLayoutScreenshots.SetColumnSpan(this.lScreenshotHelp, 2);
+            this.lScreenshotHelp.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lScreenshotHelp.Location = new System.Drawing.Point(3, 107);
+            this.lScreenshotHelp.Margin = new System.Windows.Forms.Padding(8, 3, 6, 0);
+            this.lScreenshotHelp.Name = "lScreenshotHelp";
+            this.lScreenshotHelp.Size = new System.Drawing.Size(321, 15);
+            this.lScreenshotHelp.TabIndex = 6;
+            this.lScreenshotHelp.Text = "Screenshots can be taken in-game with the PrintScreen key.";
+            this.lScreenshotHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // bSShotDirClear
             // 
             this.bSShotDirClear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSShotDirClear.Location = new System.Drawing.Point(601, 124);
+            this.bSShotDirClear.Location = new System.Drawing.Point(601, 89);
             this.bSShotDirClear.Name = "bSShotDirClear";
             this.bSShotDirClear.Size = new System.Drawing.Size(70, 23);
             this.bSShotDirClear.TabIndex = 5;
@@ -1081,7 +1097,7 @@ namespace MGEgui {
             // bSShotDirBrowse
             // 
             this.bSShotDirBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bSShotDirBrowse.Location = new System.Drawing.Point(523, 124);
+            this.bSShotDirBrowse.Location = new System.Drawing.Point(523, 89);
             this.bSShotDirBrowse.Name = "bSShotDirBrowse";
             this.bSShotDirBrowse.Size = new System.Drawing.Size(70, 23);
             this.bSShotDirBrowse.TabIndex = 4;
@@ -3026,6 +3042,7 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.Label lScreenshotHelp;
         private System.Windows.Forms.CheckBox cbAutoFOV;
         private System.Windows.Forms.ComboBox cmbPerPixelLightFlags;
         public System.Windows.Forms.ComboBox cmbSShotSuffix;
