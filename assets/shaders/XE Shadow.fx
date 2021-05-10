@@ -1,6 +1,6 @@
 
 // XE Shadow.fx
-// MGE XE 0.11
+// MGE XE 0.12
 // Shadow receiver functions (included by XE Main)
 
 #include "XE Shadow Settings.fx"

@@ -1,7 +1,7 @@
 
-MGE XE 0.11.6
+MGE XE 0.12.0
 -------------
-Released 2019-06-15
+Released 2021-05-10
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -19,14 +19,17 @@ Requirements
 Morrowind GOTY or Bloodmoon fully patched.
 Any graphics card made since 2009 or so.
 Windows Vista SP2 or later (Windows XP is not supported since MGE XE 0.11.2).
+Morrowind Code Patch, if you want to use MWSE.
 
 Install
 -------
-1. Update to or install DirectX 9.0c June 2010 at http://www.microsoft.com/download/en/details.aspx?id=35 (This is a required update for all Windows, and won't conflict with DX10+.).
+1. If you are interested in MWSE 2.1 and Lua mods, you must first install Morrowind Code Patch (https://www.nexusmods.com/morrowind/mods/19510/). The bugfixes it provides are required for MWSE.
 
-2. Ensure Microsoft Visual C++ 2015 Redistributable Update 3 RC is intalled, available at https://www.microsoft.com/en-us/download/details.aspx?id=52685
+2. Run the MGE XE installer. It will add a new configuration program, MGE XE, to your Morrowind directory and to the Morrowind section of your start menu. All Visual C++ and DirectX updates are now included in the installer.
 
-3. Run the MGE XE installer, and then configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. For a manual installation, extract the archive files to your Morrowind directory and run MWSE-Update.
+You will be given the choice to update MWSE in the installer, which requires internet access. For a manual installation, extract the archive files to your Morrowind directory and run MWSE-Update.
+
+3. Run MGE XE, and then configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. There is an instruction tab for further details. If later on you add world-changing mods to your mod list, you will need to re-run the generator to see the changes in the distant world.
 
 4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Responsive menu caching" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
 
@@ -41,13 +44,26 @@ Upgrading
 From a previous MGE XE:
 Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land. Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update or stick to the default shaders.
 
-From MGE 3.8:
-You should regenerate distant land with 150 minimum static size. If you were using HUD mods made for standard MGE, you should deselect them from your load order. MGE XE requires its own HUD mods to fix design problems with older mods.
-
 
 Uninstall
 ---------
-Uninstall by running uninstall_MGEXE.exe. If you installed manually, delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
+Uninstall from Control Panel or by running uninstall_MGEXE.exe. If you installed manually, delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
+
+
+General features
+----------------
+
+MGE XE provides:
+
+- Resolution and FOV configuration
+- Distant world rendering
+- New water rendering
+- Solar shadows
+- Shaders like SSAO, Sunshafts, and HDR
+- HQ atmosphere rendering
+- Per-pixel lighting
+
+The main feature is the distant world. The MGE XE program takes your mod list, and builds a lower detail version that can be used to render the distant world in-game. It's built by the "Distant land generator wizard" on the Distant land tab. You'll need to re-run the generator if you add or remove any mods that change the world, otherwise the distant world will appear out of date compared to your mods.
 
 
 You might want to know
@@ -79,6 +95,22 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.12.0
+- Nearly all crashes related to Alt-Tabbing and changing resolution in-game are fixed.
+- Distant landscape texture quality has been improved by a more accurate simulation of Morrowind land rendering. The distant land texture now aligns perfectly with Morrowind land texturing.
+- Distant landscape should now be less likely to clip through near statics and appear blocky.
+- Distant landscape texture is atlased, so that widely separated landmass mods don't cause distant world detail loss.
+- Distant land generator can now detect and generate distant interiors for large interior cells (on by default). Previously you have to manually add interiors to a statics override file.
+- Distant land generator now selects at least Very High mesh quality when automatically calculated settings are used.
+- Distant interiors rendering improvements. Distant interior "sunlight" matches Morrowind's more closely. Interior fog changes fixes pop-in occurring in interiors without water. For large cells the fog uses the distant interiors setting, for small cells it uses the default Morrowind fog.
+- During statics generation, NiCollisionSwitch nodes are handled correctly and won't produce niflib errors.
+- Distant land generator minor stability improvements.
+- Per-pixel lighting eliminates extra dark shadow rendering artifacts on the joints of characters. With normal lighting, artifacts are reduced but still present. This is ideally addressed by mesh fixes.
+- Per-pixel lighting has improved support for effects. Added rendering support for alpha vertex colours used with alpha textures, dark map alpha channel, and projective texturing with NiTextureEffect (maximum 1 projective texture effect).
+- Some GUI usability improvements.
+- Morrowind icon will no longer randomly disappear from the taskbar when minimized.
+- Updated Polish and Russian localizations.
+
 0.11.6
 - Fixed possible crash when saving PNG screenshots.
 - Sunshafts sun disc has its sharpness reduced slightly.

@@ -1,6 +1,6 @@
 
 // XE Main.fx
-// MGE XE 0.11
+// MGE XE 0.12
 // Main render sequence
 
 #include "XE Common.fx"

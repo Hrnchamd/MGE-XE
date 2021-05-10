@@ -1,6 +1,6 @@
 
 // XE Shadow Settings.fx
-// MGE XE 0.11
+// MGE XE 0.12
 // Shared constants
 
 
