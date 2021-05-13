@@ -1,245 +1,19 @@
 
 // XE Main.fx
-// MGE XE 0.12
+// MGE XE 0.12.1
 // Main render sequence
 
 #include "XE Common.fx"
-#include "XE Water.fx"
-#include "XE Shadow.fx"
-
 
 
 //------------------------------------------------------------
-// Distant statics
+// Core-mod code is inserted here
 
-StatVertOut StaticExteriorVS (StatVertIn IN)
-{
-    StatVertOut OUT;
-
-    // Transforms and implicit depth bias
-    float4 worldpos = mul(IN.pos, world);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    // Fogging (exterior)
-    float3 eyevec = worldpos.xyz - EyePos.xyz;
-    float dist = length(eyevec);
-    OUT.fog = fogColour(eyevec / dist, dist);
-
-    // Decompress normal
-    float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = mul(normal, world);
-    
-    // Lighting
-    float emissive = IN.normal.w; // Emissive stored in 4th value in normal vector
-    float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
-    OUT.color = float4(IN.color.rgb * light, IN.color.a);
-
-    OUT.texcoords_range = float3(IN.texcoords, dist);
-    return OUT;
-}
-
-StatVertOut StaticInteriorVS (StatVertIn IN)
-{
-    StatVertOut OUT;
-
-    // Transforms and implicit depth bias
-    float4 worldpos = mul(IN.pos, world);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    // Fogging (interior)
-    float3 eyevec = worldpos.xyz - EyePos.xyz;
-    float dist = length(eyevec);
-    OUT.fog = fogMWColour(dist);
-
-    // Decompress normal
-    float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = mul(normal, world);
-    
-    // Lighting
-    float emissive = IN.normal.w; // Emissive stored in 4th value in normal vector
-    float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
-    OUT.color = float4(IN.color.rgb * light, IN.color.a);
-
-    OUT.texcoords_range = float3(IN.texcoords, dist);
-    return OUT;
-}
-
-float4 StaticPS (StatVertOut IN): COLOR0
-{
-    float2 texcoords = IN.texcoords_range.xy;
-    float range = IN.texcoords_range.z;
-    
-    float4 result = tex2D(sampBaseTex, texcoords);
-    result.rgb *= IN.color.rgb;
-    result.rgb = fogApply(result.rgb, IN.fog);
-    
-    // Alpha to coverage conversion
-    result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
-    
-    return result;
-}
-
-//------------------------------------------------------------
-// Grass
-
-struct GrassVertOut
-{
-    float4 pos : POSITION;
-    half2 texcoords : TEXCOORD0;
-    half4 colour : COLOR0;
-    half4 fog : COLOR1;
-    
-    float4 shadow0pos : TEXCOORD1;
-    float4 shadow1pos : TEXCOORD2;
-};
-
-GrassVertOut GrassInstVS (StatVertInstIn IN)
-{
-    GrassVertOut OUT;
-    
-    // Instancing
-    float4 worldpos = instancedMul(IN.pos, IN.world0, IN.world1, IN.world2);
-
-    // Transforms with wind displacement
-    worldpos.xy += grassDisplacement(worldpos, IN.pos.z);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-    
-    // Fogging
-    float3 eyevec = worldpos.xyz - EyePos.xyz;
-    OUT.fog = fogMWColour(length(eyevec));
-
-    // Decompress normal
-    float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = instancedMul(normal, IN.world0, IN.world1, IN.world2);
-
-    // Lighting for two-sided rendering, no emissive
-    float lambert = dot(normal.xyz, -SunVec) * -sign(dot(eyevec, normal.xyz));
-    // Backscatter through thin cover
-    if(lambert < 0)
-        lambert *= -0.3;
-    
-    // Ignoring vertex colour due to problem with some grass mods
-    OUT.colour.rgb = SunCol * lambert + SunAmb;
-
-    // Non-standard shadow luminance, to create sufficient contrast when ambient is high
-    OUT.colour.a = shadowSunEstimate(lambert);
-
-    // Find position in light space, output light depth
-    OUT.shadow0pos = mul(worldpos, shadowviewproj[0]);
-    OUT.shadow1pos = mul(worldpos, shadowviewproj[1]);
-    OUT.shadow0pos.z = OUT.shadow0pos.z / OUT.shadow0pos.w;
-    OUT.shadow1pos.z = OUT.shadow1pos.z / OUT.shadow1pos.w;
-
-    OUT.texcoords = IN.texcoords;
-    return OUT;
-}
-
-float4 GrassPS (GrassVertOut IN): COLOR0
-{
-    float4 result = tex2D(sampBaseTex, IN.texcoords);
-    result.rgb *= IN.colour.rgb;
-
-    // Alpha test early
-    // Note: clip is not used here because at certain optimization levels,
-    // the texkill is pushed to the very end of the function
-    if(result.a < 64.0/255.0)
-        discard;
-
-    // Soft shadowing
-    float dz = shadowDeltaZ(IN.shadow0pos, IN.shadow1pos);
-    float v = shadowESM(dz);
- 
-    // Darken shadow area according to existing lighting (slightly towards blue)
-    v *= IN.colour.a;
-    result.rgb *= 1 - v * shadecolour;
-    
-    // Fogging
-    result.rgb = fogApply(result.rgb, IN.fog);
-    
-    // Alpha to coverage conversion
-    result.a = calc_coverage(result.a, 128.0/255.0, 4.0);
-    
-    return result;
-}
-
-//------------------------------------------------------------
-// Distant landscape
-
-struct LandVertOut
-{
-    float4 pos: POSITION;
-    float2 texcoord: TEXCOORD0;
-    float4 fog : TEXCOORD1;
-};
-
-LandVertOut LandscapeVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
-{
-    LandVertOut OUT;
-
-    // Fogging
-    float3 eyevec = pos.xyz - EyePos.xyz;
-    float dist = length(eyevec);
-    OUT.fog = fogColour(eyevec / dist, dist);
-
-    // Move land down to avoid it appearing where reduced mesh doesn't match
-    pos.z += landBias(dist);
-    
-    // Transforms
-    OUT.pos = mul(pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-    
-    OUT.texcoord = texcoord;
-    return OUT;
-}
-
-LandVertOut LandscapeReflVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
-{
-    LandVertOut OUT;
-
-    // Fogging
-    float3 eyevec = pos.xyz - EyePos.xyz;
-    float dist = length(eyevec);
-    if(isAboveSeaLevel(EyePos))
-        OUT.fog = fogColour(eyevec / dist, dist);
-    else
-        OUT.fog = fogMWColour(dist);
-
-    // Sink land near waterline a small amount
-    pos.z += -16 * saturate(1 - pos.z/16);
-    
-    // Transforms
-    OUT.pos = mul(pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-    
-    OUT.texcoord = texcoord;
-    return OUT;
-}
-
-float4 LandscapePS (in LandVertOut IN) : COLOR0
-{
-    // Expand and normalize normal map
-    float3 normal = normalize(2 * tex2D(sampNormals, IN.texcoord).rgb - 1);
-
-    // World texture
-    float3 result = tex2D(sampBaseTex, IN.texcoord).rgb;
-
-    // Detail texture
-    float detail = tex2D(sampDetail, IN.texcoord * 333).g + 0.5;
-    detail *= 0.5 * tex2D(sampDetail, IN.texcoord * 90).g + 0.75;
-
-    // Lighting
-    result *= SunCol * saturate(dot(-SunVec, normal)) + SunAmb;
-    result *= detail;
-
-    // Fogging
-    result = fogApply(result, IN.fog);
-    return float4(result, 1);
-}
+#include "XE Mod Shadow.fx"
+#include "XE Mod Statics.fx"
+#include "XE Mod Landscape.fx"
+#include "XE Mod Grass.fx"
+#include "XE Mod Water.fx"
 
 //------------------------------------------------------------
 // Morrowind/MGE blending
@@ -342,6 +116,60 @@ float4 NullVS (float4 pos : POSITION) : POSITION
 float4 NullPS () : COLOR0
 {
     return float4(0, 0, 0, 1);
+}
+
+//------------------------------------------------------------
+// Shadow map debug inset display
+
+struct DebugOut
+{
+    float4 pos : POSITION;
+    float2 tex : TEXCOORD0;
+ };
+ 
+DebugOut ShadowDebugVS (float4 pos : POSITION)
+{
+    DebugOut OUT;
+    
+    OUT.pos = float4(0, 0, 0, 1);
+    OUT.pos.x = 1 + 0.25 * (rcpres.x/rcpres.y) * (pos.x - 1);
+    OUT.pos.y = 1 + 1.0/512.0 + 0.5 * (pos.y - 1);
+    OUT.tex = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * pos.xy;
+    OUT.tex.y *= 2;
+    
+    return OUT;
+}
+
+float4 ShadowDebugPS (DebugOut IN) : COLOR0
+{
+    float z, red = 0;
+    float4 shadowClip, eyeClip;
+    
+    [branch] if(IN.tex.y < 1)
+    {
+        // Sample depth
+        float2 t = IN.tex;
+        z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 0)).r / ESM_scale;
+        // Convert pixel position from shadow clip space directly to camera clip space
+        shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
+        eyeClip = mul(shadowClip, vertexblendpalette[0]);
+    }
+    else
+    {
+        // Sample depth
+        float2 t = IN.tex - float2(0, 1);
+        z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 1)).r / ESM_scale;
+        // Convert pixel position from shadow clip space directly to camera clip space
+        shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
+        eyeClip = mul(shadowClip, vertexblendpalette[1]);
+    }
+
+    // Do perspective divide and mark the pixel if it falls within the camera frustum
+    eyeClip.xyz /= eyeClip.w;
+    if(abs(eyeClip.x) <= 1 && abs(eyeClip.y) <= 1 && eyeClip.z >= 0 && eyeClip.z <= 1)
+        red = saturate(1.5 - eyeClip.w / 8192);
+    
+    return float4(red, saturate(1-2*z), saturate(2-2*z), 1);
 }
 
 //-----------------------------------------------------------------------------

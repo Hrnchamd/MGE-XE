@@ -1,7 +1,7 @@
 
-// XE Water.fx
-// MGE XE 0.12
-// Water functions (included by XE Main)
+// XE Mod Water.fx
+// MGE XE 0.12.1
+// Water plane rendering. Can be used as a core mod.
 
 
 //------------------------------------------------------------
@@ -318,7 +318,7 @@ float4 CausticsPS(DeferredOut IN) : COLOR0
 
 
 //------------------------------------------------------------
-// Dynamic waves
+// Dynamic waves simulation
 
 struct WaveVertOut
 {
@@ -333,8 +333,6 @@ WaveVertOut WaveVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0)
     OUT.texcoord = texcoord;
     return OUT;
 }
-
-//------------------------------------------------------------
 
 float4 WaveStepPS(float2 tex : TEXCOORD0) : COLOR0
 {

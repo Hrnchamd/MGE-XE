@@ -1,11 +1,20 @@
 
 // XE Depth.fx
-// MGE XE 0.12
+// MGE XE 0.12.1
 // Depth buffer render sequence
 
 #include "XE Common.fx"
 
 
+
+//------------------------------------------------------------
+// Core-mod code is inserted here
+
+#include "XE Mod Shadow.fx"
+#include "XE Mod Statics.fx"
+#include "XE Mod Landscape.fx"
+#include "XE Mod Grass.fx"
+#include "XE Mod Water.fx"
 
 //------------------------------------------------------------
 // Floating point clears
@@ -23,14 +32,6 @@ float4 DepthClearPS (float4 pos : POSITION) : COLOR0
 //------------------------------------------------------------
 // Depth render
 
-struct DepthVertOut
-{
-	float4 pos : POSITION;
-    float alpha : COLOR0;
-	half2 texcoords : TEXCOORD0;
-    float depth : TEXCOORD1;
-};
-
 DepthVertOut DepthMWVS (in MorrowindVertIn IN)
 {
     DepthVertOut OUT;
@@ -43,10 +44,7 @@ DepthVertOut DepthMWVS (in MorrowindVertIn IN)
         viewpos = mul(IN.pos, vertexblendpalette[0]);
 
     // Fragment colour routing
-    if (hasVCol)
-        OUT.alpha = IN.color.a;
-    else
-        OUT.alpha = materialAlpha;
+    OUT.alpha = vertexMaterial(IN.color).a;
 
     // Transform and output depth
     OUT.pos = mul(viewpos, proj);
@@ -54,93 +52,6 @@ DepthVertOut DepthMWVS (in MorrowindVertIn IN)
     OUT.texcoords = IN.texcoords;
 
     return OUT;
-}
-
-DepthVertOut DepthLandVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
-{
-    DepthVertOut OUT;
-
-    // Move land down to avoid it appearing where reduced mesh doesn't match
-    pos.z += landBias(length(pos.xyz - EyePos.xyz));
-
-    OUT.pos = mul(pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    OUT.depth = OUT.pos.w;
-    OUT.alpha = 1;
-    OUT.texcoords = texcoord;
-
-    return OUT;
-}
-
-DepthVertOut DepthStaticVS (StatVertIn IN)
-{
-    DepthVertOut OUT;
-
-    OUT.pos = mul(IN.pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    OUT.depth = OUT.pos.w;
-    OUT.alpha = 1;
-    OUT.texcoords = IN.texcoords;
-
-    return OUT;
-}
-
-DepthVertOut DepthGrassVS (StatVertIn IN)
-{
-    DepthVertOut OUT;
-
-    // Transforms with wind displacement
-    float4 worldpos = mul(IN.pos, world);
-    worldpos.xy += grassDisplacement(worldpos, IN.pos.z);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    OUT.depth = OUT.pos.w;
-    OUT.alpha = 1;
-    OUT.texcoords = IN.texcoords;
-
-    return OUT;
-}
-
-DepthVertOut DepthGrassInstVS (StatVertInstIn IN)
-{
-    DepthVertOut OUT;
-
-    // Instancing
-    float4 worldpos = instancedMul(IN.pos, IN.world0, IN.world1, IN.world2);
-
-    // Transforms with wind displacement
-    worldpos.xy += grassDisplacement(worldpos, IN.pos.z);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    OUT.depth = OUT.pos.w;
-    OUT.alpha = 1;
-    OUT.texcoords = IN.texcoords;
-
-    return OUT;
-}
-
-float4 DepthLandPS (DepthVertOut IN) : COLOR0
-{
-    clip(IN.depth - nearViewRange);
-    return IN.depth;
-}
-
-float4 DepthStaticPS (DepthVertOut IN) : COLOR0
-{
-    clip(IN.depth - nearViewRange);
-
-    if(hasalpha)
-    {
-        float alpha = tex2D(sampBaseTex, IN.texcoords).a;
-        clip(alpha - 133.0/255.0);
-    }
-    return IN.depth;
 }
 
 float4 DepthNearPS (DepthVertOut IN) : COLOR0
@@ -214,16 +125,6 @@ Technique T0 {
 
         VertexShader = compile vs_3_0 DepthStaticVS ();
         PixelShader = compile ps_3_0 DepthStaticPS ();
-    }
-   //------------------------------------------------------------
-   // Used for rendering grass depth
-    Pass D4 {
-        ZEnable = true;
-        ZWriteEnable = true;
-        CullMode = none;
-        
-        VertexShader = compile vs_3_0 DepthGrassVS ();
-        PixelShader = compile ps_3_0 DepthNearPS ();
     }
    //------------------------------------------------------------
    // Used for rendering grass depth

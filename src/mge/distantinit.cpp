@@ -9,11 +9,13 @@
 #include "morrowindbsa.h"
 #include "mwbridge.h"
 #include "mgeversion.h"
+#include "statusoverlay.h"
 #include <memory>
 
 
 
 using std::string;
+using std::string_view;
 using std::vector;
 using std::unordered_map;
 
@@ -253,8 +255,61 @@ bool DistantLand::reloadShaders() {
     return true;
 }
 
-static void logShaderError(const char* shaderID, ID3DXBuffer* errors) {
-    LOG::logline("!! %s shader error", shaderID);
+static const string shaderCoreModPrefix = "XE Mod";
+static const string pathCoreShaders = "Data Files\\shaders\\core\\";
+static const string pathCoreMods = "Data Files\\shaders\\core-mods\\";
+
+struct CoreModInclude : public ID3DXInclude {
+    vector<string> modsFound;
+
+    STDMETHOD(Open)(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID *ppData, UINT *pBytes) {
+        string filename(pFileName), shaderPath = filename;
+        bool isMod = false;
+        char *buffer = nullptr;
+        HANDLE h;
+
+        // Check if it uses the core shader path prefix, if not, add the prefix
+        if (filename.compare(0, pathCoreShaders.length(), pathCoreShaders) != 0) {
+            shaderPath = pathCoreShaders + filename;
+        }
+
+        // Check if this file is moddable, and if a core-mod exists, use its path
+        if (filename.substr(0, shaderCoreModPrefix.length()) == shaderCoreModPrefix) {
+            string modShaderPath = pathCoreMods + filename;
+            if (GetFileAttributes(modShaderPath.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                isMod = true;
+                shaderPath = modShaderPath;
+            }
+        }
+
+        // Read file contents for the effect compiler
+        h = CreateFile(shaderPath.c_str(), GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+        if (h != INVALID_HANDLE_VALUE) {
+            DWORD bytesRead, bufferSize = GetFileSize(h, NULL);
+
+            buffer = new char[bufferSize];
+            ReadFile(h, buffer, bufferSize, &bytesRead, 0);
+            CloseHandle(h);
+
+            if (isMod) {
+                modsFound.push_back(filename);
+            }
+
+            *ppData = buffer;
+            *pBytes = bufferSize;
+            return S_OK;
+        }
+        return E_FAIL;
+    }
+
+    STDMETHOD(Close)(LPCVOID pData) {
+        char *buffer = (char*)(pData);
+        delete [] buffer;
+        return S_OK;
+    }
+};
+
+static void logShaderError(ID3DXBuffer* errors) {
     if (errors) {
         LOG::write("!! Shader compile errors:\n");
         LOG::write(reinterpret_cast<const char*>(errors->GetBufferPointer()));
@@ -264,6 +319,38 @@ static void logShaderError(const char* shaderID, ID3DXBuffer* errors) {
     LOG::flush();
 }
 
+static bool createCoreEffectWithMods(const char *name, IDirect3DDevice9* device, vector<D3DXMACRO>& features, ID3DXEffectPool *effectPool, ID3DXEffect **pEffect, bool reportMods) {
+    string path = pathCoreShaders + name;
+    ID3DXBuffer* errors;
+    CoreModInclude includer;
+    HRESULT hr;
+
+    // Attempt to compile with core mods first
+    hr = D3DXCreateEffectFromFile(device, path.c_str(), &*features.begin(), &includer, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, pEffect, &errors);
+    if (hr == D3D_OK) {
+        if (reportMods) {
+            for (auto& m : includer.modsFound) {
+                LOG::logline("-- Using core mod %s", m.c_str());
+            }
+        }
+        return true;
+    } else {
+        LOG::logline("!! Core shader %s failed to compile with core-mods, retrying with standard shaders.", name);
+        StatusOverlay::setStatus("Core shader mod compilation failure. Check mgeXE.log for details.");
+        logShaderError(errors);
+    }
+
+    // Fallback to compiling without core mods
+    hr = D3DXCreateEffectFromFile(device, path.c_str(), &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, pEffect, &errors);
+    if (hr == D3D_OK) {
+        return true;
+    } else {
+        LOG::logline("!! Core shader %s failed to compile. Do not replace core shaders. Reinstall MGE XE.", name);
+        logShaderError(errors);
+    }
+    return false;
+}
+
 static const D3DXMACRO macroExpFog = { "USE_EXPFOG", "" };
 static const D3DXMACRO macroScattering = { "USE_SCATTERING", "" };
 static const D3DXMACRO macroFilterReflection = { "FILTER_WATER_REFLECTION", "" };
@@ -271,8 +358,7 @@ static const D3DXMACRO macroDynamicRipples = { "DYNAMIC_RIPPLES", "" };
 static const D3DXMACRO macroTerminator = { 0, 0 };
 
 bool DistantLand::initShader() {
-    ID3DXBuffer* errors;
-    std::vector<D3DXMACRO> features;
+    vector<D3DXMACRO> features;
     HRESULT hr;
 
     // Set shader defines corresponding to required features
@@ -298,9 +384,7 @@ bool DistantLand::initShader() {
         }
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
-    if (hr != D3D_OK) {
-        logShaderError("XE Main", errors);
+    if (!createCoreEffectWithMods("XE Main.fx", device, features, effectPool, &effect, true)) {
         return false;
     }
 
@@ -347,15 +431,10 @@ bool DistantLand::initShader() {
     effect->SetFloatArray(ehRcpRes, rcpres, 2);
     effect->SetFloat(ehShadowRcpRes, 1.0f / Configuration.DL.ShadowResolution);
 
-    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
-    if (hr != D3D_OK) {
-        logShaderError("XE Shadowmap", errors);
+    if (!createCoreEffectWithMods("XE Shadowmap.fx", device, features, effectPool, &effectShadow, false)) {
         return false;
     }
-
-    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
-    if (hr != D3D_OK) {
-        logShaderError("XE Depth", errors);
+    if (!createCoreEffectWithMods("XE Depth.fx", device, features, effectPool, &effectDepth, false)) {
         return false;
     }
 

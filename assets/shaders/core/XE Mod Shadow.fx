@@ -1,9 +1,9 @@
 
-// XE Shadow.fx
-// MGE XE 0.12
-// Shadow receiver functions (included by XE Main)
+// XE Mod Shadow.fx
+// MGE XE 0.12.1
+// Shadow receiver functions. Can be used as a core mod.
 
-#include "XE Shadow Settings.fx"
+#include "XE Mod Shadow Data.fx"
 
 
 
@@ -97,10 +97,7 @@ RenderShadowVertOut RenderShadowsVS (in MorrowindVertIn IN)
     OUT.pos.z -= clamp(0.05 / OUT.pos.w, 0, 1e-3);
     
     // Fragment colour routing
-    if (hasVCol)
-        OUT.alpha = IN.color.a;
-    else
-        OUT.alpha = materialAlpha;
+    OUT.alpha = vertexMaterial(IN.color).a;
 
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
     OUT.light = shadowSunEstimate(saturate(dot(normal.xyz, -SunVecView)));
@@ -146,10 +143,7 @@ RenderShadowVertOut RenderShadowsFFEVS (in MorrowindVertIn IN)
     OUT.pos = mul(viewpos, proj);
 
     // Fragment colour routing
-    if (hasVCol)
-        OUT.alpha = IN.color.a;
-    else
-        OUT.alpha = materialAlpha;
+    OUT.alpha = vertexMaterial(IN.color).a;
 
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
     OUT.light = shadowSunEstimate(saturate(dot(normal.xyz, -SunVecView)));
@@ -192,59 +186,5 @@ float4 RenderShadowsPS (RenderShadowVertOut IN): COLOR0
  
     // Darken shadow area according to existing lighting (slightly towards blue)
     clip(v - 2.0/255.0);
-    return float4(v * shadecolour, 1);
-}
-
-//------------------------------------------------------------
-// Shadow map debug inset display
-
-struct DebugOut
-{
-    float4 pos : POSITION;
-    float2 tex : TEXCOORD0;
- };
- 
-DebugOut ShadowDebugVS (float4 pos : POSITION)
-{
-    DebugOut OUT;
-    
-    OUT.pos = float4(0, 0, 0, 1);
-    OUT.pos.x = 1 + 0.25 * (rcpres.x/rcpres.y) * (pos.x - 1);
-    OUT.pos.y = 1 + 1.0/512.0 + 0.5 * (pos.y - 1);
-    OUT.tex = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * pos.xy;
-    OUT.tex.y *= 2;
-    
-    return OUT;
-}
-
-float4 ShadowDebugPS (DebugOut IN) : COLOR0
-{
-    float z, red = 0;
-    float4 shadowClip, eyeClip;
-    
-    [branch] if(IN.tex.y < 1)
-    {
-        // Sample depth
-        float2 t = IN.tex;
-        z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 0)).r / ESM_scale;
-        // Convert pixel position from shadow clip space directly to camera clip space
-        shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
-        eyeClip = mul(shadowClip, vertexblendpalette[0]);
-    }
-    else
-    {
-        // Sample depth
-        float2 t = IN.tex - float2(0, 1);
-        z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 1)).r / ESM_scale;
-        // Convert pixel position from shadow clip space directly to camera clip space
-        shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
-        eyeClip = mul(shadowClip, vertexblendpalette[1]);
-    }
-
-    // Do perspective divide and mark the pixel if it falls within the camera frustum
-    eyeClip.xyz /= eyeClip.w;
-    if(abs(eyeClip.x) <= 1 && abs(eyeClip.y) <= 1 && eyeClip.z >= 0 && eyeClip.z <= 1)
-        red = saturate(1.5 - eyeClip.w / 8192);
-    
-    return float4(red, saturate(1-2*z), saturate(2-2*z), 1);
+    return float4(v * shadecolor, 1);
 }

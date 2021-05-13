@@ -1,6 +1,6 @@
 
 // XE Common.fx
-// MGE XE 0.12
+// MGE XE 0.12.1
 // Shared structures and functions
 
 
@@ -72,6 +72,17 @@ struct StatVertOut
     float4 color : COLOR0;
     float3 texcoords_range : TEXCOORD0;
     float4 fog : TEXCOORD1;
+};
+
+//------------------------------------------------------------
+// Depth buffer for deferred rendering
+
+struct DepthVertOut
+{
+	float4 pos : POSITION;
+    float alpha : COLOR0;
+	half2 texcoords : TEXCOORD0;
+    float depth : TEXCOORD1;
 };
 
 //------------------------------------------------------------
@@ -155,11 +166,11 @@ float fogMWScalar(float dist)
             float3 att = atmdep * sunscatter * (sunaltitude_a + mie);
             att = (1 - exp(-fogdist * att)) / att;
             
-            float3 colour = 0.125 * mie + newskycol * rayl;
-            colour *= att * (1.1*atmdep + 0.5) * sunaltitude_b;
-            colour = lerp(skyColDirectional, colour, niceWeather);
+            float3 color = 0.125 * mie + newskycol * rayl;
+            color *= att * (1.1*atmdep + 0.5) * sunaltitude_b;
+            color = lerp(skyColDirectional, color, niceWeather);
 
-            return float4(colour, fog);
+            return float4(color, fog);
         }
         else
         {
@@ -221,43 +232,11 @@ float3 fogApply(float3 c, float4 f)
 }
 
 //------------------------------------------------------------
-// Distant land height bias to prevent low lod meshes from clipping
-
-float landBias(float dist)
-{
-    float maxdist = nearViewRange - 1152;
-    return -40 + -10 * max(0, maxdist - dist);
-}
-
-//------------------------------------------------------------
 // Is point above water function, for exteriors only
 
 bool isAboveSeaLevel(float3 pos)
 {
     return (pos.z > -1);
-}
-
-//------------------------------------------------------------
-// Grass, wind displacement function
-
-float2 grassDisplacement(float4 worldpos, float h)
-{
-    float v = length(WindVec);
-    float2 displace = 2 * WindVec + 0.1;
-    float2 harmonics = 0;
-    
-    harmonics += (1 - 0.10*v) * sin(1.0*time + worldpos.xy / 1100);
-    harmonics += (1 - 0.04*v) * cos(2.0*time + worldpos.xy / 750);
-    harmonics += (1 + 0.14*v) * sin(3.0*time + worldpos.xy / 500);
-    harmonics += (1 + 0.28*v) * sin(5.0*time + worldpos.xy / 200);
-
-    float d = length(worldpos.xy - FootPos.xy);
-    float2 stomp = 0;
-    
-    if(d < 150)
-        stomp = (60 / d - 0.4) * (worldpos.xy - FootPos.xy);
-
-    return saturate(0.02 * h) * (harmonics * displace + stomp);
 }
 
 //------------------------------------------------------------
@@ -297,6 +276,19 @@ float4 skin(float4 pos, float4 blend)
         viewpos += mul(pos, vertexblendpalette[3]) * blend[3];
         
     return viewpos;
+}
+
+//------------------------------------------------------------
+// Vertex material to fragment colour routing
+
+float4 vertexMaterial(float4 vertexColour)
+{
+    if (hasVCol) {
+        return vertexColour;
+    }
+    else {
+        return float4(1, 1, 1, materialAlpha);
+    }
 }
 
 //------------------------------------------------------------
