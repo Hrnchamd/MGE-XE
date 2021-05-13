@@ -18,18 +18,19 @@ void DistantLand::renderStage0() {
     IDirect3DStateBlock9* stateSaved;
     UINT passes;
 
+    // Update current cell and select distant static set
+    selectDistantCell();
+
     // Get Morrowind camera matrices
     device->GetTransform(D3DTS_VIEW, &mwView);
     device->GetTransform(D3DTS_PROJECTION, &mwProj);
 
-    // Set variables derived from current camera configuration
+    // Set variables derived from current game state and camera configuration
     setView(&mwView);
     adjustFog();
     setupCommonEffect(&mwView, &mwProj);
     FixedFunctionShader::updateLighting(lightSunMult, lightAmbMult);
 
-    // Select distant static set
-    selectDistantCell();
     isRenderCached &= (Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu();
     isPPLActive = (Configuration.MGEFlags & USE_FFESHADER) && !(Configuration.PerPixelLightFlags == 1 && !mwBridge->IntCurCellAddr());
 
