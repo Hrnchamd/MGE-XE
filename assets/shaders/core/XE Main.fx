@@ -22,7 +22,7 @@ DeferredOut MGEBlendVS(float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc
     DeferredOut OUT;
 
     // Fix D3D9 half pixel offset    
-    OUT.pos = float4(ndc.x - rcpres.x, ndc.y + rcpres.y, 0, 1);
+    OUT.pos = float4(ndc.x - rcpRes.x, ndc.y + rcpRes.y, 0, 1);
     OUT.tex = float4(tex, 0, 0);
     
     // Eye space reconstruction vector
@@ -36,10 +36,10 @@ float4 MGEBlendPS(DeferredOut IN) : COLOR0 {
     
     if(w > bound) {
         // tex2Dlod allows texld to be moved into the branch, as grad calculation is not required
-        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(rcpres.x, 0, 0, 0)).r);
-        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, rcpres.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(-rcpRes.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, -rcpRes.y, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(rcpRes.x, 0, 0, 0)).r);
+        w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, rcpRes.y, 0, 0)).r);
     }
     
     //w *= length(IN.eye);   // causes some errors with distant land
@@ -64,11 +64,11 @@ SkyVertOut SkyVS(StatVertIn IN) {
     float4 pos = IN.pos;
     
     // Screw around with skydome, align default mesh with horizon
-    if(!hasalpha)
+    if(!hasAlpha)
         pos.z = 50 * (IN.pos.z + 200);
     
     pos = mul(pos, world);
-    OUT.skypos = float4(pos.xyz - EyePos, 1);
+    OUT.skypos = float4(pos.xyz - eyePos, 1);
 
     pos = mul(pos, view);
     OUT.pos = mul(pos, proj);
@@ -85,11 +85,11 @@ static const float ditherSky[4][4] = { 0.001176, 0.001961, -0.001176, -0.001699,
 float4 SkyPS(SkyVertOut IN, float2 vpos : VPOS) : COLOR0 {
     float4 c = 0;
     
-    if(hasalpha)
+    if(hasAlpha)
         // Sample texture at lod 0 avoiding mip blurring
         c = IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
         
-    if(hasbones) {
+    if(hasBones) {
         // Use colour from scattering for sky (but preserves alpha)
         float4 f = fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
         c.rgb = f.rgb;
@@ -121,7 +121,7 @@ DebugOut ShadowDebugVS(float4 pos : POSITION) {
     DebugOut OUT;
     
     OUT.pos = float4(0, 0, 0, 1);
-    OUT.pos.x = 1 + 0.25 * (rcpres.x/rcpres.y) * (pos.x - 1);
+    OUT.pos.x = 1 + 0.25 * (rcpRes.x/rcpRes.y) * (pos.x - 1);
     OUT.pos.y = 1 + 1.0/512.0 + 0.5 * (pos.y - 1);
     OUT.tex = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * pos.xy;
     OUT.tex.y *= 2;
@@ -139,7 +139,7 @@ float4 ShadowDebugPS(DebugOut IN) : COLOR0 {
         z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 0)).r / ESM_scale;
         // Convert pixel position from shadow clip space directly to camera clip space
         shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
-        eyeClip = mul(shadowClip, vertexblendpalette[0]);
+        eyeClip = mul(shadowClip, vertexBlendPalette[0]);
     }
     else {
         // Sample depth
@@ -147,7 +147,7 @@ float4 ShadowDebugPS(DebugOut IN) : COLOR0 {
         z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 1)).r / ESM_scale;
         // Convert pixel position from shadow clip space directly to camera clip space
         shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
-        eyeClip = mul(shadowClip, vertexblendpalette[1]);
+        eyeClip = mul(shadowClip, vertexBlendPalette[1]);
     }
 
     // Do perspective divide and mark the pixel if it falls within the camera frustum

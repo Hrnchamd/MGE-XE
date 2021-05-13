@@ -35,10 +35,10 @@ DepthVertOut DepthMWVS(MorrowindVertIn IN) {
     float4 viewpos;
 
     // Skin mesh if required
-    if(hasbones)
+    if(hasBones)
         viewpos = skin(IN.pos, IN.blendweights);
     else
-        viewpos = mul(IN.pos, vertexblendpalette[0]);
+        viewpos = mul(IN.pos, vertexBlendPalette[0]);
 
     // Fragment colour routing
     OUT.alpha = vertexMaterial(IN.color).a;
@@ -55,9 +55,9 @@ float4 DepthNearPS(DepthVertOut IN) : COLOR0 {
     clip(nearViewRange + 64.0 - IN.depth);
 
     // Respect alpha test
-    if(hasalpha) {
+    if(hasAlpha) {
         float alpha = IN.alpha * tex2D(sampBaseTex, IN.texcoords).a;
-        clip(alpha - alpharef);
+        clip(alpha - alphaRef);
     }
 
     return IN.depth;

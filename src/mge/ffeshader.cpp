@@ -54,8 +54,8 @@ bool FixedFunctionShader::init(IDirect3DDevice* d, ID3DXEffectPool* pool) {
 
     // Use it to bind shared parameters too
     ehWorld = effect->GetParameterByName(0, "world");
-    ehVertexBlendState = effect->GetParameterByName(0, "vertexblendstate");
-    ehVertexBlendPalette = effect->GetParameterByName(0, "vertexblendpalette");
+    ehVertexBlendState = effect->GetParameterByName(0, "vertexBlendState");
+    ehVertexBlendPalette = effect->GetParameterByName(0, "vertexBlendPalette");
     ehTex0 = effect->GetParameterByName(0, "tex0");
     ehTex1 = effect->GetParameterByName(0, "tex1");
     ehTex2 = effect->GetParameterByName(0, "tex2");
@@ -561,7 +561,7 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     case 0:     // Fog disabled
         break;
     case 1:     // Standard fog mode
-        buf << "c.rgb = lerp(FogCol1, c.rgb, fog); ";
+        buf << "c.rgb = lerp(fogColNear, c.rgb, fog); ";
         break;
     case 2:     // Additive objects should fog towards black, which preserves the destination correctly
         buf << "c.rgb *= fog; ";

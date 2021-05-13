@@ -355,8 +355,8 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX* view, const D3DXMATRIX* pr
     effect->SetFloat(ehFogNearStart, fogNearStart);
     effect->SetFloat(ehFogNearRange, fogNearEnd);
     effect->SetFloatArray(ehSkyCol, *skyCol, 3);
-    effect->SetFloatArray(ehFogCol1, nearFogCol, 3);
-    effect->SetFloatArray(ehFogCol2, horizonCol, 3);
+    effect->SetFloatArray(ehFogColNear, nearFogCol, 3);
+    effect->SetFloatArray(ehFogColFar, horizonCol, 3);
     effect->SetFloat(ehNearViewRange, nearViewRange);
     effect->SetFloat(ehNiceWeather, niceWeather);
 

@@ -23,8 +23,8 @@ float4 mapShadowToAtlas(float2 t, int layer) {
 // Incoming vertex sunlight estimation
 
 float shadowSunEstimate(float lambert) {
-    float x = lambert * dot(SunCol, float3(0.36, 0.53, 0.11));
-    x *= 0.25 + 0.75 * SunVis;
+    float x = lambert * dot(sunCol, float3(0.36, 0.53, 0.11));
+    x *= 0.25 + 0.75 * sunVis;
     return x / (shade + x);
 }
 
@@ -33,13 +33,13 @@ TransformedVert transformShadowVert(MorrowindVertIn IN) {
     float4 normal = float4(IN.normal.xyz, 0);
 
     // Skin mesh if required
-    if(hasbones) {
+    if(hasBones) {
         v.viewpos = skin(IN.pos, IN.blendweights);
         v.normal = normalize(skin(normal, IN.blendweights));
     }
     else {
-        v.viewpos = mul(IN.pos, vertexblendpalette[0]);
-        v.normal = mul(normal, vertexblendpalette[0]);
+        v.viewpos = mul(IN.pos, vertexBlendPalette[0]);
+        v.normal = mul(normal, vertexBlendPalette[0]);
     }
     
     v.pos = mul(v.viewpos, proj);
@@ -93,18 +93,18 @@ RenderShadowVertOut RenderShadowsBaseVS(MorrowindVertIn IN) {
     OUT.alpha = vertexMaterial(IN.color).a;
 
     // Non-standard shadow luminance, to create sufficient contrast when ambient is high
-    OUT.light = shadowSunEstimate(saturate(dot(v.normal.xyz, -SunVecView)));
+    OUT.light = shadowSunEstimate(saturate(dot(v.normal.xyz, -sunVecView)));
 
     // Fog attenuation (shadow darkness and distance fade)
     float fogatt = pow(fogMWScalar(OUT.pos.w), 2);
-    if(isAboveSeaLevel(EyePos))
+    if(isAboveSeaLevel(eyePos))
         OUT.light *= fogatt;
     else
         OUT.light *= saturate(4 * fogatt);
     
     // Find position in light space, output light depth
-    OUT.shadow0pos = mul(v.viewpos, shadowviewproj[0]);
-    OUT.shadow1pos = mul(v.viewpos, shadowviewproj[1]);
+    OUT.shadow0pos = mul(v.viewpos, shadowViewProj[0]);
+    OUT.shadow1pos = mul(v.viewpos, shadowViewProj[1]);
     OUT.shadow0pos.z = OUT.shadow0pos.z / OUT.shadow0pos.w;
     OUT.shadow1pos.z = OUT.shadow1pos.z / OUT.shadow1pos.w;
 
@@ -131,9 +131,9 @@ float4 RenderShadowsPS(RenderShadowVertOut IN): COLOR0 {
     
     // Respect alpha test
     float alpha = IN.alpha;
-    if(hasalpha) {
+    if(hasAlpha) {
         alpha *= tex2D(sampBaseTex, IN.texcoords).a;
-        clip(alpha - alpharef);
+        clip(alpha - alphaRef);
     }
 
     // Soft shadowing

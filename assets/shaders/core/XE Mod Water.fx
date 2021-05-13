@@ -14,12 +14,12 @@ sampler sampRefract = sampler_state { texture = <tex2>; minfilter = linear; magf
 // Water constants
 
 static const float kDistantZBias = 5e-6;
-static const float _lightfactor = 1 - pow(1 - SunVis, 2);
-static const float3 _depthcolor = _lightfactor * SunCol * float3(0.03, 0.04, 0.05) + (2 * SkyCol + FogCol2) * float3(0.075, 0.08, 0.085);
-static const float3 _SunCollf = SunCol * _lightfactor;
-static const float _windfactor = (length (WindVec) + 1.5) / 140;
-static const float waterlevel = world[3][2];
-static const float cauststr = 0.05 * alpharef * saturate(0.75 * _lightfactor + 0.35 * length(FogCol2));
+static const float sunlightFactor = 1 - pow(1 - sunVis, 2);
+static const float3 sunColAdjusted = sunCol * sunlightFactor;
+static const float3 depthBaseColor = sunColAdjusted * float3(0.03, 0.04, 0.05) + (2 * skyCol + fogColFar) * float3(0.075, 0.08, 0.085);
+static const float windFactor = (length(windVec) + 1.5) / 140;
+static const float waterLevel = world[3][2];
+static const float causticsStrength = 0.05 * alphaRef * saturate(0.75 * sunlightFactor + 0.35 * length(fogColFar));
 
 shared texture tex4, tex5;
 shared float3 rippleOrigin;
@@ -68,7 +68,7 @@ float3 getProjectedReflection(float4 tex)
 
 float3 getProjectedReflection(float4 tex)
 {
-    float4 radius = 0.006 * saturate(0.11 + tex.w/6000) * tex.w * float4(1, rcpres.y/rcpres.x, 0, 0);
+    float4 radius = 0.006 * saturate(0.11 + tex.w/6000) * tex.w * float4(1, rcpRes.y/rcpRes.x, 0, 0);
     
     float3 reflected = tex2Dproj(sampReflect, tex);
     reflected += tex2Dproj(sampReflect, tex + radius*float4(0.60, 0.10, 0, 0));
@@ -117,7 +117,7 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     // Match bias in distant land projection
     OUT.position.z *= 1.0 + kDistantZBias * step(nearViewRange, OUT.position.w);
     
-    OUT.screenpos = float4(0.5 * (1 + rcpres) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
+    OUT.screenpos = float4(0.5 * (1 + rcpRes) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
     return OUT;
 }
@@ -139,7 +139,7 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     float t = 0.4 * time;
     float height = tex3Dlod(sampWater3d, float4(OUT.pos.xy / 1104, t, 0)).a;
     float height2 = tex3Dlod(sampWater3d, float4(OUT.pos.xy / 3900, t, 0)).a;
-    float dist = length(EyePos.xyz - OUT.pos.xyz);
+    float dist = length(eyePos.xyz - OUT.pos.xyz);
 
     float addheight = waveHeight * (lerp(height, height2, saturate(dist/8000)) - 0.5) * saturate(1 - dist/6400) * saturate(dist/200);
     OUT.pos.z += addheight;
@@ -148,14 +148,14 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     OUT.position = mul(OUT.pos, view);
     OUT.position = mul(OUT.position, proj);
     OUT.position.z *= 1.0 + kDistantZBias * step(nearViewRange, OUT.position.w);
-    OUT.screenpos = float4(0.5 * (1 + rcpres) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
+    OUT.screenpos = float4(0.5 * (1 + rcpRes) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
     // Clamp reflection point to be above surface
     float4 clampedPos = OUT.pos - float4(0, 0, abs(addheight), 0);
     clampedPos = mul(clampedPos, view);
     clampedPos = mul(clampedPos, proj);
     clampedPos.z *= 1.0 + kDistantZBias * step(nearViewRange, clampedPos.w);
-    OUT.screenposclamp = float4(0.5 * (1 + rcpres) * clampedPos.w + float2(0.5, -0.5) * clampedPos.xy, clampedPos.zw);
+    OUT.screenposclamp = float4(0.5 * (1 + rcpRes) * clampedPos.w + float2(0.5, -0.5) * clampedPos.xy, clampedPos.zw);
     
     return OUT;
 }
@@ -164,26 +164,26 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
 float4 WaterPS(in WaterVertOut IN): COLOR0
 {
     // Calculate eye vector
-    float3 EyeVec = IN.pos.xyz - EyePos.xyz;
+    float3 EyeVec = IN.pos.xyz - eyePos.xyz;
     float dist = length(EyeVec);
     EyeVec /= dist;
 
     // Define fog
     float4 fog = fogColourWater(EyeVec, dist);
-    float3 depthcolor = fogApply(_depthcolor, fog);
+    float3 depthColor = fogApply(depthBaseColor, fog);
     
     // Calculate water normal
     float3 normal = getFinalWaterNormal(IN.texcoords.xy, IN.texcoords.zw, dist, IN.pos.xy);
 
     // Reflection/refraction pixel distortion factor, wind strength increases distortion
-    float2 reffactor = (_windfactor * dist + 0.1) * normal.xy;
+    float2 reffactor = (windFactor * dist + 0.1) * normal.xy;
 
     // Distort refraction dependent on depth
     float4 newscrpos = IN.screenpos + float4(reffactor.yx, 0, 0);
     float depth = max(0, tex2Dproj(sampDepth, newscrpos).r - IN.screenpos.w);
 
     // Refraction
-    float3 refracted = depthcolor;
+    float3 refracted = depthColor;
     float shorefactor = 0;
 
     // Avoid sampling deep water
@@ -204,7 +204,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
         shorefactor = pow(depthscale, 90);
 
         // Make transition between actual refraction image and depth color depending on water depth
-        refracted = lerp(depthcolor, refracted, 0.8 * depthscale + 0.2 * shorefactor);
+        refracted = lerp(depthColor, refracted, 0.8 * depthscale + 0.2 * shorefactor);
     }
     
     // Sample reflection texture
@@ -230,9 +230,9 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     // Specular lighting
     // This should use Blinn-Phong, but it doesn't work so well for area lights like the sun
     // Instead multiply and saturate to widen a Phong specular lobe which better simulates an area light
-    float vdotr = dot(-EyeVec, reflect(-SunPos, normal));
+    float vdotr = dot(-EyeVec, reflect(-sunPos, normal));
     vdotr = saturate(1.0025 * vdotr);
-    float3 spec = _SunCollf * (pow(vdotr, 170) + 0.07 * pow(vdotr, 4));
+    float3 spec = sunColAdjusted * (pow(vdotr, 170) + 0.07 * pow(vdotr, 4));
     result += spec * fog.a;
 
     // Smooth transition at shore line
@@ -246,7 +246,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
 float4 UnderwaterPS(in WaterVertOut IN): COLOR0
 {
     // Calculate eye vector
-    float3 EyeVec = IN.pos.xyz - EyePos.xyz;
+    float3 EyeVec = IN.pos.xyz - eyePos.xyz;
     float dist = length(EyeVec);
     EyeVec /= dist;
 
@@ -257,12 +257,12 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
     float3 normal = -getFinalWaterNormal(IN.texcoords.xy, IN.texcoords.zw, dist, IN.pos.xy);
 
     // Reflection / refraction pixel distortion factor, wind strength increases distortion
-    float2 reffactor = 2 * (_windfactor * dist + 0.1) * normal.xy;
+    float2 reffactor = 2 * (windFactor * dist + 0.1) * normal.xy;
 
     // Distort refraction
     float4 newscrpos = IN.screenpos + float4(2 * -reffactor.xy, 0, 0);
     float3 refracted = tex2Dproj(sampRefract, newscrpos).rgb;
-    refracted = lerp(FogCol2, refracted, exp(-dist / 500));
+    refracted = lerp(fogColFar, refracted, exp(-dist / 500));
 
     // Sample reflection texture
     float3 reflected = getProjectedReflection(IN.screenpos - float4(2.1 * reffactor.x, -abs(reffactor.y), 0, 0));
@@ -272,8 +272,8 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
     float3 result = lerp(refracted, reflected, fresnel);
 
     // Sun refraction
-    float refractsun = dot(-EyeVec, normalize(-SunPos + normal));
-    float3 spec = _SunCollf * pow(refractsun, 6) * fog;
+    float refractsun = dot(-EyeVec, normalize(-sunPos + normal));
+    float3 spec = sunColAdjusted * pow(refractsun, 6) * fog;
 
     return float4(result + spec, 1);
 }
@@ -286,7 +286,7 @@ DeferredOut CausticsVS(float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc
     DeferredOut OUT;
     
     // Fix D3D9 half pixel offset    
-    OUT.pos = float4(ndc.x - rcpres.x, ndc.y + rcpres.y, 0, 1);
+    OUT.pos = float4(ndc.x - rcpRes.x, ndc.y + rcpRes.y, 0, 1);
     OUT.tex = float4(tex, 0, 0);
     
     // World space reconstruction vector
@@ -304,12 +304,12 @@ float4 CausticsPS(DeferredOut IN) : COLOR0
 
     clip(nearViewRange - depth);
 
-    float3 uwpos = EyePos + IN.eye * depth;
-    uwpos.z -= waterlevel;
+    float3 uwpos = eyePos + IN.eye * depth;
+    uwpos.z -= waterLevel;
     clip(-uwpos.z);
 
-    float3 sunray = uwpos - SunVec * (uwpos.z / SunVec.z);
-    float caust = cauststr * tex3D(sampWater3d, float3(sunray.xy / 1104, 0.4 * time)).b;
+    float3 sunray = uwpos - sunVec * (uwpos.z / sunVec.z);
+    float caust = causticsStrength * tex3D(sampWater3d, float3(sunray.xy / 1104, 0.4 * time)).b;
     caust *= saturate(125 / depth * min(fwidth(sunray.x), fwidth(sunray.y)));
     c *= 1 + (caust - 0.3) * saturate(exp(uwpos.z / 400)) * saturate(uwpos.z / -30) * fog;
     

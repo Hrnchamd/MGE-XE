@@ -8,24 +8,24 @@
 //------------------------------------------------------------
 // Uniform variables
 
-shared float2 rcpres;
+shared float2 rcpRes;
 shared float shadowRcpRes;
 shared matrix world, view, proj;
-shared matrix vertexblendpalette[4];
-shared matrix shadowviewproj[2];
-shared bool hasalpha, hasbones, hasVCol;
-shared float alpharef, materialAlpha;
-shared int vertexblendstate;
+shared matrix vertexBlendPalette[4];
+shared matrix shadowViewProj[2];
+shared bool hasAlpha, hasBones, hasVCol;
+shared float alphaRef, materialAlpha;
+shared int vertexBlendState;
 
-shared float3 EyePos, FootPos;
-shared float3 SunVec, SunVecView, SunCol, SunAmb;
-shared float3 SkyCol, FogCol1, FogCol2;
-shared float FogStart, FogRange;
+shared float3 eyePos, footPos;
+shared float3 sunVec, sunVecView, sunCol, sunAmb;
+shared float3 skyCol, fogColNear, fogColFar;
+shared float fogStart, fogRange;
 shared float nearFogStart, nearFogRange;
 shared float nearViewRange;
-shared float3 SunPos;
-shared float SunVis;
-shared float2 WindVec;
+shared float3 sunPos;
+shared float sunVis;
+shared float2 windVec;
 shared float niceWeather;
 shared float time;
 
@@ -121,7 +121,7 @@ struct TransformedVert {
 #ifdef USE_EXPFOG
 
 float fogScalar(float dist) {
-    float x = (dist - FogStart) / (FogRange - FogStart);
+    float x = (dist - fogStart) / (fogRange - fogStart);
     return saturate(exp(-x));
 }
 
@@ -142,11 +142,11 @@ float fogMWScalar(float dist) {
 #endif
 
 #ifdef USE_SCATTERING
-    static const float3 newskycol = 0.38 * SkyCol + float3(0.23, 0.39, 0.68);
-    static const float sunaltitude = pow(1 + SunPos.z, 10);
+    static const float3 newskyCol = 0.38 * skyCol + float3(0.23, 0.39, 0.68);
+    static const float sunaltitude = pow(1 + sunPos.z, 10);
     static const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
     static const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
-    static const float sunaltitude2 = saturate(exp(-2 * SunPos.z)) * saturate(sunaltitude);
+    static const float sunaltitude2 = saturate(exp(-2 * sunPos.z)) * saturate(sunaltitude);
 
     float3 outscatter, inscatter;
     static const float3 midscatter = 0.5 * (outscatter + inscatter);
@@ -154,8 +154,8 @@ float fogMWScalar(float dist) {
     float4 fogColourScatter(float3 dir, float fogdist, float fog, float3 skyColDirectional)     {
         skyColDirectional *= 1 - fog;
         
-        if(niceWeather > 0.001 && EyePos.z > /*WaterLevel*/-1) {
-            float suncos = dot(dir, SunPos);
+        if(niceWeather > 0.001 && eyePos.z > /*WaterLevel*/-1) {
+            float suncos = dot(dir, sunPos);
             float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
             float rayl = 1 - 0.09 * mie;
             
@@ -165,7 +165,7 @@ float fogMWScalar(float dist) {
             float3 att = atmdep * sunscatter * (sunaltitude_a + mie);
             att = (1 - exp(-fogdist * att)) / att;
             
-            float3 color = 0.125 * mie + newskycol * rayl;
+            float3 color = 0.125 * mie + newskyCol * rayl;
             color *= att * (1.1*atmdep + 0.5) * sunaltitude_b;
             color = lerp(skyColDirectional, color, niceWeather);
 
@@ -177,29 +177,29 @@ float fogMWScalar(float dist) {
     }
     
     float4 fogColour(float3 dir, float dist) {
-        float fogdist = (dist - FogStart) / (FogRange - FogStart);
+        float fogdist = (dist - fogStart) / (fogRange - fogStart);
         float fog = (dist > nearViewRange) ? saturate(exp(-fogdist)) : fogMWScalar(dist);
         fogdist = saturate(0.224 * fogdist);
 
-        return fogColourScatter(dir, fogdist, fog, FogCol2);
+        return fogColourScatter(dir, fogdist, fog, fogColFar);
     }
 
     float4 fogColourWater(float3 dir, float dist) {
-        float fogdist = (dist - FogStart) / (FogRange - FogStart);
+        float fogdist = (dist - fogStart) / (fogRange - fogStart);
         float fog = saturate(exp(-fogdist));
         fogdist = saturate(0.224 * fogdist);
 
-        return fogColourScatter(dir, fogdist, fog, FogCol2);
+        return fogColourScatter(dir, fogdist, fog, fogColFar);
     }
 
     float4 fogColourSky(float3 dir) {
-        float3 skyColDirectional = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
+        float3 skyColDirectional = lerp(fogColFar, skyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         return fogColourScatter(dir, 1, 0, skyColDirectional);
     }
 #else
     float4 fogColour(float3 dir, float dist) {
         float f = fogScalar(dist);
-        return float4((1 - f) * FogCol2, f);
+        return float4((1 - f) * fogColFar, f);
     }
 
     float4 fogColourWater(float3 dir, float dist) {
@@ -207,14 +207,14 @@ float fogMWScalar(float dist) {
     }
     
     float4 fogColourSky(float3 dir) {
-        float3 skyColDirectional = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
+        float3 skyColDirectional = lerp(fogColFar, skyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         return float4(skyColDirectional, 0);
     }
 #endif
 
 float4 fogMWColour(float dist) {
     float f = fogMWScalar(dist);
-    return float4((1 - f) * FogCol1, f);
+    return float4((1 - f) * fogColNear, f);
 }
 
 float3 fogApply(float3 c, float4 f) {
@@ -246,21 +246,21 @@ float4 instancedMul(float4 pos, float4 m0, float4 m1, float4 m2) {
 // Uses worldview matrices for numerical accuracy
 
 float4 skin(float4 pos, float4 blend) {
-    if(vertexblendstate == 1)
+    if(vertexBlendState == 1)
         blend[1] = 1 - blend[0];
-    else if(vertexblendstate == 2)
+    else if(vertexBlendState == 2)
         blend[2] = 1 - (blend[0] + blend[1]);
-    else if(vertexblendstate == 3)
+    else if(vertexBlendState == 3)
         blend[3] = 1 - (blend[0] + blend[1] + blend[2]);
 
-    float4 viewpos = mul(pos, vertexblendpalette[0]) * blend[0];
+    float4 viewpos = mul(pos, vertexBlendPalette[0]) * blend[0];
 
-    if(vertexblendstate >= 1)
-        viewpos += mul(pos, vertexblendpalette[1]) * blend[1];
-    if(vertexblendstate >= 2)
-        viewpos += mul(pos, vertexblendpalette[2]) * blend[2];
-    if(vertexblendstate >= 3)
-        viewpos += mul(pos, vertexblendpalette[3]) * blend[3];
+    if(vertexBlendState >= 1)
+        viewpos += mul(pos, vertexBlendPalette[1]) * blend[1];
+    if(vertexBlendState >= 2)
+        viewpos += mul(pos, vertexBlendPalette[2]) * blend[2];
+    if(vertexBlendState >= 3)
+        viewpos += mul(pos, vertexBlendPalette[3]) * blend[3];
         
     return viewpos;
 }

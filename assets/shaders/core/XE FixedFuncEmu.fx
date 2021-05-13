@@ -36,7 +36,7 @@ sampler sampFFE5 = sampler_state { texture = <tex5>; };
 #define FFE_LIGHTS_ACTIVE 8
 #define FFE_VERTEX_MATERIAL diffuse = vertexMaterialDiffAmb(d, a, IN.col);
 #define FFE_TEXTURING c = diffuse + bumpmapLumiStage(sampFFE1, IN.texcoord01.zw, tex2D(sampFFE0, IN.texcoord01.xy));
-#define FFE_FOG_APPLICATION c.rgb = lerp(FogCol1, c.rgb, fog);
+#define FFE_FOG_APPLICATION c.rgb = lerp(fogColNear, c.rgb, fog);
 #endif
 
 #ifdef FFE_ERROR_MATERIAL
@@ -48,7 +48,7 @@ sampler sampFFE5 = sampler_state { texture = <tex5>; };
 #define FFE_LIGHTS_ACTIVE 0
 #define FFE_VERTEX_MATERIAL diffuse = float4(1, 0, 0.5, 1);
 #define FFE_TEXTURING
-#define FFE_FOG_APPLICATION c.rgb = lerp(FogCol1, c.rgb, fog);
+#define FFE_FOG_APPLICATION c.rgb = lerp(fogColNear, c.rgb, fog);
 #endif
 
 

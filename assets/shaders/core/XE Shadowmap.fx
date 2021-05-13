@@ -21,7 +21,7 @@ ShadowVertOut ShadowVS(StatVertIn IN) {
     ShadowVertOut OUT;
 
     OUT.pos = mul(IN.pos, world);
-    OUT.pos = mul(OUT.pos, shadowviewproj[0]);
+    OUT.pos = mul(OUT.pos, shadowViewProj[0]);
 
     // Clamp vertices to front plane to avoid clipping and shadow loss
     OUT.pos.z = max(0, OUT.pos.z);
@@ -44,7 +44,7 @@ ShadowVertOut ShadowClearVS(float4 pos : POSITION) {
 
 float4 ShadowPS(ShadowVertOut IN) : COLOR0 {
     // Sample alpha geometry if required
-    if(hasalpha) {
+    if(hasAlpha) {
         float a = tex2D(sampBaseTex, IN.texcoords).a;
         clip(a - 180.0/255.0);
     }
@@ -79,7 +79,7 @@ float4 ShadowSoftenPS(ShadowPostOut IN) : COLOR0 {
     // Looks better without exp-space filtering, with a side effect of expanding silhouttes by about 1 pixel
     float4 t = float4(IN.texcoords, 0, 0);
     float d = tex2Dlod(sampDepth, t).r;
-    if(!hasalpha) {
+    if(!hasAlpha) {
         d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
         d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
         d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;

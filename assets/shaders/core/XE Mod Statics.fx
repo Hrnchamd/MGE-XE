@@ -25,7 +25,7 @@ float4 lightStaticVert(StatVertIn IN) {
     // Lighting (worldspace)
     // Emissive is stored in the 4th value of the normal vector
     float emissive = IN.normal.w;
-    float3 light = SunCol * saturate(dot(normal.xyz, -SunVec)) + SunAmb + emissive;
+    float3 light = sunCol * saturate(dot(normal.xyz, -sunVec)) + sunAmb + emissive;
 
     return float4(IN.color.rgb * light, IN.color.a);
 }
@@ -40,7 +40,7 @@ StatVertOut StaticExteriorVS(StatVertIn IN) {
     OUT.color = lightStaticVert(IN);
 
     // Fogging (exterior)
-    float3 eyevec = v.worldpos.xyz - EyePos.xyz;
+    float3 eyevec = v.worldpos.xyz - eyePos.xyz;
     float dist = length(eyevec);
     OUT.fog = fogColour(eyevec / dist, dist);
 
@@ -95,7 +95,7 @@ DepthVertOut DepthStaticVS (StatVertIn IN) {
 float4 DepthStaticPS (DepthVertOut IN) : COLOR0 {
     clip(IN.depth - nearViewRange);
 
-    if(hasalpha) {
+    if(hasAlpha) {
         float alpha = tex2D(sampBaseTex, IN.texcoords).a;
         clip(alpha - 133.0/255.0);
     }

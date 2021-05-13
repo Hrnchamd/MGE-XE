@@ -36,7 +36,7 @@ LandVertOut LandscapeVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0) {
     LandVertOut OUT;
 
     // Fogging
-    float3 eyevec = mul(pos, world).xyz - EyePos.xyz;
+    float3 eyevec = mul(pos, world).xyz - eyePos.xyz;
     float dist = length(eyevec);
     OUT.fog = fogColour(eyevec / dist, dist);
 
@@ -54,9 +54,9 @@ LandVertOut LandscapeReflVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0) 
     LandVertOut OUT;
 
     // Fogging
-    float3 eyevec = mul(pos, world).xyz - EyePos.xyz;
+    float3 eyevec = mul(pos, world).xyz - eyePos.xyz;
     float dist = length(eyevec);
-    if(isAboveSeaLevel(EyePos))
+    if(isAboveSeaLevel(eyePos))
         OUT.fog = fogColour(eyevec / dist, dist);
     else
         OUT.fog = fogMWColour(dist);
@@ -83,7 +83,7 @@ float4 LandscapePS(LandVertOut IN) : COLOR0 {
     detail *= 0.5 * tex2D(sampDetail, IN.texcoord * 90).g + 0.75;
 
     // Lighting
-    result *= SunCol * saturate(dot(-SunVec, normal)) + SunAmb;
+    result *= sunCol * saturate(dot(-sunVec, normal)) + sunAmb;
     result *= detail;
 
     // Fogging
@@ -95,7 +95,7 @@ DepthVertOut DepthLandVS(float4 pos: POSITION, float2 texcoord: TEXCOORD0) {
     DepthVertOut OUT;
 
     // Move land down to avoid it appearing where reduced mesh doesn't match
-    pos.z += landBias(length(pos.xyz - EyePos.xyz));
+    pos.z += landBias(length(pos.xyz - eyePos.xyz));
 
     TransformedVert v = transformLandVert(pos);
     OUT.pos = v.pos;
