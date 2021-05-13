@@ -422,7 +422,7 @@ namespace MGEgui.DirectX {
             VertexElement.VertexDeclarationEnd
         };
 
-        private const string EffectPath = @"Data Files\shaders\CellTexBlend.fx";
+        private const string EffectPath = @"Data Files\shaders\core\CellTexBlend.fx";
         private VertexBuffer vBuffer;
         private VertexBuffer colorBuffer;
         private System.Collections.Generic.List<TextureBank> texBanks;

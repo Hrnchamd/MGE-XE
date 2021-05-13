@@ -41,7 +41,7 @@ bool FixedFunctionShader::init(IDirect3DDevice* d, ID3DXEffectPool* pool) {
     ID3DXEffect* effect;
     ID3DXBuffer* errors;
 
-    HRESULT hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effect, &errors);
+    HRESULT hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE FixedFuncEmu.fx", generateDefault, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effect, &errors);
     if (hr != D3D_OK) {
         if (errors) {
             LOG::write("!! Shader compile errors:\n");
@@ -591,7 +591,7 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     //LOG::logline("-- Generating replacement fixed function shader");
     //sk.log();
 
-    HRESULT hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effectFFE, &errors);
+    HRESULT hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE FixedFuncEmu.fx", generatedCode, 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, constantPool, &effectFFE, &errors);
 
     if (hr != D3D_OK) {
         LOG::logline("!! Generating FFE shader: compile error %xh", hr);

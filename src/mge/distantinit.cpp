@@ -298,7 +298,7 @@ bool DistantLand::initShader() {
         }
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE Main.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effect, &errors);
     if (hr != D3D_OK) {
         logShaderError("XE Main", errors);
         return false;
@@ -347,13 +347,13 @@ bool DistantLand::initShader() {
     effect->SetFloatArray(ehRcpRes, rcpres, 2);
     effect->SetFloat(ehShadowRcpRes, 1.0f / Configuration.DL.ShadowResolution);
 
-    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE Shadowmap.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectShadow, &errors);
     if (hr != D3D_OK) {
         logShaderError("XE Shadowmap", errors);
         return false;
     }
 
-    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
+    hr = D3DXCreateEffectFromFile(device, "Data Files\\shaders\\core\\XE Depth.fx", &*features.begin(), 0, D3DXSHADER_OPTIMIZATION_LEVEL3|D3DXFX_LARGEADDRESSAWARE, effectPool, &effectDepth, &errors);
     if (hr != D3D_OK) {
         logShaderError("XE Depth", errors);
         return false;
