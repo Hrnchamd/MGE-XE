@@ -18,8 +18,7 @@
 //------------------------------------------------------------
 // Morrowind/MGE blending
 
-DeferredOut MGEBlendVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1)
-{
+DeferredOut MGEBlendVS(float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1) {
     DeferredOut OUT;
 
     // Fix D3D9 half pixel offset    
@@ -31,13 +30,11 @@ DeferredOut MGEBlendVS (float4 pos : POSITION, float2 tex : TEXCOORD0, float2 nd
     return OUT;
 }
 
-float4 MGEBlendPS (DeferredOut IN) : COLOR0
-{
+float4 MGEBlendPS(DeferredOut IN) : COLOR0 {
     const float zone = 512.0, bound = nearViewRange - zone;
     float v, w = tex2Dlod(sampDepthPoint, IN.tex).r;
     
-    if(w > bound)
-    {
+    if(w > bound) {
         // tex2Dlod allows texld to be moved into the branch, as grad calculation is not required
         w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(-rcpres.x, 0, 0, 0)).r);
         w = min(w, tex2Dlod(sampDepthPoint, IN.tex + float4(0, -rcpres.y, 0, 0)).r);
@@ -55,16 +52,14 @@ float4 MGEBlendPS (DeferredOut IN) : COLOR0
 //------------------------------------------------------------
 // Sky reflections
 
-struct SkyVertOut
-{
+struct SkyVertOut {
     float4 pos : POSITION;
     float4 color : COLOR0;
     float2 texcoords : TEXCOORD0;
     float4 skypos : TEXCOORD1;
 };
 
-SkyVertOut SkyVS (StatVertIn IN)
-{
+SkyVertOut SkyVS(StatVertIn IN) {
     SkyVertOut OUT;
     float4 pos = IN.pos;
     
@@ -87,16 +82,14 @@ SkyVertOut SkyVS (StatVertIn IN)
 // Ordered dithering matrix
 static const float ditherSky[4][4] = { 0.001176, 0.001961, -0.001176, -0.001699, -0.000654, -0.000915, 0.000392, 0.000131, -0.000131, -0.001961, 0.000654, 0.000915, 0.001699, 0.001438, -0.000392, -0.001438 };
 
-float4 SkyPS (SkyVertOut IN, float2 vpos : VPOS) : COLOR0
-{
+float4 SkyPS(SkyVertOut IN, float2 vpos : VPOS) : COLOR0 {
     float4 c = 0;
     
     if(hasalpha)
         // Sample texture at lod 0 avoiding mip blurring
         c = IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
         
-    if(hasbones)
-    {
+    if(hasbones) {
         // Use colour from scattering for sky (but preserves alpha)
         float4 f = fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
         c.rgb = f.rgb;
@@ -108,27 +101,23 @@ float4 SkyPS (SkyVertOut IN, float2 vpos : VPOS) : COLOR0
 //------------------------------------------------------------
 // Minimal shader for clip plane bug workaround
 
-float4 NullVS (float4 pos : POSITION) : POSITION
-{
+float4 NullVS(float4 pos : POSITION) : POSITION {
     return float4(0, 0, 0, 1);
 }
 
-float4 NullPS () : COLOR0
-{
+float4 NullPS() : COLOR0 {
     return float4(0, 0, 0, 1);
 }
 
 //------------------------------------------------------------
 // Shadow map debug inset display
 
-struct DebugOut
-{
+struct DebugOut {
     float4 pos : POSITION;
     float2 tex : TEXCOORD0;
  };
  
-DebugOut ShadowDebugVS (float4 pos : POSITION)
-{
+DebugOut ShadowDebugVS(float4 pos : POSITION) {
     DebugOut OUT;
     
     OUT.pos = float4(0, 0, 0, 1);
@@ -140,13 +129,11 @@ DebugOut ShadowDebugVS (float4 pos : POSITION)
     return OUT;
 }
 
-float4 ShadowDebugPS (DebugOut IN) : COLOR0
-{
+float4 ShadowDebugPS(DebugOut IN) : COLOR0 {
     float z, red = 0;
     float4 shadowClip, eyeClip;
     
-    [branch] if(IN.tex.y < 1)
-    {
+    [branch] if(IN.tex.y < 1) {
         // Sample depth
         float2 t = IN.tex;
         z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 0)).r / ESM_scale;
@@ -154,8 +141,7 @@ float4 ShadowDebugPS (DebugOut IN) : COLOR0
         shadowClip = float4(2*t.x - 1, 1 - 2*t.y, z, 1);
         eyeClip = mul(shadowClip, vertexblendpalette[0]);
     }
-    else
-    {
+    else {
         // Sample depth
         float2 t = IN.tex - float2(0, 1);
         z = tex2Dlod(sampDepth, mapShadowToAtlas(t, 1)).r / ESM_scale;
@@ -202,8 +188,8 @@ Technique T0 {
         AlphaFunc = GreaterEqual;
         AlphaRef = 128;
         
-        VertexShader = compile vs_3_0 GrassInstVS ();
-        PixelShader = compile ps_3_0 GrassPS ();
+        VertexShader = compile vs_3_0 GrassInstVS();
+        PixelShader = compile ps_3_0 GrassPS();
     }
     //------------------------------------------------------------
     // Used for rendering shadows over fixed function output
@@ -218,8 +204,8 @@ Technique T0 {
         DestBlend = InvSrcColor;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 RenderShadowsVS ();
-        PixelShader = compile ps_3_0 RenderShadowsPS ();
+        VertexShader = compile vs_3_0 RenderShadowsVS();
+        PixelShader = compile ps_3_0 RenderShadowsPS();
     }
     //------------------------------------------------------------
     // Used for rendering shadows over FFE output
@@ -234,8 +220,8 @@ Technique T0 {
         DestBlend = InvSrcColor;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 RenderShadowsFFEVS ();
-        PixelShader = compile ps_3_0 RenderShadowsPS ();
+        VertexShader = compile vs_3_0 RenderShadowsFFEVS();
+        PixelShader = compile ps_3_0 RenderShadowsPS();
     }
     //------------------------------------------------------------
     // Used to render the landscape
@@ -248,8 +234,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
         
-        VertexShader = compile vs_3_0 LandscapeVS ();
-        PixelShader = compile ps_3_0 LandscapePS ();
+        VertexShader = compile vs_3_0 LandscapeVS();
+        PixelShader = compile ps_3_0 LandscapePS();
     }
     //------------------------------------------------------------
     // Used to render the landscape reflection
@@ -262,8 +248,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
         
-        VertexShader = compile vs_3_0 LandscapeReflVS ();
-        PixelShader = compile ps_3_0 LandscapePS ();
+        VertexShader = compile vs_3_0 LandscapeReflVS();
+        PixelShader = compile ps_3_0 LandscapePS();
     }
     //------------------------------------------------------------
     // Used for rendering distant statics in exteriors 
@@ -278,8 +264,8 @@ Technique T0 {
         AlphaFunc = GreaterEqual;
         AlphaRef = 133;
         
-        VertexShader = compile vs_3_0 StaticExteriorVS ();
-        PixelShader = compile ps_3_0 StaticPS ();
+        VertexShader = compile vs_3_0 StaticExteriorVS();
+        PixelShader = compile ps_3_0 StaticPS();
     }
     //------------------------------------------------------------
     // Used for rendering distant statics in interiors and underwater
@@ -294,8 +280,8 @@ Technique T0 {
         AlphaFunc = GreaterEqual;
         AlphaRef = 133;
         
-        VertexShader = compile vs_3_0 StaticInteriorVS ();
-        PixelShader = compile ps_3_0 StaticPS ();
+        VertexShader = compile vs_3_0 StaticInteriorVS();
+        PixelShader = compile ps_3_0 StaticPS();
     }
     //------------------------------------------------------------
     // Used for rendering sky scattering and sky reflection
@@ -309,8 +295,8 @@ Technique T0 {
         DestBlend = InvSrcAlpha;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 SkyVS ();
-        PixelShader = compile ps_3_0 SkyPS ();
+        VertexShader = compile vs_3_0 SkyVS();
+        PixelShader = compile ps_3_0 SkyPS();
     }
     //------------------------------------------------------------
     // Used for rendering water plane
@@ -324,8 +310,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 WaterVS ();
-        PixelShader = compile ps_3_0 WaterPS ();
+        VertexShader = compile vs_3_0 WaterVS();
+        PixelShader = compile ps_3_0 WaterPS();
     }
     //------------------------------------------------------------
     // Used for rendering underwater water plane
@@ -338,8 +324,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 WaterVS ();
-        PixelShader = compile ps_3_0 UnderwaterPS ();
+        VertexShader = compile vs_3_0 WaterVS();
+        PixelShader = compile ps_3_0 UnderwaterPS();
     }
     //------------------------------------------------------------
     // Used for rendering caustics
@@ -352,8 +338,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
         
-        VertexShader = compile vs_3_0 CausticsVS ();
-        PixelShader = compile ps_3_0 CausticsPS ();
+        VertexShader = compile vs_3_0 CausticsVS();
+        PixelShader = compile ps_3_0 CausticsPS();
     }
      //------------------------------------------------------------
     // Used for blending between Morrowind and MGE
@@ -368,8 +354,8 @@ Technique T0 {
         DestBlend = InvSrcAlpha;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 MGEBlendVS ();
-        PixelShader = compile ps_3_0 MGEBlendPS ();
+        VertexShader = compile vs_3_0 MGEBlendVS();
+        PixelShader = compile ps_3_0 MGEBlendPS();
     }
     //------------------------------------------------------------
     // Used for rendering shadow debug
@@ -382,8 +368,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
         
-        VertexShader = compile vs_3_0 ShadowDebugVS ();
-        PixelShader = compile ps_3_0 ShadowDebugPS ();
+        VertexShader = compile vs_3_0 ShadowDebugVS();
+        PixelShader = compile ps_3_0 ShadowDebugPS();
     }
     //------------------------------------------------------------
     // Used for creating ripples around PC
@@ -396,8 +382,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 WaveVS ();
-        PixelShader = compile ps_3_0 PlayerWavePS ();
+        VertexShader = compile vs_3_0 WaveVS();
+        PixelShader = compile ps_3_0 PlayerWavePS();
     }
     //------------------------------------------------------------
     // Used for calculating waves
@@ -410,8 +396,8 @@ Technique T0 {
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
 
-        VertexShader = compile vs_3_0 WaveVS ();
-        PixelShader = compile ps_3_0 WaveStepPS ();
+        VertexShader = compile vs_3_0 WaveVS();
+        PixelShader = compile ps_3_0 WaveStepPS();
     }
     //------------------------------------------------------------
     // Used for a clip plane bug workaround
@@ -419,8 +405,8 @@ Technique T0 {
         ZEnable = false;
         ZWriteEnable = false;
 
-        VertexShader = compile vs_3_0 NullVS ();
-        PixelShader = compile ps_3_0 NullPS ();
+        VertexShader = compile vs_3_0 NullVS();
+        PixelShader = compile ps_3_0 NullPS();
     }
     //------------------------------------------------------------
 }

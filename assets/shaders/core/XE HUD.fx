@@ -6,15 +6,12 @@
 texture tex;
 sampler s0 = sampler_state { texture = <tex>; minfilter = point; magfilter = point; addressu = clamp; addressv = clamp; };
 
-float4 hud(float2 t : TEXCOORD) : COLOR0
-{
+float4 hud(float2 t : TEXCOORD) : COLOR0 {
     return tex2Dlod(s0, float4(t, 0, 0));
 }
 
-technique T
-{
-    Pass P
-    {
+technique T {
+    Pass P {
         AlphaBlendEnable = true;
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;

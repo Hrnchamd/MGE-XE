@@ -19,21 +19,18 @@
 //------------------------------------------------------------
 // Floating point clears
 
-float4 DepthClearVS (float4 pos : POSITION) : POSITION
-{
+float4 DepthClearVS(float4 pos : POSITION) : POSITION {
     return pos;
 }
 
-float4 DepthClearPS (float4 pos : POSITION) : COLOR0
-{
+float4 DepthClearPS(float4 pos : POSITION) : COLOR0 {
     return 1.0e38;
 }
 
 //------------------------------------------------------------
 // Depth render
 
-DepthVertOut DepthMWVS (in MorrowindVertIn IN)
-{
+DepthVertOut DepthMWVS(MorrowindVertIn IN) {
     DepthVertOut OUT;
     float4 viewpos;
 
@@ -54,13 +51,11 @@ DepthVertOut DepthMWVS (in MorrowindVertIn IN)
     return OUT;
 }
 
-float4 DepthNearPS (DepthVertOut IN) : COLOR0
-{
+float4 DepthNearPS(DepthVertOut IN) : COLOR0 {
     clip(nearViewRange + 64.0 - IN.depth);
 
     // Respect alpha test
-    if(hasalpha)
-    {
+    if(hasalpha) {
         float alpha = IN.alpha * tex2D(sampBaseTex, IN.texcoords).a;
         clip(alpha - alpharef);
     }
@@ -85,8 +80,8 @@ Technique T0 {
         FogEnable = false;
         Lighting = false;
 
-        VertexShader = compile vs_3_0 DepthClearVS ();
-        PixelShader = compile ps_3_0 DepthClearPS ();
+        VertexShader = compile vs_3_0 DepthClearVS();
+        PixelShader = compile ps_3_0 DepthClearPS();
     }
     //------------------------------------------------------------
     // Used for rendering scene depth
@@ -103,8 +98,8 @@ Technique T0 {
         FogEnable = false;
         Lighting = false;
 
-        VertexShader = compile vs_3_0 DepthMWVS ();
-        PixelShader = compile ps_3_0 DepthNearPS ();
+        VertexShader = compile vs_3_0 DepthMWVS();
+        PixelShader = compile ps_3_0 DepthNearPS();
     }
     //------------------------------------------------------------
     // Used for rendering distant land depth
@@ -113,8 +108,8 @@ Technique T0 {
         ZWriteEnable = true;
         CullMode = CW;
 
-        VertexShader = compile vs_3_0 DepthLandVS ();
-        PixelShader = compile ps_3_0 DepthLandPS ();
+        VertexShader = compile vs_3_0 DepthLandVS();
+        PixelShader = compile ps_3_0 DepthLandPS();
     }
    //------------------------------------------------------------
    // Used for rendering distant statics depth
@@ -123,8 +118,8 @@ Technique T0 {
         ZWriteEnable = true;
         CullMode = CW;
 
-        VertexShader = compile vs_3_0 DepthStaticVS ();
-        PixelShader = compile ps_3_0 DepthStaticPS ();
+        VertexShader = compile vs_3_0 DepthStaticVS();
+        PixelShader = compile ps_3_0 DepthStaticPS();
     }
    //------------------------------------------------------------
    // Used for rendering grass depth
@@ -133,8 +128,8 @@ Technique T0 {
         ZWriteEnable = true;
         CullMode = none;
         
-        VertexShader = compile vs_3_0 DepthGrassInstVS ();
-        PixelShader = compile ps_3_0 DepthNearPS ();
+        VertexShader = compile vs_3_0 DepthGrassInstVS();
+        PixelShader = compile ps_3_0 DepthNearPS();
     }
    //------------------------------------------------------------
 }

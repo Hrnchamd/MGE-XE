@@ -47,16 +47,14 @@ sampler sampDepthPoint = sampler_state { texture = <tex3>; minfilter = point; ma
 // Distant land statics / grass
 // diffuse in color, emissive in normal.w
 
-struct StatVertIn
-{
+struct StatVertIn {
     float4 pos : POSITION;
     float4 normal : NORMAL;
     float4 color : COLOR0;
     float2 texcoords : TEXCOORD0;
 };
 
-struct StatVertInstIn
-{
+struct StatVertInstIn {
     float4 pos : POSITION;
     float4 normal : NORMAL;
     float4 color : COLOR0;
@@ -66,8 +64,7 @@ struct StatVertInstIn
     float4 world2 : TEXCOORD3;
 };
 
-struct StatVertOut
-{
+struct StatVertOut {
     float4 pos : POSITION;
     float4 color : COLOR0;
     float3 texcoords_range : TEXCOORD0;
@@ -77,8 +74,7 @@ struct StatVertOut
 //------------------------------------------------------------
 // Depth buffer for deferred rendering
 
-struct DepthVertOut
-{
+struct DepthVertOut {
 	float4 pos : POSITION;
     float alpha : COLOR0;
 	half2 texcoords : TEXCOORD0;
@@ -88,8 +84,7 @@ struct DepthVertOut
 //------------------------------------------------------------
 // Full-screen deferred pass, used for reconstructing position from depth
 
-struct DeferredOut
-{
+struct DeferredOut {
     float4 pos : POSITION;
     float4 tex : TEXCOORD0;
     float3 eye : TEXCOORD1;
@@ -98,8 +93,7 @@ struct DeferredOut
 //------------------------------------------------------------
 // Morrowind FVF
 
-struct MorrowindVertIn
-{
+struct MorrowindVertIn {
     float4 pos : POSITION;
     float4 normal : NORMAL;
     float4 blendweights : BLENDWEIGHT;
@@ -107,38 +101,45 @@ struct MorrowindVertIn
     float2 texcoords : TEXCOORD0;
 };
 
+struct TransformedVert {
+    float4 pos;
+    float4 worldpos;
+    float4 viewpos;
+    float4 normal;
+};
+
+//------------------------------------------------------------
+// Suppress warning X3205: conversion from larger type to smaller, possible loss of data
+#pragma warning( disable : 3205 3571 )
+// Suppress warning X3571: pow(f, e) will not work for negative f
+#pragma warning( disable : 3571 )
+
+
 //------------------------------------------------------------
 // Fogging functions, horizon to sky colour approximation
 
 #ifdef USE_EXPFOG
 
-float fogScalar(float dist)
-{
+float fogScalar(float dist) {
     float x = (dist - FogStart) / (FogRange - FogStart);
     return saturate(exp(-x));
 }
 
-float fogMWScalar(float dist)
-{
+float fogMWScalar(float dist) {
     return saturate((nearFogRange - dist) / (nearFogRange - nearFogStart));
 }
 
 #else
 
-float fogScalar(float dist)
-{
+float fogScalar(float dist) {
     return saturate((nearFogRange - dist) / (nearFogRange - nearFogStart));
 }
 
-float fogMWScalar(float dist)
-{
+float fogMWScalar(float dist) {
     return fogScalar(dist);
 }
   
 #endif
-
-// Suppress warning X3571: pow(f, e) will not work for negative f
-#pragma warning( disable : 3571 )
 
 #ifdef USE_SCATTERING
     static const float3 newskycol = 0.38 * SkyCol + float3(0.23, 0.39, 0.68);
@@ -150,12 +151,10 @@ float fogMWScalar(float dist)
     float3 outscatter, inscatter;
     static const float3 midscatter = 0.5 * (outscatter + inscatter);
 
-    float4 fogColourScatter(float3 dir, float fogdist, float fog, float3 skyColDirectional)
-    {
+    float4 fogColourScatter(float3 dir, float fogdist, float fog, float3 skyColDirectional)     {
         skyColDirectional *= 1 - fog;
         
-        if(niceWeather > 0.001 && EyePos.z > /*WaterLevel*/-1)
-        {
+        if(niceWeather > 0.001 && EyePos.z > /*WaterLevel*/-1) {
             float suncos = dot(dir, SunPos);
             float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
             float rayl = 1 - 0.09 * mie;
@@ -172,14 +171,12 @@ float fogMWScalar(float dist)
 
             return float4(color, fog);
         }
-        else
-        {
+        else {
             return float4(skyColDirectional, fog);
         }
     }
     
-    float4 fogColour(float3 dir, float dist)
-    {
+    float4 fogColour(float3 dir, float dist) {
         float fogdist = (dist - FogStart) / (FogRange - FogStart);
         float fog = (dist > nearViewRange) ? saturate(exp(-fogdist)) : fogMWScalar(dist);
         fogdist = saturate(0.224 * fogdist);
@@ -187,8 +184,7 @@ float fogMWScalar(float dist)
         return fogColourScatter(dir, fogdist, fog, FogCol2);
     }
 
-    float4 fogColourWater(float3 dir, float dist)
-    {
+    float4 fogColourWater(float3 dir, float dist) {
         float fogdist = (dist - FogStart) / (FogRange - FogStart);
         float fog = saturate(exp(-fogdist));
         fogdist = saturate(0.224 * fogdist);
@@ -196,54 +192,46 @@ float fogMWScalar(float dist)
         return fogColourScatter(dir, fogdist, fog, FogCol2);
     }
 
-    float4 fogColourSky(float3 dir)
-    {
+    float4 fogColourSky(float3 dir) {
         float3 skyColDirectional = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         return fogColourScatter(dir, 1, 0, skyColDirectional);
     }
 #else
-    float4 fogColour(float3 dir, float dist)
-    {
+    float4 fogColour(float3 dir, float dist) {
         float f = fogScalar(dist);
         return float4((1 - f) * FogCol2, f);
     }
 
-    float4 fogColourWater(float3 dir, float dist)
-    {
+    float4 fogColourWater(float3 dir, float dist) {
         return fogColour(dir, dist);
     }
     
-    float4 fogColourSky(float3 dir)
-    {
+    float4 fogColourSky(float3 dir) {
         float3 skyColDirectional = lerp(FogCol2, SkyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         return float4(skyColDirectional, 0);
     }
 #endif
 
-float4 fogMWColour(float dist)
-{
+float4 fogMWColour(float dist) {
     float f = fogMWScalar(dist);
     return float4((1 - f) * FogCol1, f);
 }
 
-float3 fogApply(float3 c, float4 f)
-{
+float3 fogApply(float3 c, float4 f) {
     return f.a * c + f.rgb;
 }
 
 //------------------------------------------------------------
 // Is point above water function, for exteriors only
 
-bool isAboveSeaLevel(float3 pos)
-{
+bool isAboveSeaLevel(float3 pos) {
     return (pos.z > -1);
 }
 
 //------------------------------------------------------------
 // Instancing matrix decompression and multiply
 
-float4 instancedMul(float4 pos, float4 m0, float4 m1, float4 m2)
-{
+float4 instancedMul(float4 pos, float4 m0, float4 m1, float4 m2) {
     float4 v;
     v.x = dot(pos, m0);
     v.y = dot(pos, m1);
@@ -257,8 +245,7 @@ float4 instancedMul(float4 pos, float4 m0, float4 m1, float4 m2)
 // Skinning, fixed-function
 // Uses worldview matrices for numerical accuracy
 
-float4 skin(float4 pos, float4 blend)
-{
+float4 skin(float4 pos, float4 blend) {
     if(vertexblendstate == 1)
         blend[1] = 1 - blend[0];
     else if(vertexblendstate == 2)
@@ -281,8 +268,7 @@ float4 skin(float4 pos, float4 blend)
 //------------------------------------------------------------
 // Vertex material to fragment colour routing
 
-float4 vertexMaterial(float4 vertexColour)
-{
+float4 vertexMaterial(float4 vertexColour) {
     if (hasVCol) {
         return vertexColour;
     }
@@ -296,8 +282,7 @@ float4 vertexMaterial(float4 vertexColour)
 
 // Calculates a coverage value from alpha, such that
 // coverage = 1 at the alpha test level (alpha_ref) and falls off quickly (falloff_rate)
-float calc_coverage(float a, float alpha_ref, float falloff_rate)
-{
+float calc_coverage(float a, float alpha_ref, float falloff_rate) {
     return saturate(falloff_rate * (a - alpha_ref) + alpha_ref);
 }
 

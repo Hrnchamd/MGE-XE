@@ -11,15 +11,13 @@
 //------------------------------------------------------------
 // Shadow caster rendering
 
-struct ShadowVertOut
-{
+struct ShadowVertOut {
     float4 pos : POSITION;
     float2 texcoords : TEXCOORD0;
     float depth : TEXCOORD1;
 };
 
-ShadowVertOut ShadowVS (StatVertIn IN)
-{
+ShadowVertOut ShadowVS(StatVertIn IN) {
     ShadowVertOut OUT;
 
     OUT.pos = mul(IN.pos, world);
@@ -35,8 +33,7 @@ ShadowVertOut ShadowVS (StatVertIn IN)
     return OUT;
 }
 
-ShadowVertOut ShadowClearVS (float4 pos : POSITION)
-{
+ShadowVertOut ShadowClearVS(float4 pos : POSITION) {
     ShadowVertOut OUT;
     
     OUT.pos = pos;
@@ -45,11 +42,9 @@ ShadowVertOut ShadowClearVS (float4 pos : POSITION)
     return OUT;
 }
 
-float4 ShadowPS (ShadowVertOut IN) : COLOR0
-{
+float4 ShadowPS(ShadowVertOut IN) : COLOR0 {
     // Sample alpha geometry if required
-    if(hasalpha)
-    {
+    if(hasalpha) {
         float a = tex2D(sampBaseTex, IN.texcoords).a;
         clip(a - 180.0/255.0);
     }
@@ -57,8 +52,7 @@ float4 ShadowPS (ShadowVertOut IN) : COLOR0
     return ESM_scale * IN.depth;
 }
 
-float4 ShadowStencilPS (ShadowVertOut IN) : COLOR0
-{
+float4 ShadowStencilPS(ShadowVertOut IN) : COLOR0 {
     return 1;
 }
 
@@ -67,14 +61,12 @@ float4 ShadowStencilPS (ShadowVertOut IN) : COLOR0
 
 static const float2 shadowAtlasRcpRes = shadowRcpRes * float2(shadowCascadeSize, 1);
 
-struct ShadowPostOut
-{
+struct ShadowPostOut {
     float4 pos : POSITION;
     float2 texcoords : TEXCOORD0;
 };
 
-ShadowPostOut ShadowSoftenVS (float4 pos : POSITION)
-{
+ShadowPostOut ShadowSoftenVS(float4 pos : POSITION) {
     ShadowPostOut OUT;
     
     OUT.pos = pos;
@@ -82,21 +74,18 @@ ShadowPostOut ShadowSoftenVS (float4 pos : POSITION)
     return OUT;
 }
 
-float4 ShadowSoftenPS (ShadowPostOut IN) : COLOR0
-{
+float4 ShadowSoftenPS(ShadowPostOut IN) : COLOR0 {
     // Filter entire atlas
     // Looks better without exp-space filtering, with a side effect of expanding silhouttes by about 1 pixel
     float4 t = float4(IN.texcoords, 0, 0);
     float d = tex2Dlod(sampDepth, t).r;
-    if(!hasalpha)
-    {
+    if(!hasalpha) {
         d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
         d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
         d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
         d += 0.2 * tex2Dlod(sampDepth, t + float4(1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
     }
-    else
-    {
+    else {
         d += 0.2 * tex2Dlod(sampDepth, t + float4(0, -1.42*shadowAtlasRcpRes.y, 0, 0)).r;
         d += 0.8 * tex2Dlod(sampDepth, t + float4(0, -0.71*shadowAtlasRcpRes.y, 0, 0)).r;
         d += 0.8 * tex2Dlod(sampDepth, t + float4(0, 0.71*shadowAtlasRcpRes.y, 0, 0)).r;
@@ -123,8 +112,8 @@ technique T0 {
         FogEnable = false;
         Lighting = false;
 
-        VertexShader = compile vs_3_0 ShadowClearVS ();
-        PixelShader = compile ps_3_0 ShadowPS ();
+        VertexShader = compile vs_3_0 ShadowClearVS();
+        PixelShader = compile ps_3_0 ShadowPS();
     }
     //------------------------------------------------------------
     // Used to render the view frustum into the stencil
@@ -139,8 +128,8 @@ technique T0 {
         StencilPass = replace;
         StencilRef = 1;
         
-        VertexShader = compile vs_3_0 ShadowVS ();
-        PixelShader = compile ps_3_0 ShadowStencilPS ();
+        VertexShader = compile vs_3_0 ShadowVS();
+        PixelShader = compile ps_3_0 ShadowStencilPS();
     }
     //------------------------------------------------------------
     // Used to render the shadow map
@@ -155,8 +144,8 @@ technique T0 {
         StencilPass = keep;
         StencilRef = 0;
         
-        VertexShader = compile vs_3_0 ShadowVS ();
-        PixelShader = compile ps_3_0 ShadowPS ();
+        VertexShader = compile vs_3_0 ShadowVS();
+        PixelShader = compile ps_3_0 ShadowPS();
     }
     //------------------------------------------------------------
     // Used to soften the shadow map
@@ -166,8 +155,8 @@ technique T0 {
         
         StencilEnable = false;
         
-        VertexShader = compile vs_3_0 ShadowSoftenVS ();
-        PixelShader = compile ps_3_0 ShadowSoftenPS ();
+        VertexShader = compile vs_3_0 ShadowSoftenVS();
+        PixelShader = compile ps_3_0 ShadowSoftenPS();
     }
     //------------------------------------------------------------
 }

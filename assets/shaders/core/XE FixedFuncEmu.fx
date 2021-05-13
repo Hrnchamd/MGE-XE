@@ -75,8 +75,7 @@ float3 texgenSphere(float2 tex) { return float3(0.5 * tex + 0.5, 0); }
 static const int LGs = max(1, ceil(FFE_LIGHTS_ACTIVE / 4.0));
 
 // Point lights
-float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal)
-{
+float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal) {
     float4 dist2 = 0, lambert = 0;
     
     // Do four dot products as three mads
@@ -97,8 +96,7 @@ float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal)
     return (lambert + lightAmbient[group]) * att;
 }
 
-float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 normal)
-{
+float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 normal) {
     float4 lambert[LGs];
     float3 l = 0;    
 
@@ -112,42 +110,36 @@ float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 norm
 }
 
 // Static tonemap
-float3 tonemap(float3 c)
-{
+float3 tonemap(float3 c) {
     // Curve maps 0 -> 0, 1.0 -> 0.84, up to 2.2 -> 1.0
     c = clamp(c, 0, 2.2);
     c = (((0.0548303 * c - 0.189786) * c - 0.154732) * c + 1.12969) * c;
     return c;
 }
 
-float4 vertexMaterialNone(float3 d, float3 a)
-{
+float4 vertexMaterialNone(float3 d, float3 a) {
     return float4(materialDiffuse.rgb * d + materialAmbient.rgb * a + materialEmissive.rgb, materialDiffuse.a);
 }
 
-float4 vertexMaterialDiffAmb(float3 d, float3 a, float4 col)
-{
+float4 vertexMaterialDiffAmb(float3 d, float3 a, float4 col) {
     return float4(col.rgb * (d + a) + materialEmissive.rgb, col.a);
 }
 
-float4 vertexMaterialEmissive(float3 d, float3 a, float4 col)
-{
+float4 vertexMaterialEmissive(float3 d, float3 a, float4 col) {
     return float4(materialDiffuse.rgb * d + materialAmbient.rgb * a + col.rgb, materialDiffuse.a);
 }
 
 //------------------------------------------------------------
 // Data coupling framework
 
-struct FFEVertIn
-{
+struct FFEVertIn {
     float4 pos : POSITION;
     float3 nrm : NORMAL;
     
     /* template */ FFE_VB_COUPLING
 };
 
-struct FFEPixel
-{
+struct FFEPixel {
     float4 pos : POSITION;
     float4 nrm_fog : NORMAL;
     
@@ -160,8 +152,7 @@ struct FFEPixel
 // Shader framework
 
 // Relatively simple, notably passes lighting vectors in interpolators
-FFEPixel PerPixelVS(FFEVertIn IN)
-{
+FFEPixel PerPixelVS(FFEVertIn IN) {
     FFEPixel OUT;
 
     // Transforms
@@ -180,8 +171,7 @@ FFEPixel PerPixelVS(FFEVertIn IN)
     /* template */ FFE_VERTEX_COLOUR
     
     // Point lighting setup, vectorized
-    for(int i = 0; i != LGs; ++i)
-    {
+    for(int i = 0; i != LGs; ++i) {
         OUT.lightvec[3*i + 0] = lightPosition[i + 0] - viewpos.x;
         OUT.lightvec[3*i + 1] = lightPosition[i + 2] - viewpos.y;
         OUT.lightvec[3*i + 2] = lightPosition[i + 4] - viewpos.z;
@@ -191,14 +181,12 @@ FFEPixel PerPixelVS(FFEVertIn IN)
 }
 
 // Bumpmap stages return dUdV alpha channel due to select1 alpha op
-float4 bumpmapStage(sampler s, float2 tc, float4 dUdV)
-{
+float4 bumpmapStage(sampler s, float2 tc, float4 dUdV) {
     float2 offset = mul(dUdV.rg, float2x2(bumpMatrix.xy, bumpMatrix.zw));
     return float4(tex2D(s, tc + offset).rgb, dUdV.a);
 }
 
-float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL)
-{
+float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL) {
     float4 c = bumpmapStage(s, tc, dUdVL);
     c.rgb *= saturate(dUdVL.b * bumpLumiScaleBias.x + bumpLumiScaleBias.y);
     return c;
@@ -206,8 +194,7 @@ float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL)
 
 // Per-pixel lighting augmented with semi-HDR tonemap
 // Vectorized lighting reduces instruction count by 50%
-float4 PerPixelPS(FFEPixel IN) : COLOR0
-{
+float4 PerPixelPS(FFEPixel IN) : COLOR0 {
     float3 normal = normalize(IN.nrm_fog.xyz);
     float fog = IN.nrm_fog.w;
     
@@ -233,10 +220,8 @@ float4 PerPixelPS(FFEPixel IN) : COLOR0
 
 //-----------------------------------------------------------------------------
 
-technique FFE
-{
-    pass
-    {
+technique FFE {
+    pass {
         VertexShader = compile vs_3_0 PerPixelVS();
         PixelShader = compile ps_3_0 PerPixelPS();
     }

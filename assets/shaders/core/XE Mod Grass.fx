@@ -5,10 +5,9 @@
 
 
 //------------------------------------------------------------
-// Grass, wind displacement function
+// Grass displacement function, based on wind and player proximity
 
-float2 grassDisplacement(float4 worldpos, float h)
-{
+float2 grassDisplacement(float4 worldpos, float h) {
     float v = length(WindVec);
     float2 displace = 2 * WindVec + 0.1;
     float2 harmonics = 0;
@@ -28,10 +27,28 @@ float2 grassDisplacement(float4 worldpos, float h)
 }
 
 //------------------------------------------------------------
+// Common functions
+
+TransformedVert transformGrassVert(StatVertInstIn IN) {
+    TransformedVert v;
+    
+    v.worldpos = instancedMul(IN.pos, IN.world0, IN.world1, IN.world2);
+
+    // Transforms with wind displacement
+    v.worldpos.xy += grassDisplacement(v.worldpos, IN.pos.z);
+    v.viewpos = mul(v.worldpos, view);
+    v.pos = mul(v.viewpos, proj);
+
+    // Decompress normal
+    float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
+    v.normal = instancedMul(normal, IN.world0, IN.world1, IN.world2);
+    return v;
+}
+
+//------------------------------------------------------------
 // Grass
 
-struct GrassVertOut
-{
+struct GrassVertOut {
     float4 pos : POSITION;
     half2 texcoords : TEXCOORD0;
     half4 color : COLOR0;
@@ -41,32 +58,21 @@ struct GrassVertOut
     float4 shadow1pos : TEXCOORD2;
 };
 
-GrassVertOut GrassInstVS (StatVertInstIn IN)
-{
+GrassVertOut GrassInstVS(StatVertInstIn IN) {
     GrassVertOut OUT;
-    
-    // Instancing
-    float4 worldpos = instancedMul(IN.pos, IN.world0, IN.world1, IN.world2);
+    TransformedVert v = transformGrassVert(IN);
+    float3 eyevec = v.worldpos.xyz - EyePos.xyz;
 
-    // Transforms with wind displacement
-    worldpos.xy += grassDisplacement(worldpos, IN.pos.z);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-    
-    // Fogging
-    float3 eyevec = worldpos.xyz - EyePos.xyz;
+    OUT.pos = v.pos;
     OUT.fog = fogMWColour(length(eyevec));
 
-    // Decompress normal
-    float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
-    normal = instancedMul(normal, IN.world0, IN.world1, IN.world2);
-
     // Lighting for two-sided rendering, no emissive
-    float lambert = dot(normal.xyz, -SunVec) * -sign(dot(eyevec, normal.xyz));
+    float lambert = dot(v.normal.xyz, -SunVec) * -sign(dot(eyevec, v.normal.xyz));
     // Backscatter through thin cover
-    if(lambert < 0)
+    if(lambert < 0) {
         lambert *= -0.3;
-    
+    }
+
     // Ignoring vertex colour due to problem with some grass mods
     OUT.color.rgb = SunCol * lambert + SunAmb;
 
@@ -74,8 +80,8 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
     OUT.color.a = shadowSunEstimate(lambert);
 
     // Find position in light space, output light depth
-    OUT.shadow0pos = mul(worldpos, shadowviewproj[0]);
-    OUT.shadow1pos = mul(worldpos, shadowviewproj[1]);
+    OUT.shadow0pos = mul(v.worldpos, shadowviewproj[0]);
+    OUT.shadow1pos = mul(v.worldpos, shadowviewproj[1]);
     OUT.shadow0pos.z = OUT.shadow0pos.z / OUT.shadow0pos.w;
     OUT.shadow1pos.z = OUT.shadow1pos.z / OUT.shadow1pos.w;
 
@@ -83,8 +89,7 @@ GrassVertOut GrassInstVS (StatVertInstIn IN)
     return OUT;
 }
 
-float4 GrassPS (GrassVertOut IN): COLOR0
-{
+float4 GrassPS(GrassVertOut IN): COLOR0 {
     float4 result = tex2D(sampBaseTex, IN.texcoords);
     result.rgb *= IN.color.rgb;
 
@@ -115,19 +120,12 @@ float4 GrassPS (GrassVertOut IN): COLOR0
 // Depth buffer output
 
 
-DepthVertOut DepthGrassInstVS (StatVertInstIn IN)
-{
+DepthVertOut DepthGrassInstVS(StatVertInstIn IN) {
     DepthVertOut OUT;
+    TransformedVert v = transformGrassVert(IN);
 
-    // Instancing
-    float4 worldpos = instancedMul(IN.pos, IN.world0, IN.world1, IN.world2);
-
-    // Transforms with wind displacement
-    worldpos.xy += grassDisplacement(worldpos, IN.pos.z);
-    OUT.pos = mul(worldpos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    OUT.depth = OUT.pos.w;
+    OUT.pos = v.pos;
+    OUT.depth = v.pos.w;
     OUT.alpha = 1;
     OUT.texcoords = IN.texcoords;
 

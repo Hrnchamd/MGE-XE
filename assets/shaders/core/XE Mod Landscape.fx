@@ -5,27 +5,38 @@
 
 
 //------------------------------------------------------------
+// Common functions
+
+TransformedVert transformLandVert(float4 pos) {
+    TransformedVert v;
+    
+    v.viewpos = mul(mul(pos, world), view);
+    v.pos = mul(v.viewpos, proj);
+    return v;
+}
+
+//------------------------------------------------------------
 // Distant land height bias to prevent low lod meshes from clipping
 
-float landBias(float dist)
-{
+float landBias(float dist) {
     float maxdist = nearViewRange - 1152;
     return -40 + -10 * max(0, maxdist - dist);
 }
 
-struct LandVertOut
-{
+//------------------------------------------------------------
+// Distant landscape rendering
+
+struct LandVertOut {
     float4 pos: POSITION;
     float2 texcoord: TEXCOORD0;
     float4 fog : TEXCOORD1;
 };
 
-LandVertOut LandscapeVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
-{
+LandVertOut LandscapeVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0) {
     LandVertOut OUT;
 
     // Fogging
-    float3 eyevec = pos.xyz - EyePos.xyz;
+    float3 eyevec = mul(pos, world).xyz - EyePos.xyz;
     float dist = length(eyevec);
     OUT.fog = fogColour(eyevec / dist, dist);
 
@@ -33,20 +44,17 @@ LandVertOut LandscapeVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
     pos.z += landBias(dist);
     
     // Transforms
-    OUT.pos = mul(pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-    
+    TransformedVert v = transformLandVert(pos);
+    OUT.pos = v.pos;
     OUT.texcoord = texcoord;
     return OUT;
 }
 
-LandVertOut LandscapeReflVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
-{
+LandVertOut LandscapeReflVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0) {
     LandVertOut OUT;
 
     // Fogging
-    float3 eyevec = pos.xyz - EyePos.xyz;
+    float3 eyevec = mul(pos, world).xyz - EyePos.xyz;
     float dist = length(eyevec);
     if(isAboveSeaLevel(EyePos))
         OUT.fog = fogColour(eyevec / dist, dist);
@@ -55,18 +63,15 @@ LandVertOut LandscapeReflVS (float4 pos : POSITION, float2 texcoord : TEXCOORD0)
 
     // Sink land near waterline a small amount
     pos.z += -16 * saturate(1 - pos.z/16);
-    
+
     // Transforms
-    OUT.pos = mul(pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-    
+    TransformedVert v = transformLandVert(pos);
+    OUT.pos = v.pos;
     OUT.texcoord = texcoord;
     return OUT;
 }
 
-float4 LandscapePS (in LandVertOut IN) : COLOR0
-{
+float4 LandscapePS(LandVertOut IN) : COLOR0 {
     // Expand and normalize normal map
     float3 normal = normalize(2 * tex2D(sampNormals, IN.texcoord).rgb - 1);
 
@@ -86,26 +91,22 @@ float4 LandscapePS (in LandVertOut IN) : COLOR0
     return float4(result, 1);
 }
 
-DepthVertOut DepthLandVS (float4 pos: POSITION, float2 texcoord: TEXCOORD0)
-{
+DepthVertOut DepthLandVS(float4 pos: POSITION, float2 texcoord: TEXCOORD0) {
     DepthVertOut OUT;
 
     // Move land down to avoid it appearing where reduced mesh doesn't match
     pos.z += landBias(length(pos.xyz - EyePos.xyz));
 
-    OUT.pos = mul(pos, world);
-    OUT.pos = mul(OUT.pos, view);
-    OUT.pos = mul(OUT.pos, proj);
-
-    OUT.depth = OUT.pos.w;
+    TransformedVert v = transformLandVert(pos);
+    OUT.pos = v.pos;
+    OUT.depth = v.pos.w;
     OUT.alpha = 1;
     OUT.texcoords = texcoord;
 
     return OUT;
 }
 
-float4 DepthLandPS (DepthVertOut IN) : COLOR0
-{
+float4 DepthLandPS(DepthVertOut IN) : COLOR0 {
     clip(IN.depth - nearViewRange);
     return IN.depth;
 }
