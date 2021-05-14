@@ -336,7 +336,7 @@ static bool createCoreEffectWithMods(const char *name, IDirect3DDevice9* device,
         return true;
     } else {
         LOG::logline("!! Core shader %s failed to compile with core-mods, retrying with standard shaders.", name);
-        StatusOverlay::setStatus("Core shader mod compilation failure. Check mgeXE.log for details.");
+        StatusOverlay::setStatus("Shader core mod error. Core mods are disabled for this session. Check mgeXE.log for error details.", StatusOverlay::PriorityWarning);
         logShaderError(errors);
     }
 

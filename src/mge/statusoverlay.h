@@ -1,22 +1,18 @@
 #pragma once
 
-#include "proxydx/d3d9header.h"
+struct IDirect3DDevice9;
 
+namespace StatusOverlay {
+    enum Priority {
+        PriorityNormal = 1,
+        PriorityWarning = 5,
+        PriorityError = 10
+    };
 
-
-class StatusOverlay {
-    static char statusText[512];
-    static char fpsText[16];
-    static DWORD statusTimeout;
-
-    static ID3DXFont* font;
-    static RECT statusRect, fpsRect;
-
-public:
-    static bool init(IDirect3DDevice9* device);
-    static void release();
-    static void show(IDirect3DDevice9* device);
-    static void setStatus(const char* s);
-    static void setFPS(float fps);
-    static void showLastStatus();
+    bool init(IDirect3DDevice9* device);
+    void release();
+    void show(IDirect3DDevice9* device);
+    void setStatus(const char* s, int priority = PriorityNormal);
+    void setFPS(float fps);
+    void showLastStatus();
 };

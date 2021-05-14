@@ -237,7 +237,7 @@ HRESULT _stdcall MGEProxyDevice::BeginScene() {
                     }
                 } else {
                     Configuration.MGEFlags &= ~USE_DISTANT_LAND;
-                    StatusOverlay::setStatus("MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.");
+                    StatusOverlay::setStatus("MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.", StatusOverlay::PriorityError);
                 }
             }
         } else {

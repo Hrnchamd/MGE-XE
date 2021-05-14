@@ -65,7 +65,7 @@ static void saveScreenshot(IDirect3DSurface9* surface) {
     if (GetFileAttributes(dir) == INVALID_FILE_ATTRIBUTES) {
         if (!CreateDirectory(dir, NULL)) {
             std::snprintf(path, sizeof(path), "Screenshot failed - Cannot create directory %s", dir);
-            StatusOverlay::setStatus(path);;
+            StatusOverlay::setStatus(path);
             return;
         }
     }
