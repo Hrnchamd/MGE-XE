@@ -1195,6 +1195,9 @@ namespace MGEgui.DistantLand {
                     var simplify = args.simplify;
                     byte[] data;
 
+                    // Set default simplification level to None until the simplifier code is fixed.
+                    simplify = 1.0f;
+
                     // Try to load a version of the file that ends with '_dist' first.
                     // This allows people to supply a different version of the NIF to be
                     // rendered by distant land.  For example, a low poly nif.
@@ -1209,7 +1212,7 @@ namespace MGEgui.DistantLand {
                     try {
                         data = BSA.GetNif(dist_name);
                         // Do not simplify '_dist' NIFs.
-                        simplify = 1;
+                        simplify = 1.0f;
                     } catch {
                         // We didn't find a NIF file with '_dist' in its name,
                         // so search for the normal NIF file now.
