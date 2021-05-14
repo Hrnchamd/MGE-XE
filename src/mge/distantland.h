@@ -22,6 +22,13 @@ public:
         std::unique_ptr<QuadTree> GrassStatics;
     };
 
+    struct RecordedState : RenderedState {
+        RecordedState(const RenderedState&);
+        ~RecordedState();
+        RecordedState(const RecordedState&) = delete;
+        RecordedState(RecordedState&&) noexcept;
+    };
+
     static constexpr DWORD fvfWave = D3DFVF_XYZRHW | D3DFVF_TEX2;
     static constexpr int waveTexResolution = 512;
     static constexpr float waveTexWorldRes = 2.5f;
@@ -55,8 +62,8 @@ public:
     static VisibleSet visDistant;
     static VisibleSet visGrass;
 
-    static std::vector<RenderedState> recordMW;
-    static std::vector<RenderedState> recordSky;
+    static std::vector<RecordedState> recordMW;
+    static std::vector<RecordedState> recordSky;
     static std::vector< std::pair<const QuadTreeMesh*, int> > batchedGrass;
 
     static IDirect3DTexture9* texWorldColour, *texWorldNormals, *texWorldDetail;

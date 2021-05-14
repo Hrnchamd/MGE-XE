@@ -43,8 +43,8 @@ VisibleSet DistantLand::visLand;
 VisibleSet DistantLand::visDistant;
 VisibleSet DistantLand::visGrass;
 
-vector<RenderedState> DistantLand::recordMW;
-vector<RenderedState> DistantLand::recordSky;
+vector<DistantLand::RecordedState> DistantLand::recordMW;
+vector<DistantLand::RecordedState> DistantLand::recordSky;
 vector< std::pair<const QuadTreeMesh*, int> > DistantLand::batchedGrass;
 
 IDirect3DTexture9* DistantLand::texWorldColour, *DistantLand::texWorldNormals, *DistantLand::texWorldDetail;
@@ -1222,6 +1222,9 @@ void DistantLand::release() {
     }
 
     LOG::logline("-- Renderer unloading");
+
+    recordMW.clear();
+    recordSky.clear();
 
     PostShaders::release();
     FixedFunctionShader::release();

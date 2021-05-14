@@ -787,7 +787,7 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* r
 
     // Capture all writes to z-buffer, except detectable second passes of multi-pass rendering
     if (rs->zWrite && !isLandSplat) {
-        recordMW.push_back(*rs);
+        recordMW.emplace_back(*rs);
 
         // Unify alpha test operator/reference to be equivalent to GREATEREQUAL
         if (rs->alphaFunc == D3DCMP_GREATER) {
@@ -797,7 +797,7 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* r
 
     // Special case, capture sky
     if (recordMW.empty() && rs->blendEnable && sceneCount == 0 && mwBridge->CellHasWeather()) {
-        recordSky.push_back(*rs);
+        recordSky.emplace_back(*rs);
 
         // Check for moon geometry, and mark those records by setting lighting off
         if (frs->material.emissive.a == kMoonTag) {
@@ -857,6 +857,40 @@ IDirect3DSurface9* DistantLand::captureScreen() {
 }
 
 
+// ------------------------------------
+// DistantLand::RecordedState
+
+DistantLand::RecordedState::RecordedState(const RenderedState& state)
+    : RenderedState(state) {
+    vb->AddRef();
+    ib->AddRef();
+    if (texture) {
+        texture->AddRef();
+    }
+}
+
+DistantLand::RecordedState::~RecordedState() {
+    if (vb) {
+        vb->Release();
+    }
+    if (ib) {
+        ib->Release();
+    }
+    if (texture) {
+        texture->Release();
+    }
+}
+
+DistantLand::RecordedState::RecordedState(RecordedState&& source) noexcept
+    : RenderedState(source) {
+    source.vb = nullptr;
+    source.ib = nullptr;
+    source.texture = nullptr;
+}
+
+
+// ------------------------------------
+// RenderTargetSwitcher
 
 // RenderTargetSwitcher - Switch to a render target, restoring state at end of scope
 RenderTargetSwitcher::RenderTargetSwitcher(IDirect3DSurface9* target, IDirect3DSurface9* targetDepthStencil) {
