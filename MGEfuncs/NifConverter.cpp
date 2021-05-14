@@ -183,7 +183,7 @@ struct ExportedNode {
         radius = sqrt(radius_squared);
     }
 
-    void Optimize(unsigned int cache_size, float simplify, bool old) {
+    void Optimize(unsigned int cache_size, float simplify) {
         const unsigned int stride = 36;
 
         // Reduce vertex count by scaling factor simplify
@@ -580,7 +580,7 @@ private:
 
 public:
 
-    void Optimize(unsigned int cache_size, float simplify, bool old) {
+    void Optimize(unsigned int cache_size, float simplify) {
         // Try to combine nodes that have the same texture path
         map<string, ExportedNode*> node_tex;
 
@@ -613,7 +613,7 @@ public:
 
         // Now optimize each node
         for (size_t i = 0; i < nodes.size(); ++i) {
-            nodes[i].Optimize(cache_size, simplify, old);
+            nodes[i].Optimize(cache_size, simplify);
         }
     }
 
@@ -702,11 +702,11 @@ extern "C" int __stdcall GetLandVertSize() {
     return (int)sizeof(DXCompressedLandVertex);
 }
 
-extern "C" float __stdcall ProcessNif(char* data, int datasize, float simplify, float cutoff, BYTE static_type, BYTE old) {
+extern "C" float __stdcall ProcessNif(char* data, int datasize, float simplify, float cutoff, BYTE static_type) {
 
     // Load the NIF data into our DirectX-friendly format
     ExportedNif nif;
-    if (! nif.LoadNifFromStream(data, datasize)) {
+    if (!nif.LoadNifFromStream(data, datasize)) {
         // log_file << "LoadNifFromStream failed." << endl;
         return -1;
     }
@@ -730,8 +730,7 @@ extern "C" float __stdcall ProcessNif(char* data, int datasize, float simplify, 
     }
 
     // Optimize NIF and calculate node bounds
-
-    nif.Optimize(16, simplify, old != 0);
+    nif.Optimize(16, simplify);
     nif.CalcNodeBounds();
 
     // Determine whether this will be a near or far distant static based on size

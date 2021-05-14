@@ -959,7 +959,6 @@ namespace MGEgui.DistantLand {
             public bool activators;
             public bool misc;
             public float simplify;
-            public bool oldSimplify;
         }
 
         private void GrassDensityThreshold(float GrassDensity, KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics, KeyValuePair<string, StaticReference> pair, Random rnd, List<StaticToRemove> UsedStaticsToRemove) {
@@ -1232,7 +1231,8 @@ namespace MGEgui.DistantLand {
                             if (OverrideList.ContainsKey(name)) {
                                 staticOverride so = OverrideList[name];
                                 if (!so.Ignore || so.NamesNoIgnore) {
-                                    size = NativeMethods.ProcessNif(data, data.Length, so.overrideSimplify ? so.Simplify : simplify, args.MinSize, (byte)so.Type, (so.OldSimplify ? (byte)1 : (byte)0));
+                                    simplify = so.overrideSimplify ? so.Simplify : simplify;
+                                    size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)so.Type);
                                 }
                             } else {
                                 // Set static classification based on the file path
@@ -1245,7 +1245,7 @@ namespace MGEgui.DistantLand {
                                     classifier = StaticType.Building;
                                 }
 
-                                size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)classifier, 0);
+                                size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)classifier);
                             }
                             if (size < 0) {
                                 UsedNifList.RemoveAt(i--);
@@ -1488,7 +1488,7 @@ namespace MGEgui.DistantLand {
                     refsToRemove.Add(pair.Key);
                 } else {
                     try {
-                        float size = NativeMethods.ProcessNif(data, data.Length, 1, 1, 1, 0);
+                        float size = NativeMethods.ProcessNif(data, data.Length, 1, 1, 1);
                         if (size < 0) {
                             refsToRemove.Add(pair.Key);
                         } else {
@@ -2312,7 +2312,6 @@ namespace MGEgui.DistantLand {
 
             public bool Ignore;
             public StaticType Type;
-            public bool OldSimplify;
             public bool overrideSimplify;
             public float Simplify;
             public float Density;
@@ -2321,7 +2320,6 @@ namespace MGEgui.DistantLand {
             public bool NamesNoIgnore;
 
             public staticOverride(byte value) {
-                OldSimplify = false;
                 Simplify = 1;
                 Density = -1;
                 overrideSimplify = false;
@@ -2359,7 +2357,6 @@ namespace MGEgui.DistantLand {
             public staticOverride(string value) {
                 Ignore = false;
                 Type = StaticType.Auto;
-                OldSimplify = false;
                 overrideSimplify = false;
                 Simplify = 1;
                 Density = -1;
@@ -2394,8 +2391,6 @@ namespace MGEgui.DistantLand {
                         Type = StaticType.Building;
                     } else if (s == "no_script") {
                         NoScript = true;
-                    } else if (s == "use_old_reduction") {
-                        OldSimplify = true;
                     } else if (s.StartsWith("reduction_")) {
                         float percent;
                         if (float.TryParse(s.Remove(0, 10), out percent) && percent >= 0 && percent <= 100) {
@@ -2409,7 +2404,6 @@ namespace MGEgui.DistantLand {
             }
 
             public staticOverride(staticOverride value, bool enabledInNames) {
-                OldSimplify = value.OldSimplify;
                 Simplify = value.Simplify;
                 Density = value.Density;
                 overrideSimplify = value.overrideSimplify;
@@ -2490,7 +2484,6 @@ namespace MGEgui.DistantLand {
             csa.MipSkip = cmbStatSkipMipLevels.SelectedIndex;
             csa.activators = cbStatActivators.Checked;
             csa.misc = cbStatIncludeMisc.Checked;
-            csa.oldSimplify = false;
             csa.useOverrideList = cbStatOverrideList.Checked;
             csa.OverrideList = new List<string>();
             csa.OverrideList.Add(Statics.fn_dldefaultoverride);
