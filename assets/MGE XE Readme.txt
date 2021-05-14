@@ -1,7 +1,7 @@
 
-MGE XE 0.12.0
+MGE XE 0.12.1
 -------------
-Released 2021-05-10
+Released 2021-05-14
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -29,11 +29,13 @@ Install
 
 You will be given the choice to update MWSE in the installer, which requires internet access. For a manual installation, extract the archive files to your Morrowind directory and run MWSE-Update.
 
-3. Run MGE XE, and then configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. There is an instruction tab for further details. If later on you add world-changing mods to your mod list, you will need to re-run the generator to see the changes in the distant world.
+3. Run the main MGE XE program, which sets all the graphics configuration. If you're using Mod Organizer 2, you need to run MGEXEgui from within MO2, as it generates files inside Morrowind's Data Files directory.
 
-4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Responsive menu caching" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
+Configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. There is an instruction tab for further details. If later on you add world-changing mods to your mod list, you will need to re-run the generator to see the changes in the distant world.
 
-5. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires high quality sky scattering enabled, and MWSE installed.
+4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Pause world rendering in menus" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
+
+5. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires "High quality atmosphere" enabled in distant land, and MWSE installed and enabled.
 
 As a complement to the UI scaling, you may also want to use Better Dialogue Font for sharper menu text.
 Download at: https://www.nexusmods.com/morrowind/mods/36873
@@ -42,7 +44,9 @@ Download at: https://www.nexusmods.com/morrowind/mods/36873
 Upgrading
 ---------
 From a previous MGE XE:
-Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land. Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update or stick to the default shaders.
+Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land.
+
+Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update or stick to the default shaders.
 
 
 Uninstall
@@ -50,20 +54,22 @@ Uninstall
 Uninstall from Control Panel or by running uninstall_MGEXE.exe. If you installed manually, delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
 
 
-General features
+Major features
 ----------------
 
 MGE XE provides:
 
-- Resolution and FOV configuration
-- Distant world rendering
-- New water rendering
-- Solar shadows
-- Shaders like SSAO, Sunshafts, and HDR
-- HQ atmosphere rendering
-- Per-pixel lighting
+- Resolution and FoV configuration.
+- MWSE 2.1 support. Amazing new mods have full access to customize Morrowind's UI and gameplay mechanics.
+- Distant world rendering. As long or short a viewing distance as you want, with spectacular atmospheric colourations.
+- New water rendering, with simulated ripples from the player and from raindrops.
+- Solar shadows, that smoothly update with the time of day.
+- Shaders like SSAO, Sunshafts, and HDR.
+- Per-pixel lighting. For better performing graphics cards, it improves the rendering of lights and and fixes colour shifts caused by the old engine.
 
 The main feature is the distant world. The MGE XE program takes your mod list, and builds a lower detail version that can be used to render the distant world in-game. It's built by the "Distant land generator wizard" on the Distant land tab. You'll need to re-run the generator if you add or remove any mods that change the world, otherwise the distant world will appear out of date compared to your mods.
+
+The new water, shadows, and lighting are integrated into distant land. They are all dependent on the distant world data to know about the world beyond the area near the player. So, generate distant land and all these features will be available.
 
 
 You might want to know
@@ -71,7 +77,9 @@ You might want to know
 
 MGE XE includes an install option for MWSE 2.1 beta by NullCascade. ( https://github.com/MWSE/MWSE/ ) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
 
-Standard MGE (3.8) shaders and HUD mods are not compatible due to design differences. You will not be able to use them with MGE XE without modification. Incompatible shaders will be detected and will not load.
+Shader core mods. It's possible to edit MGE XE rendering if you know HLSL. This mod system replaces the previous strategy of replacing the core shaders, that ensured problems on upgrade. If a shader mod does not compile, the game continues with standard shaders, and you get a visible warning.
+
+To start modding, examine the shaders in Data Files/shaders/core/; any file that starts with "XE Mod" can be copied to the Data Files/shaders/core-mods/ directory. Shaders in core-mods will override the standard rendering when present. They can be distributed in your mods safely, and can be simply deleted once they are no longer needed.
 
 
 Problems?
@@ -95,6 +103,13 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.12.1
+- Shader core-mods support added. Instead of overwriting core shaders, shader mod fragments can be placed into the Data Files\shaders\core-mods directory. The game will integrate them into rendering, and if they don't work, will fall back to un-modded rendering instead of breaking.
+- Fixed single frame of incorrect fog when changing cells, or after loading a game.
+- Distant statics generator is less likely to hang on statics generation.
+- Fixed a crash that occurred when the game produced a large amount of particles in a single particle system, and MGE XE wasn't handling it properly.
+- Visual C++ 2010 runtime is properly packaged with the installer.
+
 0.12.0
 - Nearly all crashes related to Alt-Tabbing and changing resolution in-game are fixed.
 - Distant landscape texture quality has been improved by a more accurate simulation of Morrowind land rendering. The distant land texture now aligns perfectly with Morrowind land texturing.
