@@ -13,7 +13,9 @@
 #include "XE Mod Statics.fx"
 #include "XE Mod Landscape.fx"
 #include "XE Mod Grass.fx"
+#include "XE Mod Sky.fx"
 #include "XE Mod Water.fx"
+#include "XE Mod Caustics.fx"
 
 //------------------------------------------------------------
 // Morrowind/MGE blending
@@ -50,52 +52,62 @@ float4 MGEBlendPS(DeferredOut IN) : COLOR0 {
 }
 
 //------------------------------------------------------------
-// Sky reflections
+// Dynamic waves simulation
 
-struct SkyVertOut {
+struct WaveVertOut
+{
     float4 pos : POSITION;
-    float4 color : COLOR0;
-    float2 texcoords : TEXCOORD0;
-    float4 skypos : TEXCOORD1;
+    float2 texcoord : TEXCOORD0;
 };
 
-SkyVertOut SkyVS(StatVertIn IN) {
-    SkyVertOut OUT;
-    float4 pos = IN.pos;
-    
-    // Screw around with skydome, align default mesh with horizon
-    if(!hasAlpha)
-        pos.z = 50 * (IN.pos.z + 200);
-    
-    pos = mul(pos, world);
-    OUT.skypos = float4(pos.xyz - eyePos, 1);
-
-    pos = mul(pos, view);
+WaveVertOut WaveVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0)
+{
+    WaveVertOut OUT;
     OUT.pos = mul(pos, proj);
-    OUT.pos.z = 0.999999 * OUT.pos.w;   // Pin z to far plane so it renders to background
-    OUT.color = IN.color;
-    OUT.texcoords = IN.texcoords;
-    
+    OUT.texcoord = texcoord;
     return OUT;
 }
 
-// Ordered dithering matrix
-static const float ditherSky[4][4] = { 0.001176, 0.001961, -0.001176, -0.001699, -0.000654, -0.000915, 0.000392, 0.000131, -0.000131, -0.001961, 0.000654, 0.000915, 0.001699, 0.001438, -0.000392, -0.001438 };
-
-float4 SkyPS(SkyVertOut IN, float2 vpos : VPOS) : COLOR0 {
-    float4 c = 0;
+float4 WaveStepPS(float2 tex : TEXCOORD0) : COLOR0
+{
+    // Texture content is now float16 in range [-1, 1]
+    float4 tc = float4(tex, 0, 0);
+    float4 c = tex2Dlod(sampRain, tc);
+    float4 ret = {0, c.r, 0, 0};
     
-    if(hasAlpha)
-        // Sample texture at lod 0 avoiding mip blurring
-        c = IN.color * tex2Dlod(sampBaseTex, float4(IN.texcoords, 0, 0));
-        
-    if(hasBones) {
-        // Use colour from scattering for sky (but preserves alpha)
-        float4 f = fogColourSky(normalize(IN.skypos.xyz)) + ditherSky[vpos.x % 4][vpos.y % 4];
-        c.rgb = f.rgb;
-    }
-        
-    return c;
+    float4 n = {
+        tex2D(sampRain, tc + float4(waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(-waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, waveTexRcpRes, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, -waveTexRcpRes, 0, 0)).r
+    };
+    float4 n2 = {
+        tex2D(sampRain, tc + float4(1.5 * waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(-1.5 * waveTexRcpRes, 0, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, 1.5 * waveTexRcpRes, 0, 0)).r,
+        tex2D(sampRain, tc + float4(0, -1.5 * waveTexRcpRes, 0, 0)).r
+    };
+    
+    // dampened discrete two-dimensional wave equation
+    // red channel: u(t)
+    // green channel: u(t - 1)
+    // u(t + 1) = (1 - udamp) * u(t) + a * (nsum - 4 * u(t)) + (1 - vdamp) * (u(t) - u(t - 1))
+    //        = a * nsum + ((2 - udamp - vdamp) - 4 * a) * u(t) - (1 - vdamp) * u(t - 1);
+    float nsum = n.x + n.y + n.z + n.w;
+    ret.r = 0.14 * nsum + (1.96 - 0.56) * c.r - 0.98 * c.g;
+    
+    // calculate normal map
+    ret.ba = 2 * (n.xy - n.zw) + 0.5 * (n2.xy - n2.zw);
+    return ret;
+}
+
+float4 PlayerWavePS(float2 tex : TEXCOORD0) : COLOR0
+{
+    float4 ret = tex2Dlod(sampRain, float4(tex, 0, 0));
+    float wavesize = (1.0 + 0.055 * sin(16 * time) + 0.065 * sin(12.87645 * time)) * playerWaveSize;
+    float displace = saturate(2 * abs(length(tex - rippleOrigin) / wavesize - 1));
+    ret.rg = lerp(-1, ret.rg, displace);
+    return ret;
 }
 
 //------------------------------------------------------------
