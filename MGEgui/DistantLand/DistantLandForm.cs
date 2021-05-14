@@ -484,12 +484,14 @@ namespace MGEgui.DistantLand {
                 RecordReader rr = new RecordReader(br);
                 Dictionary<int, LTEX> Textures = new Dictionary<int, LTEX>();
                 Textures.Add(0, DefaultTex);
+
                 while (rr.NextRecord()) {
                     if (rr.Tag == "LAND") {
                         LAND land = new LAND();
                         land.Textures = Textures;
-                        int lx = -999;
-                        int ly = -999;
+                        int lx = -999, ly = -999;
+                        bool usesVertexHeights = true;
+
                         while (rr.NextSubrecord()) {
                             switch (rr.SubTag) {
                                 case "INTV":
@@ -497,6 +499,10 @@ namespace MGEgui.DistantLand {
                                     ly = br.ReadInt32();
                                     land.xpos = lx;
                                     land.ypos = ly;
+                                    break;
+                                case "DATA":
+                                    int flags = br.ReadInt32();
+                                    usesVertexHeights = (flags & 1) == 1;
                                     break;
                                 case "VHGT":
                                     int offset = (int)br.ReadSingle();
@@ -547,7 +553,7 @@ namespace MGEgui.DistantLand {
                                     break;
                             }
                         }
-                        if (lx != -999 && ly != -999) {
+                        if (usesVertexHeights && lx != -999 && ly != -999) {
                             // Keep track of map extents
                             if (lx > MapMaxX) {
                                 MapMaxX = lx;
