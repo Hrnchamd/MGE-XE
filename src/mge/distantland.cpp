@@ -660,6 +660,7 @@ void DistantLand::updatePostShader(MGEShader* shader) {
     float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
     float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
     shader->SetFloatArray(EV_fogcol, horizonCol, 3);
+    shader->SetFloatArray(EV_fognearcol, nearFogCol, 3);
     shader->SetFloat(EV_fogstart, fogS);
     shader->SetFloat(EV_fogrange, fogE);
     shader->SetFloat(EV_fognearstart, fogNearStart);
