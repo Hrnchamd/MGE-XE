@@ -143,8 +143,8 @@ struct FD_Press {
 struct FD_Timer {
     BYTE TimerID;                       // The timer to activate/deactivate
 };
-struct FD_Graphics {
-    BYTE function;                      // The GraphicsFunc to call
+struct FD_MGEFunction {
+    BYTE index;                      // The GraphicsFunc to call
 };
 
 struct sFakeKey {
@@ -153,7 +153,7 @@ struct sFakeKey {
         FD_Console Console;
         FD_Press Press;
         FD_Timer Timer;
-        FD_Graphics Graphics;
+        FD_MGEFunction Function;
     };
 };
 

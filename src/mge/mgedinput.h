@@ -8,6 +8,7 @@ class MGEProxyDirectInput : public ProxyDirectInput {
 public:
     enum KeyBehavior { TAP, PUSH, HAMMER, AHAMMER, DISALLOW };
     static bool mouseClick;
+    static int modifierKeys;
 
     static void changeKeyBehavior(DWORD key, KeyBehavior kb, bool on);
 

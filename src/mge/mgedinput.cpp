@@ -10,6 +10,7 @@
 
 
 bool MGEProxyDirectInput::mouseClick = false;
+int MGEProxyDirectInput::modifierKeys = 0;
 
 
 typedef void (*FakeFunc)();
@@ -123,8 +124,8 @@ void* CreateInputWrapper(void* real) {
     FakeFuncs[GF_MoveUp3PC] = MacroFunctions::MoveUp3PCam;
 
     // Force screenshots from PrintScreen
-    FakeKeys[0xb7].type = MT_Graphics;
-    FakeKeys[0xb7].Graphics.function = GF_Screenshot;
+    FakeKeys[DIK_SYSRQ].type = MT_Graphics;
+    FakeKeys[DIK_SYSRQ].Function.index = GF_Screenshot;
 
     return new MGEProxyDirectInput((IDirectInput8A*)real);
 }
@@ -220,6 +221,19 @@ public:
 
         // Copy mouse state to act as an extra 10 keys
         CopyMemory(&bytes[256], &MouseOut, 10);
+
+        // Set modifier bitfield before any macros
+        int modifierKeys = 0;
+        if (bytes[DIK_LSHIFT] || bytes[DIK_RSHIFT]) {
+            modifierKeys |= 1;
+        }
+        if (bytes[DIK_LCONTROL] || bytes[DIK_RCONTROL]) {
+            modifierKeys |= 2;
+        }
+        if (bytes[DIK_LALT] || bytes[DIK_RALT]) {
+            modifierKeys |= 4;
+        }
+        MGEProxyDirectInput::modifierKeys = modifierKeys;
 
         // Get any extra key presses
         GlobalHammer = !GlobalHammer;
@@ -346,11 +360,11 @@ public:
                         break;
                     case MT_Graphics:
                         // Activate on keydown only, except for certain functions which should repeat
-                        if ((!last)||(FakeKeys[key].Graphics.function == GF_IncreaseZoom ||
-                                      FakeKeys[key].Graphics.function == GF_DecreaseZoom ||
-                                      FakeKeys[key].Graphics.function == GF_IncreaseFOV ||
-                                      FakeKeys[key].Graphics.function == GF_DecreaseFOV)) {
-                            (FakeFuncs[FakeKeys[key].Graphics.function])();
+                        if ((!last)||(FakeKeys[key].Function.index == GF_IncreaseZoom ||
+                                      FakeKeys[key].Function.index == GF_DecreaseZoom ||
+                                      FakeKeys[key].Function.index == GF_IncreaseFOV ||
+                                      FakeKeys[key].Function.index == GF_DecreaseFOV)) {
+                            (FakeFuncs[FakeKeys[key].Function.index])();
                         }
                         break;
                     }
@@ -684,7 +698,7 @@ static void loadInputSettings() {
             macro->Timer.TimerID = std::atoi(entryNextValue(values));
             break;
         case MT_Graphics:
-            macro->Graphics.function = std::atoi(entryNextValue(values));
+            macro->Function.index = std::atoi(entryNextValue(values));
             break;
         }
     }
