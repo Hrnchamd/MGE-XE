@@ -131,7 +131,8 @@ D3DXHANDLE DistantLand::ehTime;
 D3DXHANDLE DistantLand::ehRippleOrigin;
 D3DXHANDLE DistantLand::ehWaveHeight;
 
-void (*DistantLand::captureScreenFunc)(IDirect3DSurface9*);
+std::function<void(IDirect3DSurface9*)> DistantLand::captureScreenHandler = nullptr;
+bool DistantLand::captureScreenWithUI;
 
 
 static vector<DistantStatic> DistantStatics;

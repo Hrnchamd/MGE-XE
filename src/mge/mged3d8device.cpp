@@ -295,6 +295,9 @@ HRESULT _stdcall MGEProxyDevice::EndScene() {
     }
 
     if (isFrameComplete && isHUDready && !isHUDComplete) {
+        // Capture post-UI screenshots here
+        DistantLand::checkCaptureScreenshot(true);
+
         // Render status overlay
         StatusOverlay::setFPS(calcFPS());
         StatusOverlay::show(realDevice);

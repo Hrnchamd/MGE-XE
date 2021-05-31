@@ -1,6 +1,7 @@
 
 #include "proxydx/d3d8header.h"
 #include "mmefunctiondefs.h"
+#include "mgedinput.h"
 #include "configuration.h"
 #include "mwbridge.h"
 #include "statusoverlay.h"
@@ -31,17 +32,11 @@ void MacroFunctions::TakeScreenshot() {
         return;
     }
 
-    if (MWBridge::get()->IsMenu()) {
-        // Save screen including UI
-        IDirect3DSurface9* surface = DistantLand::captureScreen();
-        saveScreenshot(surface);
-        if (surface) {
-            surface->Release();
-        }
-    } else {
-        // Request distant land to save screen without UI
-        DistantLand::requestCaptureNoUI(&saveScreenshot);
-    }
+    // Request distant land to save screen, with menu mode or shift key it will capture the UI.
+    bool captureWithUI = MWBridge::get()->IsMenu();
+    captureWithUI |= (MGEProxyDirectInput::modifierKeys & 1) != 0;
+
+    DistantLand::requestCapture(&saveScreenshot, captureWithUI);
 }
 
 static void saveScreenshot(IDirect3DSurface9* surface) {

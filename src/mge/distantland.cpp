@@ -598,17 +598,13 @@ void DistantLand::postProcess() {
             PostShaders::shaderTime(&updatePostShader, envFlags, mwBridge->frameTime());
         }
 
+        // Capture pre-UI screenshots here
+        checkCaptureScreenshot(false);
+
         // Cache render for first frame of menu mode
         if ((Configuration.MGEFlags & USE_MENU_CACHING) && mwBridge->IsMenu()) {
             texDistantBlend = PostShaders::borrowBuffer(0);
             isRenderCached = true;
-        } else if (captureScreenFunc) {
-            IDirect3DSurface9* surface = captureScreen();
-            (*captureScreenFunc)(surface);
-            if (surface) {
-                surface->Release();
-            }
-            captureScreenFunc = NULL;
         }
 
         // Shadow map inset
@@ -818,14 +814,26 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* r
     return true;
 }
 
-// requestCaptureNoUI - Set a function to be called with a screen capture
-// just after post-processing and before the UI is drawn
-void DistantLand::requestCaptureNoUI(void (*func)(IDirect3DSurface9*)) {
-    captureScreenFunc = func;
+// requestCapture - Set a function to be called with a screen capture
+// Either before the UI is drawn, or after UI and before MGE messages
+void DistantLand::requestCapture(std::function<void(IDirect3DSurface9*)> handler, bool captureWithUI) {
+    captureScreenHandler = handler;
+    captureScreenWithUI = captureWithUI;
+}
+
+void DistantLand::checkCaptureScreenshot(bool isUIDrawn) {
+    if (bool(captureScreenHandler) && captureScreenWithUI == isUIDrawn) {
+        IDirect3DSurface9* surface = captureScreenshot();
+        captureScreenHandler(surface);
+        if (surface) {
+            surface->Release();
+        }
+        captureScreenHandler = nullptr;
+    }
 }
 
 // captureScreen - Capture a screenshot
-IDirect3DSurface9* DistantLand::captureScreen() {
+IDirect3DSurface9* DistantLand::captureScreenshot() {
     IDirect3DTexture9* t;
     IDirect3DSurface9* s;
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <functional>
 #include <memory>
 
 
@@ -119,7 +120,8 @@ public:
     static D3DXHANDLE ehRippleOrigin;
     static D3DXHANDLE ehWaveHeight;
 
-    static void (*captureScreenFunc)(IDirect3DSurface9*);
+    static std::function<void(IDirect3DSurface9*)> captureScreenHandler;
+    static bool captureScreenWithUI;
 
     static bool init(IDirect3DDevice9* realDevice);
     static bool initShader();
@@ -186,8 +188,9 @@ public:
     static void postProcess();
     static void updatePostShader(MGEShader* shader);
 
-    static IDirect3DSurface9* captureScreen();
-    static void requestCaptureNoUI(void (*func)(IDirect3DSurface9*));
+    static void requestCapture(std::function<void(IDirect3DSurface9*)> handler, bool captureWithUI);
+    static void checkCaptureScreenshot(bool isUIDrawn);
+    static IDirect3DSurface9* captureScreenshot();
 };
 
 class RenderTargetSwitcher {
