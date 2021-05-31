@@ -16,7 +16,7 @@ static int sceneCount;
 static bool rendertargetNormal, isHUDready;
 static bool isMainView, isStencilScene, isAmbientWhite;
 static bool stage0Complete, isFrameComplete, isHUDComplete;
-static bool isWaterMaterial, waterDrawn;
+static bool isWaterMaterial, waterDrawn, distantWater;
 
 static bool zoomSensSaved;
 static float zoomSensX, zoomSensY;
@@ -224,9 +224,12 @@ HRESULT _stdcall MGEProxyDevice::BeginScene() {
             // isMainView is not always valid at EndScene if Morrowind draws sunglare
             ++sceneCount;
 
-            // Set any custom FOV
-            if (sceneCount == 0 && Configuration.ScreenFOV > 0) {
-                mwBridge->SetFOV(Configuration.ScreenFOV);
+            // Set any custom FOV and check distant water state
+            if (sceneCount == 0) {
+                if (Configuration.ScreenFOV > 0) {
+                    mwBridge->SetFOV(Configuration.ScreenFOV);
+                }
+                distantWater = (Configuration.MGEFlags & USE_DISTANT_LAND) || (Configuration.MGEFlags & USE_DISTANT_WATER);
             }
 
             if (!DistantLand::ready) {
@@ -287,7 +290,7 @@ HRESULT _stdcall MGEProxyDevice::EndScene() {
 
             // Draw water if the Morrowind water plane doesn't appear in view
             // it may be too distant or stencil scene order is non-normative
-            if (!waterDrawn && !isStencilScene) {
+            if (distantWater && !waterDrawn && !isStencilScene) {
                 DistantLand::renderStageWater();
                 waterDrawn = true;
             }
@@ -442,12 +445,14 @@ HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b
         }
 
         if (isWaterMaterial) {
-            // Call distant land instead of drawing water grid
-            if (!waterDrawn) {
-                DistantLand::renderStageWater();
-                waterDrawn = true;
+            if (distantWater) {
+                // Call distant land instead of drawing water grid
+                if (!waterDrawn) {
+                    DistantLand::renderStageWater();
+                    waterDrawn = true;
+                }
+                return D3D_OK;
             }
-            return D3D_OK;
         } else {
             // Let distant land record call and skip if signalled
             if (!DistantLand::inspectIndexedPrimitive(sceneCount, &rs, &frs, &lightrs)) {

@@ -39,9 +39,9 @@
 #define SKIP_INTRO              MASK(SKIP_INTRO_BIT)
 #define CPU_IDLE_BIT            15
 #define CPU_IDLE                MASK(CPU_IDLE_BIT)
-#define SHADER_DEPTH_BIT        16
-#define SHADER_DEPTH            MASK(SHADER_DEPTH_BIT)
 // Distant Land flags
+#define USE_DISTANT_WATER_BIT   16
+#define USE_DISTANT_WATER       MASK(USE_DISTANT_WATER_BIT)
 #define USE_DISTANT_LAND_BIT    17
 #define USE_DISTANT_LAND        MASK(USE_DISTANT_LAND_BIT)
 #define USE_DISTANT_STATICS_BIT 18

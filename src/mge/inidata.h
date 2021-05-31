@@ -138,6 +138,7 @@ const iniSetting iniSettings[] = {
     // Distant Land flags
     {&Configuration.MGEFlags, t_bit, USE_DISTANT_LAND_BIT, siniDL, "Distant Land", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_DISTANT_STATICS_BIT, siniDL, "Distant Statics", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_DISTANT_WATER_BIT, siniDL, "Use Distant Water Without Distant Land", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECTIVE_WATER_BIT, siniDL, "Water Reflects Land", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECT_NEAR_BIT, siniDL, "Water Reflects Near Statics", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECT_INTERIOR_BIT, siniDL, "Water Reflects Interiors", False, &dictBool, DICTONLY, 0, 0},
