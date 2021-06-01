@@ -35,8 +35,9 @@ public:
     static constexpr float waveTexWorldRes = 2.5f;
     static constexpr int GrassInstStride = 48;
     static constexpr int MaxGrassElements = 8192;
-    static constexpr float kCellSize = 8192.0;
-    static constexpr float kDistantZBias = 5e-6;
+    static constexpr float kCellSize = 8192.0f;
+    static constexpr float kDistantZBias = 5e-6f;
+    static constexpr float kDistantNearPlane = 4.0f;
     static constexpr float kMoonTag = 88888.0f;
 
     static bool ready;

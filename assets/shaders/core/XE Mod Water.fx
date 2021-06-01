@@ -111,12 +111,9 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     OUT.texcoords.xy = OUT.pos.xy / 3900;
     OUT.texcoords.zw = OUT.pos.xy / 527;
 
+    // Calculate screen position for refraction
     OUT.position = mul(OUT.pos, view);
     OUT.position = mul(OUT.position, proj);
-
-    // Match bias in distant land projection
-    OUT.position.z *= 1.0 + kDistantZBias * step(nearViewRange, OUT.position.w);
-    
     OUT.screenpos = float4(0.5 * (1 + rcpRes) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
     return OUT;
@@ -144,17 +141,15 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     float addheight = waveHeight * (lerp(height, height2, saturate(dist/8000)) - 0.5) * saturate(1 - dist/6400) * saturate(dist/200);
     OUT.pos.z += addheight;
 
-    // Match bias in distant land projection
+    // Calculate screen position for refraction
     OUT.position = mul(OUT.pos, view);
     OUT.position = mul(OUT.position, proj);
-    OUT.position.z *= 1.0 + kDistantZBias * step(nearViewRange, OUT.position.w);
     OUT.screenpos = float4(0.5 * (1 + rcpRes) * OUT.position.w + float2(0.5, -0.5) * OUT.position.xy, OUT.position.zw);
 
     // Clamp reflection point to be above surface
     float4 clampedPos = OUT.pos - float4(0, 0, abs(addheight), 0);
     clampedPos = mul(clampedPos, view);
     clampedPos = mul(clampedPos, proj);
-    clampedPos.z *= 1.0 + kDistantZBias * step(nearViewRange, clampedPos.w);
     OUT.screenposclamp = float4(0.5 * (1 + rcpRes) * clampedPos.w + float2(0.5, -0.5) * clampedPos.xy, clampedPos.zw);
     
     return OUT;

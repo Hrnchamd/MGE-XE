@@ -55,7 +55,7 @@ void DistantLand::renderStage0() {
             // Distant everything; bias the projection matrix such that
             // distant land gets drawn behind anything Morrowind would draw
             D3DXMATRIX distProj = mwProj;
-            distProj._33 += kDistantZBias;
+            editProjectionZ(&distProj, kDistantNearPlane - 1e-2, Configuration.DL.DrawDist * kCellSize);
             effect->SetMatrix(ehProj, &distProj);
 
             effect->Begin(&passes, D3DXFX_DONOTSAVESTATE);
@@ -738,7 +738,7 @@ void DistantLand::setProjection(D3DMATRIX* proj) {
     // Move near plane from 1.0 to 4.0 for more z accuracy
     // Move far plane back to edge of draw distance
     if (Configuration.MGEFlags & USE_DISTANT_LAND) {
-        editProjectionZ(proj, 4.0, Configuration.DL.DrawDist * kCellSize);
+        editProjectionZ(proj, kDistantNearPlane, Configuration.DL.DrawDist * kCellSize);
     }
 }
 
