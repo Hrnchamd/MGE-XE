@@ -14,7 +14,6 @@
 #include "XE Mod Statics.fx"
 #include "XE Mod Landscape.fx"
 #include "XE Mod Grass.fx"
-#include "XE Mod Water.fx"
 
 //------------------------------------------------------------
 // Floating point clears
@@ -127,7 +126,7 @@ Technique T0 {
         ZEnable = true;
         ZWriteEnable = true;
         CullMode = none;
-        
+
         VertexShader = compile vs_3_0 DepthGrassInstVS();
         PixelShader = compile ps_3_0 DepthNearPS();
     }
