@@ -347,11 +347,10 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX* view, const D3DXMATRIX* pr
     }
 
     // Sky/fog
-    float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
-    float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
+    bool isExpFog = (Configuration.MGEFlags & EXP_FOG) != 0;
     const RGBVECTOR* skyCol = mwBridge->CellHasWeather() ?  mwBridge->getCurrentWeatherSkyCol() : &horizonCol;
-    effect->SetFloat(ehFogStart, fogS);
-    effect->SetFloat(ehFogRange, fogE);
+    effect->SetFloat(ehFogStart, isExpFog ? fogExpStart : fogStart);
+    effect->SetFloat(ehFogRange, isExpFog ? fogExpDivisor : fogEnd);
     effect->SetFloat(ehFogNearStart, fogNearStart);
     effect->SetFloat(ehFogNearRange, fogNearEnd);
     effect->SetFloatArray(ehSkyCol, *skyCol, 3);
@@ -452,7 +451,11 @@ void DistantLand::adjustFog() {
     if ((Configuration.MGEFlags & USE_DISTANT_LAND) && isDistantCell()) {
         // Set hardware fog for Morrowind's use
         if (Configuration.MGEFlags & EXP_FOG) {
-            // Exponential mode
+            // Exponential fog mode
+            // Adjust exp curve so that at the fog end boundary, the same fog value is reached for all values of fogStart
+            fogExpStart = fogStart / Configuration.DL.ExpFogDistMult;
+            fogExpDivisor = (fogEnd - fogExpStart) / Configuration.DL.ExpFogDistMult;
+
             if (mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather()) {
                 // Leave fog ranges as set, shaders use all linear fogging in this case
                 fogNearStart = fogStart;
@@ -460,14 +463,11 @@ void DistantLand::adjustFog() {
             } else {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
                 // Linear density matched to exp fog at dist = 1280 and dist = viewrange (or fog end if closer)
-                fogNearStart = fogStart / Configuration.DL.ExpFogDistMult;
-                fogNearEnd = fogEnd / Configuration.DL.ExpFogDistMult;
-
                 float farIntercept = std::min(fogEnd, nearViewRange);
-                float expStart = exp(-(1280.0f - fogNearStart) / (fogNearEnd - fogNearStart));
-                float expEnd = exp(-(farIntercept - fogNearStart) / (fogNearEnd - fogNearStart));
-                fogNearStart = 1280.0f + (farIntercept - 1280.0f) * (1.0f - expStart) / (expEnd - expStart);
-                fogNearEnd = 1280.0f + (farIntercept - 1280.0f) * -expStart / (expEnd - expStart);
+                float expFogNear = exp(-(1280.0f - fogExpStart) / fogExpDivisor);
+                float expFogFar = exp(-(farIntercept - fogExpStart) / fogExpDivisor);
+                fogNearStart = 1280.0f + (farIntercept - 1280.0f) * (1.0f - expFogNear) / (expFogFar - expFogNear);
+                fogNearEnd = 1280.0f + (farIntercept - 1280.0f) * -expFogNear / (expFogFar - expFogNear);
             }
         } else {
             // Linear mode
@@ -508,9 +508,7 @@ void DistantLand::adjustFog() {
         const float sunaltitude2 = float(saturate(exp(-2.0 * sunPos.z)) * saturate(sunaltitude));
 
         // Calculate scatter colour at Morrowind draw distance boundary
-        float fogS = fogStart / Configuration.DL.ExpFogDistMult;
-        float fogE = fogEnd / Configuration.DL.ExpFogDistMult;
-        float fogdist = (nearViewRange - fogS) / (fogE - fogS);
+        float fogdist = (nearViewRange - fogExpStart) / fogExpDivisor;
         float fog = float(saturate(exp(-fogdist)));
         fogdist = float(saturate(0.21 * fogdist));
 
@@ -653,12 +651,11 @@ void DistantLand::updatePostShader(MGEShader* shader) {
     shader->SetFloat(EV_sunvis, float(lerp(sunVis, 1.0, 0.333 * niceWeather)));
 
     // Sky/fog
-    float fogS = (Configuration.MGEFlags & EXP_FOG) ? (fogStart / Configuration.DL.ExpFogDistMult) : fogStart;
-    float fogE = (Configuration.MGEFlags & EXP_FOG) ? (fogEnd / Configuration.DL.ExpFogDistMult) : fogEnd;
+    bool isExpFog = (Configuration.MGEFlags & EXP_FOG) != 0;
     shader->SetFloatArray(EV_fogcol, horizonCol, 3);
     shader->SetFloatArray(EV_fognearcol, nearFogCol, 3);
-    shader->SetFloat(EV_fogstart, fogS);
-    shader->SetFloat(EV_fogrange, fogE);
+    shader->SetFloat(EV_fogstart, isExpFog ? fogExpStart : fogStart);
+    shader->SetFloat(EV_fogrange, isExpFog ? fogExpDivisor : fogEnd);
     shader->SetFloat(EV_fognearstart, fogNearStart);
     shader->SetFloat(EV_fognearrange, fogNearEnd);
 

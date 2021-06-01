@@ -83,6 +83,7 @@ RGBVECTOR DistantLand::nearFogCol, DistantLand::horizonCol;
 RGBVECTOR DistantLand::atmOutscatter(0.07, 0.36, 0.76);
 RGBVECTOR DistantLand::atmInscatter(0.25, 0.38, 0.48);
 float DistantLand::fogStart, DistantLand::fogEnd;
+float DistantLand::fogExpStart, DistantLand::fogExpDivisor;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
 float DistantLand::nearViewRange;
 float DistantLand::windScaling, DistantLand::niceWeather;

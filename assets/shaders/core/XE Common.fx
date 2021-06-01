@@ -121,7 +121,7 @@ struct TransformedVert {
 #ifdef USE_EXPFOG
 
 float fogScalar(float dist) {
-    float x = (dist - fogStart) / (fogRange - fogStart);
+    float x = (dist - fogStart) / fogRange;
     return saturate(exp(-x));
 }
 
@@ -138,7 +138,7 @@ float fogScalar(float dist) {
 float fogMWScalar(float dist) {
     return fogScalar(dist);
 }
-  
+
 #endif
 
 #ifdef USE_SCATTERING
@@ -153,18 +153,18 @@ float fogMWScalar(float dist) {
 
     float4 fogColourScatter(float3 dir, float fogdist, float fog, float3 skyColDirectional)     {
         skyColDirectional *= 1 - fog;
-        
+
         if(niceWeather > 0.001 && eyePos.z > /*WaterLevel*/-1) {
             float suncos = dot(dir, sunPos);
             float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
             float rayl = 1 - 0.09 * mie;
-            
+
             float atmdep = 1.33 * exp(-2 * saturate(dir.z));
             // float3 sunscatter = lerp(inscatter, outscatter, 0.5 * (1 + suncos));
             float3 sunscatter = lerp(midscatter, outscatter, suncos);
             float3 att = atmdep * sunscatter * (sunaltitude_a + mie);
             att = (1 - exp(-fogdist * att)) / att;
-            
+
             float3 color = 0.125 * mie + newskyCol * rayl;
             color *= att * (1.1*atmdep + 0.5) * sunaltitude_b;
             color = lerp(skyColDirectional, color, niceWeather);
@@ -175,9 +175,9 @@ float fogMWScalar(float dist) {
             return float4(skyColDirectional, fog);
         }
     }
-    
+
     float4 fogColour(float3 dir, float dist) {
-        float fogdist = (dist - fogStart) / (fogRange - fogStart);
+        float fogdist = (dist - fogStart) / fogRange;
         float fog = (dist > nearViewRange) ? saturate(exp(-fogdist)) : fogMWScalar(dist);
         fogdist = saturate(0.224 * fogdist);
 
@@ -185,7 +185,7 @@ float fogMWScalar(float dist) {
     }
 
     float4 fogColourWater(float3 dir, float dist) {
-        float fogdist = (dist - fogStart) / (fogRange - fogStart);
+        float fogdist = (dist - fogStart) / fogRange;
         float fog = saturate(exp(-fogdist));
         fogdist = saturate(0.224 * fogdist);
 
@@ -205,7 +205,7 @@ float fogMWScalar(float dist) {
     float4 fogColourWater(float3 dir, float dist) {
         return fogColour(dir, dist);
     }
-    
+
     float4 fogColourSky(float3 dir) {
         float3 skyColDirectional = lerp(fogColFar, skyCol, 1 - pow(saturate(1 - 2.22 * saturate(dir.z - 0.075)), 1.15));
         return float4(skyColDirectional, 0);
@@ -261,7 +261,7 @@ float4 skin(float4 pos, float4 blend) {
         viewpos += mul(pos, vertexBlendPalette[2]) * blend[2];
     if(vertexBlendState >= 3)
         viewpos += mul(pos, vertexBlendPalette[3]) * blend[3];
-        
+
     return viewpos;
 }
 

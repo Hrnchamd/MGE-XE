@@ -94,6 +94,7 @@ public:
     static RGBVECTOR nearFogCol, horizonCol;
     static RGBVECTOR atmOutscatter, atmInscatter;
     static float fogStart, fogEnd;
+    static float fogExpStart, fogExpDivisor;
     static float fogNearStart, fogNearEnd;
     static float nearViewRange;
     static float windScaling, niceWeather;
