@@ -195,7 +195,6 @@ const iniSetting iniSettings[] = {
     {&Configuration.DL.BelowWaterFogEnd, t_float, 1, siniDL, "Below Water Fog End", "0.3", NULL, MINMAX, 0.1, 300},
     {&Configuration.DL.InteriorFogStart, t_float, 1, siniDL, "Interior Fog Start", "0", NULL, MINMAX, -0.9, 299.9},
     {&Configuration.DL.InteriorFogEnd, t_float, 1, siniDL, "Interior Fog End", "2.0", NULL, MINMAX, 0.1, 300},
-    {&Configuration.DL.ExpFogDistMult, t_float, 1, siniDL, "Exponential Distance Multiplier", "4.0", NULL, MINMAX, 2.5, 5.0},
     {&Configuration.DL.WaterWaveHeight, t_uint8, 1, siniDL, "Water Wave Height", "0", NULL, MINMAX, 0, 250},
     {&Configuration.DL.WaterCaustics, t_uint8, 1, siniDL, "Water Caustics Intensity", "50", NULL, MINMAX, 0, 100},
     {&Configuration.DL.ShadowResolution, t_uint32, 1, siniDL, "Shadow Resolution", "1024", NULL, MINMAX, 512, 8192},

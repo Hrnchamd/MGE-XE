@@ -2047,7 +2047,7 @@ namespace MGEgui {
             this.pDLStatics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pDLStatics.Location = new System.Drawing.Point(3, 85);
             this.pDLStatics.Name = "pDLStatics";
-            this.pDLStatics.Size = new System.Drawing.Size(357, 114);
+            this.pDLStatics.Size = new System.Drawing.Size(357, 118);
             this.pDLStatics.TabIndex = 5;
             this.pDLStatics.TabStop = true;
             // 
@@ -2071,7 +2071,7 @@ namespace MGEgui {
             this.gbDLStatics.Enabled = false;
             this.gbDLStatics.Location = new System.Drawing.Point(0, 0);
             this.gbDLStatics.Name = "gbDLStatics";
-            this.gbDLStatics.Size = new System.Drawing.Size(357, 114);
+            this.gbDLStatics.Size = new System.Drawing.Size(357, 118);
             this.gbDLStatics.TabIndex = 1;
             this.gbDLStatics.TabStop = false;
             // 
@@ -2307,9 +2307,9 @@ namespace MGEgui {
             this.gbDLFog.Controls.Add(this.lDLFogStart);
             this.gbDLFog.Controls.Add(this.lDLFogEnd);
             this.gbDLFog.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbDLFog.Location = new System.Drawing.Point(3, 205);
+            this.gbDLFog.Location = new System.Drawing.Point(3, 209);
             this.gbDLFog.Name = "gbDLFog";
-            this.gbDLFog.Size = new System.Drawing.Size(357, 206);
+            this.gbDLFog.Size = new System.Drawing.Size(357, 202);
             this.gbDLFog.TabIndex = 6;
             this.gbDLFog.TabStop = false;
             this.gbDLFog.Text = "&Fog";
@@ -2344,7 +2344,7 @@ namespace MGEgui {
             this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
             this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            this.tableAlignDLFog.Size = new System.Drawing.Size(335, 100);
+            this.tableAlignDLFog.Size = new System.Drawing.Size(335, 76);
             this.tableAlignDLFog.TabIndex = 10;
             // 
             // udDLFogAStart
@@ -2437,6 +2437,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
+            this.udDLFogExpMul.Visible = false;
             this.udDLFogExpMul.ValueChanged += new System.EventHandler(this.udDLFogExpMul_ValueChanged);
             // 
             // lDLFogExpMul
@@ -2451,6 +2452,7 @@ namespace MGEgui {
             this.lDLFogExpMul.TabIndex = 8;
             this.lDLFogExpMul.Text = "Exponential distance multiplier";
             this.lDLFogExpMul.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lDLFogExpMul.Visible = false;
             // 
             // udDLFogBStart
             // 
@@ -2617,7 +2619,7 @@ namespace MGEgui {
             this.cbDLScattering.AutoSize = true;
             this.cbDLScattering.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbDLScattering.Enabled = false;
-            this.cbDLScattering.Location = new System.Drawing.Point(72, 167);
+            this.cbDLScattering.Location = new System.Drawing.Point(72, 143);
             this.cbDLScattering.Name = "cbDLScattering";
             this.cbDLScattering.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.cbDLScattering.Size = new System.Drawing.Size(271, 19);
@@ -2631,7 +2633,7 @@ namespace MGEgui {
             this.cbDLFogExp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDLFogExp.AutoSize = true;
             this.cbDLFogExp.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDLFogExp.Location = new System.Drawing.Point(139, 141);
+            this.cbDLFogExp.Location = new System.Drawing.Point(139, 118);
             this.cbDLFogExp.Name = "cbDLFogExp";
             this.cbDLFogExp.Size = new System.Drawing.Size(204, 19);
             this.cbDLFogExp.TabIndex = 6;

@@ -127,7 +127,6 @@ struct ConfigurationStruct {
         float BelowWaterFogEnd;
         float InteriorFogStart;
         float InteriorFogEnd;
-        float ExpFogDistMult;
         BYTE WaterWaveHeight;
         BYTE WaterCaustics;
         BYTE WaterReflect;

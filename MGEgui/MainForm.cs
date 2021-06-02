@@ -1332,7 +1332,7 @@ namespace MGEgui {
         }
 
         private void AutoSetDistances(object sender, EventArgs e) {
-            double draw_distance, dist_root;
+            double draw_distance;
             loading = true;
             if (autoDistances == AutoDistance.byAFogEnd) {
                 decimal distance = udDLFogAEnd.Value;
@@ -1344,10 +1344,9 @@ namespace MGEgui {
                 udDLDrawDist.Value = distance;
             }
             draw_distance = (double)udDLDrawDist.Value;
-            dist_root = Math.Sqrt(draw_distance);
 
             if (autoDistances != AutoDistance.byAFogEnd) {
-                udDLFogAStart.Value = (decimal)(draw_distance * 0.15);
+                udDLFogAStart.Value = (decimal)(draw_distance * 0.24 + 0.4);
                 udDLFogAEnd.Value = (decimal)draw_distance;
             }
             udDLFogBStart.Value = -0.5M;
@@ -1355,8 +1354,8 @@ namespace MGEgui {
             udDLFogIStart.Value = 0.0M;
             udDLFogIEnd.Value = (decimal)(draw_distance * 0.5 + 0.5);
             udDLDistNear.Value = (decimal)(draw_distance * 0.3);
-            udDLDistFar.Value = (decimal)(draw_distance * 0.7);
-            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.95);
+            udDLDistFar.Value = (decimal)(draw_distance * 0.67);
+            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.98);
 
             // Make sure improper values have not been generated
             loading = false;

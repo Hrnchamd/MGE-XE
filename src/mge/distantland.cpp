@@ -453,8 +453,9 @@ void DistantLand::adjustFog() {
         if (Configuration.MGEFlags & EXP_FOG) {
             // Exponential fog mode
             // Adjust exp curve so that at the fog end boundary, the same fog value is reached for all values of fogStart
-            fogExpStart = fogStart / Configuration.DL.ExpFogDistMult;
-            fogExpDivisor = (fogEnd - fogExpStart) / Configuration.DL.ExpFogDistMult;
+            constexpr float expFogDistScale = 4.4f;
+            fogExpStart = fogStart / expFogDistScale;
+            fogExpDivisor = (fogEnd - fogExpStart) / expFogDistScale;
 
             if (mwBridge->IsUnderwater(eyePos.z) || !mwBridge->CellHasWeather()) {
                 // Leave fog ranges as set, shaders use all linear fogging in this case
