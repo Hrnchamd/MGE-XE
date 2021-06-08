@@ -117,6 +117,7 @@ float3 tonemap(float3 c) {
     return c;
 }
 
+// Vertex material routing
 float4 vertexMaterialNone(float3 d, float3 a) {
     return float4(materialDiffuse.rgb * d + materialAmbient.rgb * a + materialEmissive.rgb, materialDiffuse.a);
 }
@@ -127,6 +128,18 @@ float4 vertexMaterialDiffAmb(float3 d, float3 a, float4 col) {
 
 float4 vertexMaterialEmissive(float3 d, float3 a, float4 col) {
     return float4(materialDiffuse.rgb * d + materialAmbient.rgb * a + col.rgb, materialDiffuse.a);
+}
+
+// Bumpmap stages return dUdV alpha channel due to select1 alpha op
+float4 bumpmapStage(sampler s, float2 tc, float4 dUdV) {
+    float2 offset = mul(dUdV.rg, float2x2(bumpMatrix.xy, bumpMatrix.zw));
+    return float4(tex2D(s, tc + offset).rgb, dUdV.a);
+}
+
+float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL) {
+    float4 c = bumpmapStage(s, tc, dUdVL);
+    c.rgb *= saturate(dUdVL.b * bumpLumiScaleBias.x + bumpLumiScaleBias.y);
+    return c;
 }
 
 //------------------------------------------------------------
@@ -180,20 +193,7 @@ FFEPixel PerPixelVS(FFEVertIn IN) {
     return OUT;
 }
 
-// Bumpmap stages return dUdV alpha channel due to select1 alpha op
-float4 bumpmapStage(sampler s, float2 tc, float4 dUdV) {
-    float2 offset = mul(dUdV.rg, float2x2(bumpMatrix.xy, bumpMatrix.zw));
-    return float4(tex2D(s, tc + offset).rgb, dUdV.a);
-}
-
-float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL) {
-    float4 c = bumpmapStage(s, tc, dUdVL);
-    c.rgb *= saturate(dUdVL.b * bumpLumiScaleBias.x + bumpLumiScaleBias.y);
-    return c;
-}
-
-// Per-pixel lighting augmented with semi-HDR tonemap
-// Vectorized lighting reduces instruction count by 50%
+// Per-pixel lighting augmented with semi-HDR tonemap instead of light clamping
 float4 PerPixelPS(FFEPixel IN) : COLOR0 {
     float3 normal = normalize(IN.nrm_fog.xyz);
     float fog = IN.nrm_fog.w;
