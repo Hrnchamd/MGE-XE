@@ -464,10 +464,11 @@ namespace MGEgui {
             // 
             // lScreenshotStatus
             // 
-            this.lScreenshotStatus.AutoSize = true;
-            this.lScreenshotStatus.Location = new System.Drawing.Point(13, 118);
+            this.lScreenshotStatus.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lScreenshotStatus.Location = new System.Drawing.Point(13, 121);
             this.lScreenshotStatus.Name = "lScreenshotStatus";
-            this.lScreenshotStatus.Size = new System.Drawing.Size(500, 15);
+            this.lScreenshotStatus.Size = new System.Drawing.Size(650, 45);
             this.lScreenshotStatus.TabIndex = 9;
             this.lScreenshotStatus.Text = "Screenshots can be taken with the PrintScreen key. MGE will compress and save the" +
             "m for you.";
@@ -950,7 +951,7 @@ namespace MGEgui {
             this.gbSShot.Controls.Add(this.tableLayoutScreenshots);
             this.gbSShot.Location = new System.Drawing.Point(8, 290);
             this.gbSShot.Name = "gbSShot";
-            this.gbSShot.Size = new System.Drawing.Size(680, 175);
+            this.gbSShot.Size = new System.Drawing.Size(680, 177);
             this.gbSShot.TabIndex = 2;
             this.gbSShot.TabStop = false;
             this.gbSShot.Text = "Screenshots";
@@ -1080,7 +1081,7 @@ namespace MGEgui {
             this.tableLayoutScreenshots.SetColumnSpan(this.lScreenshotHelp, 3);
             this.lScreenshotHelp.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lScreenshotHelp.Location = new System.Drawing.Point(8, 95);
-            this.lScreenshotHelp.Margin = new System.Windows.Forms.Padding(8, 0, 0, 0);
+            this.lScreenshotHelp.Margin = new System.Windows.Forms.Padding(8, 0, 22, 0);
             this.lScreenshotHelp.Name = "lScreenshotHelp";
             this.lScreenshotHelp.Size = new System.Drawing.Size(660, 58);
             this.lScreenshotHelp.TabIndex = 6;
