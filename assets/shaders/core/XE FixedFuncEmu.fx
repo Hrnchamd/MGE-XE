@@ -1,6 +1,6 @@
 
 // XE FixedFuncEmu.fx
-// MGE XE 0.12
+// MGE XE 0.13.0
 // Replacement shaders for Morrowind's object rendering
 
 #include "XE Common.fx"

@@ -1,6 +1,6 @@
 
 // XE Mod Statics.fx
-// MGE XE 0.12.1
+// MGE XE 0.13.0
 // Distant statics rendering. Can be used as a core mod.
 
 

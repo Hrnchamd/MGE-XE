@@ -1,6 +1,6 @@
 
 // XE Main.fx
-// MGE XE 0.12.1
+// MGE XE 0.13.0
 // Main render sequence
 
 #include "XE Common.fx"
@@ -200,7 +200,7 @@ Technique T0 {
         AlphaTestEnable = true;
         AlphaFunc = GreaterEqual;
         AlphaRef = 128;
-
+        
         VertexShader = compile vs_3_0 GrassInstVS();
         PixelShader = compile ps_3_0 GrassPS();
     }
@@ -248,7 +248,7 @@ Technique T0 {
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
-
+        
         VertexShader = compile vs_3_0 LandscapeVS();
         PixelShader = compile ps_3_0 LandscapePS();
     }
@@ -262,7 +262,7 @@ Technique T0 {
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
-
+        
         VertexShader = compile vs_3_0 LandscapeReflVS();
         PixelShader = compile ps_3_0 LandscapePS();
     }
@@ -278,7 +278,7 @@ Technique T0 {
         AlphaTestEnable = true;
         AlphaFunc = GreaterEqual;
         AlphaRef = 133;
-
+        
         VertexShader = compile vs_3_0 StaticExteriorVS();
         PixelShader = compile ps_3_0 StaticPS();
     }
@@ -294,7 +294,7 @@ Technique T0 {
         AlphaTestEnable = true;
         AlphaFunc = GreaterEqual;
         AlphaRef = 133;
-
+        
         VertexShader = compile vs_3_0 StaticInteriorVS();
         PixelShader = compile ps_3_0 StaticPS();
     }
@@ -304,7 +304,7 @@ Technique T0 {
         ZEnable = true;
         ZWriteEnable = false;
         CullMode = CW;
-
+        
         AlphaBlendEnable = true;
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;
@@ -321,7 +321,7 @@ Technique T0 {
         ZFunc = LessEqual;
         StencilEnable = false;
         CullMode = none;
-
+        
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
 
@@ -335,7 +335,7 @@ Technique T0 {
         ZWriteEnable = true;
         StencilEnable = false;
         CullMode = none;
-
+        
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
 
@@ -352,7 +352,7 @@ Technique T0 {
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
-
+        
         VertexShader = compile vs_3_0 CausticsVS();
         PixelShader = compile ps_3_0 CausticsPS();
     }
@@ -382,7 +382,7 @@ Technique T0 {
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
-
+        
         VertexShader = compile vs_3_0 ShadowDebugVS();
         PixelShader = compile ps_3_0 ShadowDebugPS();
     }

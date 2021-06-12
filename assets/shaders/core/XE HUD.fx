@@ -1,6 +1,6 @@
 
 // XE HUD.fx
-// MGE XE 0.12
+// MGE XE 0.13.0
 // Standard HUD shader
 
 texture tex;

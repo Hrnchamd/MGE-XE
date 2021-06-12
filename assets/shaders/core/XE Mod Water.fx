@@ -1,6 +1,6 @@
 
 // XE Mod Water.fx
-// MGE XE 0.12.1
+// MGE XE 0.13.0
 // Water plane rendering. Can be used as a core mod.
 
 

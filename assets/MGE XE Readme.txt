@@ -1,7 +1,7 @@
 
-MGE XE 0.12.1
+MGE XE 0.13.0
 -------------
-Released 2021-05-14
+Released 2021-06-12
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -23,7 +23,7 @@ Morrowind Code Patch, if you want to use MWSE.
 
 Install
 -------
-1. If you are interested in MWSE 2.1 and Lua mods, you must first install Morrowind Code Patch (https://www.nexusmods.com/morrowind/mods/19510/). The bugfixes it provides are required for MWSE.
+1. If you are using the CD version of Morrowind, please install Morrowind to a directory outside of Program Files to avoid issues. If you are interested in MWSE 2.1 and Lua mods, you must first install Morrowind Code Patch (https://www.nexusmods.com/morrowind/mods/19510/). The bugfixes it provides are required for MWSE.
 
 2. Run the MGE XE installer. It will add a new configuration program, MGE XE, to your Morrowind directory and to the Morrowind section of your start menu. All Visual C++ and DirectX updates are now included in the installer.
 
@@ -84,7 +84,7 @@ To start modding, examine the shaders in Data Files/shaders/core/; any file that
 
 Problems?
 ---------
-If you get a message in game "MGE XE serious error condition. Check mgeXE.log for details.", you can see the log file by clicking the "Show mgeXE.log" button in the Config tab of MGEXEgui. You may be able to discover what's wrong from the error message.
+If you get a message in game "MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.", you can see the log file by clicking the "Show mgeXE.log" button in the Config tab of MGEXEgui. You may be able to discover what's wrong from the error message.
 
 Questions and support thread at #troubleshooting channel on discord https://discord.me/mwmods
 
@@ -103,6 +103,15 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.0
+- Adjusted high quality sky scattering to create an overall brighter sky. Aims for a bright and vibrant blue during the day, and a more intense sunrise/sunset.
+- Rendering bias for distant land and water improved. Unfortunately this means water shader mods have to be updated to render correctly.
+- Exponential fog now uses an auto distance multiplier that fades exactly to the fog colour at fog end distance. Tthe multiplier has been removed from configuration. The auto distance function for near fog is tuned for better near visibility while retaining atmosphere.
+- Capture screenshots with or without UI, depending on shift key. Using shift always captures UI.
+- Correct issue with SSAO making fogged objects slightly lighter, in good weather with sky scattering, where draw distance was <8 cells.
+- Updated grass shader stomp effect to fade out if the player is high above. A little generous on height difference to account for different grass mods.
+- Updated French localization, thanks to Redondepremière.
+
 0.12.1
 - Shader core-mods support added. Instead of overwriting core shaders, shader mod fragments can be placed into the Data Files\shaders\core-mods directory. The game will integrate them into rendering, and if they don't work, will fall back to un-modded rendering instead of breaking.
 - Fixed single frame of incorrect fog when changing cells, or after loading a game.

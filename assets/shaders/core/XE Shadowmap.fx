@@ -1,6 +1,6 @@
 
 // XE Shadowmap.fx
-// MGE XE 0.12.1
+// MGE XE 0.13.0
 // Shadow map rendering
 
 #include "XE Common.fx"

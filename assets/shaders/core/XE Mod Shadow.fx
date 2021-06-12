@@ -1,6 +1,6 @@
 
 // XE Mod Shadow.fx
-// MGE XE 0.12.1
+// MGE XE 0.13.0
 // Shadow receiver functions. Can be used as a core mod.
 
 #include "XE Mod Shadow Data.fx"
