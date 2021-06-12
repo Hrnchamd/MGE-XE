@@ -142,31 +142,29 @@ float fogMWScalar(float dist) {
 #endif
 
 #ifdef USE_SCATTERING
-    static const float3 newskyCol = 0.38 * skyCol + float3(0.23, 0.39, 0.68);
+    static const float3 newskyCol = lerp(skyCol, float3(0.371, 0.637, 1.108), 0.62);
     static const float sunaltitude = pow(1 + sunPos.z, 10);
     static const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
     static const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
     static const float sunaltitude2 = saturate(exp(-2 * sunPos.z)) * saturate(sunaltitude);
 
     float3 outscatter, inscatter;
-    static const float3 midscatter = 0.5 * (outscatter + inscatter);
 
-    float4 fogColourScatter(float3 dir, float fogdist, float fog, float3 skyColDirectional)     {
+    float4 fogColourScatter(float3 dir, float fogdist, float fog, float3 skyColDirectional) {
         skyColDirectional *= 1 - fog;
 
         if(niceWeather > 0.001 && eyePos.z > /*WaterLevel*/-1) {
             float suncos = dot(dir, sunPos);
-            float mie = (1.62 / (1.3 - suncos)) * sunaltitude2;
+            float mie = (1.62 / (1.2 - suncos)) * sunaltitude2;
             float rayl = 1 - 0.09 * mie;
 
             float atmdep = 1.33 * exp(-2 * saturate(dir.z));
-            // float3 sunscatter = lerp(inscatter, outscatter, 0.5 * (1 + suncos));
-            float3 sunscatter = lerp(midscatter, outscatter, suncos);
-            float3 att = atmdep * sunscatter * (sunaltitude_a + mie);
+            float3 sunscatter = lerp(inscatter, outscatter, 0.5 * (1 + suncos));
+            float3 att = atmdep * sunscatter * (sunaltitude_a + 0.7*mie);
             att = (1 - exp(-fogdist * att)) / att;
 
             float3 color = 0.125 * mie + newskyCol * rayl;
-            color *= att * (1.1*atmdep + 0.5) * sunaltitude_b;
+            color *= att * (1.17*atmdep + 0.89) * sunaltitude_b;
             color = lerp(skyColDirectional, color, niceWeather);
 
             return float4(color, fog);
