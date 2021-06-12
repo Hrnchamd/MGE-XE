@@ -15,6 +15,7 @@
 static int sceneCount;
 static bool rendertargetNormal, isHUDready;
 static bool isMainView, isStencilScene, isAmbientWhite;
+static DWORD stencilRef;
 static bool stage0Complete, isFrameComplete, isHUDComplete;
 static bool isWaterMaterial, waterDrawn, distantWater;
 
@@ -43,6 +44,7 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d) : ProxyDev
     rendertargetNormal = true;
     isHUDready = false;
     isMainView = isStencilScene = isAmbientWhite = stage0Complete = isFrameComplete = isHUDComplete = false;
+    stencilRef = 0;
     isWaterMaterial = waterDrawn = false;
     D3DXMatrixIdentity(&camEffectsMatrix);
 
@@ -388,6 +390,9 @@ HRESULT _stdcall MGEProxyDevice::SetRenderState(D3DRENDERSTATETYPE a, DWORD b) {
     if (a == D3DRS_STENCILENABLE) {
         isStencilScene = b;
     }
+    else if (a == D3DRS_STENCILREF) {
+        stencilRef = b;
+    }
 
     // Ambient is used for scene detection
     if (a == D3DRS_AMBIENT) {
@@ -430,7 +435,8 @@ HRESULT _stdcall MGEProxyDevice::SetTextureStageState(DWORD a, D3DTEXTURESTAGEST
 // Inspect draw calls for re-use later
 HRESULT _stdcall MGEProxyDevice::DrawIndexedPrimitive(D3DPRIMITIVETYPE a, UINT b, UINT c, UINT d, UINT e) {
     // Allow distant land to inspect draw calls
-    if (DistantLand::ready && rendertargetNormal && isMainView && !isStencilScene) {
+    bool isShadowStencil = isStencilScene && stencilRef <= 1;
+    if (DistantLand::ready && rendertargetNormal && isMainView && !isShadowStencil) {
         rs.primType = a;
         rs.baseIndex = baseVertexIndex;
         rs.minIndex = b;
