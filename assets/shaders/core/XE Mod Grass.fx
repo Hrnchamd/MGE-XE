@@ -12,16 +12,18 @@ float2 grassDisplacement(float4 worldpos, float h) {
     float2 displace = 2 * windVec + 0.1;
     float2 harmonics = 0;
     
-    harmonics += (1 - 0.10*v) * sin(1.0*time + worldpos.xy / 1100);
-    harmonics += (1 - 0.04*v) * cos(2.0*time + worldpos.xy / 750);
-    harmonics += (1 + 0.14*v) * sin(3.0*time + worldpos.xy / 500);
-    harmonics += (1 + 0.28*v) * sin(5.0*time + worldpos.xy / 200);
+    harmonics += (1 - 0.10*v) * sin(1.0*time + worldpos.xy / 1104);
+    harmonics += (1 - 0.04*v) * cos(2.0*time + worldpos.xy / 751);
+    harmonics += (1 + 0.14*v) * sin(3.0*time + worldpos.xy / 526);
+    harmonics += (1 + 0.28*v) * sin(5.0*time + worldpos.xy / 209);
 
     float d = length(worldpos.xy - footPos.xy);
+    d += pow(0.06 * max(0, footPos.z - worldpos.z - 60), 2);
     float2 stomp = 0;
     
-    if(d < 150)
+    if(d < 150) {
         stomp = (60 / d - 0.4) * (worldpos.xy - footPos.xy);
+    }
 
     return saturate(0.02 * h) * (harmonics * displace + stomp);
 }
