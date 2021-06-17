@@ -13,7 +13,6 @@ sampler sampRefract = sampler_state { texture = <tex2>; minfilter = linear; magf
 //------------------------------------------------------------
 // Water constants
 
-static const float kDistantZBias = 5e-6;
 static const float sunlightFactor = 1 - pow(1 - sunVis, 2);
 static const float3 sunColAdjusted = sunCol * sunlightFactor;
 static const float3 depthBaseColor = sunColAdjusted * float3(0.03, 0.04, 0.05) + (2 * skyCol + fogColFar) * float3(0.075, 0.08, 0.085);
