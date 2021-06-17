@@ -19,8 +19,8 @@ TransformedVert transformLandVert(float4 pos) {
 // Distant land height bias to prevent low lod meshes from clipping
 
 float landBias(float dist) {
-    float maxdist = nearViewRange - 1152;
-    return -40 + -10 * max(0, maxdist - dist);
+    float maxDist = nearViewRange - 1152;
+    return -30 + -2 * max(0, maxDist - dist);
 }
 
 //------------------------------------------------------------

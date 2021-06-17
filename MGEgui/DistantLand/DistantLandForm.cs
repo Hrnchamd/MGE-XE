@@ -83,8 +83,6 @@ namespace MGEgui.DistantLand {
         private int MapMinY = Int32.MaxValue;
 
         private int CellCount;
-        public int VeryHigh = int.MinValue;
-        public int VeryLow = int.MaxValue;
 
         private static LAND[,] map;
         private readonly LAND defaultland = new LAND();
@@ -507,19 +505,11 @@ namespace MGEgui.DistantLand {
                                 case "VHGT":
                                     int offset = (int)br.ReadSingle();
                                     for (int y = 0; y < 65; y++) {
-                                        offset += br.ReadSByte();
-                                        land.Heights[0, y] = offset;
-                                        int pos = offset;
-                                        for (int x = 1; x < 65; x++) {
-                                            pos += br.ReadSByte();
-                                            land.Heights[x, y] = pos;
-                                            if (pos > VeryHigh) {
-                                                VeryHigh = pos;
-                                            }
-                                            if (pos < VeryLow) {
-                                                VeryLow = pos;
-                                            }
+                                        for (int x = 0; x < 65; x++) {
+                                            offset += br.ReadSByte();
+                                            land.Heights[x, y] = offset;
                                         }
+                                        offset = land.Heights[0, y];
                                     }
                                     break;
                                 case "VNML":

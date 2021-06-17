@@ -203,24 +203,17 @@ public:
         // Figure which height values to sample.
         size_t low_x, high_x, low_y, high_y;
 
-        float data_x = (0.0f - left + x) / (right - left) * (float)data_width;
-        float data_y = (0.0f - bottom + y) / (top - bottom) * (float)data_height;
+        float data_x = (x - left) / 128.0f;
+        float data_y = (y - bottom) / 128.0f;
 
         low_x = (size_t)floor(data_x);
         high_x = (size_t)ceil(data_x);
         low_y = (size_t)floor(data_y);
         high_y = (size_t)ceil(data_y);
 
-        // Linear Interpolation
-        float x_interp = 1.0f;
-        if (high_x - low_x == 1) {
-            x_interp = data_x - (float)low_x;
-        }
-
-        float y_interp = 1.0f;
-        if (high_y - low_y == 1) {
-            y_interp = data_y - (float)low_y;
-        }
+        // Bilinear interpolation
+        float x_interp = data_x - (float)low_x;
+        float y_interp = data_y - (float)low_y;
 
         // horizontal
         float bottom_val = GetHeightValue(low_x, low_y) * (1.0f - x_interp) + GetHeightValue(high_x, low_y) * x_interp;
@@ -242,10 +235,10 @@ public:
             y = 0;
         }
         if (y > data_height - 1) {
-            y = data_height -1;
+            y = data_height - 1;
         }
 
-        return data[ y * data_width + x ];
+        return data[y * data_width + x];
     }
 };
 
@@ -288,7 +281,7 @@ public:
         // Make sure pool can hold this object
         if (last_used_index + 1 >= pool.size()) {
             // No more room RoamVarianceNode objects to hand out.
-            return nullptr;
+            throw std::runtime_error("RoamVarianceNode pool full.");
         }
 
         // increment the last used index and return the object at that position
@@ -513,7 +506,6 @@ public:
     }
 
     void GatherTriangles(HeightFieldSampler* sampler, const SplitTriangle& s_tri, vector<RenderTriangle>& triangles) {
-
         Vector3 hc = s_tri.GetHypoCenter();
         hc.z = sampler->SampleHeight(hc.x, hc.y);
 
@@ -785,11 +777,9 @@ extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, 
     HeightFieldSampler sampler(height_data, data_height, data_width, atlas_data, atlas_count, top, left, bottom, right);
 
     // Create patches
-    size_t patches_across = (size_t)floor(((float)data_width) / 256.0f + 0.5f);
-    size_t patches_down = (size_t)floor(((float)data_height) / 256.0f + 0.5f);
-
-    float patch_width = (right - left) / (float)patches_across;
-    float patch_height = (top - bottom) / (float)patches_down;
+    const float patch_width = 32768.0f, patch_height = 32768.0f;
+    size_t patches_across = (size_t)ceil(float(data_width) / 256.0f);
+    size_t patches_down = (size_t)ceil(float(data_height) / 256.0f);
 
     vector<RoamLandPatch> patches;
 
@@ -862,4 +852,3 @@ extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, 
     // Save the Meshes
     LandMesh::SaveMeshes(file_path, meshes);
 }
-
