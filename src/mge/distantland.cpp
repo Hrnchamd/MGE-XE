@@ -465,8 +465,8 @@ void DistantLand::adjustFog() {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
                 // Linear density matched to exp fog at dist = 1280 and dist = viewrange (or fog end if closer)
                 float farIntercept = std::min(fogEnd, nearViewRange);
-                float expFogNear = exp(-(1280.0f - fogExpStart) / fogExpDivisor);
-                float expFogFar = exp(-(farIntercept - fogExpStart) / fogExpDivisor);
+                float expFogNear = saturate(exp(-(1280.0f - fogExpStart) / fogExpDivisor));
+                float expFogFar = saturate(exp(-(farIntercept - fogExpStart) / fogExpDivisor));
                 fogNearStart = 1280.0f + (farIntercept - 1280.0f) * (1.0f - expFogNear) / (expFogFar - expFogNear);
                 fogNearEnd = 1280.0f + (farIntercept - 1280.0f) * -expFogNear / (expFogFar - expFogNear);
             }
@@ -502,37 +502,37 @@ void DistantLand::adjustFog() {
 
         // Simplified version of scattering from the shader
         const RGBVECTOR* skyCol = mwBridge->getCurrentWeatherSkyCol();
-        const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + D3DXVECTOR3(0.23, 0.39, 0.68);
+        const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + 0.62 * D3DXVECTOR3(0.371, 0.637, 1.108);
         const float sunaltitude = powf(1 + sunPos.z, 10);
-        const float sunaltitude_a = 2.8f + 4.3f / sunaltitude;
-        const float sunaltitude_b = float(saturate(1.0 - exp2(-1.9 * sunaltitude)));
-        const float sunaltitude2 = float(saturate(exp(-2.0 * sunPos.z)) * saturate(sunaltitude));
+        const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
+        const float sunaltitude_b = saturate(1.0 - exp2(-1.9 * sunaltitude));
+        const float sunaltitude2 = saturate(exp(-2.0 * sunPos.z)) * saturate(sunaltitude);
 
         // Calculate scatter colour at Morrowind draw distance boundary
         float fogdist = (nearViewRange - fogExpStart) / fogExpDivisor;
-        float fog = float(saturate(exp(-fogdist)));
-        fogdist = float(saturate(0.21 * fogdist));
+        float fog = saturate(exp(-fogdist));
+        fogdist = saturate(0.224 * fogdist);
 
         D3DXVECTOR2 horizonDir(eyeVec.x, eyeVec.y);
         D3DXVec2Normalize(&horizonDir, &horizonDir);
         float suncos =  horizonDir.x * sunPos.x + horizonDir.y * sunPos.y;
-        float mie = (1.62f / (1.3f - suncos)) * sunaltitude2;
-        float rayl = 1.0f - 0.09f * mie;
-        float atmdep = 1.33f;
+        float mie = (1.62 / (1.2 - suncos)) * sunaltitude2;
+        float rayl = 1.0 - 0.09 * mie;
+        float atmdep = 1.33;
 
-        RGBVECTOR midscatter = 0.5f * (atmInscatter + atmOutscatter);
         D3DXVECTOR3 scatter;
-        scatter.x = float(lerp(midscatter.r, atmOutscatter.r, suncos));
-        scatter.y = float(lerp(midscatter.g, atmOutscatter.g, suncos));
-        scatter.z = float(lerp(midscatter.b, atmOutscatter.b, suncos));
+        float scatterT = 0.5 * (1 + suncos);
+        scatter.x = float(lerp(atmInscatter.r, atmOutscatter.r, scatterT));
+        scatter.y = float(lerp(atmInscatter.g, atmOutscatter.g, scatterT));
+        scatter.z = float(lerp(atmInscatter.b, atmOutscatter.b, scatterT));
 
-        D3DXVECTOR3 att = atmdep * scatter * (sunaltitude_a + mie);
+        D3DXVECTOR3 att = atmdep * scatter * (sunaltitude_a + 0.7 * mie);
         att.x = (1 - exp(-fogdist * att.x)) / att.x;
         att.y = (1 - exp(-fogdist * att.y)) / att.y;
         att.z = (1 - exp(-fogdist * att.z)) / att.z;
 
         D3DXVECTOR3 k0 = mie * D3DXVECTOR3(0.125, 0.125, 0.125) + rayl * newSkyCol;
-        D3DXVECTOR3 k1 = att * (1.1f * atmdep + 0.5f) * sunaltitude_b;
+        D3DXVECTOR3 k1 = att * (1.17 * atmdep + 0.89) * sunaltitude_b;
         c1.r = k0.x * k1.x;
         c1.g = k0.y * k1.y;
         c1.b = k0.z * k1.z;
