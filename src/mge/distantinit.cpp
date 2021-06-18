@@ -363,6 +363,11 @@ bool DistantLand::initShader() {
     vector<D3DXMACRO> features;
     HRESULT hr;
 
+    // Disable exponential fog if distant land is initially off
+    if (~Configuration.MGEFlags & USE_DISTANT_LAND) {
+        Configuration.MGEFlags &= ~(EXP_FOG | USE_ATM_SCATTER);
+    }
+
     // Set shader defines corresponding to required features
     if (Configuration.MGEFlags & EXP_FOG) {
         features.push_back(macroExpFog);
