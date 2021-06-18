@@ -1,7 +1,7 @@
 
-MGE XE 0.13.0
+MGE XE 0.13.1
 -------------
-Released 2021-06-12
+Released 2021-06-19
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -103,6 +103,14 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.1
+- Actually updated French localization, thanks to Redondepremière. Accidentally did not get included in 0.13.0.
+- Fixed nearly all distant landscape heightfield artifacts, which were appearing as terrain glitches. Land bias changes are no longer required.
+- Reworked HDR shader to functionally brighten dark scenes, while having minimal effects on bright scenes. Adapts to brightness quickly, but dark vision takes more time to adapt to. Should make dark areas of the game more playable.
+- Changed sky scattering to transition from sunrise colours to a blue sky more quickly after sunrise. Updated distant land fog to blend better with near fog, which was noticable with shorter view distances.
+- Changed automatically set distant statics distances to a minimum of 4 cells, to minimize near pop-in.
+- Disable exponential fog if distant land is initially off. Makes sure the water shader has the correct fog mode when distant land is intended to be off.
+
 0.13.0
 - Adjusted high quality sky scattering to create an overall brighter sky. Aims for a bright and vibrant blue during the day, and a more intense sunrise/sunset.
 - Rendering bias for distant land and water improved. Unfortunately this means water shader mods have to be updated to render correctly.
