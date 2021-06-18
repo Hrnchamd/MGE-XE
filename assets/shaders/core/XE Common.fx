@@ -146,7 +146,7 @@ float fogMWScalar(float dist) {
     static const float sunaltitude = pow(1 + sunPos.z, 10);
     static const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
     static const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
-    static const float sunaltitude2 = saturate(exp(-2 * sunPos.z)) * saturate(sunaltitude);
+    static const float sunaltitude2 = saturate(exp(-4 * sunPos.z)) * saturate(sunaltitude);
 
     float3 outscatter, inscatter;
 

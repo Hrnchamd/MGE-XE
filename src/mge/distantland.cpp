@@ -506,7 +506,7 @@ void DistantLand::adjustFog() {
         const float sunaltitude = powf(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
         const float sunaltitude_b = saturate(1.0 - exp2(-1.9 * sunaltitude));
-        const float sunaltitude2 = saturate(exp(-2.0 * sunPos.z)) * saturate(sunaltitude);
+        const float sunaltitude2 = saturate(exp(-4.0 * sunPos.z)) * saturate(sunaltitude);
 
         // Calculate scatter colour at Morrowind draw distance boundary
         float fogdist = (nearViewRange - fogExpStart) / fogExpDivisor;
