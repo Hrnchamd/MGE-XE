@@ -1298,12 +1298,12 @@ namespace MGEgui {
             }
 
             if (sender == udDLDistFar && (near_dist >= far_dist)) {
-                near_dist = far_dist - 0.1;
+                near_dist = far_dist;
             }
             if (sender == udDLDistVeryFar && (far_dist >= v_far_dist)) {
-                far_dist = v_far_dist - 0.1;
+                far_dist = v_far_dist;
                 if (near_dist >= far_dist) {
-                    near_dist = far_dist - 0.1;
+                    near_dist = far_dist;
                 }
             }
             // Prevent the near static distance from ever being less than Morrowind's draw distance
@@ -1312,10 +1312,10 @@ namespace MGEgui {
             }
             // Prevent any distant static distance from being less than or equal to the one before it.
             if (far_dist <= near_dist) {
-                far_dist = near_dist + 0.1;
+                far_dist = near_dist;
             }
             if (v_far_dist <= far_dist) {
-                v_far_dist = far_dist + 0.1;
+                v_far_dist = far_dist;
             }
 
             udDLFogAStart.Value = (decimal)fog_start_above;
@@ -1332,8 +1332,9 @@ namespace MGEgui {
         }
 
         private void AutoSetDistances(object sender, EventArgs e) {
-            double draw_distance;
+            double draw_distance, minStaticDist;
             loading = true;
+
             if (autoDistances == AutoDistance.byAFogEnd) {
                 decimal distance = udDLFogAEnd.Value;
                 if (distance < 1.0M) {
@@ -1344,6 +1345,7 @@ namespace MGEgui {
                 udDLDrawDist.Value = distance;
             }
             draw_distance = (double)udDLDrawDist.Value;
+            minStaticDist = Math.Min(draw_distance, 4.0);
 
             if (autoDistances != AutoDistance.byAFogEnd) {
                 udDLFogAStart.Value = (decimal)(draw_distance * 0.24 + 0.4);
@@ -1353,9 +1355,9 @@ namespace MGEgui {
             udDLFogBEnd.Value = 0.3M;
             udDLFogIStart.Value = 0.0M;
             udDLFogIEnd.Value = (decimal)(draw_distance * 0.5 + 0.5);
-            udDLDistNear.Value = (decimal)(draw_distance * 0.3);
-            udDLDistFar.Value = (decimal)(draw_distance * 0.67);
-            udDLDistVeryFar.Value = (decimal)(draw_distance * 0.98);
+            udDLDistNear.Value = (decimal)Math.Max(draw_distance * 0.3, minStaticDist);
+            udDLDistFar.Value = (decimal)Math.Max(draw_distance * 0.67, minStaticDist);
+            udDLDistVeryFar.Value = (decimal)Math.Max(draw_distance * 0.98, minStaticDist);
 
             // Make sure improper values have not been generated
             loading = false;
