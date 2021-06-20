@@ -1,4 +1,4 @@
-: MGE XE 0.12 standard distant statics classifier list
+: MGE XE 0.13 standard distant statics classifier list
 
 d\ex_velothi_loaddoor_01.nif=far
 d\ex_v_cantondoor_01.nif=very_far
@@ -25,5 +25,6 @@ f\act_bm_stone_wind_01.nif=far no_script
 
 [names]
 chargen boat=disable
+chargen_lantern_03_sway=disable
 chargen_plank=disable
 fm_boat_dock=disable
