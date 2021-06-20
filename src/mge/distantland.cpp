@@ -507,7 +507,7 @@ void DistantLand::adjustFog() {
         const float sunaltitude = powf(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
         const float sunaltitude_b = saturate(1.0 - exp2(-1.9 * sunaltitude));
-        const float sunaltitude2 = saturate(exp(-4.0 * sunPos.z)) * saturate(sunaltitude);
+        const float sunaltitude_c = saturate(exp(-4.0 * sunPos.z)) * saturate(sunaltitude);
 
         // Calculate scatter colour at Morrowind draw distance boundary
         float fogdist = (nearViewRange - fogExpStart) / fogExpDivisor;
@@ -517,7 +517,7 @@ void DistantLand::adjustFog() {
         D3DXVECTOR2 horizonDir(eyeVec.x, eyeVec.y);
         D3DXVec2Normalize(&horizonDir, &horizonDir);
         float suncos =  horizonDir.x * sunPos.x + horizonDir.y * sunPos.y;
-        float mie = (1.62 / (1.2 - suncos)) * sunaltitude2;
+        float mie = (1.58 / (1.24 - suncos)) * sunaltitude_c;
         float rayl = 1.0 - 0.09 * mie;
         float atmdep = 1.33;
 

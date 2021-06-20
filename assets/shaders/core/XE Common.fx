@@ -146,7 +146,7 @@ float fogMWScalar(float dist) {
     static const float sunaltitude = pow(1 + sunPos.z, 10);
     static const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
     static const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
-    static const float sunaltitude2 = saturate(exp(-4 * sunPos.z)) * saturate(sunaltitude);
+    static const float sunaltitude_c = saturate(exp(-4 * sunPos.z)) * saturate(sunaltitude);
 
     float3 outscatter, inscatter;
 
@@ -155,7 +155,7 @@ float fogMWScalar(float dist) {
 
         if(niceWeather > 0.001 && eyePos.z > /*WaterLevel*/-1) {
             float suncos = dot(dir, sunPos);
-            float mie = (1.62 / (1.2 - suncos)) * sunaltitude2;
+            float mie = (1.58 / (1.24 - suncos)) * sunaltitude_c;
             float rayl = 1 - 0.09 * mie;
 
             float atmdep = 1.33 * exp(-2 * saturate(dir.z));
