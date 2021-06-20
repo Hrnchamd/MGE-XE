@@ -464,9 +464,10 @@ void DistantLand::adjustFog() {
             } else {
                 // Adjust near region linear Morrowind fogging to approximation of exp fog curve
                 // Linear density matched to exp fog at dist = 1280 and dist = viewrange (or fog end if closer)
+                // Note to self: Don't use saturate here or the denominators can become zero.
                 float farIntercept = std::min(fogEnd, nearViewRange);
-                float expFogNear = saturate(exp(-(1280.0f - fogExpStart) / fogExpDivisor));
-                float expFogFar = saturate(exp(-(farIntercept - fogExpStart) / fogExpDivisor));
+                float expFogNear = exp(-(1280.0f - fogExpStart) / fogExpDivisor);
+                float expFogFar = exp(-(farIntercept - fogExpStart) / fogExpDivisor);
                 fogNearStart = 1280.0f + (farIntercept - 1280.0f) * (1.0f - expFogNear) / (expFogFar - expFogNear);
                 fogNearEnd = 1280.0f + (farIntercept - 1280.0f) * -expFogNear / (expFogFar - expFogNear);
             }
