@@ -1,7 +1,7 @@
 
-MGE XE 0.13.1
+MGE XE 0.13.2
 -------------
-Released 2021-06-19
+Released 2021-06-20
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -103,6 +103,11 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.2
+- Fixed an issue with exponential fog which caused near rendering to be all black, when the effective draw distance is high (clear weather, draw distance > 16 or high custom fog start distance).
+- The lantern of the chargen boat no longer appears in reflections when the boat is gone.
+- Tuned sunrise/sunset slightly to reduce banding from over-saturation.
+
 0.13.1
 - Actually updated French localization, thanks to Redondepremière. Accidentally did not get included in 0.13.0.
 - Fixed nearly all distant landscape heightfield artifacts, which were appearing as terrain glitches. Land bias changes are no longer required.
