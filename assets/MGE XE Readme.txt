@@ -1,7 +1,7 @@
 
-MGE XE 0.13.2
+MGE XE 0.13.3
 -------------
-Released 2021-06-20
+Released 2021-06-30
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -10,7 +10,7 @@ Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
 Summary
 -------
 
-A graphics improvement add-on to Morrowind, for longer viewing distances, great sunsets, fine shaders and better lighting. Supports MWSE 2.1 beta, included as part of the installer, so that the newest Lua gameplay mods work straight away.
+A graphics improvement add-on to the Morrowind engine, for longer viewing distances, great sunsets, fine shaders and better lighting. Supports MWSE 2.1 beta, included as part of the installer, so that the newest Lua gameplay mods work straight away. As an engine mod, this is not compatible with OpenMW.
 
 
 Requirements
@@ -20,6 +20,25 @@ Morrowind GOTY or Bloodmoon fully patched.
 Any graphics card made since 2009 or so.
 Windows Vista SP2 or later (Windows XP is not supported since MGE XE 0.11.2).
 Morrowind Code Patch, if you want to use MWSE.
+
+
+Major features
+----------------
+
+MGE XE provides:
+
+- Resolution and FoV configuration.
+- MWSE 2.1 support. Amazing new mods have full access to customize Morrowind's UI and gameplay mechanics.
+- Distant world rendering. As long or short a viewing distance as you want, with spectacular atmospheric colourations.
+- New water rendering, with simulated ripples from the player and from raindrops.
+- Solar shadows, that smoothly update with the time of day.
+- Shaders like SSAO, Sunshafts, and HDR.
+- Per-pixel lighting. For better performing graphics cards, it improves the rendering of lights and and fixes colour shifts caused by the old engine.
+
+The main feature is the distant world. The MGE XE program takes your mod list, and builds a lower detail version that can be used to render the distant world in-game. It's built by the "Distant land generator wizard" on the Distant land tab. You'll need to re-run the generator if you add or remove any mods that change the world, otherwise the distant world will appear out of date compared to your mods.
+
+The new water, shadows, and lighting are integrated into distant land. They are all dependent on the distant world data to know about the world beyond the area near the player. So, generate distant land and all these features will be available.
+
 
 Install
 -------
@@ -54,24 +73,6 @@ Uninstall
 Uninstall from Control Panel or by running uninstall_MGEXE.exe. If you installed manually, delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
 
 
-Major features
-----------------
-
-MGE XE provides:
-
-- Resolution and FoV configuration.
-- MWSE 2.1 support. Amazing new mods have full access to customize Morrowind's UI and gameplay mechanics.
-- Distant world rendering. As long or short a viewing distance as you want, with spectacular atmospheric colourations.
-- New water rendering, with simulated ripples from the player and from raindrops.
-- Solar shadows, that smoothly update with the time of day.
-- Shaders like SSAO, Sunshafts, and HDR.
-- Per-pixel lighting. For better performing graphics cards, it improves the rendering of lights and and fixes colour shifts caused by the old engine.
-
-The main feature is the distant world. The MGE XE program takes your mod list, and builds a lower detail version that can be used to render the distant world in-game. It's built by the "Distant land generator wizard" on the Distant land tab. You'll need to re-run the generator if you add or remove any mods that change the world, otherwise the distant world will appear out of date compared to your mods.
-
-The new water, shadows, and lighting are integrated into distant land. They are all dependent on the distant world data to know about the world beyond the area near the player. So, generate distant land and all these features will be available.
-
-
 You might want to know
 ----------------------
 
@@ -103,6 +104,10 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.3
+- Fixed excessive heavy fog in storms, blizzards, and foggy weather, particularly if using short draw distances. Storms now have a minimum visibility distance comparable to vanilla.
+- Minor fix to per-pixel lighting. Supports up to 4 UV sets in NIFs, and logs a warning if there are more than it can handle.
+
 0.13.2
 - Fixed an issue with exponential fog which caused near rendering to be all black, when the effective draw distance is high (clear weather, draw distance > 16 or high custom fog start distance).
 - The lantern of the chargen boat no longer appears in reflections when the boat is gone.
