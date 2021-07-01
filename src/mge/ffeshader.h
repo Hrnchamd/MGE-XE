@@ -64,7 +64,7 @@ struct LightState {
 
 class FixedFunctionShader {
     struct ShaderKey {
-        DWORD uvSets : 2;
+        DWORD uvSets : 4;
         DWORD usesSkinning : 1;
         DWORD vertexColour : 1;
         DWORD heavyLighting : 1;
