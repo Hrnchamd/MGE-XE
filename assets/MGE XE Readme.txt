@@ -1,7 +1,7 @@
 
-MGE XE 0.13.3
+MGE XE 0.13.4
 -------------
-Released 2021-06-30
+Released 2021-07-04
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -87,7 +87,7 @@ Problems?
 ---------
 If you get a message in game "MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.", you can see the log file by clicking the "Show mgeXE.log" button in the Config tab of MGEXEgui. You may be able to discover what's wrong from the error message.
 
-Questions and support thread at #troubleshooting channel on discord https://discord.me/mwmods
+Questions and support thread at #troubleshooting channel on discord. https://discord.me/mwmods
 
 Reporting in game crashes: Open MGEXEgui, on the Config tab click "Show last mgeXE.log". Add it to your report.
 
@@ -104,6 +104,10 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.4
+- Fixed some distant interiors cells not rendering as distant. An issue with the distant generator output could cause the game to fail to load some distant interiors in some cases. Regenerate distant land for this fix.
+- Minor fix to per-pixel lighting. Checks how many UV sets are actually used before failing with purple rendering output and a warning. Some models have >4 UV sets for no reason.
+
 0.13.3
 - Fixed excessive heavy fog in storms, blizzards, and foggy weather, particularly if using short draw distances. Storms now have a minimum visibility distance comparable to vanilla.
 - Minor fix to per-pixel lighting. Supports up to 4 UV sets in NIFs, and logs a warning if there are more than it can handle.

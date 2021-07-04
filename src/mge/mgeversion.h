@@ -1,9 +1,9 @@
 #pragma once
 
-#define XE_VERSION_STRING "MGE XE 0.13.3"
+#define XE_VERSION_STRING "MGE XE 0.13.4"
 #define MGE_MAJOR_VERSION 4
 #define MGE_MINOR_VERSION 13
-#define MGE_BUILD_VERSION 3
+#define MGE_BUILD_VERSION 4
 
 #define MGE_SAVE_VERSION 47
 #define MGE_DL_VERSION 6
