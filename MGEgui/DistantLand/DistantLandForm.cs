@@ -1252,15 +1252,18 @@ namespace MGEgui.DistantLand {
             } finally {
                 NativeMethods.EndStaticCreation();
             }
+
             // Reset used distant static ID numbers to match NIF list order
             Dictionary<string, uint> NifMap = new Dictionary<string, uint>();
             uint count = 0;
             foreach (string name in UsedNifList) {
                 NifMap[name] = count++;
             }
-            List<StaticToRemove> UsedStaticsToRemove = new List<StaticToRemove>();
+
             // Determine floating point grass density
+            List<StaticToRemove> UsedStaticsToRemove = new List<StaticToRemove>();
             float GrassDensity = (float)udStatGrassDensity.Value / 100.0f;
+
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
                 foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
                     string nif_name = StaticsList[pair.Value.name].mesh;
@@ -1288,29 +1291,32 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
             BinaryWriter bw = new BinaryWriter(File.Create(Statics.fn_usagedata), System.Text.Encoding.Default);
             bw.Write(UsedNifList.Count);
+
+            // Write main worldspace statics usage
             bw.Write(UsedStaticsList[""].Count);
-            // uint UseRef = 0;
             foreach (KeyValuePair<string, StaticReference> pair in UsedStaticsList[""]) {
-                pair.Value.Write(bw/*, UseRef++*/);
+                pair.Value.Write(bw);
             }
+
             UsedStaticsList[""].Clear();
             UsedStaticsList.Remove("");
-            char[] cellName = new char[64];
+
+            // Write cells' statics usage
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
-                bw.Write((int)(cellStatics.Value as Dictionary<string, StaticReference>).Count);
-                int i;
-                for (i = 0; i < 64; ++i) {
-                    cellName[i] = '\0';
+                int cellStaticsCount = cellStatics.Value.Count;
+                // Don't write cells with no distant statics
+                if (cellStaticsCount == 0) {
+                    continue;
                 }
-                i = 0;
-                foreach (char c in cellStatics.Key) {
-                    cellName[i++] = c;
-                }
-                bw.Write(cellName, 0, 64);
+
+                bw.Write(cellStaticsCount);
+                bw.Write(cellStatics.Key.PadRight(64, '\0').ToCharArray());
                 foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
-                    pair.Value.Write(bw/*, UseRef++*/);
+                    pair.Value.Write(bw);
                 }
             }
+
+            // Write terminator
             bw.Write((int)0);
             bw.Write((float)Convert.ToSingle(udStatMinSize.Value));
             bw.Close();
