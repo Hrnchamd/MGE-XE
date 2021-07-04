@@ -678,7 +678,9 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
         }
     }
 
+    DWORD maxTexcoordIndex = 0;
     bool bumpStageFixup = false;
+
     for (int i = 0; i != 8; ++i) {
         const FragmentState::Stage& s = frs->stage[i];
 
@@ -695,6 +697,7 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
         stage[i].alphaOpSelect1 = (s.alphaOp == D3DTOP_SELECTARG1 && s.alphaArg1 == s.colorArg1);
         stage[i].texcoordIndex = s.texcoordIndex & 3;
         stage[i].texcoordGen = s.texcoordIndex >> 16;
+        maxTexcoordIndex = std::max(maxTexcoordIndex, (DWORD)stage[i].texcoordIndex);
 
         if (s.colorOp == D3DTOP_BUMPENVMAP || s.colorOp == D3DTOP_BUMPENVMAPLUMINANCE) {
             usesBumpmap = 1;
@@ -714,6 +717,10 @@ FixedFunctionShader::ShaderKey::ShaderKey(const RenderedState* rs, const Fragmen
             texgenStage = i;
         }
     }
+
+    // Generate based on actual UV sets available and used
+    DWORD usedUVSets = maxTexcoordIndex + 1;
+    uvSets = std::min((DWORD)uvSets, usedUVSets);
 }
 
 bool FixedFunctionShader::ShaderKey::operator<(const ShaderKey& other) const {
