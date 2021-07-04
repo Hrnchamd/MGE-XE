@@ -683,20 +683,18 @@ bool DistantLand::selectDistantCell() {
     auto mwBridge = MWBridge::get();
 
     if (Configuration.MGEFlags & USE_DISTANT_LAND) {
+        string cellname;
         if (mwBridge->IsExterior()) {
-            decltype(mapWorldSpaces)::const_iterator iWS = mapWorldSpaces.find(string());
-            if (iWS != mapWorldSpaces.end()) {
-                currentWorldSpace = &iWS->second;
-                return true;
-            }
+            cellname = string();
         }
-        else if (mwBridge->CellHasWeather() || (Configuration.MGEFlags & REFLECT_INTERIOR)) {
-            string cellname = mwBridge->getInteriorName();
-            decltype(mapWorldSpaces)::const_iterator iWS = mapWorldSpaces.find(cellname);
-            if (iWS != mapWorldSpaces.end()) {
-                currentWorldSpace = &iWS->second;
-                return true;
-            }
+        else {
+            cellname = mwBridge->getInteriorName();
+        }
+
+        const auto iWS = mapWorldSpaces.find(cellname);
+        if (iWS != mapWorldSpaces.end()) {
+            currentWorldSpace = &iWS->second;
+            return true;
         }
     }
 
