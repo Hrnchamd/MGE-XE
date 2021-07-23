@@ -3,6 +3,8 @@
 d\ex_velothi_loaddoor_01.nif=far
 d\ex_v_cantondoor_01.nif=very_far
 f\active_blight_large.nif=ignore
+i\in_akulakhan00.nif=ignore
+i\in_dagoth_bridge00.nif=ignore
 x\ex_vivec_b_gap_t_01.nif=very_far
 x\ex_vivec_b_wb_gap_01.nif=very_far
 x\ex_vivec_b_gap_b_01.nif=very_far
