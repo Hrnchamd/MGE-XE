@@ -7,6 +7,10 @@
 //------------------------------------------------------------
 // Caustics post-process
 
+// Note: causticsStrength may be defined in another fx file, so cannot be used here to avoid multiple declarations
+static const float causticsSunlightFactor = 1 - pow(1 - sunVis, 2);
+static const float causticsStrengthScalar = 0.05 * alphaRef * saturate(0.75 * causticsSunlightFactor + 0.35 * length(fogColFar));
+
 DeferredOut CausticsVS(float4 pos : POSITION, float2 tex : TEXCOORD0, float2 ndc : TEXCOORD1)
 {
     DeferredOut OUT;
@@ -35,7 +39,7 @@ float4 CausticsPS(DeferredOut IN) : COLOR0
     clip(-uwpos.z);
 
     float3 sunray = uwpos - sunVec * (uwpos.z / sunVec.z);
-    float caust = causticsStrength * tex3D(sampWater3d, float3(sunray.xy / 1104, 0.4 * time)).b;
+    float caust = causticsStrengthScalar * tex3D(sampWater3d, float3(sunray.xy / 1104, 0.4 * time)).b;
     caust *= saturate(125 / depth * min(fwidth(sunray.x), fwidth(sunray.y)));
     c *= 1 + (caust - 0.3) * saturate(exp(uwpos.z / 400)) * saturate(uwpos.z / -30) * fog;
     

@@ -18,7 +18,6 @@ static const float3 sunColAdjusted = sunCol * sunlightFactor;
 static const float3 depthBaseColor = sunColAdjusted * float3(0.03, 0.04, 0.05) + (2 * skyCol + fogColFar) * float3(0.075, 0.08, 0.085);
 static const float windFactor = (length(windVec) + 1.5) / 140;
 static const float waterLevel = world[3][2];
-static const float causticsStrength = 0.05 * alphaRef * saturate(0.75 * sunlightFactor + 0.35 * length(fogColFar));
 
 shared texture tex4, tex5;
 shared float3 rippleOrigin;
