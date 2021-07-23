@@ -1216,7 +1216,7 @@ namespace MGEgui.DistantLand {
                         UsedNifList.RemoveAt(i--);
                     } else {
                         try {
-                            statusText.Text = strings["StaticsGenerate3Nif"] + name;
+                            backgroundWorker.ReportProgress(3, strings["StaticsGenerate3Nif"] + name);
                             if (DEBUG) {
                                 allWarnings.Add("Processing NIF: " + name);
                             }
