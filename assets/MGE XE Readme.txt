@@ -1,7 +1,7 @@
 
-MGE XE 0.13.4
+MGE XE 0.13.5
 -------------
-Released 2021-07-04
+Released 2021-07-24
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -62,10 +62,9 @@ Download at: https://www.nexusmods.com/morrowind/mods/36873
 
 Upgrading
 ---------
-From a previous MGE XE:
-Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land.
+When upgrading from a previous MGE XE: Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land.
 
-Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update or stick to the default shaders.
+Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update, test it yourself by checking mgeXE.log after the game for error messages, or stick to the default shaders.
 
 
 Uninstall
@@ -104,6 +103,11 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.5
+- Small change to distant land generation to avoid distant rendering issues in end game interior cells.
+- Distant land generator should no longer generate toolbar related exception pop-ups.
+- Updated GUI resolution selector. Largest resolutions appear first. It should display the intended warning if the resolution could not be changed.
+
 0.13.4
 - Fixed some distant interiors cells not rendering as distant. An issue with the distant generator output could cause the game to fail to load some distant interiors in some cases. Regenerate distant land for this fix.
 - Minor fix to per-pixel lighting. Checks how many UV sets are actually used before failing with purple rendering output and a warning. Some models have >4 UV sets for no reason.
