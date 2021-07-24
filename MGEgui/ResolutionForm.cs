@@ -263,6 +263,7 @@ namespace MGEgui {
             foreach (Point r in DirectX.DXMain.GetResolutions()) {
                 Resolutions.Add(new Resolution(r));
             }
+            Resolutions.Reverse();
 
             // Show the dialog
             ResolutionForm rf = new ResolutionForm();
@@ -270,19 +271,21 @@ namespace MGEgui {
                 // Write new data to the registry
                 try {
                     key = Registry.LocalMachine.OpenSubKey(@"Software\Bethesda Softworks\Morrowind", true);
-                } catch {
-                    MessageBox.Show(Statics.strings["UnableToWriteReg"], Statics.strings["Error"]);
-                }
-                if (key != null) {
+                    if (key == null) {
+                        throw new ArgumentNullException();
+                    }
+
                     key.SetValue("Screen Width", sWidth);
                     key.SetValue("Screen Height", sHeight);
                     key.SetValue("Refresh Rate", sRefresh);
                     key.Close();
+
+                    p = new Point(sWidth, sHeight);
+                    refresh = sRefresh;
+                    return true;
+                } catch {
+                    MessageBox.Show(Statics.strings["UnableToWriteReg"], Statics.strings["Error"]);
                 }
-                // Return
-                p = new Point(sWidth, sHeight);
-                refresh = sRefresh;
-                return true;
             }
             p = new Point();
             refresh = 0;
