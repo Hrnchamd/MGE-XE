@@ -126,7 +126,9 @@ technique T0 {
         StencilEnable = true;
         StencilFunc = always;
         StencilPass = replace;
+        StencilFail = keep;
         StencilRef = 1;
+        StencilMask = 0xffffffff;
         
         VertexShader = compile vs_3_0 ShadowVS();
         PixelShader = compile ps_3_0 ShadowStencilPS();
@@ -142,7 +144,9 @@ technique T0 {
         StencilEnable = true;
         StencilFunc = notequal;
         StencilPass = keep;
+        StencilFail = keep;
         StencilRef = 0;
+        StencilMask = 0xffffffff;
         
         VertexShader = compile vs_3_0 ShadowVS();
         PixelShader = compile ps_3_0 ShadowPS();
