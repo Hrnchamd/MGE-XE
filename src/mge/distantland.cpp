@@ -785,8 +785,12 @@ bool DistantLand::inspectIndexedPrimitive(int sceneCount, const RenderedState* r
     bool isLandSplat = sceneCount == 0 && rs->vb == lastVB && rs->blendEnable && (rs->fvf & D3DFVF_DIFFUSE) && mwBridge->IsExterior();
     lastVB = rs->vb;
 
+    // Avoid recording decal passes from UV sets >0, shadow rendering only samples alpha from texture 0 with UV 0
+    const auto& stage0 = frs->stage[0];
+    bool isDecal = stage0.texcoordIndex != 0 && (stage0.colorArg1 == D3DTA_TEXTURE || stage0.colorArg2 == D3DTA_TEXTURE);
+
     // Capture all writes to z-buffer, except detectable second passes of multi-pass rendering
-    if (rs->zWrite && !isLandSplat) {
+    if (rs->zWrite && !isLandSplat && !isDecal) {
         recordMW.emplace_back(*rs);
 
         // Unify alpha test operator/reference to be equivalent to GREATEREQUAL
