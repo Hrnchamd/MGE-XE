@@ -6,6 +6,7 @@
 #include "../3rdparty/niflib/include/obj/NiAVObject.h"
 #include "../3rdparty/niflib/include/obj/NiNode.h"
 #include "../3rdparty/niflib/include/obj/NiSwitchNode.h"
+#include "../3rdparty/niflib/include/obj/NiLODNode.h"
 #include "../3rdparty/niflib/include/obj/NiProperty.h"
 #include "../3rdparty/niflib/include/obj/NiMaterialProperty.h"
 #include "../3rdparty/niflib/include/obj/NiTexturingProperty.h"
@@ -406,24 +407,47 @@ private:
     }
 
     void SearchShapes(NiAVObjectRef rootObj, vector<NiTriBasedGeomRef>* SubsetNodes) {
+        // Exclude hidden objects
+        if (!rootObj->GetVisibility()) {
+            return;
+        }
+
         // Check if this object is derived from NiTriBasedGeom
         NiTriBasedGeomRef niGeom = DynamicCast<NiTriBasedGeom>(rootObj);
         if (niGeom) {
             SubsetNodes->push_back(niGeom);
         } else {
             // Check if this object derives from NiNode and, thus, may have children
-            // Follow switch index for NiSwitchNodes, ignore RootCollisionNodes
+            // Follow lowest LOD for NiLODNodes, switch index for NiSwitchNodes, ignore RootCollisionNodes
             NiNodeRef niNode = DynamicCast<NiNode>(rootObj);
-            NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>(rootObj);
-            RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>(rootObj);
-            if (niSwitch) {
-                // Search just the selected child
-                SearchShapes(niSwitch->GetActiveChild(), SubsetNodes);
-            } else if (niNode && !collision) {
-                // Call this function for any children
-                vector<NiAVObjectRef> children = niNode->GetChildren();
-                for (size_t i = 0; i < children.size(); i++) {
-                    SearchShapes(children[i], SubsetNodes);
+
+            if (niNode) {
+                const auto children = niNode->GetChildren();
+                NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>(rootObj);
+                NiLODNodeRef lod = DynamicCast<NiLODNode>(rootObj);
+                RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>(rootObj);
+
+                if (lod) {
+                    // Use lowest detail LOD (level with the farthest nearExtent)
+                    const auto levels = lod->GetLODLevels();
+                    float maxNearExtent = 0;
+                    int index = 0;
+
+                    for (size_t i = 0; i < levels.size(); ++i) {
+                        if (levels[i].nearExtent > maxNearExtent) {
+                            maxNearExtent = levels[i].nearExtent;
+                            index = i;
+                        }
+                    }
+                    SearchShapes(children[index], SubsetNodes);
+                } else if (niSwitch) {
+                    // Search just the selected child
+                    SearchShapes(niSwitch->GetActiveChild(), SubsetNodes);
+                } else if (!collision) {
+                    // Call this function for any children
+                    for (auto child : children) {
+                        SearchShapes(child, SubsetNodes);
+                    }
                 }
             }
         }
