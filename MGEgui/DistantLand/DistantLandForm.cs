@@ -478,7 +478,7 @@ namespace MGEgui.DistantLand {
                     allWarnings.Add("Loading plugin: " + file);
                 }
                 lastFileProcessed = file;
-                BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
+                BinaryReader br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 RecordReader rr = new RecordReader(br);
                 Dictionary<int, LTEX> Textures = new Dictionary<int, LTEX>();
                 Textures.Add(0, DefaultTex);
@@ -1137,7 +1137,7 @@ namespace MGEgui.DistantLand {
                 if (DEBUG) {
                     allWarnings.Add("Parsing for statics definitions: " + file);
                 }
-                BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
+                BinaryReader br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 try {
                     ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList, null);
                 } catch (Exception ex) {
@@ -1151,7 +1151,7 @@ namespace MGEgui.DistantLand {
                 if (DEBUG) {
                     allWarnings.Add("Parsing for used statics: " + file);
                 }
-                BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
+                BinaryReader br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 FileInfo fi = new FileInfo(file);
                 try {
                     ParseFileForInteriors(br, CellList);
@@ -1289,7 +1289,7 @@ namespace MGEgui.DistantLand {
                 UsedStaticsList[key.worldspace].Remove(key.reference);
             }
             backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
-            BinaryWriter bw = new BinaryWriter(File.Create(Statics.fn_usagedata), System.Text.Encoding.Default);
+            BinaryWriter bw = new BinaryWriter(File.Create(Statics.fn_usagedata), Statics.ESPEncoding);
             bw.Write(UsedNifList.Count);
 
             // Write main worldspace statics usage
@@ -1328,7 +1328,7 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(5, strings["StaticsGenerate5"]);
             {
                 StaticTexCreator stc = new StaticTexCreator(args.MipSkip);
-                BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), System.Text.Encoding.Default);
+                BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), Statics.ESPEncoding);
                 foreach (string name in UsedNifList) {
                     int nodes = br.ReadInt32();
                     br.BaseStream.Position += 16; // 4 - radius, 12 - center
@@ -1466,7 +1466,7 @@ namespace MGEgui.DistantLand {
 
             foreach (string file in files) {
                 lastFileProcessed = file;
-                BinaryReader br = new BinaryReader(File.OpenRead(file), System.Text.Encoding.Default);
+                BinaryReader br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 ParseFileForStatics(br, null, args.activators, args.misc, null, NoScriptList);
                 br.BaseStream.Position = 0;
                 ParseFileForInteriors(br, CellList);
@@ -1815,7 +1815,9 @@ namespace MGEgui.DistantLand {
         /* Plugins tab handlers */
 
         private void bPlugsFromINI_Click(object sender, EventArgs e) {
+            // morrowind.ini uses system codepage
             StreamReader sr = new StreamReader(Statics.fn_mwini, System.Text.Encoding.Default);
+
             bool InModList = false;
             List<string> ActivePlugins = new List<string>();
             while (!sr.EndOfStream) {

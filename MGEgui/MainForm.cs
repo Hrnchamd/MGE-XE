@@ -193,7 +193,8 @@ namespace MGEgui {
         };
 
         private void LoadMWINI() {
-            INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, INIFile.LegacyEncoding);
+            // morrowind.ini uses system codepage
+            INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default);
 
             // Clamp to FPS control maximum
             udFPSLimit.Value = Math.Min(new Decimal(mwini.getKeyValue("FPSLimit")), udFPSLimit.Maximum);
@@ -775,7 +776,8 @@ namespace MGEgui {
         }
 
         private void SaveMWINI() {
-            INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, INIFile.LegacyEncoding, true);
+            // morrowind.ini uses system codepage
+            INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default, true);
 
             mwini.setKey("FPSLimit", (int)udFPSLimit.Value);
             mwini.setKey("SSEnable", cbScreenshots.Checked);

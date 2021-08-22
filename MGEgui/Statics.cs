@@ -235,6 +235,7 @@ namespace MGEgui {
         public static readonly System.Globalization.CultureInfo Culture = new System.Globalization.CultureInfo("en-US", false);
         public static readonly System.Globalization.NumberFormatInfo NumFormat = Culture.NumberFormat;
         public static readonly System.Text.Encoding UTF8NoPreamble = new System.Text.UTF8Encoding(false);
+        public static readonly System.Text.Encoding ESPEncoding = System.Text.Encoding.GetEncoding(1252);
 
         private struct CommandArgs {
             public readonly bool styles;
