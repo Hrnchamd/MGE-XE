@@ -416,38 +416,44 @@ private:
         NiTriBasedGeomRef niGeom = DynamicCast<NiTriBasedGeom>(rootObj);
         if (niGeom) {
             SubsetNodes->push_back(niGeom);
-        } else {
-            // Check if this object derives from NiNode and, thus, may have children
-            // Follow lowest LOD for NiLODNodes, switch index for NiSwitchNodes, ignore RootCollisionNodes
-            NiNodeRef niNode = DynamicCast<NiNode>(rootObj);
+            return;
+        }
 
-            if (niNode) {
-                const auto children = niNode->GetChildren();
-                NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>(rootObj);
-                NiLODNodeRef lod = DynamicCast<NiLODNode>(rootObj);
-                RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>(rootObj);
+        // Check if this object derives from NiNode and, thus, may have children
+        // Select appropriate LOD for NiLODNodes, switch index for NiSwitchNodes, ignore RootCollisionNodes
+        NiNodeRef niNode = DynamicCast<NiNode>(rootObj);
+        if (niNode) {
+            const auto children = niNode->GetChildren();
+            NiSwitchNodeRef niSwitch = DynamicCast<NiSwitchNode>(rootObj);
+            NiLODNodeRef lod = DynamicCast<NiLODNode>(rootObj);
+            RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>(rootObj);
 
-                if (lod) {
-                    // Use lowest detail LOD (level with the farthest nearExtent)
-                    const auto levels = lod->GetLODLevels();
-                    float maxNearExtent = 0;
-                    int index = 0;
+            if (lod) {
+                // Pick LOD level with 1 cell equivalent distance, which may result in no node selected
+                const float lodDist = 8192.0f;
+                const auto levels = lod->GetLODLevels();
+                int index = -1;
 
-                    for (size_t i = 0; i < levels.size(); ++i) {
-                        if (levels[i].nearExtent > maxNearExtent) {
-                            maxNearExtent = levels[i].nearExtent;
-                            index = i;
-                        }
+                for (int i = 0; i < levels.size(); ++i) {
+                    if (lodDist >= levels[i].nearExtent && lodDist < levels[i].farExtent) {
+                        index = i;
+                        break;
                     }
+                }
+
+                if (index >= 0 && index < children.size()) {
                     SearchShapes(children[index], SubsetNodes);
-                } else if (niSwitch) {
-                    // Search just the selected child
-                    SearchShapes(niSwitch->GetActiveChild(), SubsetNodes);
-                } else if (!collision) {
-                    // Call this function for any children
-                    for (auto child : children) {
-                        SearchShapes(child, SubsetNodes);
-                    }
+                }
+            } else if (niSwitch) {
+                // Search just the selected child
+                auto child = niSwitch->GetActiveChild();
+                if (child) {
+                    SearchShapes(child, SubsetNodes);
+                }
+            } else if (!collision) {
+                // Call this function for any children
+                for (auto child : children) {
+                    SearchShapes(child, SubsetNodes);
                 }
             }
         }
