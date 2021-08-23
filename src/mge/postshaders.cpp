@@ -398,6 +398,7 @@ void PostShaders::shaderTime(MGEShaderUpdateFunc updateVarsFunc, int environment
     device->SetRenderState(D3DRS_ZWRITEENABLE, 0);
     device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
     device->SetRenderState(D3DRS_ALPHATESTENABLE, 0);
+    device->SetRenderState(D3DRS_FILLMODE, D3DFILL_SOLID);
 
     // Make sure fogging is off, drivers are not consistent in applying fog to post-transform vertices
     device->SetRenderState(D3DRS_FOGENABLE, 0);

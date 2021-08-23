@@ -72,6 +72,7 @@ Technique T0 {
         ZWriteEnable = false;
         CullMode = CW;
         ClipPlaneEnable = 0;
+        FillMode = Solid;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -90,6 +91,7 @@ Technique T0 {
         ZFunc = LessEqual;
         CullMode = CW;
         ClipPlaneEnable = 0;
+        FillMode = Solid;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;

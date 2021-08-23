@@ -347,8 +347,9 @@ Technique T0 {
     Pass P8 {
         ZEnable = false;
         ZWriteEnable = false;
-        CullMode = none;
         StencilEnable = false;
+        CullMode = none;
+        FillMode = Solid;
 
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
@@ -363,6 +364,7 @@ Technique T0 {
         ZWriteEnable = false;
         StencilEnable = false;
         CullMode = CW;
+        FillMode = Solid;
 
         AlphaBlendEnable = true;
         SrcBlend = SrcAlpha;
