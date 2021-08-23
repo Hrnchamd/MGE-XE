@@ -1,7 +1,7 @@
 
-MGE XE 0.13.5
+MGE XE 0.13.6
 -------------
-Released 2021-07-24
+Released 2021-08-22
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -103,6 +103,12 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.6
+- Distant land generator has improved compatibility with systems using languages with multi-byte character encodings (such as Shift-JIS). For these systems, it should be much less likely to fail generation or to generate corrupted distant land.
+- Distant land generator now selects the lowest detail LOD from models that contain LOD nodes (mods like Morrowind Optimization Patch).
+- Prevented special wireframe and stencil effects from affecting shaders and other effects rendering.
+- Fixed a rendering issue with some texture decals generating incorrect lighting and extra shadows on the object they are applied to.
+
 0.13.5
 - Small change to distant land generation to avoid distant rendering issues in end game interior cells.
 - Distant land generator should no longer generate toolbar related exception pop-ups.
