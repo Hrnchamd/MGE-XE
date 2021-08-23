@@ -1,7 +1,7 @@
 
-MGE XE 0.13.6
+MGE XE 0.13.7
 -------------
-Released 2021-08-22
+Released 2021-08-23
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -103,6 +103,10 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.13.7
+- Distant land generator now selects the LOD detail at 1 cell distance from models that contain LOD nodes.
+- Fix distant land generator crash when handling some configurations of LOD nodes.
+
 0.13.6
 - Distant land generator has improved compatibility with systems using languages with multi-byte character encodings (such as Shift-JIS). For these systems, it should be much less likely to fail generation or to generate corrupted distant land.
 - Distant land generator now selects the lowest detail LOD from models that contain LOD nodes (mods like Morrowind Optimization Patch).
