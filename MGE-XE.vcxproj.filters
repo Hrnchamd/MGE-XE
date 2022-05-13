@@ -180,6 +180,9 @@
     <ClCompile Include="src\support\pngsave.cpp">
       <Filter>Source Files\support</Filter>
     </ClCompile>
+    <ClCompile Include="src\mge\api.cpp">
+      <Filter>Source Files\mge</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\proxydx\d3d8device.h">
@@ -334,6 +337,12 @@
     </ClInclude>
     <ClInclude Include="src\support\pngsave.h">
       <Filter>Header Files\support</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mge\api.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mge\MGEAPI.h">
+      <Filter>Header Files\mge</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

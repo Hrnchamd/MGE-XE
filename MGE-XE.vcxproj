@@ -108,6 +108,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\mge\api.cpp" />
     <ClCompile Include="src\mge\configuration.cpp" />
     <ClCompile Include="src\mge\distantinit.cpp" />
     <ClCompile Include="src\mge\distantland.cpp" />
@@ -157,6 +158,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\exports.def" />
+    <ClInclude Include="src\mge\api.h" />
+    <ClInclude Include="src\mge\MGEAPI.h" />
     <ClInclude Include="src\proxydx\d3d8header.inl">
       <FileType>Document</FileType>
     </ClInclude>
