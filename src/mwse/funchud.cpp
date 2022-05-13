@@ -133,7 +133,7 @@ bool mwseEnableHUD::execute(mwseInstruction* _this) {
 
     MGEhud::hud_id id = MGEhud::resolveName(hud);
     if (id != MGEhud::invalid_hud_id) {
-        MGEhud::enable(id);
+        MGEhud::setEnabled(id, true);
     }
 
     return true;
@@ -149,7 +149,7 @@ bool mwseDisableHUD::execute(mwseInstruction* _this) {
 
     MGEhud::hud_id id = MGEhud::resolveName(hud);
     if (id != MGEhud::invalid_hud_id) {
-        MGEhud::disable(id);
+        MGEhud::setEnabled(id, false);
     }
 
     return true;
@@ -270,7 +270,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDEnableHUD)
 // NIDEnableHUD
 bool mwseNIDEnableHUD::execute(mwseInstruction* _this) {
     if (currentHUD != MGEhud::invalid_hud_id) {
-        MGEhud::enable(currentHUD);
+        MGEhud::setEnabled(currentHUD, true);
     }
     return true;
 }
@@ -281,7 +281,7 @@ MWSEINSTRUCTION_DECLARE_VTABLE(mwseNIDDisableHUD)
 // NIDDisableHUD
 bool mwseNIDDisableHUD::execute(mwseInstruction* _this) {
     if (currentHUD != MGEhud::invalid_hud_id) {
-        MGEhud::disable(currentHUD);
+        MGEhud::setEnabled(currentHUD, false);
     }
     return true;
 }

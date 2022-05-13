@@ -503,6 +503,25 @@ MGEShader* PostShaders::findShader(const char* shaderName) {
     return nullptr;
 }
 
+const std::vector<MGEShader>& PostShaders::listShaders() {
+    return shaders;
+}
+
+bool PostShaders::setShaderVar(const char* shaderName, const char* varName, bool b) {
+    MGEShader* shader = findShader(shaderName);
+    if (!shader) {
+        return false;
+    }
+
+    D3DXHANDLE ehVar = shader->effect->GetParameterByName(0, varName);
+    if (!ehVar) {
+        return false;
+    }
+
+    shader->effect->SetBool(ehVar, b);
+    return true;
+}
+
 bool PostShaders::setShaderVar(const char* shaderName, const char* varName, int x) {
     MGEShader* shader = findShader(shaderName);
     if (!shader) {

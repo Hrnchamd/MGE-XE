@@ -10,12 +10,14 @@
 #include "funcmwui.h"
 #include "funcphysics.h"
 #include "mgebridge.h"
+#include "mge/api.h"
 #include "support/winheader.h"
 
 
 
 struct TES3MACHINE;
 typedef TES3MACHINE* (*MWSEGetVM_t)();
+typedef bool (*MGEInterface_t)(api::MGEAPI*);
 typedef bool (*MWSEAddInstruction_t)(OPCODE, mwseInstruction*);
 typedef bool (__thiscall* addInstruction_t)(TES3MACHINE*, OPCODE, mwseInstruction*);
 
@@ -53,8 +55,15 @@ static void fixMWSE94Problems(HMODULE dll) {
 
 void MWSE_MGEPlugin::init(HMODULE dll) {
     // Test MWSE for extensibility
+    MGEInterface_t MGEInterface = (MGEInterface_t)GetProcAddress(dll, "MGEInterface");
     MWSEGetVM_t MWSEGetVM = (MWSEGetVM_t)GetProcAddress(dll, "MWSEGetVM");
     MWSEAddInstruction_t MWSEAddInstruction = (MWSEAddInstruction_t)GetProcAddress(dll, "MWSEAddInstruction");
+
+    if (MGEInterface) {
+        // Create and pass API instance to MWSE 2.1+
+        api::api = new api::MGEAPIv1();
+        MGEInterface(api::api);
+    }
 
     if (MWSEGetVM && MWSEAddInstruction) {
         // Newer, extensible MWSE version

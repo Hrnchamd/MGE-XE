@@ -231,14 +231,14 @@ void MGEhud::free(hud_id hud) {
     e->effectFilename.clear();
 }
 
-void MGEhud::enable(hud_id hud) {
+bool MGEhud::getEnabled(hud_id hud) {
     Element* e = &elements[hud];
-    e->enabled = true;
+    return e->enabled;
 }
 
-void MGEhud::disable(hud_id hud) {
+void MGEhud::setEnabled(hud_id hud, bool enable) {
     Element* e = &elements[hud];
-    e->enabled = false;
+    e->enabled = enable;
 }
 
 void MGEhud::setPosition(hud_id hud, float x, float y) {

@@ -55,6 +55,8 @@ public:
     static void release();
 
     static MGEShader* findShader(const char* shaderName);
+    static const std::vector<MGEShader>& listShaders();
+    static bool setShaderVar(const char* shaderName, const char* varName, bool b);
     static bool setShaderVar(const char* shaderName, const char* varName, int x);
     static bool setShaderVar(const char* shaderName, const char* varName, float x);
     static bool setShaderVar(const char* shaderName, const char* varName, float* v);

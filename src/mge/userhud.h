@@ -39,8 +39,8 @@ public:
     static hud_id load(const char* name, const char* texture);
     static hud_id resolveName(const char* name);
     static void free(hud_id hud);
-    static void enable(hud_id hud);
-    static void disable(hud_id hud);
+    static bool getEnabled(hud_id hud);
+    static void setEnabled(hud_id hud, bool enable);
     static void setPosition(hud_id hud, float x, float y);
     static void setScale(hud_id hud, float xscale, float yscale);
     static void setFullscreen(hud_id hud);
