@@ -4,7 +4,7 @@
 
 
 
-#define MASK(x) (1 << x)
+#define MASK(x) (1U << x)
 
 // MGE Generic flags
 #define MGE_DISABLED_BIT        0

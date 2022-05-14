@@ -60,6 +60,53 @@ namespace api {
         return MGE_MWSE_VERSION;
     }
 
+
+    const std::array<unsigned int, 21> featureToFlagMap = {
+		FPS_COUNTER,
+		DISPLAY_MESSAGES,
+		USE_MENU_CACHING,
+		NO_MW_MGE_BLEND,
+		NO_MW_SUNGLARE,
+		USE_HW_SHADER,
+		TRANSPARENCY_AA,
+		USE_HDR,
+		EXP_FOG,
+		USE_ATM_SCATTER,
+		USE_GRASS,
+		USE_SHADOWS,
+		USE_DISTANT_WATER,
+		USE_DISTANT_LAND,
+		USE_DISTANT_STATICS,
+		REFLECTIVE_WATER,
+		REFLECT_NEAR,
+		REFLECT_INTERIOR,
+		REFLECT_SKY,
+		BLUR_REFLECTIONS,
+		DYNAMIC_RIPPLES,
+    };
+
+    bool MGEAPIv1::featureGetEnabled(RenderFeature feature) {
+        int i = static_cast<int>(feature);
+        if (i >= 0 && i < featureToFlagMap.size()) {
+            auto flag = featureToFlagMap[i];
+            return (Configuration.MGEFlags & flag) != 0;
+        }
+        return false;
+    }
+
+    void MGEAPIv1::featureSetEnabled(RenderFeature feature, bool enable) {
+        int i = static_cast<int>(feature);
+        if (i >= 0 && i < featureToFlagMap.size()) {
+            auto flag = featureToFlagMap[i];
+            if (enable) {
+                Configuration.MGEFlags |= flag;
+            }
+            else {
+                Configuration.MGEFlags &= ~flag;
+            }
+        }
+    }
+
     const MacroFunctions* MGEAPIv1::macroFunctions() {
         return &macroFns;
     }
@@ -129,13 +176,13 @@ namespace api {
     }
 
     void MGEAPIv1::zoomSetZoomContinuous(float rate, float rateTarget) {
-        Configuration.CameraEffects.zoomRate = std::max(1.0f, rate);
-        Configuration.CameraEffects.zoomRateTarget = std::max(1.0f, rateTarget);
+        Configuration.CameraEffects.zoomRate = rate;
+        Configuration.CameraEffects.zoomRateTarget = rateTarget;
     }
 
     void MGEAPIv1::zoomStop() const {
-        Configuration.CameraEffects.zoomRateTarget = 0;
         Configuration.CameraEffects.zoomRate = 0;
+        Configuration.CameraEffects.zoomRateTarget = 0;
     }
 
     bool MGEAPIv1::cameraShakeGetEnabled() {
@@ -264,7 +311,7 @@ namespace api {
     }
 
     ShaderHandle MGEAPIv1::shaderListShaders(size_t index) {
-        auto shaders = PostShaders::listShaders();
+        const auto& shaders = PostShaders::listShaders();
         return (index < shaders.size()) ? ShaderHandle(&shaders[index]) : nullptr;
     }
 
@@ -290,42 +337,49 @@ namespace api {
         if (param_handle) {
             D3DXPARAMETER_DESC desc;
             if (SUCCEEDED(shader->effect->GetParameterDesc(param_handle, &desc))) {
-                // Initially label as unknown type 'x'
-                strncpy_s(out_info->name, desc.Name, sizeof(out_info->name));
-                out_info->valueType = 'x';
+                // Initially label variable as unknown type 'x'
+                std::snprintf(out_info->name, sizeof(out_info->name), "%s", desc.Name);
+                char valueType = 'x';
 
                 if (desc.Class == D3DXPC_SCALAR) {
-                    switch (desc.Type) {
-                    case D3DXPT_BOOL:
-                        out_info->valueType = 'b';
-                        break;
-                    case D3DXPT_INT:
-                        out_info->valueType = 'i';
-                        break;
-                    case D3DXPT_FLOAT:
-                        out_info->valueType = 'f';
-                        break;
-                    case D3DXPT_STRING:
-                        out_info->valueType = 's';
-                        break;
+                    if (desc.Elements <= 1) {
+                        switch (desc.Type) {
+                        case D3DXPT_BOOL:
+                            valueType = 'b';
+                            break;
+                        case D3DXPT_INT:
+                            valueType = 'i';
+                            break;
+                        case D3DXPT_FLOAT:
+                            valueType = 'f';
+                            break;
+                        case D3DXPT_STRING:
+                            valueType = 's';
+                            break;
+                        }
+                    }
+                    else if (desc.Type == D3DXPT_FLOAT) {
+                        valueType = 'a';
                     }
                 }
                 else if (desc.Class == D3DXPC_VECTOR && desc.Type == D3DXPT_FLOAT) {
-                    switch (desc.Elements) {
+                    switch (desc.Columns) {
                     case 2:
-                        out_info->valueType = '2';
+                        valueType = '2';
                         break;
                     case 3:
-                        out_info->valueType = '3';
+                        valueType = '3';
                         break;
                     case 4:
-                        out_info->valueType = '4';
+                        valueType = '4';
                         break;
                     }
                 }
-                else if (desc.Class == D3DXPC_MATRIX_COLUMNS && desc.Type == D3DXPT_FLOAT) {
-                    out_info->valueType = 'm';
+                else if (desc.Class == D3DXPC_MATRIX_ROWS && desc.Type == D3DXPT_FLOAT) {
+                    valueType = 'm';
                 }
+
+                out_info->valueType = valueType;
                 return true;
             }
         }
@@ -379,12 +433,39 @@ namespace api {
         return false;
     }
 
+    bool MGEAPIv1::shaderGetFloatArray(ShaderHandle handle, const char* variableName, float* out_values, size_t* count) {
+        auto shader = static_cast<MGEShader*>(handle);
+        auto param_handle = shader->effect->GetParameterByName(0, variableName);
+
+        if (param_handle) {
+            D3DXPARAMETER_DESC desc;
+            shader->effect->GetParameterDesc(param_handle, &desc);
+
+            // Check if array fits into array provided.
+            if (desc.Elements <= *count) {
+                *count = desc.Elements;
+                return shader->effect->GetFloatArray(param_handle, out_values, desc.Elements) == D3D_OK;
+            }
+        }
+        return false;
+    }
+
     bool MGEAPIv1::shaderGetVector(ShaderHandle handle, const char* variableName, float* out_values, size_t count) {
         auto shader = static_cast<MGEShader*>(handle);
         auto param_handle = shader->effect->GetParameterByName(0, variableName);
 
         if (param_handle) {
             return shader->effect->GetFloatArray(param_handle, out_values, count) == D3D_OK;
+        }
+        return false;
+    }
+
+    bool MGEAPIv1::shaderGetMatrix(ShaderHandle handle, const char* variableName, float* out_values) {
+        auto shader = static_cast<MGEShader*>(handle);
+        auto param_handle = shader->effect->GetParameterByName(0, variableName);
+
+        if (param_handle) {
+            return shader->effect->GetMatrix(param_handle, reinterpret_cast<D3DXMATRIX*>(out_values)) == D3D_OK;
         }
         return false;
     }
@@ -429,12 +510,32 @@ namespace api {
         return false;
     }
 
-    bool MGEAPIv1::shaderSetVector(ShaderHandle handle, const char* variableName, float* values, size_t count) {
+    bool MGEAPIv1::shaderSetFloatArray(ShaderHandle handle, const char* variableName, const float* values, size_t* count) {
+        auto shader = static_cast<MGEShader*>(handle);
+        auto param_handle = shader->effect->GetParameterByName(0, variableName);
+
+        if (param_handle) {
+            return shader->effect->SetFloatArray(param_handle, values, *count) == D3D_OK;
+        }
+        return false;
+    }
+
+    bool MGEAPIv1::shaderSetVector(ShaderHandle handle, const char* variableName, const float* values, size_t count) {
         auto shader = static_cast<MGEShader*>(handle);
         auto param_handle = shader->effect->GetParameterByName(0, variableName);
 
         if (param_handle) {
             return shader->effect->SetFloatArray(param_handle, values, count) == D3D_OK;
+        }
+        return false;
+    }
+
+    bool MGEAPIv1::shaderSetMatrix(ShaderHandle handle, const char* variableName, const float* values) {
+        auto shader = static_cast<MGEShader*>(handle);
+        auto param_handle = shader->effect->GetParameterByName(0, variableName);
+
+        if (param_handle) {
+            return shader->effect->SetMatrix(param_handle, reinterpret_cast<const D3DXMATRIX*>(values)) == D3D_OK;
         }
         return false;
     }

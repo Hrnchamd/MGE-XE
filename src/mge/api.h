@@ -10,37 +10,37 @@ namespace api {
 		virtual int getMGEVersion() const = 0;
 	};
 
-    struct DistantLandRenderConfig {
+	struct DistantLandRenderConfig {
 		// API v1
-        float DrawDist;
-        float NearStaticEnd;
-        float FarStaticEnd;
-        float VeryFarStaticEnd;
-        float FarStaticMinSize;
-        float VeryFarStaticMinSize;
-        float AboveWaterFogStart;
-        float AboveWaterFogEnd;
-        float BelowWaterFogStart;
-        float BelowWaterFogEnd;
-        float InteriorFogStart;
-        float InteriorFogEnd;
-        unsigned char WaterWaveHeight;
-        unsigned char WaterCaustics;
-        unsigned char WaterReflect;
-        unsigned int ShadowResolution;
-        float Wind[10];
-        float FogDist[10];
-        float FogOffsetDist[10];
-    };
+		float DrawDist;
+		float NearStaticEnd;
+		float FarStaticEnd;
+		float VeryFarStaticEnd;
+		float FarStaticMinSize;
+		float VeryFarStaticMinSize;
+		float AboveWaterFogStart;
+		float AboveWaterFogEnd;
+		float BelowWaterFogStart;
+		float BelowWaterFogEnd;
+		float InteriorFogStart;
+		float InteriorFogEnd;
+		unsigned char WaterWaveHeight;
+		unsigned char WaterCaustics;
+		unsigned char WaterReflect;
+		unsigned int ShadowResolution;
+		float Wind[10];
+		float FogDist[10];
+		float FogOffsetDist[10];
+	};
 
-    enum struct LightingMode {
+	enum struct LightingMode {
 		// API v1
 		Vertex = 0,
 		PerPixelAll = 1,
-		PerPixelInteriorOnly = 2
+		PerPixelInteriorOnly = 2,
 	};
 
-	typedef void * ShaderHandle;
+	typedef void* ShaderHandle;
 
 	struct ShaderVariableInfo {
 		char valueType;
@@ -91,9 +91,37 @@ namespace api {
 		Macro MoveUp3PCam;
 	};
 
+	enum struct RenderFeature {
+		// API v1
+		FPSCounter = 0,
+		DisplayMessages = 1,
+		PauseRenderingInMenus = 2,
+		NoMWMGEBlending = 3,
+		NoMWSunglare = 4,
+		Shaders = 5,
+		TransparencyAA = 6,
+		UpdateHDR = 7,
+		ExponentialFog = 8,
+		AtmosphericScattering = 9,
+		Grass = 10,
+		Shadows = 11,
+		DistantWater = 12,
+		DistantLand = 13,
+		DistantStatics = 14,
+		ReflectiveWater = 15,
+		ReflectNear = 16,
+		ReflectInterior = 17,
+		ReflectSky = 18,
+		BlurReflections = 19,
+		DynamicRipples = 20,
+	};
+
 	struct MGEAPIv1 : public MGEAPI {
 		virtual int getAPIVersion() const override;
 		virtual int getMGEVersion() const override;
+
+		virtual bool featureGetEnabled(RenderFeature feature);
+		virtual void featureSetEnabled(RenderFeature feature, bool enable);
 
 		virtual const MacroFunctions* macroFunctions();
 		virtual bool reloadDistantLand();
@@ -143,12 +171,16 @@ namespace api {
 		virtual bool shaderGetFloat(ShaderHandle handle, const char* variableName, float* out_value);
 		virtual bool shaderGetInt(ShaderHandle handle, const char* variableName, int* out_value);
 		virtual bool shaderGetString(ShaderHandle handle, const char* variableName, const char** out_value);
+		virtual bool shaderGetFloatArray(ShaderHandle handle, const char* variableName, float* out_values, size_t* count);
 		virtual bool shaderGetVector(ShaderHandle handle, const char* variableName, float* out_values, size_t count);
+		virtual bool shaderGetMatrix(ShaderHandle handle, const char* variableName, float* out_values);
 		virtual bool shaderSetBool(ShaderHandle handle, const char* variableName, bool value);
 		virtual bool shaderSetFloat(ShaderHandle handle, const char* variableName, float value);
 		virtual bool shaderSetInt(ShaderHandle handle, const char* variableName, int value);
 		virtual bool shaderSetString(ShaderHandle handle, const char* variableName, const char* value);
-		virtual bool shaderSetVector(ShaderHandle handle, const char* variableName, float* values, size_t count);
+		virtual bool shaderSetFloatArray(ShaderHandle handle, const char* variableName, const float* values, size_t* count);
+		virtual bool shaderSetVector(ShaderHandle handle, const char* variableName, const float* values, size_t count);
+		virtual bool shaderSetMatrix(ShaderHandle handle, const char* variableName, const float* values);
 
 		virtual void weatherScatteringGet(float* inscatter, float* outscatter);
 		virtual void weatherScatteringSet(float inscatter[3], float outscatter[3]);
