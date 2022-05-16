@@ -296,14 +296,21 @@ namespace api {
     }
 
     ShaderHandle MGEAPIv1::shaderLoad(const char* id) {
-        // TODO
-        return nullptr;
+        // Check if shader is not already loaded
+        auto s = PostShaders::findShader(id);
+        if (!s) {
+            // Try loading shader
+            if (PostShaders::loadNewShader(id)) {
+                s = PostShaders::findShader(id);
+            }
+        }
+        return ShaderHandle(s);
     }
 
     bool MGEAPIv1::shaderReload(ShaderHandle handle) {
         auto shader = static_cast<MGEShader*>(handle);
-        // TODO
-        return false;
+        shader->timestamp = 0;
+        return PostShaders::updateShaderChain();
     }
 
     ShaderHandle MGEAPIv1::shaderGetShader(const char* id) {
@@ -312,7 +319,11 @@ namespace api {
 
     ShaderHandle MGEAPIv1::shaderListShaders(size_t index) {
         const auto& shaders = PostShaders::listShaders();
-        return (index < shaders.size()) ? ShaderHandle(&shaders[index]) : nullptr;
+        if (index < shaders.size()) {
+            MGEShader *s = &*shaders[index];
+            return ShaderHandle(s);
+        }
+        return nullptr;
     }
 
     const char* MGEAPIv1::shaderGetName(ShaderHandle handle) {

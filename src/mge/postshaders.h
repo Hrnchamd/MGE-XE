@@ -2,8 +2,9 @@
 
 #include "doublesurface.h"
 
-#include <vector>
+#include <memory>
 #include <string>
+#include <vector>
 
 
 
@@ -34,7 +35,7 @@ typedef void (*MGEShaderUpdateFunc)(MGEShader*);
 
 class PostShaders {
     static IDirect3DDevice9* device;
-    static std::vector<MGEShader> shaders;
+    static std::vector<std::unique_ptr<MGEShader>> shaders;
     static std::vector<D3DXMACRO> features;
     static IDirect3DTexture9* texLastShader;
     static IDirect3DSurface9* surfaceLastShader;
@@ -47,15 +48,16 @@ class PostShaders {
 public:
     static bool init(IDirect3DDevice9* realDevice);
     static bool initShaderChain();
+    static bool loadNewShader(const char* name);
     static bool updateShaderChain();
-    static bool checkShaderVersion(MGEShader* shader);
+    static bool checkShaderVersion(ID3DXEffect* effect);
     static void initShader(MGEShader* shader);
     static void loadShaderDependencies(MGEShader* shader);
     static bool initBuffers();
     static void release();
 
     static MGEShader* findShader(const char* shaderName);
-    static const std::vector<MGEShader>& listShaders();
+    static const std::vector<std::unique_ptr<MGEShader>>& listShaders();
     static bool setShaderVar(const char* shaderName, const char* varName, bool b);
     static bool setShaderVar(const char* shaderName, const char* varName, int x);
     static bool setShaderVar(const char* shaderName, const char* varName, float x);
