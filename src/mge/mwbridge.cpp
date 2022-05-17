@@ -1093,6 +1093,42 @@ bool MWBridge::isLoadingSplash() {
 
 //-----------------------------------------------------------------------------
 
+// showLoadingBar - Displays the loading progress bar with text and fill amount
+void MWBridge::showLoadingBar(const char* text, float amount) {
+    const auto showLoadingMenu = reinterpret_cast<void(__cdecl*)(const char*, float)>(0x5ded20);
+    showLoadingMenu(text, amount);
+
+    const auto renderNextFrame = reinterpret_cast<void(__thiscall*)(void*, int)>(0x41be90);
+    renderNextFrame(reinterpret_cast<void*>(eMaster2), 0);
+}
+
+//-----------------------------------------------------------------------------
+
+// patchPreMenuLoading - Patch in a callback before the start of ESM loading
+void MWBridge::patchGameLoading(void (__cdecl* newfunc)()) {
+    // addr1 - Load game from main menu
+    // addr2 - Start new game
+    // addr3 - After renderer restart
+    DWORD addr1 = 0x4c4f24;
+    DWORD addr2 = 0x5fb2c5;
+    DWORD addr3 = 0x41aa31;
+
+    // Replace existing function call, change following test al, al to xor al, al
+    VirtualMemWriteAccessor vw1((void*)addr1, 6);
+    write_dword(addr1 + 1, (DWORD)newfunc - (addr1+5));
+    write_byte(addr1 + 5, 0x32);
+
+    VirtualMemWriteAccessor vw2((void*)addr2, 6);
+    write_dword(addr2 + 1, (DWORD)newfunc - (addr2+5));
+    write_byte(addr2 + 5, 0x32);
+
+    // Replace existing function call only
+    VirtualMemWriteAccessor vw3((void*)addr3, 5);
+    write_dword(addr3 + 1, (DWORD)newfunc - (addr3+5));
+}
+
+//-----------------------------------------------------------------------------
+
 // redirectMenuBackground - Redirects splash screen scenegraph draw call to another function
 void MWBridge::redirectMenuBackground(void (_stdcall* func)(int)) {
     DWORD addr = 0x04589fb;

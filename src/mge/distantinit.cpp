@@ -188,15 +188,14 @@ const D3DVERTEXELEMENT9 GrassElem[] = {
 
 
 
-bool DistantLand::init(IDirect3DDevice9* realDevice) {
+bool DistantLand::init() {
     if (ready) {
         return true;
     }
-    if (device) {
+    if (!device) {
         return false;
     }
 
-    device = realDevice;
     LOG::logline(">> Starting Distant Land init");
     vsr.init(device);
     BSA::init();

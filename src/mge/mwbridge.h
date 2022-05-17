@@ -108,6 +108,8 @@ public:
     void disableIntroMovies();
     bool isIntroDone();
     bool isLoadingSplash();
+    void showLoadingBar(const char* text, float amount);
+    void patchGameLoading(void (__cdecl* newfunc)());
     void redirectMenuBackground(void (__stdcall* func)(int));
     void setUIScale(float scale);
     void patchUIConfigure(void (__stdcall* newfunc)());

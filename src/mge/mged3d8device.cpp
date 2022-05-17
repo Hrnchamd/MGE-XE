@@ -28,6 +28,7 @@ static RenderedState rs;
 static FragmentState frs;
 static LightState lightrs;
 
+static void initOnLoad();
 static bool detectMenu(const D3DMATRIX* m);
 static void captureRenderState(D3DRENDERSTATETYPE a, DWORD b);
 static void captureFragmentRenderState(DWORD a, D3DTEXTURESTAGESTATETYPE b, DWORD c);
@@ -76,6 +77,9 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d) : ProxyDev
 
     lightrs.lights.clear();
     lightrs.active.clear();
+
+    // Store active device in distant land, occurs on startup and after fullscreen alt-tab
+    DistantLand::device = realDevice;
 }
 
 // Present - End of MW frame
@@ -86,7 +90,12 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT* a, const RECT* b, HWND c, c
     // Load Morrowind's dynamic memory pointers
     if (!mwBridge->IsLoaded() && mwBridge->CanLoad()) {
         mwBridge->Load();
+
+        // Apply patch to load distant land after entering game from the main menu, and on renderer restart
+        mwBridge->patchGameLoading(&initOnLoad);
+        // Disable MW screenshot function to allow MGE to use the same key
         mwBridge->disableScreenshotFunc();
+        // Mark water material to allow MGEProxyDevice to detect it
         mwBridge->markWaterNode(99999.0f);
     }
 
@@ -222,7 +231,7 @@ HRESULT _stdcall MGEProxyDevice::BeginScene() {
         }
 
         if (isMainView) {
-            // Track scene count here in BeginSene
+            // Track scene count here in BeginScene
             // isMainView is not always valid at EndScene if Morrowind draws sunglare
             ++sceneCount;
 
@@ -232,18 +241,6 @@ HRESULT _stdcall MGEProxyDevice::BeginScene() {
                     mwBridge->SetFOV(Configuration.ScreenFOV);
                 }
                 distantWater = (Configuration.MGEFlags & USE_DISTANT_LAND) || (Configuration.MGEFlags & USE_DISTANT_WATER);
-            }
-
-            if (!DistantLand::ready) {
-                if (DistantLand::init(realDevice)) {
-                    // Initially force view distance to max, required for full extent shadows and grass
-                    if (Configuration.MGEFlags & USE_DISTANT_LAND) {
-                        mwBridge->SetViewDistance(7168.0);
-                    }
-                } else {
-                    Configuration.MGEFlags &= ~USE_DISTANT_LAND;
-                    StatusOverlay::setStatus("MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.", StatusOverlay::PriorityError);
-                }
             }
         } else {
             // UI scene, apply post-process if there was anything drawn before it
@@ -484,6 +481,25 @@ ULONG _stdcall MGEProxyDevice::Release() {
 }
 
 // --------------------------------------------------------
+
+// initOnLoad
+// Initializes distant land
+// Called after new game or load game is selected from the main menu
+void initOnLoad() {
+    auto mwBridge = MWBridge::get();
+
+    mwBridge->showLoadingBar("Loading MGE XE...", 50.0);
+
+    if (DistantLand::init()) {
+        // Initially force view distance to max, required for full extent shadows and grass
+        if (Configuration.MGEFlags & USE_DISTANT_LAND) {
+            mwBridge->SetViewDistance(7168.0);
+        }
+    } else {
+        Configuration.MGEFlags &= ~USE_DISTANT_LAND;
+        StatusOverlay::setStatus("MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.", StatusOverlay::PriorityError);
+    }
+}
 
 // detectMenu
 // detects if view matrix is for UI / load bars

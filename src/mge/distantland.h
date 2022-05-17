@@ -125,7 +125,7 @@ public:
     static std::function<void(IDirect3DSurface9*)> captureScreenHandler;
     static bool captureScreenWithUI;
 
-    static bool init(IDirect3DDevice9* realDevice);
+    static bool init();
     static bool initShader();
     static bool initDepth();
     static bool initWater();
