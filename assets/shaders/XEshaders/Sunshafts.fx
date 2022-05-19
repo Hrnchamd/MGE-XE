@@ -209,7 +209,7 @@ float4 alpha( float2 Tex : TEXCOORD0 ) : COLOR0
     return float4(a, a, a, 1);
 }
 
-technique T0 < string MGEinterface="MGE XE 0"; bool disableSunglare = true; >
+technique T0 < string MGEinterface = "MGE XE 0"; bool disableSunglare = true; string category = "atmosphere"; >
 {
     pass {PixelShader = compile ps_3_0 stretch();}
     pass {PixelShader = compile ps_3_0 blurRHalf();}

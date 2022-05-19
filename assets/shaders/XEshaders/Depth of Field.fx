@@ -128,7 +128,7 @@ float4 smartblur(float2 tex : TEXCOORD) : COLOR0
 
 
 
-technique T0 < string MGEinterface = "MGE XE 0"; >
+technique T0 < string MGEinterface = "MGE XE 0"; string category = "lens"; >
 {
     pass { PixelShader = compile SM dof(); }
     pass { PixelShader = compile SM smartblur(); }

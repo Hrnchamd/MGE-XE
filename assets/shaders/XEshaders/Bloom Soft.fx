@@ -406,7 +406,7 @@ float4 doDepthFix(in float2 Tex : TEXCOORD) : COLOR0
 }
 #endif
 
-technique T0 < string MGEinterface = "MGE XE 0"; >
+technique T0 < string MGEinterface = "MGE XE 0"; string category = "sensor";  >
 {
     #if ( ( BLOOM_FX_SKY != 1 ) || ( BLOOM_FX_HANDS != 1 ) )
     pass fixSky { PixelShader = compile ps_3_0 doDepthFix(); }

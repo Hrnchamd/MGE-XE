@@ -73,7 +73,7 @@ float4 blurHorzCombine(in float2 Tex : TEXCOORD) : COLOR0
     return pow(base + bloomLevel * radiance, 1.0/bloomGamma);
 }
 
-technique T0 < string MGEinterface="MGE XE 0"; >
+technique T0 < string MGEinterface = "MGE XE 0"; string category = "sensor"; >
 {
     pass { PixelShader = compile ps_3_0 energyLevels(); }
     pass { PixelShader = compile ps_3_0 blurVert(); }

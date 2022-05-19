@@ -52,7 +52,7 @@ float4 tone(float2 tex : TEXCOORD) : COLOR0
     return float4(saturate(g), 1);
 }
 
-technique T0 < string MGEinterface = "MGE XE 0"; bool requiresHDR = true; >
+technique T0 < string MGEinterface = "MGE XE 0"; bool requiresHDR = true; string category = "tone"; >
 {
     pass { PixelShader = compile ps_3_0 tone(); }
 }

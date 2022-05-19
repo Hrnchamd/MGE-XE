@@ -80,7 +80,7 @@ float4 rays(float2 tex : TEXCOORD0) : COLOR
     return c + rayz * lf * lightcolour;
 }
 
-technique T0  < string MGEinterface = "MGE XE 0"; >
+technique T0  < string MGEinterface = "MGE XE 0"; string category = "scene"; >
 {
     pass { PixelShader = compile ps_3_0 rays(); }
 }

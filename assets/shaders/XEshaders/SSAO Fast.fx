@@ -213,7 +213,7 @@ float4 combine(float2 tex : TEXCOORD0) : COLOR
 
 
 
-technique T0 < string MGEinterface="MGE XE 0"; >
+technique T0 < string MGEinterface = "MGE XE 0"; string category = "scene"; int priorityAdjust = -10000; >
 {
     pass { PixelShader = compile ps_3_0 ssao(); }
 #ifdef BLUR
