@@ -46,8 +46,16 @@ bool PostShaders::init(IDirect3DDevice9* realDevice) {
         return false;
     }
 
-    if (!initShaderChain()) {
-        return false;
+    if (shaders.empty()) {
+        // Read shader config on first load
+        if (!initShaderChain()) {
+            return false;
+        }
+    }
+    else {
+        // Reload existing shader list after renderer restart
+        // Update applies to all shaders, due to timestamp == 0 set during release()
+        updateShaderChain();
     }
 
     return true;
@@ -61,6 +69,7 @@ bool PostShaders::initShaderChain() {
     char path[MAX_PATH];
 
     // Set shader defines corresponding to required features
+    features.clear();
     if (Configuration.MGEFlags & EXP_FOG) {
         features.push_back(macroExpFog);
     }
@@ -173,7 +182,7 @@ bool PostShaders::updateShaderChain() {
 
     for (auto& s : shaders) {
         WIN32_FILE_ATTRIBUTE_DATA fileAttrs;
-        ID3DXEffect* effect;
+        ID3DXEffect* newEffect;
         ID3DXBuffer* errors;
 
         std::snprintf(path, sizeof(path), "Data Files\\shaders\\XEshaders\\%s.fx", s->name.c_str());
@@ -181,12 +190,14 @@ bool PostShaders::updateShaderChain() {
             continue;
         }
 
-        if (s->timestamp != fileAttrs.ftLastWriteTime.dwLowDateTime) {
-            HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &effect, &errors);
+        if (s->effect == nullptr || s->timestamp != fileAttrs.ftLastWriteTime.dwLowDateTime) {
+            HRESULT hr = D3DXCreateEffectFromFile(device, path, &*features.begin(), 0, D3DXFX_LARGEADDRESSAWARE, 0, &newEffect, &errors);
 
             if (hr == D3D_OK) {
-                s->effect->Release();
-                s->effect = effect;
+                if (s->effect) {
+                    s->effect->Release();
+                }
+                s->effect = newEffect;
                 s->timestamp = fileAttrs.ftLastWriteTime.dwLowDateTime;
 
                 initShader(&*s);
@@ -374,10 +385,12 @@ bool PostShaders::initBuffers() {
 
 // release - Cleans up Direct3D resources
 void PostShaders::release() {
+    // Release effects, but keep shader vector to preserve API handles, runtime loaded shaders, etc.
     for (auto& s : shaders) {
         s->effect->Release();
+        s->effect = nullptr;
+        s->timestamp = 0;
     }
-    shaders.clear();
 
     surfaceLastShader->Release();
     texLastShader->Release();
