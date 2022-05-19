@@ -19,6 +19,7 @@ struct MGEShader {
     ID3DXEffect* effect;
     bool enabled;
     int disableFlags;
+    int priority;
     DWORD timestamp;
     std::string name;
     D3DXHANDLE ehVars[32];
@@ -53,6 +54,7 @@ public:
     static bool checkShaderVersion(ID3DXEffect* effect);
     static void initShader(MGEShader* shader);
     static void loadShaderDependencies(MGEShader* shader);
+    static void orderShaders();
     static bool initBuffers();
     static void release();
 

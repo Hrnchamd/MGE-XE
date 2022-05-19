@@ -117,6 +117,8 @@ bool PostShaders::initShaderChain() {
         }
     }
 
+    orderShaders();
+
     LOG::logline("-- Shader chain indicates HDR %s", (Configuration.MGEFlags & USE_HDR) ? "On" : "Off");
 
     if (Configuration.MGEFlags & NO_MW_SUNGLARE) {
@@ -153,7 +155,14 @@ bool PostShaders::loadNewShader(const char* name) {
             initShader(&*shader);
             loadShaderDependencies(&*shader);
 
-            shaders.push_back(std::move(shader));
+            // Insert shader at sorted position
+            auto p = shader->priority;
+            auto it = std::find_if(shaders.begin(), shaders.end(),
+                                   [=](const auto& s) {
+                                       return p < s->priority;
+                                   });
+            shaders.insert(it, std::move(shader));
+
             LOG::logline("-- Post shader %s loaded", path);
             return true;
         } else {
@@ -217,6 +226,10 @@ bool PostShaders::updateShaderChain() {
         }
     }
 
+    if (updated) {
+        orderShaders();
+    }
+
     return updated;
 }
 
@@ -245,10 +258,31 @@ bool PostShaders::checkShaderVersion(ID3DXEffect* effect) {
     return false;
 }
 
+// Determine priority from category string
+enum struct ShaderPriorityValue : int {
+    Scene = 1000000,
+    Atmosphere = 2000000,
+    Lens = 3000000,
+    Sensor = 4000000,
+    Tone = 5000000,
+    Final = 6000000,
+    Default = 8000000,
+};
+
+static ShaderPriorityValue getShaderPriority(std::string s) {
+    if(s == "scene") { return ShaderPriorityValue::Scene; }
+    if(s == "atmosphere") { return ShaderPriorityValue::Atmosphere; }
+    if(s == "lens") { return ShaderPriorityValue::Lens; }
+    if(s == "sensor") { return ShaderPriorityValue::Sensor; }
+    if(s == "tone") { return ShaderPriorityValue::Tone; }
+    if(s == "final") { return ShaderPriorityValue::Final; }
+    return ShaderPriorityValue::Default;
+}
+
 // initShader - Binds standard game environment variables
 void PostShaders::initShader(MGEShader* shader) {
     ID3DXEffect* effect = shader->effect;
-    D3DXHANDLE tech, hdr, glare;
+    D3DXHANDLE tech, hdr, glare, category, priorityAdjust;
 
     // Variable handles
     for (int i = 0; i != effectVariableCount; ++i) {
@@ -271,6 +305,23 @@ void PostShaders::initShader(MGEShader* shader) {
     glare = effect->GetAnnotationByName(tech, "disableSunglare");
     if (glare) {
         Configuration.MGEFlags |= NO_MW_SUNGLARE;
+    }
+
+    // Shader priority
+    shader->priority = int(ShaderPriorityValue::Default);
+    category = effect->GetAnnotationByName(tech, "category");
+    if (category) {
+        const char *categoryStr = nullptr;
+        effect->GetString(category, &categoryStr);
+        if (categoryStr) {
+            shader->priority = int(getShaderPriority(categoryStr));
+        }
+    }
+    priorityAdjust = effect->GetAnnotationByName(tech, "priorityAdjust");
+    if (priorityAdjust) {
+        int adjust = 0;
+        effect->GetInt(priorityAdjust, &adjust);
+        shader->priority += adjust;
     }
 
     // Constants
@@ -306,6 +357,38 @@ void PostShaders::loadShaderDependencies(MGEShader* shader) {
             }
         }
     }
+}
+
+static bool shaderComparator(const std::unique_ptr<MGEShader>& a, const std::unique_ptr<MGEShader>& b) {
+    return a->priority < b->priority;
+}
+
+// orderShaders - Order shaders by priority and existing load order
+void PostShaders::orderShaders() {
+    // Shaders without a category have default priority, but should remain in their relative position
+    // Approach this by assigning them a new priority based on prev or next available categorized shader
+    const int defaultPriority = int(ShaderPriorityValue::Default);
+
+    // Find first categorized shader
+    int lastPriority = defaultPriority;
+    for(const auto& s : shaders) {
+        if (s->priority != defaultPriority) {
+            lastPriority = s->priority;
+            break;
+        }
+    }
+
+    // Replace default priorities with last seen priority
+    for(auto& s : shaders) {
+        if (s->priority == defaultPriority) {
+            s->priority = lastPriority;
+        }
+        else {
+            lastPriority = s->priority;
+        }
+    }
+
+    std::stable_sort(shaders.begin(), shaders.end(), shaderComparator);
 }
 
 // initBuffers - Create ping-pong buffers and HDR resolve surfaces

@@ -166,6 +166,8 @@ namespace api {
 		virtual const char* shaderGetName(ShaderHandle handle);
 		virtual bool shaderGetEnabled(ShaderHandle handle);
 		virtual void shaderSetEnabled(ShaderHandle handle, bool enable);
+		virtual int shaderGetPriority(ShaderHandle handle);
+		virtual void shaderSetPriority(ShaderHandle handle, int value);
 		virtual bool shaderGetVariableInfo(ShaderHandle handle, size_t index, ShaderVariableInfo* out_info);
 		virtual bool shaderGetBool(ShaderHandle handle, const char* variableName, bool* out_value);
 		virtual bool shaderGetFloat(ShaderHandle handle, const char* variableName, float* out_value);

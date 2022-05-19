@@ -341,6 +341,17 @@ namespace api {
         shader->enabled = enable;
     }
 
+    int MGEAPIv1::shaderGetPriority(ShaderHandle handle) {
+        auto shader = static_cast<MGEShader*>(handle);
+        return shader->priority;
+    }
+
+    void MGEAPIv1::shaderSetPriority(ShaderHandle handle, int value) {
+        auto shader = static_cast<MGEShader*>(handle);
+        shader->priority = value;
+        PostShaders::orderShaders();
+    }
+
     bool MGEAPIv1::shaderGetVariableInfo(ShaderHandle handle, size_t index, ShaderVariableInfo* out_info) {
         auto shader = static_cast<MGEShader*>(handle);
         auto param_handle = shader->effect->GetParameter(0, index);
