@@ -1104,27 +1104,22 @@ void MWBridge::showLoadingBar(const char* text, float amount) {
 
 //-----------------------------------------------------------------------------
 
-// patchPreMenuLoading - Patch in a callback before the start of ESM loading
+// patchGameLoading - Patch in a callback to allow MGE to load before the first frame of world rendering
 void MWBridge::patchGameLoading(void (__cdecl* newfunc)()) {
-    // addr1 - Load game from main menu
-    // addr2 - Start new game
-    // addr3 - After renderer restart
-    DWORD addr1 = 0x4c4f24;
-    DWORD addr2 = 0x5fb2c5;
-    DWORD addr3 = 0x41aa31;
+    // addr1 - At end of game loading and init function
+    // addr2 - After renderer restart
+    DWORD addr1 = 0x41A052;
+    DWORD addr2 = 0x41AA31;
 
-    // Replace existing function call, change following test al, al to xor al, al
-    VirtualMemWriteAccessor vw1((void*)addr1, 6);
+    // Insert call before function epilogue
+    VirtualMemWriteAccessor vw1((void*)addr1, 0x1E);
+    memmove((void*)(addr1 + 5), (void*)addr1, 0x18);
+    write_byte(addr1, 0xE8);
     write_dword(addr1 + 1, (DWORD)newfunc - (addr1+5));
-    write_byte(addr1 + 5, 0x32);
 
-    VirtualMemWriteAccessor vw2((void*)addr2, 6);
+    // Replace existing function call
+    VirtualMemWriteAccessor vw2((void*)addr2, 5);
     write_dword(addr2 + 1, (DWORD)newfunc - (addr2+5));
-    write_byte(addr2 + 5, 0x32);
-
-    // Replace existing function call only
-    VirtualMemWriteAccessor vw3((void*)addr3, 5);
-    write_dword(addr3 + 1, (DWORD)newfunc - (addr3+5));
 }
 
 //-----------------------------------------------------------------------------

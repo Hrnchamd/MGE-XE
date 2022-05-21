@@ -91,7 +91,7 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT* a, const RECT* b, HWND c, c
     if (!mwBridge->IsLoaded() && mwBridge->CanLoad()) {
         mwBridge->Load();
 
-        // Apply patch to load distant land after entering game from the main menu, and on renderer restart
+        // Apply patch to load distant land before the main menu, and on renderer restart
         mwBridge->patchGameLoading(&initOnLoad);
         // Disable MW screenshot function to allow MGE to use the same key
         mwBridge->disableScreenshotFunc();
@@ -488,7 +488,7 @@ ULONG _stdcall MGEProxyDevice::Release() {
 void initOnLoad() {
     auto mwBridge = MWBridge::get();
 
-    mwBridge->showLoadingBar("Loading MGE XE...", 50.0);
+    mwBridge->showLoadingBar("Loading MGE XE...", 95.0);
 
     if (DistantLand::init()) {
         // Initially force view distance to max, required for full extent shadows and grass
