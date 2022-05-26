@@ -451,6 +451,10 @@ bool DistantLand::initShader() {
         // Mark moon geometry for detection
         MWBridge::get()->markMoonNodes(kMoonTag);
     }
+    else {
+        ehOutscatter = 0;
+        ehInscatter = 0;
+    }
 
     return true;
 }

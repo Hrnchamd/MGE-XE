@@ -359,7 +359,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX* view, const D3DXMATRIX* pr
     effect->SetFloat(ehNearViewRange, nearViewRange);
     effect->SetFloat(ehNiceWeather, niceWeather);
 
-    if (Configuration.MGEFlags & USE_ATM_SCATTER) {
+    if (ehOutscatter) {
         effect->SetFloatArray(ehOutscatter, atmOutscatter, 3);
         effect->SetFloatArray(ehInscatter, atmInscatter, 3);
     }
