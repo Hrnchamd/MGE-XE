@@ -114,6 +114,7 @@ namespace api {
 		ReflectSky = 18,
 		BlurReflections = 19,
 		DynamicRipples = 20,
+		CrosshairAutoHide = 21,
 	};
 
 	struct MGEAPIv1 : public MGEAPI {
@@ -128,6 +129,11 @@ namespace api {
 		virtual DistantLandRenderConfig* getDistantLandRenderConfig();
 		virtual LightingMode lightingModeGet();
 		virtual void lightingModeSet(LightingMode mode);
+
+		virtual float cameraGetFoV();
+		virtual void cameraSetFoV(float fov);
+		virtual void cameraThirdPersonGetOffset(float* out_values);
+		virtual void cameraThirdPersonSetOffset(float* values);
 
 		virtual bool zoomGetEnabled();
 		virtual void zoomSetEnabled(bool enable);

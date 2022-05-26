@@ -176,7 +176,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.Offset3rdPerson.x, t_float, 1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
     {&Configuration.Offset3rdPerson.y, t_float, 1, siniMisc, "Initial 3rd Person Camera Y", "-160", NULL, MINMAX, -2500.0, 2500.0},
     {&Configuration.Offset3rdPerson.z, t_float, 1, siniMisc, "Initial 3rd Person Camera Z", "0", NULL, MINMAX, -250.0, 250.0},
-    {&Configuration.CrosshairAutohide, t_bool, 1, siniMisc, "Crosshair Autohide", "False", &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, CROSSHAIR_AUTOHIDE_BIT, siniMisc, "Crosshair Autohide", "False", &dictBool, DICTONLY, 0, 0},
     {&Configuration.UIScale, t_float, 1, siniRendState, "UI Scaling", "1", NULL, MINMAX, 0.5, 5.0},
 
     // Shaders, flat list

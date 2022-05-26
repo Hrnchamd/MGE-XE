@@ -33,8 +33,8 @@
 #define TRANSPARENCY_AA         MASK(TRANSPARENCY_AA_BIT)
 #define USE_HDR_BIT             12
 #define USE_HDR                 MASK(USE_HDR_BIT)
-#define FPS_HOLD_BIT            13
-#define FPS_HOLD                MASK(FPS_HOLD_BIT)
+#define CROSSHAIR_AUTOHIDE_BIT  13
+#define CROSSHAIR_AUTOHIDE      MASK(CROSSHAIR_AUTOHIDE_BIT)
 #define SKIP_INTRO_BIT          14
 #define SKIP_INTRO              MASK(SKIP_INTRO_BIT)
 #define CPU_IDLE_BIT            15
@@ -103,7 +103,6 @@ struct ConfigurationStruct {
     struct {
         float x, y, z;
     } Offset3rdPerson;
-    bool CrosshairAutohide;
     float UIScale;
 
     struct {

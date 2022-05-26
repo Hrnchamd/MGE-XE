@@ -61,28 +61,29 @@ namespace api {
     }
 
 
-    const std::array<unsigned int, 21> featureToFlagMap = {
-		FPS_COUNTER,
-		DISPLAY_MESSAGES,
-		USE_MENU_CACHING,
-		NO_MW_MGE_BLEND,
-		NO_MW_SUNGLARE,
-		USE_HW_SHADER,
-		TRANSPARENCY_AA,
-		USE_HDR,
-		EXP_FOG,
-		USE_ATM_SCATTER,
-		USE_GRASS,
-		USE_SHADOWS,
-		USE_DISTANT_WATER,
-		USE_DISTANT_LAND,
-		USE_DISTANT_STATICS,
-		REFLECTIVE_WATER,
-		REFLECT_NEAR,
-		REFLECT_INTERIOR,
-		REFLECT_SKY,
-		BLUR_REFLECTIONS,
-		DYNAMIC_RIPPLES,
+    const std::array<unsigned int, 22> featureToFlagMap = {
+        FPS_COUNTER,
+        DISPLAY_MESSAGES,
+        USE_MENU_CACHING,
+        NO_MW_MGE_BLEND,
+        NO_MW_SUNGLARE,
+        USE_HW_SHADER,
+        TRANSPARENCY_AA,
+        USE_HDR,
+        EXP_FOG,
+        USE_ATM_SCATTER,
+        USE_GRASS,
+        USE_SHADOWS,
+        USE_DISTANT_WATER,
+        USE_DISTANT_LAND,
+        USE_DISTANT_STATICS,
+        REFLECTIVE_WATER,
+        REFLECT_NEAR,
+        REFLECT_INTERIOR,
+        REFLECT_SKY,
+        BLUR_REFLECTIONS,
+        DYNAMIC_RIPPLES,
+        CROSSHAIR_AUTOHIDE,
     };
 
     bool MGEAPIv1::featureGetEnabled(RenderFeature feature) {
@@ -113,10 +114,10 @@ namespace api {
 
     static_assert(sizeof(DistantLandRenderConfig) == sizeof(Configuration.DL));
 
-	DistantLandRenderConfig* MGEAPIv1::getDistantLandRenderConfig() {
-	    // Requires updating when Configuration.DL struct changes.
-	    return reinterpret_cast<DistantLandRenderConfig*>(&Configuration.DL);
-	}
+    DistantLandRenderConfig* MGEAPIv1::getDistantLandRenderConfig() {
+        // Requires updating when Configuration.DL struct changes.
+        return reinterpret_cast<DistantLandRenderConfig*>(&Configuration.DL);
+    }
 
     bool MGEAPIv1::reloadDistantLand() {
         return DistantLand::reloadShaders();
@@ -144,6 +145,26 @@ namespace api {
                 Configuration.PerPixelLightFlags = 1;
                 break;
         }
+    }
+
+    float MGEAPIv1::cameraGetFoV() {
+        return Configuration.ScreenFOV;
+    }
+
+    void MGEAPIv1::cameraSetFoV(float fov) {
+        Configuration.ScreenFOV = fov;
+    }
+
+    void MGEAPIv1::cameraThirdPersonGetOffset(float* out_values) {
+        out_values[0] = Configuration.Offset3rdPerson.x;
+        out_values[1] = Configuration.Offset3rdPerson.y;
+        out_values[2] = Configuration.Offset3rdPerson.z;
+    }
+
+    void MGEAPIv1::cameraThirdPersonSetOffset(float* values) {
+        Configuration.Offset3rdPerson.x = values[0];
+        Configuration.Offset3rdPerson.y = values[1];
+        Configuration.Offset3rdPerson.z = values[2];
     }
 
     bool MGEAPIv1::zoomGetEnabled() {
