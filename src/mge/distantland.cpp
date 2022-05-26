@@ -69,15 +69,20 @@ void DistantLand::renderStage0() {
                 }
 
                 // Draw distant statics, with alpha dissolve as they pass the near view boundary
-                DWORD p = mwBridge->CellHasWeather() ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
-                effect->BeginPass(p);
-                vsr.beginAlphaToCoverage(device);
+                if (Configuration.MGEFlags & USE_DISTANT_STATICS) {
+                    DWORD p = mwBridge->CellHasWeather() ? PASS_RENDERSTATICSEXTERIOR : PASS_RENDERSTATICSINTERIOR;
+                    effect->BeginPass(p);
+                    vsr.beginAlphaToCoverage(device);
 
-                cullDistantStatics(&mwView, &distProj);
-                renderDistantStatics();
+                    cullDistantStatics(&mwView, &distProj);
+                    renderDistantStatics();
 
-                vsr.endAlphaToCoverage(device);
-                effect->EndPass();
+                    vsr.endAlphaToCoverage(device);
+                    effect->EndPass();
+                }
+                else {
+                    visDistant.RemoveAll();
+                }
             }
 
             // Sky scattering and sky objects (should be drawn late as possible)
