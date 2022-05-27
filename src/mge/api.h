@@ -26,7 +26,6 @@ namespace api {
 		float InteriorFogEnd;
 		unsigned char WaterWaveHeight;
 		unsigned char WaterCaustics;
-		unsigned char WaterReflect;
 		unsigned int ShadowResolution;
 		float Wind[10];
 		float FogDist[10];
@@ -109,7 +108,7 @@ namespace api {
 		DistantLand = 13,
 		DistantStatics = 14,
 		ReflectiveWater = 15,
-		ReflectNear = 16,
+		ReflectNearStatics = 16,
 		ReflectInterior = 17,
 		ReflectSky = 18,
 		BlurReflections = 19,

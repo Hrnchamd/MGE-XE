@@ -128,7 +128,6 @@ struct ConfigurationStruct {
         float InteriorFogEnd;
         BYTE WaterWaveHeight;
         BYTE WaterCaustics;
-        BYTE WaterReflect;
         DWORD ShadowResolution;
         float Wind[10];
         float FogD[10];
