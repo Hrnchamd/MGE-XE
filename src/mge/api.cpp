@@ -7,6 +7,7 @@
 #include "mgeversion.h"
 #include "postshaders.h"
 #include "userhud.h"
+#include "mwbridge.h"
 
 
 
@@ -106,6 +107,15 @@ namespace api {
                 Configuration.MGEFlags &= ~flag;
             }
         }
+    }
+
+    float MGEAPIv1::guiGetScale() {
+        return Configuration.UIScale;
+    }
+
+    void MGEAPIv1::guiSetScale(float scale) {
+        Configuration.UIScale = scale;
+        MWBridge::get()->setUIScale(scale);
     }
 
     const MacroFunctions* MGEAPIv1::macroFunctions() {

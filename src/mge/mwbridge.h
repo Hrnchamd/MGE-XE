@@ -111,6 +111,7 @@ public:
     void showLoadingBar(const char* text, float amount);
     void patchGameLoading(void (__cdecl* newfunc)());
     void redirectMenuBackground(void (__stdcall* func)(int));
+    float getUIScale();
     void setUIScale(float scale);
     void patchUIConfigure(void (__stdcall* newfunc)());
     void patchFrameTimer(int (__cdecl* newfunc)());

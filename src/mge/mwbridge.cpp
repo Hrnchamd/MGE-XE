@@ -1138,37 +1138,56 @@ void MWBridge::redirectMenuBackground(void (_stdcall* func)(int)) {
 
 //-----------------------------------------------------------------------------
 
-// setUIScale - Configures the scaling of Morrowind's UI system, must be called early before main menu
+// getUIScale - Get the scaling of Morrowind's UI system.
+//              MWBridge is not required to be loaded for this function.
+float MWBridge::getUIScale() {
+    DWORD worldController = read_dword(eMaster);
+
+    // Read renderer and viewport sizes
+    DWORD renderer = read_dword(worldController + 0x30);
+    DWORD backBufferInfo = read_dword(renderer + 0x544);
+    int w = read_dword(backBufferInfo);
+    int vw = read_dword(worldController + 0x78);
+
+    // Calculate scale factor
+    return float(w) / float(vw);
+}
+
+//-----------------------------------------------------------------------------
+
+// setUIScale - Configures the scaling of Morrowind's UI system.
 //              MWBridge is not required to be loaded for this function.
 void MWBridge::setUIScale(float scale) {
-    DWORD addr = read_dword(eMaster);
+    DWORD worldController = read_dword(eMaster);
     int w, h;
 
-    // Read UI viewport width and height
-    w = read_dword(addr + 0x78);
-    h = read_dword(addr + 0x7c);
+    // Read renderer width and height
+    DWORD renderer = read_dword(worldController + 0x30);
+    DWORD backBufferInfo = read_dword(renderer + 0x544);
+    w = read_dword(backBufferInfo);
+    h = read_dword(backBufferInfo + 4);
     // Calculate a smaller viewport that will be scaled up by Morrowind
     w = (int)(w / scale);
     h = (int)(h / scale);
     // Write new viewport size
-    write_dword(addr + 0x78, w);
-    write_dword(addr + 0x7c, h);
+    write_dword(worldController + 0x78, w);
+    write_dword(worldController + 0x7c, h);
 
     // Call UI configuration method to update scaling
     typedef void (__thiscall *uiproc1)(DWORD, DWORD);
     const uiproc1 ui_configureUIScale = (uiproc1)0x40f2a0;
 
-    ui_configureUIScale(addr, w);
+    ui_configureUIScale(worldController, w);
 
     // Call UI configuration method to update mouse bounds
     typedef void (__thiscall *uiproc2)(DWORD, int, int, int, int);
     const uiproc2 ui_configureUIMouseArea = (uiproc2)0x408740;
 
     int w_half = (w+1) / 2, h_half = (h+1) / 2;
-    ui_configureUIMouseArea(read_dword(addr + 0x50), -w_half, -h_half, w_half, h_half);
+    ui_configureUIMouseArea(read_dword(worldController + 0x50), -w_half, -h_half, w_half, h_half);
 
     // Patch raycast system to use UI viewport size instead of D3D viewport size
-    addr = 0x6f5157;
+    DWORD addr = 0x6f5157;
     const BYTE patch[] = {
         0xa1, 0xdc, 0x67, 0x7c, 0x00,       // mov eax, eMaster
         0x8b, 0x78, 0x78,                   // mov edi, [eax+0x78]

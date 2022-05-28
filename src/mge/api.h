@@ -123,6 +123,9 @@ namespace api {
 		virtual bool featureGetEnabled(RenderFeature feature);
 		virtual void featureSetEnabled(RenderFeature feature, bool enable);
 
+		virtual float guiGetScale();
+		virtual void guiSetScale(float scale);
+
 		virtual const MacroFunctions* macroFunctions();
 		virtual bool reloadDistantLand();
 		virtual DistantLandRenderConfig* getDistantLandRenderConfig();
