@@ -37,10 +37,10 @@ const char* siniTriggers = sections[10];
 const char* siniRemap = sections[11];
 
 const tdictent dictentBool [] = {
-    {False, 0},
-    {True, 1},
     {"False", 0},
     {"True", 1},
+    {False, 0},
+    {True, 1},
     {"No", 0},
     {"Yes", 1},
     {"Off", 0},

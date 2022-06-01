@@ -149,6 +149,7 @@ struct ConfigurationStruct {
     char ShaderChain[512];
 
     bool LoadSettings();
+    bool SaveSettings();
 };
 
 extern ConfigurationStruct Configuration;

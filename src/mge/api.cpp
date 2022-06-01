@@ -62,6 +62,30 @@ namespace api {
     }
 
 
+    bool MGEAPIv1::loadConfig() {
+        auto prevFogFlags = Configuration.MGEFlags & (EXP_FOG | USE_ATM_SCATTER);
+        auto prevUIScale = Configuration.UIScale;
+
+        bool success = Configuration.LoadSettings();
+
+        // Update components that are dependent on changed config values
+        if (success) {
+            auto currFogFlags = Configuration.MGEFlags & (EXP_FOG | USE_ATM_SCATTER);
+            if (prevFogFlags != currFogFlags) {
+                DistantLand::reloadShaders();
+            }
+
+            if (prevUIScale != Configuration.UIScale) {
+                MWBridge::get()->setUIScale(Configuration.UIScale);
+            }
+        }
+        return success;
+    }
+
+    bool MGEAPIv1::saveConfig() {
+        return Configuration.SaveSettings();
+    }
+
     const std::array<unsigned int, 22> featureToFlagMap = {
         FPS_COUNTER,
         DISPLAY_MESSAGES,

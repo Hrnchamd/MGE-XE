@@ -120,6 +120,9 @@ namespace api {
 		virtual int getAPIVersion() const override;
 		virtual int getMGEVersion() const override;
 
+		virtual bool loadConfig();
+		virtual bool saveConfig();
+
 		virtual bool featureGetEnabled(RenderFeature feature);
 		virtual void featureSetEnabled(RenderFeature feature, bool enable);
 
