@@ -350,6 +350,14 @@ namespace api {
         MGEhud::setTexture(id, texturePath);
     }
 
+    float MGEAPIv1::shaderGetHDRReactionSpeed() {
+        return Configuration.HDRReactionSpeed;
+    }
+
+    void MGEAPIv1::shaderSetHDRReactionSpeed(float speed) {
+        Configuration.HDRReactionSpeed = speed;
+    }
+
     ShaderHandle MGEAPIv1::shaderLoad(const char* id) {
         // Check if shader is not already loaded
         auto s = PostShaders::findShader(id);

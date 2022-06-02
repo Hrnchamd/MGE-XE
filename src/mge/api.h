@@ -170,6 +170,8 @@ namespace api {
 		virtual void hudSetVector4(const char* name, const char* variableName, float value[4]);
 		virtual void hudSetTexture(const char* name, const char* texturePath);
 
+		virtual float shaderGetHDRReactionSpeed();
+		virtual void shaderSetHDRReactionSpeed(float speed);
 		virtual ShaderHandle shaderLoad(const char* id);
 		virtual bool shaderReload(ShaderHandle handle);
 		virtual ShaderHandle shaderGetShader(const char* id);
