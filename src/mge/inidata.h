@@ -128,8 +128,8 @@ const tdictionary dictPPLFlags = {countof(dictentPPLFlags), dictentPPLFlags};
 
 const iniSetting iniSettings[] = {
     // Generic flags
-    {&Configuration.MGEFlags, t_bit, MGE_DISABLED_BIT, siniMisc, "MGE Disabled", False, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, MWSE_DISABLED_BIT, siniMisc, "Internal MWSE Disabled", False, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, MGE_DISABLED_BIT, siniMisc, "MGE Disabled", False, &dictBool, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.MGEFlags, t_bit, MWSE_DISABLED_BIT, siniMisc, "Internal MWSE Disabled", False, &dictBool, DICTONLY|DONT_SAVE, 0, 0},
     {&Configuration.MGEFlags, t_bit, SKIP_INTRO_BIT, siniMisc, "Skip Intro Movies", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, FPS_COUNTER_BIT, siniRendState, "MGE FPS Counter", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, DISPLAY_MESSAGES_BIT, siniRendState, "MGE Messages", True, &dictBool, DICTONLY, 0, 0},
@@ -138,7 +138,7 @@ const iniSetting iniSettings[] = {
     // Distant Land flags
     {&Configuration.MGEFlags, t_bit, USE_DISTANT_LAND_BIT, siniDL, "Distant Land", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_DISTANT_STATICS_BIT, siniDL, "Distant Statics", True, &dictBool, DICTONLY, 0, 0},
-    {&Configuration.MGEFlags, t_bit, USE_DISTANT_WATER_BIT, siniDL, "Use Distant Water Without Distant Land", True, &dictBool, DICTONLY, 0, 0},
+    {&Configuration.MGEFlags, t_bit, USE_DISTANT_WATER_BIT, siniDL, "Use Distant Water Without Distant Land", True, &dictBool, DICTONLY|DONT_SAVE, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECTIVE_WATER_BIT, siniDL, "Water Reflects Land", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECT_NEAR_BIT, siniDL, "Water Reflects Near Statics", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, REFLECT_INTERIOR_BIT, siniDL, "Water Reflects Interiors", False, &dictBool, DICTONLY, 0, 0},
@@ -152,12 +152,12 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, USE_FFESHADER_BIT, siniDL, "Per Pixel Shader", False, &dictBool, DICTONLY, 0, 0},
 
     // Renderer options
-    {&Configuration.AALevel, t_uint8, 1, siniGlobGraph, "Antialiasing Level", "None", &dictAA, DICTONLY, 0, 0},
-    {&Configuration.ZBufFormat, t_uint8, 1, siniGlobGraph, "Z-Buffer Format", "D24S8", &dictZBuf, DICTONLY, 0, 0},
-    {&Configuration.VWait, t_uint8, 1, siniGlobGraph, "VWait", "Immediate", &dictVWait, DICTONLY, 0, 0},
-    {&Configuration.RefreshRate, t_uint8, 1, siniGlobGraph, "Refresh Rate", "Default", &dictRefrRate, MINMAX, 0, 240},
-    {&Configuration.Borderless, t_bool, 1, siniGlobGraph, "Borderless Window", "True", &dictBool, DICTONLY, 0, 0},
-    {&Configuration.AnisoLevel, t_uint8, 1, siniRendState, "Anisotropic Filtering Level", "Off", &dictAnisoLvl, DICTONLY, 0, 0},
+    {&Configuration.AALevel, t_uint8, 1, siniGlobGraph, "Antialiasing Level", "None", &dictAA, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.ZBufFormat, t_uint8, 1, siniGlobGraph, "Z-Buffer Format", "D24S8", &dictZBuf, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.VWait, t_uint8, 1, siniGlobGraph, "VWait", "Immediate", &dictVWait, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.RefreshRate, t_uint8, 1, siniGlobGraph, "Refresh Rate", "Default", &dictRefrRate, MINMAX|DONT_SAVE, 0, 240},
+    {&Configuration.Borderless, t_bool, 1, siniGlobGraph, "Borderless Window", "True", &dictBool, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.AnisoLevel, t_uint8, 1, siniRendState, "Anisotropic Filtering Level", "Off", &dictAnisoLvl, DICTONLY|DONT_SAVE, 0, 0},
     {&Configuration.LODBias, t_float, 1, siniRendState, "Mipmap LOD Bias", "0", NULL, MINMAX, -2, 2},
     {&Configuration.ScreenFOV, t_float, 1, siniRendState, "Horizontal Screen FOV", "75", NULL, MINMAX, 5, 150},
     {&Configuration.FogMode, t_uint8, 1, siniRendState, "Fog Mode", "Depth pixel", &dictFogMode, DICTONLY, 0, 0},
@@ -167,10 +167,10 @@ const iniSetting iniSettings[] = {
     {&Configuration.PerPixelLightFlags, t_uint32, 1, siniDL, "Per Pixel Shader Flags", "Always", &dictPPLFlags, DICTONLY, 0, 0},
 
     // Generic variables
-    {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY, 0, 0},
-    {&Configuration.SSDir, t_string, sizeof(Configuration.SSDir), siniRendState, "Screenshot Output Directory", "", NULL, 0, 0, 0},
-    {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "Morrowind", NULL, 0, 0, 0},
-    {&Configuration.SSSuffix, t_uint8, 1, siniRendState, "Screenshot Name Suffix", "Timestamp", &dictSSSuffix, DICTONLY, 0, 0},
+    {&Configuration.SSFormat, t_uint8, 1, siniRendState, "Screenshot Format", "PNG", &dictSSFormat, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.SSDir, t_string, sizeof(Configuration.SSDir), siniRendState, "Screenshot Output Directory", "", NULL, DONT_SAVE, 0, 0},
+    {&Configuration.SSName, t_string, sizeof(Configuration.SSName), siniRendState, "Screenshot Name Prefix", "Morrowind", NULL, DONT_SAVE, 0, 0},
+    {&Configuration.SSSuffix, t_uint8, 1, siniRendState, "Screenshot Name Suffix", "Timestamp", &dictSSSuffix, DICTONLY|DONT_SAVE, 0, 0},
     {&Configuration.StatusTimeout, t_int32, 1, siniRendState, "MGE Messages Timeout", "2000", NULL, MINMAX, 1000, 10000},
     {&Configuration.Force3rdPerson, t_bool, 1, siniMisc, "Customize 3rd Person Camera", "False", &dictBool, DICTONLY, 0, 0},
     {&Configuration.Offset3rdPerson.x, t_float, 1, siniMisc, "Initial 3rd Person Camera X", "0", NULL, MINMAX, -250.0, 250.0},
@@ -180,7 +180,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.UIScale, t_float, 1, siniRendState, "UI Scaling", "1", NULL, MINMAX, 0.5, 5.0},
 
     // Shaders, flat list
-    {&Configuration.ShaderChain, t_set, sizeof(Configuration.ShaderChain), siniShaders, NULL, NULL, NULL, 0, 0, 0},
+    {&Configuration.ShaderChain, t_set, sizeof(Configuration.ShaderChain), siniShaders, NULL, NULL, NULL, DONT_SAVE, 0, 0},
 
     // Distant Land, variables
     {&Configuration.DL.DrawDist, t_float, 1, siniDL, "Draw Distance", "5", NULL, MINMAX, 1, 300},
@@ -254,10 +254,10 @@ const iniSetting iniSettings[] = {
     {&Configuration.Lighting.AmbMult[9], t_float, 1, siniPPLighting, "Blizzard Ambient Brightness", "1", NULL, MINMAX, 0, 10},
 
     // Input
-    {&Configuration.Input.AltCombat, t_bool, 1, siniMisc, "Daggerfall Combat Controls", "False", &dictBool, DICTONLY, 0, 0},
-    {&Configuration.Input.Macros, t_set, sizeof(Configuration.Input.Macros), siniMacros, NULL, NULL, NULL, 0, 0, 0},
-    {&Configuration.Input.Triggers, t_set, sizeof(Configuration.Input.Triggers), siniTriggers, NULL, NULL, NULL, 0, 0, 0},
-    {&Configuration.Input.Remap, t_set, sizeof(Configuration.Input.Remap), siniRemap, NULL, NULL, NULL, 0, 0, 0}
+    {&Configuration.Input.AltCombat, t_bool, 1, siniMisc, "Daggerfall Combat Controls", "False", &dictBool, DICTONLY|DONT_SAVE, 0, 0},
+    {&Configuration.Input.Macros, t_set, sizeof(Configuration.Input.Macros), siniMacros, NULL, NULL, NULL, DONT_SAVE, 0, 0},
+    {&Configuration.Input.Triggers, t_set, sizeof(Configuration.Input.Triggers), siniTriggers, NULL, NULL, NULL, DONT_SAVE, 0, 0},
+    {&Configuration.Input.Remap, t_set, sizeof(Configuration.Input.Remap), siniRemap, NULL, NULL, NULL, DONT_SAVE, 0, 0}
 };
 
 #endif /* _INIDATA_H_ */

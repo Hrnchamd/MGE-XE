@@ -24,6 +24,9 @@ char (&_ArraySizeHelper(T (&array)[N]))[N];
 #define MINMAX          MASK(MINMAX_BIT)
 #define MODULO_BIT      2
 #define MODULO          MASK(MODULO_BIT)
+#define DONT_SAVE_BIT   7
+#define DONT_SAVE       MASK(DONT_SAVE_BIT)
+
 
 enum vtype { t_bit, t_bool, t_uint8, t_int8, t_uint16, t_int16, t_uint32, t_int32, t_float, t_double, t_string, t_set };
 

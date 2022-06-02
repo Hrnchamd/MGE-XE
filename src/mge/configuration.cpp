@@ -159,6 +159,10 @@ bool ConfigurationStruct::SaveSettings() {
         int strSize = 0;
         double value;
 
+        if (set.flags & DONT_SAVE) {
+            continue;
+        }
+
         switch (set.type) {
         case t_bit:
             value = (((*(int*)set.variable) >> set.bit_size) & 1) ? 1 : 0;
