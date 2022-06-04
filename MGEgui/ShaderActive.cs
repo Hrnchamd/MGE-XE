@@ -669,12 +669,12 @@ namespace MGEgui {
             // columnName
             // 
             this.columnName.Text = "Name";
-            this.columnName.Width = 250;
+            this.columnName.Width = 180;
             // 
             // columnCategory
             // 
             this.columnCategory.Text = "Category";
-            this.columnCategory.Width = 120;
+            this.columnCategory.Width = 80;
             // 
             // ShaderActive
             // 
@@ -766,6 +766,14 @@ namespace MGEgui {
 
             loadSettings();
             onShaderListUpdate();
+        }
+
+        protected override void ScaleControl(System.Drawing.SizeF factor, BoundsSpecified specified) {
+            base.ScaleControl(factor, specified);
+
+            // Fix ListView column widths interaction with DPI scaling
+            this.columnName.Width = (int)(this.columnName.Width * factor.Width);
+            this.columnCategory.Width = (int)(this.columnCategory.Width * factor.Width);
         }
 
         static string shaderPath(string s) {
