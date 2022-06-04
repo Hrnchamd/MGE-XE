@@ -3,19 +3,24 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using MGEgui.INI;
 
 namespace MGEgui {
     public class ShaderActive : Form {
         private Button bMoveUp;
-        private ListBox lbSelected;
         private ListBox lbAvailable;
+        private ListView lvActive;
         private Button bMoveDown;
         private Button bSave;
         private Button bClear;
         private Button bCancel;
 
         private bool setup = false;
+
+        private static Regex regexTechnique = new Regex(@"\btechnique.+<([^>]+)>");
+        private static Regex regexCategory = new Regex(@"\bcategory\s*=\s*""(\w+)""");
+        private static Regex regexPriority = new Regex(@"\bpriorityAdjust\s*=\s*(-?\d+)");
 
         private static List<string> effectHDR = new List<string> { "Eye Adaptation (HDR)" };
         private static List<string> effectSSAO = new List<string> {
@@ -115,8 +120,8 @@ namespace MGEgui {
         private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.bMoveUp = new System.Windows.Forms.Button();
-            this.lbSelected = new System.Windows.Forms.ListBox();
             this.lbAvailable = new System.Windows.Forms.ListBox();
+            this.lvActive = new System.Windows.Forms.ListView();
             this.bMoveDown = new System.Windows.Forms.Button();
             this.bSave = new System.Windows.Forms.Button();
             this.bClear = new System.Windows.Forms.Button();
@@ -152,6 +157,8 @@ namespace MGEgui {
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.tableRightAlign1 = new System.Windows.Forms.TableLayoutPanel();
             this.tableRightAlign2 = new System.Windows.Forms.TableLayoutPanel();
+            this.columnName = new System.Windows.Forms.ColumnHeader();
+            this.columnCategory = new System.Windows.Forms.ColumnHeader();
             this.tableLayoutPanelAdv.SuspendLayout();
             this.panelActions.SuspendLayout();
             this.panelActiveListActions.SuspendLayout();
@@ -171,17 +178,6 @@ namespace MGEgui {
             this.bMoveUp.Text = "Move up";
             this.bMoveUp.Click += new System.EventHandler(this.bMoveUp_Click);
             // 
-            // lbSelected
-            // 
-            this.lbSelected.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbSelected.IntegralHeight = false;
-            this.lbSelected.ItemHeight = 15;
-            this.lbSelected.Location = new System.Drawing.Point(9, 227);
-            this.lbSelected.Name = "lbSelected";
-            this.lbSelected.Size = new System.Drawing.Size(237, 140);
-            this.lbSelected.TabIndex = 3;
-            this.lbSelected.DoubleClick += new System.EventHandler(this.lbSelected_DoubleClick);
-            // 
             // lbAvailable
             // 
             this.lbAvailable.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -192,6 +188,22 @@ namespace MGEgui {
             this.lbAvailable.Size = new System.Drawing.Size(237, 172);
             this.lbAvailable.TabIndex = 1;
             this.lbAvailable.DoubleClick += new System.EventHandler(this.lbAvailable_DoubleClick);
+            // 
+            // lvActive
+            // 
+            this.lvActive.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnName,
+            this.columnCategory});
+            this.lvActive.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lvActive.FullRowSelect = true;
+            this.lvActive.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.lvActive.Location = new System.Drawing.Point(13, 342);
+            this.lvActive.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.lvActive.Name = "lvActive";
+            this.lvActive.Size = new System.Drawing.Size(356, 208);
+            this.lvActive.TabIndex = 3;
+            this.lvActive.View = System.Windows.Forms.View.Details;
+            this.lvActive.DoubleClick += new System.EventHandler(this.lvActive_DoubleClick);
             // 
             // bMoveDown
             // 
@@ -292,7 +304,7 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.Controls.Add(this.lShaderUsage, 0, 4);
             this.tableLayoutPanelAdv.Controls.Add(this.lbAvailable, 0, 1);
             this.tableLayoutPanelAdv.Controls.Add(this.lActiveList, 0, 2);
-            this.tableLayoutPanelAdv.Controls.Add(this.lbSelected, 0, 3);
+            this.tableLayoutPanelAdv.Controls.Add(this.lvActive, 0, 3);
             this.tableLayoutPanelAdv.Controls.Add(this.panelActions, 1, 1);
             this.tableLayoutPanelAdv.Controls.Add(this.panelActiveListActions, 1, 3);
             this.tableLayoutPanelAdv.Location = new System.Drawing.Point(300, 0);
@@ -304,7 +316,7 @@ namespace MGEgui {
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 45F));
             this.tableLayoutPanelAdv.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanelAdv.Size = new System.Drawing.Size(340, 410);
+            this.tableLayoutPanelAdv.Size = new System.Drawing.Size(400, 410);
             this.tableLayoutPanelAdv.TabIndex = 23;
             // 
             // panelActions
@@ -654,13 +666,23 @@ namespace MGEgui {
             this.tableRightAlign2.Size = new System.Drawing.Size(150, 211);
             this.tableRightAlign2.TabIndex = 25;
             // 
+            // columnName
+            // 
+            this.columnName.Text = "Name";
+            this.columnName.Width = 250;
+            // 
+            // columnCategory
+            // 
+            this.columnCategory.Text = "Category";
+            this.columnCategory.Width = 120;
+            // 
             // ShaderActive
             // 
             this.AcceptButton = this.bSave;
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.bCancel;
-            this.ClientSize = new System.Drawing.Size(644, 411);
+            this.ClientSize = new System.Drawing.Size(704, 411);
             this.Controls.Add(this.tableRightAlign2);
             this.Controls.Add(this.tableRightAlign1);
             this.Controls.Add(this.lHDRTime2);
@@ -682,7 +704,7 @@ namespace MGEgui {
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;
-            this.MaximumSize = new System.Drawing.Size(660, 500);
+            this.MaximumSize = new System.Drawing.Size(720, 500);
             this.MinimumSize = new System.Drawing.Size(305, 440);
             this.Name = "ShaderActive";
             this.Text = "Set active shaders";
@@ -729,6 +751,8 @@ namespace MGEgui {
         private System.Windows.Forms.Button bEditor;
         private System.Windows.Forms.Label lActiveList;
         private System.Windows.Forms.Label lAvailableList;
+        private System.Windows.Forms.ColumnHeader columnName;
+        private System.Windows.Forms.ColumnHeader columnCategory;
 
         #endregion
         #endregion
@@ -736,10 +760,16 @@ namespace MGEgui {
         public ShaderActive() {
             InitializeComponent();
             Statics.Localizations.Apply(this);
+
+            // Initially only show left side of window
             this.Size = new System.Drawing.Size(this.MinimumSize.Width, this.Size.Height);
 
             loadSettings();
             onShaderListUpdate();
+        }
+
+        static string shaderPath(string s) {
+            return Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx";
         }
 
         private void loadSettings() {
@@ -749,12 +779,12 @@ namespace MGEgui {
                 }
             }
 
-            INIFile iniFile = new INIFile(Statics.fn_inifile, iniShaderDefault, true);
+            var iniFile = new INIFile(Statics.fn_inifile, iniShaderDefault, true);
             udHDRTime.Value = (decimal)iniFile.getKeyValue("HDRTime");
 
             foreach (string s in iniFile.getSectList(iniShaderChain)) {
-                if (File.Exists(Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx")) {
-                    lbSelected.Items.Add(s);
+                if (File.Exists(shaderPath(s))) {
+                    addActiveShader(s);
                 }
             }
         }
@@ -774,8 +804,11 @@ namespace MGEgui {
                 presetHigh,
                 presetUltra
             };
-            lbSelected.Items.Clear();
-            lbSelected.Items.AddRange(presets[cmbPresets.SelectedIndex]);
+
+            lvActive.Items.Clear();
+            foreach (var s in presets[cmbPresets.SelectedIndex]) {
+                addActiveShader(s);
+            }
             onShaderListUpdate();
         }
 
@@ -789,7 +822,7 @@ namespace MGEgui {
                 return;
             }
 
-            lbSelected.Items.Clear();
+            lvActive.Items.Clear();
             addShaderOption(effectSSAO, cmbSSAO.SelectedIndex);
             addShaderOption(effectInteriorCaustics, cmbInteriorCaustics.SelectedIndex);
             addShaderOption(effectWaterSunshafts, cmbWaterSunshafts.SelectedIndex);
@@ -806,26 +839,31 @@ namespace MGEgui {
         private void onShaderListUpdate() {
             setup = true;
 
-            cmbHDR.SelectedIndex = findShaderOption(effectHDR);
-            cmbSSAO.SelectedIndex = findShaderOption(effectSSAO);
-            cmbBloom.SelectedIndex = findShaderOption(effectBloom);
-            cmbSunshafts.SelectedIndex = findShaderOption(effectSunshafts);
-            cmbDoF.SelectedIndex = findShaderOption(effectDoF);
-            cmbWaterSunshafts.SelectedIndex = findShaderOption(effectWaterSunshafts);
-            cmbInteriorCaustics.SelectedIndex = findShaderOption(effectInteriorCaustics);
+            var active = new List<string>();
+            foreach (ListViewItem item in lvActive.Items) {
+                active.Add(item.SubItems[0].Text);
+            }
 
-            string[][] presets = new string[][] {
+            cmbHDR.SelectedIndex = findShaderOption(active, effectHDR);
+            cmbSSAO.SelectedIndex = findShaderOption(active, effectSSAO);
+            cmbBloom.SelectedIndex = findShaderOption(active, effectBloom);
+            cmbSunshafts.SelectedIndex = findShaderOption(active, effectSunshafts);
+            cmbDoF.SelectedIndex = findShaderOption(active, effectDoF);
+            cmbWaterSunshafts.SelectedIndex = findShaderOption(active, effectWaterSunshafts);
+            cmbInteriorCaustics.SelectedIndex = findShaderOption(active, effectInteriorCaustics);
+
+            var presets = new string[][] {
                 presetLowest,
                 presetLow,
                 presetMed,
                 presetHigh,
                 presetUltra
             };
-            IEnumerable<string> sel = lbSelected.Items.OfType<string>();
 
+            // Default to "Custom" preset, check for matches with existing presets
             cmbPresets.SelectedIndex = 5;
             for (int n = 0; n != presets.Count(); n++) {
-                if (presets[n].SequenceEqual(sel)) {
+                if (presets[n].SequenceEqual(active)) {
                     cmbPresets.SelectedIndex = n;
                     break;
                 }
@@ -836,40 +874,99 @@ namespace MGEgui {
 
         private void addShaderOption(List<string> effect, int n) {
             if (n > 0) {
-                lbSelected.Items.Add(effect[n - 1]);
+                addActiveShader(effect[n - 1]);
             }
         }
 
-        private int findShaderOption(List<string> effect) {
-            foreach (string item in lbSelected.Items) {
-                if (effect.Contains(item)) {
-                    return 1 + effect.IndexOf(item);
+        private int findShaderOption(List<string> active, List<string> effect) {
+            foreach (var s in active) {
+                if (effect.Contains(s)) {
+                    return 1 + effect.IndexOf(s);
                 }
             }
             return 0;
         }
 
-        private void lbAvailable_DoubleClick(object sender, EventArgs e) {
-            if (lbSelected.Items.Count >= 32) {
-                return;
+        static Dictionary<string, int> categoryPriorities = new Dictionary<string, int> {
+            { "scene", 1000000 },
+            { "atmosphere", 2000000 },
+            { "lens", 3000000 },
+            { "sensor", 4000000 },
+            { "tone", 5000000 },
+            { "final", 6000000 },
+            { "default", 8000000 },
+        };
+
+        private int getShaderPriority(string category) {
+            if (categoryPriorities.ContainsKey(category)) {
+                return categoryPriorities[category];
             }
+            return categoryPriorities["default"];
+        }
+
+        private void addActiveShader(string shader) {
+            // Read shader and discover category annotation
+            var path = shaderPath(shader);
+            string category = null;
+            int priorityAdjust = 0;
+
+            using (var sr = new StreamReader(path)) {
+                var match = regexTechnique.Match(sr.ReadToEnd());
+                if (match.Success) {
+                    var annotation = match.Groups[1].Value;
+
+                    var matchCategory = regexCategory.Match(annotation);
+                    if (matchCategory.Success) {
+                        category = matchCategory.Groups[1].Value;
+                    }
+                    var matchPriority = regexPriority.Match(annotation);
+                    if (matchPriority.Success) {
+                        Int32.TryParse(matchPriority.Groups[1].Value, out priorityAdjust);
+                    }
+                }
+            }
+
+            var newItem = new ListViewItem(new string[] { shader, category });
+            int defaultPriority = getShaderPriority("default");
+
+            if (category != null) {
+                // Insert shader into sorted position, ignoring default priority shaders
+                newItem.Tag = getShaderPriority(category) + priorityAdjust;
+                int insertAt = lvActive.Items.Count;
+                foreach (ListViewItem item in lvActive.Items) {
+                    if ((int)item.Tag != defaultPriority && (int)newItem.Tag < (int)item.Tag) {
+                        insertAt = item.Index;
+                        break;
+                    }
+                }
+                lvActive.Items.Insert(insertAt, newItem);
+            }
+            else {
+                // No category, place at the end
+                newItem.Tag = defaultPriority;
+                lvActive.Items.Add(newItem);
+            }
+        }
+        
+        private void lbAvailable_DoubleClick(object sender, EventArgs e) {
             if (lbAvailable.SelectedIndex == -1) {
                 return;
             }
+            string s = (string)lbAvailable.SelectedItem;
 
             DirectX.DXMain.CreateDevice(this);
-            if (DirectX.Shaders.CompileShader(false, null, null, Statics.runDir + "\\" + Statics.pathShaders + "\\" + (string)lbAvailable.SelectedItem + ".fx") != null) {
+            if (DirectX.Shaders.CompileShader(false, null, null, shaderPath(s)) != null) {
                 MessageBox.Show("That shader does not currently compile.");
             } else {
-                lbSelected.Items.Add(string.Copy((string)lbAvailable.SelectedItem));
+                addActiveShader(s);
                 onShaderListUpdate();
             }
             DirectX.DXMain.CloseDevice();
         }
 
-        private void lbSelected_DoubleClick(object sender, EventArgs e) {
-            if (lbSelected.SelectedIndex != -1) {
-                lbSelected.Items.RemoveAt(lbSelected.SelectedIndex);
+        private void lvActive_DoubleClick(object sender, EventArgs e) {
+            if (lvActive.SelectedItems.Count > 0) {
+                lvActive.SelectedItems[0].Remove();
                 onShaderListUpdate();
             }
         }
@@ -879,41 +976,55 @@ namespace MGEgui {
         }
 
         private void bSave_Click(object sender, EventArgs e) {
-            INIFile iniFile = new INIFile(Statics.fn_inifile, iniShaderDefault, true);
+            var active = new List<string>();
+            foreach (ListViewItem item in lvActive.Items) {
+                active.Add(item.SubItems[0].Text);
+            }
 
+            var iniFile = new INIFile(Statics.fn_inifile, iniShaderDefault, true);
             iniFile.setKey("HDRTime", (double)udHDRTime.Value);
-            iniFile.setSectOrderedList(iniShaderChain, lbSelected.Items.OfType<string>().ToArray());
+            iniFile.setSectOrderedList(iniShaderChain, active.ToArray());
 
             iniFile.save();
             Close();
         }
 
         private void bMoveUp_Click(object sender, EventArgs e) {
-            if (lbSelected.SelectedIndex > 0) {
-                string s = (string)lbSelected.Items[lbSelected.SelectedIndex];
-                lbSelected.Items[lbSelected.SelectedIndex] = lbSelected.Items[lbSelected.SelectedIndex - 1];
-                lbSelected.Items[lbSelected.SelectedIndex - 1] = s;
-                lbSelected.SelectedIndex--;
+            if (lvActive.SelectedItems.Count == 0) return;
+            var item = lvActive.SelectedItems[0];
+            var index = item.Index;
+
+            if (index > 0) {
+                lvActive.BeginUpdate();
+                lvActive.Items.Remove(item);
+                lvActive.Items.Insert(index - 1, item);
+                lvActive.Focus();
+                lvActive.EndUpdate();
             }
         }
 
         private void bMoveDown_Click(object sender, EventArgs e) {
-            if (lbSelected.SelectedIndex != -1 && lbSelected.SelectedIndex != lbSelected.Items.Count - 1) {
-                string s = (string)lbSelected.Items[lbSelected.SelectedIndex];
-                lbSelected.Items[lbSelected.SelectedIndex] = lbSelected.Items[lbSelected.SelectedIndex + 1];
-                lbSelected.Items[lbSelected.SelectedIndex + 1] = s;
-                lbSelected.SelectedIndex++;
+            if (lvActive.SelectedItems.Count == 0) return;
+            var item = lvActive.SelectedItems[0];
+            var index = item.Index;
+
+            if (index != lvActive.Items.Count - 1) {
+                lvActive.BeginUpdate();
+                lvActive.Items.Remove(item);
+                lvActive.Items.Insert(index + 1, item);
+                lvActive.Focus();
+                lvActive.EndUpdate();
             }
         }
 
         private void bClear_Click(object sender, EventArgs e) {
-            lbSelected.Items.Clear();
+            lvActive.Items.Clear();
         }
 
         private void bEditor_Click(object sender, EventArgs e) {
             string shader = null;
             if (lbAvailable.SelectedIndex != -1) {
-                shader = Statics.runDir + "\\" + Statics.pathShaders + "\\" + (string)lbAvailable.SelectedItem + ".fx";
+                shader = shaderPath((string)lbAvailable.SelectedItem);
             }
 
             ShaderEditorForm ed = new ShaderEditorForm(shader);
