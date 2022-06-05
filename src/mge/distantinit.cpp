@@ -444,7 +444,9 @@ bool DistantLand::initShader() {
         return false;
     }
 
+    // Atmosphere scattering specific parameters
     if (Configuration.MGEFlags & USE_ATM_SCATTER) {
+
         ehOutscatter = effect->GetParameterByName(0, "outscatter");
         ehInscatter = effect->GetParameterByName(0, "inscatter");
 
@@ -454,6 +456,14 @@ bool DistantLand::initShader() {
     else {
         ehOutscatter = 0;
         ehInscatter = 0;
+    }
+
+    // Dynamic ripples specific parameters
+    if (Configuration.MGEFlags & DYNAMIC_RIPPLES) {
+        ehTex4 = effect->GetParameterByName(0, "tex4");
+        ehTex5 = effect->GetParameterByName(0, "tex5");
+        ehRippleOrigin = effect->GetParameterByName(0, "rippleOrigin");
+        ehWaveHeight = effect->GetParameterByName(0, "waveHeight");
     }
 
     return true;
@@ -648,12 +658,6 @@ bool DistantLand::initDynamicWaves() {
     }
     memcpy(vp, waveVertices, sizeof(waveVertices));
     vbWaveSim->Unlock();
-
-    // Extra shader variables required
-    ehTex4 = effect->GetParameterByName(0, "tex4");
-    ehTex5 = effect->GetParameterByName(0, "tex5");
-    ehRippleOrigin = effect->GetParameterByName(0, "rippleOrigin");
-    ehWaveHeight = effect->GetParameterByName(0, "waveHeight");
 
     return true;
 }
