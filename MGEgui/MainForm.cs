@@ -476,7 +476,7 @@ namespace MGEgui {
             udDLDrawDist.Value = (decimal)iniFile.getKeyValue("DrawDist");
             udDLDistNear.Value = (decimal)iniFile.getKeyValue("EndNear");
             udDLDistFar.Value = (decimal)iniFile.getKeyValue("EndFar");
-            udDLDistVeryFar.Value = (int)iniFile.getKeyValue("EndVFar");
+            udDLDistVeryFar.Value = (decimal)iniFile.getKeyValue("EndVFar");
             udDLSizeFar.Value = (decimal)iniFile.getKeyValue("SizeFar");
             udDLSizeVeryFar.Value = (decimal)iniFile.getKeyValue("SizeVFar");
             cbDLReflLand.Checked = (iniFile.getKeyValue("ReflLand") == 1);
