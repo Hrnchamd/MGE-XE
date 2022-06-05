@@ -370,9 +370,11 @@ bool DistantLand::initShader() {
     // Set shader defines corresponding to required features
     if (Configuration.MGEFlags & EXP_FOG) {
         features.push_back(macroExpFog);
-    }
-    if (Configuration.MGEFlags & USE_ATM_SCATTER) {
-        features.push_back(macroScattering);
+
+        // Requires exp. fog
+        if (Configuration.MGEFlags & USE_ATM_SCATTER) {
+            features.push_back(macroScattering);
+        }
     }
     if (Configuration.MGEFlags & BLUR_REFLECTIONS) {
         features.push_back(macroFilterReflection);
