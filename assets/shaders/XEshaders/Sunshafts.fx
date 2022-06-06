@@ -116,7 +116,7 @@ float4 rays( float2 Tex : TEXCOORD0 ) : COLOR0
     float2 screendir = Tex - sunview;
     float screendist = length(screendir * float2(1, raspect));
     screendir /= screendist;
-    float sunr = min(raysunradius, screendist);    
+    float sunr = min(raysunradius, screendist);
     float l = 0;
 
     for(int i = 1; i <= N; i++)
