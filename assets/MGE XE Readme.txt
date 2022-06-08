@@ -1,7 +1,7 @@
 
-MGE XE 0.13.7
+MGE XE 0.14.0
 -------------
-Released 2021-08-23
+Released 2022-06-07
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -52,6 +52,8 @@ You will be given the choice to update MWSE in the installer, which requires int
 
 Configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. There is an instruction tab for further details. If later on you add world-changing mods to your mod list, you will need to re-run the generator to see the changes in the distant world.
 
+(NEW) Many settings can be adjusted within the game, where you will be able to see the effect of your changes in real-time. This requires MWSE. Press Esc, click on 'Mod Options', then select MGE XE from the mods list. You can then open the settings window with the button, which will hide all other windows to show a full preview of the world. There are several tabs in the window, and the configuration can be loaded and saved.
+
 4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Pause world rendering in menus" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
 
 5. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires "High quality atmosphere" enabled in distant land, and MWSE installed and enabled.
@@ -62,7 +64,7 @@ Download at: https://www.nexusmods.com/morrowind/mods/36873
 
 Upgrading
 ---------
-When upgrading from a previous MGE XE: Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land.
+When upgrading from a previous MGE XE: Run the installer, or manually extract the archive to the Morrowind directory. Run MGEXEgui and regenerate distant land. Run MWSE-Update if you installed manually.
 
 Custom modded shaders you've installed may or may not be compatible, so you should check with the authors for an update, test it yourself by checking mgeXE.log after the game for error messages, or stick to the default shaders.
 
@@ -76,6 +78,10 @@ You might want to know
 ----------------------
 
 MGE XE includes an install option for MWSE 2.1 beta by NullCascade. ( https://github.com/MWSE/MWSE/ ) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
+
+Many rendering settings can be changed in-game using the MGE XE mod options window, which is new in v0.14. A lot of settings are now dynamically adjustable.
+
+Post-processing shaders now auto-sort into the correct order, when the file is tagged with a category. You will see the category when you add the shader to the active list. The standard shaders are already categorized, but other shaders will need an update. Further details on this system are in the readme in Data Files/shaders/XEshaders.
 
 Shader core mods. It's possible to edit MGE XE rendering if you know HLSL. This mod system replaces the previous strategy of replacing the core shaders, that ensured problems on upgrade. If a shader mod does not compile, the game continues with standard shaders, and you get a visible warning.
 
@@ -103,6 +109,13 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.14.0
+- Distant land loads before the main menu, instead of the first time you load a game. This allows earlier script access to MGE XE functions.
+- MGE XE settings can now be controlled in-game through MWSE. It's available on the Mod Config options page, and opens a separate window. The rendering will update in real-time as you change options, so that you can compare the difference.
+- Shaders can now have category annotations which are designed to help sort shaders into the correct rendering order. If the shader has a category specific within it, the category name will appear when a shader is added to the active list, and that shader will auto-sort into place.
+- Added an API interface to allow MWSE to control MGE XE, including runtime shader loading and variables support. See MWSE docs for details.
+- The very far static distance no longer rounds to the nearest integer on load/save.
+
 0.13.7
 - Distant land generator now selects the LOD detail at 1 cell distance from models that contain LOD nodes.
 - Fix distant land generator crash when handling some configurations of LOD nodes.
