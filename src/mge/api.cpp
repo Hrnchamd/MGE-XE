@@ -9,6 +9,8 @@
 #include "userhud.h"
 #include "mwbridge.h"
 
+#include <array>
+
 
 
 static api::MacroFunctions macroFns = {

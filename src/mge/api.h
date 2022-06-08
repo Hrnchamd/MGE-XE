@@ -29,7 +29,7 @@ namespace api {
 		unsigned int ShadowResolution;
 		float Wind[10];
 		float FogDist[10];
-		float FogOffsetDist[10];
+		float FogOffset[10];
 	};
 
 	enum struct LightingMode {
