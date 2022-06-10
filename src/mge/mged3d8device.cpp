@@ -488,7 +488,18 @@ ULONG _stdcall MGEProxyDevice::Release() {
 void initOnLoad() {
     auto mwBridge = MWBridge::get();
 
-    mwBridge->showLoadingBar("Loading MGE XE...", 95.0);
+    // Compose loading message from translated string
+    char buffer[64];
+    const char* loadingMessage = *(const char**)mwBridge->getGMSTPointer(602);
+    int firstWordLength = 0;
+
+    for (const char *c = loadingMessage; *c; ++c) {
+        if (*c == ' ') { break; }
+        ++firstWordLength;
+    }
+
+    std::snprintf(buffer, sizeof(buffer), "%.*s MGE XE...", firstWordLength, loadingMessage);
+    mwBridge->showLoadingBar(buffer, 95.0);
 
     if (DistantLand::init()) {
         // Initially force view distance to max, required for full extent shadows and grass
