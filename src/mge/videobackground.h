@@ -24,6 +24,7 @@ class VideoPatch {
     static int state;
 
 public:
+    static void start(IDirect3DDevice9* device);
     static void monitor(IDirect3DDevice9* device);
     static void _stdcall patch(int x);
 };

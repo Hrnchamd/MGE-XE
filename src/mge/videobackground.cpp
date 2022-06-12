@@ -109,28 +109,36 @@ void VideoBackground::end() {
 
 
 
-void VideoPatch::monitor(IDirect3DDevice9* device) {
-    auto mwBridge = MWBridge::get();
-
-    if (state == 0 && mwBridge->isIntroDone()) {
-        // Load after starting movies are played
+void VideoPatch::start(IDirect3DDevice9* device) {
+    if (state == 0) {
         state = v.begin(device) ? 1 : -1;
         d = device;
 
         if (state == 1) {
-            mwBridge->redirectMenuBackground(VideoPatch::patch);
+            MWBridge::get()->redirectMenuBackground(VideoPatch::patch);
         }
     }
-    if (state == 1 && mwBridge->isLoadingSplash()) {
-        // Release when first splash screen appears (includes new game cutscene)
+}
+
+void VideoPatch::monitor(IDirect3DDevice9* device) {
+    auto mwBridge = MWBridge::get();
+
+    if (state == 1) {
+        // Wait until pre-main menu loading screen is gone
+        if (!mwBridge->isLoadingBar()) {
+            state = 2;
+        }
+    }
+    else if (state == 2 && mwBridge->isLoadingBar()) {
+        // Release when first loading bar appears (includes new game cutscene)
         state = -1;
-        mwBridge->redirectMenuBackground(NULL);
+        mwBridge->redirectMenuBackground(nullptr);
         v.end();
     }
 }
 
 void _stdcall VideoPatch::patch(int x) {
-    if (state == 1) {
+    if (state >= 1) {
         v.render(d);
     }
 }

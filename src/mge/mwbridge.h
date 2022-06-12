@@ -107,8 +107,9 @@ public:
     void disableSunglare();
     void disableIntroMovies();
     bool isIntroDone();
-    bool isLoadingSplash();
+    bool isLoadingBar();
     void showLoadingBar(const char* text, float amount);
+    void destroyLoadingBar();
     void patchGameLoading(void (__cdecl* newfunc)());
     void redirectMenuBackground(void (__stdcall* func)(int));
     float getUIScale();

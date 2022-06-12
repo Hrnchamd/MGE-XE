@@ -1086,8 +1086,8 @@ bool MWBridge::isIntroDone() {
 
 //-----------------------------------------------------------------------------
 
-// isLoadingSplash - Tests if a splash screen is shown (as a proxy for post-main menu loading)
-bool MWBridge::isLoadingSplash() {
+// isLoadingBar - Tests if a loading bar is shown
+bool MWBridge::isLoadingBar() {
     return read_byte(0x7d4294) != 0;
 }
 
@@ -1100,6 +1100,14 @@ void MWBridge::showLoadingBar(const char* text, float amount) {
 
     const auto renderNextFrame = reinterpret_cast<void(__thiscall*)(void*, int)>(0x41be90);
     renderNextFrame(reinterpret_cast<void*>(eMaster2), 0);
+}
+
+//-----------------------------------------------------------------------------
+
+// destroyLoadingBar - Destroys loading bar menu element
+void MWBridge::destroyLoadingBar() {
+    const auto destroyLoadingMenu = reinterpret_cast<void(__cdecl*)()>(0x5deea0);
+    destroyLoadingMenu();
 }
 
 //-----------------------------------------------------------------------------

@@ -501,6 +501,7 @@ void initOnLoad() {
     std::snprintf(buffer, sizeof(buffer), "%.*s MGE XE...", firstWordLength, loadingMessage);
     mwBridge->showLoadingBar(buffer, 95.0);
 
+    // Initialize distant land
     if (DistantLand::init()) {
         // Initially force view distance to max, required for full extent shadows and grass
         if (Configuration.MGEFlags & USE_DISTANT_LAND) {
@@ -510,6 +511,11 @@ void initOnLoad() {
         Configuration.MGEFlags &= ~USE_DISTANT_LAND;
         StatusOverlay::setStatus("MGE XE serious error condition. Exit Morrowind and check mgeXE.log for details.", StatusOverlay::PriorityError);
     }
+
+    // Clean up loading bar menu, otherwise it persists in the background
+    mwBridge->destroyLoadingBar();
+
+    VideoPatch::start(DistantLand::device);
 }
 
 // detectMenu
