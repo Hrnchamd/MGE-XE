@@ -1,7 +1,7 @@
 
-MGE XE 0.14.0
+MGE XE 0.14.1
 -------------
-Released 2022-06-07
+Released 2022-06-12
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -10,7 +10,7 @@ Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
 Summary
 -------
 
-A graphics improvement add-on to the Morrowind engine, for longer viewing distances, great sunsets, fine shaders and better lighting. Supports MWSE 2.1 beta, included as part of the installer, so that the newest Lua gameplay mods work straight away. As an engine mod, this is not compatible with OpenMW.
+A graphics improvement add-on to the Morrowind engine, for longer viewing distances, great sunsets, fine shaders and better lighting. Supports MWSE 2.1, included as part of the installer, so that the newest Lua gameplay mods work straight away. As an engine mod, this is not compatible with OpenMW.
 
 
 Requirements
@@ -109,6 +109,11 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.14.1
+- Fix main menu video background mods failing to play.
+- Updated French localization, thanks to Redondepremière.
+- Help button now points to nexusmods.
+
 0.14.0
 - Distant land loads before the main menu, instead of the first time you load a game. This allows earlier script access to MGE XE functions.
 - MGE XE settings can now be controlled in-game through MWSE. It's available on the Mod Config options page, and opens a separate window. The rendering will update in real-time as you change options, so that you can compare the difference.
