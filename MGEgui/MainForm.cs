@@ -968,7 +968,7 @@ namespace MGEgui {
 
         private void bHelp_Click(object sender, EventArgs e) {
             try {
-                System.Diagnostics.Process p = System.Diagnostics.Process.Start(@"https://bethesda.net/community/category/106/mods");
+                System.Diagnostics.Process p = System.Diagnostics.Process.Start(@"https://www.nexusmods.com/morrowind/mods/41102");
                 p.Close();
             } catch {
             }
