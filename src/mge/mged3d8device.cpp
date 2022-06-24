@@ -69,11 +69,13 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d) : ProxyDev
     memset(&frs, 0, sizeof(frs));
     for (FragmentState::Stage* s = &frs.stage[0]; s != &frs.stage[8]; ++s) {
         s->colorOp = D3DTOP_DISABLE;
-        s->alphaOp = D3DTOP_SELECTARG1;
+        s->alphaOp = D3DTOP_DISABLE;
         s->colorArg1 = s->alphaArg1 = D3DTA_TEXTURE;
         s->colorArg2 = s->alphaArg2 = D3DTA_CURRENT;
         s->colorArg0 = s->alphaArg0 = s->resultArg = D3DTA_CURRENT;
     }
+    frs.stage[0].colorOp = D3DTOP_MODULATE;
+    frs.stage[0].alphaOp = D3DTOP_SELECTARG1;
 
     lightrs.lights.clear();
     lightrs.active.clear();
