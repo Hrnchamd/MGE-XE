@@ -84,7 +84,7 @@ namespace MGEgui.Localization {
         }
 
         public void Add(string fileName) {
-            if (fileName != null && fileName != "") {
+            if (!string.IsNullOrEmpty(fileName)) {
                 Localization localization = new Localization(fileName);
                 if (localization.Language != "") {
                     localizations.Add(localization.Language, localization);

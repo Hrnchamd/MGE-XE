@@ -31,11 +31,7 @@ namespace MGEgui.DistantLand {
         }
 
         private void cbMesh_CheckedChanged(object sender, EventArgs e) {
-            if (cbMesh.Checked == false) {
-                cbMeshAuto.Enabled = false;
-            } else {
-                cbMeshAuto.Enabled = flags["EnaLandAuto"];
-            }
+            cbMeshAuto.Enabled = cbMesh.Checked && flags["EnaLandAuto"];
         }
 
         private void setChecked() {

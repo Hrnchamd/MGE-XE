@@ -85,9 +85,9 @@ namespace MGEgui.DistantLand {
 
         private int CellCount;
 
-        private static LAND[,] map;
-        private readonly LAND defaultland = new LAND();
+        private readonly LAND DefaultLand = new LAND();
         private static LTEX DefaultTex;
+        private static LAND[,] map;
         private List<AtlasRegion> Atlas;
         private int AtlasSpanX, AtlasSpanY;
 
@@ -546,22 +546,14 @@ namespace MGEgui.DistantLand {
                         }
                         if (usesVertexHeights && lx != -999 && ly != -999) {
                             // Keep track of map extents
-                            if (lx > MapMaxX) {
-                                MapMaxX = lx;
-                            }
-                            if (ly > MapMaxY) {
-                                MapMaxY = ly;
-                            }
-                            if (lx < MapMinX) {
-                                MapMinX = lx;
-                            }
-                            if (ly < MapMinY) {
-                                MapMinY = ly;
-                            }
-                            int max = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
-                            if (max > MapSize) {
-                                MapSize = max;
-                            }
+                            MapMinX = Math.Min(MapMinX, lx);
+                            MapMaxX = Math.Max(MapMaxX, lx);
+                            MapMinY = Math.Min(MapMinY, ly);
+                            MapMaxY = Math.Max(MapMaxY, ly);
+
+                            int maxDimension = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
+                            MapSize = Math.Max(MapSize, maxDimension);
+
                             if (map[lx, ly] == null) {
                                 CellCount++;
                             }
@@ -657,7 +649,7 @@ namespace MGEgui.DistantLand {
                 for (int y = r.minY; y <= r.maxY; y++) {
                     backgroundWorker.ReportProgress(Math.Min(++count, statusProgress.Maximum));
                     for (int x = r.minX; x <= r.maxX; x++) {
-                        if (map[x, y] == null || map[x, y] == defaultland) {
+                        if (map[x, y] == null || map[x, y] == DefaultLand) {
                             ctc.SetDefaultCell(DefaultTex);
                         } else {
                             // Set the colors and normals
@@ -682,7 +674,7 @@ namespace MGEgui.DistantLand {
                 for (int y = r.minY; y <= r.maxY; y++) {
                     backgroundWorker.ReportProgress(Math.Min(++count, statusProgress.Maximum));
                     for (int x = r.minX; x <= r.maxX; x++) {
-                        if (map[x, y] == null || map[x, y] == defaultland) {
+                        if (map[x, y] == null || map[x, y] == DefaultLand) {
                             ctc.SetDefaultCell(DefaultTex);
                         } else {
                             // Set the colors and normals
@@ -715,7 +707,7 @@ namespace MGEgui.DistantLand {
             for (int y = MapMinY; y <= MapMaxY; y++) {
                 for (int x = MapMinX; x <= MapMaxX; x++) {
                     LAND land = map[x, y];
-                    if (land == null || land == defaultland || land.atlasId >= 0) {
+                    if (land == null || land == DefaultLand || land.atlasId >= 0) {
                         continue;
                     }
 
@@ -736,7 +728,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
                             LAND searchLand = map[searchX, r.minY - 1];
-                            if (searchLand != null && searchLand != defaultland) {
+                            if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -749,7 +741,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
                             LAND searchLand = map[searchX, r.maxY + 1];
-                            if (searchLand != null && searchLand != defaultland) {
+                            if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -762,7 +754,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
                             LAND searchLand = map[r.minX - 1, searchY];
-                            if (searchLand != null && searchLand != defaultland) {
+                            if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -775,7 +767,7 @@ namespace MGEgui.DistantLand {
                         extend = false;
                         for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
                             LAND searchLand = map[r.maxX + 1, searchY];
-                            if (searchLand != null && searchLand != defaultland) {
+                            if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
@@ -796,7 +788,7 @@ namespace MGEgui.DistantLand {
 
             // Sort regions by width, largest first
             regions.Sort((a, b) => (b.maxX - b.minX).CompareTo(a.maxX - a.minX));
-            
+
             // Pack first (widest) region
             var first = regions[0];
             Atlas.Add(first);
@@ -893,8 +885,7 @@ namespace MGEgui.DistantLand {
 
         void workerCreateMeshes(object sender, System.ComponentModel.DoWorkEventArgs e) {
             CreateMeshArgs cma = (CreateMeshArgs)e.Argument;
-            int count = 0;
-            backgroundWorker.ReportProgress(count, strings["LandMeshCreate"]);
+            backgroundWorker.ReportProgress(0, strings["LandMeshCreate"]);
             GenerateWorldMesh(cma.MeshDetail, Statics.fn_world);
             // Dispose of map object, high memory use
             map = null;
@@ -1332,10 +1323,10 @@ namespace MGEgui.DistantLand {
                 BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), Statics.ESPEncoding);
                 foreach (string name in UsedNifList) {
                     int nodes = br.ReadInt32();
-                    br.BaseStream.Position += 16; // 4 - radius, 12 - center
+                    br.BaseStream.Position += 16; // Byte count: 4 - radius, 12 - center
                     int type = br.BaseStream.ReadByte();
                     for (int j = 0; j < nodes; j++) {
-                        br.BaseStream.Position += 40; // 4 - radius, 12 - center, 12 - min, 12 - center
+                        br.BaseStream.Position += 40; // Byte count: 4 - radius, 12 - center, 12 - AABB min, 12 - AABB max
                         int verts = br.ReadInt32();
                         int faces = br.ReadInt32();
                         int vert_size = NativeMethods.GetCompressedVertSize();
@@ -2605,7 +2596,7 @@ namespace MGEgui.DistantLand {
                         }
 
                         if (!ignore) {
-                            if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script] == true) {
+                            if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script]) {
                                 if (NoScriptList != null) {
                                     NoScriptList[name] = model;
                                 }

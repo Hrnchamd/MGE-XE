@@ -1372,7 +1372,7 @@ namespace MGEgui {
                     RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
 
                     // Morrowind standard horizontal FOV is 75 degrees at 4:3 aspect ratio
-                    double basefov = 75.0 * Math.PI / 180.0;
+                    const double basefov = 75.0 * Math.PI / 180.0;
                     double aspect = (double)(int)key.GetValue("Screen Width") / (double)(int)key.GetValue("Screen Height");
                     double x = 2.0 * Math.Atan((aspect / (4.0 / 3.0)) * Math.Tan(0.5 * basefov));
 
@@ -1530,11 +1530,7 @@ namespace MGEgui {
             udDLDistFar.Enabled = !status;
             udDLDistVeryFar.Enabled = !status;
             if (status) {
-                if (rbDLAutoByDrawDist.Checked) {
-                    autoDistances = AutoDistance.byDrawDist;
-                } else {
-                    autoDistances = AutoDistance.byAFogEnd;
-                }
+                autoDistances = rbDLAutoByDrawDist.Checked ? AutoDistance.byDrawDist :  AutoDistance.byAFogEnd;
                 if (!loading) {
                     AutoSetDistances(sender, e);
                 }
@@ -1575,11 +1571,7 @@ namespace MGEgui {
             udDLFogAStart.Enabled = !status || !rbDLAutoByDrawDist.Checked;
             udDLFogAEnd.Enabled = !status || !rbDLAutoByDrawDist.Checked;
             if (status) {
-                if (rbDLAutoByDrawDist.Checked) {
-                    autoDistances = AutoDistance.byDrawDist;
-                } else {
-                    autoDistances = AutoDistance.byAFogEnd;
-                }
+                autoDistances = rbDLAutoByDrawDist.Checked ? AutoDistance.byDrawDist : AutoDistance.byAFogEnd;
                 if (!loading) {
                     AutoSetDistances(sender, e);
                 }

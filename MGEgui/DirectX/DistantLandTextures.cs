@@ -646,7 +646,7 @@ namespace MGEgui.DirectX {
         }
 
         public void Render(float pos_x, float pos_y, float scale_x, float scale_y) {
-            // Modelview matrix corrects D3D half-texel offset (*2 here, as NDC space is from -1 to +1)
+            // Modelview matrix corrects D3D9 half-texel offset (*2 here, as NDC space is from -1 to +1)
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
             mat.M41 = pos_x - texelSize;
             mat.M42 = pos_y + texelSize;
@@ -694,7 +694,7 @@ namespace MGEgui.DirectX {
         }
 
         public void RenderNormalMap(float pos_x, float pos_y, float scale_x, float scale_y) {
-            // Modelview matrix corrects D3D half-texel offset (*2 here, as NDC space is from -1 to +1)
+            // Modelview matrix corrects D3D9 half-texel offset (*2 here, as NDC space is from -1 to +1)
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
             mat.M41 = pos_x - texelSize;
             mat.M42 = pos_y + texelSize;
