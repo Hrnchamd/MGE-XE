@@ -58,11 +58,12 @@ namespace MGEgui.DistantLand {
         /* Static methods */
 
         private static void DumpError(Exception ex) {
-            string str = ex.ToString();
+            var str = new StringBuilder(ex.ToString());
             while ((ex = ex.InnerException) != null) {
-                str += Environment.NewLine + Environment.NewLine + str.ToString();
+                str.AppendLine();
+                str.Append(ex.ToString());
             }
-            File.WriteAllText(Statics.fn_dllog, str);
+            File.WriteAllText(Statics.fn_dllog, str.ToString());
         }
 
         /* Common properties */
