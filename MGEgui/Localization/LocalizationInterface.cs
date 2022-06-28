@@ -85,7 +85,7 @@ namespace MGEgui.Localization {
 
         public void Add(string fileName) {
             if (!string.IsNullOrEmpty(fileName)) {
-                Localization localization = new Localization(fileName);
+                var localization = new Localization(fileName);
                 if (localization.Language != "") {
                     localizations.Add(localization.Language, localization);
                 }
@@ -94,7 +94,7 @@ namespace MGEgui.Localization {
 
         public string [] Languages {
             get {
-                List<string> list = new List<string>(localizations.Keys);
+                var list = new List<string>(localizations.Keys);
                 list.Sort();
                 return list.ToArray();
             }
@@ -154,7 +154,7 @@ namespace MGEgui.Localization {
 
         public void Apply(Form form, Localization localization) {
             FieldInfo messages_field;
-            List<ToolStrip> toolstrips = new List<ToolStrip>();
+            var toolstrips = new List<ToolStrip>();
             foreach (Control c in form.Controls) {
                 if (c is ToolStrip) {
                     toolstrips.Add((ToolStrip)c);
@@ -189,14 +189,14 @@ namespace MGEgui.Localization {
             }
 
             messages_field = form.GetType().GetField("strings");
-            Dictionary<string, string> messages = new Dictionary<string, string>();
+            var messages = new Dictionary<string, string>();
             if (messages_field != null && messages_field.FieldType == messages.GetType()) {
                 messages = messages_field.GetValue(form) as Dictionary<string, string>;
                 ApplyStrings(form.Name, messages, localization);
             }
 
             messages_field = form.GetType().GetField("tooltip_messages");
-            Dictionary<string, string[]> tips = new Dictionary<string, string[]>();
+            var tips = new Dictionary<string, string[]>();
             if (messages_field != null && messages_field.FieldType == tips.GetType()) {
                 tips = messages_field.GetValue(form) as Dictionary<string, string[]>;
                 messages_field = form.GetType().GetField("toolTip");

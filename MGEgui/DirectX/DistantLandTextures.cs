@@ -238,7 +238,7 @@ namespace MGEgui.DirectX {
         }
         public void CalcWeights(LAND cell) {
 
-            WeightVertex[] WeightData = new WeightVertex[65 * 65];
+            var WeightData = new WeightVertex[65 * 65];
 
             for (int y = 0; y <= 64; y++) {
                 for (int x = 0; x <= 64; x++) {
@@ -290,10 +290,10 @@ namespace MGEgui.DirectX {
 
             // Blur the weights as we transfer them so the transitions aren't quite so blocky and horrible.
             // Blur kernel
-            float[] blur = new float[] { 0.04f, 0.16f, 0.6f, 0.16f, 0.04f };
+            var blur = new float[] { 0.04f, 0.16f, 0.6f, 0.16f, 0.04f };
 
             // Horizontal Pass
-            WeightVertex[] FirstPassWD = new WeightVertex[65 * 65];
+            var FirstPassWD = new WeightVertex[65 * 65];
             for (int y = 0; y <= 64; y++) {
                 for (int x = 0; x <= 64; x++) {
                     // Figure out which index to use
@@ -528,7 +528,7 @@ namespace MGEgui.DirectX {
         public void SetDefaultCell(LTEX tex) {
             ResetColorsAndNormals();
             texBanks.Clear();
-            TextureBank tb = new TextureBank();
+            var tb = new TextureBank();
             tb.SetSingleTexture(tex);
             texBanks.Add(tb);
         }
@@ -579,7 +579,7 @@ namespace MGEgui.DirectX {
 
             // Create one bank for each group of 4 textures
             int index = 0;
-            TextureBank tb = new TextureBank();
+            var tb = new TextureBank();
             foreach (LTEX tex in tex_dict.Values) {
                 switch (index) {
                     case 0:
@@ -628,7 +628,7 @@ namespace MGEgui.DirectX {
 
             DXMain.device.SetStreamSource(0, vBuffer, 0, CellVertex.Stride);
             DXMain.device.SetStreamSource(1, colorBuffer, 0, NormalColorVertex.Stride);
-            VertexDeclaration decl = new VertexDeclaration(DXMain.device, Elements);
+            var decl = new VertexDeclaration(DXMain.device, Elements);
             DXMain.device.Indices = iBuffer;
             DXMain.device.VertexDeclaration = decl;
         }
@@ -640,7 +640,7 @@ namespace MGEgui.DirectX {
 
             DXMain.device.SetStreamSource(0, vBuffer, 0, CellVertex.Stride);
             DXMain.device.SetStreamSource(1, colorBuffer, 0, NormalColorVertex.Stride);
-            VertexDeclaration decl = new VertexDeclaration(DXMain.device, NormalElements);
+            var decl = new VertexDeclaration(DXMain.device, NormalElements);
             DXMain.device.Indices = iBuffer;
             DXMain.device.VertexDeclaration = decl;
         }
