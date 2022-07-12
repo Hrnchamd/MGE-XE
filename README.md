@@ -5,25 +5,37 @@
 
 <br>
 <br>
+<br>
 
 <div align = center>
 
+---
+
 [![Button Building]][Building] 
+
+---
 
 </div>
 
 <br>
 <br>
+<br>
 
 ## Dependencies
+
+<br>
 
 -   **[DirectX 9]**  (  `June 2010`  )
     
     *Needed for the d3dx runtime library.*
+    
+    <br>
 
 -   **[SlimDX]**
 
     *Needed for MGEXEgui.*
+
+<br>
 
 
 <!----------------------------------------------------------------------------->
