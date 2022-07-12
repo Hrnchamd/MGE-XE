@@ -1,5 +1,5 @@
 
-# Morrowind Graphics Extender - XE
+# Morrowind Graphics Extender - XE   [![Badge License]][License]
 
 *Extends the view distance & improves graphics in **[Morrowind]**.*
 
@@ -33,6 +33,12 @@
 [SlimDX]: http://slimdx.org/
 
 [Building]: Documentation/Building.md
+[License]: LICENSE
+
+
+<!---------------------------------[ Badges ]---------------------------------->
+
+[Badge License]: https://img.shields.io/badge/License-GPL_2-blue.svg?style=for-the-badge
 
 
 <!---------------------------------[ Buttons ]--------------------------------->
