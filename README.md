@@ -13,11 +13,24 @@
 </div>
 
 <br>
+<br>
+
+## Dependencies
+
+-   **[DirectX 9]**  (  `June 2010`  )
+    
+    *Needed for the d3dx runtime library.*
+
+-   **[SlimDX]**
+
+    *Needed for MGEXEgui.*
 
 
 <!----------------------------------------------------------------------------->
 
 [Morrowind]: https://store.steampowered.com/app/22320
+[DirectX 9]: http://msdn.microsoft.com/en-us/directx/
+[SlimDX]: http://slimdx.org/
 
 [Building]: Documentation/Building.md
 
