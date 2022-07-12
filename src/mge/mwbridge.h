@@ -109,6 +109,9 @@ public:
     bool isIntroDone();
     bool isLoadingBar();
     void showLoadingBar(const char* text, float amount);
+
+    HWND getWindowHandle();
+    void* getGameOptionsStruct();
     void destroyLoadingBar();
     void patchGameLoading(void (__cdecl* newfunc)());
     void redirectMenuBackground(void (__stdcall* func)(int));

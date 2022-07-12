@@ -46,7 +46,7 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             isMW = false;
 
             // Make Morrowind apply UI scaling, as the D3D proxy is not available to do it
-            MWInitPatch::patchUIScale();
+            MWInitPatch::patchUIInit();
         }
 
         if (~Configuration.MGEFlags & MWSE_DISABLED) {

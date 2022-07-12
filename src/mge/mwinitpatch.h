@@ -3,6 +3,6 @@
 class MWInitPatch {
 public:
     static void disableIntroMovies();
-    static void patchUIScale();
+    static void patchUIInit();
     static void patchFrameTimer();
 };
