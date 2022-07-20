@@ -1823,11 +1823,9 @@ namespace MGEgui {
             }
         }
 
-        /// </summary>
         /// <summary>
         /// Stops editing a macro and goes back to the macro select screen
         /// </summary>
-        /// <param name="Partial">true to not change any form properties</param>
         public void EndMacro() {
             Text = strings["NormalTitle"];
             formtype = MacroFormType.Editor;
@@ -1919,22 +1917,10 @@ namespace MGEgui {
                         int i = GetCode((Button)c);
                         if (formtype == MacroFormType.Console) {
                             c.BackColor = SystemColors.Control;
-                            if (i < 256) {
-                                c.Enabled = true;
-                            } else {
-                                c.Enabled = false;
-                            }
+                            c.Enabled = (i < 256);
                         } else {
-                            if (i < 264) {
-                                c.Enabled = true;
-                            } else {
-                                c.Enabled = false;
-                            }
-                            if (Active[GetCode((Button)c)]) {
-                                c.BackColor = Color.LightBlue;
-                            } else {
-                                c.BackColor = SystemColors.Control;
-                            }
+                            c.Enabled = (i < 264);
+                            c.BackColor = Active[GetCode((Button)c)] ? Color.LightBlue : SystemColors.Control;
                         }
                     }
 
@@ -1961,16 +1947,8 @@ namespace MGEgui {
                 tbCDesc.Enabled = false;
                 bClear.Enabled = false;
             }
-            if (formtype == MacroFormType.Function) {
-                cbFunction.Enabled = true;
-            } else {
-                cbFunction.Enabled = false;
-            }
-            if (formtype == MacroFormType.Timer) {
-                cbTrigger.Enabled = true;
-            } else {
-                cbTrigger.Enabled = false;
-            }
+            cbFunction.Enabled = (formtype == MacroFormType.Function);
+            cbTrigger.Enabled = (formtype == MacroFormType.Timer);
         }
 
         private void StartTrigger(int Code) {

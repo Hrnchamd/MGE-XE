@@ -46,7 +46,7 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             isMW = false;
 
             // Make Morrowind apply UI scaling, as the D3D proxy is not available to do it
-            MWInitPatch::patchUIScale();
+            MWInitPatch::patchUIInit();
         }
 
         if (~Configuration.MGEFlags & MWSE_DISABLED) {
@@ -71,6 +71,13 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
         }
 
         MWInitPatch::patchFrameTimer();
+    }
+
+    // Load extender for CS, if Construction Set detected
+    bool isCS = bool(GetModuleHandle("TES Construction Set.exe"));
+    if (isCS) {
+        // Load CSSE dll, it injects by itself
+        LoadLibraryA("CSSE.dll");
     }
 
     return true;

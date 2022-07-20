@@ -59,7 +59,7 @@ namespace MGEgui.DistantLand {
             string[] bsas = Directory.GetFiles("Data Files", "*.bsa");
             foreach (string s in bsas) {
                 try {
-                    BinaryReader br = new BinaryReader(File.OpenRead(s));
+                    var br = new BinaryReader(File.OpenRead(s));
                     br.BaseStream.Position += 4;
                     int hashoffset = br.ReadInt32();
                     int numfiles = br.ReadInt32();
@@ -98,7 +98,7 @@ namespace MGEgui.DistantLand {
             }
             string dds_name = Path.ChangeExtension(name, ".dds");
 
-            List<string> search_paths = new List<string>();
+            var search_paths = new List<string>();
             search_paths.Add(@"Data Files\Textures" + dds_name);
             search_paths.Add(@"Data Files" + dds_name);
             search_paths.Add(@"Data Files\Textures" + name);

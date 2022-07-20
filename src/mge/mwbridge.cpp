@@ -1112,6 +1112,20 @@ void MWBridge::destroyLoadingBar() {
 
 //-----------------------------------------------------------------------------
 
+// getWindowHandle - Gets window handle of windowed mode frame
+HWND MWBridge::getWindowHandle() {
+    return (HWND)read_dword(read_dword(0x7C67DC) + 0xC8);
+}
+
+//-----------------------------------------------------------------------------
+
+// getGameOptionsStruct - Gets TES3Game struct
+void* MWBridge::getGameOptionsStruct() {
+    return (void*)read_dword(0x7C6CDC);
+}
+
+//-----------------------------------------------------------------------------
+
 // patchGameLoading - Patch in a callback to allow MGE to load before the first frame of world rendering
 void MWBridge::patchGameLoading(void (__cdecl* newfunc)()) {
     // addr1 - At end of game loading and init function

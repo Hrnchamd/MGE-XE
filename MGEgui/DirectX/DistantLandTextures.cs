@@ -74,10 +74,10 @@ namespace MGEgui.DirectX {
 
     class StaticTexCreator {
         private readonly System.Collections.Generic.List<string> texCache;
-        private readonly int div;
+        private readonly int sizeDivisor;
 
-        public StaticTexCreator(int skip) {
-            div = (1 << skip);
+        public StaticTexCreator(int skipMips) {
+            sizeDivisor = (1 << skipMips);
             texCache = new System.Collections.Generic.List<string>();
         }
 
@@ -111,13 +111,16 @@ namespace MGEgui.DirectX {
             } catch (SlimDXException) {
                 return false;
             }
-
-            int newWidth = imginfo.Width / div, newHeight = imginfo.Height / div;
+ 
+            // Avoid reducing a texture to sizes that aren't DXT block compressible
+            int newWidth = imginfo.Width / sizeDivisor, newHeight = imginfo.Height / sizeDivisor;
             if (newWidth < 4 || newHeight < 4) {
                 return true;
             }
 
+            // Select best compressed DDS format for this texture
             if (imginfo.Format == Format.Dxt1) {
+                // Mipmaps generate smooth alphas, so any transparency requires DXT3
                 format = isDXT1a(imginfo, data) ? Format.Dxt3 : Format.Dxt1;
             } else if (imginfo.Format == Format.Dxt3 || imginfo.Format == Format.Dxt5) {
                 format = imginfo.Format;
@@ -127,9 +130,12 @@ namespace MGEgui.DirectX {
                 format = Format.Dxt3;
             }
 
-            if (div > 1 || format != imginfo.Format) {
+            // Create distant texture if resized or if format conversion is required
+            if (sizeDivisor > 1 || format != imginfo.Format) {
                 Texture t = null;
-                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(System.IO.Path.Combine(@"data files\distantland\statics\textures\", path)));
+
+                var outputPath = System.IO.Path.Combine(Statics.fn_stattex, path);
+                System.IO.Directory.CreateDirectory(System.IO.Path.GetDirectoryName(outputPath));
 
                 try {
                     if (format == imginfo.Format) {
@@ -151,7 +157,7 @@ namespace MGEgui.DirectX {
 
                         srctex.Dispose();
                     }
-                    Texture.ToFile(t, System.IO.Path.Combine(@"data files\distantland\statics\textures\", path), ImageFileFormat.Dds);
+                    Texture.ToFile(t, outputPath, ImageFileFormat.Dds);
                     t.Dispose();
                 } catch (SlimDXException) {
                     if (t != null) {
@@ -238,7 +244,7 @@ namespace MGEgui.DirectX {
         }
         public void CalcWeights(LAND cell) {
 
-            WeightVertex[] WeightData = new WeightVertex[65 * 65];
+            var WeightData = new WeightVertex[65 * 65];
 
             for (int y = 0; y <= 64; y++) {
                 for (int x = 0; x <= 64; x++) {
@@ -290,10 +296,10 @@ namespace MGEgui.DirectX {
 
             // Blur the weights as we transfer them so the transitions aren't quite so blocky and horrible.
             // Blur kernel
-            float[] blur = new float[] { 0.04f, 0.16f, 0.6f, 0.16f, 0.04f };
+            var blur = new float[] { 0.04f, 0.16f, 0.6f, 0.16f, 0.04f };
 
             // Horizontal Pass
-            WeightVertex[] FirstPassWD = new WeightVertex[65 * 65];
+            var FirstPassWD = new WeightVertex[65 * 65];
             for (int y = 0; y <= 64; y++) {
                 for (int x = 0; x <= 64; x++) {
                     // Figure out which index to use
@@ -528,7 +534,7 @@ namespace MGEgui.DirectX {
         public void SetDefaultCell(LTEX tex) {
             ResetColorsAndNormals();
             texBanks.Clear();
-            TextureBank tb = new TextureBank();
+            var tb = new TextureBank();
             tb.SetSingleTexture(tex);
             texBanks.Add(tb);
         }
@@ -579,7 +585,7 @@ namespace MGEgui.DirectX {
 
             // Create one bank for each group of 4 textures
             int index = 0;
-            TextureBank tb = new TextureBank();
+            var tb = new TextureBank();
             foreach (LTEX tex in tex_dict.Values) {
                 switch (index) {
                     case 0:
@@ -628,7 +634,7 @@ namespace MGEgui.DirectX {
 
             DXMain.device.SetStreamSource(0, vBuffer, 0, CellVertex.Stride);
             DXMain.device.SetStreamSource(1, colorBuffer, 0, NormalColorVertex.Stride);
-            VertexDeclaration decl = new VertexDeclaration(DXMain.device, Elements);
+            var decl = new VertexDeclaration(DXMain.device, Elements);
             DXMain.device.Indices = iBuffer;
             DXMain.device.VertexDeclaration = decl;
         }
@@ -640,13 +646,13 @@ namespace MGEgui.DirectX {
 
             DXMain.device.SetStreamSource(0, vBuffer, 0, CellVertex.Stride);
             DXMain.device.SetStreamSource(1, colorBuffer, 0, NormalColorVertex.Stride);
-            VertexDeclaration decl = new VertexDeclaration(DXMain.device, NormalElements);
+            var decl = new VertexDeclaration(DXMain.device, NormalElements);
             DXMain.device.Indices = iBuffer;
             DXMain.device.VertexDeclaration = decl;
         }
 
         public void Render(float pos_x, float pos_y, float scale_x, float scale_y) {
-            // Modelview matrix corrects D3D half-texel offset (*2 here, as NDC space is from -1 to +1)
+            // Modelview matrix corrects D3D9 half-texel offset (*2 here, as NDC space is from -1 to +1)
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
             mat.M41 = pos_x - texelSize;
             mat.M42 = pos_y + texelSize;
@@ -694,7 +700,7 @@ namespace MGEgui.DirectX {
         }
 
         public void RenderNormalMap(float pos_x, float pos_y, float scale_x, float scale_y) {
-            // Modelview matrix corrects D3D half-texel offset (*2 here, as NDC space is from -1 to +1)
+            // Modelview matrix corrects D3D9 half-texel offset (*2 here, as NDC space is from -1 to +1)
             SlimDX.Matrix mat = SlimDX.Matrix.Identity;
             mat.M41 = pos_x - texelSize;
             mat.M42 = pos_y + texelSize;

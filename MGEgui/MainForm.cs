@@ -194,7 +194,7 @@ namespace MGEgui {
 
         private void LoadMWINI() {
             // morrowind.ini uses system codepage
-            INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default);
+            var mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default);
 
             // Clamp to FPS control maximum
             udFPSLimit.Value = Math.Min(new Decimal(mwini.getKeyValue("FPSLimit")), udFPSLimit.Maximum);
@@ -423,7 +423,7 @@ namespace MGEgui {
         }
 
         private void LoadGraphicsSettings(bool reset, bool save) {
-            INIFile iniFile = new INIFile(reset ? Statics.fn_nul : Statics.fn_inifile, iniSettings, true);
+            var iniFile = new INIFile(reset ? Statics.fn_nul : Statics.fn_inifile, iniSettings, true);
             if (reset) {
                 iniFile.fileName = Statics.fn_inifile;
             }
@@ -507,7 +507,7 @@ namespace MGEgui {
         }
 
         private void SaveGraphicsSettings() {
-            INIFile iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
+            var iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
             // Config
             iniFile.setKey("Version", Statics.versionString);
             iniFile.setKey("TipSpeed", cmbTipReadSpd.SelectedIndex);
@@ -598,7 +598,7 @@ namespace MGEgui {
             if (!File.Exists(Statics.fn_didata)) {
                 return;
             }
-            BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_didata));
+            var br = new BinaryReader(File.OpenRead(Statics.fn_didata));
             version = br.ReadByte();
             if (version < 39) {
                 throw new Exception(strings["InpTooOld"]);
@@ -688,7 +688,7 @@ namespace MGEgui {
         }
 
         private void LoadInputSettings() {
-            INIFile iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
+            var iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
 
             for (int i = 0; i < Statics.MACROS; ++i) {
                 Statics.Macros[i] = new Macro();
@@ -777,7 +777,7 @@ namespace MGEgui {
 
         private void SaveMWINI() {
             // morrowind.ini uses system codepage
-            INIFile mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default, true);
+            var mwini = new INIFile(Statics.fn_mwini, mwSettings, System.Text.Encoding.Default, true);
 
             mwini.setKey("FPSLimit", (int)udFPSLimit.Value);
             mwini.setKey("SSEnable", cbScreenshots.Checked);
@@ -800,10 +800,10 @@ namespace MGEgui {
         }
 
         private void SaveInputSettings() {
-            INIFile iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
+            var iniFile = new INIFile(Statics.fn_inifile, iniSettings, true);
 
-            List<string> text = new List<string>();
-            List<string> macroDesc = new List<string>();
+            var text = new List<string>();
+            var macroDesc = new List<string>();
             for (int i = 0; i < Statics.MACROS; ++i) {
                 Macro m = Statics.Macros[i];
                 string s = string.Format("M{0}={1}", i, m.Type);
@@ -942,7 +942,7 @@ namespace MGEgui {
             if (File.Exists(Statics.fn_dlver) && File.Exists(Statics.fn_usagedata)) {
                 byte[] bytes = File.ReadAllBytes(Statics.fn_dlver);
                 if (bytes.Length == 1 && bytes[0] == (byte)Statics.DistantLandVersion) {
-                    BinaryReader br = new BinaryReader(File.OpenRead(Statics.fn_usagedata));
+                    var br = new BinaryReader(File.OpenRead(Statics.fn_usagedata));
                     br.BaseStream.Position = br.BaseStream.Length - 4;
                     tbDLNearSize.Text = br.ReadSingle().ToString();
                     br.Close();
@@ -975,7 +975,7 @@ namespace MGEgui {
         }
 
         private void bShaderEd_Click(object sender, EventArgs e) {
-            ShaderActive SetActiveForm = new ShaderActive();
+            var SetActiveForm = new ShaderActive();
             SetActiveForm.ShowDialog();
             SetActiveForm.Dispose();
         }
@@ -1372,7 +1372,7 @@ namespace MGEgui {
                     RegistryKey key = Registry.LocalMachine.OpenSubKey(Statics.reg_mw);
 
                     // Morrowind standard horizontal FOV is 75 degrees at 4:3 aspect ratio
-                    double basefov = 75.0 * Math.PI / 180.0;
+                    const double basefov = 75.0 * Math.PI / 180.0;
                     double aspect = (double)(int)key.GetValue("Screen Width") / (double)(int)key.GetValue("Screen Height");
                     double x = 2.0 * Math.Atan((aspect / (4.0 / 3.0)) * Math.Tan(0.5 * basefov));
 
@@ -1387,7 +1387,7 @@ namespace MGEgui {
             DialogResult res = MessageBox.Show(String.Format(strings["AskReset"], (delete ? strings["ResetSaved"] : "")), strings["ResetAsk"], MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
             if (res == DialogResult.Yes) {
                 LoadGraphicsSettings(true, delete);
-                INIFile iniFile = new INIFile(Statics.fn_inifile, DLWeatherForm.iniWeatherSettings, true);
+                var iniFile = new INIFile(Statics.fn_inifile, DLWeatherForm.iniWeatherSettings, true);
                 iniFile.reinitialize();
                 iniFile.save();
                 cbSkipMovie.Checked = true;
@@ -1530,11 +1530,7 @@ namespace MGEgui {
             udDLDistFar.Enabled = !status;
             udDLDistVeryFar.Enabled = !status;
             if (status) {
-                if (rbDLAutoByDrawDist.Checked) {
-                    autoDistances = AutoDistance.byDrawDist;
-                } else {
-                    autoDistances = AutoDistance.byAFogEnd;
-                }
+                autoDistances = rbDLAutoByDrawDist.Checked ? AutoDistance.byDrawDist :  AutoDistance.byAFogEnd;
                 if (!loading) {
                     AutoSetDistances(sender, e);
                 }
@@ -1575,11 +1571,7 @@ namespace MGEgui {
             udDLFogAStart.Enabled = !status || !rbDLAutoByDrawDist.Checked;
             udDLFogAEnd.Enabled = !status || !rbDLAutoByDrawDist.Checked;
             if (status) {
-                if (rbDLAutoByDrawDist.Checked) {
-                    autoDistances = AutoDistance.byDrawDist;
-                } else {
-                    autoDistances = AutoDistance.byAFogEnd;
-                }
+                autoDistances = rbDLAutoByDrawDist.Checked ? AutoDistance.byDrawDist : AutoDistance.byAFogEnd;
                 if (!loading) {
                     AutoSetDistances(sender, e);
                 }
@@ -1685,7 +1677,7 @@ namespace MGEgui {
 
         private void displayLogFile(string path) {
             if (File.Exists(path)) {
-                LogViewerForm f = new LogViewerForm(path);
+                var f = new LogViewerForm(path);
                 f.ShowDialog();
             }
         }
