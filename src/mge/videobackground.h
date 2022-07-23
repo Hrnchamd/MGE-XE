@@ -13,6 +13,7 @@ class VideoBackground {
 public:
     VideoBackground() : video(0), surface(0) {}
 
+    bool init();
     bool begin(IDirect3DDevice9* device);
     void render(IDirect3DDevice9* device);
     void end();

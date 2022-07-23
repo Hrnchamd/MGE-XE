@@ -34,11 +34,11 @@ IDirect3DDevice9* VideoPatch::d;
 VideoBackground VideoPatch::v;
 int VideoPatch::state;
 
+const char* videoPath = "Data Files\\video\\menu_background.bik";
 
 
 
-bool VideoBackground::begin(IDirect3DDevice9* device) {
-    const char* path = "Data Files\\video\\menu_background.bik";
+bool VideoBackground::init() {
 
     HMODULE hDLL = LoadLibrary("binkw32.dll");
     if (hDLL == NULL) {
@@ -53,19 +53,25 @@ bool VideoBackground::begin(IDirect3DDevice9* device) {
     BinkNextFrame = (BinkNextFrame_t)GetProcAddress(hDLL, "_BinkNextFrame@4");
 
     // If there is no replacer installed, signal failure but not an error
-    if (GetFileAttributes(path) == INVALID_FILE_ATTRIBUTES) {
+    if (GetFileAttributes(videoPath) == INVALID_FILE_ATTRIBUTES) {
         return false;
     }
 
-    video = BinkOpen(path, 0);
+    return true;
+}
+
+bool VideoBackground::begin(IDirect3DDevice9* device) {
+    video = BinkOpen(videoPath, 0);
     if (!video) {
         LOG::logline("!! Video renderer: Bink failed to open video file.");
+        end();
         return false;
     }
 
     HRESULT hr = device->CreateOffscreenPlainSurface(video->width, video->height, D3DFMT_X8R8G8B8, D3DPOOL_DEFAULT, &surface, 0);
     if (hr != D3D_OK) {
         LOG::logline("!! Video renderer: Failed to create a surface for video output.");
+        end();
         return false;
     }
 
@@ -109,13 +115,24 @@ void VideoBackground::end() {
 
 
 
-void VideoPatch::start(IDirect3DDevice9* device) {
-    if (state == 0) {
-        state = v.begin(device) ? 1 : -1;
-        d = device;
+struct VideoState {
+    enum {
+        PreMainScreen = 0,
+        WaitForMain = 1,
+        Playing = 2,
+        Done = -1
+    };
+};
 
-        if (state == 1) {
+void VideoPatch::start(IDirect3DDevice9* device) {
+    if (state == VideoState::PreMainScreen) {
+        d = device;
+        if (v.init()) {
+            state = VideoState::WaitForMain;
             MWBridge::get()->redirectMenuBackground(VideoPatch::patch);
+        }
+        else {
+            state = VideoState::Done;
         }
     }
 }
@@ -123,22 +140,27 @@ void VideoPatch::start(IDirect3DDevice9* device) {
 void VideoPatch::monitor(IDirect3DDevice9* device) {
     auto mwBridge = MWBridge::get();
 
-    if (state == 1) {
+    if (state == VideoState::WaitForMain) {
         // Wait until pre-main menu loading screen is gone
         if (!mwBridge->isLoadingBar()) {
-            state = 2;
+            if (v.begin(device)) {
+                state = VideoState::Playing;
+            }
+            else {
+                state = VideoState::Done;
+            }
         }
     }
-    else if (state == 2 && mwBridge->isLoadingBar()) {
+    else if (state == VideoState::Playing && mwBridge->isLoadingBar()) {
         // Release when first loading bar appears (includes new game cutscene)
-        state = -1;
+        state = VideoState::Done;
         mwBridge->redirectMenuBackground(nullptr);
         v.end();
     }
 }
 
 void _stdcall VideoPatch::patch(int x) {
-    if (state >= 1) {
+    if (state == VideoState::Playing) {
         v.render(d);
     }
 }
