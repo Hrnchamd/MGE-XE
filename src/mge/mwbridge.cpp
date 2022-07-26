@@ -51,7 +51,8 @@ void MWBridge::InitStaticMemory() {
     // Bloodmoon v. 1080
     eNoMusicBreak = 0x00403659;
     eMusicVolFunc = 0x00403a10;
-    eHaggleMore = 0x005A73D0;
+    eHaggleUpdate = 0x005A74C0;
+    eHaggleAmount = 0x007D287C;
     eTruform = 0x006e4ffc;
     eGetMouseState = 0x00406721;
     eNoWorldFOV = 0x004049fe;
@@ -76,7 +77,6 @@ void MWBridge::InitStaticMemory() {
     eEnviro = eMaster + 0x4;
     eLoad = eMaster + 0x1DDC;
 
-    eHaggleLess  = eHaggleMore + 0xF0;
     eXMenuHudOut = eXMenuHudIn + 0x448;
     eMenuMouseMove = eXMenuNoMouse + 0xE0;
     eJournalScale = eBookScale + 0xF5;
@@ -714,40 +714,38 @@ float MWBridge::WaterLevel() {
 
 void MWBridge::HaggleMore(DWORD num) {
     assert(m_loaded);
-    typedef void (_stdcall *mmHaggleProc)();
-    mmHaggleProc proc = (mmHaggleProc)eHaggleMore;
-    num -= 1;
+    auto updateProc = reinterpret_cast<void (__stdcall*)()>(eHaggleUpdate);
+
     if (num != 0) {
-        int d = (int)read_dword(0x7D287C);
+        int d = (int)read_dword(eHaggleAmount);
         if (d <= 0) {
             d -= num;
         } else {
             d += num;
         }
 
-        write_dword(0x7D287C, d);
+        write_dword(eHaggleAmount, d);
     }
-    proc();
+    updateProc();
 }
 
 //-----------------------------------------------------------------------------
 
 void MWBridge::HaggleLess(DWORD num) {
     assert(m_loaded);
-    typedef void (_stdcall *mmHaggleProc)();
-    mmHaggleProc proc = (mmHaggleProc)eHaggleLess;
-    num -= 1;
+    auto updateProc = reinterpret_cast<void (__stdcall*)()>(eHaggleUpdate);
+
     if (num != 0) {
-        int d = (int)read_dword(0x7D287C);
+        int d = (int)read_dword(eHaggleAmount);
         if (d <= 0) {
             d += num;
         } else {
             d -= num;
         }
 
-        write_dword(0x7D287C, d);
+        write_dword(eHaggleAmount, d);
     }
-    proc();
+    updateProc();
 }
 
 //-----------------------------------------------------------------------------

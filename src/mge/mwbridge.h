@@ -179,7 +179,7 @@ protected:
     DWORD eNoMusicBreak,
           eGammaFunc,
           eMusicVolFunc,
-          eHaggleMore, eHaggleLess,
+          eHaggleUpdate, eHaggleAmount,
           eMenuMouseMove,
           eTruform, eGetMouseState,
           eXMenuHudIn, eXMenuHudOut, eXMenuNoMouse, eXMenuNoFOV,
