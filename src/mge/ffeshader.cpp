@@ -343,7 +343,7 @@ ID3DXEffect* FixedFunctionShader::generateMWShader(const ShaderKey& sk) {
     buf.str(string());
 
     if (sk.vertexColour) {
-        buf << "float4 col : COLOR; ";
+        buf << "centroid float4 col : COLOR; ";
     }
     if (totalOutputCoords == 1) {
         buf << "float2 texcoord01 : TEXCOORD0; ";

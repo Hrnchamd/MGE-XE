@@ -1,6 +1,6 @@
 
 // XE Mod Shadow.fx
-// MGE XE 0.13.0
+// MGE XE 0.14.2
 // Shadow receiver functions. Can be used as a core mod.
 
 #include "XE Mod Shadow Data.fx"
@@ -76,8 +76,8 @@ float shadowESM(float dz) {
 struct RenderShadowVertOut {
     float4 pos: POSITION;
     half2 texcoords: TEXCOORD0;
-    float light: COLOR0;
-    float alpha: COLOR1;
+    centroid float light: COLOR0;
+    centroid float alpha: COLOR1;
     
     float4 shadow0pos: TEXCOORD1;
     float4 shadow1pos: TEXCOORD2;

@@ -1,6 +1,6 @@
 
 // XE Common.fx
-// MGE XE 0.13.0
+// MGE XE 0.14.2
 // Shared structures and functions
 
 
@@ -66,9 +66,9 @@ struct StatVertInstIn {
 
 struct StatVertOut {
     float4 pos : POSITION;
-    float4 color : COLOR0;
-    float3 texcoords_range : TEXCOORD0;
-    float4 fog : TEXCOORD1;
+    centroid float4 color : COLOR0;
+    centroid float4 fog : TEXCOORD0;
+    float3 texcoords_range : TEXCOORD1;
 };
 
 //------------------------------------------------------------

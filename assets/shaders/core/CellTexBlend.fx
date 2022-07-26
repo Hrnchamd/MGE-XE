@@ -1,4 +1,6 @@
 
+// CellTexBlend.fx
+// MGE XE 0.14.2
 // Used by distant land generator to create world ground texture
 
 Matrix transform;

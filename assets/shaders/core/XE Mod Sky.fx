@@ -1,6 +1,6 @@
 
 // XE Mod Sky.fx
-// MGE XE 0.13.0
+// MGE XE 0.14.2
 // Sky rendering. Can be used as a core mod.
 
 //------------------------------------------------------------

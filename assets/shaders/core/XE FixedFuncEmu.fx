@@ -1,6 +1,6 @@
 
 // XE FixedFuncEmu.fx
-// MGE XE 0.13.0
+// MGE XE 0.14.2
 // Replacement shaders for Morrowind's object rendering
 
 #include "XE Common.fx"
@@ -154,7 +154,7 @@ struct FFEVertIn {
 
 struct FFEPixel {
     float4 pos : POSITION;
-    float4 nrm_fog : NORMAL;
+    centroid float4 nrm_fog : NORMAL;
     
     /* template */ FFE_SHADER_COUPLING
     

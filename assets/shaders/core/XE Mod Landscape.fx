@@ -1,6 +1,6 @@
 
 // XE Mod Landscape.fx
-// MGE XE 0.13.0
+// MGE XE 0.14.2
 // Distant landscape rendering. Can be used as a core mod.
 
 
@@ -29,7 +29,7 @@ float landBias(float dist) {
 struct LandVertOut {
     float4 pos: POSITION;
     float2 texcoord: TEXCOORD0;
-    float4 fog : TEXCOORD1;
+    centroid float4 fog : TEXCOORD1;
 };
 
 LandVertOut LandscapeVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0) {

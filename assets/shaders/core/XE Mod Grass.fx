@@ -1,6 +1,6 @@
 
 // XE Mod Grass.fx
-// MGE XE 0.13.0
+// MGE XE 0.14.2
 // Grass rendering. Can be used as a core mod.
 
 
@@ -53,8 +53,8 @@ TransformedVert transformGrassVert(StatVertInstIn IN) {
 struct GrassVertOut {
     float4 pos : POSITION;
     half2 texcoords : TEXCOORD0;
-    half4 color : COLOR0;
-    half4 fog : COLOR1;
+    centroid half4 color : COLOR0;
+    centroid half4 fog : COLOR1;
     
     float4 shadow0pos : TEXCOORD1;
     float4 shadow1pos : TEXCOORD2;
