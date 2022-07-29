@@ -9,6 +9,7 @@ return {
     ["Close"] = "Закрыть",
 	["On"] = "вкл",
 	["Off"] = "выкл",
+	["Reset"] = "Сброс",
 
     ["TabRendering"] = "Графика",
     ["TabDistantLand"] = "Distant Land",

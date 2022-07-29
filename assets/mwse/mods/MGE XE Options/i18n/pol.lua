@@ -9,6 +9,7 @@ return {
     ["Close"] = "Zamknij",
 	["On"] = "Wł",
 	["Off"] = "Wył",
+	["Reset"] = "Domyślne",
 
     ["TabRendering"] = "Grafika",
     ["TabDistantLand"] = "Odległy teren",

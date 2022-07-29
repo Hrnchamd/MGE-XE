@@ -9,6 +9,7 @@ return {
     ["Close"] = "Fermer",
 	["On"] = "Marche",
 	["Off"] = "Arrêt",
+	["Reset"] = "Réinit.",
 
     ["TabRendering"] = "Graphismes",
     ["TabDistantLand"] = "Paysages distants",

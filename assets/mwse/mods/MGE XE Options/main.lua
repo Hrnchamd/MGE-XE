@@ -7,6 +7,8 @@
 local gui = require("MGE XE Options.gui")
 local i18n = mwse.loadTranslations("MGE XE Options")
 
+-- MCM
+
 local modConfig = {}
 function modConfig.onCreate(parent)
 	local container = parent:createThinBorder{}
@@ -55,6 +57,29 @@ event.register("modConfigReady", function ()
 	mwse.registerModConfig("MGE XE", modConfig)
 end)
 
+-- Video options
+
+local function addGammaResetButton(e)
+	if not e.newlyCreated then return end
+
+	local gamma = e.element:findChild("MenuVideo_GamaSlider")
+	if gamma then
+		local r = gamma.parent:createButton{ id = "MGE-XE:ResetGamma", text = i18n("Reset") }
+		r.absolutePosAlignX = 1
+		r.absolutePosAlignY = 0.38
+
+		r:register(tes3.uiEvent.mouseClick, function(e)
+			gamma.widget.current = 50
+			gamma:triggerEvent("PartScrollBar_changed")
+			gamma:getTopLevelMenu():updateLayout()
+		end)
+
+		gamma:getTopLevelMenu():updateLayout()
+	end
+end
+event.register(tes3.event.uiActivated, addGammaResetButton, { filter = "MenuVideo" })
+
+-- Init
 
 local function onInitialized(mod)
 	gui.i18n = i18n

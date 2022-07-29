@@ -9,6 +9,7 @@ return {
     ["Close"] = "Close",
 	["On"] = "On",
 	["Off"] = "Off",
+	["Reset"] = "Reset",
 
     ["TabRendering"] = "Rendering",
     ["TabDistantLand"] = "Distant Land",
