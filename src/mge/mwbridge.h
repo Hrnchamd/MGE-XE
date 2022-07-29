@@ -118,6 +118,7 @@ public:
     float getUIScale();
     void setUIScale(float scale);
     void patchUIConfigure(void (__stdcall* newfunc)());
+    void patchSplashScreen(unsigned int width, unsigned int height);
     void patchFrameTimer(int (__cdecl* newfunc)());
 
     void* getGMSTPointer(DWORD id);

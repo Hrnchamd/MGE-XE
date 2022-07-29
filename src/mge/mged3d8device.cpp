@@ -82,6 +82,11 @@ MGEProxyDevice::MGEProxyDevice(IDirect3DDevice9* real, ProxyD3D* d3d) : ProxyDev
 
     // Store active device in distant land, occurs on startup and after fullscreen alt-tab
     DistantLand::device = realDevice;
+
+    // Patch splash screen minor issues
+    D3DVIEWPORT9 vp;
+    realDevice->GetViewport(&vp);
+    MWBridge::get()->patchSplashScreen(vp.Width, vp.Height);
 }
 
 // Present - End of MW frame
