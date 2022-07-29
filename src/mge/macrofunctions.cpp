@@ -322,36 +322,40 @@ void MacroFunctions::DecreaseFOV() {
     Configuration.ScreenFOV = std::max(60.0f, Configuration.ScreenFOV - 1.0f);
 }
 
+int haggleMultiplier() {
+    return (MGEProxyDirectInput::modifierKeys & 1) ? 100 : 1;
+}
+
 void MacroFunctions::HaggleMore1() {
-    MWBridge::get()->HaggleMore(1);
+    MWBridge::get()->HaggleMore(1 * haggleMultiplier());
 }
 void MacroFunctions::HaggleMore10() {
-    MWBridge::get()->HaggleMore(10);
+    MWBridge::get()->HaggleMore(10 * haggleMultiplier());
 }
 void MacroFunctions::HaggleMore100() {
-    MWBridge::get()->HaggleMore(100);
+    MWBridge::get()->HaggleMore(100 * haggleMultiplier());
 }
 void MacroFunctions::HaggleMore1000() {
-    MWBridge::get()->HaggleMore(1000);
+    MWBridge::get()->HaggleMore(1000 * haggleMultiplier());
 }
 void MacroFunctions::HaggleMore10000() {
-    MWBridge::get()->HaggleMore(10000);
+    MWBridge::get()->HaggleMore(10000 * haggleMultiplier());
 }
 
 void MacroFunctions::HaggleLess1() {
-    MWBridge::get()->HaggleLess(1);
+    MWBridge::get()->HaggleLess(1 * haggleMultiplier());
 }
 void MacroFunctions::HaggleLess10() {
-    MWBridge::get()->HaggleLess(10);
+    MWBridge::get()->HaggleLess(10 * haggleMultiplier());
 }
 void MacroFunctions::HaggleLess100() {
-    MWBridge::get()->HaggleLess(100);
+    MWBridge::get()->HaggleLess(100 * haggleMultiplier());
 }
 void MacroFunctions::HaggleLess1000() {
-    MWBridge::get()->HaggleLess(1000);
+    MWBridge::get()->HaggleLess(1000 * haggleMultiplier());
 }
 void MacroFunctions::HaggleLess10000() {
-    MWBridge::get()->HaggleLess(10000);
+    MWBridge::get()->HaggleLess(10000 * haggleMultiplier());
 }
 
 static void displayCamPosition() {
