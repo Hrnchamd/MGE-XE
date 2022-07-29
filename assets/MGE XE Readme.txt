@@ -1,7 +1,7 @@
 
-MGE XE 0.14.2
+MGE XE 0.14.3
 -------------
-Released 2022-07-16
+Released 2022-07-29
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -109,12 +109,19 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.14.3
+- Fixed white pixel sparkling of distant subpixel objects at night (e.g. tree branches and thin fences).
+- Added gamma correction reset button to video options.
+- Adjusted main menu video background code to allow mods to run first, so that video randomizing mods can work again.
+- Fixed haggle macros inconsistent behaviour. The Shift modifier is now always supported.
+- Fixed splash screens showing a thin line of background color pixels on some edges of the screen when multisampling is used.
+
 0.14.2
 - Supports borderless windowed mode even when MGE XE is disabled.
 - Fixed incorrect per-pixel lighting rendering of modded multi-texture effects (such as darkmap or glowmap) in rare situations.
 
 0.14.1
-- Fix main menu video background mods failing to play.
+- Fixed main menu video background mods failing to play.
 - Updated French localization, thanks to Redondepremière.
 - Help button now points to nexusmods.
 
@@ -157,14 +164,14 @@ Changelog (newest first)
 - Actually updated French localization, thanks to Redondepremière. Accidentally did not get included in 0.13.0.
 - Fixed nearly all distant landscape heightfield artifacts, which were appearing as terrain glitches. Land bias changes are no longer required.
 - Reworked HDR shader to functionally brighten dark scenes, while having minimal effects on bright scenes. Adapts to brightness quickly, but dark vision takes more time to adapt to. Should make dark areas of the game more playable.
-- Changed sky scattering to transition from sunrise colours to a blue sky more quickly after sunrise. Updated distant land fog to blend better with near fog, which was noticable with shorter view distances.
+- Changed sky scattering to transition from sunrise colours to a blue sky more quickly after sunrise. Updated distant land fog to blend better with near fog, which was noticeable with shorter view distances.
 - Changed automatically set distant statics distances to a minimum of 4 cells, to minimize near pop-in.
 - Disable exponential fog if distant land is initially off. Makes sure the water shader has the correct fog mode when distant land is intended to be off.
 
 0.13.0
 - Adjusted high quality sky scattering to create an overall brighter sky. Aims for a bright and vibrant blue during the day, and a more intense sunrise/sunset.
 - Rendering bias for distant land and water improved. Unfortunately this means water shader mods have to be updated to render correctly.
-- Exponential fog now uses an auto distance multiplier that fades exactly to the fog colour at fog end distance. Tthe multiplier has been removed from configuration. The auto distance function for near fog is tuned for better near visibility while retaining atmosphere.
+- Exponential fog now uses an auto distance multiplier that fades exactly to the fog colour at fog end distance. The multiplier has been removed from configuration. The auto distance function for near fog is tuned for better near visibility while retaining atmosphere.
 - Capture screenshots with or without UI, depending on shift key. Using shift always captures UI.
 - Correct issue with SSAO making fogged objects slightly lighter, in good weather with sky scattering, where draw distance was <8 cells.
 - Updated grass shader stomp effect to fade out if the player is high above. A little generous on height difference to account for different grass mods.
