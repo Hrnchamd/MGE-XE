@@ -2220,7 +2220,7 @@ namespace MGEgui.DistantLand {
             Building = 6
         }
 
-        private struct StaticToRemove {
+        private class StaticToRemove {
 
             public readonly string Worldspace;
             public readonly string Reference;
@@ -2277,7 +2277,7 @@ namespace MGEgui.DistantLand {
 
         }
 
-        private struct StaticOverride {
+        private class StaticOverride {
 
             public bool Ignore;
             public StaticType Type;
