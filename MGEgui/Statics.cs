@@ -187,7 +187,7 @@ namespace MGEgui {
         public const string versionNumber = "0.14.3";
         public const string versionString = "v" + versionNumber;
         public const byte SaveVersion = 47;
-        public const byte DistantLandVersion = 6;
+        public const byte DistantLandVersion = 7;
 
         public const int MACROS = 266;
         public const int TRIGGERS = 4;

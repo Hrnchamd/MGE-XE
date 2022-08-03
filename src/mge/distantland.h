@@ -23,6 +23,24 @@ public:
         std::unique_ptr<QuadTree> GrassStatics;
     };
 
+    struct DynamicVisGroup {
+        enum class DataSource : uint8_t {
+            Journal = 1,
+            Global = 2,
+            Other = 3
+        };
+        struct Range {
+            int begin, end;
+        };
+
+        DataSource source;
+        bool enabled;
+        void *gameObject;
+        std::string id;
+        std::vector<Range> ranges;
+        std::vector<QuadTreeMesh*> references;
+    };
+
     struct RecordedState : RenderedState {
         RecordedState(const RenderedState&);
         ~RecordedState();
@@ -59,6 +77,7 @@ public:
 
     static std::unordered_map<std::string, WorldSpace> mapWorldSpaces;
     static const WorldSpace* currentWorldSpace;
+    static std::vector<DynamicVisGroup> dynamicVisGroups;
     static QuadTree LandQuadTree;
     static VisibleSet visLand;
     static VisibleSet visDistant;

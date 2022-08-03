@@ -38,6 +38,7 @@ VendorSpecificRendering DistantLand::vsr;
 
 unordered_map<std::string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
 const DistantLand::WorldSpace* DistantLand::currentWorldSpace;
+std::vector<DistantLand::DynamicVisGroup> DistantLand::dynamicVisGroups;
 QuadTree DistantLand::LandQuadTree;
 VisibleSet DistantLand::visLand;
 VisibleSet DistantLand::visDistant;
@@ -911,6 +912,41 @@ bool DistantLand::loadDistantStatics() {
     LOG::flush();
 
 
+    // Load dynamic vis groups
+    size_t dynamicVisGroupCount;
+    ReadFile(h, &dynamicVisGroupCount, 4, &unused, 0);
+    dynamicVisGroups.clear();
+
+    if (dynamicVisGroupCount > 0) {
+        const size_t visGroupRecordSize = 130;
+        size_t visDataSize = visGroupRecordSize * dynamicVisGroupCount;
+        auto visData = std::make_unique<char[]>(visDataSize);
+        ReadFile(h, visData.get(), visDataSize, &unused, 0);
+        membuf_reader visReader(visData.get());
+
+        // VisGroup indexes use a 1-based index, group 0 is reserved for testing
+        dynamicVisGroups.resize(dynamicVisGroupCount + 1);
+
+        for (size_t nVisGroup = 1; nVisGroup <= dynamicVisGroupCount; ++nVisGroup) {
+            DynamicVisGroup& dvg = dynamicVisGroups[nVisGroup];
+            visReader.read(&dvg.source, 1);
+            dvg.enabled = true;
+            dvg.gameObject = nullptr;
+
+            char id[64];
+            visReader.read(&id, sizeof(id));
+            dvg.id = id;
+
+            uint8_t rangeCount;
+            visReader.read(&rangeCount, sizeof(rangeCount));
+
+            DynamicVisGroup::Range ranges[8];
+            visReader.read(&ranges, sizeof(ranges));
+            dvg.ranges.assign(ranges, ranges + rangeCount);
+        }
+        visData.reset();
+    }
+
     // Load statics references
     mapWorldSpaces.clear();
     for (size_t nWorldSpace = 0; true; ++nWorldSpace) {
@@ -935,7 +971,8 @@ bool DistantLand::loadDistantStatics() {
             mapWorldSpaces.insert(make_pair(string(cellname), WorldSpace()));
         }
 
-        size_t UsedDistantStaticDataSize = UsedDistantStaticCount * 32;
+        const size_t UsedDistantStaticRecordSize = 34;
+        size_t UsedDistantStaticDataSize = UsedDistantStaticRecordSize * UsedDistantStaticCount;
         auto UsedDistantStaticData = std::make_unique<char[]>(UsedDistantStaticDataSize);
         ReadFile(h, UsedDistantStaticData.get(), UsedDistantStaticDataSize, &unused, 0);
         membuf_reader udsReader(UsedDistantStaticData.get());
@@ -948,6 +985,7 @@ bool DistantLand::loadDistantStatics() {
             float yaw, pitch, roll, scale;
 
             udsReader.read(&NewUsedStatic.staticRef, 4);
+            udsReader.read(&NewUsedStatic.visIndex, 2);
             udsReader.read(&NewUsedStatic.pos, 12);
             udsReader.read(&yaw, 4);
             udsReader.read(&pitch, 4);

@@ -41,6 +41,7 @@ struct DistantStatic {
 
 struct UsedDistantStatic {
     DWORD staticRef;
+    uint16_t visIndex;
     D3DXVECTOR3 pos;
     float scale;
     D3DXMATRIX transform;

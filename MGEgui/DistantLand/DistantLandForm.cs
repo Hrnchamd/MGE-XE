@@ -959,10 +959,10 @@ namespace MGEgui.DistantLand {
         }
 
         enum OverrideFileSection {
-            Default, Names, Interiors
+            Default, Names, Interiors, DynamicVis
         }
 
-        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, List<string> staticsWarnings) {
+        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, Dictionary<string, DynamicVisGroup> dynamicVis, List<string> staticsWarnings) {
             foreach (string filename in overrideFiles) {
                 if (DEBUG) {
                     allWarnings.Add("Loading override: " + filename);
@@ -1003,6 +1003,7 @@ namespace MGEgui.DistantLand {
 
                                 if (section_name == "names") { section = OverrideFileSection.Names; }
                                 else if (section_name == "interiors") { section = OverrideFileSection.Interiors; }
+                                else if (section_name == "dynamic_vis") { section = OverrideFileSection.DynamicVis; }
 
                                 continue;
                             }
@@ -1064,12 +1065,26 @@ namespace MGEgui.DistantLand {
                                         interiorEnables[line] = true;
                                     }
                                     break;
+                                case OverrideFileSection.DynamicVis:
+                                    if (key != null) {
+                                        dynamicVis[key] = new DynamicVisGroup(value);
+                                    } else {
+                                        staticsWarnings.Add("Warning: Failed to parse line in override list '" + filename + "': '" + line + "'");
+                                    }
+                                    break;
                             }
                         }
                     }
                 } catch {
                     staticsWarnings.Add("Error: Could not import statics override list '" + filename + "'");
                 }
+            }
+
+            // Assign unique indexes to dynamic vis groups
+            int i = 1;
+            foreach (var item in dynamicVis) {
+                var vis = item.Value;
+                vis.Index = i++;
             }
         }
 
@@ -1079,13 +1094,14 @@ namespace MGEgui.DistantLand {
             var overrideList = new Dictionary<string, StaticOverride>();
             var namedObjectDisables = new Dictionary<string, bool>();
             var interiorEnables = new Dictionary<string, bool>();
+            var dynamicVis = new Dictionary<string, DynamicVisGroup>();
 
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
 
             if (args.UseOverrideList && args.OverrideFiles.Count > 0) {
-                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, staticsWarnings);
+                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, dynamicVis, staticsWarnings);
             }
 
             Directory.CreateDirectory(Statics.fn_statics);
@@ -1095,7 +1111,7 @@ namespace MGEgui.DistantLand {
                 }
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 try {
-                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null);
+                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null, dynamicVis);
                 } catch (Exception ex) {
                     staticsWarnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
@@ -1251,6 +1267,12 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
             using (var bw = new BinaryWriter(File.Create(Statics.fn_usagedata), Statics.ESPEncoding)) {
                 bw.Write(UsedNifList.Count);
+
+                // Write dynamic vis data
+                bw.Write(dynamicVis.Count);
+                foreach (var vis in dynamicVis) {
+                    vis.Value.Write(bw);
+                }
 
                 // Write main worldspace statics usage
                 var mainWorldspace = UsedStaticsList[""];
@@ -1431,7 +1453,7 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 lastFileProcessed = file;
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
-                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList);
+                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList, null);
                 br.BaseStream.Position = 0;
                 ParseFileForInteriors(br, interiorEnables);
                 br.Close();
@@ -1856,6 +1878,7 @@ namespace MGEgui.DistantLand {
                 SetupFlags["EnaLandAuto"] = cmbMeshWorldDetail.SelectedIndex != -1;
                 SetupFlags["EnaLandTex"] = Exists;
                 SetupFlags["EnaLandMesh"] = Exists;
+                SetupFlags["EnaStatics"] = Exists;
 
                 var runSetupForm = new RunSetupForm(SetupFlags);
                 runSetupForm.FormClosed += new FormClosedEventHandler(runSetupForm_FormClosed);
@@ -2237,11 +2260,13 @@ namespace MGEgui.DistantLand {
             public readonly string Name;
             public readonly string Model;
             public float Size;
+            public int VisIndex;
 
             public Static(string name, string model) {
                 Name = name.ToLower(Statics.Culture);
                 Model = model.ToLower(Statics.Culture);
                 Size = 0;
+                VisIndex = 0;
             }
 
         }
@@ -2253,19 +2278,25 @@ namespace MGEgui.DistantLand {
             public float Yaw, Pitch, Roll;
             public float Scale;
             public uint StaticID;
+            public int VisIndex;
 
             public void SetID(Dictionary<string, Static> staticsList, Dictionary<string, uint> staticMap) {
-                string file = staticsList[Name].Model;
+                var s = staticsList[Name];
+                string file = s.Model;
+
                 if (staticMap.ContainsKey(file)) {
                     StaticID = staticMap[file];
                 } else {
                     StaticID = (uint)staticMap.Count;
                     staticMap[file] = StaticID;
                 }
+
+                VisIndex = s.VisIndex;
             }
 
             public void Write(BinaryWriter bw) {
                 bw.Write(StaticID);
+                bw.Write((ushort)VisIndex);
                 bw.Write(X);
                 bw.Write(Y);
                 bw.Write(Z);
@@ -2345,6 +2376,73 @@ namespace MGEgui.DistantLand {
                 NamesNoIgnore = enabledInNames;
             }
 
+        }
+
+        private class DynamicVisGroup {
+            public int Index;
+            public string JournalId, GlobalId;
+            public List<Tuple<int, int>> EnabledRanges;
+
+            public DynamicVisGroup(string value) {
+                Index = -1;
+                JournalId = null;
+                GlobalId = null;
+                EnabledRanges = new List<Tuple<int, int>>();
+
+                string[] tokens = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (tokens.Length <= 2) {
+                    return;
+                }
+
+                if (tokens[0] == "journal") {
+                    JournalId = tokens[1];
+                }
+                else if (tokens[0] == "global") {
+                    GlobalId = tokens[1];
+                }
+                else {
+                    return;
+                }
+
+                for (int i = 2; i < tokens.Length; ++i) {
+                    string s = tokens[i];
+                    int index = s.IndexOf('-');
+                    int start = 0, end = 0;
+                    bool ok;
+
+                    if (index != -1) {
+                        ok = Int32.TryParse(s.Substring(0, index), out start);
+                        ok = ok && Int32.TryParse(s.Substring(index+1), out end);
+                    }
+                    else {
+                        ok = Int32.TryParse(s, out start);
+                        end = start + 1;
+                    }
+                    if (ok && EnabledRanges.Count < 8) {
+                        EnabledRanges.Add(new Tuple<int,int>(start, end));
+                    }
+                }
+            }
+            
+            public void Write(BinaryWriter bw) {
+                if (JournalId != null) {
+                    bw.Write((byte)1);
+                    bw.Write(JournalId.PadRight(64, '\0').ToCharArray());
+                }
+                else if (GlobalId != null) {
+                    bw.Write((byte)2);
+                    bw.Write(GlobalId.PadRight(64, '\0').ToCharArray());
+                }
+                bw.Write((byte)EnabledRanges.Count);
+                foreach (var range in EnabledRanges) {
+                    bw.Write(range.Item1);
+                    bw.Write(range.Item2);
+                }
+                for (int filler = 8 - EnabledRanges.Count; filler > 0; filler--) {
+                    bw.Write((Int64)0);
+                }
+            }
         }
 
         /* Statics tab handlers */
@@ -2475,7 +2573,7 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList) {
+        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList, Dictionary<string, DynamicVisGroup> dynamicVis) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
 
@@ -2504,32 +2602,41 @@ namespace MGEgui.DistantLand {
                                 model = rr.ReadCString().ToLower(Statics.Culture);
                                 break;
                             case "SCRI":
-                                script = rr.ReadCString().ToLower(Statics.Culture);
+                                script = rr.ReadCString().ToLowerInvariant();
                                 break;
                         }
                     }
 
                     if (name != null && model != null && model.Trim() != string.Empty) {
-                        // Named exceptions
-                        if (namedObjectDisables != null && namedObjectDisables.ContainsKey(name)) {
-                            if (!namedObjectDisables[name]) {
-                                StaticsList[name] = new Static(name, model);
-                                if (overrideList != null && overrideList.ContainsKey(model) && overrideList[model].Ignore) {
-                                    overrideList[model] = new StaticOverride(overrideList[model], true);
-                                    if (DEBUG) {
-                                        DEBUG_statics++;
-                                        continue;
-                                    }
-                                }
-                            }
-                            if (DEBUG) {
-                                DEBUG_ignored++;
-                            }
-                            continue;
-                        }
                         // no_script override
                         if (script != null && overrideList != null && overrideList.ContainsKey(model) && overrideList[model].NoScript) {
                             script = null;
+                        }
+
+                        // Dynamic vis
+                        if (dynamicVis != null && script != null && dynamicVis.ContainsKey(script)) {
+                            var s = new Static(name, model);
+                            s.VisIndex = dynamicVis[script].Index;
+                            StaticsList[name] = s;
+
+                            DEBUG_statics++;
+                            continue;
+                        }
+
+                        // Named exceptions
+                        if (namedObjectDisables != null && namedObjectDisables.ContainsKey(name)) {
+                            if (!namedObjectDisables[name]) {
+                                // Object set to enabled, bypassing nif ignore
+                                StaticsList[name] = new Static(name, model);
+                                // Flag that the nif is used despite the ignore flag
+                                if (overrideList != null && overrideList.ContainsKey(model) && overrideList[model].Ignore) {
+                                    overrideList[model] = new StaticOverride(overrideList[model], true);
+                                }
+                                DEBUG_statics++;
+                                continue;
+                            }
+                            DEBUG_ignored++;
+                            continue;
                         }
 
                         bool ignore;
@@ -2539,20 +2646,20 @@ namespace MGEgui.DistantLand {
                             ignore = (misc && !includeMisc) || (activator && !includeActivators);
                         }
 
+                        if (!ignore && script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script]) {
+                            // no_script detection for static list exporter
+                            if (noScriptList != null) {
+                                noScriptList[name] = model;
+                            }
+                            ignore = true;
+                        }
+
                         if (!ignore) {
-                            if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script]) {
-                                if (noScriptList != null) {
-                                    noScriptList[name] = model;
-                                }
-                                if (DEBUG) {
-                                    DEBUG_ignored++;
-                                }
-                                continue;
-                            }
                             StaticsList[name] = new Static(name, model);
-                            if (DEBUG) {
-                                DEBUG_statics++;
-                            }
+                            DEBUG_statics++;
+                        }
+                        else {
+                            DEBUG_ignored++;
                         }
                     }
                 }
