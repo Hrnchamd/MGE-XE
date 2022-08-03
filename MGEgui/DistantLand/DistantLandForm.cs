@@ -87,7 +87,7 @@ namespace MGEgui.DistantLand {
 
         private readonly LAND DefaultLand = new LAND();
         private static LTEX DefaultTex;
-        private static LAND[,] map;
+        private static LAND[,] LandMap;
         private List<AtlasRegion> Atlas;
         private int AtlasSpanX, AtlasSpanY;
 
@@ -161,7 +161,7 @@ namespace MGEgui.DistantLand {
 
         static public LTEX GetTex(int cellx, int celly, int texx, int texy) {
             LTEX t = DefaultTex;
-            var c = map[cellx, celly];
+            var c = LandMap[cellx, celly];
             if (c != null) {
                 t = c.Textures[c.Tex[texx, texy]];
             }
@@ -378,7 +378,7 @@ namespace MGEgui.DistantLand {
             }
             iniFile.setKey("PlugSort", temp);
             iniFile.setSectList(iniDLWizardPlugDirs, pluginDirs.ToArray());
-            
+
             var tempList = new List<string>();
             foreach (string s in clbPlugsModList.CheckedItems) {
                 tempList.Add(s);
@@ -415,7 +415,7 @@ namespace MGEgui.DistantLand {
             iniFile.setKey("Activators", cbStatActivators.Checked);
             iniFile.setKey("MiscObj", cbStatIncludeMisc.Checked);
             iniFile.setKey("UseStatOvr", cbStatOverrideList.Checked);
-            
+
             var tempList = new List<string>();
             foreach (OverrideListItem item in lbStatOverrideList.Items) {
                 tempList.Add(item.FileName);
@@ -459,7 +459,7 @@ namespace MGEgui.DistantLand {
         }
 
         private void workerLoadPlugins(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            map = (LAND[,])Array.CreateInstance(typeof(LAND), new int[] {
+            LandMap = (LAND[,])Array.CreateInstance(typeof(LAND), new int[] {
                 501,
                 501
             }, new int[] {
@@ -557,10 +557,10 @@ namespace MGEgui.DistantLand {
                             int maxDimension = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
                             MapSize = Math.Max(MapSize, maxDimension);
 
-                            if (map[lx, ly] == null) {
+                            if (LandMap[lx, ly] == null) {
                                 CellCount++;
                             }
-                            map[lx, ly] = land;
+                            LandMap[lx, ly] = land;
                         }
                     } else if (rr.Tag == "LTEX") {
                         var tex = new LTEX();
@@ -649,17 +649,17 @@ namespace MGEgui.DistantLand {
             wtc.Begin();
             ctc.Begin();
             foreach (var r in Atlas) {
-                for (int y = r.minY; y <= r.maxY; y++) {
+                for (int y = r.MinY; y <= r.MaxY; y++) {
                     backgroundWorker.ReportProgress(Math.Min(++count, statusProgress.Maximum));
-                    for (int x = r.minX; x <= r.maxX; x++) {
-                        if (map[x, y] == null || map[x, y] == DefaultLand) {
+                    for (int x = r.MinX; x <= r.MaxX; x++) {
+                        if (LandMap[x, y] == null || LandMap[x, y] == DefaultLand) {
                             ctc.SetDefaultCell(DefaultTex);
                         } else {
                             // Set the colors and normals
-                            ctc.SetCell(map[x, y]);
+                            ctc.SetCell(LandMap[x, y]);
                         }
-                        float x_pos = ((float)(x - r.minX + r.offsetX) + 0.5f) * wtc.x_spacing - 1.0f;
-                        float y_pos = ((float)(y - r.minY + r.offsetY) + 0.5f) * wtc.y_spacing - 1.0f;
+                        float x_pos = ((float)(x - r.MinX + r.OffsetX) + 0.5f) * wtc.x_spacing - 1.0f;
+                        float y_pos = ((float)(y - r.MinY + r.OffsetY) + 0.5f) * wtc.y_spacing - 1.0f;
                         ctc.Render(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                     }
                 }
@@ -674,17 +674,17 @@ namespace MGEgui.DistantLand {
             wtc.Begin();
             ctc.BeginNormalMap();
             foreach (var r in Atlas) {
-                for (int y = r.minY; y <= r.maxY; y++) {
+                for (int y = r.MinY; y <= r.MaxY; y++) {
                     backgroundWorker.ReportProgress(Math.Min(++count, statusProgress.Maximum));
-                    for (int x = r.minX; x <= r.maxX; x++) {
-                        if (map[x, y] == null || map[x, y] == DefaultLand) {
+                    for (int x = r.MinX; x <= r.MaxX; x++) {
+                        if (LandMap[x, y] == null || LandMap[x, y] == DefaultLand) {
                             ctc.SetDefaultCell(DefaultTex);
                         } else {
                             // Set the colors and normals
-                            ctc.SetCell(map[x, y]);
+                            ctc.SetCell(LandMap[x, y]);
                         }
-                        float x_pos = ((float)(x - r.minX + r.offsetX) + 0.5f) * wtc.x_spacing - 1.0f;
-                        float y_pos = ((float)(y - r.minY + r.offsetY) + 0.5f) * wtc.y_spacing - 1.0f;
+                        float x_pos = ((float)(x - r.MinX + r.OffsetX) + 0.5f) * wtc.x_spacing - 1.0f;
+                        float y_pos = ((float)(y - r.MinY + r.OffsetY) + 0.5f) * wtc.y_spacing - 1.0f;
                         ctc.RenderNormalMap(x_pos, y_pos, wtc.x_scale, wtc.y_scale);
                     }
                 }
@@ -695,11 +695,11 @@ namespace MGEgui.DistantLand {
 
             ctc.Dispose();
         }
-        
+
         private class AtlasRegion {
-            public int id;
-            public int minX, minY, maxX, maxY;
-            public int offsetX, offsetY;
+            public int Id;
+            public int MinX, MinY, MaxX, MaxY;
+            public int OffsetX, OffsetY;
         }
 
         void AtlasSetup() {
@@ -709,7 +709,7 @@ namespace MGEgui.DistantLand {
 
             for (int y = MapMinY; y <= MapMaxY; y++) {
                 for (int x = MapMinX; x <= MapMaxX; x++) {
-                    LAND land = map[x, y];
+                    LAND land = LandMap[x, y];
                     if (land == null || land == DefaultLand || land.atlasId >= 0) {
                         continue;
                     }
@@ -717,66 +717,66 @@ namespace MGEgui.DistantLand {
                     // Found new starting cell
                     var r = new AtlasRegion();
                     regions.Add(r);
-                    r.id = currentAtlasId;
+                    r.Id = currentAtlasId;
                     land.atlasId = currentAtlasId;
 
                     // Search for connecting cells on the atlas border
-                    r.minX = r.maxX = x;
-                    r.minY = r.maxY = y;
+                    r.MinX = r.MaxX = x;
+                    r.MinY = r.MaxY = y;
                     bool continueSearch = true, extend = false;
 
                     while (continueSearch) {
                         continueSearch = false;
 
                         extend = false;
-                        for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
-                            LAND searchLand = map[searchX, r.minY - 1];
+                        for (int searchX = r.MinX - 1; searchX <= r.MaxX + 1; searchX++) {
+                            LAND searchLand = LandMap[searchX, r.MinY - 1];
                             if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
                         }
                         if (extend) {
-                            r.minY--;
+                            r.MinY--;
                             continueSearch = true;
                         }
 
                         extend = false;
-                        for (int searchX = r.minX - 1; searchX <= r.maxX + 1; searchX++) {
-                            LAND searchLand = map[searchX, r.maxY + 1];
+                        for (int searchX = r.MinX - 1; searchX <= r.MaxX + 1; searchX++) {
+                            LAND searchLand = LandMap[searchX, r.MaxY + 1];
                             if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
                         }
                         if (extend) {
-                            r.maxY++;
+                            r.MaxY++;
                             continueSearch = true;
                         }
 
                         extend = false;
-                        for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
-                            LAND searchLand = map[r.minX - 1, searchY];
+                        for (int searchY = r.MinY - 1; searchY <= r.MaxY + 1; searchY++) {
+                            LAND searchLand = LandMap[r.MinX - 1, searchY];
                             if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
                         }
                         if (extend) {
-                            r.minX--;
+                            r.MinX--;
                             continueSearch = true;
                         }
 
                         extend = false;
-                        for (int searchY = r.minY - 1; searchY <= r.maxY + 1; searchY++) {
-                            LAND searchLand = map[r.maxX + 1, searchY];
+                        for (int searchY = r.MinY - 1; searchY <= r.MaxY + 1; searchY++) {
+                            LAND searchLand = LandMap[r.MaxX + 1, searchY];
                             if (searchLand != null && searchLand != DefaultLand) {
                                 searchLand.atlasId = currentAtlasId;
                                 extend = true;
                             }
                         }
                         if (extend) {
-                            r.maxX++;
+                            r.MaxX++;
                             continueSearch = true;
                         }
                     }
@@ -790,15 +790,15 @@ namespace MGEgui.DistantLand {
             Atlas = new List<AtlasRegion>();
 
             // Sort regions by width, largest first
-            regions.Sort((a, b) => (b.maxX - b.minX).CompareTo(a.maxX - a.minX));
+            regions.Sort((a, b) => (b.MaxX - b.MinX).CompareTo(a.MaxX - a.MinX));
 
             // Pack first (widest) region
             var first = regions[0];
             Atlas.Add(first);
             regions.RemoveAt(0);
 
-            AtlasSpanX = first.maxX - first.minX + 1;
-            AtlasSpanY = first.maxY - first.minY + 1;
+            AtlasSpanX = first.MaxX - first.MinX + 1;
+            AtlasSpanY = first.MaxY - first.MinY + 1;
             currentOffsetY += AtlasSpanY;
 
             // Pack wide regions
@@ -806,13 +806,13 @@ namespace MGEgui.DistantLand {
 
             while (regions.Count > 0) {
                 var r = regions[0];
-                int width = r.maxX - r.minX + 1, height = r.maxY - r.minY + 1;
+                int width = r.MaxX - r.MinX + 1, height = r.MaxY - r.MinY + 1;
                 if (width < widthLimit) {
                     break;
                 }
 
-                r.offsetX = 0;
-                r.offsetY = currentOffsetY;
+                r.OffsetX = 0;
+                r.OffsetY = currentOffsetY;
                 currentOffsetY += height;
                 AtlasSpanY += height;
 
@@ -821,12 +821,12 @@ namespace MGEgui.DistantLand {
             }
 
             // Sort remaining regions by height, largest first
-            regions.Sort((a, b) => (b.maxY - b.minY).CompareTo(a.maxY - a.minY));
+            regions.Sort((a, b) => (b.MaxY - b.MinY).CompareTo(a.MaxY - a.MinY));
 
             // Pack smaller regions
             while (regions.Count > 0) {
                 var r = regions[0];
-                int width = r.maxX - r.minX + 1, height = r.maxY - r.minY + 1;
+                int width = r.MaxX - r.MinX + 1, height = r.MaxY - r.MinY + 1;
                 if (currentOffsetX + width > AtlasSpanX) {
                     currentOffsetX = 0;
                     currentOffsetY = AtlasSpanY;
@@ -835,10 +835,10 @@ namespace MGEgui.DistantLand {
                     AtlasSpanY += height;
                 }
 
-                r.offsetX = currentOffsetX;
-                r.offsetY = currentOffsetY;
+                r.OffsetX = currentOffsetX;
+                r.OffsetY = currentOffsetY;
                 currentOffsetX += width;
-                
+
                 Atlas.Add(r);
                 regions.RemoveAt(0);
             }
@@ -891,7 +891,7 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(0, strings["LandMeshCreate"]);
             GenerateWorldMesh(cma.MeshDetail, Statics.fn_world);
             // Dispose of map object, high memory use
-            map = null;
+            LandMap = null;
         }
 
         void workerFCreateMeshes(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -940,10 +940,10 @@ namespace MGEgui.DistantLand {
             public float MinSize;
             public int MipSkip;
             public List<string> OverrideFiles;
-            public bool useOverrideList;
-            public bool activators;
-            public bool misc;
-            public float simplify;
+            public bool UseOverrideList;
+            public bool Activators;
+            public bool Misc;
+            public float Simplify;
         }
 
         private void GrassDensityThreshold(float GrassDensity, KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics, KeyValuePair<string, StaticReference> pair, Random rnd, List<StaticToRemove> UsedStaticsToRemove) {
@@ -962,7 +962,7 @@ namespace MGEgui.DistantLand {
             Default, Names, Interiors
         }
 
-        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> ignoreList, Dictionary<string, bool> cellList, List<string> staticsWarnings) {
+        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, List<string> staticsWarnings) {
             foreach (string filename in overrideFiles) {
                 if (DEBUG) {
                     allWarnings.Add("Loading override: " + filename);
@@ -1030,10 +1030,10 @@ namespace MGEgui.DistantLand {
                                     if (key != null) {
                                         switch (value) {
                                             case "enable":
-                                                ignoreList[key] = false;
+                                                namedObjectDisables[key] = false;
                                                 break;
                                             case "disable":
-                                                ignoreList[key] = true;
+                                                namedObjectDisables[key] = true;
                                                 break;
                                             default:
                                                 staticsWarnings.Add("Warning: Invalid keyword in override names '" + filename + "': '" + line + "'");
@@ -1042,17 +1042,17 @@ namespace MGEgui.DistantLand {
                                     }
                                     else {
                                         // Object name only, disable object by default
-                                        ignoreList[line] = true;
+                                        namedObjectDisables[line] = true;
                                     }
                                     break;
                                 case OverrideFileSection.Interiors:
                                     if (key != null) {
                                         switch (value) {
                                             case "enable":
-                                                cellList[key] = true;
+                                                interiorEnables[key] = true;
                                                 break;
                                             case "disable":
-                                                cellList[key] = false;
+                                                interiorEnables[key] = false;
                                                 break;
                                             default:
                                                 staticsWarnings.Add("Warning: Invalid keyword in override cells '" + filename + "': '" + line + "'");
@@ -1061,7 +1061,7 @@ namespace MGEgui.DistantLand {
                                     }
                                     else {
                                         // Cell name only, enable interior by default
-                                        cellList[line] = true;
+                                        interiorEnables[line] = true;
                                     }
                                     break;
                             }
@@ -1077,15 +1077,15 @@ namespace MGEgui.DistantLand {
             var args = (CreateStaticsArgs)e.Argument;
             var staticsWarnings = new List<string>();
             var overrideList = new Dictionary<string, StaticOverride>();
-            var ignoreList = new Dictionary<string, bool>();
-            var cellList = new Dictionary<string, bool>();
+            var namedObjectDisables = new Dictionary<string, bool>();
+            var interiorEnables = new Dictionary<string, bool>();
 
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
 
-            if (args.useOverrideList && args.OverrideFiles.Count > 0) {
-                ParseOverrideFiles(args.OverrideFiles, overrideList, ignoreList, cellList, staticsWarnings);
+            if (args.UseOverrideList && args.OverrideFiles.Count > 0) {
+                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, staticsWarnings);
             }
 
             Directory.CreateDirectory(Statics.fn_statics);
@@ -1095,7 +1095,7 @@ namespace MGEgui.DistantLand {
                 }
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 try {
-                    ParseFileForStatics(br, overrideList, args.activators, args.misc, ignoreList, null);
+                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null);
                 } catch (Exception ex) {
                     staticsWarnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
@@ -1111,9 +1111,9 @@ namespace MGEgui.DistantLand {
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 var fi = new FileInfo(file);
                 try {
-                    ParseFileForInteriors(br, cellList);
+                    ParseFileForInteriors(br, interiorEnables);
                     br.BaseStream.Position = 0;
-                    ParseFileForCells(br, fi.Name, ignoreList, cellList);
+                    ParseFileForCells(br, fi.Name, namedObjectDisables, interiorEnables);
                 } catch (Exception ex) {
                     staticsWarnings.Add("Parsing cells failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
@@ -1125,7 +1125,7 @@ namespace MGEgui.DistantLand {
             var UsedNifList = new List<string>();
             foreach (KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics in UsedStaticsList) {
                 foreach (KeyValuePair<string, StaticReference> pair in cellStatics.Value) {
-                    string nif_name = StaticsList[pair.Value.name].mesh;
+                    string nif_name = StaticsList[pair.Value.Name].Model;
                     if (!UsedNifList.Contains(nif_name)) {
                         UsedNifList.Add(nif_name);
                     }
@@ -1141,7 +1141,7 @@ namespace MGEgui.DistantLand {
                 // Try to load the NIFs and remove any from the list that fail or are too small
                 for (int i = 0; i < UsedNifList.Count; i++) {
                     string name = UsedNifList[i];
-                    var simplify = args.simplify;
+                    var simplify = args.Simplify;
                     byte[] data;
 
                     // Set default simplification level to None until the simplifier code is fixed.
@@ -1225,9 +1225,9 @@ namespace MGEgui.DistantLand {
 
             foreach (var cellStatics in UsedStaticsList) {
                 foreach (var pair in cellStatics.Value) {
-                    string nif_name = StaticsList[pair.Value.name].mesh;
+                    string nif_name = StaticsList[pair.Value.Name].Model;
                     if (NifMap.ContainsKey(nif_name)) {
-                        pair.Value.staticID = NifMap[nif_name];
+                        pair.Value.StaticID = NifMap[nif_name];
                     } else {
                         UsedStaticsToRemove.Add(new StaticToRemove(cellStatics.Key, pair.Key));
                     }
@@ -1245,23 +1245,23 @@ namespace MGEgui.DistantLand {
                 }
             }
             foreach (StaticToRemove key in UsedStaticsToRemove) {
-                UsedStaticsList[key.worldspace].Remove(key.reference);
+                UsedStaticsList[key.Worldspace].Remove(key.Reference);
             }
 
             backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
             using (var bw = new BinaryWriter(File.Create(Statics.fn_usagedata), Statics.ESPEncoding)) {
                 bw.Write(UsedNifList.Count);
-    
+
                 // Write main worldspace statics usage
                 var mainWorldspace = UsedStaticsList[""];
                 bw.Write(mainWorldspace.Count);
                 foreach (KeyValuePair<string, StaticReference> pair in mainWorldspace) {
                     pair.Value.Write(bw);
                 }
-    
+
                 mainWorldspace.Clear();
                 UsedStaticsList.Remove("");
-    
+
                 // Write cells' statics usage
                 foreach (var cellStatics in UsedStaticsList) {
                     int cellStaticsCount = cellStatics.Value.Count;
@@ -1269,14 +1269,14 @@ namespace MGEgui.DistantLand {
                     if (cellStaticsCount == 0) {
                         continue;
                     }
-    
+
                     bw.Write(cellStaticsCount);
                     bw.Write(cellStatics.Key.PadRight(64, '\0').ToCharArray());
                     foreach (var pair in cellStatics.Value) {
                         pair.Value.Write(bw);
                     }
                 }
-    
+
                 // Write terminator
                 bw.Write((int)0);
                 bw.Write((float)Convert.ToSingle(udStatMinSize.Value));
@@ -1413,16 +1413,17 @@ namespace MGEgui.DistantLand {
         }
 
         private struct ExportStaticsArgs {
-            public string filename;
+            public string Filename;
             public float MinSize;
-            public bool activators;
-            public bool misc;
+            public bool Activators;
+            public bool Misc;
         }
 
         void workerExportStatics(object sender, System.ComponentModel.DoWorkEventArgs e) {
             var args = (ExportStaticsArgs)e.Argument;
-            var CellList = new Dictionary<string, bool>();
-            var NoScriptList = new Dictionary<string, string>();
+            var interiorEnables = new Dictionary<string, bool>();
+            var noScriptList = new Dictionary<string, string>();
+
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
@@ -1430,9 +1431,9 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 lastFileProcessed = file;
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
-                ParseFileForStatics(br, null, args.activators, args.misc, null, NoScriptList);
+                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList);
                 br.BaseStream.Position = 0;
-                ParseFileForInteriors(br, CellList);
+                ParseFileForInteriors(br, interiorEnables);
                 br.Close();
             }
             unsafe {
@@ -1442,7 +1443,7 @@ namespace MGEgui.DistantLand {
             foreach (var pair in StaticsList) {
                 byte[] data;
                 try {
-                    data = BSA.GetNif(pair.Value.mesh);
+                    data = BSA.GetNif(pair.Value.Model);
                 } catch {
                     data = null;
                 }
@@ -1454,7 +1455,7 @@ namespace MGEgui.DistantLand {
                         if (size < 0) {
                             refsToRemove.Add(pair.Key);
                         } else {
-                            pair.Value.size = size;
+                            pair.Value.Size = size;
                         }
                     } catch (Exception) {
                         refsToRemove.Add(pair.Key);
@@ -1467,12 +1468,12 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 var br = new BinaryReader(File.OpenRead(file));
                 try {
-                    ParseFileForCellsExport(br, CellList, NoScriptList);
+                    ParseFileForCellsExport(br, interiorEnables, noScriptList);
                 } catch {
                 }
                 br.Close();
             }
-            var sw = new StreamWriter(args.filename, false);
+            var sw = new StreamWriter(args.Filename, false);
             sw.WriteLine(": MGE distant statics list (for MGE 3.8.1 SVN rev.120 or later)\r\n"
             + "\r\n"
             + ": Syntax is <nif file name>=<keywords>\r\n"
@@ -1509,12 +1510,12 @@ namespace MGEgui.DistantLand {
             sw.Write(": This list was generated with 'min. static size' = ");
             sw.WriteLine(args.MinSize);
             sw.WriteLine();
-            
+
             // Filter statics in use, merge duplicates and sort NIF paths
             var meshList = new SortedDictionary<string, Static>();
             foreach (var pair in StaticsList) {
                 if (StaticMap.ContainsKey(pair.Key)) {
-                    meshList[pair.Value.mesh] = pair.Value;
+                    meshList[pair.Value.Model] = pair.Value;
                 }
             }
             foreach (var pair in meshList) {
@@ -1524,13 +1525,13 @@ namespace MGEgui.DistantLand {
                 } else if (pair.Key.StartsWith("trees\\")) {
                     sw.Write("=tree\t\t: size: ");
                 } else if (pair.Key.StartsWith("x\\")) {
-                    if (pair.Value.size * 2.0f >= args.MinSize) {
+                    if (pair.Value.Size * 2.0f >= args.MinSize) {
                         sw.Write("=building\t\t: size: ");
                     } else {
                         sw.Write("=ignore\t\t: size: ");
                     }
                 } else {
-                    if (pair.Value.size >= args.MinSize) {
+                    if (pair.Value.Size >= args.MinSize) {
                         if (pair.Key == "f\\active_blight_large.nif") {
                             sw.Write("=ignore\t\t: exception, size: ");
                         } else {
@@ -1540,12 +1541,12 @@ namespace MGEgui.DistantLand {
                         sw.Write("=ignore\t\t: size: ");
                     }
                 }
-                sw.WriteLine(pair.Value.size);
+                sw.WriteLine(pair.Value.Size);
             }
-            
+
             // Filter no-script statics in use, merge duplicates and sort NIF paths
             var noScriptLines = new SortedSet<string>();
-            foreach (var pair in NoScriptList) {
+            foreach (var pair in noScriptList) {
                 if (StaticMap.ContainsKey(pair.Key)) {
                     noScriptLines.Add(pair.Value);
                 }
@@ -1557,7 +1558,7 @@ namespace MGEgui.DistantLand {
             sw.WriteLine("\r\n[names]\r\nchargen boat\r\nchargen_plank");
 
             sw.WriteLine("\r\n[interiors]");
-            foreach (var interior in CellList) {
+            foreach (var interior in interiorEnables) {
                 // Escape comment character
                 sw.WriteLine(interior.Key.Replace(":", "\\:"));
             }
@@ -1838,7 +1839,7 @@ namespace MGEgui.DistantLand {
                     }
                 }
             }
-            
+
             KeyValuePair<string, MWPlugin>[] list = pluginList.ByLoadOrder;
             int j = 0;
             foreach (KeyValuePair<string, MWPlugin> item in list) {
@@ -1846,7 +1847,7 @@ namespace MGEgui.DistantLand {
                     files[j++] = item.Value.FullName;
                 }
             }
-            
+
             // Continue
             if (configure) {
                 startSetup();
@@ -2028,7 +2029,7 @@ namespace MGEgui.DistantLand {
             backgroundWorker.RunWorkerCompleted += workerFCreateTextures;
             statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
-            
+
             var args = new CreateTextureArgs();
             args.WorldRes = 128 << cmbTexWorldResolution.SelectedIndex;
             args.WorldNormal = 128 << cmbTexWorldNormalRes.SelectedIndex;
@@ -2064,7 +2065,7 @@ namespace MGEgui.DistantLand {
             backgroundWorker.RunWorkerCompleted += workerFCreateMeshes;
             statusWarnings.Text = strings["NoWarnings"];
             statusWarnings.Enabled = false;
-            
+
             var cma = new CreateMeshArgs();
             cma.MeshDetail = cmbMeshWorldDetail.SelectedIndex;
             backgroundWorker.RunWorkerAsync(cma);
@@ -2159,8 +2160,8 @@ namespace MGEgui.DistantLand {
                         for (int x2 = 0; x2 < 64; x2++) {
                             int y = (y1 + MapOffsetY) * 64 + y2;
                             int x = (x1 + MapOffsetX) * 64 + x2;
-                            if (map[x1, y1] != null && x1 > map.GetLowerBound(0) && x1 < map.GetUpperBound(0) && y1 > map.GetLowerBound(1) && y1 < map.GetUpperBound(1)) {
-                                height_data[y * DataSpanX + x] = (float)map[x1, y1].Heights[x2, y2] * 8.0f;
+                            if (LandMap[x1, y1] != null && x1 > LandMap.GetLowerBound(0) && x1 < LandMap.GetUpperBound(0) && y1 > LandMap.GetLowerBound(1) && y1 < LandMap.GetUpperBound(1)) {
+                                height_data[y * DataSpanX + x] = (float)LandMap[x1, y1].Heights[x2, y2] * 8.0f;
                             } else {
                                 height_data[y * DataSpanX + x] = -2048.0f;
                             }
@@ -2173,22 +2174,22 @@ namespace MGEgui.DistantLand {
             var atlas_data = new float[8 * Atlas.Count];
             var iAtlas = 0;
             foreach (var r in Atlas) {
-                atlas_data[iAtlas + 0] = r.minX * 8192.0f;
-                atlas_data[iAtlas + 1] = r.maxX * 8192.0f;
-                atlas_data[iAtlas + 2] = r.minY * 8192.0f;
-                atlas_data[iAtlas + 3] = r.maxY * 8192.0f;
-                atlas_data[iAtlas + 4] = r.offsetX * 8192.0f;
-                atlas_data[iAtlas + 5] = r.offsetY * 8192.0f;
+                atlas_data[iAtlas + 0] = r.MinX * 8192.0f;
+                atlas_data[iAtlas + 1] = r.MaxX * 8192.0f;
+                atlas_data[iAtlas + 2] = r.MinY * 8192.0f;
+                atlas_data[iAtlas + 3] = r.MaxY * 8192.0f;
+                atlas_data[iAtlas + 4] = r.OffsetX * 8192.0f;
+                atlas_data[iAtlas + 5] = r.OffsetY * 8192.0f;
                 atlas_data[iAtlas + 6] = AtlasSpanX * 8192.0f;
                 atlas_data[iAtlas + 7] = AtlasSpanY * 8192.0f;
                 iAtlas += 8;
             }
-            
+
             float left = (float)(MapMinX * 64) * 128.0f;
             float right = (float)((MapMaxX + 1) * 64) * 128.0f;
             float bottom = (float)(MapMinY * 64) * 128.0f;
             float top = (float)((MapMaxY + 1) * 64) * 128.0f;
-            
+
             // Landscape detail selection
             float tolerance = 125.0f;
             if (detail >= 0 && detail <= 4) {
@@ -2221,57 +2222,57 @@ namespace MGEgui.DistantLand {
 
         private struct StaticToRemove {
 
-            public readonly string worldspace;
-            public readonly string reference;
+            public readonly string Worldspace;
+            public readonly string Reference;
 
-            public StaticToRemove(string Worldspace, string Reference) {
-                worldspace = Worldspace;
-                reference = Reference;
+            public StaticToRemove(string worldspace, string reference) {
+                Worldspace = worldspace;
+                Reference = reference;
             }
 
         }
 
         private class Static {
 
-            public readonly string name;
-            public readonly string mesh;
-            public float size;
+            public readonly string Name;
+            public readonly string Model;
+            public float Size;
 
-            public Static(string Name, string Mesh) {
-                name = Name.ToLower(Statics.Culture);
-                mesh = Mesh.ToLower(Statics.Culture);
-                size = 0;
+            public Static(string name, string model) {
+                Name = name.ToLower(Statics.Culture);
+                Model = model.ToLower(Statics.Culture);
+                Size = 0;
             }
 
         }
 
         private class StaticReference {
 
-            public string name;
-            public float x, y, z;
-            public float yaw, pitch, roll;
-            public float scale;
-            public uint staticID;
+            public string Name;
+            public float X, Y, Z;
+            public float Yaw, Pitch, Roll;
+            public float Scale;
+            public uint StaticID;
 
-            public void SetID(Dictionary<string, Static> StaticsList, Dictionary<string, uint> StaticMap) {
-                string file = StaticsList[name].mesh;
-                if (StaticMap.ContainsKey(file)) {
-                    staticID = StaticMap[file];
+            public void SetID(Dictionary<string, Static> staticsList, Dictionary<string, uint> staticMap) {
+                string file = staticsList[Name].Model;
+                if (staticMap.ContainsKey(file)) {
+                    StaticID = staticMap[file];
                 } else {
-                    staticID = (uint)StaticMap.Count;
-                    StaticMap[file] = staticID;
+                    StaticID = (uint)staticMap.Count;
+                    staticMap[file] = StaticID;
                 }
             }
 
             public void Write(BinaryWriter bw) {
-                bw.Write(staticID);
-                bw.Write(x);
-                bw.Write(y);
-                bw.Write(z);
-                bw.Write(yaw);
-                bw.Write(pitch);
-                bw.Write(roll);
-                bw.Write(scale);
+                bw.Write(StaticID);
+                bw.Write(X);
+                bw.Write(Y);
+                bw.Write(Z);
+                bw.Write(Yaw);
+                bw.Write(Pitch);
+                bw.Write(Roll);
+                bw.Write(Scale);
             }
 
         }
@@ -2355,11 +2356,11 @@ namespace MGEgui.DistantLand {
             bStatExportStatics.Enabled = false;
             bStatSkip.Enabled = false;
             bStatRun.Enabled = false;
-            
+
             var args = new ExportStaticsArgs();
-            args.filename = saveStaticListDialog.FileName;
-            args.activators = cbStatActivators.Checked;
-            args.misc = cbStatIncludeMisc.Checked;
+            args.Filename = saveStaticListDialog.FileName;
+            args.Activators = cbStatActivators.Checked;
+            args.Misc = cbStatIncludeMisc.Checked;
             args.MinSize = (ushort)udStatMinSize.Value;
 
             statusText.Text = "Exporting list of statics";
@@ -2398,25 +2399,25 @@ namespace MGEgui.DistantLand {
             Statics.mf.tbDLNearSize.Text = udStatMinSize.Text;
             switch (cmbStatSimplifyMeshes.SelectedIndex) {
                 case 1:
-                    csa.simplify = 0.9f;
+                    csa.Simplify = 0.9f;
                     break;
                 case 2:
-                    csa.simplify = 0.75f;
+                    csa.Simplify = 0.75f;
                     break;
                 case 3:
-                    csa.simplify = 0.5f;
+                    csa.Simplify = 0.5f;
                     break;
                 case 4:
-                    csa.simplify = 0.25f;
+                    csa.Simplify = 0.25f;
                     break;
                 default:
-                    csa.simplify = 1.0f;
+                    csa.Simplify = 1.0f;
                     break;
             }
             csa.MipSkip = cmbStatSkipMipLevels.SelectedIndex;
-            csa.activators = cbStatActivators.Checked;
-            csa.misc = cbStatIncludeMisc.Checked;
-            csa.useOverrideList = cbStatOverrideList.Checked;
+            csa.Activators = cbStatActivators.Checked;
+            csa.Misc = cbStatIncludeMisc.Checked;
+            csa.UseOverrideList = cbStatOverrideList.Checked;
             csa.OverrideFiles = new List<string>();
             csa.OverrideFiles.Add(Statics.fn_dldefaultoverride);
             foreach (OverrideListItem item in lbStatOverrideList.Items) {
@@ -2474,15 +2475,17 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> OverrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> IgnoreList, Dictionary<string, string> NoScriptList) {
+        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
+
             // Look for any scripts that might be disabling activators
             if (includeActivators) {
                 ParseFileForDisableScripts(br);
                 // Reset file position
                 br.BaseStream.Position = 0;
             }
+
             var rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 if (rr.Tag == "STAT" || rr.Tag == "ACTI" || rr.Tag == "DOOR" || rr.Tag == "CONT" || rr.Tag == "LIGH") {
@@ -2491,6 +2494,7 @@ namespace MGEgui.DistantLand {
                     string name = null;
                     string model = null;
                     string script = null;
+
                     while (rr.NextSubrecord()) {
                         switch (rr.SubTag) {
                             case "NAME":
@@ -2504,13 +2508,14 @@ namespace MGEgui.DistantLand {
                                 break;
                         }
                     }
+
                     if (name != null && model != null && model.Trim() != string.Empty) {
                         // Named exceptions
-                        if (IgnoreList != null && IgnoreList.ContainsKey(name)) {
-                            if (!IgnoreList[name]) {
+                        if (namedObjectDisables != null && namedObjectDisables.ContainsKey(name)) {
+                            if (!namedObjectDisables[name]) {
                                 StaticsList[name] = new Static(name, model);
-                                if (OverrideList != null && OverrideList.ContainsKey(model) && OverrideList[model].Ignore) {
-                                    OverrideList[model] = new StaticOverride(OverrideList[model], true);
+                                if (overrideList != null && overrideList.ContainsKey(model) && overrideList[model].Ignore) {
+                                    overrideList[model] = new StaticOverride(overrideList[model], true);
                                     if (DEBUG) {
                                         DEBUG_statics++;
                                         continue;
@@ -2523,21 +2528,21 @@ namespace MGEgui.DistantLand {
                             continue;
                         }
                         // no_script override
-                        if (script != null && OverrideList != null && OverrideList.ContainsKey(model) && OverrideList[model].NoScript) {
+                        if (script != null && overrideList != null && overrideList.ContainsKey(model) && overrideList[model].NoScript) {
                             script = null;
                         }
 
                         bool ignore;
-                        if (OverrideList != null && OverrideList.ContainsKey(model)) {
-                            ignore = OverrideList[model].Ignore;
+                        if (overrideList != null && overrideList.ContainsKey(model)) {
+                            ignore = overrideList[model].Ignore;
                         } else {
                             ignore = (misc && !includeMisc) || (activator && !includeActivators);
                         }
 
                         if (!ignore) {
                             if (script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script]) {
-                                if (NoScriptList != null) {
-                                    NoScriptList[name] = model;
+                                if (noScriptList != null) {
+                                    noScriptList[name] = model;
                                 }
                                 if (DEBUG) {
                                     DEBUG_ignored++;
@@ -2557,25 +2562,27 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForCells(BinaryReader br, string PluginName, Dictionary<string, bool> IgnoreList, Dictionary<string, bool> CellList) {
-            var Masters = new List<string>() { PluginName.ToLower(Statics.Culture) };
+        private void ParseFileForCells(BinaryReader br, string pluginName, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables) {
+            var masters = new List<string>() { pluginName.ToLower(Statics.Culture) };
+
             if (DEBUG) {
-                allWarnings.Add("PLUGIN=" + Masters[0]);
+                allWarnings.Add("PLUGIN=" + masters[0]);
             }
             int DEBUG_cells = 0;
             int DEBUG_refs = 0;
             int DEBUG_added = 0;
             int DEBUG_moved = 0;
             int DEBUG_deleted = 0;
+
             var rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 switch (rr.Tag) {
                     case "TES3":
                         while (rr.NextSubrecord()) {
                             if (rr.SubTag == "MAST") {
-                                Masters.Add(rr.ReadSubrecordString().ToLower(Statics.Culture));
+                                masters.Add(rr.ReadSubrecordString().ToLower(Statics.Culture));
                                 if (DEBUG) {
-                                    allWarnings.Add("MASTER[" + (Masters.Count - 1) + "]=" + Masters[Masters.Count - 1]);
+                                    allWarnings.Add("MASTER[" + (masters.Count - 1) + "]=" + masters[masters.Count - 1]);
                                 }
                             }
                         }
@@ -2584,77 +2591,77 @@ namespace MGEgui.DistantLand {
                         if (DEBUG) {
                             DEBUG_cells++;
                         }
-                        string CellName = "";
-                        bool IsValidCell = false;
-                        bool InReference = false;
-                        bool ReferenceHasScale = false;
-                        bool ReferenceDeleted = false;
-                        bool ReadData = false;
-                        bool Interior = false;
-                        uint RefID = 0;
-                        int MastID = 0;
-                        int CellX = 0;
-                        int CellY = 0;
+                        string cellName = "";
+                        bool isValidCell = false;
+                        bool inReference = false;
+                        bool referenceHasScale = false;
+                        bool referenceDeleted = false;
+                        bool readData = false;
+                        bool isInterior = false;
+                        uint refID = 0;
+                        int mastID = 0;
+                        int cellX = 0;
+                        int cellY = 0;
 
                         var sr = new StaticReference();
                         while (rr.NextSubrecord()) {
                             switch (rr.SubTag) {
                                 case "DATA":
-                                    if (!InReference) {
-                                        if (ReadData) {
+                                    if (!inReference) {
+                                        if (readData) {
                                             break;
                                         }
                                         uint flags = br.ReadUInt32();
                                         bool isInteriorExterior = (flags & 0x81) == 0x81;
                                         bool isInteriorWater = (flags & 0x83) == 0x03;
-                                        Interior = (flags & 0x1) == 0x1;
-                                        if (!Interior || (cbStatIntExt.Checked && isInteriorExterior) || (cbStatIntWater.Checked && isInteriorWater)) {
-                                            IsValidCell = true;
+                                        isInterior = (flags & 0x1) == 0x1;
+                                        if (!isInterior || (cbStatIntExt.Checked && isInteriorExterior) || (cbStatIntWater.Checked && isInteriorWater)) {
+                                            isValidCell = true;
                                         }
-                                        if (Interior && CellList.ContainsKey(CellName.ToLower(Statics.Culture))) {
-                                            IsValidCell = CellList[CellName.ToLower(Statics.Culture)];
+                                        if (isInterior && interiorEnables.ContainsKey(cellName.ToLower(Statics.Culture))) {
+                                            isValidCell = interiorEnables[cellName.ToLower(Statics.Culture)];
                                         }
-                                        CellX = br.ReadInt32();
-                                        CellY = br.ReadInt32();
-                                        ReadData = true;
+                                        cellX = br.ReadInt32();
+                                        cellY = br.ReadInt32();
+                                        readData = true;
                                     } else {
-                                        sr.x = br.ReadSingle();
-                                        sr.y = br.ReadSingle();
-                                        sr.z = br.ReadSingle();
-                                        sr.yaw = br.ReadSingle();
-                                        sr.pitch = br.ReadSingle();
-                                        sr.roll = br.ReadSingle();
+                                        sr.X = br.ReadSingle();
+                                        sr.Y = br.ReadSingle();
+                                        sr.Z = br.ReadSingle();
+                                        sr.Yaw = br.ReadSingle();
+                                        sr.Pitch = br.ReadSingle();
+                                        sr.Roll = br.ReadSingle();
                                     }
                                     break;
                                 case "FRMR":
                                     if (DEBUG) {
                                         DEBUG_refs++;
                                     }
-                                    if (!IsValidCell) {
+                                    if (!isValidCell) {
                                         break;
                                     }
-                                    if (InReference) {
-                                        if (!ReferenceHasScale) {
-                                            sr.scale = 1;
+                                    if (inReference) {
+                                        if (!referenceHasScale) {
+                                            sr.Scale = 1;
                                         }
-                                        if (StaticsList.ContainsKey(sr.name) && (!IgnoreList.ContainsKey(sr.name) || !IgnoreList[sr.name])) {
+                                        if (StaticsList.ContainsKey(sr.Name) && (!namedObjectDisables.ContainsKey(sr.Name) || !namedObjectDisables[sr.Name])) {
                                             sr.SetID(StaticsList, StaticMap);
-                                            string Worldspace = Interior ? CellName : "";
-                                            string Reference = Masters[MastID] + "\u0001" + (Interior ? "" : CellX + "\u0002" + CellY + "\u0001") + RefID;
-                                            if (ReferenceDeleted) {
-                                                if (UsedStaticsList.ContainsKey(Worldspace) && UsedStaticsList[Worldspace].ContainsKey(Reference)) {
-                                                    UsedStaticsList[Worldspace].Remove(Reference);
+                                            string worldspace = isInterior ? cellName : "";
+                                            string referenceFullyQualified = masters[mastID] + "\u0001" + (isInterior ? "" : cellX + "\u0002" + cellY + "\u0001") + refID;
+                                            if (referenceDeleted) {
+                                                if (UsedStaticsList.ContainsKey(worldspace) && UsedStaticsList[worldspace].ContainsKey(referenceFullyQualified)) {
+                                                    UsedStaticsList[worldspace].Remove(referenceFullyQualified);
                                                 }
                                             } else {
-                                                if (!UsedStaticsList.ContainsKey(Worldspace)) {
-                                                    UsedStaticsList.Add(Worldspace, new Dictionary<string, StaticReference>());
+                                                if (!UsedStaticsList.ContainsKey(worldspace)) {
+                                                    UsedStaticsList.Add(worldspace, new Dictionary<string, StaticReference>());
                                                 }
-                                                UsedStaticsList[Worldspace][Reference] = sr;
+                                                UsedStaticsList[worldspace][referenceFullyQualified] = sr;
                                             }
                                             if (DEBUG) {
-                                                if (ReferenceDeleted) {
+                                                if (referenceDeleted) {
                                                     ++DEBUG_deleted;
-                                                } else if (MastID > 0) {
+                                                } else if (mastID > 0) {
                                                     ++DEBUG_moved;
                                                 } else {
                                                     ++DEBUG_added;
@@ -2662,55 +2669,56 @@ namespace MGEgui.DistantLand {
                                             }
                                         }
                                     }
-                                    RefID = br.ReadUInt32();
-                                    MastID = (int)(RefID >> 24);
-                                    RefID &= 0x00FFFFFF;
+                                    refID = br.ReadUInt32();
+                                    mastID = (int)(refID >> 24);
+                                    refID &= 0x00FFFFFF;
                                     sr = new StaticReference();
-                                    InReference = true;
-                                    ReferenceHasScale = false;
-                                    ReferenceDeleted = false;
+                                    inReference = true;
+                                    referenceHasScale = false;
+                                    referenceDeleted = false;
                                     break;
                                 case "DELE":
-                                    ReferenceDeleted = true;
+                                    referenceDeleted = true;
                                     break;
                                 case "NAME":
-                                    if (InReference) {
-                                        sr.name = rr.ReadSubrecordString().ToLower(Statics.Culture);
+                                    if (inReference) {
+                                        sr.Name = rr.ReadSubrecordString().ToLower(Statics.Culture);
                                     } else {
-                                        CellName = rr.ReadSubrecordString();
+                                        cellName = rr.ReadSubrecordString();
                                     }
                                     break;
                                 case "XSCL":
-                                    if (!InReference) {
+                                    if (!inReference) {
                                         break;
                                     }
-                                    sr.scale = br.ReadSingle();
-                                    ReferenceHasScale = true;
+                                    sr.Scale = br.ReadSingle();
+                                    referenceHasScale = true;
                                     break;
                             }
                         }
-                        if (InReference) {
-                            if (!ReferenceHasScale) {
-                                sr.scale = 1;
+                        if (inReference) {
+                            if (!referenceHasScale) {
+                                sr.Scale = 1;
                             }
-                            if (StaticsList.ContainsKey(sr.name) && (!IgnoreList.ContainsKey(sr.name) || !IgnoreList[sr.name])) {
+                            if (StaticsList.ContainsKey(sr.Name) && (!namedObjectDisables.ContainsKey(sr.Name) || !namedObjectDisables[sr.Name])) {
                                 sr.SetID(StaticsList, StaticMap);
-                                string Worldspace = Interior ? CellName : "";
-                                string Reference = Masters[MastID] + "\u0001" + (Interior ? "" : CellX + "\u0002" + CellY + "\u0001") + RefID;
-                                if (ReferenceDeleted) {
-                                    if (UsedStaticsList.ContainsKey(Worldspace) && UsedStaticsList[Worldspace].ContainsKey(Reference)) {
-                                        UsedStaticsList[Worldspace].Remove(Reference);
+                                string worldspace = isInterior ? cellName : "";
+                                string referenceFullyQualified = masters[mastID] + "\u0001" + (isInterior ? "" : cellX + "\u0002" + cellY + "\u0001") + refID;
+
+                                if (referenceDeleted) {
+                                    if (UsedStaticsList.ContainsKey(worldspace) && UsedStaticsList[worldspace].ContainsKey(referenceFullyQualified)) {
+                                        UsedStaticsList[worldspace].Remove(referenceFullyQualified);
                                     }
                                 } else {
-                                    if (!UsedStaticsList.ContainsKey(Worldspace)) {
-                                        UsedStaticsList.Add(Worldspace, new Dictionary<string, StaticReference>());
+                                    if (!UsedStaticsList.ContainsKey(worldspace)) {
+                                        UsedStaticsList.Add(worldspace, new Dictionary<string, StaticReference>());
                                     }
-                                    UsedStaticsList[Worldspace][Reference] = sr;
+                                    UsedStaticsList[worldspace][referenceFullyQualified] = sr;
                                 }
                                 if (DEBUG) {
-                                    if (ReferenceDeleted) {
+                                    if (referenceDeleted) {
                                         ++DEBUG_deleted;
-                                    } else if (MastID > 0) {
+                                    } else if (mastID > 0) {
                                         ++DEBUG_moved;
                                     } else {
                                         ++DEBUG_added;
@@ -2722,45 +2730,45 @@ namespace MGEgui.DistantLand {
                 }
             }
             if (DEBUG) {
-                allWarnings.Add("Scanning summary for: " + PluginName + " : " + DEBUG_cells + " cells : " + DEBUG_refs + " refs : " + DEBUG_added + " added : " + DEBUG_moved + " moved : " + DEBUG_deleted + " deleted");
+                allWarnings.Add("Scanning summary for: " + pluginName + " : " + DEBUG_cells + " cells : " + DEBUG_refs + " refs : " + DEBUG_added + " added : " + DEBUG_moved + " moved : " + DEBUG_deleted + " deleted");
             }
         }
 
-        private void ParseFileForCellsExport(BinaryReader br, Dictionary<string, bool> CellList, Dictionary<string, string> NoScriptList) {
+        private void ParseFileForCellsExport(BinaryReader br, Dictionary<string, bool> interiorEnables, Dictionary<string, string> noScriptList) {
             var rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 if (rr.Tag == "CELL") {
-                    string CellName = "";
-                    bool IsValidCell = false;
-                    bool IsInterior = false;
-                    bool InReference = false;
-                    bool ReadData = false;
+                    string cellName = "";
+                    bool isValidCell = false;
+                    bool isInterior = false;
+                    bool inReference = false;
+                    bool readData = false;
 
                     while (rr.NextSubrecord()) {
                         switch (rr.SubTag) {
                             case "DATA":
-                                if (!InReference && !ReadData) {
+                                if (!inReference && !readData) {
                                     uint flags = br.ReadUInt32();
-                                    IsInterior = (flags & 0x1) == 0x1;
-                                    ReadData = true;
+                                    isInterior = (flags & 0x1) == 0x1;
+                                    readData = true;
                                 }
                                 break;
                             case "FRMR":
-                                IsValidCell = !IsInterior || CellList.ContainsKey(CellName.ToLower(Statics.Culture));
-                                InReference = true;
+                                isValidCell = !isInterior || interiorEnables.ContainsKey(cellName.ToLower(Statics.Culture));
+                                inReference = true;
                                 break;
                             case "NAME":
-                                if (InReference) {
+                                if (inReference) {
                                     string sname = rr.ReadCString().ToLower(Statics.Culture);
-                                    if (StaticsList.ContainsKey(sname) || NoScriptList.ContainsKey(sname)) {
+                                    if (StaticsList.ContainsKey(sname) || noScriptList.ContainsKey(sname)) {
                                         StaticMap[sname] = 1;
                                     }
                                 } else {
-                                    CellName = rr.ReadSubrecordString();
+                                    cellName = rr.ReadSubrecordString();
                                 }
                                 break;
                         }
-                        if (InReference && !IsValidCell) {
+                        if (inReference && !isValidCell) {
                             break;
                         }
                     }
@@ -2768,14 +2776,14 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForInteriors(BinaryReader br, Dictionary<string, bool> CellList) {
+        private void ParseFileForInteriors(BinaryReader br, Dictionary<string, bool> interiorEnables) {
             var rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 if (rr.Tag == "CELL") {
-                    string CellName = "";
-                    bool InReference = false;
-                    bool ReadData = false;
-                    bool IsInterior = false;
+                    string cellName = "";
+                    bool inReference = false;
+                    bool readData = false;
+                    bool isInterior = false;
                     uint cellFlags = 0;
                     float cellMinX = float.MaxValue, cellMinY = float.MaxValue, cellMinZ = float.MaxValue;
                     float cellMaxX = float.MinValue, cellMaxY = float.MinValue, cellMaxZ = float.MinValue;
@@ -2783,11 +2791,11 @@ namespace MGEgui.DistantLand {
                     while (rr.NextSubrecord()) {
                         switch (rr.SubTag) {
                             case "DATA":
-                                if (!InReference && !ReadData) {
+                                if (!inReference && !readData) {
                                     cellFlags = br.ReadUInt32();
-                                    ReadData = true;
-                                    IsInterior = (cellFlags & 0x1) == 0x1;
-                                } else if (InReference) {
+                                    readData = true;
+                                    isInterior = (cellFlags & 0x1) == 0x1;
+                                } else if (inReference) {
                                     float x = br.ReadSingle();
                                     float y = br.ReadSingle();
                                     float z = br.ReadSingle();
@@ -2800,32 +2808,32 @@ namespace MGEgui.DistantLand {
                                 }
                                 break;
                             case "FRMR":
-                                InReference = true;
+                                inReference = true;
                                 break;
                             case "NAME":
-                                if (!InReference) {
-                                    CellName = rr.ReadSubrecordString();
+                                if (!inReference) {
+                                    cellName = rr.ReadSubrecordString();
                                 }
                                 break;
                         }
-                        
-                        if (ReadData && !IsInterior) {
+
+                        if (readData && !isInterior) {
                             break;
                         }
                     }
-                    
-                    if (IsInterior) {
+
+                    if (isInterior) {
                         const float largeCellSpan = 10000.0f;
                         bool isInteriorExterior = (cellFlags & 0x81) == 0x81;
                         bool isInteriorWater = (cellFlags & 0x83) == 0x03;
                         float span = cellMaxX - cellMinX;
                         span = Math.Max(span, cellMaxY - cellMinY);
                         span = Math.Max(span, cellMaxZ - cellMinZ);
-                        
+
                         if ((cbStatIntExt.Checked && isInteriorExterior)
                             || (cbStatIntWater.Checked && isInteriorWater)
                             || (cbStatLargeInt.Checked && span >= largeCellSpan)) {
-                            CellList[CellName.ToLower(Statics.Culture)] = true;
+                            interiorEnables[cellName.ToLower(Statics.Culture)] = true;
                         }
                     }
                 }
