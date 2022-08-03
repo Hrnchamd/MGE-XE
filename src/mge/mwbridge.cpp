@@ -1334,3 +1334,33 @@ int MWBridge::getDaysPassed() {
 int MWBridge::getFrameBeginMillis() {
     return read_dword(eMaster1 + 0x20);
 }
+
+//-----------------------------------------------------------------------------
+
+// getGlobalVar - Get global variable record
+void* MWBridge::getGlobalVar(const char *id) {
+    const auto RecordsHandler_getGlobal = reinterpret_cast<void* (__thiscall*)(DWORD, const char *)>(0x4BA820);
+
+    DWORD addr = read_dword(eEnviro);
+    addr = read_dword(addr);
+    return RecordsHandler_getGlobal(addr, id);
+}
+
+float MWBridge::getGlobalVarValue(const void* globalVar) {
+    const char *p = reinterpret_cast<const char*>(globalVar);
+    return *reinterpret_cast<const float*>(p + 0x34);
+}
+
+// getDialogue - Get dialogue record
+void* MWBridge::getDialogue(const char *id) {
+    const auto RecordsHandler_getDialogue = reinterpret_cast<void* (__thiscall*)(DWORD, const char *)>(0x4BA8D0);
+
+    DWORD addr = read_dword(eEnviro);
+    addr = read_dword(addr);
+    return RecordsHandler_getDialogue(addr, id);
+}
+
+int MWBridge::getJournalIndex(const void* dialogue) {
+    const char *p = reinterpret_cast<const char*>(dialogue);
+    return *reinterpret_cast<const int*>(p + 0x2C);
+}

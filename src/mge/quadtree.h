@@ -9,6 +9,8 @@
 struct QuadTreeMesh {
     BoundingSphere sphere;
     BoundingBox box;
+    bool enabled;
+    bool hasalpha;
 
     IDirect3DTexture9* tex;
     D3DXMATRIX transform;
@@ -16,7 +18,6 @@ struct QuadTreeMesh {
     IDirect3DVertexBuffer9* vBuffer;
     int faces;
     IDirect3DIndexBuffer9* iBuffer;
-    bool hasalpha;
 
     QuadTreeMesh(
         BoundingSphere b_sphere,
@@ -98,7 +99,7 @@ public:
 
     QuadTree();
     ~QuadTree();
-    void AddMesh(
+    QuadTreeMesh* AddMesh(
         BoundingSphere sphere,
         BoundingBox box,
         D3DXMATRIX transform,

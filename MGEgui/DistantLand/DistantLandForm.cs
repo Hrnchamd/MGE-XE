@@ -1011,8 +1011,8 @@ namespace MGEgui.DistantLand {
                             // Key-value parse
                             index = line.LastIndexOf('=');
                             if (index != -1) {
-                                key = line.Substring(0, index);
-                                value = line.Substring(index + 1);
+                                key = line.Substring(0, index).Trim();
+                                value = line.Substring(index + 1).Trim();
                             }
                             else {
                                 key = null;

@@ -1103,7 +1103,7 @@ bool DistantLand::initDistantStaticsBVH() {
             if (stat->type == STATIC_BUILDING) {
                 // Use model bound so that all building parts have coherent visibility
                 for (auto& s : stat->subsets) {
-                    targetQTR->AddMesh(
+                    auto mesh = targetQTR->AddMesh(
                         i.sphere,
                         i.box,
                         i.transform,
@@ -1113,11 +1113,14 @@ bool DistantLand::initDistantStaticsBVH() {
                         s.faces,
                         s.ibuffer
                     );
+                    if (i.visIndex > 0) {
+                        dynamicVisGroups[i.visIndex].references.push_back(mesh);
+                    }
                 }
             } else {
                 // Use individual mesh bounds
                 for (auto& s : stat->subsets) {
-                    targetQTR->AddMesh(
+                    auto mesh = targetQTR->AddMesh(
                         i.GetBoundingSphere(s.sphere),
                         i.GetBoundingBox(s.aabbMin, s.aabbMax),
                         i.transform,
@@ -1127,6 +1130,9 @@ bool DistantLand::initDistantStaticsBVH() {
                         s.faces,
                         s.ibuffer
                     );
+                    if (i.visIndex > 0) {
+                        dynamicVisGroups[i.visIndex].references.push_back(mesh);
+                    }
                 }
             }
         }

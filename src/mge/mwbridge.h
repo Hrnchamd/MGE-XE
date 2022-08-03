@@ -127,6 +127,10 @@ public:
     float getGameHour();
     int getDaysPassed();
     int getFrameBeginMillis();
+    void* getGlobalVar(const char *id);
+    float getGlobalVarValue(const void* globalVar);
+    void* getDialogue(const char *id);
+    int getJournalIndex(const void* dialogue);
 
     MWBridge();
 

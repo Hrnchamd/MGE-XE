@@ -35,7 +35,7 @@ public:
 
         DataSource source;
         bool enabled;
-        void *gameObject;
+        const void *gameObject;
         std::string id;
         std::vector<Range> ranges;
         std::vector<QuadTreeMesh*> references;
@@ -161,6 +161,7 @@ public:
     static void editProjectionZ(D3DMATRIX* m, float zn, float zf);
     static bool selectDistantCell();
     static bool isDistantCell();
+    static void scanDynamicVisGroups();
 
     static void setView(const D3DMATRIX* m);
     static void setProjection(D3DMATRIX* proj);

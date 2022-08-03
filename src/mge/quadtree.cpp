@@ -25,6 +25,7 @@ QuadTreeMesh::QuadTreeMesh(
 ) {
     this->sphere = sphere;
     this->box = box;
+    this->enabled = true;
     this->transform = transform;
     this->tex = tex;
     this->verts = verts;
@@ -229,15 +230,17 @@ void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR
             }
         }
 
-        // Avoid camera rotation dependent clipping by using a spherical far clip plane
-        // Test mesh against view sphere (eyepos.xyz, radius)
-        D3DXVECTOR3 eyepos(viewsphere.x, viewsphere.y, viewsphere.z);
-        D3DXVECTOR3 d = mesh->sphere.center - eyepos;
-        float rangesquared = d.x*d.x + d.y*d.y + d.z*d.z;
-        float viewlimit = viewsphere.w + mesh->sphere.radius;
+        if (mesh->enabled) {
+            // Avoid camera rotation dependent clipping by using a spherical far clip plane
+            // Test mesh against view sphere (eyepos.xyz, radius)
+            D3DXVECTOR3 eyepos(viewsphere.x, viewsphere.y, viewsphere.z);
+            D3DXVECTOR3 d = mesh->sphere.center - eyepos;
+            float rangesquared = d.x*d.x + d.y*d.y + d.z*d.z;
+            float viewlimit = viewsphere.w + mesh->sphere.radius;
 
-        if (rangesquared <= viewlimit*viewlimit) {
-            visible_set.visible_set.push_back(mesh);
+            if (rangesquared <= viewlimit*viewlimit) {
+                visible_set.visible_set.push_back(mesh);
+            }
         }
     }
 }
@@ -287,7 +290,9 @@ void QuadTreeNode::GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet
             continue;
         }
 
-        visible_set.visible_set.push_back(mesh);
+        if (mesh->enabled) {
+            visible_set.visible_set.push_back(mesh);
+        }
     }
 }
 
@@ -516,7 +521,7 @@ QuadTree::~QuadTree() {
 
 //-----------------------------------------------------------------------------
 
-void QuadTree::AddMesh(
+QuadTreeMesh* QuadTree::AddMesh(
     BoundingSphere sphere,
     BoundingBox box,
     D3DXMATRIX transform,
@@ -537,6 +542,7 @@ void QuadTree::AddMesh(
                                  iBuffer);
 
     m_root_node->AddMesh(new_mesh, QUADTREE_MAX_DEPTH);
+    return new_mesh;
 }
 
 //-----------------------------------------------------------------------------

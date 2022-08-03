@@ -688,6 +688,9 @@ bool DistantLand::selectDistantCell() {
     auto mwBridge = MWBridge::get();
 
     if (Configuration.MGEFlags & USE_DISTANT_LAND) {
+        // Testing: Scan dynamic vis every frame
+        scanDynamicVisGroups();
+
         string cellname;
         if (mwBridge->IsExterior()) {
             cellname = string();
@@ -710,6 +713,54 @@ bool DistantLand::selectDistantCell() {
 // isDistantCell - Check if there is distant land selected for this cell
 bool DistantLand::isDistantCell() {
     return currentWorldSpace != nullptr;
+}
+
+// scanDynamicVisGroups - Scan through game data for visibility changes
+void DistantLand::scanDynamicVisGroups() {
+    auto mwBridge = MWBridge::get();
+
+    for (auto& vis : dynamicVisGroups) {
+        bool valid = false;
+        int value;
+
+        switch (vis.source) {
+        case DynamicVisGroup::DataSource::Journal:
+            if (!vis.gameObject) {
+                vis.gameObject = mwBridge->getDialogue(vis.id.c_str());
+            }
+            if (vis.gameObject) {
+                value = mwBridge->getJournalIndex(vis.gameObject);
+                valid = true;
+            }
+            break;
+        case DynamicVisGroup::DataSource::Global:
+            if (!vis.gameObject) {
+                vis.gameObject = mwBridge->getGlobalVar(vis.id.c_str());
+            }
+            if (vis.gameObject) {
+                value = int(mwBridge->getGlobalVarValue(vis.gameObject));
+                valid = true;
+            }
+            break;
+        }
+
+        if (valid) {
+            bool enable = false;
+            for (const auto& r : vis.ranges) {
+                if (r.begin <= value && value < r.end) {
+                    enable = true;
+                    break;
+                }
+            }
+
+            if (enable ^ vis.enabled) {
+                vis.enabled = enable;
+                for (auto& m : vis.references) {
+                    m->enabled = enable;
+                }
+            }
+        }
+    }
 }
 
 // setView - Called once per frame to setup view dependent data
