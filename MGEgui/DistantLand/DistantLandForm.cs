@@ -939,7 +939,7 @@ namespace MGEgui.DistantLand {
         private struct CreateStaticsArgs {
             public float MinSize;
             public int MipSkip;
-            public List<string> OverrideList;
+            public List<string> OverrideFiles;
             public bool useOverrideList;
             public bool activators;
             public bool misc;
@@ -958,175 +958,136 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        void workerCreateStatics(object sender, System.ComponentModel.DoWorkEventArgs e) {
-            var args = (CreateStaticsArgs)e.Argument;
-            var warnings = new List<string>();
-            var OverrideList = new Dictionary<string, staticOverride>();
-            var IgnoreList = new Dictionary<string, bool>();
-            var CellList = new Dictionary<string, bool>();
-            StaticsList.Clear();
-            UsedStaticsList.Clear();
-            StaticMap.Clear();
+        enum OverrideFileSection {
+            Default, Names, Interiors
+        }
 
-            if (args.useOverrideList && args.OverrideList.Count > 0) {
-                foreach (string overrideList in args.OverrideList) {
-                    if (DEBUG) {
-                        allWarnings.Add("Loading override: " + overrideList);
-                    }
-                    StreamReader sr = null;
-                    try {
-                        sr = new StreamReader(File.OpenRead(overrideList));
-                    } catch {
-                        warnings.Add("Error: Could not import statics override list '" + overrideList + "'");
-                    }
-                    if (sr != null) {
+        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> ignoreList, Dictionary<string, bool> cellList, List<string> staticsWarnings) {
+            foreach (string filename in overrideFiles) {
+                if (DEBUG) {
+                    allWarnings.Add("Loading override: " + filename);
+                }
+
+                try {
+                    using (var sr = new StreamReader(filename)) {
+                        OverrideFileSection section = OverrideFileSection.Default;
+                        string line, key, value;
                         int index;
-                        string section = "";
-                        string line;
-                        string escape;
+
                         while (!sr.EndOfStream) {
+                            // Read line, trim and remove comment
+                            line = sr.ReadLine().ToLower(Statics.Culture);
+
+                            index = 0;
+                            while (index != -1) {
+                                index = line.IndexOf(':', index);
+                                if (index == -1) { break; }
+
+                                // Check for escaped comment character
+                                if (index > 0 && line[index-1] == '\\') {
+                                    ++index;
+                                }
+                                else {
+                                    line = line.Substring(0, index);
+                                    break;
+                                }
+                            }
+                            line = line.Trim();
+
+                            // Skip blank lines
+                            if (line.Length == 0) { continue; }
+
+                            // Check for section change
+                            if (line.StartsWith("[") && line.EndsWith("]") && !line.EndsWith("\\]")) {
+                                string section_name = line.Substring(1, line.Length - 2);
+
+                                if (section_name == "names") { section = OverrideFileSection.Names; }
+                                else if (section_name == "interiors") { section = OverrideFileSection.Interiors; }
+
+                                continue;
+                            }
+
+                            // Key-value parse
+                            index = line.LastIndexOf('=');
+                            if (index != -1) {
+                                key = line.Substring(0, index);
+                                value = line.Substring(index + 1);
+                            }
+                            else {
+                                key = null;
+                                value = null;
+                            }
+
                             switch (section) {
-                                case "":
-                                    line = sr.ReadLine().ToLower(Statics.Culture);
-                                    index = line.IndexOf(':');
-                                    if (index != -1) {
-                                        line = line.Substring(0, index);
-                                    }
-                                    line = line.Trim();
-                                    if (line.Length > 0 && line[0] != '#') {
-                                        if (line.StartsWith("[") && line.EndsWith("]")) {
-                                            section = line.Substring(1, line.Length - 2);
-                                            continue;
-                                        }
-                                        index = line.LastIndexOf('=');
-                                        if (index != -1) {
-                                            string mesh = line.Substring(0, index);
-                                            string value = line.Substring(index + 1);
-                                            byte type;
-                                            if (byte.TryParse(value, out type)) {
-                                                if (type != 3 && type <= 6) {
-                                                    OverrideList[line] = new staticOverride(type);
-                                                } else if (type > 6) {
-                                                    warnings.Add("Warning: Invalid type specified in statics list '" + overrideList + "' line '" + line + "'");
-                                                }
-                                            } else {
-                                                OverrideList[mesh] = new staticOverride(value);
-                                            }
-                                        } else {
-                                            warnings.Add("Warning: Failed to parse line in statics list '" + overrideList + "': '" + line + "'");
-                                        }
+                                case OverrideFileSection.Default:
+                                    if (key != null) {
+                                        overrideList[key] = new StaticOverride(value);
+                                    } else {
+                                        staticsWarnings.Add("Warning: Failed to parse line in override list '" + filename + "': '" + line + "'");
                                     }
                                     break;
-                                case "names":
-                                    line = sr.ReadLine().ToLower(Statics.Culture);
-                                    index = line.IndexOf(':');
-                                    escape = line;
-                                    if (index != -1) {
-                                        escape = escape.Substring(0, index);
-                                    }
-                                    escape = escape.Trim();
-                                    if (escape.Length > 0 && escape.StartsWith("[") && escape.EndsWith("]") && !escape.EndsWith("\\]")) {
-                                        section = escape.Substring(1, escape.Length - 2);
-                                        continue;
-                                    }
-                                    if (line.IndexOf('\u0001') != -1) {
-                                        continue;
-                                    }
-                                    escape = "";
-                                    while ((index = line.IndexOf('\\') + 1) != 0) {
-                                        if (index == line.Length) {
-                                            break;
+                                case OverrideFileSection.Names:
+                                    if (key != null) {
+                                        switch (value) {
+                                            case "enable":
+                                                ignoreList[key] = false;
+                                                break;
+                                            case "disable":
+                                                ignoreList[key] = true;
+                                                break;
+                                            default:
+                                                staticsWarnings.Add("Warning: Invalid keyword in override names '" + filename + "': '" + line + "'");
+                                                break;
                                         }
-                                        escape += line[index];
-                                        line = line.Substring(0, index - 1) + "\u0001" + (line.Length >= index ? line.Substring(index + 1) : "");
                                     }
-                                    index = line.IndexOf(':');
-                                    if (index != -1) {
-                                        line = line.Substring(0, index);
-                                    }
-                                    line = line.Trim();
-                                    int equals_index = line.LastIndexOf('=');
-                                    for (var i = 0; (index = line.IndexOf('\u0001')) != -1; i++) {
-                                        line = line.Substring(0, index) + escape[i] + (line.Length >= index ? line.Substring(index + 1) : "");
-                                    }
-                                    if (line.Length > 0) {
-                                        if (equals_index == -1) {
-                                            IgnoreList[line] = true;
-                                        } else {
-                                            string value = line.Substring(equals_index + 1);
-                                            line = line.Substring(0, equals_index);
-                                            switch (value) {
-                                                case "enable":
-                                                    IgnoreList[line] = false;
-                                                    break;
-                                                case "disable":
-                                                    IgnoreList[line] = true;
-                                                    break;
-                                                default:
-                                                    warnings.Add("Warning: Invalid keyword in statics list line '" + line + "'");
-                                                    break;
-                                            }
-                                        }
+                                    else {
+                                        // Object name only, disable object by default
+                                        ignoreList[line] = true;
                                     }
                                     break;
-                                case "interiors":
-                                    line = sr.ReadLine().ToLower(Statics.Culture);
-                                    index = line.IndexOf(':');
-                                    escape = line;
-                                    if (index != -1) {
-                                        escape = escape.Substring(0, index);
-                                    }
-                                    escape = escape.Trim();
-                                    if (escape.Length > 0 && escape.StartsWith("[") && escape.EndsWith("]") && !escape.EndsWith("\\]")) {
-                                        section = escape.Substring(1, escape.Length - 2);
-                                        continue;
-                                    }
-                                    if (line.IndexOf('\u0001') != -1) {
-                                        continue;
-                                    }
-                                    escape = "";
-                                    while ((index = line.IndexOf('\\') + 1) != 0) {
-                                        if (index == line.Length) {
-                                            break;
+                                case OverrideFileSection.Interiors:
+                                    if (key != null) {
+                                        switch (value) {
+                                            case "enable":
+                                                cellList[key] = true;
+                                                break;
+                                            case "disable":
+                                                cellList[key] = false;
+                                                break;
+                                            default:
+                                                staticsWarnings.Add("Warning: Invalid keyword in override cells '" + filename + "': '" + line + "'");
+                                                break;
                                         }
-                                        escape += line[index];
-                                        line = line.Substring(0, index - 1) + "\u0001" + (line.Length >= index ? line.Substring(index + 1) : "");
                                     }
-                                    index = line.IndexOf(':');
-                                    if (index != -1) {
-                                        line = line.Substring(0, index);
-                                    }
-                                    line = line.Trim();
-                                    equals_index = line.LastIndexOf('=');
-                                    for (var i = 0; (index = line.IndexOf('\u0001')) != -1; i++) {
-                                        line = line.Substring(0, index) + escape[i] + (line.Length >= index ? line.Substring(index + 1) : "");
-                                    }
-                                    if (line.Length > 0) {
-                                        if (equals_index == -1) {
-                                            CellList[line] = true;
-                                        } else {
-                                            string value = line.Substring(equals_index + 1);
-                                            line = line.Substring(0, equals_index);
-                                            switch (value) {
-                                                case "enable":
-                                                    CellList[line] = true;
-                                                    break;
-                                                case "disable":
-                                                    CellList[line] = false;
-                                                    break;
-                                                default:
-                                                    warnings.Add("Warning: Invalid keyword in statics cell list line '" + line + "'");
-                                                    break;
-                                            }
-                                        }
+                                    else {
+                                        // Cell name only, enable interior by default
+                                        cellList[line] = true;
                                     }
                                     break;
                             }
                         }
-                        sr.Close();
                     }
+                } catch {
+                    staticsWarnings.Add("Error: Could not import statics override list '" + filename + "'");
                 }
             }
+        }
+
+        void workerCreateStatics(object sender, System.ComponentModel.DoWorkEventArgs e) {
+            var args = (CreateStaticsArgs)e.Argument;
+            var staticsWarnings = new List<string>();
+            var overrideList = new Dictionary<string, StaticOverride>();
+            var ignoreList = new Dictionary<string, bool>();
+            var cellList = new Dictionary<string, bool>();
+
+            StaticsList.Clear();
+            UsedStaticsList.Clear();
+            StaticMap.Clear();
+
+            if (args.useOverrideList && args.OverrideFiles.Count > 0) {
+                ParseOverrideFiles(args.OverrideFiles, overrideList, ignoreList, cellList, staticsWarnings);
+            }
+
             Directory.CreateDirectory(Statics.fn_statics);
             foreach (string file in files) {
                 if (DEBUG) {
@@ -1134,12 +1095,13 @@ namespace MGEgui.DistantLand {
                 }
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 try {
-                    ParseFileForStatics(br, OverrideList, args.activators, args.misc, IgnoreList, null);
+                    ParseFileForStatics(br, overrideList, args.activators, args.misc, ignoreList, null);
                 } catch (Exception ex) {
-                    warnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
+                    staticsWarnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
                 br.Close();
             }
+
             backgroundWorker.ReportProgress(1, strings["StaticsGenerate1"]);
             UsedStaticsList.Add("", new Dictionary<string, StaticReference>());
             foreach (string file in files) {
@@ -1149,14 +1111,15 @@ namespace MGEgui.DistantLand {
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 var fi = new FileInfo(file);
                 try {
-                    ParseFileForInteriors(br, CellList);
+                    ParseFileForInteriors(br, cellList);
                     br.BaseStream.Position = 0;
-                    ParseFileForCells(br, fi.Name, IgnoreList, CellList);
+                    ParseFileForCells(br, fi.Name, ignoreList, cellList);
                 } catch (Exception ex) {
-                    warnings.Add("Parsing cells failed on \"" + file + "\"\n\n" + ex.ToString());
+                    staticsWarnings.Add("Parsing cells failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
                 br.Close();
             }
+
             // Generate a list of the NIF files we need to load
             backgroundWorker.ReportProgress(2, strings["StaticsGenerate2"]);
             var UsedNifList = new List<string>();
@@ -1168,6 +1131,7 @@ namespace MGEgui.DistantLand {
                     }
                 }
             }
+
             backgroundWorker.ReportProgress(3, strings["StaticsGenerate3"]);
             unsafe {
                 NativeMethods.BeginStaticCreation((IntPtr)DXMain.device.ComPointer, Statics.fn_statmesh);
@@ -1216,10 +1180,10 @@ namespace MGEgui.DistantLand {
                                 allWarnings.Add("Processing NIF: " + name);
                             }
                             float size = -1;
-                            if (OverrideList.ContainsKey(name)) {
-                                staticOverride so = OverrideList[name];
+                            if (overrideList.ContainsKey(name)) {
+                                StaticOverride so = overrideList[name];
                                 if (!so.Ignore || so.NamesNoIgnore) {
-                                    simplify = so.overrideSimplify ? so.Simplify : simplify;
+                                    simplify = so.OverrideSimplify ? so.Simplify : simplify;
                                     size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)so.Type);
                                 }
                             } else {
@@ -1239,7 +1203,7 @@ namespace MGEgui.DistantLand {
                                 UsedNifList.RemoveAt(i--);
                             }
                         } catch (Exception ex) {
-                            warnings.Add("Failed to process NIF " + name + "\n    " + ex.ToString());
+                            staticsWarnings.Add("Failed to process NIF " + name + "\n    " + ex.ToString());
                             UsedNifList.RemoveAt(i--);
                         }
                     }
@@ -1267,10 +1231,10 @@ namespace MGEgui.DistantLand {
                     } else {
                         UsedStaticsToRemove.Add(new StaticToRemove(cellStatics.Key, pair.Key));
                     }
-                    if (nif_name.StartsWith("grass\\") || (OverrideList.ContainsKey(nif_name) && OverrideList[nif_name].Type == StaticType.Grass)) {
-                        if (OverrideList.ContainsKey(nif_name)) {
-                            if (OverrideList[nif_name].Density >= 0) {
-                                GrassDensityThreshold(OverrideList[nif_name].Density, cellStatics, pair, rnd, UsedStaticsToRemove);
+                    if (nif_name.StartsWith("grass\\") || (overrideList.ContainsKey(nif_name) && overrideList[nif_name].Type == StaticType.Grass)) {
+                        if (overrideList.ContainsKey(nif_name)) {
+                            if (overrideList[nif_name].Density >= 0) {
+                                GrassDensityThreshold(overrideList[nif_name].Density, cellStatics, pair, rnd, UsedStaticsToRemove);
                             } else {
                                 GrassDensityThreshold(GrassDensity, cellStatics, pair, rnd, UsedStaticsToRemove);
                             }
@@ -1283,79 +1247,83 @@ namespace MGEgui.DistantLand {
             foreach (StaticToRemove key in UsedStaticsToRemove) {
                 UsedStaticsList[key.worldspace].Remove(key.reference);
             }
+
             backgroundWorker.ReportProgress(4, strings["StaticsGenerate4"]);
-            var bw = new BinaryWriter(File.Create(Statics.fn_usagedata), Statics.ESPEncoding);
-            bw.Write(UsedNifList.Count);
-
-            // Write main worldspace statics usage
-            bw.Write(UsedStaticsList[""].Count);
-            foreach (KeyValuePair<string, StaticReference> pair in UsedStaticsList[""]) {
-                pair.Value.Write(bw);
-            }
-
-            UsedStaticsList[""].Clear();
-            UsedStaticsList.Remove("");
-
-            // Write cells' statics usage
-            foreach (var cellStatics in UsedStaticsList) {
-                int cellStaticsCount = cellStatics.Value.Count;
-                // Don't write cells with no distant statics
-                if (cellStaticsCount == 0) {
-                    continue;
-                }
-
-                bw.Write(cellStaticsCount);
-                bw.Write(cellStatics.Key.PadRight(64, '\0').ToCharArray());
-                foreach (var pair in cellStatics.Value) {
+            using (var bw = new BinaryWriter(File.Create(Statics.fn_usagedata), Statics.ESPEncoding)) {
+                bw.Write(UsedNifList.Count);
+    
+                // Write main worldspace statics usage
+                var mainWorldspace = UsedStaticsList[""];
+                bw.Write(mainWorldspace.Count);
+                foreach (KeyValuePair<string, StaticReference> pair in mainWorldspace) {
                     pair.Value.Write(bw);
                 }
+    
+                mainWorldspace.Clear();
+                UsedStaticsList.Remove("");
+    
+                // Write cells' statics usage
+                foreach (var cellStatics in UsedStaticsList) {
+                    int cellStaticsCount = cellStatics.Value.Count;
+                    // Don't write cells with zero distant statics, as it would be confused with the terminator
+                    if (cellStaticsCount == 0) {
+                        continue;
+                    }
+    
+                    bw.Write(cellStaticsCount);
+                    bw.Write(cellStatics.Key.PadRight(64, '\0').ToCharArray());
+                    foreach (var pair in cellStatics.Value) {
+                        pair.Value.Write(bw);
+                    }
+                }
+    
+                // Write terminator
+                bw.Write((int)0);
+                bw.Write((float)Convert.ToSingle(udStatMinSize.Value));
             }
-
-            // Write terminator
-            bw.Write((int)0);
-            bw.Write((float)Convert.ToSingle(udStatMinSize.Value));
-            bw.Close();
 
             if (!File.Exists(Statics.fn_statmesh)) {
                 return;
             }
+
             setFinishDesc(4);
             backgroundWorker.ReportProgress(5, strings["StaticsGenerate5"]);
             {
                 var stc = new StaticTexCreator(args.MipSkip);
-                var br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), Statics.ESPEncoding);
-                foreach (var name in UsedNifList) {
-                    int nodes = br.ReadInt32();
-                    br.BaseStream.Position += 16; // Byte count: 4 - radius, 12 - center
-                    int type = br.BaseStream.ReadByte();
-                    for (int j = 0; j < nodes; j++) {
-                        br.BaseStream.Position += 40; // Byte count: 4 - radius, 12 - center, 12 - AABB min, 12 - AABB max
-                        int verts = br.ReadInt32();
-                        int faces = br.ReadInt32();
-                        int vert_size = NativeMethods.GetCompressedVertSize();
-                        br.BaseStream.Position += verts * vert_size + faces * 6;
-                        short chars = br.ReadInt16();
-                        string path = new string(br.ReadChars(chars - 1));
-                        br.BaseStream.Position += 1;
-                        try {
-                            if (type != (int)StaticType.Grass && type != (int)StaticType.Tree) {
-                                bool ok = stc.LoadTexture(path);
-                                if (!ok) {
-                                    String warn = String.Format(strings["MissingTexture"], path, name);
-                                    MessageBox.Show(warn, "Warning", MessageBoxButtons.OK);
-                                    warnings.Add(warn);
+                using (var br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), Statics.ESPEncoding)) {
+                    foreach (var name in UsedNifList) {
+                        int nodes = br.ReadInt32();
+                        br.BaseStream.Position += 16; // Byte count: 4 - radius, 12 - center
+                        int type = br.BaseStream.ReadByte();
+                        for (int j = 0; j < nodes; j++) {
+                            br.BaseStream.Position += 40; // Byte count: 4 - radius, 12 - center, 12 - AABB min, 12 - AABB max
+                            int verts = br.ReadInt32();
+                            int faces = br.ReadInt32();
+                            int vert_size = NativeMethods.GetCompressedVertSize();
+                            br.BaseStream.Position += verts * vert_size + faces * 6;
+                            short chars = br.ReadInt16();
+                            string path = new string(br.ReadChars(chars - 1));
+                            br.BaseStream.Position += 1;
+                            try {
+                                if (type != (int)StaticType.Grass && type != (int)StaticType.Tree) {
+                                    bool ok = stc.LoadTexture(path);
+                                    if (!ok) {
+                                        String warn = String.Format(strings["MissingTexture"], path, name);
+                                        MessageBox.Show(warn, "Warning", MessageBoxButtons.OK);
+                                        staticsWarnings.Add(warn);
+                                    }
                                 }
+                            } catch (ArgumentException) {
+                                // warnings.Add("Warning: Texture '"+path+"' on subset "+j+" of mesh '"+pair.Key+"' could not be found");
                             }
-                        } catch (ArgumentException) {
-                            // warnings.Add("Warning: Texture '"+path+"' on subset "+j+" of mesh '"+pair.Key+"' could not be found");
                         }
                     }
                 }
-                br.Close();
                 stc.Dispose();
             }
-            if (warnings.Count > 0) {
-                e.Result = warnings;
+
+            if (staticsWarnings.Count > 0) {
+                e.Result = staticsWarnings;
             }
         }
 
@@ -2308,62 +2276,27 @@ namespace MGEgui.DistantLand {
 
         }
 
-        private struct staticOverride {
+        private struct StaticOverride {
 
             public bool Ignore;
             public StaticType Type;
-            public bool overrideSimplify;
+            public bool OverrideSimplify;
             public float Simplify;
             public float Density;
-            public bool StaticsOnly;
             public bool NoScript;
             public bool NamesNoIgnore;
 
-            public staticOverride(byte value) {
+            public StaticOverride(string value) {
+                Ignore = false;
+                Type = StaticType.Auto;
+                OverrideSimplify = false;
                 Simplify = 1;
                 Density = -1;
-                overrideSimplify = false;
-                Ignore = false;
-                StaticsOnly = false;
-                Type = StaticType.Auto;
                 NoScript = false;
                 NamesNoIgnore = false;
-                switch (value) {
-                    case 0:
-                        Ignore = true;
-                        break;
-                    case 1:
-                        Type = StaticType.Near;
-                        break;
-                    case 2:
-                        Type = StaticType.Far;
-                        break;
-                    case 3:
-                        break;
-                    case 4:
-                        overrideSimplify = true;
-                        Type = StaticType.Near;
-                        break;
-                    case 5:
-                        overrideSimplify = true;
-                        Type = StaticType.Far;
-                        break;
-                    case 6:
-                        overrideSimplify = true;
-                        break;
-                }
-            }
 
-            public staticOverride(string value) {
-                Ignore = false;
-                Type = StaticType.Auto;
-                overrideSimplify = false;
-                Simplify = 1;
-                Density = -1;
-                StaticsOnly = false;
-                NoScript = false;
-                NamesNoIgnore = false;
                 string[] keys = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
                 foreach (string s in keys) {
                     if (s == "ignore") {
                         Ignore = true;
@@ -2394,21 +2327,18 @@ namespace MGEgui.DistantLand {
                     } else if (s.StartsWith("reduction_")) {
                         float percent;
                         if (float.TryParse(s.Remove(0, 10), out percent) && percent >= 0 && percent <= 100) {
-                            overrideSimplify = true;
+                            OverrideSimplify = true;
                             Simplify = percent / 100.0f;
                         }
-                    } else if (s == "static_only") {
-                        StaticsOnly = true;
                     }
                 }
             }
 
-            public staticOverride(staticOverride value, bool enabledInNames) {
+            public StaticOverride(StaticOverride value, bool enabledInNames) {
                 Simplify = value.Simplify;
                 Density = value.Density;
-                overrideSimplify = value.overrideSimplify;
+                OverrideSimplify = value.OverrideSimplify;
                 Ignore = value.Ignore;
-                StaticsOnly = value.StaticsOnly;
                 Type = value.Type;
                 NoScript = value.NoScript;
                 NamesNoIgnore = enabledInNames;
@@ -2487,10 +2417,10 @@ namespace MGEgui.DistantLand {
             csa.activators = cbStatActivators.Checked;
             csa.misc = cbStatIncludeMisc.Checked;
             csa.useOverrideList = cbStatOverrideList.Checked;
-            csa.OverrideList = new List<string>();
-            csa.OverrideList.Add(Statics.fn_dldefaultoverride);
+            csa.OverrideFiles = new List<string>();
+            csa.OverrideFiles.Add(Statics.fn_dldefaultoverride);
             foreach (OverrideListItem item in lbStatOverrideList.Items) {
-                csa.OverrideList.Add(item.FileName);
+                csa.OverrideFiles.Add(item.FileName);
             }
             if (!SetupFlags["AutoRun"]) {
                 ChangingPage = true;
@@ -2516,7 +2446,7 @@ namespace MGEgui.DistantLand {
 
         /* Statics tab methods */
 
-        private void ParseFileForDisableScripts(BinaryReader br, Dictionary<string, staticOverride> OverrideList) {
+        private void ParseFileForDisableScripts(BinaryReader br) {
             var rr = new RecordReader(br);
             while (rr.NextRecord()) {
                 if (rr.Tag == "SCPT") {
@@ -2544,12 +2474,12 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForStatics(BinaryReader br, Dictionary<string, staticOverride> OverrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> IgnoreList, Dictionary<string, string> NoScriptList) {
+        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> OverrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> IgnoreList, Dictionary<string, string> NoScriptList) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
             // Look for any scripts that might be disabling activators
             if (includeActivators) {
-                ParseFileForDisableScripts(br, OverrideList);
+                ParseFileForDisableScripts(br);
                 // Reset file position
                 br.BaseStream.Position = 0;
             }
@@ -2580,7 +2510,7 @@ namespace MGEgui.DistantLand {
                             if (!IgnoreList[name]) {
                                 StaticsList[name] = new Static(name, model);
                                 if (OverrideList != null && OverrideList.ContainsKey(model) && OverrideList[model].Ignore) {
-                                    OverrideList[model] = new staticOverride(OverrideList[model], true);
+                                    OverrideList[model] = new StaticOverride(OverrideList[model], true);
                                     if (DEBUG) {
                                         DEBUG_statics++;
                                         continue;
