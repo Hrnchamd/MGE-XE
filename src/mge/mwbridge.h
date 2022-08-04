@@ -131,6 +131,8 @@ public:
     float getGlobalVarValue(const void* globalVar);
     void* getDialogue(const char *id);
     int getJournalIndex(const void* dialogue);
+    void* findFirstReferenceById(const char *id);
+    unsigned int getRecordFlags(const void* record);
 
     MWBridge();
 

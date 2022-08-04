@@ -962,7 +962,7 @@ namespace MGEgui.DistantLand {
             Default, Names, Interiors, DynamicVis
         }
 
-        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, Dictionary<string, DynamicVisGroup> dynamicVis, List<string> staticsWarnings) {
+        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, Dictionary<string, DynamicVisGroup> dynamicVis, Dictionary<string, DynamicVisGroup> dynamicVisUniqueObjs, List<string> staticsWarnings) {
             foreach (string filename in overrideFiles) {
                 if (DEBUG) {
                     allWarnings.Add("Loading override: " + filename);
@@ -1067,7 +1067,19 @@ namespace MGEgui.DistantLand {
                                     break;
                                 case OverrideFileSection.DynamicVis:
                                     if (key != null) {
-                                        dynamicVis[key] = new DynamicVisGroup(value);
+                                        var dvg = new DynamicVisGroup(key, value);
+                                        if (dvg.Valid) {
+                                            dynamicVis[key] = dvg;
+    
+                                            if (dvg.LinkedObjIds != null) {
+                                                foreach (var o in dvg.LinkedObjIds) {
+                                                    dynamicVisUniqueObjs[o] = dvg;
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            staticsWarnings.Add("Warning: Failed to parse line in override list '" + filename + "': '" + line + "'");
+                                        }
                                     } else {
                                         staticsWarnings.Add("Warning: Failed to parse line in override list '" + filename + "': '" + line + "'");
                                     }
@@ -1095,13 +1107,14 @@ namespace MGEgui.DistantLand {
             var namedObjectDisables = new Dictionary<string, bool>();
             var interiorEnables = new Dictionary<string, bool>();
             var dynamicVis = new Dictionary<string, DynamicVisGroup>();
+            var dynamicVisUniqueObjs = new Dictionary<string, DynamicVisGroup>();
 
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
 
             if (args.UseOverrideList && args.OverrideFiles.Count > 0) {
-                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, dynamicVis, staticsWarnings);
+                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, dynamicVis, dynamicVisUniqueObjs, staticsWarnings);
             }
 
             Directory.CreateDirectory(Statics.fn_statics);
@@ -1111,7 +1124,7 @@ namespace MGEgui.DistantLand {
                 }
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 try {
-                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null, dynamicVis);
+                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null, dynamicVis, dynamicVisUniqueObjs);
                 } catch (Exception ex) {
                     staticsWarnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
@@ -1453,7 +1466,7 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 lastFileProcessed = file;
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
-                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList, null);
+                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList, null, null);
                 br.BaseStream.Position = 0;
                 ParseFileForInteriors(br, interiorEnables);
                 br.Close();
@@ -2379,60 +2392,91 @@ namespace MGEgui.DistantLand {
 
         private class DynamicVisGroup {
             public int Index;
-            public string JournalId, GlobalId;
+            public bool Valid;
+            public string JournalId, GlobalId, UniqueObjId;
             public List<Tuple<int, int>> EnabledRanges;
+            public List<string> LinkedObjIds;
 
-            public DynamicVisGroup(string value) {
+            public DynamicVisGroup(string key, string value) {
                 Index = -1;
+                Valid = false;
                 JournalId = null;
                 GlobalId = null;
+                UniqueObjId = null;
                 EnabledRanges = new List<Tuple<int, int>>();
+                LinkedObjIds = null;
 
                 string[] tokens = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (tokens.Length <= 2) {
-                    return;
-                }
-
-                if (tokens[0] == "journal") {
+                if (tokens[0] == "journal" && tokens.Length >= 2) {
                     JournalId = tokens[1];
                 }
-                else if (tokens[0] == "global") {
+                else if (tokens[0] == "global" && tokens.Length >= 2) {
                     GlobalId = tokens[1];
+                }
+                else if (tokens[0] == "unique_object") {
+                    UniqueObjId = key;
                 }
                 else {
                     return;
                 }
 
-                for (int i = 2; i < tokens.Length; ++i) {
-                    string s = tokens[i];
-                    int index = s.IndexOf('-');
-                    int start = 0, end = 0;
-                    bool ok;
+                if (JournalId != null || GlobalId != null) {
+                    // Parse up to 8 range parameters of the format (int | int-int)
+                    for (int i = 2; i < tokens.Length; ++i) {
+                        string s = tokens[i];
+                        int index = s.IndexOf('-');
+                        int start = 0, end = 0;
+                        bool ok;
+    
+                        if (index != -1) {
+                            ok = Int32.TryParse(s.Substring(0, index), out start);
+                            ok = ok && Int32.TryParse(s.Substring(index+1), out end);
+                        }
+                        else {
+                            ok = Int32.TryParse(s, out start);
+                            end = start + 1;
+                        }
+                        if (ok && EnabledRanges.Count < 8) {
+                            EnabledRanges.Add(new Tuple<int,int>(start, end));
+                        }
+                    }
+                    Valid = true;
+                }
+                else if (UniqueObjId != null) {
+                    // Enabled objects have state 1
+                    EnabledRanges.Add(new Tuple<int, int>(1, 2));
 
-                    if (index != -1) {
-                        ok = Int32.TryParse(s.Substring(0, index), out start);
-                        ok = ok && Int32.TryParse(s.Substring(index+1), out end);
-                    }
-                    else {
-                        ok = Int32.TryParse(s, out start);
-                        end = start + 1;
-                    }
-                    if (ok && EnabledRanges.Count < 8) {
-                        EnabledRanges.Add(new Tuple<int,int>(start, end));
-                    }
+                    // Take list of object names, replace "unique_object" with vis source object name
+                    LinkedObjIds = new List<string>(tokens);
+                    LinkedObjIds[0] = key;
+                    Valid = true;
                 }
             }
-            
+
+            private enum DataSource {
+                Journal = 1,
+                Global = 2,
+                UniqueObject = 3
+            }
+
             public void Write(BinaryWriter bw) {
                 if (JournalId != null) {
-                    bw.Write((byte)1);
+                    bw.Write((byte)DataSource.Journal);
                     bw.Write(JournalId.PadRight(64, '\0').ToCharArray());
                 }
                 else if (GlobalId != null) {
-                    bw.Write((byte)2);
+                    bw.Write((byte)DataSource.Global);
                     bw.Write(GlobalId.PadRight(64, '\0').ToCharArray());
                 }
+                else if (UniqueObjId != null) {
+                    bw.Write((byte)DataSource.UniqueObject);
+                    bw.Write(UniqueObjId.PadRight(64, '\0').ToCharArray());
+                }
+                else {
+                    throw new InvalidOperationException("Invalid DynamicVisGroup state");
+                }
+
                 bw.Write((byte)EnabledRanges.Count);
                 foreach (var range in EnabledRanges) {
                     bw.Write(range.Item1);
@@ -2569,7 +2613,7 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList, Dictionary<string, DynamicVisGroup> dynamicVis) {
+        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList, Dictionary<string, DynamicVisGroup> dynamicVis, Dictionary<string, DynamicVisGroup> dynamicVisUniqueObjs) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
 
@@ -2610,14 +2654,25 @@ namespace MGEgui.DistantLand {
                         }
 
                         // Dynamic vis
-                        if (dynamicVis != null && script != null && dynamicVis.ContainsKey(script)) {
-                            // Set object with vis group
-                            var s = new Static(name, model);
-                            s.VisIndex = dynamicVis[script].Index;
-                            StaticsList[name] = s;
+                        if (dynamicVis != null) {
+                            DynamicVisGroup dvg = null;
 
-                            DEBUG_statics++;
-                            continue;
+                            if (script != null) {
+                                dynamicVis.TryGetValue(script, out dvg);
+                            }
+                            if (dvg == null) {
+                                dynamicVisUniqueObjs.TryGetValue(name, out dvg);
+                            }
+
+                            if (dvg != null) {
+                                // Set object with vis group
+                                var s = new Static(name, model);
+                                s.VisIndex = dvg.Index;
+                                StaticsList[name] = s;
+    
+                                DEBUG_statics++;
+                                continue;
+                            }
                         }
 
                         // Named exceptions

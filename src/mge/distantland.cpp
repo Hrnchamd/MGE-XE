@@ -742,6 +742,16 @@ void DistantLand::scanDynamicVisGroups() {
                 valid = true;
             }
             break;
+        case DynamicVisGroup::DataSource::UniqueObject:
+            if (!vis.gameObject) {
+                vis.gameObject = mwBridge->findFirstReferenceById(vis.id.c_str());
+            }
+            if (vis.gameObject) {
+                auto flags = mwBridge->getRecordFlags(vis.gameObject);
+                value = (flags & 0x800) == 0;
+                valid = true;
+            }
+            break;
         }
 
         if (valid) {

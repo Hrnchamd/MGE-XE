@@ -27,7 +27,7 @@ public:
         enum class DataSource : uint8_t {
             Journal = 1,
             Global = 2,
-            Other = 3
+            UniqueObject = 3
         };
         struct Range {
             int begin, end;

@@ -1364,3 +1364,17 @@ int MWBridge::getJournalIndex(const void* dialogue) {
     const char *p = reinterpret_cast<const char*>(dialogue);
     return *reinterpret_cast<const int*>(p + 0x2C);
 }
+
+// findFirstReferenceById - Find first reference to object
+void* MWBridge::findFirstReferenceById(const char *id) {
+    const auto RecordsHandler_findFirstReferenceById = reinterpret_cast<void* (__thiscall*)(DWORD, const char *)>(0x4B8F50);
+
+    DWORD addr = read_dword(eEnviro);
+    addr = read_dword(addr);
+    return RecordsHandler_findFirstReferenceById(addr, id);
+}
+
+unsigned int MWBridge::getRecordFlags(const void* record) {
+    const char *p = reinterpret_cast<const char*>(record);
+    return *reinterpret_cast<const unsigned int*>(p + 8);
+}
