@@ -1,4 +1,4 @@
-: MGE XE 0.13 standard distant statics classifier list
+: MGE XE 0.15 standard distant statics classifier list
 
 d\ex_velothi_loaddoor_01.nif=far
 d\ex_v_cantondoor_01.nif=very_far
@@ -10,12 +10,12 @@ x\ex_vivec_b_wb_gap_01.nif=very_far
 x\ex_vivec_b_gap_b_01.nif=very_far
 x\ex_vivec_p_water_01.nif=ignore
 
-x\ex_mh_almalexia_whole.nif=far no_script
-x\ex_mh_pav_steps.nif=far no_script
-x\ex_mh_pav_top.nif=far no_script
-l\ex_mh_streetlamp_01.nif=far no_script
-f\flora_tree_mh_01.nif=far no_script
-f\flora_tree_mh_02.nif=far no_script
+x\ex_mh_almalexia_whole.nif=far
+x\ex_mh_pav_steps.nif=far
+x\ex_mh_pav_top.nif=far
+l\ex_mh_streetlamp_01.nif=far
+f\flora_tree_mh_01.nif=far
+f\flora_tree_mh_02.nif=far
 
 f\terrain_bm_icelayer_01.nif=far
 f\act_bm_stone_beast_01.nif=far no_script
@@ -27,6 +27,90 @@ f\act_bm_stone_wind_01.nif=far no_script
 
 [names]
 chargen boat=disable
+chargen_cabindoor=disable
+chargen_ship_trapdoor=disable
 chargen_lantern_03_sway=disable
 chargen_plank=disable
 fm_boat_dock=disable
+
+[dynamic_vis]
+GhostfenceScript  = journal C3_DestroyDagoth 0-20
+
+Strong1           = global Stronghold 1-10
+Strong1_Complete  = global Stronghold 2-10
+Strong1_Construct = global Stronghold 1
+Strong1_Only      = global Stronghold 2
+Strong2           = global Stronghold 3-10
+Strong2_Complete  = global Stronghold 4-10
+Strong2_Construct = global Stronghold 3
+Strong2_Not       = global Stronghold 0-3
+Strong2_Only      = global Stronghold 4
+Strong3           = global Stronghold 5-10
+Strong3_Complete  = global Stronghold 6-10
+Strong3_Construct = global Stronghold 5
+Strong3_Not       = global Stronghold 0-5
+Strong3_Only      = global Stronghold 4
+StrongZero        = global Stronghold 0
+
+ex_de_scaffold_01_Boe  = unique_object ex_de_scaffold_02_boe ex_de_scaffold_03_boe ex_de_scaffold_01a_boe ex_de_scaffold_02a_Boe ex_de_scaffold_02b_Boe ex_de_scaffold_02c_Boe ex_de_scaffold_03a_Boe
+Ex_DAE_Boethiah_fixed  = unique_object Ex_DAE_r_platform_01_boe
+terrain_rock_wg_UNIQUE = unique_object
+
+fab_attack_disable = global FabAttack 0
+fab_attack_enable  = global FabAttack 1
+fab_attack_enable2 = journal TR_Bamz 1-1000
+treedeadScript     = global MournWeather 7
+treeliveScript     = global MournWeather 0-6 8-10
+
+ColonyFactor1_D     = global ColonyState 0-30 32-34 35-100
+ColonyFactor1_Mid   = global ColonyState 31
+ColonyFactor1_Final = global ColonyState 34
+ColonyFactor2_D     = global ColonyState 0-32 33-35 36-100
+ColonyFactor2_Mid   = global ColonyState 32
+ColonyFactor2_Final = global ColonyState 35
+ColonyFactor3_D     = global ColonyState 0-33
+ColonyFactor3_Mid   = global ColonyState 33
+ColonyFactor3_Final = global ColonyState 36
+
+ColonyMineBoulder1 = journal CO_8 0-10
+ColonyMineBoulder2 = journal CO_10 0-10
+ColonyRoot1        = journal CO_10 0-120
+ColonyRoot1a       = journal CO_10 0-120
+ColonyRoot2        = journal CO_10 120
+ColonyShipwreck    = journal CO_3 10-1000
+
+ColonyDock              = global ColonyService 5-100
+ColonyServSmith         = global ColonyService 5
+ColonyServSmithConst    = global ColonyService 3 5
+ColonyServSmithDisable  = global ColonyService 0-3 4 6
+ColonyServTrader        = global ColonyService 6
+ColonyServTraderConst   = global ColonyService 4
+ColonyServTraderDisable = global ColonyService 0-4 5
+
+Colony_D_1_I      = global ColonyState 0-1
+Colony_D_1_F      = global ColonyState 0-3
+Colony_D_1_Mine   = global ColonyState 1
+Colony_D_2_F      = global ColonyState 0-10
+Colony_D_3_F      = global ColonyState 0-20
+Colony_E_1_M      = global ColonyState 1-3
+Colony_E_1_F      = global ColonyState 3-100
+Colony_E_1_Mine   = global ColonyState 2-100
+Colony_E_2_M      = global ColonyState 3-10
+Colony_E_2_F      = global ColonyState 10-100
+Colony_E_3_M      = global ColonyState 12-20
+Colony_E_3_F      = global ColonyState 20-100
+Colony_E_4_M      = global ColonyState 22-30
+Colony_E_4_F      = global ColonyState 30-100
+Colony_first_boat = global ColonyState 3-100
+
+fortDisableScript  = journal BM_Smugglers 0-93
+fortEnableScript   = journal BM_Smugglers 93-1000
+glendoor2Script    = journal BM_Wind 10-1000
+glendoorScript     = journal BM_Wind 0-10
+karstcavdoorScript = journal BM_FrostGiant1 0-30
+musicdoor2Script   = journal BM_Earth 10-1000
+musicdoorScript    = journal BM_Earth 0-10
+penumbradoorScript = journal BM_Sun 0-10
+skaalaradoorScript = journal BM_Ceremony1 0-10
+stahldoorScript    = journal BM_Water 0-10
+stoneUlfgarScript  = journal BM_BrodirGrove 90-1000
