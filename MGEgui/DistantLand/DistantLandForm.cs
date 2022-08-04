@@ -2280,8 +2280,7 @@ namespace MGEgui.DistantLand {
             public uint StaticID;
             public int VisIndex;
 
-            public void SetID(Dictionary<string, Static> staticsList, Dictionary<string, uint> staticMap) {
-                var s = staticsList[Name];
+            public void SetID(Static s, Dictionary<string, uint> staticMap) {
                 string file = s.Model;
 
                 if (staticMap.ContainsKey(file)) {
@@ -2562,9 +2561,6 @@ namespace MGEgui.DistantLand {
                         }
                     }
                     if (name != null && text != null) {
-                        if (name == "ghostfencescript") {
-                            continue;
-                        }
                         if (text.Contains("disable")) {
                             DisableScripts[name] = true;
                         }
@@ -2615,6 +2611,7 @@ namespace MGEgui.DistantLand {
 
                         // Dynamic vis
                         if (dynamicVis != null && script != null && dynamicVis.ContainsKey(script)) {
+                            // Set object with vis group
                             var s = new Static(name, model);
                             s.VisIndex = dynamicVis[script].Index;
                             StaticsList[name] = s;
@@ -2626,8 +2623,9 @@ namespace MGEgui.DistantLand {
                         // Named exceptions
                         if (namedObjectDisables != null && namedObjectDisables.ContainsKey(name)) {
                             if (!namedObjectDisables[name]) {
-                                // Object set to enabled, bypassing nif ignore
+                                // Object set to enabled, bypassing nif ignore and disable script
                                 StaticsList[name] = new Static(name, model);
+
                                 // Flag that the nif is used despite the ignore flag
                                 if (overrideList != null && overrideList.ContainsKey(model) && overrideList[model].Ignore) {
                                     overrideList[model] = new StaticOverride(overrideList[model], true);
@@ -2751,8 +2749,11 @@ namespace MGEgui.DistantLand {
                                         if (!referenceHasScale) {
                                             sr.Scale = 1;
                                         }
-                                        if (StaticsList.ContainsKey(sr.Name) && (!namedObjectDisables.ContainsKey(sr.Name) || !namedObjectDisables[sr.Name])) {
-                                            sr.SetID(StaticsList, StaticMap);
+
+                                        Static stat;
+                                        StaticsList.TryGetValue(sr.Name, out stat);
+                                        if (stat != null && (stat.VisIndex > 0 || !namedObjectDisables.ContainsKey(sr.Name) || !namedObjectDisables[sr.Name])) {
+                                            sr.SetID(stat, StaticMap);
                                             string worldspace = isInterior ? cellName : "";
                                             string referenceFullyQualified = masters[mastID] + "\u0001" + (isInterior ? "" : cellX + "\u0002" + cellY + "\u0001") + refID;
                                             if (referenceDeleted) {
@@ -2807,8 +2808,11 @@ namespace MGEgui.DistantLand {
                             if (!referenceHasScale) {
                                 sr.Scale = 1;
                             }
-                            if (StaticsList.ContainsKey(sr.Name) && (!namedObjectDisables.ContainsKey(sr.Name) || !namedObjectDisables[sr.Name])) {
-                                sr.SetID(StaticsList, StaticMap);
+
+                            Static stat;
+                            StaticsList.TryGetValue(sr.Name, out stat);
+                            if (stat != null && (stat.VisIndex > 0 || !namedObjectDisables.ContainsKey(sr.Name) || !namedObjectDisables[sr.Name])) {
+                                sr.SetID(stat, StaticMap);
                                 string worldspace = isInterior ? cellName : "";
                                 string referenceFullyQualified = masters[mastID] + "\u0001" + (isInterior ? "" : cellX + "\u0002" + cellY + "\u0001") + refID;
 
