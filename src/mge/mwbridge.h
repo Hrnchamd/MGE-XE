@@ -96,6 +96,7 @@ public:
     int getPlayerWeapon();
     bool isPlayerCasting();
     bool isPlayerAimingWeapon();
+    void* getPlayerCell();
 
     void HaggleMore(DWORD num);
     void HaggleLess(DWORD num);
@@ -120,6 +121,7 @@ public:
     void patchUIConfigure(void (__stdcall* newfunc)());
     void patchSplashScreen(unsigned int width, unsigned int height);
     void patchFrameTimer(int (__cdecl* newfunc)());
+    void patchResolveDuringInit(void (__cdecl* newfunc)());
 
     void* getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);

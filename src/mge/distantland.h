@@ -78,6 +78,7 @@ public:
     static std::unordered_map<std::string, WorldSpace> mapWorldSpaces;
     static const WorldSpace* currentWorldSpace;
     static std::vector<DynamicVisGroup> dynamicVisGroups;
+    static void* lastDistantVisCell;
     static QuadTree LandQuadTree;
     static VisibleSet visLand;
     static VisibleSet visDistant;
@@ -161,6 +162,7 @@ public:
     static void editProjectionZ(D3DMATRIX* m, float zn, float zf);
     static bool selectDistantCell();
     static bool isDistantCell();
+    static void resolveDynamicVisGroups();
     static void scanDynamicVisGroups();
 
     static void setView(const D3DMATRIX* m);

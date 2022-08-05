@@ -39,6 +39,7 @@ VendorSpecificRendering DistantLand::vsr;
 unordered_map<std::string, DistantLand::WorldSpace> DistantLand::mapWorldSpaces;
 const DistantLand::WorldSpace* DistantLand::currentWorldSpace;
 std::vector<DistantLand::DynamicVisGroup> DistantLand::dynamicVisGroups;
+void* DistantLand::lastDistantVisCell;
 QuadTree DistantLand::LandQuadTree;
 VisibleSet DistantLand::visLand;
 VisibleSet DistantLand::visDistant;
@@ -236,6 +237,8 @@ bool DistantLand::init() {
     if (!initGrass()) {
         return false;
     }
+
+    MWBridge::get()->patchResolveDuringInit(&resolveDynamicVisGroups);
 
     LOG::logline("<< Completed Distant Land init");
     ready = true;
@@ -944,6 +947,7 @@ bool DistantLand::loadDistantStatics() {
             visReader.read(&ranges, sizeof(ranges));
             dvg.ranges.assign(ranges, ranges + rangeCount);
         }
+
         visData.reset();
     }
 

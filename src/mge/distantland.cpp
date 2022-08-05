@@ -688,9 +688,14 @@ bool DistantLand::selectDistantCell() {
     auto mwBridge = MWBridge::get();
 
     if (Configuration.MGEFlags & USE_DISTANT_LAND) {
-        // Testing: Scan dynamic vis every frame
-        scanDynamicVisGroups();
+        // Scan dynamic vis on cell change
+        void* playerCell = mwBridge->getPlayerCell();
+        if (playerCell != lastDistantVisCell) {
+            scanDynamicVisGroups();
+            lastDistantVisCell = playerCell;
+        }
 
+        // Get worldspace key
         string cellname;
         if (mwBridge->IsExterior()) {
             cellname = string();
@@ -715,59 +720,71 @@ bool DistantLand::isDistantCell() {
     return currentWorldSpace != nullptr;
 }
 
+// resolveDynamicVisGroups - Resolve pointers to game objects on load/reload
+void DistantLand::resolveDynamicVisGroups() {
+    auto mwBridge = MWBridge::get();
+
+    for (auto& vis : dynamicVisGroups) {
+        // Clear previous pointer
+        vis.gameObject = nullptr;
+
+        // Resolve IDs to pointers
+        switch (vis.source) {
+        case DynamicVisGroup::DataSource::Journal:
+            vis.gameObject = mwBridge->getDialogue(vis.id.c_str());
+            break;
+        case DynamicVisGroup::DataSource::Global:
+            vis.gameObject = mwBridge->getGlobalVar(vis.id.c_str());
+            break;
+        case DynamicVisGroup::DataSource::UniqueObject:
+            vis.gameObject = mwBridge->findFirstReferenceById(vis.id.c_str());
+            break;
+        }
+    }
+
+    // Ensure reloading into the same cell still triggers updates
+    lastDistantVisCell = nullptr;
+}
+
 // scanDynamicVisGroups - Scan through game data for visibility changes
 void DistantLand::scanDynamicVisGroups() {
     auto mwBridge = MWBridge::get();
 
     for (auto& vis : dynamicVisGroups) {
-        bool valid = false;
         int value;
+
+        // Ignore unresolved objects
+        if (!vis.gameObject) {
+            continue;
+        }
 
         switch (vis.source) {
         case DynamicVisGroup::DataSource::Journal:
-            if (!vis.gameObject) {
-                vis.gameObject = mwBridge->getDialogue(vis.id.c_str());
-            }
-            if (vis.gameObject) {
-                value = mwBridge->getJournalIndex(vis.gameObject);
-                valid = true;
-            }
+            value = mwBridge->getJournalIndex(vis.gameObject);
             break;
         case DynamicVisGroup::DataSource::Global:
-            if (!vis.gameObject) {
-                vis.gameObject = mwBridge->getGlobalVar(vis.id.c_str());
-            }
-            if (vis.gameObject) {
-                value = int(mwBridge->getGlobalVarValue(vis.gameObject));
-                valid = true;
-            }
+            value = int(mwBridge->getGlobalVarValue(vis.gameObject));
             break;
         case DynamicVisGroup::DataSource::UniqueObject:
-            if (!vis.gameObject) {
-                vis.gameObject = mwBridge->findFirstReferenceById(vis.id.c_str());
-            }
-            if (vis.gameObject) {
-                auto flags = mwBridge->getRecordFlags(vis.gameObject);
-                value = (flags & 0x800) == 0;
-                valid = true;
-            }
+            const int disabledRecordFlag = 0x800;
+            value = (mwBridge->getRecordFlags(vis.gameObject) & disabledRecordFlag) == 0;
             break;
         }
 
-        if (valid) {
-            bool enable = false;
-            for (const auto& r : vis.ranges) {
-                if (r.begin <= value && value < r.end) {
-                    enable = true;
-                    break;
-                }
+        // Enable if value is inside any range
+        bool enable = false;
+        for (const auto& r : vis.ranges) {
+            if (r.begin <= value && value < r.end) {
+                enable = true;
+                break;
             }
+        }
 
-            if (enable ^ vis.enabled) {
-                vis.enabled = enable;
-                for (auto& m : vis.references) {
-                    m->enabled = enable;
-                }
+        // If enable state has changed, propagate to distant land mesh instances
+        if (enable ^ vis.enabled) {
+            vis.enabled = enable;
+            for (auto& m : vis.references) {
+                m->enabled = enable;
             }
         }
     }

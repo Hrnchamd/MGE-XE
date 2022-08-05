@@ -966,6 +966,14 @@ bool MWBridge::isPlayerAimingWeapon() {
 
 //-----------------------------------------------------------------------------
 
+// getPlayerCell - Gets pointer to player cell
+void* MWBridge::getPlayerCell() {
+    DWORD addr = read_dword(eEnviro);
+    return (void*)read_dword(addr + 0xB540);
+}
+
+//-----------------------------------------------------------------------------
+
 // toggleRipples - Turns off ripple generation from all sources
 void MWBridge::toggleRipples(BOOL enabled) {
     DWORD addr = eRipplesSwitch;
@@ -1274,6 +1282,30 @@ void MWBridge::patchFrameTimer(int (__cdecl* newfunc)()) {
     for (int i = 0; i != sizeof(addrs)/sizeof(addrs[0]); ++i) {
         VirtualMemWriteAccessor vw((void*)addrs[i], sizeof(&patchFrameTimerTarget));
         write_dword(addrs[i], reinterpret_cast<DWORD>(&patchFrameTimerTarget));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+static void (__cdecl* patchResolveDuringInitFunc)();
+
+static void __fastcall patchResolveDuringInitShim(void* worldController) {
+    // Call original function.
+    const auto resolveScriptInternalIDs = reinterpret_cast<void (__thiscall*)(void*)>(0x40FC40);
+    resolveScriptInternalIDs(worldController);
+
+    patchResolveDuringInitFunc();
+}
+
+// patchResolveDuringInit - Inserts a callback where game data is initialized or re-initialized.
+void MWBridge::patchResolveDuringInit(void (__cdecl* newfunc)()) {
+    DWORD addrs[] = { 0x419AC4, 0x4C601D, 0x5FB11A, 0x5FE929 };
+
+    patchResolveDuringInitFunc = newfunc;
+
+    for (int i = 0; i != sizeof(addrs)/sizeof(addrs[0]); ++i) {
+        VirtualMemWriteAccessor vw((void*)addrs[i], 5);
+        write_dword(addrs[i] + 1, reinterpret_cast<DWORD>(&patchResolveDuringInitShim) - addrs[i] - 5);
     }
 }
 
