@@ -723,10 +723,20 @@ bool DistantLand::isDistantCell() {
 // resolveDynamicVisGroups - Resolve pointers to game objects on load/reload
 void DistantLand::resolveDynamicVisGroups() {
     auto mwBridge = MWBridge::get();
+    const DynamicVisGroup *lastDVG = nullptr;
 
     for (auto& vis : dynamicVisGroups) {
         // Clear previous pointer
         vis.gameObject = nullptr;
+
+        // Re-use previous result if the id matches
+        if (lastDVG && vis.id == lastDVG->id) {
+            vis.gameObject = lastDVG->gameObject;
+            continue;
+        }
+        else {
+            lastDVG = &vis;
+        }
 
         // Resolve IDs to pointers
         switch (vis.source) {
