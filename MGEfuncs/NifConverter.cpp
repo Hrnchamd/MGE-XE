@@ -276,11 +276,11 @@ struct ExportedNode {
             cv.Position[2] = FloatToHalf(v.Position.z);
             cv.Position[3] = FloatToHalf(1.0f);
 
-            // Compress Texcoords
+            // Compress texcoords
             cv.texCoord[0] = FloatToHalf(v.texCoord.u);
             cv.texCoord[1] = FloatToHalf(v.texCoord.v);
 
-            // Compress normals
+            // Compress normals + emissive
             cv.Normal[0] = (unsigned char)(255.0f * (v.Normal.x * 0.5 + 0.5));
             cv.Normal[1] = (unsigned char)(255.0f * (v.Normal.y * 0.5 + 0.5));
             cv.Normal[2] = (unsigned char)(255.0f * (v.Normal.z * 0.5 + 0.5));
@@ -473,33 +473,29 @@ private:
             return false;
         }
 
-        // Get data object (NiTriBasedGeomData) from geometry node (NiTriBasedGeom)
+        // Get data object (NiTriBasedGeomData) from geometry node
         NiTriBasedGeomDataRef niGeomData = DynamicCast<NiTriBasedGeomData>(niGeom->GetData());
         if (!niGeomData) {
             // log_file << "There is no Geometry data on this mesh." << endl;
             return false;
         }
 
-        // Get material object (NiMaterialProperty) from geometry node (NiTriBasedGeom)
+        // Get material property from geometry node
         NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(niGeom->GetPropertyByType(NiMaterialProperty::TYPE));
 
-        // Get Diffuse color (will be baked into vertices
+        // Get diffuse color (will be baked into vertices)
+        // Get the emissive color (will be averaged and stored in the 4th channel of normals)
+        // Get the alpha of the material
         Color3 diffuse(1.0f, 1.0f, 1.0f);
+        Color3 emissive(0.0f, 0.0f, 0.0f);
+        float alpha = 1.0f;
+
         if (niMatProp) {
             diffuse = niMatProp->GetDiffuseColor();
-        }
-        // Get the emissive color (will be averaged and stored in alpha chanel of vertices)
-        Color3 emissive(0.0f, 0.0f, 0.0f);
-        if (niMatProp) {
             emissive = niMatProp->GetEmissiveColor();
+            alpha = niMatProp->GetTransparency();
         }
         node->emissive = (emissive.r + emissive.b + emissive.g) / 3.0f;
-
-        // Get the alpha of the material
-        float Alpha = 1.0f;
-        if (niMatProp) {
-            Alpha = niMatProp->GetTransparency();
-        }
 
         // Check that there is at least one set of texture coords available
         if (niGeomData->GetUVSetCount() == 0) {
@@ -507,11 +503,7 @@ private:
             return false;
         }
 
-        // ProgMesh simplify = ProgMesh(niGeomData);
-        // simplify.ComputeProgressiveMesh();
-        // simplify.DoProgressiveMesh(0.1);
-
-        // Indicies
+        // Indices
         vector<Triangle> tris = niGeomData->GetTriangles();
         node->faces = tris.size();
         if (node->faces == 0) {
@@ -528,13 +520,6 @@ private:
         // This will be used to transform normals
         Matrix44 rotation(transform.GetRotation());
 
-        node->iBuffer = std::make_unique<unsigned short[]>(node->faces*3);
-        for (int i = 0; i < node->faces; i++) {
-            node->iBuffer[i*3+0] = tris[i].v1;
-            node->iBuffer[i*3+1] = tris[i].v2;
-            node->iBuffer[i*3+2] = tris[i].v3;
-        }
-
         // Vertex data
         vector<Vector3> positions;
         vector<Vector3> normals;
@@ -549,36 +534,43 @@ private:
 
         // Vertices
         node->verts = niGeomData->GetVertexCount();
-
         node->vBuffer = std::make_unique<DXVertex[]>(node->verts);
-        for (int i = 0; i < node->verts; i++) {
-            // Push the world transform into the verticies
-            positions[i] = transform * positions[i];
 
+        for (int i = 0; i < node->verts; i++) {
+            // Push the world transform into the vertices
             // Apply the world transform's rotation to the normals
+            positions[i] = transform * positions[i];
             normals[i] = rotation * normals[i];
 
             node->vBuffer[i].Position = positions[i];
-            if (normals.size()>0) {
+            if (normals.size() > 0) {
                 node->vBuffer[i].Normal = normals[i];
             } else {
                 node->vBuffer[i].Normal.x = 0;
                 node->vBuffer[i].Normal.y = 0;
                 node->vBuffer[i].Normal.z = 1;
             }
-            if (colors.size()>0) {
+            if (colors.size() > 0) {
                 node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * colors[i].b * diffuse.b);
                 node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * colors[i].g * diffuse.g);
                 node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * colors[i].r * diffuse.r);
-                node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * colors[i].a * Alpha);
+                node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * colors[i].a * alpha);
             } else {
                 node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * diffuse.b);
                 node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * diffuse.g);
                 node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * diffuse.r);
-                node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * Alpha);
+                node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * alpha);
             }
 
             node->vBuffer[i].texCoord = texCoords[i];
+        }
+
+        // Write index buffer
+        node->iBuffer = std::make_unique<unsigned short[]>(node->faces*3);
+        for (int i = 0; i < node->faces; i++) {
+            node->iBuffer[i*3+0] = tris[i].v1;
+            node->iBuffer[i*3+1] = tris[i].v2;
+            node->iBuffer[i*3+2] = tris[i].v3;
         }
 
         // Get texture file path
@@ -599,7 +591,7 @@ private:
 
         // Remove any leading forward slashes that remain
         if (s[0] == '\\') {
-            s = s.substr(1, string::npos );
+            s = s.substr(1, string::npos);
         }
 
         node->tex = s;
