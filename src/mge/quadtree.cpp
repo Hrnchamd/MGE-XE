@@ -14,9 +14,9 @@ static const float QUADTREE_MIN_DIST = 20.0f;
 //-----------------------------------------------------------------------------
 
 QuadTreeMesh::QuadTreeMesh(
-    BoundingSphere sphere,
-    BoundingBox box,
-    D3DXMATRIX transform,
+    const BoundingSphere& sphere,
+    const BoundingBox& box,
+    const D3DXMATRIX& transform,
     IDirect3DTexture9* tex,
     int verts,
     IDirect3DVertexBuffer9* vBuffer,
@@ -522,9 +522,9 @@ QuadTree::~QuadTree() {
 //-----------------------------------------------------------------------------
 
 QuadTreeMesh* QuadTree::AddMesh(
-    BoundingSphere sphere,
-    BoundingBox box,
-    D3DXMATRIX transform,
+    const BoundingSphere& sphere,
+    const BoundingBox& box,
+    const D3DXMATRIX& transform,
     IDirect3DTexture9* tex,
     int verts,
     IDirect3DVertexBuffer9* vBuffer,
@@ -598,9 +598,9 @@ QuadTreeNode* QuadTree::CreateNode() {
 //-----------------------------------------------------------------------------
 
 QuadTreeMesh* QuadTree::CreateMesh(
-    BoundingSphere sphere,
-    BoundingBox box,
-    D3DXMATRIX transform,
+    const BoundingSphere& sphere,
+    const BoundingBox& box,
+    const D3DXMATRIX& transform,
     IDirect3DTexture9* tex,
     int verts,
     IDirect3DVertexBuffer9* vBuffer,

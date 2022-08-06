@@ -1107,39 +1107,32 @@ bool DistantLand::initDistantStaticsBVH() {
             }
 
             // Add sub-meshes to appropriate quadtree
-            if (stat->type == STATIC_BUILDING) {
-                // Use model bound so that all building parts have coherent visibility
-                for (auto& s : stat->subsets) {
-                    auto mesh = targetQTR->AddMesh(
-                        i.sphere,
-                        i.box,
-                        i.transform,
-                        s.tex,
-                        s.verts,
-                        s.vbuffer,
-                        s.faces,
-                        s.ibuffer
-                    );
-                    if (i.visIndex > 0) {
-                        dynamicVisGroups[i.visIndex].references.push_back(mesh);
-                    }
+            for (auto& s : stat->subsets) {
+                BoundingSphere boundSphere;
+                BoundingBox boundBox;
+
+                if (stat->type == STATIC_BUILDING) {
+                    // Use model bound so that all building parts have coherent visibility
+                    boundSphere = i.sphere;
+                    boundBox = i.box;
+                } else {
+                    // Use individual mesh bounds
+                    boundSphere = i.GetBoundingSphere(s.sphere);
+                    boundBox = i.GetBoundingBox(s.aabbMin, s.aabbMax);
                 }
-            } else {
-                // Use individual mesh bounds
-                for (auto& s : stat->subsets) {
-                    auto mesh = targetQTR->AddMesh(
-                        i.GetBoundingSphere(s.sphere),
-                        i.GetBoundingBox(s.aabbMin, s.aabbMax),
-                        i.transform,
-                        s.tex,
-                        s.verts,
-                        s.vbuffer,
-                        s.faces,
-                        s.ibuffer
-                    );
-                    if (i.visIndex > 0) {
-                        dynamicVisGroups[i.visIndex].references.push_back(mesh);
-                    }
+
+                auto mesh = targetQTR->AddMesh(
+                    boundSphere,
+                    boundBox,
+                    i.transform,
+                    s.tex,
+                    s.verts,
+                    s.vbuffer,
+                    s.faces,
+                    s.ibuffer
+                );
+                if (i.visIndex > 0) {
+                    dynamicVisGroups[i.visIndex].references.push_back(mesh);
                 }
             }
 

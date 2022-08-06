@@ -20,9 +20,9 @@ struct QuadTreeMesh {
     IDirect3DIndexBuffer9* iBuffer;
 
     QuadTreeMesh(
-        BoundingSphere b_sphere,
-        BoundingBox b_box,
-        D3DXMATRIX transform,
+        const BoundingSphere& b_sphere,
+        const BoundingBox& b_box,
+        const D3DXMATRIX& transform,
         IDirect3DTexture9* tex,
         int verts,
         IDirect3DVertexBuffer9* vBuffer,
@@ -83,8 +83,8 @@ struct QuadTreeNode {
 
     void GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set, bool inside = false);
     void GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside = false);
-    void AddMesh(QuadTreeMesh* new_mesh, int depth);
 
+    void AddMesh(QuadTreeMesh* new_mesh, int depth);
     void PushDown(QuadTreeMesh* new_mesh, int depth);
     bool Optimize();
     BoundingSphere CalcVolume();
@@ -100,15 +100,16 @@ public:
     QuadTree();
     ~QuadTree();
     QuadTreeMesh* AddMesh(
-        BoundingSphere sphere,
-        BoundingBox box,
-        D3DXMATRIX transform,
+        const BoundingSphere& sphere,
+        const BoundingBox& box,
+        const D3DXMATRIX& transform,
         IDirect3DTexture9* tex,
         int verts,
         IDirect3DVertexBuffer9* vBuffer,
         int faces,
         IDirect3DIndexBuffer9* iBuffer
     );
+
     bool Optimize();
     void Clear();
     void GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set);
@@ -122,11 +123,12 @@ public:
 
 protected:
     friend struct QuadTreeNode;
+
     QuadTreeNode* CreateNode();
     QuadTreeMesh* CreateMesh(
-        BoundingSphere sphere,
-        BoundingBox box,
-        D3DXMATRIX transform,
+        const BoundingSphere& sphere,
+        const BoundingBox& box,
+        const D3DXMATRIX& transform,
         IDirect3DTexture9* tex,
         int verts,
         IDirect3DVertexBuffer9* vBuffer,
