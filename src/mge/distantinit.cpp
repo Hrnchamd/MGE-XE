@@ -910,8 +910,9 @@ bool DistantLand::loadDistantStatics() {
     int texturesLoaded, texMemUsage;
     BSA::cacheStats(&texturesLoaded, &texMemUsage);
 
-    LOG::logline("-- Distant static textures loaded, %d textures", texturesLoaded);
-    LOG::logline("-- Distant static texture memory use: %d MB", texMemUsage);
+    LOG::logline("-- Distant static geometry memory use: %d MB", file_size / (1 << 20));
+    LOG::logline("-- Distant textures loaded, %d textures", texturesLoaded);
+    LOG::logline("-- Distant texture memory use: %d MB", texMemUsage);
     LOG::flush();
 
 
@@ -1021,6 +1022,8 @@ bool DistantLand::loadDistantStatics() {
 }
 
 bool DistantLand::initDistantStaticsBVH() {
+    size_t total_instances = 0;
+
     for (auto& iWS : mapWorldSpaces) {
         vector<UsedDistantStatic>& uds = UsedDistantStatics.find(iWS.first)->second;
 
@@ -1060,7 +1063,7 @@ bool DistantLand::initDistantStaticsBVH() {
             DistantStatic* stat = &DistantStatics[i.staticRef];
             QuadTree* targetQTR;
 
-            // Use transformed radius
+            // Use post-transform (include scale) radius
             float radius = i.sphere.radius;
 
             // Buildings are treated as larger objects, as they are typically
@@ -1139,6 +1142,8 @@ bool DistantLand::initDistantStaticsBVH() {
                     }
                 }
             }
+
+            total_instances += stat->subsets.size();
         }
 
         NQTR->Optimize();
@@ -1152,6 +1157,9 @@ bool DistantLand::initDistantStaticsBVH() {
 
         uds.clear();
     }
+
+    // Log approximate memory use
+    LOG::logline("-- Distant worldspaces memory use: %d MB", total_instances * sizeof(QuadTreeMesh) / (1 << 20));
 
     return true;
 }
@@ -1199,6 +1207,7 @@ bool DistantLand::initLandscape() {
         return false;
     }
 
+    DWORD file_size = GetFileSize(file, NULL);
     DWORD mesh_count, unused;
     ReadFile(file, &mesh_count, 4, &unused, 0);
 
@@ -1258,6 +1267,9 @@ bool DistantLand::initLandscape() {
 
     CloseHandle(file);
     LandQuadTree.CalcVolume();
+
+    // Log approximate memory use
+    LOG::logline("-- Distant landscape memory use: %d MB", file_size / (1 << 20));
 
     return true;
 }
