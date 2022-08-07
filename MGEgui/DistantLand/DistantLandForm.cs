@@ -1325,6 +1325,8 @@ namespace MGEgui.DistantLand {
             backgroundWorker.ReportProgress(5, strings["StaticsGenerate5"]);
             {
                 var stc = new StaticTexCreator(args.MipSkip);
+                int vert_size = NativeMethods.GetCompressedVertSize(), face_size = 6;
+
                 using (var br = new BinaryReader(File.OpenRead(Statics.fn_statmesh), Statics.ESPEncoding)) {
                     foreach (var name in UsedNifList) {
                         int nodes = br.ReadInt32();
@@ -1334,11 +1336,12 @@ namespace MGEgui.DistantLand {
                             br.BaseStream.Position += 40; // Byte count: 4 - radius, 12 - center, 12 - AABB min, 12 - AABB max
                             int verts = br.ReadInt32();
                             int faces = br.ReadInt32();
-                            int vert_size = NativeMethods.GetCompressedVertSize();
-                            br.BaseStream.Position += verts * vert_size + faces * 6;
+                            br.BaseStream.Position += verts * vert_size + faces * face_size;
+                            br.BaseStream.Position += 2; // Byte count: 2 - flags
                             short chars = br.ReadInt16();
                             string path = new string(br.ReadChars(chars - 1));
                             br.BaseStream.Position += 1;
+
                             try {
                                 if (type != (int)StaticType.Grass && type != (int)StaticType.Tree) {
                                     bool ok = stc.LoadTexture(path);

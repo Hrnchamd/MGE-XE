@@ -1,6 +1,6 @@
 
 // XE Mod Statics.fx
-// MGE XE 0.14.2
+// MGE XE 0.15.0
 // Distant statics rendering. Can be used as a core mod.
 
 
@@ -30,6 +30,17 @@ float4 lightStaticVert(StatVertIn IN) {
     return float4(IN.color.rgb * light, IN.color.a);
 }
 
+float2 texcoordsModifier(StatVertIn IN) {
+    float2 tc = IN.texcoords;
+
+    if (hasVCol) {
+        // Linked to animateUV static flag
+        // Render with fixed scrolling that approximates ghostfence
+        tc.y += fmod(0.08 * time, 1);
+    }
+    return tc;
+}
+
 //------------------------------------------------------------
 // Statics rendering
 
@@ -44,7 +55,7 @@ StatVertOut StaticExteriorVS(StatVertIn IN) {
     float dist = length(eyevec);
     OUT.fog = fogColour(eyevec / dist, dist);
 
-    OUT.texcoords_range = float3(IN.texcoords, dist);
+    OUT.texcoords_range = float3(texcoordsModifier(IN), dist);
     return OUT;
 }
 
@@ -58,18 +69,18 @@ StatVertOut StaticInteriorVS (StatVertIn IN) {
     float dist = length(v.viewpos.xyz);
     OUT.fog = fogMWColour(dist);
 
-    OUT.texcoords_range = float3(IN.texcoords, dist);
+    OUT.texcoords_range = float3(texcoordsModifier(IN), dist);
     return OUT;
 }
 
 float4 StaticPS (StatVertOut IN): COLOR0 {
     float2 texcoords = IN.texcoords_range.xy;
     float range = IN.texcoords_range.z;
-    
+
     float4 result = tex2D(sampBaseTex, texcoords);
     result.rgb *= IN.color.rgb;
     result.rgb = fogApply(result.rgb, IN.fog);
-    
+
     // Alpha to coverage conversion
     result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
     
@@ -87,7 +98,7 @@ DepthVertOut DepthStaticVS (StatVertIn IN) {
 
     OUT.depth = OUT.pos.w;
     OUT.alpha = 1;
-    OUT.texcoords = IN.texcoords;
+    OUT.texcoords = texcoordsModifier(IN);
 
     return OUT;
 }

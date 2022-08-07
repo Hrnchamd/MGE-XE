@@ -9,8 +9,7 @@
 struct QuadTreeMesh {
     BoundingSphere sphere;
     BoundingBox box;
-    bool enabled;
-    bool hasalpha;
+    bool enabled, hasAlpha, animateUV;
 
     IDirect3DTexture9* tex;
     D3DXMATRIX transform;
@@ -23,6 +22,8 @@ struct QuadTreeMesh {
         const BoundingSphere& b_sphere,
         const BoundingBox& b_box,
         const D3DXMATRIX& transform,
+        bool hasAlpha,
+        bool animateUV,
         IDirect3DTexture9* tex,
         int verts,
         IDirect3DVertexBuffer9* vBuffer,
@@ -44,21 +45,22 @@ struct QuadTreeMesh {
 
 class VisibleSet {
 public:
-    void RemoveAll();
     VisibleSet() {}
     ~VisibleSet() {}
 
-    void Render(
-        IDirect3DDevice9* device,
-        ID3DXEffect* effect,
-        ID3DXEffect* effectPool,
-        D3DXHANDLE* texture_handle,
-        D3DXHANDLE* hasalpha_handle,
-        D3DXHANDLE* world_matrix_handle,
-        unsigned int vertex_size );
+    void Render(IDirect3DDevice9* device,
+                ID3DXEffect* effect,
+                ID3DXEffect* effectPool,
+                D3DXHANDLE* texture_handle,
+                D3DXHANDLE* has_alpha_handle,
+                D3DXHANDLE* animate_uv_handle,
+                D3DXHANDLE* world_matrix_handle,
+                unsigned int vertex_size);
 
     void SortByState();
     void SortByTexture();
+    void RemoveAll();
+
     size_t size() const {
         return visible_set.size();
     }
@@ -103,6 +105,8 @@ public:
         const BoundingSphere& sphere,
         const BoundingBox& box,
         const D3DXMATRIX& transform,
+        bool hasAlpha,
+        bool animateUV,
         IDirect3DTexture9* tex,
         int verts,
         IDirect3DVertexBuffer9* vBuffer,
@@ -129,6 +133,8 @@ protected:
         const BoundingSphere& sphere,
         const BoundingBox& box,
         const D3DXMATRIX& transform,
+        bool hasAlpha,
+        bool animateUV,
         IDirect3DTexture9* tex,
         int verts,
         IDirect3DVertexBuffer9* vBuffer,

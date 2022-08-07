@@ -884,6 +884,12 @@ bool DistantLand::loadDistantStatics() {
             subset.vbuffer = vb;
             subset.ibuffer = ib;
 
+            // Texturing flags
+            bool texturingFlags[2];
+            reader.read(&texturingFlags, 2);
+            subset.hasAlpha = texturingFlags[0];
+            subset.hasUVController = texturingFlags[1];
+
             // Load referenced texture
             unsigned short pathsize;
             reader.read(&pathsize, 2);
@@ -1125,6 +1131,8 @@ bool DistantLand::initDistantStaticsBVH() {
                     boundSphere,
                     boundBox,
                     i.transform,
+                    s.hasAlpha,
+                    s.hasUVController,
                     s.tex,
                     s.verts,
                     s.vbuffer,
@@ -1254,7 +1262,7 @@ bool DistantLand::initLandscape() {
         // Add meshes to the quadtree
         for (auto& i : meshesLand) {
             meshCollectionLand.push_back(MeshResources(i.vbuffer, i.ibuffer, 0));
-            LandQuadTree.AddMesh(i.sphere, i.box, world, texWorldColour, i.verts, i.vbuffer, i.faces, i.ibuffer);
+            LandQuadTree.AddMesh(i.sphere, i.box, world, false, false, texWorldColour, i.verts, i.vbuffer, i.faces, i.ibuffer);
         }
     }
 

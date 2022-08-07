@@ -17,6 +17,8 @@ QuadTreeMesh::QuadTreeMesh(
     const BoundingSphere& sphere,
     const BoundingBox& box,
     const D3DXMATRIX& transform,
+    bool hasAlpha,
+    bool animateUV,
     IDirect3DTexture9* tex,
     int verts,
     IDirect3DVertexBuffer9* vBuffer,
@@ -26,16 +28,14 @@ QuadTreeMesh::QuadTreeMesh(
     this->sphere = sphere;
     this->box = box;
     this->enabled = true;
+    this->hasAlpha = hasAlpha;
+    this->animateUV = animateUV;
     this->transform = transform;
     this->tex = tex;
     this->verts = verts;
     this->vBuffer = vBuffer;
     this->faces = faces;
     this->iBuffer = iBuffer;
-
-    D3DSURFACE_DESC texdesc;
-    tex->GetLevelDesc(0, &texdesc);
-    this->hasalpha = (texdesc.Format == D3DFMT_A8R8G8B8 || texdesc.Format == D3DFMT_DXT3 || texdesc.Format == D3DFMT_DXT5);
 }
 
 //-----------------------------------------------------------------------------
@@ -51,12 +51,13 @@ QuadTreeMesh& QuadTreeMesh::operator=(const QuadTreeMesh& rh) {
     sphere.radius = rh.sphere.radius;
     box = rh.box;
     transform = rh.transform;
+    hasAlpha = rh.hasAlpha;
+    animateUV = rh.animateUV;
     tex = rh.tex;
     verts = rh.verts;
     vBuffer = rh.vBuffer;
     faces = rh.faces;
     iBuffer = rh.iBuffer;
-    hasalpha = rh.hasalpha;
 
     return *this;
 }
@@ -103,14 +104,14 @@ void VisibleSet::RemoveAll() {
 
 //-----------------------------------------------------------------------------
 
-void VisibleSet::Render(
-    IDirect3DDevice9* device,
-    ID3DXEffect* effect,
-    ID3DXEffect* effectPool,
-    D3DXHANDLE* texture_handle,
-    D3DXHANDLE* hasalpha_handle,
-    D3DXHANDLE* world_matrix_handle,
-    unsigned int vertex_size) {
+void VisibleSet::Render(IDirect3DDevice9* device,
+                        ID3DXEffect* effect,
+                        ID3DXEffect* effectPool,
+                        D3DXHANDLE* texture_handle,
+                        D3DXHANDLE* has_alpha_handle,
+                        D3DXHANDLE* animate_uv_handle,
+                        D3DXHANDLE* world_matrix_handle,
+                        unsigned int vertex_size) {
     // Iterate through each group of textures in the map
     IDirect3DTexture9* last_texture = 0;
     IDirect3DVertexBuffer9* last_buffer = 0;
@@ -122,12 +123,17 @@ void VisibleSet::Render(
         // Set texture if it has changed
         if (effect && texture_handle && last_texture != mesh->tex) {
             effectPool->SetTexture(*texture_handle, mesh->tex);
-            if (hasalpha_handle) {
+
+            if (has_alpha_handle) {
                 // Control if texture access is required
-                effectPool->SetBool(*hasalpha_handle, mesh->hasalpha);
+                effectPool->SetBool(*has_alpha_handle, mesh->hasAlpha);
             } else {
                 // Alpha test is compatible with transparency supersampling, while clip() isn't
-                device->SetRenderState(D3DRS_ALPHATESTENABLE, mesh->hasalpha);
+                device->SetRenderState(D3DRS_ALPHATESTENABLE, mesh->hasAlpha);
+            }
+            if (animate_uv_handle) {
+                // Enable UV animation
+                effectPool->SetBool(*animate_uv_handle, mesh->animateUV);
             }
             effect_changed = true;
             last_texture = mesh->tex;
@@ -525,6 +531,8 @@ QuadTreeMesh* QuadTree::AddMesh(
     const BoundingSphere& sphere,
     const BoundingBox& box,
     const D3DXMATRIX& transform,
+    bool hasAlpha,
+    bool animateUV,
     IDirect3DTexture9* tex,
     int verts,
     IDirect3DVertexBuffer9* vBuffer,
@@ -535,6 +543,8 @@ QuadTreeMesh* QuadTree::AddMesh(
                                  sphere,
                                  box,
                                  transform,
+                                 hasAlpha,
+                                 animateUV,
                                  tex,
                                  verts,
                                  vBuffer,
@@ -601,6 +611,8 @@ QuadTreeMesh* QuadTree::CreateMesh(
     const BoundingSphere& sphere,
     const BoundingBox& box,
     const D3DXMATRIX& transform,
+    bool hasAlpha,
+    bool animateUV,
     IDirect3DTexture9* tex,
     int verts,
     IDirect3DVertexBuffer9* vBuffer,
@@ -614,6 +626,8 @@ QuadTreeMesh* QuadTree::CreateMesh(
         sphere,
         box,
         transform,
+        hasAlpha,
+        animateUV,
         tex,
         verts,
         vBuffer,

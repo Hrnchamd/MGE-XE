@@ -47,7 +47,7 @@ void DistantLand::renderDepth() {
             // Distant statics
             effectDepth->BeginPass(PASS_RENDERSTATICSDEPTH);
             device->SetVertexDeclaration(StaticDecl);
-            visDistant.Render(device, effectDepth, effect, &ehTex0, &ehHasAlpha, &ehWorld, SIZEOFSTATICVERT);
+            visDistant.Render(device, effectDepth, effect, &ehTex0, &ehHasAlpha, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
             effectDepth->EndPass();
         }
 

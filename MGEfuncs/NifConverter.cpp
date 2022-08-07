@@ -8,6 +8,7 @@
 #include "../3rdparty/niflib/include/obj/NiSwitchNode.h"
 #include "../3rdparty/niflib/include/obj/NiLODNode.h"
 #include "../3rdparty/niflib/include/obj/NiProperty.h"
+#include "../3rdparty/niflib/include/obj/NiAlphaProperty.h"
 #include "../3rdparty/niflib/include/obj/NiMaterialProperty.h"
 #include "../3rdparty/niflib/include/obj/NiTexturingProperty.h"
 #include "../3rdparty/niflib/include/obj/NiSourceTexture.h"
@@ -15,6 +16,7 @@
 #include "../3rdparty/niflib/include/obj/NiTriBasedGeomData.h"
 #include "../3rdparty/niflib/include/obj/NiBinaryExtraData.h"
 #include "../3rdparty/niflib/include/obj/NiTriStripsData.h"
+#include "../3rdparty/niflib/include/obj/NiUVController.h"
 #include "../3rdparty/niflib/include/obj/RootCollisionNode.h"
 
 #include <assert.h>
@@ -94,21 +96,18 @@ struct ExportedNode {
     std::unique_ptr<unsigned short[]> iBuffer;
     string tex;
     float emissive;
+    bool alphaTestEnabled;
+    bool alphaBlendEnabled;
+    bool hasUVController;
 
-    ExportedNode() {
-        center.Set(0.0f, 0.0f, 0.0f);
-        radius = 0;
-        verts = 0;
-        faces = 0;
-        emissive = 0.0f;
+    ExportedNode() :
+        center(0,0,0), radius(0), verts(0), faces(0), emissive(0),
+        alphaTestEnabled(false), alphaBlendEnabled(false), hasUVController(false) {
     }
 
-    ExportedNode(const ExportedNode& src) {
-        center.Set(0.0f, 0.0f, 0.0f);
-        radius = 0;
-        verts = 0;
-        faces = 0;
-        emissive = 0.0f;
+    ExportedNode(const ExportedNode& src) :
+        center(0,0,0), radius(0), verts(0), faces(0), emissive(0),
+        alphaTestEnabled(false), alphaBlendEnabled(false), hasUVController(false) {
 
         *this = src;
     }
@@ -121,6 +120,9 @@ struct ExportedNode {
         faces = src.faces;
         tex = src.tex;
         emissive = src.emissive;
+        alphaTestEnabled = src.alphaTestEnabled;
+        alphaBlendEnabled = src.alphaBlendEnabled;
+        hasUVController = src.hasUVController;
 
         if (verts) {
             vBuffer = std::make_unique<DXVertex[]>(verts);
@@ -235,7 +237,6 @@ struct ExportedNode {
 
     void Save(HANDLE& file) {
         DWORD unused;
-        short slen = (short)tex.size() + 1;
 
         // Write radius and center
         WriteFile(file, &radius, 4, &unused, 0);
@@ -291,7 +292,14 @@ struct ExportedNode {
         WriteFile(file, &*compVBuf.begin(), verts * sizeof(DXCompressedVertex), &unused, 0);
         WriteFile(file, iBuffer.get(), faces * 3 * sizeof(unsigned short), &unused, 0);
 
+        // Write texturing flags
+        bool flags[2];
+        flags[0] = alphaTestEnabled || alphaBlendEnabled;
+        flags[1] = hasUVController;
+        WriteFile(file, &flags, 2, &unused, 0);
+
         // Write texture name
+        unsigned short slen = (unsigned short)tex.size() + 1;
         WriteFile(file, &slen, 2, &unused, 0);
         WriteFile(file, tex.c_str(), slen, &unused, 0);
     }
@@ -480,8 +488,24 @@ private:
             return false;
         }
 
-        // Get material property from geometry node
+        // Indices
+        vector<Triangle> tris = niGeomData->GetTriangles();
+        node->faces = tris.size();
+        if (node->faces == 0) {
+            // log_file << "This mesh has no triangles." << endl;
+            return false;
+        }
+
+        // Get properties from geometry node
+        NiAlphaPropertyRef niAlphaProp = DynamicCast<NiAlphaProperty>(niGeom->GetPropertyByType(NiAlphaProperty::TYPE));
         NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(niGeom->GetPropertyByType(NiMaterialProperty::TYPE));
+
+        // alpha prop -> flag alpha test, alpha blend
+        if (niAlphaProp) {
+            node->alphaTestEnabled = niAlphaProp->GetTestState();
+            node->alphaBlendEnabled = niAlphaProp->GetBlendState();
+        }
+
 
         // Get diffuse color (will be baked into vertices)
         // Get the emissive color (will be averaged and stored in the 4th channel of normals)
@@ -503,12 +527,14 @@ private:
             return false;
         }
 
-        // Indices
-        vector<Triangle> tris = niGeomData->GetTriangles();
-        node->faces = tris.size();
-        if (node->faces == 0) {
-            // log_file << "This mesh has no triangles." << endl;
-            return false;
+        // Check for UV controller, to flag for special rendering
+        if (niGeom->IsAnimated()) {
+            for (auto& c : niGeom->GetControllers()) {
+                if (c->IsDerivedType(NiUVController::TYPE)) {
+                    node->hasUVController = true;
+                    break;
+                }
+            }
         }
 
         // Now that we're sure this mesh is valid, start the conversion

@@ -156,7 +156,7 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* i
     }
 
     device->SetVertexDeclaration(StaticDecl);
-    visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehWorld, SIZEOFSTATICVERT);
+    visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
 
     effectShadow->EndPass();
 }

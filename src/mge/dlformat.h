@@ -25,7 +25,7 @@ struct DistantSubset {
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
     IDirect3DTexture9* tex;
-    bool hasalpha;                      // texture has alpha transparency
+    bool hasAlpha, hasUVController;
     IDirect3DVertexBuffer9* vbuffer;
     IDirect3DIndexBuffer9* ibuffer;
     int verts;
