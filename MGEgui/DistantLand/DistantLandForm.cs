@@ -2858,6 +2858,7 @@ namespace MGEgui.DistantLand {
                                         break;
                                     }
                                     sr.Scale = br.ReadSingle();
+                                    if (sr.Scale == 0) { sr.Scale = 1.0f; }
                                     referenceHasScale = true;
                                     break;
                             }

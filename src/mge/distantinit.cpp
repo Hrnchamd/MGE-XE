@@ -1001,13 +1001,7 @@ bool DistantLand::loadDistantStatics() {
             udsReader.read(&yaw, 4);
             udsReader.read(&pitch, 4);
             udsReader.read(&roll, 4);
-            udsReader.read(&scale, 4);
-
-            DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
-            if (scale == 0.0f) {
-                scale = 1.0f;
-            }
-            NewUsedStatic.scale = scale;
+            udsReader.read(&NewUsedStatic.scale, 4);
 
             D3DXMATRIX transmat, rotmatx, rotmaty, rotmatz, scalemat;
             D3DXMatrixTranslation(&transmat, NewUsedStatic.pos.x, NewUsedStatic.pos.y, NewUsedStatic.pos.z);
@@ -1015,6 +1009,8 @@ bool DistantLand::loadDistantStatics() {
             D3DXMatrixRotationY(&rotmaty, -pitch);
             D3DXMatrixRotationZ(&rotmatz, -roll);
             D3DXMatrixScaling(&scalemat, scale, scale, scale);
+
+            const DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
             NewUsedStatic.transform = scalemat * rotmatz * rotmaty * rotmatx * transmat;
             NewUsedStatic.sphere = NewUsedStatic.GetBoundingSphere(stat->sphere);
             NewUsedStatic.box = NewUsedStatic.GetBoundingBox(stat->aabbMin, stat->aabbMax);
