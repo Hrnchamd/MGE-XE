@@ -138,9 +138,6 @@ std::function<void(IDirect3DSurface9*)> DistantLand::captureScreenHandler = null
 bool DistantLand::captureScreenWithUI;
 
 
-static vector<DistantStatic> DistantStatics;
-static unordered_map< string, vector<UsedDistantStatic> > UsedDistantStatics;
-
 struct MeshResources {
     IDirect3DVertexBuffer9* vb;
     IDirect3DIndexBuffer9* ib;
@@ -742,14 +739,6 @@ bool DistantLand::initDistantStatics() {
         return false;
     }
 
-    if (!initDistantStaticsBVH()) {
-        return false;
-    }
-
-    // Remove UsedDistantStatic, DistantStatic, and DistantSubset objects
-    UsedDistantStatics.clear();
-    DistantStatics.clear();
-
     currentWorldSpace = nullptr;
     return true;
 }
@@ -774,6 +763,8 @@ public:
         ptr += size;
     }
 };
+
+static size_t initDistantStaticsQT(DistantLand::WorldSpace& worldSpace, vector<DistantStatic>& distantStatics, vector<UsedDistantStatic>& uds);
 
 bool DistantLand::loadDistantStatics() {
     DWORD unused;
@@ -807,9 +798,10 @@ bool DistantLand::loadDistantStatics() {
         return false;
     }
 
+    vector<DistantStatic> distantStatics;
     size_t DistantStaticCount;
     ReadFile(h, &DistantStaticCount, 4, &unused, 0);
-    DistantStatics.resize(DistantStaticCount);
+    distantStatics.resize(DistantStaticCount);
 
     HANDLE h2 = CreateFile("Data Files\\distantland\\statics\\static_meshes", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
     if (h2 == INVALID_HANDLE_VALUE) {
@@ -834,7 +826,7 @@ bool DistantLand::loadDistantStatics() {
     membuf_reader reader(file_buffer.get());
     CloseHandle(h2);
 
-    for (auto& i : DistantStatics) {
+    for (auto& i : distantStatics) {
         int numSubsets;
         reader.read(&numSubsets, 4);
         reader.read(&i.sphere.radius, 4);
@@ -961,12 +953,14 @@ bool DistantLand::loadDistantStatics() {
     // Load statics references
     const size_t UsedDistantStaticRecordSize = 34;
     const size_t UsedDistantStaticChunkCount = 250000;
+    size_t worldvis_memory_use = 0;
     auto UsedDistantStaticData = std::make_unique<char[]>(UsedDistantStaticChunkCount * UsedDistantStaticRecordSize);
 
     mapWorldSpaces.clear();
     for (size_t nWorldSpace = 0; true; ++nWorldSpace) {
+        vector<UsedDistantStatic> worldSpaceStatics;
+        WorldSpace* currentWorldSpace;
         size_t UsedDistantStaticCount;
-        decltype(UsedDistantStatics)::iterator iCell;
 
         ReadFile(h, &UsedDistantStaticCount, 4, &unused, 0);
         if (nWorldSpace != 0 && UsedDistantStaticCount == 0) {
@@ -974,20 +968,19 @@ bool DistantLand::loadDistantStatics() {
         }
 
         if (nWorldSpace == 0) {
-            mapWorldSpaces.insert(make_pair(string(), WorldSpace()));
-            iCell = UsedDistantStatics.insert(make_pair(string(), vector<UsedDistantStatic>())).first;
+            auto iterWS = mapWorldSpaces.insert(make_pair(string(), WorldSpace())).first;
+            currentWorldSpace = &iterWS->second;
             if (UsedDistantStaticCount == 0) {
                 continue;
             }
         } else {
             char cellname[64];
             ReadFile(h, &cellname, 64, &unused, 0);
-            iCell = UsedDistantStatics.insert(make_pair(string(cellname), vector<UsedDistantStatic>())).first;
-            mapWorldSpaces.insert(make_pair(string(cellname), WorldSpace()));
+            auto iterWS = mapWorldSpaces.insert(make_pair(string(cellname), WorldSpace())).first;
+            currentWorldSpace = &iterWS->second;
         }
 
-        vector<UsedDistantStatic>& ThisWorldStatics = iCell->second;
-        ThisWorldStatics.reserve(UsedDistantStaticCount);
+        worldSpaceStatics.reserve(UsedDistantStaticCount);
 
         while (UsedDistantStaticCount > 0) {
             size_t staticsToRead = std::min(UsedDistantStaticChunkCount, UsedDistantStaticCount);
@@ -1016,156 +1009,153 @@ bool DistantLand::loadDistantStatics() {
                 D3DXMatrixRotationZ(&rotmatz, -roll);
                 D3DXMatrixScaling(&scalemat, scale, scale, scale);
 
-                const DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
+                const DistantStatic* stat = &distantStatics[NewUsedStatic.staticRef];
                 NewUsedStatic.transform = scalemat * rotmatz * rotmaty * rotmatx * transmat;
                 NewUsedStatic.sphere = NewUsedStatic.GetBoundingSphere(stat->sphere);
                 NewUsedStatic.box = NewUsedStatic.GetBoundingBox(stat->aabbMin, stat->aabbMax);
 
-                ThisWorldStatics.push_back(NewUsedStatic);
+                worldSpaceStatics.push_back(NewUsedStatic);
             }
         }
+
+        worldvis_memory_use += initDistantStaticsQT(*currentWorldSpace, distantStatics, worldSpaceStatics);
     }
 
     CloseHandle(h);
+
+    // Log approximate memory use
+    LOG::logline("-- Distant worldspaces memory use: %d MB", worldvis_memory_use / (1 << 20));
+
     return true;
 }
 
-bool DistantLand::initDistantStaticsBVH() {
-    size_t total_instances = 0;
+static size_t initDistantStaticsQT(DistantLand::WorldSpace& worldSpace, vector<DistantStatic>& distantStatics, vector<UsedDistantStatic>& uds) {
+    // Initialize quadtrees
+    worldSpace.NearStatics = std::make_unique<QuadTree>();
+    worldSpace.FarStatics = std::make_unique<QuadTree>();
+    worldSpace.VeryFarStatics = std::make_unique<QuadTree>();
+    worldSpace.GrassStatics = std::make_unique<QuadTree>();
+    QuadTree* NQTR = worldSpace.NearStatics.get();
+    QuadTree* FQTR = worldSpace.FarStatics.get();
+    QuadTree* VFQTR = worldSpace.VeryFarStatics.get();
+    QuadTree* GQTR = worldSpace.GrassStatics.get();
 
-    for (auto& iWS : mapWorldSpaces) {
-        vector<UsedDistantStatic>& uds = UsedDistantStatics.find(iWS.first)->second;
+    // Calclulate optimal initial quadtree size
+    D3DXVECTOR2 aabbMax = D3DXVECTOR2(-FLT_MAX, -FLT_MAX);
+    D3DXVECTOR2 aabbMin = D3DXVECTOR2(FLT_MAX, FLT_MAX);
 
-        // Initialize quadtrees
-        iWS.second.NearStatics = std::make_unique<QuadTree>();
-        iWS.second.FarStatics = std::make_unique<QuadTree>();
-        iWS.second.VeryFarStatics = std::make_unique<QuadTree>();
-        iWS.second.GrassStatics = std::make_unique<QuadTree>();
-        QuadTree* NQTR = iWS.second.NearStatics.get();
-        QuadTree* FQTR = iWS.second.FarStatics.get();
-        QuadTree* VFQTR = iWS.second.VeryFarStatics.get();
-        QuadTree* GQTR = iWS.second.GrassStatics.get();
+    // Find xyz bounds
+    for (const auto& i : uds) {
+        float x = i.pos.x, y = i.pos.y, r = i.sphere.radius;
 
-        // Calclulate optimal initial quadtree size
-        D3DXVECTOR2 aabbMax = D3DXVECTOR2(-FLT_MAX, -FLT_MAX);
-        D3DXVECTOR2 aabbMin = D3DXVECTOR2(FLT_MAX, FLT_MAX);
-
-        // Find xyz bounds
-        for (const auto& i : uds) {
-            float x = i.pos.x, y = i.pos.y, r = i.sphere.radius;
-
-            aabbMax.x = std::max(x + r, aabbMax.x);
-            aabbMax.y = std::max(y + r, aabbMax.y);
-            aabbMin.x = std::min(aabbMin.x, x - r);
-            aabbMin.y = std::min(aabbMin.y, y - r);
-        }
-
-        float box_size = std::max(aabbMax.x - aabbMin.x, aabbMax.y - aabbMin.y);
-        D3DXVECTOR2 box_center = 0.5 * (aabbMax + aabbMin);
-
-        NQTR->SetBox(box_size, box_center);
-        FQTR->SetBox(box_size, box_center);
-        VFQTR->SetBox(box_size, box_center);
-        GQTR->SetBox(box_size, box_center);
-
-        for (const auto& i : uds) {
-            DistantStatic* stat = &DistantStatics[i.staticRef];
-            QuadTree* targetQTR;
-
-            // Use post-transform (include scale) radius
-            float radius = i.sphere.radius;
-
-            // Buildings are treated as larger objects, as they are typically
-            // smaller component meshes combined to make a single building
-            if (stat->type == STATIC_BUILDING) {
-                radius *= 2.0f;
-            }
-
-            // Select quadtree to place object in
-            switch (stat->type) {
-            case STATIC_AUTO:
-            case STATIC_TREE:
-            case STATIC_BUILDING:
-                if (radius <= Configuration.DL.FarStaticMinSize) {
-                    targetQTR = NQTR;
-                } else if (radius <= Configuration.DL.VeryFarStaticMinSize) {
-                    targetQTR = FQTR;
-                } else {
-                    targetQTR = VFQTR;
-                }
-                break;
-
-            case STATIC_GRASS:
-                targetQTR = GQTR;
-                break;
-
-            case STATIC_NEAR:
-                targetQTR = NQTR;
-                break;
-
-            case STATIC_FAR:
-                targetQTR = FQTR;
-                break;
-
-            case STATIC_VERY_FAR:
-                targetQTR = VFQTR;
-                break;
-
-            default:
-                continue;
-            }
-
-            // Add sub-meshes to appropriate quadtree
-            for (auto& s : stat->subsets) {
-                BoundingSphere boundSphere;
-                BoundingBox boundBox;
-
-                if (stat->type == STATIC_BUILDING) {
-                    // Use model bound so that all building parts have coherent visibility
-                    boundSphere = i.sphere;
-                    boundBox = i.box;
-                } else {
-                    // Use individual mesh bounds
-                    boundSphere = i.GetBoundingSphere(s.sphere);
-                    boundBox = i.GetBoundingBox(s.aabbMin, s.aabbMax);
-                }
-
-                auto mesh = targetQTR->AddMesh(
-                    boundSphere,
-                    boundBox,
-                    i.transform,
-                    s.hasAlpha,
-                    s.hasUVController,
-                    s.tex,
-                    s.verts,
-                    s.vbuffer,
-                    s.faces,
-                    s.ibuffer
-                );
-                if (i.visIndex > 0) {
-                    dynamicVisGroups[i.visIndex].references.push_back(mesh);
-                }
-            }
-
-            total_instances += stat->subsets.size();
-        }
-
-        NQTR->Optimize();
-        NQTR->CalcVolume();
-        FQTR->Optimize();
-        FQTR->CalcVolume();
-        VFQTR->Optimize();
-        VFQTR->CalcVolume();
-        GQTR->Optimize();
-        GQTR->CalcVolume();
-
-        uds.clear();
+        aabbMax.x = std::max(x + r, aabbMax.x);
+        aabbMax.y = std::max(y + r, aabbMax.y);
+        aabbMin.x = std::min(aabbMin.x, x - r);
+        aabbMin.y = std::min(aabbMin.y, y - r);
     }
 
-    // Log approximate memory use
-    LOG::logline("-- Distant worldspaces memory use: %d MB", total_instances * sizeof(QuadTreeMesh) / (1 << 20));
+    size_t total_instances = 0;
+    float box_size = std::max(aabbMax.x - aabbMin.x, aabbMax.y - aabbMin.y);
+    D3DXVECTOR2 box_center = 0.5 * (aabbMax + aabbMin);
 
-    return true;
+    NQTR->SetBox(box_size, box_center);
+    FQTR->SetBox(box_size, box_center);
+    VFQTR->SetBox(box_size, box_center);
+    GQTR->SetBox(box_size, box_center);
+
+    for (const auto& i : uds) {
+        DistantStatic* stat = &distantStatics[i.staticRef];
+        QuadTree* targetQTR;
+
+        // Use post-transform (include scale) radius
+        float radius = i.sphere.radius;
+
+        // Buildings are treated as larger objects, as they are typically
+        // smaller component meshes combined to make a single building
+        if (stat->type == STATIC_BUILDING) {
+            radius *= 2.0f;
+        }
+
+        // Select quadtree to place object in
+        switch (stat->type) {
+        case STATIC_AUTO:
+        case STATIC_TREE:
+        case STATIC_BUILDING:
+            if (radius <= Configuration.DL.FarStaticMinSize) {
+                targetQTR = NQTR;
+            } else if (radius <= Configuration.DL.VeryFarStaticMinSize) {
+                targetQTR = FQTR;
+            } else {
+                targetQTR = VFQTR;
+            }
+            break;
+
+        case STATIC_GRASS:
+            targetQTR = GQTR;
+            break;
+
+        case STATIC_NEAR:
+            targetQTR = NQTR;
+            break;
+
+        case STATIC_FAR:
+            targetQTR = FQTR;
+            break;
+
+        case STATIC_VERY_FAR:
+            targetQTR = VFQTR;
+            break;
+
+        default:
+            continue;
+        }
+
+        // Add sub-meshes to appropriate quadtree
+        for (auto& s : stat->subsets) {
+            BoundingSphere boundSphere;
+            BoundingBox boundBox;
+
+            if (stat->type == STATIC_BUILDING) {
+                // Use model bound so that all building parts have coherent visibility
+                boundSphere = i.sphere;
+                boundBox = i.box;
+            } else {
+                // Use individual mesh bounds
+                boundSphere = i.GetBoundingSphere(s.sphere);
+                boundBox = i.GetBoundingBox(s.aabbMin, s.aabbMax);
+            }
+
+            auto mesh = targetQTR->AddMesh(
+                boundSphere,
+                boundBox,
+                i.transform,
+                s.hasAlpha,
+                s.hasUVController,
+                s.tex,
+                s.verts,
+                s.vbuffer,
+                s.faces,
+                s.ibuffer
+            );
+            if (i.visIndex > 0) {
+                DistantLand::dynamicVisGroups[i.visIndex].references.push_back(mesh);
+            }
+        }
+
+        total_instances += stat->subsets.size();
+    }
+
+    NQTR->Optimize();
+    NQTR->CalcVolume();
+    FQTR->Optimize();
+    FQTR->CalcVolume();
+    VFQTR->Optimize();
+    VFQTR->CalcVolume();
+    GQTR->Optimize();
+    GQTR->CalcVolume();
+
+    // Return total memory use of leaves only, non-leaf nodes barely use much memory
+    return total_instances * sizeof(QuadTreeMesh);
 }
 
 bool DistantLand::initLandscape() {

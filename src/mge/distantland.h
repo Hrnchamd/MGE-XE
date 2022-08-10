@@ -155,7 +155,6 @@ public:
     static bool initShadow();
     static bool initGrass();
     static bool loadDistantStatics();
-    static bool initDistantStaticsBVH();
     static bool reloadShaders();
     static void release();
 
