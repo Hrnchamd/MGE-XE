@@ -959,6 +959,10 @@ bool DistantLand::loadDistantStatics() {
     }
 
     // Load statics references
+    const size_t UsedDistantStaticRecordSize = 34;
+    const size_t UsedDistantStaticChunkCount = 250000;
+    auto UsedDistantStaticData = std::make_unique<char[]>(UsedDistantStaticChunkCount * UsedDistantStaticRecordSize);
+
     mapWorldSpaces.clear();
     for (size_t nWorldSpace = 0; true; ++nWorldSpace) {
         size_t UsedDistantStaticCount;
@@ -982,40 +986,43 @@ bool DistantLand::loadDistantStatics() {
             mapWorldSpaces.insert(make_pair(string(cellname), WorldSpace()));
         }
 
-        const size_t UsedDistantStaticRecordSize = 34;
-        size_t UsedDistantStaticDataSize = UsedDistantStaticRecordSize * UsedDistantStaticCount;
-        auto UsedDistantStaticData = std::make_unique<char[]>(UsedDistantStaticDataSize);
-        ReadFile(h, UsedDistantStaticData.get(), UsedDistantStaticDataSize, &unused, 0);
-        membuf_reader udsReader(UsedDistantStaticData.get());
-
         vector<UsedDistantStatic>& ThisWorldStatics = iCell->second;
         ThisWorldStatics.reserve(UsedDistantStaticCount);
 
-        for (size_t i = 0; i < UsedDistantStaticCount; ++i) {
-            UsedDistantStatic NewUsedStatic;
-            float yaw, pitch, roll, scale;
+        while (UsedDistantStaticCount > 0) {
+            size_t staticsToRead = std::min(UsedDistantStaticChunkCount, UsedDistantStaticCount);
+            UsedDistantStaticCount -= staticsToRead;
 
-            udsReader.read(&NewUsedStatic.staticRef, 4);
-            udsReader.read(&NewUsedStatic.visIndex, 2);
-            udsReader.read(&NewUsedStatic.pos, 12);
-            udsReader.read(&yaw, 4);
-            udsReader.read(&pitch, 4);
-            udsReader.read(&roll, 4);
-            udsReader.read(&NewUsedStatic.scale, 4);
+            ReadFile(h, UsedDistantStaticData.get(), staticsToRead * UsedDistantStaticRecordSize, &unused, 0);
+            membuf_reader udsReader(UsedDistantStaticData.get());
 
-            D3DXMATRIX transmat, rotmatx, rotmaty, rotmatz, scalemat;
-            D3DXMatrixTranslation(&transmat, NewUsedStatic.pos.x, NewUsedStatic.pos.y, NewUsedStatic.pos.z);
-            D3DXMatrixRotationX(&rotmatx, -yaw);
-            D3DXMatrixRotationY(&rotmaty, -pitch);
-            D3DXMatrixRotationZ(&rotmatz, -roll);
-            D3DXMatrixScaling(&scalemat, scale, scale, scale);
+            for (size_t i = 0; i < staticsToRead; ++i) {
+                UsedDistantStatic NewUsedStatic;
+                float yaw, pitch, roll, scale;
 
-            const DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
-            NewUsedStatic.transform = scalemat * rotmatz * rotmaty * rotmatx * transmat;
-            NewUsedStatic.sphere = NewUsedStatic.GetBoundingSphere(stat->sphere);
-            NewUsedStatic.box = NewUsedStatic.GetBoundingBox(stat->aabbMin, stat->aabbMax);
+                udsReader.read(&NewUsedStatic.staticRef, 4);
+                udsReader.read(&NewUsedStatic.visIndex, 2);
+                udsReader.read(&NewUsedStatic.pos, 12);
+                udsReader.read(&yaw, 4);
+                udsReader.read(&pitch, 4);
+                udsReader.read(&roll, 4);
+                udsReader.read(&scale, 4);
+                NewUsedStatic.scale = scale;
 
-            ThisWorldStatics.push_back(NewUsedStatic);
+                D3DXMATRIX transmat, rotmatx, rotmaty, rotmatz, scalemat;
+                D3DXMatrixTranslation(&transmat, NewUsedStatic.pos.x, NewUsedStatic.pos.y, NewUsedStatic.pos.z);
+                D3DXMatrixRotationX(&rotmatx, -yaw);
+                D3DXMatrixRotationY(&rotmaty, -pitch);
+                D3DXMatrixRotationZ(&rotmatz, -roll);
+                D3DXMatrixScaling(&scalemat, scale, scale, scale);
+
+                const DistantStatic* stat = &DistantStatics[NewUsedStatic.staticRef];
+                NewUsedStatic.transform = scalemat * rotmatz * rotmaty * rotmatx * transmat;
+                NewUsedStatic.sphere = NewUsedStatic.GetBoundingSphere(stat->sphere);
+                NewUsedStatic.box = NewUsedStatic.GetBoundingBox(stat->aabbMin, stat->aabbMax);
+
+                ThisWorldStatics.push_back(NewUsedStatic);
+            }
         }
     }
 
