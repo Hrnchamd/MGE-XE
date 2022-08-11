@@ -8,6 +8,8 @@
 #include "postshaders.h"
 #include "userhud.h"
 #include "mwbridge.h"
+#include "support/log.h"
+#include "support/pngsave.h"
 
 #include <array>
 
@@ -664,4 +666,80 @@ namespace api {
             Configuration.Lighting.AmbMult[weatherID] = ambMult;
         }
     }
+
+    //
+    // MGEAPI v2
+    //
+
+    std::string saveScreenshotPath;
+    static void saveScreenshotCallback(IDirect3DSurface9* surface);
+
+    void MGEAPIv2::saveScreenshot(const char* path, bool captureWithUI) {
+        // Requires distant land to be loaded
+        if (!DistantLand::ready) {
+            return;
+        }
+        if (!path) {
+            return;
+        }
+
+        saveScreenshotPath = path;
+        DistantLand::requestCapture(&saveScreenshotCallback, captureWithUI);
+    }
+
+    static void saveScreenshotCallback(IDirect3DSurface9* surface) {
+        const std::array strImageExtensions{ ".bmp", ".jpg", ".dds", ".png", ".tga" };
+        const std::array formats{ D3DXIFF_BMP, D3DXIFF_JPG, D3DXIFF_DDS, D3DXIFF_PNG, D3DXIFF_TGA };
+        const char* path = saveScreenshotPath.c_str();
+        D3DXIMAGE_FILEFORMAT outputFormat = D3DXIFF_PNG;
+
+        if (!surface) {
+            LOG::logline("mge.saveScreenshot failed - Surface error");
+            return;
+        }
+
+        // Check for overwrite
+        if (GetFileAttributes(path) != INVALID_FILE_ATTRIBUTES) {
+            LOG::logline("mge.saveScreenshot failed - %s already exists", path);
+            return;
+        }
+
+        // Detect format from extension
+        if (saveScreenshotPath.length() > 4) {
+            auto ext = saveScreenshotPath.substr(saveScreenshotPath.length() - 4, 4);
+            for (int i = 0; i < formats.size(); ++i) {
+                if (ext == strImageExtensions[i]) {
+                    outputFormat = formats[i];
+                    break;
+                }
+            }
+        }
+
+        // Save screenshot to desired format
+        if (outputFormat == D3DXIFF_PNG) {
+            // D3DX PNG support does full compression which takes >1 sec to save an image
+            // Use a non-compressing PNG encoder for reasonable screenshot times
+            bool success = false;
+            D3DSURFACE_DESC desc;
+            D3DLOCKED_RECT rect;
+            surface->GetDesc(&desc);
+
+            if (surface->LockRect(&rect, NULL, D3DLOCK_READONLY) == D3D_OK) {
+                success = pngSaveBGRA(path, rect.pBits, desc.Width, desc.Height, rect.Pitch);
+                surface->UnlockRect();
+            }
+            if (!success) {
+                LOG::logline("mge.saveScreenshot failed - pngSave error");
+            }
+        }
+        else {
+            HRESULT hr = D3DXSaveSurfaceToFile(path, outputFormat, surface, NULL, NULL);
+            if (FAILED(hr)) {
+                LOG::logline("mge.saveScreenshot failed - D3DX Error %lx", hr);
+            }
+        }
+    }
+
+    void MGEAPIv2::weatherScatteringFarGet(float* farSky) {}
+    void MGEAPIv2::weatherScatteringFarSet(float farSky[3]) {}
 }
