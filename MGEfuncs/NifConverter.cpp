@@ -12,9 +12,9 @@
 #include "../3rdparty/niflib/include/obj/NiMaterialProperty.h"
 #include "../3rdparty/niflib/include/obj/NiTexturingProperty.h"
 #include "../3rdparty/niflib/include/obj/NiSourceTexture.h"
+#include "../3rdparty/niflib/include/obj/NiStringExtraData.h"
 #include "../3rdparty/niflib/include/obj/NiTriBasedGeom.h"
 #include "../3rdparty/niflib/include/obj/NiTriBasedGeomData.h"
-#include "../3rdparty/niflib/include/obj/NiBinaryExtraData.h"
 #include "../3rdparty/niflib/include/obj/NiTriStripsData.h"
 #include "../3rdparty/niflib/include/obj/NiUVController.h"
 #include "../3rdparty/niflib/include/obj/RootCollisionNode.h"
@@ -527,12 +527,23 @@ private:
             return false;
         }
 
-        // Check for UV controller, to flag for special rendering
+        // Check for UV controller and extra data, to flag for special rendering
+        const char *specialTag = "mge.distant.scroll";
+        bool detectedUVAnim = false;
+
         if (niGeom->IsAnimated()) {
             for (auto& c : niGeom->GetControllers()) {
                 if (c->IsDerivedType(NiUVController::TYPE)) {
-                    node->hasUVController = true;
+                    detectedUVAnim = true;
                     break;
+                }
+            }
+        }
+        if (detectedUVAnim) {
+            for (auto& extra : niGeom->GetExtraData()) {
+                auto extraString = DynamicCast<NiStringExtraData>(extra);
+                if (extraString && extraString->GetData() == specialTag) {
+                    node->hasUVController = true;
                 }
             }
         }
