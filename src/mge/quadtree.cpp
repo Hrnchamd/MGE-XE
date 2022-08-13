@@ -190,47 +190,40 @@ void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR
         if (result == ViewFrustum::OUTSIDE) {
             return;
         }
-
         if (result == ViewFrustum::INSIDE) {
             inside = true;
         }
     }
 
     // If this node has children, check them
-    if (GetChildCount() > 0) {
-        if (children[0]) {
-            children[0]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-        }
-
-        if (children[1]) {
-            children[1]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-        }
-
-        if (children[2]) {
-            children[2]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-        }
-
-        if (children[3]) {
-            children[3]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-        }
-
+    if (children[0]) {
+        children[0]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+    }
+    if (children[1]) {
+        children[1]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+    }
+    if (children[2]) {
+        children[2]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+    }
+    if (children[3]) {
+        children[3]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
+    }
+    if (meshes.empty()) {
         return;
     }
 
     // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
-    for (size_t i = 0, size = meshes.size(); i < size; ++i) {
-        const QuadTreeMesh* mesh = meshes[i];
+    D3DXVECTOR3 eyepos(viewsphere.x, viewsphere.y, viewsphere.z);
 
+    for (const QuadTreeMesh* mesh : meshes) {
         if (inside == false) {
             ViewFrustum::Containment res = frustum.ContainsSphere(mesh->sphere);
             if (res == ViewFrustum::OUTSIDE) {
                 continue;
             }
-
             if (res == ViewFrustum::INTERSECTS) {
                 // The sphere intersects one of the edges of the screen, so try the box test
-                res = frustum.ContainsBox(mesh->box);
-                if (res == ViewFrustum::OUTSIDE) {
+                if (frustum.ContainsBox(mesh->box) == ViewFrustum::OUTSIDE) {
                     continue;
                 }
             }
@@ -239,12 +232,11 @@ void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR
         if (mesh->enabled) {
             // Avoid camera rotation dependent clipping by using a spherical far clip plane
             // Test mesh against view sphere (eyepos.xyz, radius)
-            D3DXVECTOR3 eyepos(viewsphere.x, viewsphere.y, viewsphere.z);
             D3DXVECTOR3 d = mesh->sphere.center - eyepos;
-            float rangesquared = d.x*d.x + d.y*d.y + d.z*d.z;
-            float viewlimit = viewsphere.w + mesh->sphere.radius;
+            float range_squared = d.x*d.x + d.y*d.y + d.z*d.z;
+            float view_limit = viewsphere.w + mesh->sphere.radius;
 
-            if (rangesquared <= viewlimit*viewlimit) {
+            if (range_squared <= view_limit*view_limit) {
                 visible_set.visible_set.push_back(mesh);
             }
         }
@@ -260,37 +252,30 @@ void QuadTreeNode::GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet
         if (result == ViewFrustum::OUTSIDE) {
             return;
         }
-
         if (result == ViewFrustum::INSIDE) {
             inside = true;
         }
     }
 
     // If this node has children, check them
-    if (GetChildCount() > 0) {
-        if (children[0]) {
-            children[0]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-        }
-
-        if (children[1]) {
-            children[1]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-        }
-
-        if (children[2]) {
-            children[2]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-        }
-
-        if (children[3]) {
-            children[3]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-        }
-
+    if (children[0]) {
+        children[0]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+    }
+    if (children[1]) {
+        children[1]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+    }
+    if (children[2]) {
+        children[2]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+    }
+    if (children[3]) {
+        children[3]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
+    }
+    if (meshes.empty()) {
         return;
     }
 
     // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
-    for (size_t i = 0, size = meshes.size(); i < size; ++i) {
-        const QuadTreeMesh* mesh = meshes[i];
-
+    for (const QuadTreeMesh* mesh : meshes) {
         // Only test bounding sphere
         if (inside == false && frustum.ContainsSphere(mesh->sphere) == ViewFrustum::OUTSIDE) {
             continue;
