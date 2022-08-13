@@ -437,8 +437,8 @@ private:
             RootCollisionNodeRef collision = DynamicCast<RootCollisionNode>(rootObj);
 
             if (lod) {
-                // Pick LOD level with 1 cell equivalent distance, which may result in no node selected
-                const float lodDist = 8192.0f;
+                // Pick LOD level with 2 cell equivalent distance, which may result in no node selected
+                const float lodDist = 2 * 8192.0f;
                 const auto levels = lod->GetLODLevels();
                 int index = -1;
 
