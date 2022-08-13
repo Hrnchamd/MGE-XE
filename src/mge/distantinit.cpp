@@ -84,6 +84,7 @@ RGBVECTOR DistantLand::sunCol, DistantLand::sunAmb, DistantLand::ambCol;
 RGBVECTOR DistantLand::nearFogCol, DistantLand::horizonCol;
 RGBVECTOR DistantLand::atmOutscatter(0.07, 0.36, 0.76);
 RGBVECTOR DistantLand::atmInscatter(0.25, 0.38, 0.48);
+D3DXVECTOR4 DistantLand::atmScatterColFar(0.371, 0.637, 1.108, 0.44);
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogExpStart, DistantLand::fogExpDivisor;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;
@@ -120,6 +121,7 @@ D3DXHANDLE DistantLand::ehSunPos;
 D3DXHANDLE DistantLand::ehSunVis;
 D3DXHANDLE DistantLand::ehOutscatter;
 D3DXHANDLE DistantLand::ehInscatter;
+D3DXHANDLE DistantLand::ehSkyScatterFar;
 D3DXHANDLE DistantLand::ehSkyCol;
 D3DXHANDLE DistantLand::ehFogColNear;
 D3DXHANDLE DistantLand::ehFogColFar;
@@ -452,6 +454,7 @@ bool DistantLand::initShader() {
 
         ehOutscatter = effect->GetParameterByName(0, "outscatter");
         ehInscatter = effect->GetParameterByName(0, "inscatter");
+        ehSkyScatterFar = effect->GetParameterByName(0, "skyScatterColFar");
 
         // Mark moon geometry for detection
         MWBridge::get()->markMoonNodes(kMoonTag);
@@ -459,6 +462,7 @@ bool DistantLand::initShader() {
     else {
         ehOutscatter = 0;
         ehInscatter = 0;
+        ehSkyScatterFar = 0;
     }
 
     // Dynamic ripples specific parameters

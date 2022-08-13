@@ -367,6 +367,7 @@ void DistantLand::setupCommonEffect(const D3DXMATRIX* view, const D3DXMATRIX* pr
     if (ehOutscatter) {
         effect->SetFloatArray(ehOutscatter, atmOutscatter, 3);
         effect->SetFloatArray(ehInscatter, atmInscatter, 3);
+        effect->SetFloatArray(ehSkyScatterFar, atmScatterColFar, 4);
     }
 
     // Wind, requires smoothing as it is very noisy

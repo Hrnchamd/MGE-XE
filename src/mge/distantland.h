@@ -114,6 +114,7 @@ public:
     static RGBVECTOR sunCol, sunAmb, ambCol;
     static RGBVECTOR nearFogCol, horizonCol;
     static RGBVECTOR atmOutscatter, atmInscatter;
+    static D3DXVECTOR4 atmScatterColFar;
     static float fogStart, fogEnd;
     static float fogExpStart, fogExpDivisor;
     static float fogNearStart, fogNearEnd;
@@ -132,7 +133,7 @@ public:
     static D3DXHANDLE ehSunCol, ehSunAmb, ehSunVec, ehSunVecView;
     static D3DXHANDLE ehSkyCol, ehFogColNear, ehFogColFar;
     static D3DXHANDLE ehSunPos, ehSunVis;
-    static D3DXHANDLE ehOutscatter, ehInscatter;
+    static D3DXHANDLE ehOutscatter, ehInscatter, ehSkyScatterFar;
     static D3DXHANDLE ehFogStart, ehFogRange;
     static D3DXHANDLE ehFogNearStart, ehFogNearRange;
     static D3DXHANDLE ehNearViewRange;

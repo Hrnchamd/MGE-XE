@@ -1,6 +1,6 @@
 
 // XE Common.fx
-// MGE XE 0.14.2
+// MGE XE 0.15.0
 // Shared structures and functions
 
 
@@ -20,6 +20,7 @@ shared int vertexBlendState;
 shared float3 eyePos, footPos;
 shared float3 sunVec, sunVecView, sunCol, sunAmb;
 shared float3 skyCol, fogColNear, fogColFar;
+shared float4 skyScatterColFar;
 shared float fogStart, fogRange;
 shared float nearFogStart, nearFogRange;
 shared float nearViewRange;
@@ -142,7 +143,7 @@ float fogMWScalar(float dist) {
 #endif
 
 #ifdef USE_SCATTERING
-    static const float3 newskyCol = lerp(skyCol, float3(0.371, 0.637, 1.108), 0.62);
+    static const float3 newSkyCol = lerp(skyCol, skyScatterColFar.rgb, skyScatterColFar.a);
     static const float sunaltitude = pow(1 + sunPos.z, 10);
     static const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
     static const float sunaltitude_b = saturate(1 - exp2(-1.9 * sunaltitude));
@@ -163,7 +164,7 @@ float fogMWScalar(float dist) {
             float3 att = atmdep * sunscatter * (sunaltitude_a + 0.7*mie);
             att = (1 - exp(-fogdist * att)) / att;
 
-            float3 color = 0.125 * mie + newskyCol * rayl;
+            float3 color = 0.125 * mie + newSkyCol * rayl;
             color *= att * (1.17*atmdep + 0.89) * sunaltitude_b;
             color = lerp(skyColDirectional, color, niceWeather);
 
