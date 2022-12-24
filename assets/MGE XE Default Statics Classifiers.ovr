@@ -1,5 +1,7 @@
 : MGE XE 0.15 standard distant statics classifier list
+: For more documentation, use the export statics list button in the distant land generator
 
+: Morrowind
 d\ex_velothi_loaddoor_01.nif=far
 d\ex_v_cantondoor_01.nif=very_far
 f\active_blight_large.nif=ignore
@@ -10,6 +12,7 @@ x\ex_vivec_b_wb_gap_01.nif=very_far
 x\ex_vivec_b_gap_b_01.nif=very_far
 x\ex_vivec_p_water_01.nif=ignore
 
+: Tribunal
 x\ex_mh_almalexia_whole.nif=far
 x\ex_mh_pav_steps.nif=far
 x\ex_mh_pav_top.nif=far
@@ -17,6 +20,7 @@ l\ex_mh_streetlamp_01.nif=far
 f\flora_tree_mh_01.nif=far
 f\flora_tree_mh_02.nif=far
 
+: Bloodmoon
 f\terrain_bm_icelayer_01.nif=far
 f\act_bm_stone_beast_01.nif=far no_script
 f\act_bm_stone_earth_01.nif=far no_script
@@ -26,6 +30,7 @@ f\act_bm_stone_water_01.nif=far no_script
 f\act_bm_stone_wind_01.nif=far no_script
 
 [names]
+: Chargen ship parts
 chargen boat=disable
 chargen_cabindoor=disable
 chargen_ship_trapdoor=disable
@@ -34,6 +39,11 @@ chargen_plank=disable
 fm_boat_dock=disable
 
 [dynamic_vis]
+: Syntax
+:     <script id> = journal <journal id> start1(-end1)? [ start2(-end2)? .... start8(-end8)? ]
+:     <script id> = global <global var> start1(-end1)? [ start2(-end2)? .... start8(-end8)? ]
+:     <unique object edid> = unique_object [ 0 - 8 additional object edids ]
+
 GhostfenceScript  = journal C3_DestroyDagoth 0-20
 
 Strong1           = global Stronghold 1-10
