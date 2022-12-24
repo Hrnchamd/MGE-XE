@@ -2651,12 +2651,7 @@ namespace MGEgui.DistantLand {
                     }
 
                     if (name != null && model != null && model.Trim() != string.Empty) {
-                        // no_script override
-                        if (script != null && overrideList != null && overrideList.ContainsKey(model) && overrideList[model].NoScript) {
-                            script = null;
-                        }
-
-                        // Dynamic vis
+                        // Dynamic vis, match on script or object ID
                         if (dynamicVis != null) {
                             DynamicVisGroup dvg = null;
 
@@ -2676,6 +2671,11 @@ namespace MGEgui.DistantLand {
                                 DEBUG_statics++;
                                 continue;
                             }
+                        }
+
+                        // no_script override
+                        if (script != null && overrideList != null && overrideList.ContainsKey(model) && overrideList[model].NoScript) {
+                            script = null;
                         }
 
                         // Named exceptions
