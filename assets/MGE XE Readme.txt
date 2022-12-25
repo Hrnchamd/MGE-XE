@@ -1,7 +1,7 @@
 
-MGE XE 0.14.3
+MGE XE 0.15.0
 -------------
-Released 2022-07-29
+Released 2022-12-24
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -56,6 +56,8 @@ Configure your graphics setting in the 'Graphics' tab, and generate distant land
 
 4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Pause world rendering in menus" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
 
+If you use MO2, turn off "Automatic archive invalidation" in the Profiles window. It generates an incompatible BSA file that MGE XE can't read.
+
 5. There is an optional mod, 'XE Sky Variations', that will randomize the sky colour and sunrise/sunset every day. It requires "High quality atmosphere" enabled in distant land, and MWSE installed and enabled.
 
 As a complement to the UI scaling, you may also want to use Better Dialogue Font for sharper menu text.
@@ -109,6 +111,15 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.15.0
+- Dynamic distant visibility. Quest-related statics in the distance now update visibility during gameplay events, without requiring manual regeneration. The affected objects must be specified in the override files used by the distant land generator, all base game quests are included in the defaults. Export a statics file from the generator and read it to see the details.
+- Per-pixel lighting mode has added shader pre-caching to reduce stutter at the start of a session.
+- Distant version of the ghostfence has a minor scrolling effect added.
+- Reduced peak memory usage when initially loading the game.
+- Additional MWSE script commands added for screenshots and lighting.
+- Tweaked LOD selection for generating distant statics.
+- Fixed (again) splash screens showing a thin line of background color pixels on the top edge.
+
 0.14.3
 - Fixed white pixel sparkling of distant subpixel objects at night (e.g. tree branches and thin fences).
 - Added gamma correction reset button to video options.
