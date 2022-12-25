@@ -125,6 +125,7 @@ class FixedFunctionShader {
 
 public:
     static bool init(IDirect3DDevice* d, ID3DXEffectPool* pool);
+    static void precache();
     static void updateLighting(float sunMult, float ambMult);
     static void renderMorrowind(const RenderedState* rs, const FragmentState* frs, LightState* lightrs);
     static void release();

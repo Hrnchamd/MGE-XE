@@ -1,5 +1,6 @@
 
 #include "ffeshader.h"
+#include "configuration.h"
 #include "support/log.h"
 
 #include <algorithm>
@@ -83,10 +84,63 @@ bool FixedFunctionShader::init(IDirect3DDevice* d, ID3DXEffectPool* pool) {
     effectDefaultPurple = effect;
     sunMultiplier = ambMultiplier = 1.0;
 
-    shaderLRU.effect = NULL;
+    // Clear cache and LRU, important if the renderer resets
+    shaderLRU.effect = nullptr;
     shaderLRU.last_sk = ShaderKey();
     cacheEffects.clear();
+
+    // Pre-warm cache if any per-pixel mode is active
+    if (Configuration.MGEFlags & USE_FFESHADER) {
+        LOG::logline("-- Per-pixel shader precaching");
+        precache();
+    }
+
     return true;
+}
+
+void FixedFunctionShader::precache() {
+    // Pre-warm cache with common materials
+    ShaderKey skCommon;
+    memset(&skCommon, 0, sizeof skCommon);
+    skCommon.uvSets = 1;
+
+    for (int vertexCol = 0; vertexCol <= 1; ++vertexCol) {
+        skCommon.vertexColour = vertexCol;
+        skCommon.vertexMaterial = vertexCol + 1;
+
+        for (int heavyLighting = 0; heavyLighting <= 1; ++heavyLighting) {
+            skCommon.heavyLighting = heavyLighting;
+
+            // Additive texture without fog
+            skCommon.usesSkinning = 0;
+            skCommon.activeStages = 1;
+            skCommon.fogMode = 0;
+            skCommon.usesTexgen = 0;
+            skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
+            memset(&skCommon.stage[1], 0, sizeof skCommon.stage[1]);
+            generateMWShader(skCommon);
+
+            for (int skinning = 0; skinning <= 1; ++skinning) {
+                skCommon.usesSkinning = skinning;
+
+                // Standard diffuse texturing
+                skCommon.activeStages = 1;
+                skCommon.fogMode = 1;
+                skCommon.usesTexgen = 0;
+                skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
+                memset(&skCommon.stage[1], 0, sizeof skCommon.stage[1]);
+                generateMWShader(skCommon);
+
+                // Enchantment effect
+                skCommon.activeStages = 2;
+                skCommon.fogMode = 0;
+                skCommon.usesTexgen = 1;
+                skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 0, 1, 0, 3 };
+                skCommon.stage[1] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_CURRENT, D3DTA_CURRENT, 1, 0, 0, 0 };
+                generateMWShader(skCommon);
+            }
+        }
+    }
 }
 
 void FixedFunctionShader::updateLighting(float sunMult, float ambMult) {
@@ -638,7 +692,7 @@ void FixedFunctionShader::release() {
         }
     }
 
-    shaderLRU.effect = NULL;
+    shaderLRU.effect = nullptr;
     shaderLRU.last_sk = ShaderKey();
     cacheEffects.clear();
     effectDefaultPurple->Release();
@@ -741,6 +795,16 @@ void FixedFunctionShader::ShaderKey::log() const {
     const char* opSymbols[] = { "?", "disable", "select1", "select2", "mul", "mul2x", "mul4x", "add", "addsigned", "addsigned2x", "sub", "?", "blend.diffuse", "blend.texture", "?", "?", "?", "?", "?", "?", "?", "?", "bump", "bump.l", "dp3", "mad", "?" };
     const char* argSymbols[] = { "diffuse", "current", "texture", "tfactor", "specular", "temp", "constant" };
     const char* texgenSymbols[] = { "none", "normal", "position", "reflection", "sphere" };
+
+    const unsigned char *dump = (const unsigned char*)this;
+    stringstream stream;
+    stream << "   Hex: ";
+    for(int i = 0; i < sizeof *this; ++i) {
+        char hex[4];
+        snprintf(hex, sizeof hex, "%02x ", dump[i]);
+        stream << hex;
+    }
+    LOG::logline("%s", stream.str().c_str());
 
     LOG::logline("   Input state: UVs:%d skin:%d vcol:%d lights:%d vmat:%d fogm:%d", uvSets, usesSkinning, vertexColour, vertexMaterial ? (heavyLighting ? 8 : 4) : 0, vertexMaterial, fogMode);
     LOG::logline("   Texture stages:");
