@@ -1249,7 +1249,7 @@ void MWBridge::patchUIConfigure(void (_stdcall* newfunc)()) {
 // patchSplashScreen - Patches the splash screen quad so that it renders without
 //                     gaps at the screen edge when multisampling is on.
 void MWBridge::patchSplashScreen(unsigned int width, unsigned int height) {
-    const float dx = -0.5 / width, dy = -0.5 / height;
+    const float dx = -0.5 / width, dy = 0.5 / height;
 
     // Patch screen quad vertex coordinates with half pixel offset
     DWORD addr = 0x458E89;
