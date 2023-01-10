@@ -1,7 +1,7 @@
 
-MGE XE 0.15.0
+MGE XE 0.15.1
 -------------
-Released 2022-12-24
+Released 2023-01-10
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -52,6 +52,8 @@ You will be given the choice to update MWSE in the installer, which requires int
 
 Configure your graphics setting in the 'Graphics' tab, and generate distant land in the 'Distant Land' tab. There is an instruction tab for further details. If later on you add world-changing mods to your mod list, you will need to re-run the generator to see the changes in the distant world.
 
+Borderless windowed mode is recommended over fullscreen, as it allows easier recovery from crashes and fast switching with other programs. Both modes are still supported.
+
 (NEW) Many settings can be adjusted within the game, where you will be able to see the effect of your changes in real-time. This requires MWSE. Press Esc, click on 'Mod Options', then select MGE XE from the mods list. You can then open the settings window with the button, which will hide all other windows to show a full preview of the world. There are several tabs in the window, and the configuration can be loaded and saved.
 
 4. If you use Steam, you should turn off the Steam overlay (in Steam, right click Morrowind > Properties). If you use Crossfire/SLI, turn off "Pause world rendering in menus" in the In-game tab, to avoid performance reductions, as this feature is SLI unfriendly.
@@ -79,7 +81,7 @@ Uninstall from Control Panel or by running uninstall_MGEXE.exe. If you installed
 You might want to know
 ----------------------
 
-MGE XE includes an install option for MWSE 2.1 beta by NullCascade. ( https://github.com/MWSE/MWSE/ ) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
+MGE XE includes an install option for MWSE 2.1 by NullCascade. ( https://github.com/MWSE/MWSE/ ) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
 
 Many rendering settings can be changed in-game using the MGE XE mod options window, which is new in v0.14. A lot of settings are now dynamically adjustable.
 
@@ -111,6 +113,12 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.15.1
+- High quality atmosphere mode now has added skylight customization through the API. It affects the both the sky and the atmosphere haze colour, which allows unnatural weathers to be created. It will be accessible through a new version of Weather Adjuster.
+- High quality atmosphere minor fixes to colour blending.
+- Reverted LOD selection for generating distant statics to previous method.
+- Distant land generator now detects missing land texture records and shows warnings, instead of stopping generation.
+
 0.15.0
 - Dynamic distant visibility. Quest-related statics in the distance now update visibility during gameplay events, without requiring manual regeneration. The affected objects must be specified in the override files used by the distant land generator, all base game quests are included in the defaults. Export a statics file from the generator and read it to see the details.
 - Per-pixel lighting mode has added shader pre-caching to reduce stutter at the start of a session.
