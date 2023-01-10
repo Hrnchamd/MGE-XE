@@ -544,6 +544,24 @@ namespace MGEgui.DistantLand {
                                             }
                                         }
                                     }
+
+                                    // Verify land texture index records exist
+                                    bool warningLatch = false;
+                                    for (int y = 0; y < 16; y++) {
+                                        for (int x = 0; x < 16; x++) {
+                                            int t = land.Tex[x, y];
+                                            if (!land.Textures.ContainsKey(t)) {
+                                                if (!warningLatch) {
+                                                    String warn = String.Format(strings["MissingLandTexture"], lx, ly, file);
+                                                    MessageBox.Show(warn, "Warning", MessageBoxButtons.OK);
+                                                    warnings.Add(warn);
+                                                    warningLatch = true;
+                                                }
+                                                // Reset missing index to use default texture
+                                                land.Tex[x, y] = 0;
+                                            }
+                                        }
+                                    }
                                     break;
                             }
                         }
@@ -557,6 +575,7 @@ namespace MGEgui.DistantLand {
                             int maxDimension = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
                             MapSize = Math.Max(MapSize, maxDimension);
 
+                            // Add land to map
                             if (LandMap[lx, ly] == null) {
                                 CellCount++;
                             }
