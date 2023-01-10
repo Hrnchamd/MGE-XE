@@ -740,11 +740,11 @@ namespace api {
         }
     }
 
-    void MGEAPIv2::weatherScatteringFarGet(float* farScatter) {
-        memcpy(farScatter, &DistantLand::atmScatterColFar.x, 4 * sizeof(float));
+    void MGEAPIv2::weatherScatteringSkylightGet(float* skylight) {
+        memcpy(skylight, &DistantLand::atmSkylightScatter.x, 4 * sizeof(float));
     }
 
-    void MGEAPIv2::weatherScatteringFarSet(float farScatter[4]) {
-        memcpy(&DistantLand::atmScatterColFar.x, farScatter, 4 * sizeof(float));
+    void MGEAPIv2::weatherScatteringSkylightSet(float skylight[4]) {
+        memcpy(&DistantLand::atmSkylightScatter.x, skylight, 4 * sizeof(float));
     }
 }

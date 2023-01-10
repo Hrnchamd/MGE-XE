@@ -114,7 +114,7 @@ public:
     static RGBVECTOR sunCol, sunAmb, ambCol;
     static RGBVECTOR nearFogCol, horizonCol;
     static RGBVECTOR atmOutscatter, atmInscatter;
-    static D3DXVECTOR4 atmScatterColFar;
+    static D3DXVECTOR4 atmSkylightScatter;
     static float fogStart, fogEnd;
     static float fogExpStart, fogExpDivisor;
     static float fogNearStart, fogNearEnd;

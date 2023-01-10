@@ -208,8 +208,8 @@ namespace api {
     struct MGEAPIv2 : public MGEAPIv1 {
         virtual void saveScreenshot(const char* path, bool captureWithUI);
 
-		virtual void weatherScatteringFarGet(float* farScatter);
-		virtual void weatherScatteringFarSet(float farScatter[4]);
+		virtual void weatherScatteringSkylightGet(float* skylight);
+		virtual void weatherScatteringSkylightSet(float skylight[4]);
     };
 
 	inline MGEAPIv1* api = nullptr;
