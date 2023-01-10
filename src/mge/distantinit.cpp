@@ -84,7 +84,7 @@ RGBVECTOR DistantLand::sunCol, DistantLand::sunAmb, DistantLand::ambCol;
 RGBVECTOR DistantLand::nearFogCol, DistantLand::horizonCol;
 RGBVECTOR DistantLand::atmOutscatter(0.07, 0.36, 0.76);
 RGBVECTOR DistantLand::atmInscatter(0.25, 0.38, 0.48);
-D3DXVECTOR4 DistantLand::atmScatterColFar(0.371, 0.637, 1.108, 0.44);
+D3DXVECTOR4 DistantLand::atmSkylightScatter(0.4456, 0.6194, 1.0, 0.44);
 float DistantLand::fogStart, DistantLand::fogEnd;
 float DistantLand::fogExpStart, DistantLand::fogExpDivisor;
 float DistantLand::fogNearStart, DistantLand::fogNearEnd;

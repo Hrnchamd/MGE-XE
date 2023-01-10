@@ -515,7 +515,11 @@ void DistantLand::adjustFog() {
 
         // Simplified version of scattering from the shader
         const RGBVECTOR* skyCol = mwBridge->getCurrentWeatherSkyCol();
-        const D3DXVECTOR3 newSkyCol = 0.38 * D3DXVECTOR3(skyCol->r, skyCol->g, skyCol->b) + 0.62 * D3DXVECTOR3(0.371, 0.637, 1.108);
+        const D3DXVECTOR3 newSkyCol = {
+            float(lerp(skyCol->r, atmSkylightScatter.x, atmSkylightScatter.w)),
+            float(lerp(skyCol->g, atmSkylightScatter.y, atmSkylightScatter.w)),
+            float(lerp(skyCol->b, atmSkylightScatter.z, atmSkylightScatter.w))
+        };
         const float sunaltitude = powf(1 + sunPos.z, 10);
         const float sunaltitude_a = 2.8 + 4.3 / sunaltitude;
         const float sunaltitude_b = saturate(1.0 - exp2(-1.9 * sunaltitude));
