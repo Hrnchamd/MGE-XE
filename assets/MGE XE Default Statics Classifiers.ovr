@@ -36,7 +36,9 @@ chargen_cabindoor=disable
 chargen_ship_trapdoor=disable
 chargen_lantern_03_sway=disable
 chargen_plank=disable
+: Firemoth ships
 fm_boat_dock=disable
+fm_boat_island=disable
 
 [dynamic_vis]
 : Syntax
@@ -65,6 +67,8 @@ StrongZero        = global Stronghold 0
 ex_de_scaffold_01_Boe  = unique_object ex_de_scaffold_02_boe ex_de_scaffold_03_boe ex_de_scaffold_01a_boe ex_de_scaffold_02a_Boe ex_de_scaffold_02b_Boe ex_de_scaffold_02c_Boe ex_de_scaffold_03a_Boe
 Ex_DAE_Boethiah_fixed  = unique_object Ex_DAE_r_platform_01_boe
 terrain_rock_wg_UNIQUE = unique_object
+fm_boat_dock = unique_object
+fm_boat_island = unique_object
 
 fab_attack_disable = global FabAttack 0
 fab_attack_enable  = global FabAttack 1
