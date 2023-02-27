@@ -1767,7 +1767,7 @@ namespace MGEgui {
             this.udDLDrawDist.DecimalPlaces = 1;
             this.udDLDrawDist.Location = new System.Drawing.Point(6, 22);
             this.udDLDrawDist.Maximum = new decimal(new int[] {
-                                    250,
+                                    300,
                                     0,
                                     0,
                                     0});
