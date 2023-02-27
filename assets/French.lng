@@ -17,6 +17,7 @@ MWRegistry = "Impossible de trouver les clés de registre de Morrowind. Veuillez
 UnableToWriteReg = "Impossible d'écrire la clef de registre de Morrowind. MGE XE a besoin d'être lancé en mode Administrateur."
 MWRunning = "Morrowind est déjà en cours d'exécution.\nVeuillez quitter le jeu avant de lancer MGEXEgui.exe."
 NotMWDir = "MGE XE doit être installé dans le répertoire d'installation de Morrowind."
+MWAdapterNotPresent = "Morrowind est configuré pour utiliser un moniteur ou une sortie vidéo qui n'est plus présent. La sélection de la carte graphique sera réinitialisée."
 Translation = "Français "
 
 

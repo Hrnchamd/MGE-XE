@@ -346,7 +346,13 @@ namespace MGEgui {
             for (int i = 0; i < TRIGGERS; i++) {
                 Triggers[i] = new Trigger();
             }
+            
+            if (!DXMain.CheckAdapter()) {
+                System.Windows.Forms.MessageBox.Show(strings["MWAdapterNotPresent"], "Warning");
+                DXMain.ResetAdapter();
+            }
             DXMain.GetDeviceCaps();
+
             mf = new MainForm(autoLanguage);
             Application.Run(mf);
         }

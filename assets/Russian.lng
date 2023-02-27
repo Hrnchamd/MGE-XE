@@ -6,10 +6,11 @@ Translator = Europop&Sylvius
 
 
 [.Strings]
-Close = "&Закрыть"
 DSound = "Вероятно, у вас осталась установлена часть старой версии MGE.\nВы должны удалить dsound.dll из папки Morrowind для корректной работы этой версии MGE."
 Error = "Ошибка"
+Warning = "Предупреждение"
 Message = "Сообщение"
+Close = "&Закрыть"
 MGEguiRunning = "MGEgui.exe уже запущен."
 MGEMissing = "Один или несколько файлов MGE вероятно отсутствуют. Пожалуйста, переустановите."
 MWCorrupt = "Morrowind.exe вероятно поврежден.\nMGE не удается определить версию Morrowind."
@@ -17,7 +18,7 @@ MWIncompat = "Ваша версия Morrowind не совместима с MGE.\
 MWRegistry = "Не удается найти ключи реестра Morrowind. Пожалуйста, запустите игру перед установкой MGE."
 MWRunning = "Morrowind вероятно сейчас запущен.\nПожалуйста, выйдите из игры перед запуском MGEgui.exe."
 NotMWDir = "MGE должен быть установлен в папку Morrowind."
-Warning = "Предупреждение"
+MWAdapterNotPresent = "Morrowind настроен на использование монитора или видеовыхода, которого больше нет. Выбор видеокарты будет сброшен."
 Translation = "Русский перевод"
 
 

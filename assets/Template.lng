@@ -81,7 +81,7 @@ MWRegistry = "Unable to find Morrowind registry keys. Please run the game as adm
 UnableToWriteReg = "Could not write Morrowind registry key. MGEXEgui needs to be launched as Administrator."
 MWRunning = "Morrowind appears to be currently running.\nPlease quit the game before running MGEXEgui."
 NotMWDir = "MGE XE must be installed to the Morrowind directory."
-
+MWAdapterNotPresent = "Morrowind is configured to use a monitor or video output that is no longer present. The adapter selection will be reset to default."
 ;; Replace English with your language
 Translation = "English translation"
 

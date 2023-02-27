@@ -19,6 +19,7 @@ MWRegistry = "W rejestrze nie odnaleziono wpisów dotyczących Morrowinda. Uruch
 UnableToWriteReg = "Nie udało się nadpisać wpisów w rejestrze. MGE musi być uruchomiony jako administrator."
 MWRunning = "Morrowind już jest uruchomiony.\nWyłącz grę przed uruchomieniem MGEgui.exe"
 NotMWDir = "MGE musi być zainstalowany w głównym folderze Morrowinda."
+MWAdapterNotPresent = "Morrowind został skonfigurowany do korzystania z monitora lub wyjścia wideo, które nie jest już obecne. Wybór karty graficznej zostanie zresetowany."
 Translation = "Polskie tłumaczenie"
 
 
