@@ -496,6 +496,12 @@ private:
             return false;
         }
 
+        // Check that there is at least one set of texture coords available
+        if (niGeomData->GetUVSetCount() == 0) {
+            // log_file << "There are no texture coordinates on this mesh." << endl;
+            return false;
+        }
+
         // Get properties from geometry node
         NiAlphaPropertyRef niAlphaProp = DynamicCast<NiAlphaProperty>(niGeom->GetPropertyByType(NiAlphaProperty::TYPE));
         NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(niGeom->GetPropertyByType(NiMaterialProperty::TYPE));
@@ -505,7 +511,6 @@ private:
             node->alphaTestEnabled = niAlphaProp->GetTestState();
             node->alphaBlendEnabled = niAlphaProp->GetBlendState();
         }
-
 
         // Get diffuse color (will be baked into vertices)
         // Get the emissive color (will be averaged and stored in the 4th channel of normals)
@@ -520,12 +525,6 @@ private:
             alpha = niMatProp->GetTransparency();
         }
         node->emissive = (emissive.r + emissive.b + emissive.g) / 3.0f;
-
-        // Check that there is at least one set of texture coords available
-        if (niGeomData->GetUVSetCount() == 0) {
-            // log_file << "There are no texture coordinates on this mesh." << endl;
-            return false;
-        }
 
         // Check for UV controller and extra data, to flag for special rendering
         const char *specialTag = "mge.distant.scroll";
@@ -615,18 +614,18 @@ private:
 
         // Make texture path all lowercase
         for (size_t i = 0; i < s.size(); ++i) {
-            if (s[i] >= 65 && s[i] <= 90) {
+            if (s[i] >= 'A' && s[i] <= 'Z') {
                 s[i] += 32;
             }
         }
 
         // If the path starts with "textures" or "\textures" remove it
         size_t pos = s.find("textures");
-        if (pos <= 1) {
+        if (pos == 0 || (pos == 1 && s[0] == '\\')) {
             s = s.substr(pos + 8, string::npos);
         }
 
-        // Remove any leading forward slashes that remain
+        // Remove any leading backslashes that remain
         if (s[0] == '\\') {
             s = s.substr(1, string::npos);
         }
