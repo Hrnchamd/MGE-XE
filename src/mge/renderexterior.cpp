@@ -62,7 +62,7 @@ void DistantLand::renderDistantLand(ID3DXEffect* e, const D3DXMATRIX* view, cons
     LandQuadTree.GetVisibleMeshes(frustum, viewsphere, visLand);
 
     device->SetVertexDeclaration(LandDecl);
-    visLand.Render(device, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, SIZEOFLANDVERT);
+    visLand.Render(device, SIZEOFLANDVERT);
 }
 
 void DistantLand::renderDistantLandZ() {
@@ -74,7 +74,7 @@ void DistantLand::renderDistantLandZ() {
 
     // Draw with cached vis set
     device->SetVertexDeclaration(LandDecl);
-    visLand.Render(device, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, SIZEOFLANDVERT);
+    visLand.Render(device, SIZEOFLANDVERT);
 }
 
 void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj) {

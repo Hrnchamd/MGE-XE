@@ -105,37 +105,55 @@ void VisibleSet::RemoveAll() {
 //-----------------------------------------------------------------------------
 
 void VisibleSet::Render(IDirect3DDevice9* device,
-                        ID3DXEffect* effect,
-                        ID3DXEffect* effectPool,
-                        D3DXHANDLE* texture_handle,
-                        D3DXHANDLE* has_alpha_handle,
-                        D3DXHANDLE* animate_uv_handle,
-                        D3DXHANDLE* world_matrix_handle,
                         unsigned int vertex_size) {
-    // Iterate through each group of textures in the map
-    IDirect3DTexture9* last_texture = 0;
+
     IDirect3DVertexBuffer9* last_buffer = 0;
 
     const auto& visible_set_const = visible_set;
     for (const auto mesh : visible_set_const) {
-        bool effect_changed = false;
+        // Set buffer if it has changed
+        if (last_buffer != mesh->vBuffer) {
+            device->SetIndices(mesh->iBuffer);
+            device->SetStreamSource(0, mesh->vBuffer, 0, vertex_size);
+            last_buffer = mesh->vBuffer;
+        }
 
-        // Set texture if it has changed
-        if (effect && texture_handle && last_texture != mesh->tex) {
+        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mesh->verts, 0, mesh->faces);
+    }
+}
+
+void VisibleSet::Render(IDirect3DDevice9* device,
+                        ID3DXEffect* effect,
+                        ID3DXEffect* effectPool,
+                        const D3DXHANDLE* texture_handle,
+                        const D3DXHANDLE* has_alpha_handle,
+                        const D3DXHANDLE* animate_uv_handle,
+                        const D3DXHANDLE* world_matrix_handle,
+                        unsigned int vertex_size) {
+
+    IDirect3DTexture9* last_texture = nullptr;
+    IDirect3DVertexBuffer9* last_buffer = nullptr;
+    bool last_animateUV = false;
+
+    const auto& visible_set_const = visible_set;
+    for (const auto mesh : visible_set_const) {
+        // Set texture and texture related variables if it has changed
+        if (texture_handle && last_texture != mesh->tex) {
             effectPool->SetTexture(*texture_handle, mesh->tex);
 
             if (has_alpha_handle) {
-                // Control if texture access is required
+                // Depth-only rendering, control if texture alpha channel reads are required in shader
                 effectPool->SetBool(*has_alpha_handle, mesh->hasAlpha);
             } else {
-                // Alpha test is compatible with transparency supersampling, while clip() isn't
+                // World rendering, alpha test state is compatible with transparency supersampling, while clip() isn't
                 device->SetRenderState(D3DRS_ALPHATESTENABLE, mesh->hasAlpha);
             }
+
+            // Set UV animation flag
             if (animate_uv_handle) {
-                // Enable UV animation
                 effectPool->SetBool(*animate_uv_handle, mesh->animateUV);
             }
-            effect_changed = true;
+
             last_texture = mesh->tex;
         }
 
@@ -147,16 +165,9 @@ void VisibleSet::Render(IDirect3DDevice9* device,
         }
 
         // Set transform matrix
-        if (effect && world_matrix_handle) {
-            effectPool->SetMatrix(*world_matrix_handle, &mesh->transform);
-            effect_changed = true;
-        }
+        effectPool->SetMatrix(*world_matrix_handle, &mesh->transform);
 
-        // Commit any changes that were made to the effect
-        if (effect_changed) {
-            effect->CommitChanges();
-        }
-
+        effect->CommitChanges();
         device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mesh->verts, 0, mesh->faces);
     }
 }

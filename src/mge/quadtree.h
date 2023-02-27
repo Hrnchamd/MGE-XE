@@ -49,12 +49,15 @@ public:
     ~VisibleSet() {}
 
     void Render(IDirect3DDevice9* device,
+                unsigned int vertex_size);
+
+    void Render(IDirect3DDevice9* device,
                 ID3DXEffect* effect,
                 ID3DXEffect* effectPool,
-                D3DXHANDLE* texture_handle,
-                D3DXHANDLE* has_alpha_handle,
-                D3DXHANDLE* animate_uv_handle,
-                D3DXHANDLE* world_matrix_handle,
+                const D3DXHANDLE* texture_handle,
+                const D3DXHANDLE* has_alpha_handle,
+                const D3DXHANDLE* animate_uv_handle,
+                const D3DXHANDLE* world_matrix_handle,
                 unsigned int vertex_size);
 
     void SortByState();
