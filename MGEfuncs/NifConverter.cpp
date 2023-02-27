@@ -570,24 +570,24 @@ private:
         vector<TexCoord> texCoords = niGeomData->GetUVSet(0);
 
         // Vertices
+        bool hasNormals = normals.size() > 0;
+        bool hasColors = colors.size() > 0;
         node->verts = niGeomData->GetVertexCount();
         node->vBuffer = std::make_unique<DXVertex[]>(node->verts);
 
         for (int i = 0; i < node->verts; i++) {
             // Push the world transform into the vertices
             // Apply the world transform's rotation to the normals
-            positions[i] = transform * positions[i];
-            normals[i] = rotation * normals[i];
+            node->vBuffer[i].Position = transform * positions[i];
 
-            node->vBuffer[i].Position = positions[i];
-            if (normals.size() > 0) {
-                node->vBuffer[i].Normal = normals[i];
+            if (hasNormals) {
+                node->vBuffer[i].Normal = rotation * normals[i];
             } else {
                 node->vBuffer[i].Normal.x = 0;
                 node->vBuffer[i].Normal.y = 0;
                 node->vBuffer[i].Normal.z = 1;
             }
-            if (colors.size() > 0) {
+            if (hasColors) {
                 node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * colors[i].b * diffuse.b);
                 node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * colors[i].g * diffuse.g);
                 node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * colors[i].r * diffuse.r);
