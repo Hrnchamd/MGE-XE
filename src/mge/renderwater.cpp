@@ -157,7 +157,7 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX* view, const D3DXMATRI
     visReflected.SortByState();
 
     device->SetVertexDeclaration(StaticDecl);
-    visReflected.Render(device, effect, effect, &ehTex0, nullptr, nullptr, &ehWorld, SIZEOFSTATICVERT);
+    visReflected.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
 }
 
 void DistantLand::clearReflection() {

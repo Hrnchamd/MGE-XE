@@ -135,6 +135,12 @@ void VisibleSet::Render(IDirect3DDevice9* device,
     IDirect3DVertexBuffer9* last_buffer = nullptr;
     bool last_animateUV = false;
 
+    // Reset UV animation variables
+    if (animate_uv_handle) {
+        effectPool->SetBool(*animate_uv_handle, false);
+        effect->CommitChanges();
+    }
+
     const auto& visible_set_const = visible_set;
     for (const auto mesh : visible_set_const) {
         // Set texture and texture related variables if it has changed
@@ -148,13 +154,13 @@ void VisibleSet::Render(IDirect3DDevice9* device,
                 // World rendering, alpha test state is compatible with transparency supersampling, while clip() isn't
                 device->SetRenderState(D3DRS_ALPHATESTENABLE, mesh->hasAlpha);
             }
-
-            // Set UV animation flag
-            if (animate_uv_handle) {
-                effectPool->SetBool(*animate_uv_handle, mesh->animateUV);
-            }
-
             last_texture = mesh->tex;
+        }
+
+        // Set UV animation variables. Different objects may use the same texture, but animate differently
+        if (animate_uv_handle && mesh->animateUV != last_animateUV) {
+            effectPool->SetBool(*animate_uv_handle, mesh->animateUV);
+            last_animateUV = mesh->animateUV;
         }
 
         // Set buffer if it has changed
