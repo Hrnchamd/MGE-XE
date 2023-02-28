@@ -70,6 +70,11 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             MWInitPatch::disableIntroMovies();
         }
 
+        if (Configuration.Beta.UseDefaultTexturePool) {
+            LOG::logline("Beta Testing: Use Default Texture Pool");
+            MWInitPatch::patchTextureLoading();
+        }
+
         MWInitPatch::patchFrameTimer();
     }
 

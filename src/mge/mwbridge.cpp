@@ -1311,6 +1311,59 @@ void MWBridge::patchResolveDuringInit(void (__cdecl* newfunc)()) {
 
 //-----------------------------------------------------------------------------
 
+static void __stdcall patchLoadTexture2DUpload(void* sourceTextureData, D3DFORMAT d3dFormat) {
+    DWORD renderer = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x10);
+    DWORD width = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x44);
+    DWORD height = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x48);
+    DWORD levels = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x4C);
+    IDirect3DDevice8* device = *reinterpret_cast<IDirect3DDevice8**>((char*)renderer + 0x24);
+    IDirect3DTexture8* stagingTexture = *reinterpret_cast<IDirect3DTexture8**>((char*)sourceTextureData + 0x60);
+    IDirect3DTexture8* texture = nullptr;
+
+    // Create texture in default pool
+    void* d3d8Vtbl = *reinterpret_cast<void**>(device);
+    auto d3d8CreateTexture = *reinterpret_cast<HRESULT(__stdcall**)(IDirect3DDevice8*, UINT, UINT, UINT, DWORD, DWORD, DWORD, IDirect3DTexture8**)>((char*)d3d8Vtbl + 0x50);
+    auto d3d8UpdateTexture = *reinterpret_cast<HRESULT(__stdcall**)(IDirect3DDevice8*, IDirect3DTexture8*, IDirect3DTexture8*)>((char*)d3d8Vtbl + 0x74);
+
+    if (SUCCEEDED(d3d8CreateTexture(device, width, height, levels, 0, d3dFormat, D3DPOOL_DEFAULT, &texture))) {
+        // Move texture from staging into final texture
+        d3d8UpdateTexture(device, stagingTexture, texture);
+        *reinterpret_cast<IDirect3DTexture8**>((char*)sourceTextureData + 0x60) = texture;
+        reinterpret_cast<IUnknown*>(stagingTexture)->Release();
+    }
+}
+
+// patchLoadTexture2D - Changes texture creation from D3DPOOL_MANAGED to D3DPOOL_DEFAULT, by loading through a staging texture
+// This should reduce process memory footprint by removing managed textures.
+void MWBridge::patchLoadTexture2D() {
+    DWORD addr1 = 0x6BFC55, addr2 = 0x6BFD3B, addr3 = 0x6BFCC1;
+    BYTE patch[] = {
+        0x8b, 0x54, 0x24, 0x10,             // mov edx, [esp+d3dFormat]
+        0x52,                               // push edx
+        0x56,                               // push esi
+        0xb8, 0xff, 0xff, 0xff, 0xff,       // mov eax, newfunc
+        0xff, 0xd0,                         // call eax
+        0xeb, 0x09                          // jmp past rest of block
+    };
+
+    // Initially load texture into a staging texture
+    VirtualMemWriteAccessor vw1((void*)addr1, 1);
+    write_byte(addr1, D3DPOOL_SYSTEMMEM);
+
+    // Overwrite some useless code with a call to upload the texture
+    VirtualMemWriteAccessor vw2((void*)addr2, sizeof(patch));
+    memcpy((void*)addr2, patch, sizeof(patch));
+    write_ptr(addr2 + 7, reinterpret_cast<void*>(patchLoadTexture2DUpload));
+
+    // Make this code re-use another stack variable instead of the d3dFormat variable
+    VirtualMemWriteAccessor vw3((void*)addr3, 0x40);
+    write_byte(0x6BFCC7, 0x18);
+    write_byte(0x6BFCD7, 0x18);
+    write_byte(0x6BFCE3, 0x24);
+}
+
+//-----------------------------------------------------------------------------
+
 // getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
 void* MWBridge::getGMSTPointer(DWORD id) {
     DWORD addr = read_dword(eEnviro);

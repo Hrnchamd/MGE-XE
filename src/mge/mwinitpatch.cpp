@@ -22,6 +22,12 @@ void MWInitPatch::disableIntroMovies() {
 }
 
 
+// Patch texture loading to reduce process memory footprint
+void MWInitPatch::patchTextureLoading() {
+    MWBridge::get()->patchLoadTexture2D();
+}
+
+
 // Override UI scaling callback: set new UI scaling and mouse bounds, setup borderless window
 static void _stdcall onUIScaleInit() {
     auto mwBridge = MWBridge::get();

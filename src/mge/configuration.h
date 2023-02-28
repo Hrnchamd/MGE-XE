@@ -148,6 +148,10 @@ struct ConfigurationStruct {
 
     char ShaderChain[512];
 
+    struct {
+        bool UseDefaultTexturePool;
+    } Beta;
+
     bool LoadSettings();
     bool SaveSettings();
 };

@@ -122,6 +122,7 @@ public:
     void patchSplashScreen(unsigned int width, unsigned int height);
     void patchFrameTimer(int (__cdecl* newfunc)());
     void patchResolveDuringInit(void (__cdecl* newfunc)());
+    void patchLoadTexture2D();
 
     void* getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
