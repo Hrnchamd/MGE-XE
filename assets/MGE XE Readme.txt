@@ -1,7 +1,7 @@
 
-MGE XE 0.15.1
+MGE XE 0.15.2
 -------------
-Released 2023-01-10
+Released 2023-02-28
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -113,6 +113,12 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.15.2
+- Catch when Morrowind's adapter (video card/monitor output) selection is no longer valid and reset to default.
+- Fix distant texture scrolling effect not working for some custom models.
+- Fix distant land generator freezing/crashing on models without normals.
+- Fix dynamic visibility for Firemoth quest boats.
+
 0.15.1
 - High quality atmosphere mode now has added skylight customization through the API. It affects the both the sky and the atmosphere haze colour, which allows unnatural weathers to be created. It will be accessible through a new version of Weather Adjuster.
 - High quality atmosphere minor fixes to colour blending.
