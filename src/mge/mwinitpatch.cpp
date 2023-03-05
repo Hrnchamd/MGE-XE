@@ -3,6 +3,7 @@
 #include "mge/configuration.h"
 #include "mge/mwbridge.h"
 #include "support/timing.h"
+#include <algorithm>
 
 struct TES3GameOptions {
     void *vtbl;
