@@ -981,7 +981,7 @@ namespace MGEgui.DistantLand {
             Default, Names, Interiors, DynamicVis
         }
 
-        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, Dictionary<string, DynamicVisGroup> dynamicVis, Dictionary<string, DynamicVisGroup> dynamicVisUniqueObjs, List<string> staticsWarnings) {
+        private void ParseOverrideFiles(List<string> overrideFiles, Dictionary<string, StaticOverride> overrideList, Dictionary<string, bool> namedObjectDisables, Dictionary<string, bool> interiorEnables, DynamicVisDataSet dynamicVisDataSet, List<string> staticsWarnings) {
             foreach (string filename in overrideFiles) {
                 if (DEBUG) {
                     allWarnings.Add("Loading override: " + filename);
@@ -1085,37 +1085,34 @@ namespace MGEgui.DistantLand {
                                     }
                                     break;
                                 case OverrideFileSection.DynamicVis:
+                                    bool valid = false;
+
                                     if (key != null) {
                                         var dvg = new DynamicVisGroup(key, value);
                                         if (dvg.Valid) {
-                                            dynamicVis[key] = dvg;
-    
-                                            if (dvg.LinkedObjIds != null) {
-                                                foreach (var o in dvg.LinkedObjIds) {
-                                                    dynamicVisUniqueObjs[o] = dvg;
-                                                }
-                                            }
+                                            // Add new / re-use existing vis group
+                                            dvg = dynamicVisDataSet.AddMerge(dvg);
+                                            // Assign to objects
+                                            dynamicVisDataSet.Assign(key, dvg);
+                                            valid = true;
                                         }
-                                        else {
-                                            staticsWarnings.Add("Warning: Failed to parse line in override list '" + filename + "': '" + line + "'");
-                                        }
-                                    } else {
-                                        staticsWarnings.Add("Warning: Failed to parse line in override list '" + filename + "': '" + line + "'");
+                                    }
+                                    if (!valid) {
+                                        staticsWarnings.Add("Warning: Failed to parse line in dynamic vis '" + filename + "': '" + line + "'");
                                     }
                                     break;
                             }
                         }
                     }
-                } catch {
-                    staticsWarnings.Add("Error: Could not import statics override list '" + filename + "'");
+                } catch (Exception ex) {
+                    staticsWarnings.Add("Error: Could not import statics override list '" + filename + "'\r\n" + ex.Message);
                 }
             }
 
-            // Assign unique indexes to dynamic vis groups
+            // Assign unique indexes to dynamic vis groups, starting at 1
             int i = 1;
-            foreach (var item in dynamicVis) {
-                var vis = item.Value;
-                vis.Index = i++;
+            foreach (var v in dynamicVisDataSet.visGroups) {
+                v.Index = i++;
             }
         }
 
@@ -1125,15 +1122,14 @@ namespace MGEgui.DistantLand {
             var overrideList = new Dictionary<string, StaticOverride>();
             var namedObjectDisables = new Dictionary<string, bool>();
             var interiorEnables = new Dictionary<string, bool>();
-            var dynamicVis = new Dictionary<string, DynamicVisGroup>();
-            var dynamicVisUniqueObjs = new Dictionary<string, DynamicVisGroup>();
+            var dynamicVisDataSet = new DynamicVisDataSet();
 
             StaticsList.Clear();
             UsedStaticsList.Clear();
             StaticMap.Clear();
 
             if (args.UseOverrideList && args.OverrideFiles.Count > 0) {
-                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, dynamicVis, dynamicVisUniqueObjs, staticsWarnings);
+                ParseOverrideFiles(args.OverrideFiles, overrideList, namedObjectDisables, interiorEnables, dynamicVisDataSet, staticsWarnings);
             }
 
             Directory.CreateDirectory(Statics.fn_statics);
@@ -1143,7 +1139,7 @@ namespace MGEgui.DistantLand {
                 }
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
                 try {
-                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null, dynamicVis, dynamicVisUniqueObjs);
+                    ParseFileForStatics(br, overrideList, args.Activators, args.Misc, namedObjectDisables, null, dynamicVisDataSet);
                 } catch (Exception ex) {
                     staticsWarnings.Add("Parse statics failed on \"" + file + "\"\n\n" + ex.ToString());
                 }
@@ -1301,9 +1297,9 @@ namespace MGEgui.DistantLand {
                 bw.Write(UsedNifList.Count);
 
                 // Write dynamic vis data
-                bw.Write(dynamicVis.Count);
-                foreach (var vis in dynamicVis) {
-                    vis.Value.Write(bw);
+                bw.Write(dynamicVisDataSet.visGroups.Count);
+                foreach (var vis in dynamicVisDataSet.visGroups) {
+                    vis.Write(bw);
                 }
 
                 // Write main worldspace statics usage
@@ -1488,7 +1484,7 @@ namespace MGEgui.DistantLand {
             foreach (string file in files) {
                 lastFileProcessed = file;
                 var br = new BinaryReader(File.OpenRead(file), Statics.ESPEncoding);
-                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList, null, null);
+                ParseFileForStatics(br, null, args.Activators, args.Misc, null, noScriptList, null);
                 br.BaseStream.Position = 0;
                 ParseFileForInteriors(br, interiorEnables);
                 br.Close();
@@ -2424,11 +2420,12 @@ namespace MGEgui.DistantLand {
         }
 
         private class DynamicVisGroup {
+            
             public int Index;
             public bool Valid;
-            public string JournalId, GlobalId, UniqueObjId;
-            public List<Tuple<int, int>> EnabledRanges;
-            public List<string> LinkedObjIds;
+            public readonly string JournalId, GlobalId, UniqueObjId;
+            public readonly List<Tuple<int, int>> EnabledRanges;
+            public readonly List<string> LinkedObjIds;
 
             public DynamicVisGroup(string key, string value) {
                 Index = -1;
@@ -2437,7 +2434,7 @@ namespace MGEgui.DistantLand {
                 GlobalId = null;
                 UniqueObjId = null;
                 EnabledRanges = new List<Tuple<int, int>>();
-                LinkedObjIds = null;
+                LinkedObjIds = new List<string>();
 
                 string[] tokens = value.ToLowerInvariant().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -2486,6 +2483,21 @@ namespace MGEgui.DistantLand {
                     Valid = true;
                 }
             }
+            
+            public override bool Equals(object obj) {
+                DynamicVisGroup other = obj as DynamicVisGroup;
+                if (other == null) { return false; }
+                
+                return JournalId == other.JournalId
+                    && GlobalId == other.GlobalId
+                    && UniqueObjId == other.UniqueObjId
+                    && System.Linq.Enumerable.SequenceEqual(EnabledRanges, other.EnabledRanges)
+                    && System.Linq.Enumerable.SequenceEqual(LinkedObjIds, other.LinkedObjIds);
+            }
+            
+            public override int GetHashCode() {
+                return 17*JournalId.GetHashCode() + 53*GlobalId.GetHashCode() + 109*UniqueObjId.GetHashCode();
+            }
 
             private enum DataSource {
                 Journal = 1,
@@ -2517,6 +2529,40 @@ namespace MGEgui.DistantLand {
                 }
                 for (int filler = 8 - EnabledRanges.Count; filler > 0; filler--) {
                     bw.Write((Int64)0);
+                }
+            }
+        }
+        
+        class DynamicVisDataSet {
+            public List<DynamicVisGroup> visGroups;
+            public Dictionary<string, DynamicVisGroup> scripts;
+            public Dictionary<string, DynamicVisGroup> uniqueObjects;
+            
+            public DynamicVisDataSet() {
+                visGroups = new List<DynamicVisGroup>();
+                scripts = new Dictionary<string, DynamicVisGroup>();
+                uniqueObjects = new Dictionary<string, DynamicVisGroup>();
+            }
+            
+            public DynamicVisGroup AddMerge(DynamicVisGroup visGroup) {
+                // Return existing vis group if there is a match, else add it to the collection.
+                foreach (var v in visGroups) {
+                    if (v.Equals(visGroup)) {
+                        return v;
+                    }
+                }
+                visGroups.Add(visGroup);
+                return visGroup;
+            }
+            
+            public void Assign(string key, DynamicVisGroup visGroup) {
+                if (visGroup.JournalId != null || visGroup.GlobalId != null) {
+                   scripts[key] = visGroup;
+                }
+                else if (visGroup.UniqueObjId != null) {
+                    foreach (var o in visGroup.LinkedObjIds) {
+                        uniqueObjects[o] = visGroup;
+                    }
                 }
             }
         }
@@ -2646,7 +2692,7 @@ namespace MGEgui.DistantLand {
             }
         }
 
-        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList, Dictionary<string, DynamicVisGroup> dynamicVis, Dictionary<string, DynamicVisGroup> dynamicVisUniqueObjs) {
+        private void ParseFileForStatics(BinaryReader br, Dictionary<string, StaticOverride> overrideList, bool includeActivators, bool includeMisc, Dictionary<string, bool> namedObjectDisables, Dictionary<string, string> noScriptList, DynamicVisDataSet dynamicVisDataSet) {
             int DEBUG_statics = 0;
             int DEBUG_ignored = 0;
 
@@ -2682,14 +2728,14 @@ namespace MGEgui.DistantLand {
 
                     if (name != null && model != null && model.Trim() != string.Empty) {
                         // Dynamic vis, match on script or object ID
-                        if (dynamicVis != null) {
+                        if (dynamicVisDataSet != null) {
                             DynamicVisGroup dvg = null;
 
                             if (script != null) {
-                                dynamicVis.TryGetValue(script, out dvg);
+                                dynamicVisDataSet.scripts.TryGetValue(script, out dvg);
                             }
                             if (dvg == null) {
-                                dynamicVisUniqueObjs.TryGetValue(name, out dvg);
+                                dynamicVisDataSet.uniqueObjects.TryGetValue(name, out dvg);
                             }
 
                             if (dvg != null) {
