@@ -1185,11 +1185,11 @@ namespace MGEgui.DistantLand {
                 // Try to load the NIFs and remove any from the list that fail or are too small
                 for (int i = 0; i < UsedNifList.Count; i++) {
                     string name = UsedNifList[i];
-                    var simplify = args.Simplify;
                     byte[] data;
 
                     // Set default simplification level to None until the simplifier code is fixed.
-                    simplify = 1.0f;
+                    //float simplify = args.Simplify;
+                    float simplify = 1.0f;
 
                     // Try to load a version of the file that ends with '_dist' first.
                     // This allows people to supply a different version of the NIF to be
@@ -1215,7 +1215,9 @@ namespace MGEgui.DistantLand {
                             data = null;
                         }
                     }
+
                     if (data == null) {
+                        // Remove entry if loading failed
                         UsedNifList.RemoveAt(i--);
                     } else {
                         try {
@@ -1223,11 +1225,12 @@ namespace MGEgui.DistantLand {
                             if (DEBUG) {
                                 allWarnings.Add("Processing NIF: " + name);
                             }
+
                             float size = -1;
                             if (overrideList.ContainsKey(name)) {
                                 StaticOverride so = overrideList[name];
                                 if (!so.Ignore || so.NamesNoIgnore) {
-                                    simplify = so.OverrideSimplify ? so.Simplify : simplify;
+                                    simplify = so.Simplify.HasValue ? so.Simplify.Value : simplify;
                                     size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)so.Type);
                                 }
                             } else {
@@ -1243,7 +1246,9 @@ namespace MGEgui.DistantLand {
 
                                 size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)classifier);
                             }
+
                             if (size < 0) {
+                                // Remove entry if processing failed
                                 UsedNifList.RemoveAt(i--);
                             }
                         } catch (Exception ex) {
@@ -2353,8 +2358,7 @@ namespace MGEgui.DistantLand {
 
             public bool Ignore;
             public StaticType Type;
-            public bool OverrideSimplify;
-            public float Simplify;
+            public float? Simplify;
             public float Density;
             public bool NoScript;
             public bool NamesNoIgnore;
@@ -2362,8 +2366,7 @@ namespace MGEgui.DistantLand {
             public StaticOverride(string value) {
                 Ignore = false;
                 Type = StaticType.Auto;
-                OverrideSimplify = false;
-                Simplify = 1;
+                Simplify = null;
                 Density = -1;
                 NoScript = false;
                 NamesNoIgnore = false;
@@ -2400,7 +2403,6 @@ namespace MGEgui.DistantLand {
                     } else if (s.StartsWith("reduction_")) {
                         float percent;
                         if (float.TryParse(s.Remove(0, 10), out percent) && percent >= 0 && percent <= 100) {
-                            OverrideSimplify = true;
                             Simplify = percent / 100.0f;
                         }
                     }
@@ -2408,11 +2410,10 @@ namespace MGEgui.DistantLand {
             }
 
             public StaticOverride(StaticOverride value, bool enabledInNames) {
-                Simplify = value.Simplify;
-                Density = value.Density;
-                OverrideSimplify = value.OverrideSimplify;
                 Ignore = value.Ignore;
                 Type = value.Type;
+                Simplify = value.Simplify;
+                Density = value.Density;
                 NoScript = value.NoScript;
                 NamesNoIgnore = enabledInNames;
             }
