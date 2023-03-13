@@ -600,11 +600,13 @@ private:
                 node->vBuffer[i].Normal.z = 1;
             }
             if (hasColors) {
-                node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * colors[i].b * diffuse.b);
-                node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * colors[i].g * diffuse.g);
-                node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * colors[i].r * diffuse.r);
-                node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * colors[i].a * alpha);
+                // Diffuse/ambient vertex material source
+                node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * colors[i].b);
+                node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * colors[i].g);
+                node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * colors[i].r);
+                node->vBuffer[i].Diffuse[3] = (unsigned char)(255.0f * colors[i].a);
             } else {
+                // Use material property
                 node->vBuffer[i].Diffuse[0] = (unsigned char)(255.0f * diffuse.b);
                 node->vBuffer[i].Diffuse[1] = (unsigned char)(255.0f * diffuse.g);
                 node->vBuffer[i].Diffuse[2] = (unsigned char)(255.0f * diffuse.r);
