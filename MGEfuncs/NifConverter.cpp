@@ -467,9 +467,26 @@ private:
         }
     }
 
+    static NiPropertyRef ResolveProperty(NiAVObjectRef obj, const Niflib::Type& type) {
+        // Check immediate object for the property
+        NiPropertyRef prop = obj->GetPropertyByType(type);
+        if (prop) {
+            return prop;
+        }
+
+        // Check up the hierarchy to see if any property is inherited
+        auto parent = DynamicCast<NiAVObject>(obj->GetParent());
+        return parent ? ResolveProperty(parent, type) : nullptr;
+    }
+
     bool ExportShape(NiTriBasedGeomRef niGeom, ExportedNode* node) {
+        // Resolve property inheritance
+        NiAVObjectRef asAVObject = DynamicCast<NiAVObject>(niGeom);
+        NiTexturingPropertyRef niTexProp = DynamicCast<NiTexturingProperty>(ResolveProperty(asAVObject, NiTexturingProperty::TYPE));
+        NiAlphaPropertyRef niAlphaProp = DynamicCast<NiAlphaProperty>(ResolveProperty(asAVObject, NiAlphaProperty::TYPE));
+        NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(ResolveProperty(asAVObject, NiMaterialProperty::TYPE));
+
         // Check that an external texture exists
-        NiTexturingPropertyRef niTexProp = DynamicCast<NiTexturingProperty>(niGeom->GetPropertyByType(NiTexturingProperty::TYPE));
         if (!niTexProp || niTexProp->GetTextureCount() == 0) {
             // log_file << "External texture does not exist" << endl;
             return false;
@@ -501,10 +518,6 @@ private:
             // log_file << "There are no texture coordinates on this mesh." << endl;
             return false;
         }
-
-        // Get properties from geometry node
-        NiAlphaPropertyRef niAlphaProp = DynamicCast<NiAlphaProperty>(niGeom->GetPropertyByType(NiAlphaProperty::TYPE));
-        NiMaterialPropertyRef niMatProp = DynamicCast<NiMaterialProperty>(niGeom->GetPropertyByType(NiMaterialProperty::TYPE));
 
         // alpha prop -> flag alpha test, alpha blend
         if (niAlphaProp) {
