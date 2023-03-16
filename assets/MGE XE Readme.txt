@@ -1,7 +1,7 @@
 
-MGE XE 0.15.2
+MGE XE 0.15.3
 -------------
-Released 2023-02-28
+Released 2023-03-16
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -113,6 +113,10 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.15.3
+- Fix (rare) missing transparency on distant objects with complex model properties. Distant land regeneration is required.
+- Minor fix for vertex colours on distant statics.
+
 0.15.2
 - Catch when Morrowind's adapter (video card/monitor output) selection is no longer valid and reset to default.
 - Fix distant texture scrolling effect not working for some custom models.
