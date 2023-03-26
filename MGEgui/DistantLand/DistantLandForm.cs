@@ -871,6 +871,16 @@ namespace MGEgui.DistantLand {
                 Atlas.Add(r);
                 regions.RemoveAt(0);
             }
+            
+            // Log atlas generation
+            var atlas_log = new StringBuilder("### World atlas ###\r\n\r\n");
+            int n = 0;
+            foreach (var a in Atlas) {
+                atlas_log.AppendFormat("World atlas {0}: Cells ({1},{2}) to ({3},{4})\r\n", n, a.MinX, a.MinY, a.MaxX, a.MaxY);
+                n++;
+            }
+            atlas_log.AppendLine();
+            File.AppendAllText(Statics.fn_dllog, atlas_log.ToString());
         }
 
         void workerFCreateTextures(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
