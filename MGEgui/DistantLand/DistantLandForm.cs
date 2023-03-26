@@ -466,6 +466,7 @@ namespace MGEgui.DistantLand {
                 -250,
                 -250
             });
+
             DefaultTex = new LTEX();
             DefaultTex.FilePath = "_land_default.tga";
             DefaultTex.index = 0;
@@ -474,9 +475,12 @@ namespace MGEgui.DistantLand {
             } catch (Exception ex) {
                 throw new ApplicationException("Failed to load default ground texture (" + ex.Message + ")", ex);
             }
+
+            const int invalidCellCoord = -99999;
             CellCount = 0;
             int progress = 0;
             var warnings = new List<string>();
+
             foreach (string file in files) {
                 if (DEBUG) {
                     allWarnings.Add("Loading plugin: " + file);
@@ -491,7 +495,7 @@ namespace MGEgui.DistantLand {
                     if (rr.Tag == "LAND") {
                         var land = new LAND();
                         land.Textures = Textures;
-                        int lx = -999, ly = -999;
+                        int lx = invalidCellCoord, ly = invalidCellCoord;
                         bool usesVertexHeights = true;
 
                         while (rr.NextSubrecord()) {
@@ -565,21 +569,27 @@ namespace MGEgui.DistantLand {
                                     break;
                             }
                         }
-                        if (usesVertexHeights && lx != -999 && ly != -999) {
-                            // Keep track of map extents
-                            MapMinX = Math.Min(MapMinX, lx);
-                            MapMaxX = Math.Max(MapMaxX, lx);
-                            MapMinY = Math.Min(MapMinY, ly);
-                            MapMaxY = Math.Max(MapMaxY, ly);
-
-                            int maxDimension = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
-                            MapSize = Math.Max(MapSize, maxDimension);
-
-                            // Add land to map
-                            if (LandMap[lx, ly] == null) {
-                                CellCount++;
+                        if (usesVertexHeights && lx != invalidCellCoord && ly != invalidCellCoord) {
+                            if (lx >= LandMap.GetLowerBound(0) && lx <= LandMap.GetUpperBound(0)
+                                && ly >= LandMap.GetLowerBound(1) && ly <= LandMap.GetUpperBound(1)) {
+                                // Keep track of map extents
+                                MapMinX = Math.Min(MapMinX, lx);
+                                MapMaxX = Math.Max(MapMaxX, lx);
+                                MapMinY = Math.Min(MapMinY, ly);
+                                MapMaxY = Math.Max(MapMaxY, ly);
+    
+                                int maxDimension = Math.Max(MapMaxX - MapMinX, MapMaxY - MapMinY);
+                                MapSize = Math.Max(MapSize, maxDimension);
+    
+                                // Add land to map
+                                if (LandMap[lx, ly] == null) {
+                                    CellCount++;
+                                }
+                                LandMap[lx, ly] = land;
                             }
-                            LandMap[lx, ly] = land;
+                            else {
+                                warnings.Add("Cell (" + lx + "," + ly + ") in plugin '" + file + "' is too far from the map centre. It will not be generated.");
+                            }
                         }
                     } else if (rr.Tag == "LTEX") {
                         var tex = new LTEX();
@@ -2230,7 +2240,7 @@ namespace MGEgui.DistantLand {
                         for (int x2 = 0; x2 < 64; x2++) {
                             int y = (y1 + MapOffsetY) * 64 + y2;
                             int x = (x1 + MapOffsetX) * 64 + x2;
-                            if (LandMap[x1, y1] != null && x1 > LandMap.GetLowerBound(0) && x1 < LandMap.GetUpperBound(0) && y1 > LandMap.GetLowerBound(1) && y1 < LandMap.GetUpperBound(1)) {
+                            if (LandMap[x1, y1] != null) {
                                 height_data[y * DataSpanX + x] = (float)LandMap[x1, y1].Heights[x2, y2] * 8.0f;
                             } else {
                                 height_data[y * DataSpanX + x] = -2048.0f;
