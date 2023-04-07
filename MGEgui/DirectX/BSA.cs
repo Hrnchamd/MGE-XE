@@ -1,4 +1,3 @@
-//TODO: When reading in the BSAs, ignore anything that isn't a texture
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -56,7 +55,7 @@ namespace MGEgui.DistantLand {
             if (entries.Count > 0) {
                 return; // Already been init-ed
             }
-            string[] bsas = Directory.GetFiles("Data Files", "*.bsa");
+            string[] bsas = Directory.GetFiles(Statics.fn_dataFiles, "*.bsa");
             foreach (string s in bsas) {
                 try {
                     var br = new BinaryReader(File.OpenRead(s));
@@ -77,7 +76,7 @@ namespace MGEgui.DistantLand {
                             }
                             name += (char)b;
                         }
-                        entries.Add(new BSAEntry(br, @"Data Files\" + name, offset, size));
+                        entries.Add(new BSAEntry(br, Path.Combine(Statics.fn_dataFiles, name), offset, size));
                     }
                     files.Add(br);
                 } catch (IOException ex) {
@@ -93,16 +92,14 @@ namespace MGEgui.DistantLand {
                 throw new ArgumentException("Something tried to load a texture using an absolute path.");
             }
 
-            if (name[0] != '\\') {
-                name = "\\" + name;
-            }
             string dds_name = Path.ChangeExtension(name, ".dds");
 
+            // Search DDS first, then original filename
             var search_paths = new List<string>();
-            search_paths.Add(@"Data Files\Textures" + dds_name);
-            search_paths.Add(@"Data Files" + dds_name);
-            search_paths.Add(@"Data Files\Textures" + name);
-            search_paths.Add(@"Data Files" + name);
+            search_paths.Add(Path.Combine(Statics.fn_textures, dds_name));
+            search_paths.Add(Path.Combine(Statics.fn_dataFiles, dds_name));
+            search_paths.Add(Path.Combine(Statics.fn_textures, name));
+            search_paths.Add(Path.Combine(Statics.fn_dataFiles, name));
 
             // Search file system
             foreach (string file_path in search_paths) {
@@ -131,7 +128,7 @@ namespace MGEgui.DistantLand {
                 throw new ArgumentException("Something tried to load a nif using an absolute path.");
             }
 
-            string path = Path.Combine(@"Data Files\Meshes\", name);
+            string path = Path.Combine(Statics.fn_meshes, name);
             if (File.Exists(path)) {
                 return File.ReadAllBytes(path);
             }

@@ -15,7 +15,7 @@ namespace MGEgui.DistantLand {
             Statics.Localizations.Apply(this);
             Statics.Localizations.ApplyDialogs(this, new string[] { "saveStaticListDialog" });
 
-            this.saveStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
+            this.saveStaticListDialog.InitialDirectory = Path.Combine(Statics.runDir, Statics.fn_dlOverridesPath);
             Exists = exists;
             if (Exists) {
                 StaticsExist = File.Exists(Statics.fn_usagedata);
@@ -63,7 +63,7 @@ namespace MGEgui.DistantLand {
                 str.AppendLine();
                 str.Append(ex.ToString());
             }
-            File.WriteAllText(Statics.fn_dllog, str.ToString());
+            File.WriteAllText(Statics.fn_dlLog, str.ToString());
         }
 
         /* Common properties */
@@ -136,7 +136,7 @@ namespace MGEgui.DistantLand {
 
             public OverrideListItem(string s) {
                 FileName = s;
-                ShortName = s.Substring(s.LastIndexOf('\\') + 1);
+                ShortName = Path.GetFileName(s);
             }
         }
 
@@ -144,7 +144,7 @@ namespace MGEgui.DistantLand {
 
         private void saveWarnings(string source) {
             try {
-                File.AppendAllText(Statics.fn_dllog, "### " + source + " ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
+                File.AppendAllText(Statics.fn_dlLog, "### " + source + " ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
             } catch {
             }
         }
@@ -324,7 +324,7 @@ namespace MGEgui.DistantLand {
                 lastDir = casefoldDir;
             }
 
-            pluginList = new MWPlugins(Statics.fn_datafiles, pluginDirs);
+            pluginList = new MWPlugins(Statics.fn_dataFiles, pluginDirs);
             switch ((int)iniFile.getKeyValue("PlugSort")) {
                 case 0:
                     rbPlugsName.Checked = true;
@@ -428,7 +428,7 @@ namespace MGEgui.DistantLand {
 
         private void workerInitBSAs(object sender, System.ComponentModel.DoWorkEventArgs e) {
             try {
-                File.Delete(Statics.fn_dllog);
+                File.Delete(Statics.fn_dlLog);
             } catch {
             }
             BSA.InitBSAs();
@@ -880,7 +880,7 @@ namespace MGEgui.DistantLand {
                 n++;
             }
             atlas_log.AppendLine();
-            File.AppendAllText(Statics.fn_dllog, atlas_log.ToString());
+            File.AppendAllText(Statics.fn_dlLog, atlas_log.ToString());
         }
 
         void workerFCreateTextures(object sender, System.ComponentModel.RunWorkerCompletedEventArgs e) {
@@ -1444,7 +1444,7 @@ namespace MGEgui.DistantLand {
                 warnings = new List<string>(allWarnings);
                 statusWarnings.Text = warnings.Count + " " + strings["WarningCount"];
                 statusWarnings.Enabled = true;
-                File.AppendAllText(Statics.fn_dllog, "### DEBUG ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
+                File.AppendAllText(Statics.fn_dlLog, "### DEBUG ###\r\n\r\n" + string.Join("\r\n", warnings.ToArray()) + "\r\n\r\n");
                 // File.AppendAllText(Statics.fn_dllog, SlimDX.ObjectTable.ReportLeaks());
             }
             var di = new DirectoryInfo(Statics.fn_dl);
@@ -1484,7 +1484,7 @@ namespace MGEgui.DistantLand {
                 lFinishDesc.Text = summary;
             }
             try {
-                File.AppendAllText(Statics.fn_dllog, "########################################\r\n" + summary);
+                File.AppendAllText(Statics.fn_dlLog, "########################################\r\n" + summary);
             } catch {
             }
             bFinish.Enabled = true;
@@ -2660,7 +2660,7 @@ namespace MGEgui.DistantLand {
             csa.Misc = cbStatIncludeMisc.Checked;
             csa.UseOverrideList = cbStatOverrideList.Checked;
             csa.OverrideFiles = new List<string>();
-            csa.OverrideFiles.Add(Statics.fn_dldefaultoverride);
+            csa.OverrideFiles.Add(Statics.fn_dlDefaultOverride);
             foreach (OverrideListItem item in lbStatOverrideList.Items) {
                 csa.OverrideFiles.Add(item.FileName);
             }

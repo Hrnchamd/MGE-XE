@@ -133,8 +133,7 @@ namespace MGEgui {
             // OpenImage
             // 
             this.OpenImage.DefaultExt = "tga";
-            this.OpenImage.Filter = "Texture file (tga,bmp,dds,jpg)|*.tga;*.bmp;*.jpg;*.jpeg;*.dds;*.dib";
-            this.OpenImage.InitialDirectory = "mge3";
+            this.OpenImage.Filter = "Texture file (tga,bmp,dds,jpg)|*.tga;*.bmp;*.jpg;*.jpeg;*.dds";
             this.OpenImage.RestoreDirectory = true;
             this.OpenImage.Title = "Select image";
             // 
@@ -574,13 +573,13 @@ namespace MGEgui {
                 this.FileToolStrip.PerformLayout();
             }
 
-            this.OpenImage.InitialDirectory = Statics.runDir + @"\mge3";
-            this.OpenShader.InitialDirectory = this.SaveShader.InitialDirectory = Statics.runDir + @"\" + Statics.pathShaders;
+            this.OpenImage.InitialDirectory = Path.Combine(Statics.runDir, Statics.fn_testImagePath);
+            this.OpenShader.InitialDirectory = this.SaveShader.InitialDirectory = Path.Combine(Statics.runDir, Statics.fn_postShaders);
             EditingName = strings["NewFile"];
 
             if (shaderfile != null) {
                 FullFileName = shaderfile;
-                EditingName = shaderfile.Substring(FullFileName.LastIndexOf('\\') + 1);
+                EditingName = Path.GetFileName(FullFileName);
 
                 StreamReader sr = new StreamReader(File.OpenRead(FullFileName));
                 rtbTechnique.Text = sr.ReadToEnd().Trim(new char[] {
@@ -604,7 +603,7 @@ namespace MGEgui {
 
             if (ShaderModified || FullFileName == null) {
                 string tempfile = (FullFileName == null)
-                    ? Statics.runDir + "\\" + Statics.pathShaders + "\\_TempShader"
+                    ? Path.Combine(Statics.runDir, Statics.fn_postShaders, "_TempShader")
                     : FullFileName + ".tmp";
 
                 StreamWriter sw = new StreamWriter(File.Open(tempfile, FileMode.Create));
@@ -652,14 +651,14 @@ namespace MGEgui {
         }
 
         private void bSetImage_Click(object sender, EventArgs e) {
-            OpenImage.FileName = (FramePath == null) ? Statics.runDir + @"\mge3\preview_frame.dds" : FramePath;
+            OpenImage.FileName = FramePath ?? Path.Combine(Statics.runDir, Statics.fn_testImagePath + "preview_frame.dds");
             if (OpenImage.ShowDialog() == DialogResult.OK) {
                 FramePath = OpenImage.FileName;
             }
         }
 
         private void bSetDepthImage_click(object sender, EventArgs e) {
-            OpenImage.FileName = (DepthPath == null) ? Statics.runDir + @"\mge3\preview_depth.dds" : DepthPath;
+            OpenImage.FileName = DepthPath ?? Path.Combine(Statics.runDir, Statics.fn_testImagePath + "preview_depth.dds");
             if (OpenImage.ShowDialog() == DialogResult.OK) {
                 DepthPath = OpenImage.FileName;
             }
@@ -682,7 +681,7 @@ namespace MGEgui {
             DialogResult res = SaveShader.ShowDialog();
             if (res == DialogResult.OK) {
                 FullFileName = SaveShader.FileName;
-                EditingName = FullFileName.Substring(FullFileName.LastIndexOf('\\') + 1);
+                EditingName = Path.GetFileName(FullFileName);
                 saveShader();
             }
             return res;
@@ -742,7 +741,7 @@ namespace MGEgui {
             }
             if (OpenShader.ShowDialog() == DialogResult.OK) {
                 FullFileName = OpenShader.FileName;
-                EditingName = FullFileName.Substring(FullFileName.LastIndexOf('\\') + 1);
+                EditingName = Path.GetFileName(FullFileName);
                 this.Text = EditingName + " - " + strings["ShaderEditor"];
 
                 StreamReader sr = new StreamReader(File.OpenRead(FullFileName));

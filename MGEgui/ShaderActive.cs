@@ -777,11 +777,11 @@ namespace MGEgui {
         }
 
         static string shaderPath(string s) {
-            return Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx";
+            return Path.Combine(Statics.runDir, Statics.fn_postShaders, s + ".fx");
         }
 
         private void loadSettings() {
-            foreach (String s in Directory.GetFiles(Statics.runDir + "\\" + Statics.pathShaders)) {
+            foreach (String s in Directory.GetFiles(Path.Combine(Statics.runDir, Statics.fn_postShaders))) {
                 if (s.EndsWith(".fx")) {
                     lbAvailable.Items.Add(Path.GetFileNameWithoutExtension(s));
                 }

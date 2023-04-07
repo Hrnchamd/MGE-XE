@@ -1672,7 +1672,7 @@ namespace MGEgui {
         }
 
         private void bReportingShowDLWizardLog_Click(object sender, EventArgs e) {
-            displayLogFile(Statics.fn_dllog);
+            displayLogFile(Statics.fn_dlLog);
         }
 
         private void displayLogFile(string path) {

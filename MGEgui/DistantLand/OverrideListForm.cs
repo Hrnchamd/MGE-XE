@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Reflection;
+using System.IO;
 using System.Windows.Forms;
 
 namespace MGEgui.DistantLand {
@@ -15,7 +12,7 @@ namespace MGEgui.DistantLand {
             Statics.Localizations.Apply(this);
             Statics.Localizations.ApplyDialogs(this, new string[] { "openStaticListDialog" });
 
-            this.openStaticListDialog.InitialDirectory = Statics.runDir + "\\MGE3";
+            this.openStaticListDialog.InitialDirectory = Path.Combine(Statics.runDir, Statics.fn_dlOverridesPath);
             lParentStatOverrideList = lList;
             lbParentStatOverrideList = lbList;
             if (lbList != null) {

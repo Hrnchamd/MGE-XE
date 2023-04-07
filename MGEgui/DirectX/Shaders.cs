@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using SlimDX;
@@ -144,17 +145,24 @@ namespace MGEgui.DirectX {
 
             int count = 1;
             while (true) {
-                string texpath;
+                string texpath = null;
+                EffectHandle texvar = new EffectHandle("tex" + count.ToString());
+
+                try {
+                    texpath = effect.GetAnnotation(texvar, "name");
+                }
+                catch (SlimDXException) {
+                }
                 try {
                     texpath = effect.GetString("texname" + count.ToString());
-                } catch {
-                    break;
+                } catch (SlimDXException) {
                 }
+
                 if (texpath != null) {
                     try {
-                        Texture tex = Texture.FromFile(DXMain.device, Statics.runDir + "\\data files\\textures\\" + texpath);
-                        effect.SetTexture("tex" + count.ToString(), tex);
-                    } catch {
+                        Texture tex = Texture.FromFile(DXMain.device, Path.Combine(Statics.runDir, Statics.fn_textures, texpath));
+                        effect.SetTexture(texvar, tex);
+                    } catch (SlimDXException) {
                     }
                 } else {
                     break;
@@ -180,10 +188,10 @@ namespace MGEgui.DirectX {
 
         private static string Setup(string framepath, string depthpath) {
             if (framepath == null) {
-                framepath = Statics.runDir + @"\mge3\preview_frame.dds";
+                framepath = Path.Combine(Statics.runDir, Statics.fn_testImagePath, "preview_frame.dds");
             }
             if (depthpath == null) {
-                depthpath = Statics.runDir + @"\mge3\preview_depth.dds";
+                depthpath = Path.Combine(Statics.runDir, Statics.fn_testImagePath, "preview_depth.dds");
             }
 
             try {
@@ -280,7 +288,7 @@ namespace MGEgui.DirectX {
 
             INIFile iniFile = new INIFile(Statics.fn_inifile, ShaderActive.iniShaderDefault, true);
             foreach (string s in iniFile.getSectList(ShaderActive.iniShaderChain)) {
-                string path = Statics.runDir + "\\" + Statics.pathShaders + "\\" + s + ".fx";
+                string path = Path.Combine(Statics.runDir, Statics.fn_postShaders, s + ".fx");
                 Effect effect;
 
                 try {
