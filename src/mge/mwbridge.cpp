@@ -1311,51 +1311,110 @@ void MWBridge::patchResolveDuringInit(void (__cdecl* newfunc)()) {
 
 //-----------------------------------------------------------------------------
 
-static void __stdcall patchLoadTexture2DUpload(void* sourceTextureData, D3DFORMAT d3dFormat) {
-    DWORD renderer = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x10);
-    DWORD width = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x44);
-    DWORD height = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x48);
-    DWORD levels = *reinterpret_cast<DWORD*>((char*)sourceTextureData + 0x4C);
-    IDirect3DDevice8* device = *reinterpret_cast<IDirect3DDevice8**>((char*)renderer + 0x24);
-    IDirect3DTexture8* stagingTexture = *reinterpret_cast<IDirect3DTexture8**>((char*)sourceTextureData + 0x60);
-    IDirect3DTexture8* texture = nullptr;
+struct NiDX8Renderer {
+    void* vtbl;
+    int unknown_0x4[8];
+    IDirect3DDevice8* d3dDevice;
+    int unknown_0x28[414];
+};
+static_assert(sizeof(NiDX8Renderer) == 0x6A0);
 
-    // Create texture in default pool
+struct NiSourceTexture {
+    void* vtbl;
+    int unknown_0x4[10];
+    const char* filename;
+    const char* filenameOnPC;
+    void* pixelData;
+    bool isStatic;
+};
+static_assert(sizeof(NiSourceTexture) == 0x3C);
+
+struct NiDX8RendererTextureData {
+    void* vtbl;
+    void* unknown_0x4;
+    NiSourceTexture* sourceTexture;
+    void* unknown_0xC;
+    NiDX8Renderer* renderer;
+    int pixelFormat[10];
+    void* d3dPalette;
+    int d3dPaletteRevision;
+    unsigned int width, height;
+    unsigned int levels;
+    bool bMipmap;
+    int unknown_0x54;
+    void* sourcePalette;
+    int sourcePaletteRevision;
+    IDirect3DTexture8* d3dTexture;
+    int sourceRevision;
+};
+static_assert(sizeof(NiDX8RendererTextureData) == 0x68);
+
+static HRESULT __stdcall patchLoadTexture2DCreate(IDirect3DDevice8* device, NiDX8RendererTextureData* sourceTextureData, D3DFORMAT d3dFormat) {
+    // Static texture: Create staging texture in system memory pool
+    // Dynamic texture: Create texture in managed pool
+    auto width = sourceTextureData->width, height = sourceTextureData->height, levels = sourceTextureData->levels;
+    auto pool = sourceTextureData->sourceTexture->isStatic ? D3DPOOL_SYSTEMMEM : D3DPOOL_MANAGED;
+
     void* d3d8Vtbl = *reinterpret_cast<void**>(device);
     auto d3d8CreateTexture = *reinterpret_cast<HRESULT(__stdcall**)(IDirect3DDevice8*, UINT, UINT, UINT, DWORD, DWORD, DWORD, IDirect3DTexture8**)>((char*)d3d8Vtbl + 0x50);
-    auto d3d8UpdateTexture = *reinterpret_cast<HRESULT(__stdcall**)(IDirect3DDevice8*, IDirect3DTexture8*, IDirect3DTexture8*)>((char*)d3d8Vtbl + 0x74);
 
-    if (SUCCEEDED(d3d8CreateTexture(device, width, height, levels, 0, d3dFormat, D3DPOOL_DEFAULT, &texture))) {
-        // Move texture from staging into final texture
-        d3d8UpdateTexture(device, stagingTexture, texture);
-        *reinterpret_cast<IDirect3DTexture8**>((char*)sourceTextureData + 0x60) = texture;
-        reinterpret_cast<IUnknown*>(stagingTexture)->Release();
+    return d3d8CreateTexture(device, width, height, levels, 0, d3dFormat, pool, &sourceTextureData->d3dTexture);
+}
+
+static void __stdcall patchLoadTexture2DUpload(NiDX8RendererTextureData* sourceTextureData, D3DFORMAT d3dFormat) {
+    // This upload step is only needed if it is a static texture
+    if (sourceTextureData->sourceTexture->isStatic) {
+        auto width = sourceTextureData->width, height = sourceTextureData->height, levels = sourceTextureData->levels;
+        IDirect3DDevice8* device = sourceTextureData->renderer->d3dDevice;
+        IDirect3DTexture8* stagingTexture = sourceTextureData->d3dTexture;
+        IDirect3DTexture8* texture = nullptr;
+
+        // Create texture in default pool
+        void* d3d8Vtbl = *reinterpret_cast<void**>(device);
+        auto d3d8CreateTexture = *reinterpret_cast<HRESULT(__stdcall**)(IDirect3DDevice8*, UINT, UINT, UINT, DWORD, DWORD, DWORD, IDirect3DTexture8**)>((char*)d3d8Vtbl + 0x50);
+        auto d3d8UpdateTexture = *reinterpret_cast<HRESULT(__stdcall**)(IDirect3DDevice8*, IDirect3DTexture8*, IDirect3DTexture8*)>((char*)d3d8Vtbl + 0x74);
+
+        if (SUCCEEDED(d3d8CreateTexture(device, width, height, levels, 0, d3dFormat, D3DPOOL_DEFAULT, &texture))) {
+            // Move texture from staging into final texture
+            d3d8UpdateTexture(device, stagingTexture, texture);
+            sourceTextureData->d3dTexture = texture;
+            reinterpret_cast<IUnknown*>(stagingTexture)->Release();
+        }
     }
 }
 
 // patchLoadTexture2D - Changes texture creation from D3DPOOL_MANAGED to D3DPOOL_DEFAULT, by loading through a staging texture
 // This should reduce process memory footprint by removing managed textures.
 void MWBridge::patchLoadTexture2D() {
-    DWORD addr1 = 0x6BFC55, addr2 = 0x6BFD3B, addr3 = 0x6BFCC1;
-    BYTE patch[] = {
+    DWORD addr1 = 0x6BFC4B, addr2 = 0x6BFD3B, addr3 = 0x6BFCC1;
+    BYTE patch1[] = {
+        0x52,                               // push edx (d3dFormat)
+        0x56,                               // push esi (sourceTextureData)
+        0x53,                               // push ebx (d3dDevice)
+        0xb8, 0xff, 0xff, 0xff, 0xff,       // mov eax, newfunc
+        0xff, 0xd0,                         // call eax
+        0xeb, 0x0f                          // jmp past rest of block
+    };
+    BYTE patch2[] = {
         0x8b, 0x54, 0x24, 0x10,             // mov edx, [esp+d3dFormat]
-        0x52,                               // push edx
-        0x56,                               // push esi
+        0x52,                               // push edx (d3dFormat)
+        0x56,                               // push esi (sourceTextureData)
         0xb8, 0xff, 0xff, 0xff, 0xff,       // mov eax, newfunc
         0xff, 0xd0,                         // call eax
         0xeb, 0x09                          // jmp past rest of block
     };
 
-    // Initially load texture into a staging texture
+    // Initially load texture into a staging texture if static
     VirtualMemWriteAccessor vw1((void*)addr1, 1);
-    write_byte(addr1, D3DPOOL_SYSTEMMEM);
+    memcpy((void*)addr1, patch1, sizeof(patch1));
+    write_ptr(addr1 + 4, reinterpret_cast<void*>(patchLoadTexture2DCreate));
 
-    // Overwrite some useless code with a call to upload the texture
-    VirtualMemWriteAccessor vw2((void*)addr2, sizeof(patch));
-    memcpy((void*)addr2, patch, sizeof(patch));
+    // Overwrite some useless code path with a call to upload the staging texture to a default pool texture
+    VirtualMemWriteAccessor vw2((void*)addr2, sizeof(patch2));
+    memcpy((void*)addr2, patch2, sizeof(patch2));
     write_ptr(addr2 + 7, reinterpret_cast<void*>(patchLoadTexture2DUpload));
 
-    // Make this code re-use another stack variable instead of the d3dFormat variable
+    // Make this code re-use another dead stack variable instead of the d3dFormat variable which is still needed
     VirtualMemWriteAccessor vw3((void*)addr3, 0x40);
     write_byte(0x6BFCC7, 0x18);
     write_byte(0x6BFCD7, 0x18);
