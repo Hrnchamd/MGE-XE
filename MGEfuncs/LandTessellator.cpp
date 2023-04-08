@@ -98,13 +98,13 @@ public:
     }
 
     static bool SaveMeshes(LPCSTR file_path, vector<LandMesh>& meshes) {
-        DWORD mesh_count, unused;
-        HANDLE file = CreateFile(file_path,GENERIC_WRITE,0,0,CREATE_ALWAYS,0,0);
+        HANDLE file = CreateFile(file_path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
         if (file == INVALID_HANDLE_VALUE) {
             return false;
         }
-        mesh_count = meshes.size();
-        WriteFile(file, &mesh_count, 4, &unused, 0 );
+
+        DWORD unused, mesh_count = meshes.size();
+        WriteFile(file, &mesh_count, sizeof(mesh_count), &unused, 0);
 
         for (size_t i = 0; i < meshes.size(); ++i) {
             if (!meshes[i].Save(file)) {
@@ -174,15 +174,14 @@ public:
         float scaleX, scaleY;
     };
 
-    float top, left, bottom, right;
+    float minX, minY, maxX, maxY;
     float* data;
-    size_t data_height;
-    size_t data_width;
+    size_t data_width, data_height;
     AtlasRegion* atlas_data;
     size_t atlas_count;
 
-    HeightFieldSampler(float* d, size_t dh, size_t dw, float* adata, size_t ac, float t, float l, float b, float r) :
-        top(t), left(l), bottom(b), right(r), data(d), data_height(dh), data_width(dw),
+    HeightFieldSampler(float* d, size_t dw, size_t dh, float* adata, size_t ac, float _minX, float _minY, float _maxX, float _maxY) :
+         minX(_minX), minY(_minY), maxX(_maxX), maxY(_maxY), data(d), data_width(dw), data_height(dh),
         atlas_data(reinterpret_cast<AtlasRegion*>(adata)), atlas_count(ac) {}
     ~HeightFieldSampler() {}
 
@@ -201,15 +200,15 @@ public:
 
     float SampleHeight(float x, float y) {
         // Figure which height values to sample.
-        size_t low_x, high_x, low_y, high_y;
+        int low_x, high_x, low_y, high_y;
 
-        float data_x = (x - left) / 128.0f;
-        float data_y = (y - bottom) / 128.0f;
+        float data_x = (x - minX) / 128.0f;
+        float data_y = (y - minY) / 128.0f;
 
-        low_x = (size_t)floor(data_x);
-        high_x = (size_t)ceil(data_x);
-        low_y = (size_t)floor(data_y);
-        high_y = (size_t)ceil(data_y);
+        low_x = (int)floor(data_x);
+        high_x = (int)ceil(data_x);
+        low_y = (int)floor(data_y);
+        high_y = (int)ceil(data_y);
 
         // Bilinear interpolation
         float x_interp = data_x - (float)low_x;
@@ -224,7 +223,7 @@ public:
         return result;
     }
 
-    float GetHeightValue(size_t x, size_t y) {
+    float GetHeightValue(int x, int y) {
         if (x < 0) {
             x = 0;
         }
@@ -771,10 +770,10 @@ public:
     }
 };
 
-extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, unsigned int data_height, unsigned int data_width, float* atlas_data, unsigned int atlas_count, float top, float left, float bottom, float right, float error_tolerance) {
+extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, unsigned int data_width, unsigned int data_height, float* atlas_data, unsigned int atlas_count, float minX, float minY, float maxX, float maxY, float error_tolerance) {
 
     // Create sampler
-    HeightFieldSampler sampler(height_data, data_height, data_width, atlas_data, atlas_count, top, left, bottom, right);
+    HeightFieldSampler sampler(height_data, data_width, data_height, atlas_data, atlas_count, minX, minY, maxX, maxY);
 
     // Create patches
     const float patch_width = 32768.0f, patch_height = 32768.0f;
@@ -783,7 +782,7 @@ extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, 
 
     vector<RoamLandPatch> patches;
 
-    Vector3 corner(left, bottom, 0.0f);
+    Vector3 corner(minX, minY, 0.0f);
 
     // Fill in patch data
     patches.resize(patches_across * patches_down);
@@ -803,7 +802,7 @@ extern "C" void TessellateLandscapeAtlased(char* file_path, float* height_data, 
         }
         // Move the corner up and back to the left edge for the next patch
         corner.y += patch_height;
-        corner.x = left;
+        corner.x = minX;
     }
 
     // Connect neighboring patches

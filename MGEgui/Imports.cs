@@ -22,9 +22,9 @@ namespace MGEgui {
         [DllImport("MGE3/MGEfuncs.dll", CallingConvention = CallingConvention.StdCall,
             CharSet = CharSet.Ansi, EntryPoint = "TessellateLandscapeAtlased")]
         internal static extern void TessellateLandscapeAtlased([MarshalAs(UnmanagedType.LPStr)] string file_path,
-                                                               [MarshalAs(UnmanagedType.LPArray)] float[] height_data, uint data_height, uint data_width,
+                                                               [MarshalAs(UnmanagedType.LPArray)] float[] height_data, uint data_width, uint data_height,
                                                                [MarshalAs(UnmanagedType.LPArray)] float[] atlas_data, uint atlas_count,
-                                                               float top, float left, float bottom, float right, float error_tolerance);
+                                                               float minX, float minY, float maxX, float maxY, float error_tolerance);
 
         [DllImport("MGE3/MGEfuncs.dll", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Ansi, EntryPoint = "GetVertSize")]
         internal static extern int GetVertSize();

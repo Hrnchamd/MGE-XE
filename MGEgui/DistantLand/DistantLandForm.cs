@@ -2224,32 +2224,27 @@ namespace MGEgui.DistantLand {
         /* Land mesh methods */
 
         private void GenerateWorldMesh(int detail, string path) {
-            // Generate optimized landscape mesh
+            // Landscape detail selection
+            float tolerance = 125.0f;
+            if (detail >= 0 && detail <= 4) {
+                var toleranceOptions = new float[] { 15.0f, 70.0f, 125.0f, 180.0f, 235.0f };
+                tolerance = toleranceOptions[detail];
+            }
+
+            // Produce large heightmap array
             int MapSpanX = MapMaxX - MapMinX + 1;
             int MapSpanY = MapMaxY - MapMinY + 1;
-            int MapOffsetX = -MapMinX;
-            int MapOffsetY = -MapMinY;
             int DataSpanX = MapSpanX * 64;
             int DataSpanY = MapSpanY * 64;
 
-            int vCount = 64 / (1 << detail);
-            float vSpacing = 128f * (float)(1 << detail);
-            int VertsAcross = MapSpanX * vCount;
-            int VertsDown = MapSpanY * vCount;
-            int tFaces = (VertsAcross - 1) * (VertsDown - 1) * 2;
-            int tVerts = VertsAcross * VertsDown;
-            float texMultX = 1 / (float)VertsAcross;
-            float texMultY = 1 / (float)VertsDown;
-
-            // Produce large heightmap array
             var height_data = new float[DataSpanX * DataSpanY];
 
             for (int y1 = MapMinY; y1 <= MapMaxY; y1++) {
                 for (int y2 = 0; y2 < 64; y2++) {
                     for (int x1 = MapMinX; x1 <= MapMaxX; x1++) {
                         for (int x2 = 0; x2 < 64; x2++) {
-                            int y = (y1 + MapOffsetY) * 64 + y2;
-                            int x = (x1 + MapOffsetX) * 64 + x2;
+                            int y = (y1 - MapMinY) * 64 + y2;
+                            int x = (x1 - MapMinX) * 64 + x2;
                             if (LandMap[x1, y1] != null) {
                                 height_data[y * DataSpanX + x] = (float)LandMap[x1, y1].Heights[x2, y2] * 8.0f;
                             } else {
@@ -2275,20 +2270,14 @@ namespace MGEgui.DistantLand {
                 iAtlas += 8;
             }
 
-            float left = (float)(MapMinX * 64) * 128.0f;
-            float right = (float)((MapMaxX + 1) * 64) * 128.0f;
-            float bottom = (float)(MapMinY * 64) * 128.0f;
-            float top = (float)((MapMaxY + 1) * 64) * 128.0f;
-
-            // Landscape detail selection
-            float tolerance = 125.0f;
-            if (detail >= 0 && detail <= 4) {
-                var toleranceOptions = new float[] { 15.0f, 70.0f, 125.0f, 180.0f, 235.0f };
-                tolerance = toleranceOptions[detail];
-            }
+            // Generate optimized landscape mesh
+            float minX = (float)MapMinX * 8192.0f;
+            float maxX = (float)(MapMaxX + 1) * 8192.0f;
+            float minY = (float)MapMinY * 8192.0f;
+            float maxY = (float)(MapMaxY + 1) * 8192.0f;
 
             backgroundWorker.ReportProgress(10, strings["LandTessellating"]);
-            NativeMethods.TessellateLandscapeAtlased(path, height_data, (uint)DataSpanY, (uint)DataSpanX, atlas_data, (uint)Atlas.Count, top, left, bottom, right, tolerance);
+            NativeMethods.TessellateLandscapeAtlased(path, height_data, (uint)DataSpanX, (uint)DataSpanY, atlas_data, (uint)Atlas.Count, minX, minY, maxX, maxY, tolerance);
         }
 
         /* Statics tab properties */
