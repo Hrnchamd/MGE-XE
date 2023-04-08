@@ -98,13 +98,20 @@ public:
     }
 
     static bool SaveMeshes(LPCSTR file_path, vector<LandMesh>& meshes) {
-        HANDLE file = CreateFile(file_path, GENERIC_WRITE, 0, 0, CREATE_ALWAYS, 0, 0);
+        HANDLE file = CreateFile(file_path, GENERIC_READ|GENERIC_WRITE, 0, 0, OPEN_ALWAYS, 0, 0);
         if (file == INVALID_HANDLE_VALUE) {
             return false;
         }
 
         DWORD unused, mesh_count = meshes.size();
+        if (GetFileSize(file, NULL) > 0) {
+            DWORD existing_count;
+            ReadFile(file, &existing_count, sizeof(existing_count), &unused, 0);
+            mesh_count += existing_count;
+            SetFilePointer(file, 0, NULL, FILE_BEGIN);
+        }
         WriteFile(file, &mesh_count, sizeof(mesh_count), &unused, 0);
+        SetFilePointer(file, 0, NULL, FILE_END);
 
         for (size_t i = 0; i < meshes.size(); ++i) {
             if (!meshes[i].Save(file)) {

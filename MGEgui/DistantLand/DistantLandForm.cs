@@ -2231,30 +2231,6 @@ namespace MGEgui.DistantLand {
                 tolerance = toleranceOptions[detail];
             }
 
-            // Produce large heightmap array
-            int MapSpanX = MapMaxX - MapMinX + 1;
-            int MapSpanY = MapMaxY - MapMinY + 1;
-            int DataSpanX = MapSpanX * 64;
-            int DataSpanY = MapSpanY * 64;
-
-            var height_data = new float[DataSpanX * DataSpanY];
-
-            for (int y1 = MapMinY; y1 <= MapMaxY; y1++) {
-                for (int y2 = 0; y2 < 64; y2++) {
-                    for (int x1 = MapMinX; x1 <= MapMaxX; x1++) {
-                        for (int x2 = 0; x2 < 64; x2++) {
-                            int y = (y1 - MapMinY) * 64 + y2;
-                            int x = (x1 - MapMinX) * 64 + x2;
-                            if (LandMap[x1, y1] != null) {
-                                height_data[y * DataSpanX + x] = (float)LandMap[x1, y1].Heights[x2, y2] * 8.0f;
-                            } else {
-                                height_data[y * DataSpanX + x] = -2048.0f;
-                            }
-                        }
-                    }
-                }
-            }
-
             // Produce packed atlas data
             var atlas_data = new float[8 * Atlas.Count];
             var iAtlas = 0;
@@ -2270,14 +2246,44 @@ namespace MGEgui.DistantLand {
                 iAtlas += 8;
             }
 
-            // Generate optimized landscape mesh
-            float minX = (float)MapMinX * 8192.0f;
-            float maxX = (float)(MapMaxX + 1) * 8192.0f;
-            float minY = (float)MapMinY * 8192.0f;
-            float maxY = (float)(MapMaxY + 1) * 8192.0f;
+            // Ensure previous landscape data is erased
+            if (File.Exists(path)) {
+                File.Delete(path);
+            }
 
-            backgroundWorker.ReportProgress(10, strings["LandTessellating"]);
-            NativeMethods.TessellateLandscapeAtlased(path, height_data, (uint)DataSpanX, (uint)DataSpanY, atlas_data, (uint)Atlas.Count, minX, minY, maxX, maxY, tolerance);
+            // Generate optimized landscape mesh
+            foreach (var r in Atlas) {
+                // Produce atlas region heightmap array
+                int RegionSpanX = r.MaxX - r.MinX + 1;
+                int RegionSpanY = r.MaxY - r.MinY + 1;
+                int DataSpanX = RegionSpanX * 64;
+                int DataSpanY = RegionSpanY * 64;
+                var height_data = new float[DataSpanX * DataSpanY];
+    
+                for (int y1 = r.MinY; y1 <= r.MaxY; y1++) {
+                    for (int y2 = 0; y2 < 64; y2++) {
+                        for (int x1 = r.MinX; x1 <= r.MaxX; x1++) {
+                            for (int x2 = 0; x2 < 64; x2++) {
+                                int y = (y1 - r.MinY) * 64 + y2;
+                                int x = (x1 - r.MinX) * 64 + x2;
+                                if (LandMap[x1, y1] != null) {
+                                    height_data[y * DataSpanX + x] = (float)LandMap[x1, y1].Heights[x2, y2] * 8.0f;
+                                } else {
+                                    height_data[y * DataSpanX + x] = -2048.0f;
+                                }
+                            }
+                        }
+                    }
+                }
+    
+                float minX = (float)r.MinX * 8192.0f;
+                float maxX = (float)(r.MaxX + 1) * 8192.0f;
+                float minY = (float)r.MinY * 8192.0f;
+                float maxY = (float)(r.MaxY + 1) * 8192.0f;
+    
+                backgroundWorker.ReportProgress(10, strings["LandTessellating"]);
+                NativeMethods.TessellateLandscapeAtlased(path, height_data, (uint)DataSpanX, (uint)DataSpanY, atlas_data, (uint)Atlas.Count, minX, minY, maxX, maxY, tolerance);
+            }
         }
 
         /* Statics tab properties */
