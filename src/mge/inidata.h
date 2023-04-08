@@ -163,6 +163,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, USE_HW_SHADER_BIT, siniRendState, "Hardware Shader", False, &dictBool, DICTONLY, 0, 0},
     {&Configuration.HDRReactionSpeed, t_float, 1, siniRendState, "HDR Reaction Time", "2", NULL, MINMAX, 0.01, 30},
+    {&Configuration.UseDefaultTexturePool, t_bool, 1, siniRendState, "Reduce Texture Memory Use", True, &dictBool, DICTONLY|DONT_SAVE, 0, 0},
     {&Configuration.PerPixelLightFlags, t_uint32, 1, siniDL, "Per Pixel Shader Flags", "Always", &dictPPLFlags, DICTONLY, 0, 0},
 
     // Generic variables
@@ -257,9 +258,6 @@ const iniSetting iniSettings[] = {
     {&Configuration.Input.Macros, t_set, sizeof(Configuration.Input.Macros), siniMacros, NULL, NULL, NULL, DONT_SAVE, 0, 0},
     {&Configuration.Input.Triggers, t_set, sizeof(Configuration.Input.Triggers), siniTriggers, NULL, NULL, NULL, DONT_SAVE, 0, 0},
     {&Configuration.Input.Remap, t_set, sizeof(Configuration.Input.Remap), siniRemap, NULL, NULL, NULL, DONT_SAVE, 0, 0},
-
-    // Beta
-    {&Configuration.Beta.UseDefaultTexturePool, t_bool, 1, siniMisc, "Beta Test Use Default Texture Pool", "False", &dictBool, DICTONLY|DONT_SAVE, 0, 0}
 };
 
 #endif /* _INIDATA_H_ */

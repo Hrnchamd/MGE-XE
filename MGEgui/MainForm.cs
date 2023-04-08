@@ -81,15 +81,16 @@ namespace MGEgui {
             { "AntiAlias", new string [] { "cmbAntiAlias", "lAntiAlias" } },
             { "AnisoLevel", new string [] { "cmbAnisoLevel", "lAnisoLevel" } },
             { "VWait", new string [] { "cmbVWait", "lVWait" } },
+            { "HWShader", new string [] { "cbHWShader" } },
+            { "ShaderEd", new string [] { "bShaderEd" } },
+            { "FPSCounter", new string [] { "cbFPSCounter" } },
+            { "ReduceTextureMemUse", new string[] { "cbReduceTextureMemUse" } },
             { "FOV", new string [] { "udFOV", "lFOV" } },
             { "AutoFOV", new string [] { "cbAutoFOV" } },
             { "FPSLimit", new string [] { "udFPSLimit", "lFPSLimit" } },
             { "LOD", new string [] { "udLOD", "lLOD" } },
-            { "FogMode", new string [] { "cmbFogMode", "lFogMode" } },
-            { "FPSCounter", new string [] { "cbFPSCounter" } },
-            { "HWShader", new string [] { "cbHWShader" } },
-            { "ShaderEd", new string [] { "bShaderEd" } },
             { "UIScale", new string [] { "udUIScale", "lUIScale" } },
+            { "FogMode", new string [] { "cmbFogMode", "lFogMode" } },
             { "SShotFormat", new string [] { "cmbSShotFormat", "lSShotFormat" } },
             { "SShotName", new string [] { "lSShotName", "tbSShotName" } },
             { "SShotSuffix", new string [] { "cmbSShotSuffix", "lSShotSuffix" } },
@@ -331,10 +332,11 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "8x", anisoLevelDict);
         private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Range vertex", fogModeDict);
         private static INIFile.INIVariableDef iniTransparencyAA = new INIFile.INIVariableDef("TrAA", siniRendState, "Transparency Antialiasing", INIFile.INIBoolType.OnOff, "On");
-        private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniMessages = new INIFile.INIVariableDef("Messages", siniRendState, "MGE Messages", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniMsgTime = new INIFile.INIVariableDef("MsgTime", siniRendState, "MGE Messages Timeout", INIFile.INIVariableType.UInt16, "2000", 500, 50000);
         private static INIFile.INIVariableDef iniHWShader = new INIFile.INIVariableDef("HWShader", siniRendState, "Hardware Shader", INIFile.INIBoolType.OnOff, "Off");
+        private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
+        private static INIFile.INIVariableDef iniReduceTexMemUse = new INIFile.INIVariableDef("ReduceTexMemUse", siniRendState, "Reduce Texture Memory Use", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniHDRTime = new INIFile.INIVariableDef("HDRTime", siniRendState, "HDR Reaction Time", INIFile.INIVariableType.Single, "2", 0.01, 30, 2);
         private static INIFile.INIVariableDef iniFOVAuto = new INIFile.INIVariableDef("FOVAuto", siniRendState, "Match FOV To Aspect Ratio", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
@@ -392,10 +394,10 @@ namespace MGEgui {
             // Main
             iniVersion, iniTipSpeed, iniLanguage, iniAutoLang,
             // Graphics
-            iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
-            iniAnisoLvl, iniFOVAuto, iniFOV, iniFogMode,
-            iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
-            iniUIScale, iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
+            iniAntiAlias, iniAnisoLvl, iniTransparencyAA, iniVWait, iniRefresh, iniBorderless,
+            iniFOVAuto, iniFOV, iniUIScale, iniFogMode,
+            iniHWShader, iniHDRTime, iniFPSCount, iniReduceTexMemUse,
+            iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniSkipIntro, iniAltCombat,
             iniCam3rdCustom, iniCam3rdX, iniCam3rdY, iniCam3rdZ,
@@ -441,15 +443,14 @@ namespace MGEgui {
                 tbRefreshRate.Text = "Default";
             }
             cbBorderless.Checked = (iniFile.getKeyValue("Borderless") == 1);
+            cbHWShader.Checked = (iniFile.getKeyValue("HWShader") == 1);
+            cbFPSCounter.Checked = (iniFile.getKeyValue("FPSCount") == 1);
+            cbReduceTextureMemUse.Checked = (iniFile.getKeyValue("ReduceTexMemUse") == 1);
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue("AnisoLvl");
-            cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue("FogMode");
             cbAutoFOV.Checked = (iniFile.getKeyValue("FOVAuto") == 1);
             udFOV.Value = (decimal)iniFile.getKeyValue("FOV");
-            cbFPSCounter.Checked = (iniFile.getKeyValue("FPSCount") == 1);
-            cbDisplayMessages.Checked = (iniFile.getKeyValue("Messages") == 1);
-            udMsgsTime.Value = (decimal)iniFile.getKeyValue("MsgTime");
-            cbHWShader.Checked = (iniFile.getKeyValue("HWShader") == 1);
             udUIScale.Value = (decimal)iniFile.getKeyValue("UIScale");
+            cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue("FogMode");
             cmbSShotFormat.SelectedIndex = (int)iniFile.getKeyValue("SSFormat");
             cmbSShotSuffix.SelectedIndex = (int)iniFile.getKeyValue("SSSuffix");
             tbSShotDir.Text = iniFile.getKeyString("SSDir");
@@ -457,6 +458,8 @@ namespace MGEgui {
                 bSSDirClear_Click(null, null);
             }
             tbSShotName.Text = iniFile.getKeyString("SSName");
+            cbDisplayMessages.Checked = (iniFile.getKeyValue("Messages") == 1);
+            udMsgsTime.Value = (decimal)iniFile.getKeyValue("MsgTime");
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue("DisableMWSE") == 1);
@@ -518,14 +521,15 @@ namespace MGEgui {
             iniFile.setKey("Refresh", tbRefreshRate.Text);
             iniFile.setKey("Borderless", cbBorderless.Checked);
             iniFile.setKey("AnisoLvl", cmbAnisoLevel.SelectedIndex);
-            iniFile.setKey("FogMode", cmbFogMode.SelectedIndex);
+            iniFile.setKey("HWShader", cbHWShader.Checked);
+            iniFile.setKey("FPSCount", cbFPSCounter.Checked);
+            iniFile.setKey("ReduceTexMemUse", cbReduceTextureMemUse.Checked);
             iniFile.setKey("FOVAuto", cbAutoFOV.Checked);
             iniFile.setKey("FOV", (double)udFOV.Value);
-            iniFile.setKey("FPSCount", cbFPSCounter.Checked);
+            iniFile.setKey("UIScale", (double)udUIScale.Value);
+            iniFile.setKey("FogMode", cmbFogMode.SelectedIndex);
             iniFile.setKey("Messages", cbDisplayMessages.Checked);
             iniFile.setKey("MsgTime", (double)udMsgsTime.Value);
-            iniFile.setKey("HWShader", cbHWShader.Checked);
-            iniFile.setKey("UIScale", (double)udUIScale.Value);
             iniFile.setKey("SSFormat", cmbSShotFormat.SelectedIndex);
             iniFile.setKey("SSSuffix", cmbSShotSuffix.SelectedIndex);
             if (tbSShotDir.TextAlign == HorizontalAlignment.Left) {

@@ -95,6 +95,7 @@ namespace MGEgui {
             this.bSShotDirBrowse = new System.Windows.Forms.Button();
             this.bSShotDirClear = new System.Windows.Forms.Button();
             this.gbScene = new System.Windows.Forms.GroupBox();
+            this.cbReduceTextureMemUse = new System.Windows.Forms.CheckBox();
             this.cbAutoFOV = new System.Windows.Forms.CheckBox();
             this.udUIScale = new System.Windows.Forms.NumericUpDown();
             this.lUIScale = new System.Windows.Forms.Label();
@@ -1121,6 +1122,7 @@ namespace MGEgui {
             // 
             this.gbScene.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbScene.Controls.Add(this.cbReduceTextureMemUse);
             this.gbScene.Controls.Add(this.cbAutoFOV);
             this.gbScene.Controls.Add(this.udUIScale);
             this.gbScene.Controls.Add(this.lUIScale);
@@ -1139,6 +1141,16 @@ namespace MGEgui {
             this.gbScene.TabIndex = 1;
             this.gbScene.TabStop = false;
             this.gbScene.Text = "Renderer";
+            // 
+            // cbReduceTextureMemUse
+            // 
+            this.cbReduceTextureMemUse.AutoSize = true;
+            this.cbReduceTextureMemUse.Location = new System.Drawing.Point(12, 86);
+            this.cbReduceTextureMemUse.Name = "cbReduceTextureMemUse";
+            this.cbReduceTextureMemUse.Size = new System.Drawing.Size(173, 19);
+            this.cbReduceTextureMemUse.TabIndex = 24;
+            this.cbReduceTextureMemUse.Text = "Reduce texture memory use";
+            this.cbReduceTextureMemUse.UseVisualStyleBackColor = true;
             // 
             // cbAutoFOV
             // 
@@ -1272,7 +1284,7 @@ namespace MGEgui {
             // cbFPSCounter
             // 
             this.cbFPSCounter.AutoSize = true;
-            this.cbFPSCounter.Location = new System.Drawing.Point(12, 63);
+            this.cbFPSCounter.Location = new System.Drawing.Point(12, 61);
             this.cbFPSCounter.Name = "cbFPSCounter";
             this.cbFPSCounter.Size = new System.Drawing.Size(86, 19);
             this.cbFPSCounter.TabIndex = 5;
@@ -3019,6 +3031,7 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.CheckBox cbReduceTextureMemUse;
         private System.Windows.Forms.Panel panelSShotDirButtons;
         private System.Windows.Forms.Label lScreenshotHelp;
         private System.Windows.Forms.CheckBox cbAutoFOV;

@@ -66,12 +66,12 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             LOG::logline("MWSE is disabled.");
         }
 
+        // Early startup patches
         if (Configuration.MGEFlags & SKIP_INTRO) {
             MWInitPatch::disableIntroMovies();
         }
 
-        if (Configuration.Beta.UseDefaultTexturePool) {
-            LOG::logline("Beta Testing: Use Default Texture Pool");
+        if (Configuration.UseDefaultTexturePool) {
             MWInitPatch::patchTextureLoading();
         }
 

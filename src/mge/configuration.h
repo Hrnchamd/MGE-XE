@@ -89,6 +89,7 @@ struct ConfigurationStruct {
     bool Borderless;
     BYTE AnisoLevel;
     BYTE ScaleFilter;
+    bool UseDefaultTexturePool;
     float ScreenFOV;
     BYTE FogMode;
     BYTE SSFormat;
@@ -146,10 +147,6 @@ struct ConfigurationStruct {
     } Input;
 
     char ShaderChain[512];
-
-    struct {
-        bool UseDefaultTexturePool;
-    } Beta;
 
     bool LoadSettings();
     bool SaveSettings();
