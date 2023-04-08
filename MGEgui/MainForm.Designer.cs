@@ -103,8 +103,6 @@ namespace MGEgui {
             this.bShaderEd = new System.Windows.Forms.Button();
             this.cmbFogMode = new System.Windows.Forms.ComboBox();
             this.lFogMode = new System.Windows.Forms.Label();
-            this.lLOD = new System.Windows.Forms.Label();
-            this.udLOD = new System.Windows.Forms.NumericUpDown();
             this.cbHWShader = new System.Windows.Forms.CheckBox();
             this.cbFPSCounter = new System.Windows.Forms.CheckBox();
             this.udFOV = new System.Windows.Forms.NumericUpDown();
@@ -242,7 +240,6 @@ namespace MGEgui {
             this.gbScene.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udLOD)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).BeginInit();
             this.gbDisplay.SuspendLayout();
             this.tableAlignResolution.SuspendLayout();
@@ -1132,8 +1129,6 @@ namespace MGEgui {
             this.gbScene.Controls.Add(this.bShaderEd);
             this.gbScene.Controls.Add(this.cmbFogMode);
             this.gbScene.Controls.Add(this.lFogMode);
-            this.gbScene.Controls.Add(this.lLOD);
-            this.gbScene.Controls.Add(this.udLOD);
             this.gbScene.Controls.Add(this.cbHWShader);
             this.gbScene.Controls.Add(this.cbFPSCounter);
             this.gbScene.Controls.Add(this.udFOV);
@@ -1166,7 +1161,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     131072});
-            this.udUIScale.Location = new System.Drawing.Point(12, 102);
+            this.udUIScale.Location = new System.Drawing.Point(446, 103);
             this.udUIScale.Maximum = new decimal(new int[] {
                                     4,
                                     0,
@@ -1190,7 +1185,7 @@ namespace MGEgui {
             // lUIScale
             // 
             this.lUIScale.AutoSize = true;
-            this.lUIScale.Location = new System.Drawing.Point(83, 104);
+            this.lUIScale.Location = new System.Drawing.Point(517, 105);
             this.lUIScale.Name = "lUIScale";
             this.lUIScale.Size = new System.Drawing.Size(92, 15);
             this.lUIScale.TabIndex = 22;
@@ -1264,41 +1259,6 @@ namespace MGEgui {
             this.lFogMode.Size = new System.Drawing.Size(61, 15);
             this.lFogMode.TabIndex = 12;
             this.lFogMode.Text = "Fog mode";
-            // 
-            // lLOD
-            // 
-            this.lLOD.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.lLOD.AutoSize = true;
-            this.lLOD.Location = new System.Drawing.Point(517, 104);
-            this.lLOD.Name = "lLOD";
-            this.lLOD.Size = new System.Drawing.Size(102, 15);
-            this.lLOD.TabIndex = 9;
-            this.lLOD.Text = "Mipmap LOD bias";
-            // 
-            // udLOD
-            // 
-            this.udLOD.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.udLOD.DecimalPlaces = 2;
-            this.udLOD.Increment = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    65536});
-            this.udLOD.Location = new System.Drawing.Point(447, 103);
-            this.udLOD.Maximum = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    0});
-            this.udLOD.Minimum = new decimal(new int[] {
-                                    1,
-                                    0,
-                                    0,
-                                    -2147483648});
-            this.udLOD.Name = "udLOD";
-            this.udLOD.Size = new System.Drawing.Size(64, 23);
-            this.udLOD.TabIndex = 11;
-            this.udLOD.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // cbHWShader
             // 
@@ -2991,7 +2951,6 @@ namespace MGEgui {
             this.gbScene.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udUIScale)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.udLOD)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).EndInit();
             this.gbDisplay.ResumeLayout(false);
             this.gbDisplay.PerformLayout();
@@ -3137,7 +3096,6 @@ namespace MGEgui {
         public CheckBox cbAltCombat;
         public CheckBox cbSkipMovie;
         public Button bMacroEd;
-        public Label lLOD;
         public Label lSShotFormat;
         public CheckBox cbHWShader;
         public ComboBox cmbSShotFormat;
@@ -3171,7 +3129,6 @@ namespace MGEgui {
         public Label lDLFogStart;
         public Label lDLFogEnd;
         public NumericUpDown udDLDrawDist;
-        public NumericUpDown udLOD;
         public NumericUpDown udDLSizeVeryFar;
         public NumericUpDown udDLSizeFar;
         public NumericUpDown udDLDistVeryFar;

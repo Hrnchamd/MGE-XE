@@ -329,7 +329,6 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniRefresh = new INIFile.INIVariableDef("Refresh", siniGlobGraph, "Refresh Rate", INIFile.INIVariableType.Byte, "Default", refreshDict, 0, 240);
         private static INIFile.INIVariableDef iniBorderless = new INIFile.INIVariableDef("Borderless", siniGlobGraph, "Borderless Window", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniAnisoLvl = new INIFile.INIVariableDef("AnisoLvl", siniRendState, "Anisotropic Filtering Level", INIFile.INIVariableType.Dictionary, "8x", anisoLevelDict);
-        private static INIFile.INIVariableDef iniLODBias = new INIFile.INIVariableDef("LODBias", siniRendState, "Mipmap LOD Bias", INIFile.INIVariableType.Single, "0", -1, 1, 3);
         private static INIFile.INIVariableDef iniFogMode = new INIFile.INIVariableDef("FogMode", siniRendState, "Fog Mode", INIFile.INIVariableType.Dictionary, "Range vertex", fogModeDict);
         private static INIFile.INIVariableDef iniTransparencyAA = new INIFile.INIVariableDef("TrAA", siniRendState, "Transparency Antialiasing", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFPSCount = new INIFile.INIVariableDef("FPSCount", siniRendState, "MGE FPS Counter", INIFile.INIBoolType.OnOff, "Off");
@@ -394,7 +393,7 @@ namespace MGEgui {
             iniVersion, iniTipSpeed, iniLanguage, iniAutoLang,
             // Graphics
             iniAntiAlias, iniVWait, iniRefresh, iniBorderless,
-            iniAnisoLvl, iniLODBias, iniFOVAuto, iniFOV, iniFogMode,
+            iniAnisoLvl, iniFOVAuto, iniFOV, iniFogMode,
             iniTransparencyAA, iniFPSCount, iniHWShader, iniHDRTime,
             iniUIScale, iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
@@ -443,7 +442,6 @@ namespace MGEgui {
             }
             cbBorderless.Checked = (iniFile.getKeyValue("Borderless") == 1);
             cmbAnisoLevel.SelectedIndex = (int)iniFile.getKeyValue("AnisoLvl");
-            udLOD.Value = (decimal)iniFile.getKeyValue("LODBias");
             cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue("FogMode");
             cbAutoFOV.Checked = (iniFile.getKeyValue("FOVAuto") == 1);
             udFOV.Value = (decimal)iniFile.getKeyValue("FOV");
@@ -520,7 +518,6 @@ namespace MGEgui {
             iniFile.setKey("Refresh", tbRefreshRate.Text);
             iniFile.setKey("Borderless", cbBorderless.Checked);
             iniFile.setKey("AnisoLvl", cmbAnisoLevel.SelectedIndex);
-            iniFile.setKey("LODBias", (double)udLOD.Value);
             iniFile.setKey("FogMode", cmbFogMode.SelectedIndex);
             iniFile.setKey("FOVAuto", cbAutoFOV.Checked);
             iniFile.setKey("FOV", (double)udFOV.Value);

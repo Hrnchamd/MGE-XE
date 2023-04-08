@@ -89,7 +89,6 @@ struct ConfigurationStruct {
     bool Borderless;
     BYTE AnisoLevel;
     BYTE ScaleFilter;
-    float LODBias;
     float ScreenFOV;
     BYTE FogMode;
     BYTE SSFormat;

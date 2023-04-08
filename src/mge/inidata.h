@@ -158,7 +158,6 @@ const iniSetting iniSettings[] = {
     {&Configuration.RefreshRate, t_uint8, 1, siniGlobGraph, "Refresh Rate", "Default", &dictRefrRate, MINMAX|DONT_SAVE, 0, 240},
     {&Configuration.Borderless, t_bool, 1, siniGlobGraph, "Borderless Window", "True", &dictBool, DICTONLY|DONT_SAVE, 0, 0},
     {&Configuration.AnisoLevel, t_uint8, 1, siniRendState, "Anisotropic Filtering Level", "Off", &dictAnisoLvl, DICTONLY|DONT_SAVE, 0, 0},
-    {&Configuration.LODBias, t_float, 1, siniRendState, "Mipmap LOD Bias", "0", NULL, MINMAX, -2, 2},
     {&Configuration.ScreenFOV, t_float, 1, siniRendState, "Horizontal Screen FOV", "75", NULL, MINMAX, 5, 150},
     {&Configuration.FogMode, t_uint8, 1, siniRendState, "Fog Mode", "Depth pixel", &dictFogMode, DICTONLY, 0, 0},
     {&Configuration.MGEFlags, t_bit, TRANSPARENCY_AA_BIT, siniRendState, "Transparency Antialiasing", True, &dictBool, DICTONLY, 0, 0},
