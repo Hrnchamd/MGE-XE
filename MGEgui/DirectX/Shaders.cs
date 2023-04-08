@@ -127,6 +127,18 @@ namespace MGEgui.DirectX {
             } catch {
             }
             try {
+                effect.SetValue("fognearstart", 819.2f);
+            } catch {
+            }
+            try {
+                effect.SetValue("fognearrange", 65536.0f);
+            } catch {
+            }
+            try {
+                effect.SetValue("fognearcol", new Vector3(0.34f, 0.41f, 0.68f));
+            } catch {
+            }
+            try {
                 effect.SetValue("waterlevel", 0f);
             } catch {
             }
@@ -145,32 +157,32 @@ namespace MGEgui.DirectX {
 
             int count = 1;
             while (true) {
-                string texpath = null;
-                EffectHandle texvar = new EffectHandle("tex" + count.ToString());
+                string texPath = null;
+                string texVar = "tex" + count.ToString();
 
                 try {
-                    texpath = effect.GetAnnotation(texvar, "name");
-                }
-                catch (SlimDXException) {
-                }
-                try {
-                    texpath = effect.GetString("texname" + count.ToString());
-                } catch (SlimDXException) {
-                }
-
-                if (texpath != null) {
-                    try {
-                        Texture tex = Texture.FromFile(DXMain.device, Path.Combine(Statics.runDir, Statics.fn_textures, texpath));
-                        effect.SetTexture(texvar, tex);
-                    } catch (SlimDXException) {
+                    var texParam = effect.GetParameter(null, texVar);
+                    if (texParam != null) {
+                        texPath = effect.GetString(effect.GetAnnotation(texParam, "src"));
                     }
-                } else {
+                } catch (SlimDXException) {}
+                if (texPath == null) {
+                    try {
+                        texPath = effect.GetString("texname" + count.ToString());
+                    } catch (SlimDXException) {}
+                }
+                if (texPath == null) {
                     break;
                 }
+
+                try {
+                    Texture tex = Texture.FromFile(DXMain.device, Path.Combine(Statics.runDir, Statics.fn_textures, texPath));
+                    effect.SetTexture(texVar, tex);
+                } catch (SlimDXException) {}
                 count++;
             }
 
-            shader s = new shader();
+            var s = new shader();
             try {
                 s.ehTime = effect.GetParameter(null, "time");
             } catch {

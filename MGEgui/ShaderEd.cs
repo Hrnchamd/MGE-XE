@@ -651,14 +651,14 @@ namespace MGEgui {
         }
 
         private void bSetImage_Click(object sender, EventArgs e) {
-            OpenImage.FileName = FramePath ?? Path.Combine(Statics.runDir, Statics.fn_testImagePath + "preview_frame.dds");
+            OpenImage.FileName = FramePath ?? Path.Combine(Statics.runDir, Statics.fn_testImagePath, "preview_frame.dds");
             if (OpenImage.ShowDialog() == DialogResult.OK) {
                 FramePath = OpenImage.FileName;
             }
         }
 
         private void bSetDepthImage_click(object sender, EventArgs e) {
-            OpenImage.FileName = DepthPath ?? Path.Combine(Statics.runDir, Statics.fn_testImagePath + "preview_depth.dds");
+            OpenImage.FileName = DepthPath ?? Path.Combine(Statics.runDir, Statics.fn_testImagePath, "preview_depth.dds");
             if (OpenImage.ShowDialog() == DialogResult.OK) {
                 DepthPath = OpenImage.FileName;
             }
