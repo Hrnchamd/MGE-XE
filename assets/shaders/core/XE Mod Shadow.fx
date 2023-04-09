@@ -140,6 +140,10 @@ float4 RenderShadowsPS(RenderShadowVertOut IN): COLOR0 {
     float dz = shadowDeltaZ(IN.shadow0pos, IN.shadow1pos);
     clip(-dz);
     float v = shadowESM(dz) * IN.light * alpha;
+    
+    // Fade out shadows at map edges
+    float2 fade = saturate(25 * (1 - abs(IN.shadow1pos.xy)));
+    v = v * fade.x * fade.y;
 
     // Darken shadow area according to existing lighting (slightly towards blue)
     clip(v - 2.0/255.0);
