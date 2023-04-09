@@ -1,7 +1,7 @@
 
-MGE XE 0.15.3
+MGE XE 0.16.0
 -------------
-Released 2023-03-16
+Released 2023-04-09
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -78,9 +78,19 @@ Uninstall
 Uninstall from Control Panel or by running uninstall_MGEXE.exe. If you installed manually, delete MGEXEgui.exe, d3d8.dll, dinput8.dll and the mge3 directory.
 
 
+Performance
+-----------
+If performance is disappointing, there are multiple causes. Firstly, the base engine is single threaded and old. Cities and NPC dense areas are always going to have lower performance than everywhere else. Many but not all MGE XE options can be changed in-game by pressing Esc, then selecting Mod Options and finding MGE XE in the list. Other options have to be set in MGEXEgui.
+
+A few things to try and improve performance, ranked by impact:
+
+- Reduce distant land draw distance. This makes the biggest difference in framerate.
+- Turn SSAO to medium or off. SSAO is a heavy shader and high quality is too much overhead for resolutions over 1080p.
+- Set sun shadow detail to medium. Shadows are not very intensive on desktop GPUs but may be an issue on portable computers.
+
+
 You might want to know
 ----------------------
-
 MGE XE includes an install option for MWSE 2.1 by NullCascade. ( https://github.com/MWSE/MWSE/ ) MWSE mods are therefore supported while you are using MGE XE; the MWSE launcher is not required. MWSE is receiving regular fixes and improves, and can be updated by running MWSE-Update.exe in the Morrowind directory. For MWSE mod support you should contact the mod author.
 
 Many rendering settings can be changed in-game using the MGE XE mod options window, which is new in v0.14. A lot of settings are now dynamically adjustable.
@@ -113,15 +123,26 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.16.0
+- Added a "Reduce texture memory use" option, enabled by default. This keeps textures in VRAM only and not system memory, reducing the biggest use of RAM and making out-of-memory crashes less likely.
+- Reduced memory usage of distant landscape generation when including isolated landmasses placed far from the main game. This should fix some out-of-memory errors during generation.
+- Added sun shadow detail setting, which defaults to high detail. Shadows also fade out more cleanly at the edge of the casting area.
+- Improve sky rendering. Added a separate shader for clouds. XE Mod Sky core mods need updating to work.
+- Fixed sparkling of stars in the night sky, without impacting moon texture detail.
+- Tweak sun disc appearance in Sunshafts shader.
+- Removed LOD bias from renderer and MGEXEgui. LOD bias is no longer useful with high resolution textures.
+- Generation will warn and skip cells placed far outside of the land generation area, instead of stopping with an exception.
+- Removed 16x AA mode, as nearly all graphics cards no longer support that specific mode.
+
 0.15.3
-- Fix (rare) missing transparency on distant objects with complex model properties. Distant land regeneration is required.
+- Fixed (rare) missing transparency on distant objects with complex model properties. Distant land regeneration is required.
 - Minor fix for vertex colours on distant statics.
 
 0.15.2
 - Catch when Morrowind's adapter (video card/monitor output) selection is no longer valid and reset to default.
-- Fix distant texture scrolling effect not working for some custom models.
-- Fix distant land generator freezing/crashing on models without normals.
-- Fix dynamic visibility for Firemoth quest boats.
+- Fixed distant texture scrolling effect not working for some custom models.
+- Fixed distant land generator freezing/crashing on models without normals.
+- Fixed dynamic visibility for Firemoth quest boats.
 
 0.15.1
 - High quality atmosphere mode now has added skylight customization through the API. It affects the both the sky and the atmosphere haze colour, which allows unnatural weathers to be created. It will be accessible through a new version of Weather Adjuster.
