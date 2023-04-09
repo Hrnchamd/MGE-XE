@@ -87,9 +87,7 @@ void DistantLand::renderStage0() {
 
             // Sky scattering and sky objects (should be drawn late as possible)
             if ((Configuration.MGEFlags & USE_ATM_SCATTER) && mwBridge->CellHasWeather()) {
-                effect->BeginPass(PASS_RENDERSKY);
                 renderSky();
-                effect->EndPass();
             }
 
             // Update reflection

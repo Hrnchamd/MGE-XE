@@ -308,10 +308,29 @@ Technique T0 {
         AlphaBlendEnable = true;
         SrcBlend = SrcAlpha;
         DestBlend = InvSrcAlpha;
-        AlphaTestEnable = false;
+        AlphaTestEnable = true;
+        AlphaFunc = GreaterEqual;
+        AlphaRef = 1;
 
         VertexShader = compile vs_3_0 SkyVS();
         PixelShader = compile ps_3_0 SkyPS();
+    }
+    //------------------------------------------------------------
+    // Used for rendering clouds
+    Pass P5clouds {
+        ZEnable = true;
+        ZWriteEnable = false;
+        CullMode = CW;
+
+        AlphaBlendEnable = true;
+        SrcBlend = SrcAlpha;
+        DestBlend = InvSrcAlpha;
+        AlphaTestEnable = true;
+        AlphaFunc = GreaterEqual;
+        AlphaRef = 1;
+
+        VertexShader = compile vs_3_0 CloudsVS();
+        PixelShader = compile ps_3_0 CloudsPS();
     }
     //------------------------------------------------------------
     // Used for rendering water plane
