@@ -461,7 +461,7 @@ namespace MGEgui.DistantLand {
         private void workerLoadPlugins(object sender, System.ComponentModel.DoWorkEventArgs e) {
             LandMap = (LAND[,])Array.CreateInstance(typeof(LAND), new int[] {
                 501,
-                501
+                801
             }, new int[] {
                 -250,
                 -250
