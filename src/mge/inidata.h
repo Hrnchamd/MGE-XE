@@ -52,8 +52,7 @@ const tdictent dictentAA [] = {
     {"None", 0},
     {"2x", 2},
     {"4x", 4},
-    {"8x", 8},
-    {"16x", 16}
+    {"8x", 8}
 };
 const tdictionary dictAA = {countof(dictentAA), dictentAA};
 

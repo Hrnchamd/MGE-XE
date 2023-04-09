@@ -52,9 +52,9 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
         }
     }
 
-    // Map 16x antialiasing to equivalent CSAA
-    D3DMULTISAMPLE_TYPE msaaSamples = (Configuration.AALevel == 16) ? D3DMULTISAMPLE_8_SAMPLES : (D3DMULTISAMPLE_TYPE)Configuration.AALevel;
-    DWORD msaaQuality = (Configuration.AALevel == 16) ? 2 : 0;
+    // MSAA parameters
+    D3DMULTISAMPLE_TYPE msaaSamples = (D3DMULTISAMPLE_TYPE)Configuration.AALevel;
+    DWORD msaaQuality = 0;
 
     // Override device parameters
     // Note that Morrowind will look at the modified parameters

@@ -224,8 +224,7 @@ namespace MGEgui {
             { "None", 0 },
             { "2x", 1 },
             { "4x", 2 },
-            { "8x", 3 },
-            { "16x", 4 }
+            { "8x", 3 }
         };
 
         private static Dictionary<string, double> zBufferDict = new Dictionary<string, double> {

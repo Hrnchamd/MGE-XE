@@ -132,7 +132,7 @@ cbYesToAll = "Ignorer les erreurs au chargement (Yes to all)"
 
 ;;;;   combo boxes   ;;;;
 cmbAnisoLevel = "Aucun;2x;4x;8x;16x"
-cmbAntiAlias = "Aucun;2x;4x;8x;16x"
+cmbAntiAlias = "Aucun;2x;4x;8x"
 cmbFogMode = "Depth pixel (Rapide);Depth vertex;Range vertex (Meilleur)"
 cmbSShotSuffix = "Date de création                    (2020-07-04 12.50.11.808);Index                                        (0048);Nom et index                         (Player 0119);Nom, jour, index                  (Player, Jour 71, 07.38 0030)"
 cmbVWait = "Arrêt;Marche;x2;x3;x4"
