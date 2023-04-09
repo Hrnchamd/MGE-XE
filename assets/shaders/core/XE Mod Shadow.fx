@@ -1,6 +1,6 @@
 
 // XE Mod Shadow.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Shadow receiver functions. Can be used as a core mod.
 
 #include "XE Mod Shadow Data.fx"
@@ -41,7 +41,7 @@ TransformedVert transformShadowVert(MorrowindVertIn IN) {
         v.viewpos = mul(IN.pos, vertexBlendPalette[0]);
         v.normal = mul(normal, vertexBlendPalette[0]);
     }
-    
+
     v.pos = mul(v.viewpos, proj);
     return v;
 }
@@ -51,7 +51,7 @@ TransformedVert transformShadowVert(MorrowindVertIn IN) {
 
 float shadowDeltaZ(float4 shadow0pos, float4 shadow1pos) {
     float dz = 1e-6;
-    
+
     [branch] if(all(saturate(atlasMargin - abs(shadow0pos.xyz)))) {
         // Layer 0, inner
         float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow0pos.xy;
@@ -62,7 +62,7 @@ float shadowDeltaZ(float4 shadow0pos, float4 shadow1pos) {
         float2 shadowUV = (0.5 + 0.5*shadowRcpRes) + float2(0.5, -0.5) * shadow1pos.xy;
         dz = tex2Dlod(sampDepth, mapShadowToAtlas(shadowUV, 1)).r / ESM_scale - shadow1pos.z;
     }
-    
+
     return dz;
 }
 
@@ -78,7 +78,7 @@ struct RenderShadowVertOut {
     half2 texcoords: TEXCOORD0;
     centroid float light: COLOR0;
     centroid float alpha: COLOR1;
-    
+
     float4 shadow0pos: TEXCOORD1;
     float4 shadow1pos: TEXCOORD2;
 };
@@ -88,7 +88,7 @@ RenderShadowVertOut RenderShadowsBaseVS(MorrowindVertIn IN) {
     TransformedVert v = transformShadowVert(IN);
 
     OUT.pos = v.pos;
-    
+
     // Fragment colour routing
     OUT.alpha = vertexMaterial(IN.color).a;
 
@@ -101,7 +101,7 @@ RenderShadowVertOut RenderShadowsBaseVS(MorrowindVertIn IN) {
         OUT.light *= fogatt;
     else
         OUT.light *= saturate(4 * fogatt);
-    
+
     // Find position in light space, output light depth
     OUT.shadow0pos = mul(v.viewpos, shadowViewProj[0]);
     OUT.shadow1pos = mul(v.viewpos, shadowViewProj[1]);
@@ -128,7 +128,7 @@ RenderShadowVertOut RenderShadowsFFEVS(MorrowindVertIn IN) {
 float4 RenderShadowsPS(RenderShadowVertOut IN): COLOR0 {
     // Early reject unlit areas
     clip(IN.light - 2.0/255.0);
-    
+
     // Respect alpha test
     float alpha = IN.alpha;
     if(hasAlpha) {
@@ -140,7 +140,7 @@ float4 RenderShadowsPS(RenderShadowVertOut IN): COLOR0 {
     float dz = shadowDeltaZ(IN.shadow0pos, IN.shadow1pos);
     clip(-dz);
     float v = shadowESM(dz) * IN.light * alpha;
- 
+
     // Darken shadow area according to existing lighting (slightly towards blue)
     clip(v - 2.0/255.0);
     return float4(v * shadecolor, 1);

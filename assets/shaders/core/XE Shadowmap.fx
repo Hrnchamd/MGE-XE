@@ -1,6 +1,6 @@
 
 // XE Shadowmap.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Shadow map rendering
 
 #include "XE Common.fx"
@@ -28,14 +28,14 @@ ShadowVertOut ShadowVS(StatVertIn IN) {
 
     // Output depth (ortho projection is linear)
     OUT.depth = OUT.pos.z / OUT.pos.w;
-    
+
     OUT.texcoords = IN.texcoords;
     return OUT;
 }
 
 ShadowVertOut ShadowClearVS(float4 pos : POSITION) {
     ShadowVertOut OUT;
-    
+
     OUT.pos = pos;
     OUT.depth = 1.0f;
     OUT.texcoords = 0.0f;
@@ -48,7 +48,7 @@ float4 ShadowPS(ShadowVertOut IN) : COLOR0 {
         float a = tex2D(sampBaseTex, IN.texcoords).a;
         clip(a - 180.0/255.0);
     }
-    
+
     return ESM_scale * IN.depth;
 }
 
@@ -68,7 +68,7 @@ struct ShadowPostOut {
 
 ShadowPostOut ShadowSoftenVS(float4 pos : POSITION) {
     ShadowPostOut OUT;
-    
+
     OUT.pos = pos;
     OUT.texcoords = (0.5 + 0.5*shadowAtlasRcpRes) + float2(0.5, -0.5) * pos.xy;
     return OUT;
@@ -106,7 +106,7 @@ technique T0 {
         ZWriteEnable = false;
         ZFunc = LessEqual;
         CullMode = CW;
-        
+
         AlphaBlendEnable = false;
         AlphaTestEnable = false;
         FogEnable = false;
@@ -122,14 +122,14 @@ technique T0 {
         ZWriteEnable = false;
         ColorWriteEnable = 0;
         CullMode = none;
-        
+
         StencilEnable = true;
         StencilFunc = always;
         StencilPass = replace;
         StencilFail = keep;
         StencilRef = 1;
         StencilMask = 0xffffffff;
-        
+
         VertexShader = compile vs_3_0 ShadowVS();
         PixelShader = compile ps_3_0 ShadowStencilPS();
     }
@@ -140,14 +140,14 @@ technique T0 {
         ZWriteEnable = true;
         ColorWriteEnable = red|green|blue|alpha;
         CullMode = CW;
-        
+
         StencilEnable = true;
         StencilFunc = notequal;
         StencilPass = keep;
         StencilFail = keep;
         StencilRef = 0;
         StencilMask = 0xffffffff;
-        
+
         VertexShader = compile vs_3_0 ShadowVS();
         PixelShader = compile ps_3_0 ShadowPS();
     }
@@ -156,9 +156,9 @@ technique T0 {
     Pass P3 {
         ZEnable = false;
         ZWriteEnable = false;
-        
+
         StencilEnable = false;
-        
+
         VertexShader = compile vs_3_0 ShadowSoftenVS();
         PixelShader = compile ps_3_0 ShadowSoftenPS();
     }

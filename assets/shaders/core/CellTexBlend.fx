@@ -1,6 +1,6 @@
 
 // CellTexBlend.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Used by distant land generator to create world ground texture
 
 Matrix transform;
@@ -33,13 +33,13 @@ struct VSOutput {
 
 VSOutput CellTexBlendVS( float4 pos: POSITION0, float2 texcoords: TEXCOORD0, float4 color: COLOR0, float3 normal: NORMAL, float4 weights: COLOR1 ) {
 	VSOutput OUT;
-	
+
 	OUT.pos = mul(pos, transform);
 	OUT.texcoords = texcoords;
 	OUT.color = color;
-	OUT.normal = normal;	
+	OUT.normal = normal;
 	OUT.weights = weights;
-	
+
 	return OUT;
 }
 
@@ -64,7 +64,7 @@ VSColorOutput CellVertColorVS( float4 pos: POSITION0, float4 color: COLOR0 ) {
 
 	OUT.pos = mul(pos, transform);
 	OUT.color = color;
-	
+
 	return OUT;
 }
 
@@ -84,7 +84,7 @@ VSNormalOutput CellNormalMapVS( float4 pos: POSITION0, float3 normal: NORMAL ) {
 
 	OUT.pos = mul(pos, transform);
 	OUT.normal = normal;
-	
+
 	return OUT;
 }
 
@@ -109,7 +109,7 @@ Technique T0
 		Texture[1]=<t2>;
 		Texture[2]=<t3>;
 		Texture[3]=<t4>;
-		
+
 		VertexShader = compile vs_3_0 CellTexBlendVS();
 		PixelShader = compile ps_3_0 CellTexBlendPS();
 	}
@@ -117,7 +117,7 @@ Technique T0
 	{
 		AlphaBlendEnable = false;
 		AlphaTestEnable = false;
-		
+
 		VertexShader = compile vs_3_0 CellNormalMapVS();
 		PixelShader = compile ps_3_0 CellNormalMapPS();
 	}
@@ -127,7 +127,7 @@ Technique T0
 		AlphaTestEnable = false;
 		SrcBlend = DestColor;
 		DestBlend = Zero;
-		
+
 		VertexShader = compile vs_3_0 CellVertColorVS();
 		PixelShader = compile ps_3_0 CellVertColorPS();
 	}

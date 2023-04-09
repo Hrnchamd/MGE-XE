@@ -1,6 +1,6 @@
 
 // XE Mod Grass.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Grass rendering. Can be used as a core mod.
 
 
@@ -11,7 +11,7 @@ float2 grassDisplacement(float4 worldpos, float h) {
     float v = length(windVec);
     float2 displace = 2 * windVec + 0.1;
     float2 harmonics = 0;
-    
+
     harmonics += (1 - 0.10*v) * sin(1.0*time + worldpos.xy / 1104);
     harmonics += (1 - 0.04*v) * cos(2.0*time + worldpos.xy / 751);
     harmonics += (1 + 0.14*v) * sin(3.0*time + worldpos.xy / 526);
@@ -20,7 +20,7 @@ float2 grassDisplacement(float4 worldpos, float h) {
     float d = length(worldpos.xy - footPos.xy);
     d += pow(0.06 * max(0, footPos.z - worldpos.z - 60), 2);
     float2 stomp = 0;
-    
+
     if(d < 150) {
         stomp = (60 / d - 0.4) * (worldpos.xy - footPos.xy);
     }
@@ -33,7 +33,7 @@ float2 grassDisplacement(float4 worldpos, float h) {
 
 TransformedVert transformGrassVert(StatVertInstIn IN) {
     TransformedVert v;
-    
+
     v.worldpos = instancedMul(IN.pos, IN.world0, IN.world1, IN.world2);
 
     // Transforms with wind displacement
@@ -55,7 +55,7 @@ struct GrassVertOut {
     half2 texcoords : TEXCOORD0;
     centroid half4 color : COLOR0;
     centroid half4 fog : COLOR1;
-    
+
     float4 shadow0pos : TEXCOORD1;
     float4 shadow1pos : TEXCOORD2;
 };
@@ -104,17 +104,17 @@ float4 GrassPS(GrassVertOut IN): COLOR0 {
     // Soft shadowing
     float dz = shadowDeltaZ(IN.shadow0pos, IN.shadow1pos);
     float v = shadowESM(dz);
- 
+
     // Darken shadow area according to existing lighting (slightly towards blue)
     v *= IN.color.a;
     result.rgb *= 1 - v * shadecolor;
-    
+
     // Fogging
     result.rgb = fogApply(result.rgb, IN.fog);
-    
+
     // Alpha to coverage conversion
     result.a = calc_coverage(result.a, 128.0/255.0, 4.0);
-    
+
     return result;
 }
 

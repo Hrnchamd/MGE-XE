@@ -1,6 +1,6 @@
 
 // XE Mod Shadow Data.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Shared constants
 
 

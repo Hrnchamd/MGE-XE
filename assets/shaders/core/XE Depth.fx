@@ -1,6 +1,6 @@
 
 // XE Depth.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Depth buffer render sequence
 
 #include "XE Common.fx"

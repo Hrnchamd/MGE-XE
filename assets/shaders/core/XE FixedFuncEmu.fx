@@ -1,6 +1,6 @@
 
 // XE FixedFuncEmu.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Replacement shaders for Morrowind's object rendering
 
 #include "XE Common.fx"
@@ -77,19 +77,19 @@ static const int LGs = max(1, ceil(FFE_LIGHTS_ACTIVE / 4.0));
 // Point lights
 float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal) {
     float4 dist2 = 0, lambert = 0;
-    
+
     // Do four dot products as three mads
     for(int i = 0; i != 3; ++i)
         dist2 += pow(lightvec[3*group + i], 2);
-    
+
     // Same for N.L
     for(int i = 0; i != 3; ++i)
         lambert += normal[i] * lightvec[3*group + i];
-    
+
     // Normalize L after the fact
     float4 dist = sqrt(dist2);
     lambert = saturate(lambert / dist);
-    
+
     // Attenuation
     float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffConstant);
     // (slower) float4 att = 1.0 / (lightFalloffQuadratic[group] * dist2 + lightFalloffLinear[group] * dist + lightFalloffConstant);
@@ -98,14 +98,14 @@ float4 calcLighting4(float4 lightvec[3*LGs], int group, float3 normal) {
 
 float3 calcPointLighting(uniform int lights, float4 lightvec[3*LGs], float3 normal) {
     float4 lambert[LGs];
-    float3 l = 0;    
+    float3 l = 0;
 
     for(int i = 0; i != LGs; ++i)
         lambert[i] = calcLighting4(lightvec, i, normal);
-    
+
     for(int i = 0; i != lights; ++i)
         l += lambert[i/4][i%4] * lightDiffuse[i];
-    
+
     return l;
 }
 
@@ -148,16 +148,16 @@ float4 bumpmapLumiStage(sampler s, float2 tc, float4 dUdVL) {
 struct FFEVertIn {
     float4 pos : POSITION;
     float3 nrm : NORMAL;
-    
+
     /* template */ FFE_VB_COUPLING
 };
 
 struct FFEPixel {
     float4 pos : POSITION;
     centroid float4 nrm_fog : NORMAL;
-    
+
     /* template */ FFE_SHADER_COUPLING
-    
+
     float4 lightvec[3*LGs] : TEXCOORD2;
 };
 
@@ -172,24 +172,24 @@ FFEPixel PerPixelVS(FFEVertIn IN) {
     float4 viewpos;
     float3 normal;
     /* template */ FFE_TRANSFORM_SKIN
-    
+
     float dist = length(viewpos);
     OUT.pos = mul(viewpos, proj);
     OUT.nrm_fog = float4(normal, fogMWScalar(dist));
-    
+
     // Texcoord routing and texgen
     /* template */ FFE_TEXCOORDS_TEXGEN
-    
+
     // Vertex colour
     /* template */ FFE_VERTEX_COLOUR
-    
+
     // Point lighting setup, vectorized
     for(int i = 0; i != LGs; ++i) {
         OUT.lightvec[3*i + 0] = lightPosition[i + 0] - viewpos.x;
         OUT.lightvec[3*i + 1] = lightPosition[i + 2] - viewpos.y;
         OUT.lightvec[3*i + 2] = lightPosition[i + 4] - viewpos.z;
     }
-    
+
     return OUT;
 }
 
@@ -197,24 +197,24 @@ FFEPixel PerPixelVS(FFEVertIn IN) {
 float4 PerPixelPS(FFEPixel IN) : COLOR0 {
     float3 normal = normalize(IN.nrm_fog.xyz);
     float fog = IN.nrm_fog.w;
-    
+
     // Standard morrowind lighting: sun, ambient, and point lights
     float3 d = lightSunDiffuse * saturate(dot(normal, -lightSunDirection));
     float3 a = lightSceneAmbient;
     d += calcPointLighting(FFE_LIGHTS_ACTIVE, IN.lightvec, normal);
-    
+
     // Material
     float4 diffuse;
     /* template */ FFE_VERTEX_MATERIAL
-    
+
     // Texturing and combinators
     float4 c = diffuse;
     /* template */ FFE_TEXTURING
-    
+
     // Static tonemap and final fogging
     c.rgb = tonemap(c.rgb);
     /* template */ FFE_FOG_APPLICATION
-    
+
     return c;
 }
 

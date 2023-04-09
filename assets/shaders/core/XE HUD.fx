@@ -1,6 +1,6 @@
 
 // XE HUD.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Standard HUD shader
 
 texture tex;
@@ -19,7 +19,7 @@ technique T {
         AlphaTestEnable = true;
         AlphaFunc = Greater;
         AlphaRef = 0;
-        
+
         PixelShader = compile ps_3_0 hud();
     }
 }

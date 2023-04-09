@@ -1,6 +1,6 @@
 
 // XE Mod Landscape.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Distant landscape rendering. Can be used as a core mod.
 
 
@@ -9,7 +9,7 @@
 
 TransformedVert transformLandVert(float4 pos) {
     TransformedVert v;
-    
+
     v.viewpos = mul(mul(pos, world), view);
     v.pos = mul(v.viewpos, proj);
     return v;
@@ -42,7 +42,7 @@ LandVertOut LandscapeVS(float4 pos : POSITION, float2 texcoord : TEXCOORD0) {
 
     // Move land down to avoid it appearing where reduced mesh doesn't match
     pos.z += landBias(dist);
-    
+
     // Transforms
     TransformedVert v = transformLandVert(pos);
     OUT.pos = v.pos;

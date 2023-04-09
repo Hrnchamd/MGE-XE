@@ -1,6 +1,6 @@
 
 // XE Mod Water.fx
-// MGE XE 0.14.2
+// MGE XE 0.16.0
 // Water plane rendering. Can be used as a core mod.
 
 
@@ -40,7 +40,7 @@ float3 getFinalWaterNormal(float2 texcoord1, float2 texcoord2, float dist, float
     float t = 0.4 * time;
     float3 w1 = float3(texcoord1, t);
     float3 w2 = float3(texcoord2, t);
-    
+
     // Blend together the normals from different sized areas of the same texture
     float2 far_normal = tex3D(sampWater3d, w1).rg;
     float2 close_normal = tex3D(sampWater3d, w2).rg;
@@ -67,7 +67,7 @@ float3 getProjectedReflection(float4 tex)
 float3 getProjectedReflection(float4 tex)
 {
     float4 radius = 0.006 * saturate(0.11 + tex.w/6000) * tex.w * float4(1, rcpRes.y/rcpRes.x, 0, 0);
-    
+
     float3 reflected = tex2Dproj(sampReflect, tex);
     reflected += tex2Dproj(sampReflect, tex + radius*float4(0.60, 0.10, 0, 0));
     reflected += tex2Dproj(sampReflect, tex + radius*float4(0.30, -0.21, 0, 0));
@@ -75,7 +75,7 @@ float3 getProjectedReflection(float4 tex)
     reflected += tex2Dproj(sampReflect, tex + radius*float4(-0.40, 0.06, 0, 0));
     reflected += tex2Dproj(sampReflect, tex + radius*float4(-0.70, 0.18, 0, 0));
     reflected /= 6.0;
-    
+
     return reflected.rgb;
 }
 
@@ -122,7 +122,7 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
 WaterVertOut WaterVS (in float4 pos : POSITION)
 {
     WaterVertOut OUT;
-    
+
     // Move to world space
     OUT.pos = mul(pos, world);
 
@@ -149,7 +149,7 @@ WaterVertOut WaterVS (in float4 pos : POSITION)
     clampedPos = mul(clampedPos, view);
     clampedPos = mul(clampedPos, proj);
     OUT.screenposclamp = float4(0.5 * (1 + rcpRes) * clampedPos.w + float2(0.5, -0.5) * clampedPos.xy, clampedPos.zw);
-    
+
     return OUT;
 }
 #endif
@@ -164,7 +164,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     // Define fog
     float4 fog = fogColourWater(EyeVec, dist);
     float3 depthColor = fogApply(depthBaseColor, fog);
-    
+
     // Calculate water normal
     float3 normal = getFinalWaterNormal(IN.texcoords.xy, IN.texcoords.zw, dist, IN.pos.xy);
 
@@ -199,7 +199,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
         // Make transition between actual refraction image and depth color depending on water depth
         refracted = lerp(depthColor, refracted, 0.8 * depthscale + 0.2 * shorefactor);
     }
-    
+
     // Sample reflection texture
 #ifndef DYNAMIC_RIPPLES
     float4 screenpos = IN.screenpos;
@@ -219,7 +219,7 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
     float fresnel = dot(-EyeVec, adjustnormal);
     fresnel = 0.02 + pow(saturate(0.9988 - 0.28 * fresnel), 16);
     float3 result = lerp(refracted, reflected, fresnel);
-    
+
     // Specular lighting
     // This should use Blinn-Phong, but it doesn't work so well for area lights like the sun
     // Instead multiply and saturate to widen a Phong specular lobe which better simulates an area light
@@ -230,9 +230,9 @@ float4 WaterPS(in WaterVertOut IN): COLOR0
 
     // Smooth transition at shore line
     result = lerp(result, refracted, shorefactor * fog.a);
-    
+
     // Note that both refraction and reflection textures have fog applied already
-    
+
     return float4(result, 1);
 }
 
@@ -245,7 +245,7 @@ float4 UnderwaterPS(in WaterVertOut IN): COLOR0
 
     // Special case fog, avoid fog offset
     float fog = saturate(exp(-dist / 4096));
-    
+
     // Calculate water normal
     float3 normal = -getFinalWaterNormal(IN.texcoords.xy, IN.texcoords.zw, dist, IN.pos.xy);
 

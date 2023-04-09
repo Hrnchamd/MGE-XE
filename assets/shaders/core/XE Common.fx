@@ -1,6 +1,6 @@
 
 // XE Common.fx
-// MGE XE 0.15.0
+// MGE XE 0.16.0
 // Shared structures and functions
 
 

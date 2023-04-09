@@ -1,6 +1,6 @@
 
 // XE Mod Statics.fx
-// MGE XE 0.15.0
+// MGE XE 0.16.0
 // Distant statics rendering. Can be used as a core mod.
 
 
@@ -10,7 +10,7 @@
 TransformedVert transformStaticVert(StatVertIn IN) {
     // Transforms with implicit depth bias
     TransformedVert v;
-    
+
     v.worldpos = mul(IN.pos, world);
     v.viewpos = mul(v.worldpos, view);
     v.pos = mul(v.viewpos, proj);
@@ -21,7 +21,7 @@ float4 lightStaticVert(StatVertIn IN) {
     // Decompress normal
     float4 normal = float4(normalize(2 * IN.normal.xyz - 1), 0);
     normal = mul(normal, world);
-    
+
     // Lighting (worldspace)
     // Emissive is stored in the 4th value of the normal vector
     float emissive = IN.normal.w;
@@ -83,7 +83,7 @@ float4 StaticPS (StatVertOut IN): COLOR0 {
 
     // Alpha to coverage conversion
     result.a = calc_coverage(result.a, 133.0/255.0, 2.0);
-    
+
     return result;
 }
 
