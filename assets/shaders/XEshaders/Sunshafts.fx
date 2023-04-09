@@ -17,7 +17,7 @@ int mgeflags = 9;
 #define offscreenrange 0.5       // Maximum offscreen position of sun before rays vanish
 #define sundisc 1                // Draws additional sun disc. 0 disables
 #define sundiscradius 0.025      // Radius of sun disc
-#define sundiscbrightness 1.6    // Brightness of sun disc
+#define sundiscbrightness 1.9    // Brightness of sun disc
 #define sundiscdesaturate 0.5    // Desaturation of sun disc color, negative values for more saturation
 #define sundiscocclude 0.75      // How much the sun disc will 'overwrite' original image
 #define horizonclipping 1        // Prevents the sun disc from being drawn below the horizon. Might cause an FPS hit.
@@ -56,7 +56,7 @@ static const float2 sunview = (0.5).xx + sunview_v.xy * texproj;
 static const float2 sunviewhalf = 0.5 * sunview;
 
 static const float light = 1 - pow(1 - sunvis, 2);
-static const float sharpness = lerp(60, 660 + 360 * sundir.z, saturate(fogstart / 480));
+static const float sharpness = lerp(60, 450 + 100 * sundir.z, saturate(fogstart / 480));
 
 static const float strength = raystrength * light * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.x-0.5)) * smoothstep(-offscreenrange, 0, 0.5-abs(sunview.y-0.5));
 static const float oneminuscentervis = 1-centervis;
@@ -193,7 +193,7 @@ float4 combine( float2 Tex : TEXCOORD0 ) : COLOR0
 #if horizonclipping == 1
             float azi = normalize(toWorld(Tex)).z;
             occl *= smoothstep(-0.005, 0.010, azi - aziHorizon);
-            scol.gb *= smoothstep(-0.04, 0.09, azi - aziHorizon);
+            scol.gb *= smoothstep(-0.03, 0.090, azi - aziHorizon);
 #endif
             col = lerp(col, scol, sundiscocclude * occl);
         }
