@@ -385,6 +385,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniWaveHght = new INIFile.INIVariableDef("WaveHght", siniDL, "Water Wave Height", INIFile.INIVariableType.Byte, "50", 0, 250);
         private static INIFile.INIVariableDef iniCaustics = new INIFile.INIVariableDef("Caustics", siniDL, "Water Caustics Intensity", INIFile.INIVariableType.Byte, "50", 0, 100);
         private static INIFile.INIVariableDef iniShadows = new INIFile.INIVariableDef("SunShadows", siniDL, "Sun Shadows", INIFile.INIBoolType.OnOff, "On");
+        private static INIFile.INIVariableDef iniShadowDetail = new INIFile.INIVariableDef("SunShadowDetail", siniDL, "Sun Shadow Map Resolution", INIFile.INIVariableType.UInt32, "2048", 1024, 2048);
         private static INIFile.INIVariableDef iniPixelLighting = new INIFile.INIVariableDef("PPLighting", siniDL, "Per Pixel Shader", INIFile.INIBoolType.OnOff, "Off");
         private static INIFile.INIVariableDef iniPixelLightingFlags = new INIFile.INIVariableDef("PPLightingFlags", siniDL, "Per Pixel Shader Flags", INIFile.INIVariableType.Dictionary, "Always", pplFlagsDict);
 #endregion
@@ -412,7 +413,7 @@ namespace MGEgui {
             iniInterBeg, iniInterEnd, iniSkyRefl, iniDynRipples,
             iniReflBlur, iniExpFog, iniDLExpMul,
             iniScattering, iniWaveHght, iniCaustics,
-            iniShadows, iniPixelLighting, iniPixelLightingFlags
+            iniShadows, iniShadowDetail, iniPixelLighting, iniPixelLightingFlags
         };
 
         private void LoadGraphicsSettings() {
@@ -502,6 +503,7 @@ namespace MGEgui {
             rbDLAutoByAFogEnd.Checked = (autoDistBy == 2);
             cbDLAutoDist.Checked = (iniFile.getKeyValue("AutoDist") == 1);
             cbDLSunShadows.Checked = (iniFile.getKeyValue("SunShadows") == 1);
+            cmbDLShadowDetail.SelectedIndex = (iniFile.getKeyValue("SunShadowDetail") == 2048) ? 1 : 0;
             cbPerPixelLighting.Checked = (iniFile.getKeyValue("PPLighting") == 1);
             cmbPerPixelLightFlags.SelectedIndex = (int)iniFile.getKeyValue("PPLightingFlags");
             loading = false;
@@ -577,6 +579,7 @@ namespace MGEgui {
             iniFile.setKey("DLExpMul", (double)udDLFogExpMul.Value);
             iniFile.setKey("Scatter", cbDLScattering.Checked);
             iniFile.setKey("SunShadows", cbDLSunShadows.Checked);
+            iniFile.setKey("SunShadowDetail", cmbDLShadowDetail.SelectedIndex == 1 ? 2048 : 1024);
             iniFile.setKey("PPLighting", cbPerPixelLighting.Checked);
             iniFile.setKey("PPLightingFlags", cmbPerPixelLightFlags.SelectedIndex);
             iniFile.save();

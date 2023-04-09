@@ -137,6 +137,7 @@ cmbAntiAlias = "Off;2x;4x;8x;16x"
 cmbFogMode = "Depth pixel (Fast);Depth vertex;Range vertex (Best)"
 cmbSShotSuffix = "Timestamp                               (2020-07-04 12.50.11.808);Ordinal                                     (0048);Character and Ordinal              (Player 0119);Character, Game time, Ordinal  (Player, Day 71, 07.38 0030)"
 cmbVWait = "Off;On;x2;x3;x4"
+cmbDLShadowDetail = "Medium detail;High detail"
 cmbPerPixelLightFlags = "Always on;Interiors only"
 
 ;;;;   group boxes   ;;;;

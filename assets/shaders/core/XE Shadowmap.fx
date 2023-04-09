@@ -79,17 +79,19 @@ float4 ShadowSoftenPS(ShadowPostOut IN) : COLOR0 {
     // Looks better without exp-space filtering, with a side effect of expanding silhouttes by about 1 pixel
     float4 t = float4(IN.texcoords, 0, 0);
     float d = tex2Dlod(sampDepth, t).r;
+    const float filterScale = shadowRcpRes.x;
+
     if(!hasAlpha) {
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*shadowAtlasRcpRes.x, 0, 0, 0)).r;
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(1.42*shadowAtlasRcpRes.x, 0, 0, 0)).r;
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(-1.42*filterScale, 0, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(-0.71*filterScale, 0, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0.71*filterScale, 0, 0, 0)).r;
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(1.42*filterScale, 0, 0, 0)).r;
     }
     else {
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, -1.42*shadowAtlasRcpRes.y, 0, 0)).r;
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, -0.71*shadowAtlasRcpRes.y, 0, 0)).r;
-        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, 0.71*shadowAtlasRcpRes.y, 0, 0)).r;
-        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, 1.42*shadowAtlasRcpRes.y, 0, 0)).r;
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, -1.42*filterScale, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, -0.71*filterScale, 0, 0)).r;
+        d += 0.8 * tex2Dlod(sampDepth, t + float4(0, 0.71*filterScale, 0, 0)).r;
+        d += 0.2 * tex2Dlod(sampDepth, t + float4(0, 1.42*filterScale, 0, 0)).r;
     }
 
     d = d / 3.0;

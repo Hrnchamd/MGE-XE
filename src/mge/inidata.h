@@ -197,7 +197,7 @@ const iniSetting iniSettings[] = {
     {&Configuration.DL.InteriorFogEnd, t_float, 1, siniDL, "Interior Fog End", "2.0", NULL, MINMAX, 0.1, 300},
     {&Configuration.DL.WaterWaveHeight, t_uint8, 1, siniDL, "Water Wave Height", "0", NULL, MINMAX, 0, 250},
     {&Configuration.DL.WaterCaustics, t_uint8, 1, siniDL, "Water Caustics Intensity", "50", NULL, MINMAX, 0, 100},
-    {&Configuration.DL.ShadowResolution, t_uint32, 1, siniDL, "Shadow Resolution", "1024", NULL, MINMAX, 512, 8192},
+    {&Configuration.DL.ShadowResolution, t_uint32, 1, siniDL, "Sun Shadow Map Resolution", "2048", NULL, MINMAX, 1024, 2048},
 
     // Distant Land, weather
     {&Configuration.DL.Wind[0], t_float, 1, siniDLWeather, "Clear Wind Ratio", "0.1", NULL, MINMAX, 0, 1},
