@@ -86,10 +86,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX
 
     if ((Configuration.MGEFlags & REFLECT_SKY) && !recordSky.empty() && !mwBridge->IsUnderwater(eyePos.z)) {
         // Draw sky reflection, with opposite culling
-        effect->BeginPass(PASS_RENDERSKY);
-        device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
         renderReflectedSky();
-        effect->EndPass();
     }
 
     // Restore view state
@@ -101,34 +98,96 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX
 void DistantLand::renderReflectedSky() {
     // Sky objects are not correctly positioned at infinity, so correction is required
     const float adjustZ = -2.0f * eyePos.z;
+    D3DXMATRIX skyScale, worldTransform;
+    D3DXMatrixScaling(&skyScale, 1e6, 1e6, 1e6);
 
+    // Recorded renders
     const auto& recordSky_const = recordSky;
-    for (const auto& i : recordSky_const) {
-        // Adjust world transform, as skydome objects are positioned relative to the viewer
-        D3DXMATRIX worldTransform = i.worldTransforms[0];
-        worldTransform._43 += adjustZ;
+    const int standardCloudVerts = 65, standardCloudTris = 112;
+    const int standardMoonVerts = 4, standardMoonTris = 2;
 
-        if (i.texture == 0) {
+    // Render sky without clouds first
+    effect->BeginPass(PASS_RENDERSKY);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+    for (const auto& i : recordSky_const) {
+        // Skip clouds
+        if (i.texture && i.vertCount == standardCloudVerts && i.primCount == standardCloudTris) {
+            continue;
+        }
+
+        // Adjust world transform, as skydome objects are positioned relative to the viewer
+        worldTransform = i.worldTransforms[0];
+        worldTransform._43 += adjustZ;
+        if (i.texture == nullptr) {
             // Inflate sky mesh towards infinity, makes skypos in shader calculate correctly
-            D3DXMATRIX scale;
-            D3DXMatrixScaling(&scale, 1e6, 1e6, 1e6);
-            D3DXMatrixMultiply(&worldTransform, &scale, &worldTransform);
+            D3DXMatrixMultiply(&worldTransform, &skyScale, &worldTransform);
+        }
+
+        // Set variables in main effect; variables are shared via effect pool
+        effect->SetTexture(ehTex0, i.texture);
+        if (i.texture) {
+            // Textured object; draw as normal in shader, with exceptions:
+            // - Sun/moon billboards do not use mipmaps
+            // - Moon shadow cutout (prevents stars shining through moons)
+            //   which requires colour to be replaced with atmosphere scattering colour
+            bool isBillboard = (i.vertCount == standardMoonVerts && i.primCount == standardMoonTris);
+            bool isMoonShadow = i.destBlend == D3DBLEND_INVSRCALPHA && !i.useLighting;
+
+            effect->SetBool(ehHasAlpha, true);
+            effect->SetBool(ehHasBones, isBillboard);
+            effect->SetBool(ehHasVCol, isMoonShadow);
+            device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+            device->SetRenderState(D3DRS_SRCBLEND, i.srcBlend);
+            device->SetRenderState(D3DRS_DESTBLEND, i.destBlend);
+            device->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+        } else {
+            // Sky; perform atmosphere scattering in shader
+            effect->SetBool(ehHasAlpha, false);
+            effect->SetBool(ehHasVCol, true);
+            device->SetRenderState(D3DRS_ALPHABLENDENABLE, 0);
+            device->SetRenderState(D3DRS_ALPHATESTENABLE, 0);
         }
 
         effect->SetMatrix(ehWorld, &worldTransform);
-        effect->SetBool(ehHasAlpha, i.texture != 0);
-        effect->SetBool(ehHasBones, i.texture == 0);
-        effect->SetTexture(ehTex0, i.texture);
         effect->CommitChanges();
-        device->SetRenderState(D3DRS_ALPHABLENDENABLE, i.texture ? 1 : 0);
-        device->SetRenderState(D3DRS_SRCBLEND, i.srcBlend);
-        device->SetRenderState(D3DRS_DESTBLEND, i.destBlend);
 
         device->SetStreamSource(0, i.vb, i.vbOffset, i.vbStride);
         device->SetIndices(i.ib);
         device->SetFVF(i.fvf);
         device->DrawIndexedPrimitive(i.primType, i.baseIndex, i.minIndex, i.vertCount, i.startIndex, i.primCount);
     }
+    effect->EndPass();
+
+    // Render clouds with a separate shader
+    effect->BeginPass(PASS_RENDERCLOUDS);
+    device->SetRenderState(D3DRS_CULLMODE, D3DCULL_CCW);
+
+    for (const auto& i : recordSky_const) {
+        // Clouds only
+        if (!(i.texture && i.vertCount == standardCloudVerts && i.primCount == standardCloudTris)) {
+            continue;
+        }
+
+        // Adjust world transform, as skydome objects are positioned relative to the viewer
+        worldTransform = i.worldTransforms[0];
+        worldTransform._43 += adjustZ;
+
+        effect->SetTexture(ehTex0, i.texture);
+        effect->SetBool(ehHasAlpha, true);
+        device->SetRenderState(D3DRS_ALPHABLENDENABLE, 1);
+        device->SetRenderState(D3DRS_SRCBLEND, i.srcBlend);
+        device->SetRenderState(D3DRS_DESTBLEND, i.destBlend);
+        device->SetRenderState(D3DRS_ALPHATESTENABLE, 1);
+        effect->SetMatrix(ehWorld, &worldTransform);
+        effect->CommitChanges();
+
+        device->SetStreamSource(0, i.vb, i.vbOffset, i.vbStride);
+        device->SetIndices(i.ib);
+        device->SetFVF(i.fvf);
+        device->DrawIndexedPrimitive(i.primType, i.baseIndex, i.minIndex, i.vertCount, i.startIndex, i.primCount);
+    }
+    effect->EndPass();
 }
 
 void DistantLand::renderReflectedStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
