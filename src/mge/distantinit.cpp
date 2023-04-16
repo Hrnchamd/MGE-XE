@@ -11,6 +11,7 @@
 #include "mgeversion.h"
 #include "statusoverlay.h"
 #include <memory>
+#include <optional>
 
 
 
@@ -265,6 +266,7 @@ static const string pathCoreMods = "Data Files\\shaders\\core-mods\\";
 
 struct CoreModInclude : public ID3DXInclude {
     vector<string> modsFound;
+    std::optional<string> testSingleMod;
 
     STDMETHOD(Open)(D3DXINCLUDE_TYPE IncludeType, LPCSTR pFileName, LPCVOID pParentData, LPCVOID *ppData, UINT *pBytes) {
         string filename(pFileName), shaderPath = filename;
@@ -277,12 +279,21 @@ struct CoreModInclude : public ID3DXInclude {
             shaderPath = pathCoreShaders + filename;
         }
 
-        // Check if this file is moddable, and if a core-mod exists, use its path
-        if (filename.substr(0, shaderCoreModPrefix.length()) == shaderCoreModPrefix) {
-            string modShaderPath = pathCoreMods + filename;
-            if (GetFileAttributes(modShaderPath.c_str()) != INVALID_FILE_ATTRIBUTES) {
+        if (!testSingleMod) {
+            // Check if this file is moddable, and if a core-mod exists, use its path
+            if (filename.substr(0, shaderCoreModPrefix.length()) == shaderCoreModPrefix) {
+                string modShaderPath = pathCoreMods + filename;
+                if (GetFileAttributes(modShaderPath.c_str()) != INVALID_FILE_ATTRIBUTES) {
+                    isMod = true;
+                    shaderPath = modShaderPath;
+                }
+            }
+        }
+        else {
+            // Only load the specified mod for testing, ignoring others
+            if (testSingleMod.value() == filename) {
                 isMod = true;
-                shaderPath = modShaderPath;
+                shaderPath = pathCoreMods + filename;
             }
         }
 
@@ -339,9 +350,27 @@ static bool createCoreEffectWithMods(const char *name, IDirect3DDevice9* device,
         }
         return true;
     } else {
-        LOG::logline("!! Core shader %s failed to compile with core-mods, retrying with standard shaders.", name);
-        StatusOverlay::setStatus("Shader core mod error. Core mods are disabled for this session. Check mgeXE.log for error details.", StatusOverlay::PriorityWarning);
-        logShaderError(errors);
+        LOG::logline("!! Core shader %s failed to compile with core-mods. All core-mods are disabled. Checking for errors...", name);
+        StatusOverlay::setStatus("Shader core mod error. Core mods are disabled for this session. Check mgeXE.log for error details.", StatusOverlay::PriorityError);
+        if (errors) {
+            errors->Release();
+        }
+    }
+
+    // Individually test each core mod for errors
+    auto modsFound = includer.modsFound;
+    for(const auto& mod : modsFound) {
+        ID3DXEffect *testEffect;
+        includer.testSingleMod = mod;
+
+        hr = D3DXCreateEffectFromFile(device, path.c_str(), &*features.begin(), &includer, D3DXSHADER_OPTIMIZATION_LEVEL0|D3DXFX_LARGEADDRESSAWARE, effectPool, &testEffect, &errors);
+        if (hr == D3D_OK) {
+            testEffect->Release();
+        }
+        else {
+            LOG::logline("!! Core mod %s failed to compile. Disable or remove it until it is fixed.", mod.c_str());
+            logShaderError(errors);
+        }
     }
 
     // Fallback to compiling without core mods
