@@ -1,7 +1,7 @@
 
-MGE XE 0.16.0
+MGE XE 0.16.1
 -------------
-Released 2023-04-09
+Released 2023-04-16
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -123,6 +123,11 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.16.1
+- Fixed sky reflection in water. After the 0.16 change to sky rendering, the sky reflections did not update to match the sky correctly.
+- Better logging information of which shader core mod is incompatible when there is a core shader issue.
+- Improved visibility of status text and error display.
+
 0.16.0
 - Added a "Reduce texture memory use" option, enabled by default. This keeps textures in VRAM only and not system memory, reducing the biggest use of RAM and making out-of-memory crashes less likely.
 - Reduced memory usage of distant landscape generation when including isolated landmasses placed far from the main game. This should fix some out-of-memory errors during generation.
