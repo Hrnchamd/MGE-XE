@@ -434,15 +434,17 @@ void DistantLand::adjustFog() {
             lightAmbMult = Configuration.Lighting.AmbMult[wthr1];
         }
 
-        // Use considerably less fog offset in exp fog mode, to retain near visibility comparable to vanilla
-        if ((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & EXP_FOG)) {
-            fo *= 0.25f;
-        }
-
         // Fog distance scale calculation, ensure fogEnd does not scale closer than vanilla Morrowind
         fogEnd = std::max(0.875f, ff * Configuration.DL.AboveWaterFogEnd);
         fogStart = ff * Configuration.DL.AboveWaterFogStart - fo * fogEnd;
         windScaling = ws;
+
+        // For exp fog, adjust start distance so that starting fog approximately equals fo, to retain near visibility comparable to vanilla
+        if ((Configuration.MGEFlags & USE_DISTANT_LAND) && (Configuration.MGEFlags & EXP_FOG)) {
+            float lg = log(1.0f - 0.25f * fo);
+            float expCorrection = lg / (1 + lg);
+            fogStart = ff * Configuration.DL.AboveWaterFogStart + expCorrection * fogEnd;
+        }
     } else {
         // Avoid density == 0, as when fogStart and fogEnd are equal, the fog equation denominator goes to infinity
         float density = std::max(0.01f, mwBridge->getInteriorFogDens());
