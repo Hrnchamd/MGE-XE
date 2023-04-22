@@ -1502,7 +1502,7 @@
             // 
             this.udBlizzardFogOffsDay.Location = new System.Drawing.Point(6, 325);
             this.udBlizzardFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1526,7 +1526,7 @@
             // 
             this.udSnowFogOffsDay.Location = new System.Drawing.Point(6, 293);
             this.udSnowFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1550,7 +1550,7 @@
             // 
             this.udBlightFogOffsDay.Location = new System.Drawing.Point(6, 261);
             this.udBlightFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1574,7 +1574,7 @@
             // 
             this.udAshFogOffsDay.Location = new System.Drawing.Point(6, 229);
             this.udAshFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1598,7 +1598,7 @@
             // 
             this.udThunderFogOffsDay.Location = new System.Drawing.Point(6, 197);
             this.udThunderFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1622,7 +1622,7 @@
             // 
             this.udRainFogOffsDay.Location = new System.Drawing.Point(6, 165);
             this.udRainFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1646,7 +1646,7 @@
             // 
             this.udOvercastFogOffsDay.Location = new System.Drawing.Point(6, 133);
             this.udOvercastFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1670,7 +1670,7 @@
             // 
             this.udFoggyFogOffsDay.Location = new System.Drawing.Point(6, 101);
             this.udFoggyFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1694,7 +1694,7 @@
             // 
             this.udCloudyFogOffsDay.Location = new System.Drawing.Point(6, 69);
             this.udCloudyFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});
@@ -1718,7 +1718,7 @@
             // 
             this.udClearFogOffsDay.Location = new System.Drawing.Point(6, 37);
             this.udClearFogOffsDay.Maximum = new decimal(new int[] {
-                                    90,
+                                    200,
                                     0,
                                     0,
                                     0});

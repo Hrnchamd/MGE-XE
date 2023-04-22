@@ -69,21 +69,21 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniOvercastFogDay = new INIFile.INIVariableDef("OvercastFogDay", iniDLWeather, "Overcast Fog Ratio", INIFile.INIVariableType.Single, "0.7", 0.001, 2);
         private static INIFile.INIVariableDef iniRainFogDay = new INIFile.INIVariableDef("RainFogDay", iniDLWeather, "Rain Fog Ratio", INIFile.INIVariableType.Single, "0.5", 0.001, 2);
         private static INIFile.INIVariableDef iniThunderFogDay = new INIFile.INIVariableDef("ThunderFogDay", iniDLWeather, "Thunderstorm Fog Ratio", INIFile.INIVariableType.Single, "0.5", 0.001, 2);
-        private static INIFile.INIVariableDef iniAshFogDay = new INIFile.INIVariableDef("AshFogDay", iniDLWeather, "Ashstorm Fog Ratio", INIFile.INIVariableType.Single, "0.2", 0.001, 2);
-        private static INIFile.INIVariableDef iniBlightFogDay = new INIFile.INIVariableDef("BlightFogDay", iniDLWeather, "Blight Fog Ratio", INIFile.INIVariableType.Single, "0.2", 0.001, 2);
+        private static INIFile.INIVariableDef iniAshFogDay = new INIFile.INIVariableDef("AshFogDay", iniDLWeather, "Ashstorm Fog Ratio", INIFile.INIVariableType.Single, "0.25", 0.001, 2);
+        private static INIFile.INIVariableDef iniBlightFogDay = new INIFile.INIVariableDef("BlightFogDay", iniDLWeather, "Blight Fog Ratio", INIFile.INIVariableType.Single, "0.25", 0.001, 2);
         private static INIFile.INIVariableDef iniSnowFogDay = new INIFile.INIVariableDef("SnowFogDay", iniDLWeather, "Snow Fog Ratio", INIFile.INIVariableType.Single, "0.5", 0.001, 2);
         private static INIFile.INIVariableDef iniBlizzardFogDay = new INIFile.INIVariableDef("BlizzardFogDay", iniDLWeather, "Blizzard Fog Ratio", INIFile.INIVariableType.Single, "0.16", 0.001, 2);
         // day fog offset
-        private static INIFile.INIVariableDef iniClearFogOffsDay = new INIFile.INIVariableDef("ClearFogOffsDay", iniDLWeather, "Clear Fog Offset", INIFile.INIVariableType.Single, "0", 0, 90);
-        private static INIFile.INIVariableDef iniCloudyFogOffsDay = new INIFile.INIVariableDef("CloudyFogOffsDay", iniDLWeather, "Cloudy Fog Offset", INIFile.INIVariableType.Single, "0", 0, 90);
-        private static INIFile.INIVariableDef iniFoggyFogOffsDay = new INIFile.INIVariableDef("FoggyFogOffsDay", iniDLWeather, "Foggy Fog Offset", INIFile.INIVariableType.Single, "30", 0, 90);
-        private static INIFile.INIVariableDef iniOvercastFogOffsDay = new INIFile.INIVariableDef("OvercastFogOffsDay", iniDLWeather, "Overcast Fog Offset", INIFile.INIVariableType.Single, "0", 0, 90);
-        private static INIFile.INIVariableDef iniRainFogOffsDay = new INIFile.INIVariableDef("RainFogOffsDay", iniDLWeather, "Rain Fog Offset", INIFile.INIVariableType.Single, "10", 0, 90);
-        private static INIFile.INIVariableDef iniThunderFogOffsDay = new INIFile.INIVariableDef("ThunderFogOffsDay", iniDLWeather, "Thunderstorm Fog Offset", INIFile.INIVariableType.Single, "20", 0, 90);
-        private static INIFile.INIVariableDef iniAshFogOffsDay = new INIFile.INIVariableDef("AshFogOffsDay", iniDLWeather, "Ashstorm Fog Offset", INIFile.INIVariableType.Single, "50", 0, 90);
-        private static INIFile.INIVariableDef iniBlightFogOffsDay = new INIFile.INIVariableDef("BlightFogOffsDay", iniDLWeather, "Blight Fog Offset", INIFile.INIVariableType.Single, "60", 0, 90);
+        private static INIFile.INIVariableDef iniClearFogOffsDay = new INIFile.INIVariableDef("ClearFogOffsDay", iniDLWeather, "Clear Fog Offset", INIFile.INIVariableType.Single, "0", 0, 200);
+        private static INIFile.INIVariableDef iniCloudyFogOffsDay = new INIFile.INIVariableDef("CloudyFogOffsDay", iniDLWeather, "Cloudy Fog Offset", INIFile.INIVariableType.Single, "0", 0, 200);
+        private static INIFile.INIVariableDef iniFoggyFogOffsDay = new INIFile.INIVariableDef("FoggyFogOffsDay", iniDLWeather, "Foggy Fog Offset", INIFile.INIVariableType.Single, "30", 0, 200);
+        private static INIFile.INIVariableDef iniOvercastFogOffsDay = new INIFile.INIVariableDef("OvercastFogOffsDay", iniDLWeather, "Overcast Fog Offset", INIFile.INIVariableType.Single, "0", 0, 200);
+        private static INIFile.INIVariableDef iniRainFogOffsDay = new INIFile.INIVariableDef("RainFogOffsDay", iniDLWeather, "Rain Fog Offset", INIFile.INIVariableType.Single, "10", 0, 200);
+        private static INIFile.INIVariableDef iniThunderFogOffsDay = new INIFile.INIVariableDef("ThunderFogOffsDay", iniDLWeather, "Thunderstorm Fog Offset", INIFile.INIVariableType.Single, "20", 0, 200);
+        private static INIFile.INIVariableDef iniAshFogOffsDay = new INIFile.INIVariableDef("AshFogOffsDay", iniDLWeather, "Ashstorm Fog Offset", INIFile.INIVariableType.Single, "45", 0, 200);
+        private static INIFile.INIVariableDef iniBlightFogOffsDay = new INIFile.INIVariableDef("BlightFogOffsDay", iniDLWeather, "Blight Fog Offset", INIFile.INIVariableType.Single, "50", 0, 200);
         private static INIFile.INIVariableDef iniSnowFogOffsDay = new INIFile.INIVariableDef("SnowFogOffsDay", iniDLWeather, "Snow Fog Offset", INIFile.INIVariableType.Single, "40", 0, 90);
-        private static INIFile.INIVariableDef iniBlizzardFogOffsDay = new INIFile.INIVariableDef("BlizzardFogOffsDay", iniDLWeather, "Blizzard Fog Offset", INIFile.INIVariableType.Single, "70", 0, 90);
+        private static INIFile.INIVariableDef iniBlizzardFogOffsDay = new INIFile.INIVariableDef("BlizzardFogOffsDay", iniDLWeather, "Blizzard Fog Offset", INIFile.INIVariableType.Single, "100", 0, 200);
 
         public static INIFile.INIVariableDef[] iniWeatherSettings = {
             INIFile.iniDefEmpty,
