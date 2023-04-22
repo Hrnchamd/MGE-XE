@@ -65,8 +65,6 @@ public:
     float GetAIDistance();
     void SetAIDistance(float dist);
 
-    void SetFOV(float screenFOV);
-
     void GetSunDir(float& x, float& y, float& z);
     BYTE GetSunVis();
     void setSunriseSunset(float rise_time, float rise_dur, float set_time, float set_dur);
@@ -123,6 +121,8 @@ public:
     void patchFrameTimer(int (__cdecl* newfunc)());
     void patchResolveDuringInit(void (__cdecl* newfunc)());
     void patchLoadTexture2D();
+    void patchFOV(float (__fastcall* func)(void*));
+    void updateFOV();
 
     void* getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);

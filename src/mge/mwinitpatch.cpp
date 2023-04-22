@@ -60,3 +60,23 @@ void MWInitPatch::patchFrameTimer() {
     HighResolutionTimer::init();
     MWBridge::get()->patchFrameTimer(&HighResolutionTimer::getMilliseconds);
 }
+
+
+struct RenderCameraData {
+    void* camera;
+    void* unknown_4;
+    float fovDegrees;
+};
+
+static float __fastcall getScreenFOV(void* cameraData) {
+    // Store fov in struct
+    reinterpret_cast<RenderCameraData*>(cameraData)->fovDegrees = Configuration.ScreenFOV;
+
+    // Return fov in radians
+    return 0.017453292 * Configuration.ScreenFOV;
+}
+
+// Patch setting main camera and shadow camera FOV in all cases
+void MWInitPatch::patchFOV() {
+    MWBridge::get()->patchFOV(&getScreenFOV);
+}

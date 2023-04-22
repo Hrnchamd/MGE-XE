@@ -580,41 +580,6 @@ void MWBridge::SetAIDistance(float dist) {
 
 //-----------------------------------------------------------------------------
 
-void MWBridge::SetFOV(float screenFOV) {
-    assert(m_loaded);
-
-    // Recalculate FOV values
-    float fovtan = std::tan(screenFOV*D3DX_PI/360.0f);
-
-    if ( std::fabs(read_float(eWorldFOV)+fovtan) > 0.001f ) {
-        float aspect = read_float(eWorldFOV+1*sizeof(float)) / read_float(eWorldFOV+2*sizeof(float));
-        float fovtanaspect = fovtan / aspect;
-
-        write_float(eWorldFOV,-fovtan);
-        write_float(eWorldFOV+1*sizeof(float),fovtan);
-        write_float(eWorldFOV+2*sizeof(float),fovtanaspect);
-        write_float(eWorldFOV+3*sizeof(float),-fovtanaspect);
-
-        write_float(eSkyFOV ,-fovtan);
-        write_float(eSkyFOV+1*sizeof(float),fovtan);
-        write_float(eSkyFOV+2*sizeof(float),fovtanaspect);
-        write_float(eSkyFOV+3*sizeof(float),-fovtanaspect);
-
-        if (!eShadowFOV) {
-            GetShadowFovAddr();
-        }
-        if (eShadowFOV) {
-            write_float(eShadowFOV ,-fovtan);
-            write_float(eShadowFOV+1*sizeof(float),fovtan);
-            write_float(eShadowFOV+2*sizeof(float),fovtanaspect);
-            write_float(eShadowFOV+3*sizeof(float),-fovtanaspect);
-        }
-    }
-
-}
-
-//-----------------------------------------------------------------------------
-
 void MWBridge::GetSunDir(float& x, float& y, float& z) {
     // Note: Previous method caused significant jitter with moving view
     // This now returns the exact offset which was in the same scenegraph node
@@ -1419,6 +1384,35 @@ void MWBridge::patchLoadTexture2D() {
     write_byte(0x6BFCC7, 0x18);
     write_byte(0x6BFCD7, 0x18);
     write_byte(0x6BFCE3, 0x24);
+}
+
+//-----------------------------------------------------------------------------
+
+// patchFOV - Overrides main camera and shadow camera FOV in all cases (game loading, camera transitions, and werewolf state change)
+// Requires a function that returns FOV in radians
+void MWBridge::patchFOV(float (__fastcall* func)(void*)) {
+    DWORD addr = 0x404963;
+    BYTE patch[] = {
+        0x51,                           // push ecx (preserve ecx)
+        0xb8, 0xff, 0xff, 0xff, 0xff,   // mov eax, func
+        0xff, 0xd0,                     // call eax
+        0x59                            // pop ecx
+    };
+
+    VirtualMemWriteAccessor vw((void*)addr, 9);
+    memcpy((void*)addr, patch, sizeof(patch));
+    write_ptr(addr + 2, reinterpret_cast<void*>(func));
+}
+
+//-----------------------------------------------------------------------------
+
+// updateFOV - Rebuilds view frustums after a change in FOV
+void MWBridge::updateFOV() {
+    const auto RenderCameraData_buildFrustum = reinterpret_cast<void(__thiscall*)(void*)>(0x404960);
+
+    // Update world and shadow camera frustum
+    RenderCameraData_buildFrustum(reinterpret_cast<void*>(eMaster1 + 0x134));
+    RenderCameraData_buildFrustum(reinterpret_cast<void*>(eMaster1 + 0x2C0));
 }
 
 //-----------------------------------------------------------------------------

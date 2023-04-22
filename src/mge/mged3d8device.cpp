@@ -242,11 +242,8 @@ HRESULT _stdcall MGEProxyDevice::BeginScene() {
             // isMainView is not always valid at EndScene if Morrowind draws sunglare
             ++sceneCount;
 
-            // Set any custom FOV and check distant water state
+            // Check distant water state
             if (sceneCount == 0) {
-                if (Configuration.ScreenFOV > 0) {
-                    mwBridge->SetFOV(Configuration.ScreenFOV);
-                }
                 distantWater = (Configuration.MGEFlags & USE_DISTANT_LAND) || (Configuration.MGEFlags & USE_DISTANT_WATER);
             }
         } else {

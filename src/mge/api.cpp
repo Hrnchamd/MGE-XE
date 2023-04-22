@@ -191,6 +191,7 @@ namespace api {
 
     void MGEAPIv1::cameraSetFoV(float fov) {
         Configuration.ScreenFOV = fov;
+        MWBridge::get()->updateFOV();
     }
 
     void MGEAPIv1::cameraThirdPersonGetOffset(float* out_values) {
