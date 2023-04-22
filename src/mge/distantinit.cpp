@@ -368,7 +368,7 @@ static bool createCoreEffectWithMods(const char *name, IDirect3DDevice9* device,
             testEffect->Release();
         }
         else {
-            LOG::logline("!! Core mod %s failed to compile. Disable or remove it until it is fixed.", mod.c_str());
+            LOG::logline("!! Shader core mod %s%s failed to compile. Disable or remove it until it is fixed.", pathCoreMods, mod.c_str());
             logShaderError(errors);
         }
     }
