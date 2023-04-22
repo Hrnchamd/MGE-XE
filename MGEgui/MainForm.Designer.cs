@@ -134,10 +134,11 @@ namespace MGEgui {
             this.tableLayoutDL = new System.Windows.Forms.TableLayoutPanel();
             this.tableLayoutDLLeft = new System.Windows.Forms.TableLayoutPanel();
             this.gbXEFeatures = new System.Windows.Forms.GroupBox();
+            this.cbDLSunShadows = new System.Windows.Forms.CheckBox();
+            this.cmbDLShadowDetail = new System.Windows.Forms.ComboBox();
             this.cmbPerPixelLightFlags = new System.Windows.Forms.ComboBox();
             this.cbPerPixelLighting = new System.Windows.Forms.CheckBox();
             this.bMWLightSettings = new System.Windows.Forms.Button();
-            this.cbDLSunShadows = new System.Windows.Forms.CheckBox();
             this.gbDLDrawDist = new System.Windows.Forms.GroupBox();
             this.lDLDrawDist = new System.Windows.Forms.Label();
             this.udDLDrawDist = new System.Windows.Forms.NumericUpDown();
@@ -218,7 +219,7 @@ namespace MGEgui {
             this.tpInstructions = new System.Windows.Forms.TabPage();
             this.lInstructions = new System.Windows.Forms.Label();
             this.SShotFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.cmbDLShadowDetail = new System.Windows.Forms.ComboBox();
+            this.cbD3D8To9Only = new System.Windows.Forms.CheckBox();
             this.tpInput.SuspendLayout();
             this.gbMWLighting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udLightingConst)).BeginInit();
@@ -827,6 +828,7 @@ namespace MGEgui {
             // 
             this.gbInputOpts.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbInputOpts.Controls.Add(this.cbD3D8To9Only);
             this.gbInputOpts.Controls.Add(this.cbMenuCaching);
             this.gbInputOpts.Controls.Add(this.cbAutoCrosshair);
             this.gbInputOpts.Controls.Add(this.cbDisableMGE);
@@ -1669,31 +1671,6 @@ namespace MGEgui {
             this.gbXEFeatures.TabStop = false;
             this.gbXEFeatures.Text = "XE";
             // 
-            // cmbPerPixelLightFlags
-            // 
-            this.cmbPerPixelLightFlags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmbPerPixelLightFlags.Enabled = false;
-            this.cmbPerPixelLightFlags.FormattingEnabled = true;
-            this.cmbPerPixelLightFlags.Items.AddRange(new object[] {
-                                    "always on",
-                                    "interiors only"});
-            this.cmbPerPixelLightFlags.Location = new System.Drawing.Point(191, 59);
-            this.cmbPerPixelLightFlags.Name = "cmbPerPixelLightFlags";
-            this.cmbPerPixelLightFlags.Size = new System.Drawing.Size(135, 23);
-            this.cmbPerPixelLightFlags.TabIndex = 11;
-            this.cmbPerPixelLightFlags.Text = "always on";
-            // 
-            // cbPerPixelLighting
-            // 
-            this.cbPerPixelLighting.AutoSize = false;
-            this.cbPerPixelLighting.Location = new System.Drawing.Point(18, 52);
-            this.cbPerPixelLighting.Name = "cbPerPixelLighting";
-            this.cbPerPixelLighting.Size = new System.Drawing.Size(165, 36);
-            this.cbPerPixelLighting.TabIndex = 1;
-            this.cbPerPixelLighting.Text = "Per-pixel lighting shader";
-            this.cbPerPixelLighting.UseVisualStyleBackColor = true;
-            this.cbPerPixelLighting.CheckedChanged += new System.EventHandler(this.cbPerPixelLighting_CheckedChanged);
-            // 
             // cbDLSunShadows
             // 
             this.cbDLSunShadows.AutoSize = true;
@@ -1716,6 +1693,30 @@ namespace MGEgui {
             this.cmbDLShadowDetail.Size = new System.Drawing.Size(116, 23);
             this.cmbDLShadowDetail.TabIndex = 12;
             this.cmbDLShadowDetail.Text = "medium";
+            // 
+            // cmbPerPixelLightFlags
+            // 
+            this.cmbPerPixelLightFlags.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmbPerPixelLightFlags.Enabled = false;
+            this.cmbPerPixelLightFlags.FormattingEnabled = true;
+            this.cmbPerPixelLightFlags.Items.AddRange(new object[] {
+                                    "always on",
+                                    "interiors only"});
+            this.cmbPerPixelLightFlags.Location = new System.Drawing.Point(191, 59);
+            this.cmbPerPixelLightFlags.Name = "cmbPerPixelLightFlags";
+            this.cmbPerPixelLightFlags.Size = new System.Drawing.Size(135, 23);
+            this.cmbPerPixelLightFlags.TabIndex = 11;
+            this.cmbPerPixelLightFlags.Text = "always on";
+            // 
+            // cbPerPixelLighting
+            // 
+            this.cbPerPixelLighting.Location = new System.Drawing.Point(18, 52);
+            this.cbPerPixelLighting.Name = "cbPerPixelLighting";
+            this.cbPerPixelLighting.Size = new System.Drawing.Size(165, 36);
+            this.cbPerPixelLighting.TabIndex = 1;
+            this.cbPerPixelLighting.Text = "Per-pixel lighting shader";
+            this.cbPerPixelLighting.UseVisualStyleBackColor = true;
+            this.cbPerPixelLighting.CheckedChanged += new System.EventHandler(this.cbPerPixelLighting_CheckedChanged);
             // 
             // bMWLightSettings
             // 
@@ -2932,6 +2933,16 @@ namespace MGEgui {
             // 
             this.SShotFolderDialog.Description = "Select output folder for screenshots taken in game:";
             // 
+            // cbD3D8To9Only
+            // 
+            this.cbD3D8To9Only.AutoSize = true;
+            this.cbD3D8To9Only.Location = new System.Drawing.Point(11, 77);
+            this.cbD3D8To9Only.Name = "cbD3D8To9Only";
+            this.cbD3D8To9Only.Size = new System.Drawing.Size(154, 19);
+            this.cbD3D8To9Only.TabIndex = 12;
+            this.cbD3D8To9Only.Text = "Use D3D8To9 proxy only";
+            this.cbD3D8To9Only.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -3047,6 +3058,7 @@ namespace MGEgui {
             this.tpInstructions.ResumeLayout(false);
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.CheckBox cbD3D8To9Only;
         private System.Windows.Forms.ComboBox cmbDLShadowDetail;
         private System.Windows.Forms.CheckBox cbReduceTextureMemUse;
         private System.Windows.Forms.Panel panelSShotDirButtons;

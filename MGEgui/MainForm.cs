@@ -137,6 +137,7 @@ namespace MGEgui {
             /* In-game */
             { "DisableMGE", new string [] { "cbDisableMGE" } },
             { "DisableMWSE", new string [] { "cbDisableMWSE" } },
+            { "D3D8To9Only", new String [] { "cbD3D8To9Only" } },
             { "SkipMovie", new string [] { "cbSkipMovie" } },
             { "AltCombat", new string [] { "cbAltCombat" } },
             { "AutoCrosshair", new string [] { "cbAutoCrosshair" } },
@@ -347,6 +348,7 @@ namespace MGEgui {
         // In-game
         private static INIFile.INIVariableDef iniDisableMGE = new INIFile.INIVariableDef("DisableMGE", siniMisc, "MGE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
+        private static INIFile.INIVariableDef iniD3D8To9Only = new INIFile.INIVariableDef("D3D8To9Only", siniMisc, "Only Proxy D3D8To9", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniSkipIntro = new INIFile.INIVariableDef("SkipIntro", siniMisc, "Skip Intro Movies", INIFile.INIBoolType.Text, "True");
         private static INIFile.INIVariableDef iniAltCombat = new INIFile.INIVariableDef("AltCombat", siniMisc, "Daggerfall Combat Controls", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniCam3rdCustom = new INIFile.INIVariableDef("Cam3rdCustom", siniMisc, "Customize 3rd Person Camera", INIFile.INIBoolType.Text, "False");
@@ -399,7 +401,8 @@ namespace MGEgui {
             iniHWShader, iniHDRTime, iniFPSCount, iniReduceTexMemUse,
             iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
-            iniDisableMGE, iniDisableMWSE, iniSkipIntro, iniAltCombat,
+            iniDisableMGE, iniDisableMWSE, iniD3D8To9Only,
+            iniSkipIntro, iniAltCombat,
             iniCam3rdCustom, iniCam3rdX, iniCam3rdY, iniCam3rdZ,
             iniAutoCrosshair, iniMenuCaching,
             iniMessages, iniMsgTime,
@@ -463,6 +466,7 @@ namespace MGEgui {
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue("DisableMWSE") == 1);
+            cbD3D8To9Only.Checked = (iniFile.getKeyValue("D3D8To9Only") == 1);
             cbSkipMovie.Checked = (iniFile.getKeyValue("SkipIntro") == 1);
             cbAltCombat.Checked = (iniFile.getKeyValue("AltCombat") == 1);
             cbCam3rdPrsn.Checked = (iniFile.getKeyValue("Cam3rdCustom") == 1);
@@ -515,7 +519,6 @@ namespace MGEgui {
             iniFile.setKey("TipSpeed", cmbTipReadSpd.SelectedIndex);
             iniFile.setKey("Language", cmbUILanguage.Text);
             iniFile.setKey("AutoLang", cbUILangAuto.Checked);
-            iniFile.setKey("DisableMGE", cbDisableMGE.Checked);
             // Graphics
             iniFile.setKey("AntiAlias", cmbAntiAlias.SelectedIndex);
             iniFile.setKey("VWait", cmbVWait.SelectedIndex);
@@ -540,7 +543,9 @@ namespace MGEgui {
             }
             iniFile.setKey("SSName", tbSShotName.Text.TrimEnd());
             // In-game
+            iniFile.setKey("DisableMGE", cbDisableMGE.Checked);
             iniFile.setKey("DisableMWSE", cbDisableMWSE.Checked);
+            iniFile.setKey("D3D8To9Only", cbD3D8To9Only.Checked);
             iniFile.setKey("SkipIntro", cbSkipMovie.Checked);
             iniFile.setKey("AltCombat", cbAltCombat.Checked);
             iniFile.setKey("Cam3rdCustom", cbCam3rdPrsn.Checked);

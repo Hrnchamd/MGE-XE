@@ -44,7 +44,9 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
         if (Configuration.MGEFlags & MGE_DISABLED) {
             // Signal that DirectX proxies should not load
             isMW = false;
+        }
 
+        if ((Configuration.MGEFlags & MGE_DISABLED) || Configuration.OnlyProxyD3D8To9) {
             // Make Morrowind apply UI scaling, as the D3D proxy is not available to do it
             MWInitPatch::patchUIInit();
         }
@@ -54,7 +56,7 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             HMODULE dll = LoadLibraryA("MWSE.dll");
 
             if (dll) {
-                if (~Configuration.MGEFlags & MGE_DISABLED) {
+                if ((~Configuration.MGEFlags & MGE_DISABLED) && !Configuration.OnlyProxyD3D8To9) {
                     // MWSE-MGE integration
                     MWSE_MGEPlugin::init(dll);
                 }

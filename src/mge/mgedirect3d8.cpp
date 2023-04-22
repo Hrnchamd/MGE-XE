@@ -8,7 +8,7 @@
 
 
 
-const UINT MorrowindRequiredD3DVersion = 120;
+static const UINT MorrowindRequiredD3DVersion = 120;
 
 MGEProxyD3D::MGEProxyD3D(IDirect3D9* real) : ProxyD3D(real, MorrowindRequiredD3DVersion) {
     // Force pixel shaders off, to simplify water override
