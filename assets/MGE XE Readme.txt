@@ -1,7 +1,7 @@
 
-MGE XE 0.16.1
+MGE XE 0.16.2
 -------------
-Released 2023-04-16
+Released 2023-04-22
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -123,6 +123,11 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.16.2
+- Added a D3D8-to-9 proxy only mode, for compatibility with RTX Remix. It does not do any distant rendering or shaders.
+- The FOV setting now works even when "Disable MGE" and "Proxy D3D8To9" options are used.
+- Tuned fog offset with exponential fog to be more consistent over different draw distances. Fog offset settings now have a range 0-200.
+
 0.16.1
 - Fixed sky reflection in water. After the 0.16 change to sky rendering, the sky reflections did not update to match the sky correctly.
 - Better logging information of which shader core mod is incompatible when there is a core shader issue.
@@ -162,14 +167,14 @@ Changelog (newest first)
 - Reduced peak memory usage when initially loading the game.
 - Additional MWSE script commands added for screenshots and lighting.
 - Tweaked LOD selection for generating distant statics.
-- Fixed (again) splash screens showing a thin line of background color pixels on the top edge.
+- Fixed (again) splash screens showing a thin line of background colour pixels on the top edge.
 
 0.14.3
 - Fixed white pixel sparkling of distant subpixel objects at night (e.g. tree branches and thin fences).
 - Added gamma correction reset button to video options.
 - Adjusted main menu video background code to allow mods to run first, so that video randomizing mods can work again.
 - Fixed haggle macros inconsistent behaviour. The Shift modifier is now always supported.
-- Fixed splash screens showing a thin line of background color pixels on some edges of the screen when multisampling is used.
+- Fixed splash screens showing a thin line of background colour pixels on some edges of the screen when multisampling is used.
 
 0.14.2
 - Supports borderless windowed mode even when MGE XE is disabled.
