@@ -6,5 +6,4 @@ public:
     static void patchTextureLoading();
     static void patchUIInit();
     static void patchFrameTimer();
-    static void patchFOV();
 };

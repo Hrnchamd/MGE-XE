@@ -78,7 +78,6 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
         }
 
         MWInitPatch::patchFrameTimer();
-        MWInitPatch::patchFOV();
     }
 
     // Load extender for CS, if Construction Set detected

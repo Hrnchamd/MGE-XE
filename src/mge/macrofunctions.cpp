@@ -316,12 +316,10 @@ void MacroFunctions::DisableMusic() {
 
 void MacroFunctions::IncreaseFOV() {
     Configuration.ScreenFOV = std::min(Configuration.ScreenFOV + 1.0f, 150.0f);
-    MWBridge::get()->updateFOV();
 }
 
 void MacroFunctions::DecreaseFOV() {
     Configuration.ScreenFOV = std::max(60.0f, Configuration.ScreenFOV - 1.0f);
-    MWBridge::get()->updateFOV();
 }
 
 int haggleMultiplier() {
