@@ -1,7 +1,7 @@
 
-MGE XE 0.16.2
+MGE XE 0.16.3
 -------------
-Released 2023-04-22
+Released 2023-04-23
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -123,6 +123,9 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.16.3
+- Remove FOV change introduced in 0.16.2. It was causing incorrect rendering of hands when not using per-pixel lighting mode.
+
 0.16.2
 - Added a D3D8-to-9 proxy only mode, for compatibility with RTX Remix. It does not do any distant rendering or shaders.
 - The FOV setting now works even when "Disable MGE" and "Proxy D3D8To9" options are used.
