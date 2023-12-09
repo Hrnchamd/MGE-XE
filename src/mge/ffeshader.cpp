@@ -111,12 +111,38 @@ void FixedFunctionShader::precache() {
         for (int heavyLighting = 0; heavyLighting <= 1; ++heavyLighting) {
             skCommon.heavyLighting = heavyLighting;
 
-            // Additive texture without fog
+            // Additive blended texture without fog
             skCommon.usesSkinning = 0;
-            skCommon.activeStages = 1;
             skCommon.fogMode = 0;
             skCommon.usesTexgen = 0;
+
+            skCommon.activeStages = 1;
             skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
+            memset(&skCommon.stage[1], 0, sizeof skCommon.stage[1]);
+            generateMWShader(skCommon);
+
+            // Additive blended particle texturing
+            skCommon.usesSkinning = 0;
+            skCommon.fogMode = 2;
+            skCommon.usesTexgen = 0;
+
+            skCommon.activeStages = 1;
+            skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
+            memset(&skCommon.stage[1], 0, sizeof skCommon.stage[1]);
+            generateMWShader(skCommon);
+
+            skCommon.activeStages = 2;
+            skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
+            skCommon.stage[1] = { D3DTOP_ADD, D3DTA_TEXTURE, D3DTA_CURRENT, D3DTA_CURRENT, 0, 0, 0, 0 };
+            generateMWShader(skCommon);
+
+            // Untextured
+            skCommon.usesSkinning = 0;
+            skCommon.fogMode = 1;
+            skCommon.usesTexgen = 0;
+
+            skCommon.activeStages = 1;
+            skCommon.stage[0] = { D3DTOP_SELECTARG2, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
             memset(&skCommon.stage[1], 0, sizeof skCommon.stage[1]);
             generateMWShader(skCommon);
 
@@ -129,6 +155,13 @@ void FixedFunctionShader::precache() {
                 skCommon.usesTexgen = 0;
                 skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
                 memset(&skCommon.stage[1], 0, sizeof skCommon.stage[1]);
+                generateMWShader(skCommon);
+
+                skCommon.activeStages = 2;
+                skCommon.fogMode = 1;
+                skCommon.usesTexgen = 0;
+                skCommon.stage[0] = { D3DTOP_MODULATE, D3DTA_TEXTURE, D3DTA_DIFFUSE, D3DTA_CURRENT, 1, 0, 0, 0 };
+                skCommon.stage[1] = { D3DTOP_ADD, D3DTA_TEXTURE, D3DTA_CURRENT, D3DTA_CURRENT, 0, 0, 0, 0 };
                 generateMWShader(skCommon);
 
                 // Enchantment effect
