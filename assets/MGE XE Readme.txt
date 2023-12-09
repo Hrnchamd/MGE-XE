@@ -1,7 +1,7 @@
 
-MGE XE 0.16.3
+MGE XE 0.17.0
 -------------
-Released 2023-04-23
+Released 2023-12-09
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -123,6 +123,17 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+0.17.0
+- Fixed thin unshadowed line between shadow cascades, which was only visible at certain times on vertical surfaces.
+- Patched an engine bug that caused dull and transparent flames from torches, and from other emissive particles spawned on lights. The bug affected per-pixel lighting much more than the standard renderer.
+- Distant land generator no longer has a static mesh reduction feature. The reduction code was causing generation to be unreliable, hanging or crashing on some meshes, and is too hard to diagnose. Manually reduced "_dist" statics are recommended for complex meshes.
+- Distant land generator no longer has a modal error message box interrupting generation when there are missing textures from a static. The warnings are still visible in the warning summary at the end of generation.
+- In-game options menu position is now remembered.
+- Added more materials to fixed function shader pre-caching.
+- Fixed 'final' shader priority tag to be after all shaders, including shaders without a priority tag.
+- The Lua API can now set bool, int, and vec4 arrays. It can also alter the main engine's near rendering distance, to allow reducing it via script in busy areas.
+
+
 0.16.3
 - Remove FOV change introduced in 0.16.2. It was causing incorrect rendering of hands when not using per-pixel lighting mode.
 
