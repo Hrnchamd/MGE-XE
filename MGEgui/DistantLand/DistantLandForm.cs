@@ -1387,7 +1387,7 @@ namespace MGEgui.DistantLand {
                                     bool ok = stc.LoadTexture(path);
                                     if (!ok) {
                                         String warn = String.Format(strings["MissingTexture"], path, name);
-                                        MessageBox.Show(warn, "Warning", MessageBoxButtons.OK);
+                                        // MessageBox.Show(warn, "Warning", MessageBoxButtons.OK);
                                         staticsWarnings.Add(warn);
                                     }
                                 }
