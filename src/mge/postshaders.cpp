@@ -265,11 +265,11 @@ enum struct ShaderPriorityValue : int {
     Lens = 3000000,
     Sensor = 4000000,
     Tone = 5000000,
-    Final = 6000000,
-    Default = 8000000,
+    Default = 6000000,
+    Final = 9000000,
 };
 
-static ShaderPriorityValue getShaderPriority(std::string s) {
+static ShaderPriorityValue getShaderPriority(const std::string& s) {
     if(s == "scene") { return ShaderPriorityValue::Scene; }
     if(s == "atmosphere") { return ShaderPriorityValue::Atmosphere; }
     if(s == "lens") { return ShaderPriorityValue::Lens; }
