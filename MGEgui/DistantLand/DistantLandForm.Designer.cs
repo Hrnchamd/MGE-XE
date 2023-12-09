@@ -69,11 +69,9 @@ namespace MGEgui.DistantLand {
             this.udStatMinSize = new System.Windows.Forms.NumericUpDown();
             this.lStatSkipMipDesc = new System.Windows.Forms.Label();
             this.udStatGrassDensity = new System.Windows.Forms.NumericUpDown();
-            this.cmbStatSimplifyMeshes = new System.Windows.Forms.ComboBox();
             this.cmbStatSkipMipLevels = new System.Windows.Forms.ComboBox();
             this.lStatMinSize = new System.Windows.Forms.Label();
             this.lStatSkipMipLevels = new System.Windows.Forms.Label();
-            this.lStatSimplifyMeshes = new System.Windows.Forms.Label();
             this.lStatGrassDensity = new System.Windows.Forms.Label();
             this.panelDPIScalingLimiter2 = new System.Windows.Forms.Panel();
             this.lStatOverrideList = new System.Windows.Forms.Label();
@@ -586,22 +584,20 @@ namespace MGEgui.DistantLand {
             this.tableLayoutStaticsOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableLayoutStaticsOptions.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutStaticsOptions.Controls.Add(this.udStatMinSize, 0, 0);
-            this.tableLayoutStaticsOptions.Controls.Add(this.lStatSkipMipDesc, 0, 4);
+            this.tableLayoutStaticsOptions.Controls.Add(this.lStatSkipMipDesc, 0, 3);
             this.tableLayoutStaticsOptions.Controls.Add(this.udStatGrassDensity, 0, 1);
-            this.tableLayoutStaticsOptions.Controls.Add(this.cmbStatSimplifyMeshes, 0, 2);
-            this.tableLayoutStaticsOptions.Controls.Add(this.cmbStatSkipMipLevels, 0, 3);
+            this.tableLayoutStaticsOptions.Controls.Add(this.cmbStatSkipMipLevels, 0, 2);
             this.tableLayoutStaticsOptions.Controls.Add(this.lStatMinSize, 1, 0);
-            this.tableLayoutStaticsOptions.Controls.Add(this.lStatSkipMipLevels, 1, 3);
-            this.tableLayoutStaticsOptions.Controls.Add(this.lStatSimplifyMeshes, 1, 2);
+            this.tableLayoutStaticsOptions.Controls.Add(this.lStatSkipMipLevels, 1, 2);
             this.tableLayoutStaticsOptions.Controls.Add(this.lStatGrassDensity, 1, 1);
             this.tableLayoutStaticsOptions.Location = new System.Drawing.Point(11, 50);
             this.tableLayoutStaticsOptions.Name = "tableLayoutStaticsOptions";
-            this.tableLayoutStaticsOptions.RowCount = 5;
-            this.tableLayoutStaticsOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
+            this.tableLayoutStaticsOptions.RowCount = 4;
             this.tableLayoutStaticsOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
             this.tableLayoutStaticsOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
             this.tableLayoutStaticsOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 27F));
             this.tableLayoutStaticsOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutStaticsOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tableLayoutStaticsOptions.Size = new System.Drawing.Size(279, 163);
             this.tableLayoutStaticsOptions.TabIndex = 18;
             // 
@@ -633,7 +629,7 @@ namespace MGEgui.DistantLand {
             // 
             this.lStatSkipMipDesc.AutoSize = true;
             this.tableLayoutStaticsOptions.SetColumnSpan(this.lStatSkipMipDesc, 2);
-            this.lStatSkipMipDesc.Location = new System.Drawing.Point(3, 108);
+            this.lStatSkipMipDesc.Location = new System.Drawing.Point(3, 81);
             this.lStatSkipMipDesc.Name = "lStatSkipMipDesc";
             this.lStatSkipMipDesc.Size = new System.Drawing.Size(177, 30);
             this.lStatSkipMipDesc.TabIndex = 0;
@@ -658,24 +654,6 @@ namespace MGEgui.DistantLand {
                                     0,
                                     0});
             // 
-            // cmbStatSimplifyMeshes
-            // 
-            this.cmbStatSimplifyMeshes.ContextMenuStrip = this.DudMenu;
-            this.cmbStatSimplifyMeshes.FormattingEnabled = true;
-            this.cmbStatSimplifyMeshes.Items.AddRange(new object[] {
-                                    "Full",
-                                    "90%",
-                                    "75%",
-                                    "50%",
-                                    "25%"});
-            this.cmbStatSimplifyMeshes.Location = new System.Drawing.Point(0, 54);
-            this.cmbStatSimplifyMeshes.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
-            this.cmbStatSimplifyMeshes.Name = "cmbStatSimplifyMeshes";
-            this.cmbStatSimplifyMeshes.Size = new System.Drawing.Size(52, 23);
-            this.cmbStatSimplifyMeshes.TabIndex = 3;
-            this.cmbStatSimplifyMeshes.Text = "Full";
-            this.cmbStatSimplifyMeshes.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.IgnoreKeyPress);
-            // 
             // cmbStatSkipMipLevels
             // 
             this.cmbStatSkipMipLevels.ContextMenuStrip = this.DudMenu;
@@ -685,7 +663,7 @@ namespace MGEgui.DistantLand {
                                     "1",
                                     "2",
                                     "3"});
-            this.cmbStatSkipMipLevels.Location = new System.Drawing.Point(0, 81);
+            this.cmbStatSkipMipLevels.Location = new System.Drawing.Point(0, 54);
             this.cmbStatSkipMipLevels.Margin = new System.Windows.Forms.Padding(0, 0, 0, 4);
             this.cmbStatSkipMipLevels.Name = "cmbStatSkipMipLevels";
             this.cmbStatSkipMipLevels.Size = new System.Drawing.Size(52, 23);
@@ -709,25 +687,13 @@ namespace MGEgui.DistantLand {
             // 
             this.lStatSkipMipLevels.AutoSize = true;
             this.lStatSkipMipLevels.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lStatSkipMipLevels.Location = new System.Drawing.Point(55, 81);
+            this.lStatSkipMipLevels.Location = new System.Drawing.Point(55, 54);
             this.lStatSkipMipLevels.Margin = new System.Windows.Forms.Padding(3, 0, 3, 4);
             this.lStatSkipMipLevels.Name = "lStatSkipMipLevels";
             this.lStatSkipMipLevels.Size = new System.Drawing.Size(221, 23);
             this.lStatSkipMipLevels.TabIndex = 0;
             this.lStatSkipMipLevels.Text = "Mipmap levels to skip";
             this.lStatSkipMipLevels.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lStatSimplifyMeshes
-            // 
-            this.lStatSimplifyMeshes.AutoSize = true;
-            this.lStatSimplifyMeshes.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lStatSimplifyMeshes.Location = new System.Drawing.Point(55, 54);
-            this.lStatSimplifyMeshes.Margin = new System.Windows.Forms.Padding(3, 0, 3, 4);
-            this.lStatSimplifyMeshes.Name = "lStatSimplifyMeshes";
-            this.lStatSimplifyMeshes.Size = new System.Drawing.Size(221, 23);
-            this.lStatSimplifyMeshes.TabIndex = 0;
-            this.lStatSimplifyMeshes.Text = "Mesh detail";
-            this.lStatSimplifyMeshes.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lStatGrassDensity
             // 
@@ -1048,8 +1014,6 @@ namespace MGEgui.DistantLand {
         private System.Windows.Forms.Label lStatMinSize;
         private System.Windows.Forms.NumericUpDown udStatGrassDensity;
         private System.Windows.Forms.Label lStatGrassDensity;
-        private System.Windows.Forms.ComboBox cmbStatSimplifyMeshes;
-        private System.Windows.Forms.Label lStatSimplifyMeshes;
         private System.Windows.Forms.ComboBox cmbStatSkipMipLevels;
         private System.Windows.Forms.Label lStatSkipMipLevels;
         private System.Windows.Forms.Label lStatSkipMipDesc;

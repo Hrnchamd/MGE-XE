@@ -43,7 +43,6 @@ namespace MGEgui.DistantLand {
         public Dictionary<string, string[]> tooltip_messages = new Dictionary<string, string[]> {
             { "StaticMinSize", new string [] { "lStatMinSize", "cmbStatMinSize" } },
             { "StaticGrassDensity", new string [] { "lStatGrassDensity", "cmbStatGrassDensity" } },
-            { "StaticSimplifyMesh", new string [] { "lStatSimplifyMeshes", "cmbStatSimplifyMeshes" } },
             { "StaticSkipMips", new string [] { "lStatSkipMipLevels", "cmbStatSkipMipLevels" } },
             { "IncludeLargeInt", new string [] { "cbStatLargeInt" } },
             { "IncludeIntExt", new string [] { "cbStatIntExt" } },
@@ -345,7 +344,6 @@ namespace MGEgui.DistantLand {
             cmbMeshWorldDetail.SelectedIndex = (int)iniFile.getKeyValue("WorldMesh");
             udStatMinSize.Value = (int)iniFile.getKeyValue("MinStat");
             udStatGrassDensity.Value = (int)iniFile.getKeyValue("GrassDens");
-            cmbStatSimplifyMeshes.SelectedIndex = (int)iniFile.getKeyValue("StatMesh");
             cmbStatSkipMipLevels.SelectedIndex = (int)iniFile.getKeyValue("SkipMip");
             cbStatLargeInt.Checked = (iniFile.getKeyValue("StatLargeInt") == 1);
             cbStatIntExt.Checked = (iniFile.getKeyValue("StatIntExt") == 1);
@@ -407,7 +405,6 @@ namespace MGEgui.DistantLand {
             var iniFile = new INIFile(Statics.fn_inifile, iniStatTab, true);
             iniFile.setKey("MinStat", (double)udStatMinSize.Value);
             iniFile.setKey("GrassDens", (double)udStatGrassDensity.Value);
-            iniFile.setKey("StatMesh", cmbStatSimplifyMeshes.SelectedIndex);
             iniFile.setKey("SkipMip", cmbStatSkipMipLevels.SelectedIndex);
             iniFile.setKey("StatLargeInt", cbStatLargeInt.Checked);
             iniFile.setKey("StatIntExt", cbStatIntExt.Checked);
@@ -982,7 +979,6 @@ namespace MGEgui.DistantLand {
             public bool UseOverrideList;
             public bool Activators;
             public bool Misc;
-            public float Simplify;
         }
 
         private void GrassDensityThreshold(float GrassDensity, KeyValuePair<string, Dictionary<string, StaticReference>> cellStatics, KeyValuePair<string, StaticReference> pair, Random rnd, List<StaticToRemove> UsedStaticsToRemove) {
@@ -1208,7 +1204,6 @@ namespace MGEgui.DistantLand {
                     byte[] data;
 
                     // Set default simplification level to None until the simplifier code is fixed.
-                    //float simplify = args.Simplify;
                     float simplify = 1.0f;
 
                     // Try to load a version of the file that ends with '_dist' first.
@@ -1250,7 +1245,7 @@ namespace MGEgui.DistantLand {
                             if (overrideList.ContainsKey(name)) {
                                 StaticOverride so = overrideList[name];
                                 if (!so.Ignore || so.NamesNoIgnore) {
-                                    simplify = so.Simplify.HasValue ? so.Simplify.Value : simplify;
+                                    //simplify = so.Simplify.HasValue ? so.Simplify.Value : simplify;
                                     size = NativeMethods.ProcessNif(data, data.Length, simplify, args.MinSize, (byte)so.Type);
                                 }
                             } else {
@@ -2633,23 +2628,6 @@ namespace MGEgui.DistantLand {
             csa.MinSize = temp;
             // Save the value of the minimum static size to the main screen
             Statics.mf.tbDLNearSize.Text = udStatMinSize.Text;
-            switch (cmbStatSimplifyMeshes.SelectedIndex) {
-                case 1:
-                    csa.Simplify = 0.9f;
-                    break;
-                case 2:
-                    csa.Simplify = 0.75f;
-                    break;
-                case 3:
-                    csa.Simplify = 0.5f;
-                    break;
-                case 4:
-                    csa.Simplify = 0.25f;
-                    break;
-                default:
-                    csa.Simplify = 1.0f;
-                    break;
-            }
             csa.MipSkip = cmbStatSkipMipLevels.SelectedIndex;
             csa.Activators = cbStatActivators.Checked;
             csa.Misc = cbStatIncludeMisc.Checked;
