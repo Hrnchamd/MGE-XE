@@ -11,7 +11,8 @@
 // Texture atlas
 
 // Clip space margin of 4 texels, to prevent bleeding from the filter kernel + adjacent textures
-static float3 atlasMargin = float3(1-4*shadowRcpRes, 1-4*shadowRcpRes, 1);
+// Clip space limits are -1 to +1, so texel dimensions are multiplied by two here
+static float3 atlasMargin = float3(1-2*4*shadowRcpRes, 1-2*4*shadowRcpRes, 1);
 
 // Shadow UV to shadow atlas UV
 float4 mapShadowToAtlas(float2 t, int layer) {
