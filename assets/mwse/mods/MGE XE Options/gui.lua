@@ -295,16 +295,18 @@ function this.run()
 	end
 
 	-- Create menu
-	menu = tes3ui.createMenu{id = "MenuMGE-XE", dragFrame = true, loadable = false}
+	menu = tes3ui.createMenu{id = "MenuMGE-XE", dragFrame = true, loadable = true}
 	menu.text = "MGE XE"
 	menu.width = 520
 	menu.height = 720
 	menu.minWidth = 480
 	menu.minHeight = 720
 
-	-- Right-align menu position
+	-- Right-align menu default position
 	menu.positionX = 0.5 * menu.maxWidth - menu.width
 	menu.positionY = 0.5 * menu.height + 20
+	-- Restore menu position
+	menu:loadMenuPosition()
 
 	-- UI creation
 	local element
