@@ -46,10 +46,8 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
             isMW = false;
         }
 
-        if ((Configuration.MGEFlags & MGE_DISABLED) || Configuration.OnlyProxyD3D8To9) {
-            // Make Morrowind apply UI scaling, as the D3D proxy is not available to do it
-            MWInitPatch::patchUIInit();
-        }
+        // Early startup patches
+        MWInitPatch::patch();
 
         if (~Configuration.MGEFlags & MWSE_DISABLED) {
             // Load MWSE dll, it injects by itself
@@ -67,17 +65,6 @@ extern "C" BOOL _stdcall DllMain(HANDLE hModule, DWORD reason, void* unused) {
         } else {
             LOG::logline("MWSE is disabled.");
         }
-
-        // Early startup patches
-        if (Configuration.MGEFlags & SKIP_INTRO) {
-            MWInitPatch::disableIntroMovies();
-        }
-
-        if (Configuration.UseDefaultTexturePool) {
-            MWInitPatch::patchTextureLoading();
-        }
-
-        MWInitPatch::patchFrameTimer();
     }
 
     // Load extender for CS, if Construction Set detected

@@ -1423,6 +1423,18 @@ void MWBridge::patchLoadTexture2D() {
 
 //-----------------------------------------------------------------------------
 
+// patchLightParticleMaterialModifier - Fix code that quenches light particles to stop affecting shared emissive materials
+// In conjunction with per-pixel lighting, an engine bug causes fire particles from lights to be weak and transparent
+void MWBridge::patchLightParticleMaterialModifier() {
+    DWORD addr = 0x4D2789;
+
+    // Jump over code that affects the particle emissive material
+    VirtualMemWriteAccessor vw((void*)addr, 1);
+    write_byte(addr, 0xEB);
+}
+
+//-----------------------------------------------------------------------------
+
 // getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
 void* MWBridge::getGMSTPointer(DWORD id) {
     DWORD addr = read_dword(eEnviro);

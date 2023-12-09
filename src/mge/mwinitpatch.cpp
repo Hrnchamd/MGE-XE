@@ -17,18 +17,6 @@ struct TES3GameOptions {
     // ...
 };
 
-// Disable intro movies on initialization as the logo appears before game init
-void MWInitPatch::disableIntroMovies() {
-    MWBridge::get()->disableIntroMovies();
-}
-
-
-// Patch texture loading to reduce process memory footprint
-void MWInitPatch::patchTextureLoading() {
-    MWBridge::get()->patchLoadTexture2D();
-}
-
-
 // Override UI scaling callback: set new UI scaling and mouse bounds, setup borderless window
 static void _stdcall onUIScaleInit() {
     auto mwBridge = MWBridge::get();
@@ -48,15 +36,29 @@ static void _stdcall onUIScaleInit() {
     mwBridge->setUIScale(Configuration.UIScale);
 }
 
-void MWInitPatch::patchUIInit() {
-    // User interface still needs to be scaled, normally done by the D3DDevice proxy
-    // Without the proxy, patch Morrowind UI creation instead
-    MWBridge::get()->patchUIConfigure(onUIScaleInit);
-}
+void MWInitPatch::patch() {
+    auto mwBridge = MWBridge::get();
 
+    if ((Configuration.MGEFlags & MGE_DISABLED) || Configuration.OnlyProxyD3D8To9) {
+        // User interface still needs to be scaled, normally done by the D3DDevice proxy
+        // Without the proxy, patch Morrowind UI creation instead
+        mwBridge->patchUIConfigure(onUIScaleInit);
+    }
 
-// Patches certain calls to timeGetTime to redirect to a better time.
-void MWInitPatch::patchFrameTimer() {
+    if (Configuration.MGEFlags & SKIP_INTRO) {
+        // Disable intro movies on initialization as the logo appears before game init
+        mwBridge->disableIntroMovies();
+    }
+
+    if (Configuration.UseDefaultTexturePool) {
+        // Patch texture loading to reduce process memory footprint
+        mwBridge->patchLoadTexture2D();
+    }
+
+    // Patches certain calls to timeGetTime to redirect to a better time.
     HighResolutionTimer::init();
-    MWBridge::get()->patchFrameTimer(&HighResolutionTimer::getMilliseconds);
+    mwBridge->patchFrameTimer(&HighResolutionTimer::getMilliseconds);
+
+    // Patch engine issue with light emissive particle material that affects particle rendering
+    mwBridge->patchLightParticleMaterialModifier();
 }
