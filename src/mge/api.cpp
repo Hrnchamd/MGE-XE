@@ -747,4 +747,13 @@ namespace api {
     void MGEAPIv2::weatherScatteringSkylightSet(float skylight[4]) {
         memcpy(&DistantLand::atmSkylightScatter.x, skylight, 4 * sizeof(float));
     }
+
+    float MGEAPIv3::nearRenderDistanceGet() {
+        return MWBridge::get()->GetViewDistance();
+    }
+
+    void MGEAPIv3::nearRenderDistanceSet(float distance) {
+        distance = std::max(2500.0f, std::min(7168.0f, distance));
+        MWBridge::get()->SetViewDistance(distance);
+    }
 }

@@ -3,7 +3,7 @@
 #include <stddef.h>
 
 namespace api {
-	static const int supported_api_version = 2;
+	static const int supported_api_version = 3;
 
 	struct MGEAPI {
 		virtual int getAPIVersion() const = 0;
@@ -211,6 +211,13 @@ namespace api {
 		virtual void weatherScatteringSkylightGet(float* skylight);
 		virtual void weatherScatteringSkylightSet(float skylight[4]);
     };
+
+    struct MGEAPIv3 : public MGEAPIv2 {
+        virtual float nearRenderDistanceGet();
+        virtual void nearRenderDistanceSet(float distance);
+    };
+
+    typedef MGEAPIv3 MGEAPI_ExportVersion;
 
 	inline MGEAPIv1* api = nullptr;
 	inline const MacroFunctions* macros = nullptr;

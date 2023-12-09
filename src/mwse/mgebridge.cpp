@@ -61,7 +61,7 @@ void MWSE_MGEPlugin::init(HMODULE dll) {
 
     if (MGEInterface) {
         // Create and pass API instance to MWSE 2.1+
-        api::api = new api::MGEAPIv2();
+        api::api = new api::MGEAPI_ExportVersion();
         MGEInterface(api::api);
     }
 
