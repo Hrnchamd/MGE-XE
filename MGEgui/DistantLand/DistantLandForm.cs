@@ -2618,9 +2618,6 @@ namespace MGEgui.DistantLand {
 
         private void bStatRun_Click(object sender, EventArgs e) {
             if (StaticsExist) {
-                if (!SetupFlags["AutoRun"] && MessageBox.Show(strings["ConfirmRecreate"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) {
-                    return;
-                }
                 Directory.Delete(Statics.fn_statics, true);
             }
             ushort temp = (ushort)udStatMinSize.Value;
