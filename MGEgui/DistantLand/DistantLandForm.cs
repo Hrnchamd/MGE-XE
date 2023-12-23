@@ -2696,9 +2696,11 @@ namespace MGEgui.DistantLand {
 
             var rr = new RecordReader(br);
             while (rr.NextRecord()) {
-                if (rr.Tag == "STAT" || rr.Tag == "ACTI" || rr.Tag == "DOOR" || rr.Tag == "CONT" || rr.Tag == "LIGH") {
-                    bool activator = rr.Tag == "ACTI";
-                    bool misc = rr.Tag == "DOOR" || rr.Tag == "CONT" || rr.Tag == "LIGH";
+                bool staticTag = rr.Tag == "STAT" || rr.Tag == "GCVR"; // GCVR extension in OpenCS
+                bool activatorTag = rr.Tag == "ACTI";
+                bool miscTag = rr.Tag == "DOOR" || rr.Tag == "CONT" || rr.Tag == "LIGH";
+                
+                if (staticTag || activatorTag || miscTag) {
                     string name = null;
                     string model = null;
                     string script = null;
@@ -2766,7 +2768,7 @@ namespace MGEgui.DistantLand {
                         if (overrideList != null && overrideList.ContainsKey(model)) {
                             ignore = overrideList[model].Ignore;
                         } else {
-                            ignore = (misc && !includeMisc) || (activator && !includeActivators);
+                            ignore = (miscTag && !includeMisc) || (activatorTag && !includeActivators);
                         }
 
                         if (!ignore && script != null && DisableScripts != null && DisableScripts.ContainsKey(script) && DisableScripts[script]) {
