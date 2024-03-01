@@ -81,7 +81,15 @@ namespace MGEgui.DistantLand {
                     files.Add(br);
                 } catch (IOException ex) {
                     entries.Clear();
-                    throw new Exception("While reading \"" + s + "\"", ex);
+                    // Do not throw error for MO2's Morrowind - Invalidation.bsa
+                    if (Path.GetFileName(s).Equals("Morrowind - Invalidation.bsa", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        throw new Exception("While reading \"" + s + "\"", ex);
+                    }
                 }
             }
             entries.Sort();
