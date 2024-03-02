@@ -32,7 +32,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <NoStdLib>False</NoStdLib>
     <WarningLevel>4</WarningLevel>
     <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
@@ -104,13 +104,19 @@
   <ItemGroup>
     <Compile Include="DirectX\DistantLandTextures.cs" />
     <Compile Include="DirectX\DXMain.cs" />
-    <Compile Include="DistantLand\BetterCheckedListBox.cs" />
-    <Compile Include="LightingForm.cs" />
+    <Compile Include="DistantLand\BetterCheckedListBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="LightingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="LightingForm.Designer.cs">
       <DependentUpon>LightingForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Localization\LocalizationInterface.cs" />
-    <Compile Include="LogViewer.cs" />
+    <Compile Include="LogViewer.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="LogViewer.Designer.cs">
       <DependentUpon>LogViewer.cs</DependentUpon>
     </Compile>
