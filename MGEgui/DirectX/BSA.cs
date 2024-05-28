@@ -57,6 +57,12 @@ namespace MGEgui.DistantLand {
             }
             string[] bsas = Directory.GetFiles(Statics.fn_dataFiles, "*.bsa");
             foreach (string s in bsas) {
+                // Skip MO2's Morrowind - Invalidation.bsa
+                if (Path.GetFileName(s).Equals("Morrowind - Invalidation.bsa", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    continue;
+                }
+
                 try {
                     var br = new BinaryReader(File.OpenRead(s));
                     br.BaseStream.Position += 4;
