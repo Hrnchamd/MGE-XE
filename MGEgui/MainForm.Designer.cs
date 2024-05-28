@@ -110,6 +110,7 @@ namespace MGEgui {
             this.udFOV = new System.Windows.Forms.NumericUpDown();
             this.lFOV = new System.Windows.Forms.Label();
             this.gbDisplay = new System.Windows.Forms.GroupBox();
+            this.tableLayoutWindowAlign = new System.Windows.Forms.TableLayoutPanel();
             this.panelWindowAlign = new System.Windows.Forms.Panel();
             this.rbWindowAlignBottomRight = new System.Windows.Forms.RadioButton();
             this.rbWindowAlignCenterRight = new System.Windows.Forms.RadioButton();
@@ -231,7 +232,6 @@ namespace MGEgui {
             this.tpInstructions = new System.Windows.Forms.TabPage();
             this.lInstructions = new System.Windows.Forms.Label();
             this.SShotFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.tableLayoutWindowAlign = new System.Windows.Forms.TableLayoutPanel();
             this.tpInput.SuspendLayout();
             this.gbMWLighting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udLightingConst)).BeginInit();
@@ -257,6 +257,7 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).BeginInit();
             this.gbDisplay.SuspendLayout();
+            this.tableLayoutWindowAlign.SuspendLayout();
             this.panelWindowAlign.SuspendLayout();
             this.tableAlignResolution.SuspendLayout();
             this.tableLayoutDisplay.SuspendLayout();
@@ -301,7 +302,6 @@ namespace MGEgui {
             this.gbMainInfo.SuspendLayout();
             this.gbMainSettings.SuspendLayout();
             this.tpInstructions.SuspendLayout();
-            this.tableLayoutWindowAlign.SuspendLayout();
             this.SuspendLayout();
             // 
             // OpenFileDialog
@@ -335,7 +335,7 @@ namespace MGEgui {
             this.tpInput.Controls.Add(this.gbInputOpts);
             this.tpInput.Location = new System.Drawing.Point(4, 24);
             this.tpInput.Name = "tpInput";
-            this.tpInput.Size = new System.Drawing.Size(696, 473);
+            this.tpInput.Size = new System.Drawing.Size(716, 473);
             this.tpInput.TabIndex = 3;
             this.tpInput.Text = "In-Game";
             this.tpInput.ToolTipText = "Options affecting Morrowind during gameplay, including a macro editor and key rem" +
@@ -352,7 +352,7 @@ namespace MGEgui {
             this.gbMWLighting.Controls.Add(this.udLightingConst);
             this.gbMWLighting.Controls.Add(this.udLightingLinear);
             this.gbMWLighting.Controls.Add(this.udLightingQuad);
-            this.gbMWLighting.Location = new System.Drawing.Point(370, 129);
+            this.gbMWLighting.Location = new System.Drawing.Point(390, 129);
             this.gbMWLighting.Name = "gbMWLighting";
             this.gbMWLighting.Size = new System.Drawing.Size(318, 72);
             this.gbMWLighting.TabIndex = 10;
@@ -471,7 +471,7 @@ namespace MGEgui {
             this.gbMWGeneral.Controls.Add(this.cbSubtitles);
             this.gbMWGeneral.Location = new System.Drawing.Point(8, 207);
             this.gbMWGeneral.Name = "gbMWGeneral";
-            this.gbMWGeneral.Size = new System.Drawing.Size(680, 175);
+            this.gbMWGeneral.Size = new System.Drawing.Size(700, 185);
             this.gbMWGeneral.TabIndex = 9;
             this.gbMWGeneral.TabStop = false;
             this.gbMWGeneral.Text = "Morrowind.ini settings";
@@ -482,7 +482,7 @@ namespace MGEgui {
                                     | System.Windows.Forms.AnchorStyles.Right)));
             this.lScreenshotStatus.Location = new System.Drawing.Point(13, 121);
             this.lScreenshotStatus.Name = "lScreenshotStatus";
-            this.lScreenshotStatus.Size = new System.Drawing.Size(650, 45);
+            this.lScreenshotStatus.Size = new System.Drawing.Size(670, 54);
             this.lScreenshotStatus.TabIndex = 9;
             this.lScreenshotStatus.Text = "Screenshots can be taken with the PrintScreen key. MGE will compress and save the" +
             "m for you.";
@@ -491,7 +491,7 @@ namespace MGEgui {
             // 
             this.cbScreenshots.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbScreenshots.AutoSize = true;
-            this.cbScreenshots.Location = new System.Drawing.Point(340, 21);
+            this.cbScreenshots.Location = new System.Drawing.Point(350, 21);
             this.cbScreenshots.Name = "cbScreenshots";
             this.cbScreenshots.Size = new System.Drawing.Size(121, 19);
             this.cbScreenshots.TabIndex = 0;
@@ -503,7 +503,7 @@ namespace MGEgui {
             this.cbHitFader.AutoSize = true;
             this.cbHitFader.Checked = true;
             this.cbHitFader.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbHitFader.Location = new System.Drawing.Point(340, 90);
+            this.cbHitFader.Location = new System.Drawing.Point(350, 90);
             this.cbHitFader.Name = "cbHitFader";
             this.cbHitFader.Size = new System.Drawing.Size(72, 19);
             this.cbHitFader.TabIndex = 8;
@@ -513,7 +513,7 @@ namespace MGEgui {
             // 
             this.cbAudio.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbAudio.AutoSize = true;
-            this.cbAudio.Location = new System.Drawing.Point(340, 67);
+            this.cbAudio.Location = new System.Drawing.Point(350, 67);
             this.cbAudio.Name = "cbAudio";
             this.cbAudio.Size = new System.Drawing.Size(97, 19);
             this.cbAudio.TabIndex = 7;
@@ -543,7 +543,7 @@ namespace MGEgui {
             this.cbThreadLoad.AutoSize = true;
             this.cbThreadLoad.Checked = true;
             this.cbThreadLoad.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbThreadLoad.Location = new System.Drawing.Point(340, 44);
+            this.cbThreadLoad.Location = new System.Drawing.Point(350, 44);
             this.cbThreadLoad.Name = "cbThreadLoad";
             this.cbThreadLoad.Size = new System.Drawing.Size(106, 19);
             this.cbThreadLoad.TabIndex = 6;
@@ -577,9 +577,9 @@ namespace MGEgui {
             this.gbMsgs.Controls.Add(this.lMsgsTime);
             this.gbMsgs.Controls.Add(this.lMsgsLanguage);
             this.gbMsgs.Controls.Add(this.lMsgsTimeUnit);
-            this.gbMsgs.Location = new System.Drawing.Point(8, 388);
+            this.gbMsgs.Location = new System.Drawing.Point(8, 395);
             this.gbMsgs.Name = "gbMsgs";
-            this.gbMsgs.Size = new System.Drawing.Size(680, 66);
+            this.gbMsgs.Size = new System.Drawing.Size(700, 66);
             this.gbMsgs.TabIndex = 8;
             this.gbMsgs.TabStop = false;
             this.gbMsgs.Text = "MGE status messages";
@@ -601,7 +601,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
-            this.udMsgsTime.Location = new System.Drawing.Point(483, 34);
+            this.udMsgsTime.Location = new System.Drawing.Point(503, 34);
             this.udMsgsTime.Maximum = new decimal(new int[] {
                                     50000,
                                     0,
@@ -630,7 +630,7 @@ namespace MGEgui {
             this.cmbMsgsLocale.FormattingEnabled = true;
             this.cmbMsgsLocale.Items.AddRange(new object[] {
                                     "English (default)"});
-            this.cmbMsgsLocale.Location = new System.Drawing.Point(240, 34);
+            this.cmbMsgsLocale.Location = new System.Drawing.Point(250, 34);
             this.cmbMsgsLocale.Name = "cmbMsgsLocale";
             this.cmbMsgsLocale.Size = new System.Drawing.Size(128, 23);
             this.cmbMsgsLocale.Sorted = true;
@@ -641,7 +641,7 @@ namespace MGEgui {
             // 
             this.lMsgsTime.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lMsgsTime.AutoSize = true;
-            this.lMsgsTime.Location = new System.Drawing.Point(483, 16);
+            this.lMsgsTime.Location = new System.Drawing.Point(503, 16);
             this.lMsgsTime.Name = "lMsgsTime";
             this.lMsgsTime.Size = new System.Drawing.Size(52, 15);
             this.lMsgsTime.TabIndex = 0;
@@ -652,7 +652,7 @@ namespace MGEgui {
             this.lMsgsLanguage.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lMsgsLanguage.AutoSize = true;
             this.lMsgsLanguage.Enabled = false;
-            this.lMsgsLanguage.Location = new System.Drawing.Point(240, 16);
+            this.lMsgsLanguage.Location = new System.Drawing.Point(250, 16);
             this.lMsgsLanguage.Name = "lMsgsLanguage";
             this.lMsgsLanguage.Size = new System.Drawing.Size(122, 15);
             this.lMsgsLanguage.TabIndex = 0;
@@ -662,7 +662,7 @@ namespace MGEgui {
             // 
             this.lMsgsTimeUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lMsgsTimeUnit.AutoSize = true;
-            this.lMsgsTimeUnit.Location = new System.Drawing.Point(544, 36);
+            this.lMsgsTimeUnit.Location = new System.Drawing.Point(564, 36);
             this.lMsgsTimeUnit.Name = "lMsgsTimeUnit";
             this.lMsgsTimeUnit.Size = new System.Drawing.Size(23, 15);
             this.lMsgsTimeUnit.TabIndex = 0;
@@ -807,7 +807,7 @@ namespace MGEgui {
             this.gbInputTools.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.gbInputTools.Controls.Add(this.bMacroEd);
             this.gbInputTools.Controls.Add(this.bRemapper);
-            this.gbInputTools.Location = new System.Drawing.Point(504, 3);
+            this.gbInputTools.Location = new System.Drawing.Point(524, 3);
             this.gbInputTools.Name = "gbInputTools";
             this.gbInputTools.Size = new System.Drawing.Size(184, 119);
             this.gbInputTools.TabIndex = 1;
@@ -851,7 +851,7 @@ namespace MGEgui {
             this.gbInputOpts.Controls.Add(this.cbAltCombat);
             this.gbInputOpts.Location = new System.Drawing.Point(8, 3);
             this.gbInputOpts.Name = "gbInputOpts";
-            this.gbInputOpts.Size = new System.Drawing.Size(490, 119);
+            this.gbInputOpts.Size = new System.Drawing.Size(510, 119);
             this.gbInputOpts.TabIndex = 0;
             this.gbInputOpts.TabStop = false;
             this.gbInputOpts.Text = "Options";
@@ -962,7 +962,7 @@ namespace MGEgui {
             this.tpGlobal.Controls.Add(this.gbDisplay);
             this.tpGlobal.Location = new System.Drawing.Point(4, 24);
             this.tpGlobal.Name = "tpGlobal";
-            this.tpGlobal.Size = new System.Drawing.Size(696, 473);
+            this.tpGlobal.Size = new System.Drawing.Size(716, 473);
             this.tpGlobal.TabIndex = 1;
             this.tpGlobal.Text = "Graphics";
             this.tpGlobal.ToolTipText = "Contains graphics settings like screen size, \nrefresh rate, anti-aliasing, and sh" +
@@ -976,7 +976,7 @@ namespace MGEgui {
             this.gbSShot.Controls.Add(this.tableLayoutScreenshots);
             this.gbSShot.Location = new System.Drawing.Point(8, 290);
             this.gbSShot.Name = "gbSShot";
-            this.gbSShot.Size = new System.Drawing.Size(680, 177);
+            this.gbSShot.Size = new System.Drawing.Size(700, 177);
             this.gbSShot.TabIndex = 2;
             this.gbSShot.TabStop = false;
             this.gbSShot.Text = "Screenshots";
@@ -1008,7 +1008,7 @@ namespace MGEgui {
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutScreenshots.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutScreenshots.Size = new System.Drawing.Size(668, 153);
+            this.tableLayoutScreenshots.Size = new System.Drawing.Size(688, 153);
             this.tableLayoutScreenshots.TabIndex = 6;
             // 
             // tableAlignSSFormat
@@ -1020,7 +1020,7 @@ namespace MGEgui {
             this.tableAlignSSFormat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tableAlignSSFormat.Controls.Add(this.cmbSShotFormat, 1, 0);
             this.tableAlignSSFormat.Controls.Add(this.lSShotFormat, 0, 0);
-            this.tableAlignSSFormat.Location = new System.Drawing.Point(528, 0);
+            this.tableAlignSSFormat.Location = new System.Drawing.Point(548, 0);
             this.tableAlignSSFormat.Margin = new System.Windows.Forms.Padding(0);
             this.tableAlignSSFormat.MinimumSize = new System.Drawing.Size(140, 29);
             this.tableAlignSSFormat.Name = "tableAlignSSFormat";
@@ -1046,7 +1046,7 @@ namespace MGEgui {
             this.tbSShotName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSShotName.Location = new System.Drawing.Point(108, 3);
             this.tbSShotName.Name = "tbSShotName";
-            this.tbSShotName.Size = new System.Drawing.Size(404, 23);
+            this.tbSShotName.Size = new System.Drawing.Size(424, 23);
             this.tbSShotName.TabIndex = 0;
             this.tbSShotName.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.fileNameFilter_KeyPress);
             // 
@@ -1068,7 +1068,7 @@ namespace MGEgui {
             this.tbSShotDir.Location = new System.Drawing.Point(108, 69);
             this.tbSShotDir.Name = "tbSShotDir";
             this.tbSShotDir.ReadOnly = true;
-            this.tbSShotDir.Size = new System.Drawing.Size(404, 23);
+            this.tbSShotDir.Size = new System.Drawing.Size(424, 23);
             this.tbSShotDir.TabIndex = 3;
             this.tbSShotDir.Text = "- Morrowind folder -";
             this.tbSShotDir.TextAlignChanged += new System.EventHandler(this.tbSSDir_TextAlignChanged);
@@ -1096,7 +1096,7 @@ namespace MGEgui {
                                     "Character, Game time, Ordinal"});
             this.cmbSShotSuffix.Location = new System.Drawing.Point(108, 36);
             this.cmbSShotSuffix.Name = "cmbSShotSuffix";
-            this.cmbSShotSuffix.Size = new System.Drawing.Size(404, 23);
+            this.cmbSShotSuffix.Size = new System.Drawing.Size(424, 23);
             this.cmbSShotSuffix.TabIndex = 5;
             this.cmbSShotSuffix.Text = "Timestamp";
             // 
@@ -1108,7 +1108,7 @@ namespace MGEgui {
             this.lScreenshotHelp.Location = new System.Drawing.Point(8, 95);
             this.lScreenshotHelp.Margin = new System.Windows.Forms.Padding(8, 0, 22, 0);
             this.lScreenshotHelp.Name = "lScreenshotHelp";
-            this.lScreenshotHelp.Size = new System.Drawing.Size(638, 58);
+            this.lScreenshotHelp.Size = new System.Drawing.Size(658, 58);
             this.lScreenshotHelp.TabIndex = 6;
             this.lScreenshotHelp.Text = "Screenshots can be taken in-game with the PrintScreen key.";
             this.lScreenshotHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1119,7 +1119,7 @@ namespace MGEgui {
             this.panelSShotDirButtons.AutoSize = true;
             this.panelSShotDirButtons.Controls.Add(this.bSShotDirBrowse);
             this.panelSShotDirButtons.Controls.Add(this.bSShotDirClear);
-            this.panelSShotDirButtons.Location = new System.Drawing.Point(515, 66);
+            this.panelSShotDirButtons.Location = new System.Drawing.Point(535, 66);
             this.panelSShotDirButtons.Margin = new System.Windows.Forms.Padding(0);
             this.panelSShotDirButtons.Name = "panelSShotDirButtons";
             this.panelSShotDirButtons.Size = new System.Drawing.Size(153, 29);
@@ -1164,7 +1164,7 @@ namespace MGEgui {
             this.gbScene.Controls.Add(this.lFOV);
             this.gbScene.Location = new System.Drawing.Point(8, 142);
             this.gbScene.Name = "gbScene";
-            this.gbScene.Size = new System.Drawing.Size(680, 142);
+            this.gbScene.Size = new System.Drawing.Size(700, 142);
             this.gbScene.TabIndex = 1;
             this.gbScene.TabStop = false;
             this.gbScene.Text = "Renderer";
@@ -1183,7 +1183,7 @@ namespace MGEgui {
             // 
             this.cbAutoFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbAutoFOV.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbAutoFOV.Location = new System.Drawing.Point(315, 24);
+            this.cbAutoFOV.Location = new System.Drawing.Point(325, 24);
             this.cbAutoFOV.Name = "cbAutoFOV";
             this.cbAutoFOV.Size = new System.Drawing.Size(120, 24);
             this.cbAutoFOV.TabIndex = 20;
@@ -1194,13 +1194,14 @@ namespace MGEgui {
             // 
             // udUIScale
             // 
+            this.udUIScale.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.udUIScale.DecimalPlaces = 2;
             this.udUIScale.Increment = new decimal(new int[] {
                                     5,
                                     0,
                                     0,
                                     131072});
-            this.udUIScale.Location = new System.Drawing.Point(446, 103);
+            this.udUIScale.Location = new System.Drawing.Point(456, 103);
             this.udUIScale.Maximum = new decimal(new int[] {
                                     4,
                                     0,
@@ -1223,8 +1224,9 @@ namespace MGEgui {
             // 
             // lUIScale
             // 
+            this.lUIScale.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lUIScale.AutoSize = true;
-            this.lUIScale.Location = new System.Drawing.Point(517, 105);
+            this.lUIScale.Location = new System.Drawing.Point(527, 105);
             this.lUIScale.Name = "lUIScale";
             this.lUIScale.Size = new System.Drawing.Size(92, 15);
             this.lUIScale.TabIndex = 22;
@@ -1234,7 +1236,7 @@ namespace MGEgui {
             // 
             this.lFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFPSLimit.AutoSize = true;
-            this.lFPSLimit.Location = new System.Drawing.Point(517, 52);
+            this.lFPSLimit.Location = new System.Drawing.Point(527, 52);
             this.lFPSLimit.Name = "lFPSLimit";
             this.lFPSLimit.Size = new System.Drawing.Size(63, 15);
             this.lFPSLimit.TabIndex = 19;
@@ -1243,7 +1245,7 @@ namespace MGEgui {
             // udFPSLimit
             // 
             this.udFPSLimit.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.udFPSLimit.Location = new System.Drawing.Point(447, 50);
+            this.udFPSLimit.Location = new System.Drawing.Point(457, 50);
             this.udFPSLimit.Maximum = new decimal(new int[] {
                                     240,
                                     0,
@@ -1282,7 +1284,7 @@ namespace MGEgui {
                                     "Depth pixel (Fast)",
                                     "Depth vertex",
                                     "Range vertex (Best)"});
-            this.cmbFogMode.Location = new System.Drawing.Point(345, 76);
+            this.cmbFogMode.Location = new System.Drawing.Point(355, 76);
             this.cmbFogMode.Name = "cmbFogMode";
             this.cmbFogMode.Size = new System.Drawing.Size(166, 23);
             this.cmbFogMode.TabIndex = 13;
@@ -1293,7 +1295,7 @@ namespace MGEgui {
             // 
             this.lFogMode.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFogMode.AutoSize = true;
-            this.lFogMode.Location = new System.Drawing.Point(517, 79);
+            this.lFogMode.Location = new System.Drawing.Point(527, 79);
             this.lFogMode.Name = "lFogMode";
             this.lFogMode.Size = new System.Drawing.Size(61, 15);
             this.lFogMode.TabIndex = 12;
@@ -1321,7 +1323,7 @@ namespace MGEgui {
             // 
             this.udFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.udFOV.DecimalPlaces = 1;
-            this.udFOV.Location = new System.Drawing.Point(447, 24);
+            this.udFOV.Location = new System.Drawing.Point(457, 24);
             this.udFOV.Maximum = new decimal(new int[] {
                                     170,
                                     0,
@@ -1346,7 +1348,7 @@ namespace MGEgui {
             // 
             this.lFOV.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.lFOV.AutoSize = true;
-            this.lFOV.Location = new System.Drawing.Point(517, 26);
+            this.lFOV.Location = new System.Drawing.Point(527, 26);
             this.lFOV.Name = "lFOV";
             this.lFOV.Size = new System.Drawing.Size(60, 15);
             this.lFOV.TabIndex = 3;
@@ -1369,10 +1371,26 @@ namespace MGEgui {
             this.gbDisplay.Controls.Add(this.lRefreshRate);
             this.gbDisplay.Location = new System.Drawing.Point(8, 3);
             this.gbDisplay.Name = "gbDisplay";
-            this.gbDisplay.Size = new System.Drawing.Size(680, 133);
+            this.gbDisplay.Size = new System.Drawing.Size(700, 133);
             this.gbDisplay.TabIndex = 0;
             this.gbDisplay.TabStop = false;
             this.gbDisplay.Text = "Display";
+            // 
+            // tableLayoutWindowAlign
+            // 
+            this.tableLayoutWindowAlign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutWindowAlign.AutoSize = true;
+            this.tableLayoutWindowAlign.ColumnCount = 1;
+            this.tableLayoutWindowAlign.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutWindowAlign.Controls.Add(this.panelWindowAlign, 0, 1);
+            this.tableLayoutWindowAlign.Controls.Add(this.lWindowAlign, 0, 0);
+            this.tableLayoutWindowAlign.Location = new System.Drawing.Point(588, 12);
+            this.tableLayoutWindowAlign.Name = "tableLayoutWindowAlign";
+            this.tableLayoutWindowAlign.RowCount = 2;
+            this.tableLayoutWindowAlign.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutWindowAlign.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutWindowAlign.Size = new System.Drawing.Size(103, 77);
+            this.tableLayoutWindowAlign.TabIndex = 11;
             // 
             // panelWindowAlign
             // 
@@ -1597,7 +1615,7 @@ namespace MGEgui {
             this.tableLayoutDisplay.Name = "tableLayoutDisplay";
             this.tableLayoutDisplay.RowCount = 1;
             this.tableLayoutDisplay.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 42F));
-            this.tableLayoutDisplay.Size = new System.Drawing.Size(661, 42);
+            this.tableLayoutDisplay.Size = new System.Drawing.Size(681, 42);
             this.tableLayoutDisplay.TabIndex = 0;
             // 
             // cmbAntiAlias
@@ -1639,7 +1657,7 @@ namespace MGEgui {
                                     "x2",
                                     "x3",
                                     "x4"});
-            this.cmbVWait.Location = new System.Drawing.Point(447, 9);
+            this.cmbVWait.Location = new System.Drawing.Point(461, 9);
             this.cmbVWait.Name = "cmbVWait";
             this.cmbVWait.Size = new System.Drawing.Size(80, 23);
             this.cmbVWait.TabIndex = 2;
@@ -1655,7 +1673,7 @@ namespace MGEgui {
                                     "4x",
                                     "8x",
                                     "16x"});
-            this.cmbAnisoLevel.Location = new System.Drawing.Point(203, 9);
+            this.cmbAnisoLevel.Location = new System.Drawing.Point(209, 9);
             this.cmbAnisoLevel.Name = "cmbAnisoLevel";
             this.cmbAnisoLevel.Size = new System.Drawing.Size(64, 23);
             this.cmbAnisoLevel.TabIndex = 10;
@@ -1666,7 +1684,7 @@ namespace MGEgui {
             // 
             this.lAnisoLevel.AutoSize = true;
             this.lAnisoLevel.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lAnisoLevel.Location = new System.Drawing.Point(273, 0);
+            this.lAnisoLevel.Location = new System.Drawing.Point(279, 0);
             this.lAnisoLevel.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lAnisoLevel.Name = "lAnisoLevel";
             this.lAnisoLevel.Size = new System.Drawing.Size(112, 40);
@@ -1678,7 +1696,7 @@ namespace MGEgui {
             // 
             this.lVWait.AutoSize = true;
             this.lVWait.Dock = System.Windows.Forms.DockStyle.Left;
-            this.lVWait.Location = new System.Drawing.Point(533, 0);
+            this.lVWait.Location = new System.Drawing.Point(547, 0);
             this.lVWait.Margin = new System.Windows.Forms.Padding(3, 0, 3, 2);
             this.lVWait.Name = "lVWait";
             this.lVWait.Size = new System.Drawing.Size(39, 40);
@@ -1755,7 +1773,7 @@ namespace MGEgui {
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.ShowToolTips = true;
-            this.tabControl.Size = new System.Drawing.Size(704, 501);
+            this.tabControl.Size = new System.Drawing.Size(724, 501);
             this.tabControl.TabIndex = 0;
             // 
             // tpDL
@@ -1765,7 +1783,7 @@ namespace MGEgui {
             this.tpDL.Controls.Add(this.gbDistantLand);
             this.tpDL.Location = new System.Drawing.Point(4, 24);
             this.tpDL.Name = "tpDL";
-            this.tpDL.Size = new System.Drawing.Size(696, 473);
+            this.tpDL.Size = new System.Drawing.Size(716, 473);
             this.tpDL.TabIndex = 7;
             this.tpDL.Text = "Distant Land";
             this.tpDL.ToolTipText = "This tab controls whether and how distant land,\ndistant statics, animated grass, " +
@@ -1801,7 +1819,7 @@ namespace MGEgui {
             this.gbDistantLand.Location = new System.Drawing.Point(0, 0);
             this.gbDistantLand.Name = "gbDistantLand";
             this.gbDistantLand.Padding = new System.Windows.Forms.Padding(3, 9, 3, 3);
-            this.gbDistantLand.Size = new System.Drawing.Size(696, 473);
+            this.gbDistantLand.Size = new System.Drawing.Size(716, 473);
             this.gbDistantLand.TabIndex = 1;
             this.gbDistantLand.TabStop = false;
             // 
@@ -1817,7 +1835,7 @@ namespace MGEgui {
             this.tableLayoutDL.Name = "tableLayoutDL";
             this.tableLayoutDL.RowCount = 1;
             this.tableLayoutDL.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutDL.Size = new System.Drawing.Size(690, 445);
+            this.tableLayoutDL.Size = new System.Drawing.Size(710, 445);
             this.tableLayoutDL.TabIndex = 12;
             // 
             // tableLayoutDLLeft
@@ -1835,7 +1853,7 @@ namespace MGEgui {
             this.tableLayoutDLLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutDLLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutDLLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutDLLeft.Size = new System.Drawing.Size(338, 445);
+            this.tableLayoutDLLeft.Size = new System.Drawing.Size(347, 445);
             this.tableLayoutDLLeft.TabIndex = 0;
             // 
             // gbXEFeatures
@@ -1848,7 +1866,7 @@ namespace MGEgui {
             this.gbXEFeatures.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbXEFeatures.Location = new System.Drawing.Point(3, 309);
             this.gbXEFeatures.Name = "gbXEFeatures";
-            this.gbXEFeatures.Size = new System.Drawing.Size(332, 133);
+            this.gbXEFeatures.Size = new System.Drawing.Size(341, 133);
             this.gbXEFeatures.TabIndex = 11;
             this.gbXEFeatures.TabStop = false;
             this.gbXEFeatures.Text = "XE";
@@ -1870,7 +1888,7 @@ namespace MGEgui {
             this.cmbDLShadowDetail.Items.AddRange(new object[] {
                                     "medium",
                                     "high"});
-            this.cmbDLShadowDetail.Location = new System.Drawing.Point(210, 24);
+            this.cmbDLShadowDetail.Location = new System.Drawing.Point(219, 24);
             this.cmbDLShadowDetail.Name = "cmbDLShadowDetail";
             this.cmbDLShadowDetail.Size = new System.Drawing.Size(116, 23);
             this.cmbDLShadowDetail.TabIndex = 12;
@@ -1884,7 +1902,7 @@ namespace MGEgui {
             this.cmbPerPixelLightFlags.Items.AddRange(new object[] {
                                     "always on",
                                     "interiors only"});
-            this.cmbPerPixelLightFlags.Location = new System.Drawing.Point(191, 59);
+            this.cmbPerPixelLightFlags.Location = new System.Drawing.Point(200, 59);
             this.cmbPerPixelLightFlags.Name = "cmbPerPixelLightFlags";
             this.cmbPerPixelLightFlags.Size = new System.Drawing.Size(135, 23);
             this.cmbPerPixelLightFlags.TabIndex = 11;
@@ -1903,7 +1921,7 @@ namespace MGEgui {
             // bMWLightSettings
             // 
             this.bMWLightSettings.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.bMWLightSettings.Location = new System.Drawing.Point(85, 102);
+            this.bMWLightSettings.Location = new System.Drawing.Point(89, 102);
             this.bMWLightSettings.Name = "bMWLightSettings";
             this.bMWLightSettings.Size = new System.Drawing.Size(160, 25);
             this.bMWLightSettings.TabIndex = 10;
@@ -1918,7 +1936,7 @@ namespace MGEgui {
             this.gbDLDrawDist.Dock = System.Windows.Forms.DockStyle.Top;
             this.gbDLDrawDist.Location = new System.Drawing.Point(3, 3);
             this.gbDLDrawDist.Name = "gbDLDrawDist";
-            this.gbDLDrawDist.Size = new System.Drawing.Size(332, 62);
+            this.gbDLDrawDist.Size = new System.Drawing.Size(341, 62);
             this.gbDLDrawDist.TabIndex = 0;
             this.gbDLDrawDist.TabStop = false;
             this.gbDLDrawDist.Text = "&Draw Distance";
@@ -1969,7 +1987,7 @@ namespace MGEgui {
             this.gbDLWater.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbDLWater.Location = new System.Drawing.Point(3, 71);
             this.gbDLWater.Name = "gbDLWater";
-            this.gbDLWater.Size = new System.Drawing.Size(332, 232);
+            this.gbDLWater.Size = new System.Drawing.Size(341, 232);
             this.gbDLWater.TabIndex = 9;
             this.gbDLWater.TabStop = false;
             this.gbDLWater.Text = "&Water";
@@ -1993,7 +2011,7 @@ namespace MGEgui {
             this.gbDLWtrCaust.Controls.Add(this.udDLWtrCaust);
             this.gbDLWtrCaust.Location = new System.Drawing.Point(6, 172);
             this.gbDLWtrCaust.Name = "gbDLWtrCaust";
-            this.gbDLWtrCaust.Size = new System.Drawing.Size(320, 54);
+            this.gbDLWtrCaust.Size = new System.Drawing.Size(329, 54);
             this.gbDLWtrCaust.TabIndex = 4;
             this.gbDLWtrCaust.TabStop = false;
             this.gbDLWtrCaust.Text = "&Caustics [underwater refracted lighting]";
@@ -2037,7 +2055,7 @@ namespace MGEgui {
             this.gbDLWtrWave.Enabled = false;
             this.gbDLWtrWave.Location = new System.Drawing.Point(6, 112);
             this.gbDLWtrWave.Name = "gbDLWtrWave";
-            this.gbDLWtrWave.Size = new System.Drawing.Size(320, 56);
+            this.gbDLWtrWave.Size = new System.Drawing.Size(329, 56);
             this.gbDLWtrWave.TabIndex = 3;
             this.gbDLWtrWave.TabStop = false;
             // 
@@ -2076,7 +2094,7 @@ namespace MGEgui {
             this.gbDLWtrRefl.Controls.Add(this.cbDLReflInterior);
             this.gbDLWtrRefl.Location = new System.Drawing.Point(6, 17);
             this.gbDLWtrRefl.Name = "gbDLWtrRefl";
-            this.gbDLWtrRefl.Size = new System.Drawing.Size(320, 92);
+            this.gbDLWtrRefl.Size = new System.Drawing.Size(329, 92);
             this.gbDLWtrRefl.TabIndex = 0;
             this.gbDLWtrRefl.TabStop = false;
             this.gbDLWtrRefl.Text = "Reflections";
@@ -2116,7 +2134,7 @@ namespace MGEgui {
             // 
             this.cbDLReflNStatics.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbDLReflNStatics.AutoSize = true;
-            this.cbDLReflNStatics.Location = new System.Drawing.Point(164, 19);
+            this.cbDLReflNStatics.Location = new System.Drawing.Point(168, 19);
             this.cbDLReflNStatics.Name = "cbDLReflNStatics";
             this.cbDLReflNStatics.Size = new System.Drawing.Size(101, 19);
             this.cbDLReflNStatics.TabIndex = 1;
@@ -2128,7 +2146,7 @@ namespace MGEgui {
             this.cbDLReflInterior.Anchor = System.Windows.Forms.AnchorStyles.Top;
             this.cbDLReflInterior.AutoSize = true;
             this.cbDLReflInterior.Enabled = false;
-            this.cbDLReflInterior.Location = new System.Drawing.Point(164, 42);
+            this.cbDLReflInterior.Location = new System.Drawing.Point(168, 42);
             this.cbDLReflInterior.Name = "cbDLReflInterior";
             this.cbDLReflInterior.Size = new System.Drawing.Size(69, 19);
             this.cbDLReflInterior.TabIndex = 3;
@@ -2144,7 +2162,7 @@ namespace MGEgui {
             this.tableLayoutDLRight.Controls.Add(this.bDLWthr, 0, 3);
             this.tableLayoutDLRight.Controls.Add(this.gbDLFog, 0, 2);
             this.tableLayoutDLRight.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutDLRight.Location = new System.Drawing.Point(338, 0);
+            this.tableLayoutDLRight.Location = new System.Drawing.Point(347, 0);
             this.tableLayoutDLRight.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutDLRight.Name = "tableLayoutDLRight";
             this.tableLayoutDLRight.RowCount = 4;
@@ -2152,7 +2170,7 @@ namespace MGEgui {
             this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tableLayoutDLRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutDLRight.Size = new System.Drawing.Size(352, 445);
+            this.tableLayoutDLRight.Size = new System.Drawing.Size(363, 445);
             this.tableLayoutDLRight.TabIndex = 1;
             // 
             // pDLAutoDist
@@ -2162,7 +2180,7 @@ namespace MGEgui {
             this.pDLAutoDist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pDLAutoDist.Location = new System.Drawing.Point(3, 3);
             this.pDLAutoDist.Name = "pDLAutoDist";
-            this.pDLAutoDist.Size = new System.Drawing.Size(346, 76);
+            this.pDLAutoDist.Size = new System.Drawing.Size(357, 76);
             this.pDLAutoDist.TabIndex = 13;
             // 
             // cbDLAutoDist
@@ -2183,7 +2201,7 @@ namespace MGEgui {
             this.gbDLAutoDist.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbDLAutoDist.Location = new System.Drawing.Point(0, 0);
             this.gbDLAutoDist.Name = "gbDLAutoDist";
-            this.gbDLAutoDist.Size = new System.Drawing.Size(346, 76);
+            this.gbDLAutoDist.Size = new System.Drawing.Size(357, 76);
             this.gbDLAutoDist.TabIndex = 13;
             this.gbDLAutoDist.TabStop = false;
             // 
@@ -2219,7 +2237,7 @@ namespace MGEgui {
             this.pDLStatics.Dock = System.Windows.Forms.DockStyle.Fill;
             this.pDLStatics.Location = new System.Drawing.Point(3, 85);
             this.pDLStatics.Name = "pDLStatics";
-            this.pDLStatics.Size = new System.Drawing.Size(346, 118);
+            this.pDLStatics.Size = new System.Drawing.Size(357, 118);
             this.pDLStatics.TabIndex = 5;
             this.pDLStatics.TabStop = true;
             // 
@@ -2243,7 +2261,7 @@ namespace MGEgui {
             this.gbDLStatics.Enabled = false;
             this.gbDLStatics.Location = new System.Drawing.Point(0, 0);
             this.gbDLStatics.Name = "gbDLStatics";
-            this.gbDLStatics.Size = new System.Drawing.Size(346, 118);
+            this.gbDLStatics.Size = new System.Drawing.Size(357, 118);
             this.gbDLStatics.TabIndex = 1;
             this.gbDLStatics.TabStop = false;
             // 
@@ -2273,14 +2291,14 @@ namespace MGEgui {
             this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 2F));
             this.tableAlignDLStatics.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            this.tableAlignDLStatics.Size = new System.Drawing.Size(324, 73);
+            this.tableAlignDLStatics.Size = new System.Drawing.Size(335, 73);
             this.tableAlignDLStatics.TabIndex = 6;
             // 
             // lDLNear
             // 
             this.lDLNear.AutoSize = true;
             this.lDLNear.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lDLNear.Location = new System.Drawing.Point(179, 0);
+            this.lDLNear.Location = new System.Drawing.Point(190, 0);
             this.lDLNear.Name = "lDLNear";
             this.lDLNear.Size = new System.Drawing.Size(32, 23);
             this.lDLNear.TabIndex = 0;
@@ -2291,7 +2309,7 @@ namespace MGEgui {
             // 
             this.udDLDistNear.DecimalPlaces = 1;
             this.udDLDistNear.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.udDLDistNear.Location = new System.Drawing.Point(274, 0);
+            this.udDLDistNear.Location = new System.Drawing.Point(285, 0);
             this.udDLDistNear.Margin = new System.Windows.Forms.Padding(0);
             this.udDLDistNear.Maximum = new decimal(new int[] {
                                     2998,
@@ -2313,7 +2331,7 @@ namespace MGEgui {
             // 
             this.udDLDistVeryFar.DecimalPlaces = 1;
             this.udDLDistVeryFar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.udDLDistVeryFar.Location = new System.Drawing.Point(274, 50);
+            this.udDLDistVeryFar.Location = new System.Drawing.Point(285, 50);
             this.udDLDistVeryFar.Margin = new System.Windows.Forms.Padding(0);
             this.udDLDistVeryFar.Maximum = new decimal(new int[] {
                                     300,
@@ -2334,7 +2352,7 @@ namespace MGEgui {
             // tbDLNearSize
             // 
             this.tbDLNearSize.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tbDLNearSize.Location = new System.Drawing.Point(214, 0);
+            this.tbDLNearSize.Location = new System.Drawing.Point(225, 0);
             this.tbDLNearSize.Margin = new System.Windows.Forms.Padding(0);
             this.tbDLNearSize.MaxLength = 3;
             this.tbDLNearSize.Name = "tbDLNearSize";
@@ -2347,7 +2365,7 @@ namespace MGEgui {
             // lDLFar
             // 
             this.lDLFar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lDLFar.Location = new System.Drawing.Point(56, 25);
+            this.lDLFar.Location = new System.Drawing.Point(67, 25);
             this.lDLFar.Name = "lDLFar";
             this.lDLFar.Size = new System.Drawing.Size(155, 23);
             this.lDLFar.TabIndex = 0;
@@ -2357,7 +2375,7 @@ namespace MGEgui {
             // lDLVeryFar
             // 
             this.lDLVeryFar.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lDLVeryFar.Location = new System.Drawing.Point(56, 50);
+            this.lDLVeryFar.Location = new System.Drawing.Point(67, 50);
             this.lDLVeryFar.Name = "lDLVeryFar";
             this.lDLVeryFar.Size = new System.Drawing.Size(155, 23);
             this.lDLVeryFar.TabIndex = 0;
@@ -2372,7 +2390,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
-            this.udDLSizeVeryFar.Location = new System.Drawing.Point(214, 50);
+            this.udDLSizeVeryFar.Location = new System.Drawing.Point(225, 50);
             this.udDLSizeVeryFar.Margin = new System.Windows.Forms.Padding(0);
             this.udDLSizeVeryFar.Maximum = new decimal(new int[] {
                                     9999,
@@ -2399,7 +2417,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     0});
-            this.udDLSizeFar.Location = new System.Drawing.Point(214, 25);
+            this.udDLSizeFar.Location = new System.Drawing.Point(225, 25);
             this.udDLSizeFar.Margin = new System.Windows.Forms.Padding(0);
             this.udDLSizeFar.Maximum = new decimal(new int[] {
                                     9999,
@@ -2422,7 +2440,7 @@ namespace MGEgui {
             // 
             this.udDLDistFar.DecimalPlaces = 1;
             this.udDLDistFar.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.udDLDistFar.Location = new System.Drawing.Point(274, 25);
+            this.udDLDistFar.Location = new System.Drawing.Point(285, 25);
             this.udDLDistFar.Margin = new System.Windows.Forms.Padding(0);
             this.udDLDistFar.Maximum = new decimal(new int[] {
                                     2999,
@@ -2444,7 +2462,7 @@ namespace MGEgui {
             // 
             this.lDLMinSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lDLMinSize.AutoSize = true;
-            this.lDLMinSize.Location = new System.Drawing.Point(219, 18);
+            this.lDLMinSize.Location = new System.Drawing.Point(230, 18);
             this.lDLMinSize.Name = "lDLMinSize";
             this.lDLMinSize.Size = new System.Drawing.Size(51, 15);
             this.lDLMinSize.TabIndex = 0;
@@ -2454,7 +2472,7 @@ namespace MGEgui {
             // 
             this.lDLEndDist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lDLEndDist.AutoSize = true;
-            this.lDLEndDist.Location = new System.Drawing.Point(279, 18);
+            this.lDLEndDist.Location = new System.Drawing.Point(290, 18);
             this.lDLEndDist.Name = "lDLEndDist";
             this.lDLEndDist.Size = new System.Drawing.Size(50, 15);
             this.lDLEndDist.TabIndex = 0;
@@ -2463,7 +2481,7 @@ namespace MGEgui {
             // bDLWthr
             // 
             this.bDLWthr.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bDLWthr.Location = new System.Drawing.Point(96, 417);
+            this.bDLWthr.Location = new System.Drawing.Point(101, 417);
             this.bDLWthr.Name = "bDLWthr";
             this.bDLWthr.Size = new System.Drawing.Size(160, 25);
             this.bDLWthr.TabIndex = 8;
@@ -2481,7 +2499,7 @@ namespace MGEgui {
             this.gbDLFog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbDLFog.Location = new System.Drawing.Point(3, 209);
             this.gbDLFog.Name = "gbDLFog";
-            this.gbDLFog.Size = new System.Drawing.Size(346, 202);
+            this.gbDLFog.Size = new System.Drawing.Size(357, 202);
             this.gbDLFog.TabIndex = 6;
             this.gbDLFog.TabStop = false;
             this.gbDLFog.Text = "&Fog";
@@ -2516,7 +2534,7 @@ namespace MGEgui {
             this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
             this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 4F));
             this.tableAlignDLFog.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 23F));
-            this.tableAlignDLFog.Size = new System.Drawing.Size(324, 76);
+            this.tableAlignDLFog.Size = new System.Drawing.Size(335, 76);
             this.tableAlignDLFog.TabIndex = 10;
             // 
             // udDLFogAStart
@@ -2528,7 +2546,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogAStart.Location = new System.Drawing.Point(214, 0);
+            this.udDLFogAStart.Location = new System.Drawing.Point(225, 0);
             this.udDLFogAStart.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogAStart.Maximum = new decimal(new int[] {
                                     2999,
@@ -2555,7 +2573,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogAEnd.Location = new System.Drawing.Point(274, 0);
+            this.udDLFogAEnd.Location = new System.Drawing.Point(285, 0);
             this.udDLFogAEnd.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogAEnd.Maximum = new decimal(new int[] {
                                     300,
@@ -2588,7 +2606,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogExpMul.Location = new System.Drawing.Point(274, 77);
+            this.udDLFogExpMul.Location = new System.Drawing.Point(285, 77);
             this.udDLFogExpMul.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogExpMul.Maximum = new decimal(new int[] {
                                     5,
@@ -2618,7 +2636,7 @@ namespace MGEgui {
             this.tableAlignDLFog.SetColumnSpan(this.lDLFogExpMul, 3);
             this.lDLFogExpMul.Dock = System.Windows.Forms.DockStyle.Right;
             this.lDLFogExpMul.Enabled = false;
-            this.lDLFogExpMul.Location = new System.Drawing.Point(102, 77);
+            this.lDLFogExpMul.Location = new System.Drawing.Point(113, 77);
             this.lDLFogExpMul.Name = "lDLFogExpMul";
             this.lDLFogExpMul.Size = new System.Drawing.Size(169, 23);
             this.lDLFogExpMul.TabIndex = 8;
@@ -2635,7 +2653,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogBStart.Location = new System.Drawing.Point(214, 25);
+            this.udDLFogBStart.Location = new System.Drawing.Point(225, 25);
             this.udDLFogBStart.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogBStart.Maximum = new decimal(new int[] {
                                     2999,
@@ -2667,7 +2685,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogBEnd.Location = new System.Drawing.Point(274, 25);
+            this.udDLFogBEnd.Location = new System.Drawing.Point(285, 25);
             this.udDLFogBEnd.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogBEnd.Maximum = new decimal(new int[] {
                                     300,
@@ -2695,7 +2713,7 @@ namespace MGEgui {
             this.lDLFogI.AutoSize = true;
             this.lDLFogI.Dock = System.Windows.Forms.DockStyle.Right;
             this.lDLFogI.Enabled = false;
-            this.lDLFogI.Location = new System.Drawing.Point(98, 50);
+            this.lDLFogI.Location = new System.Drawing.Point(109, 50);
             this.lDLFogI.Name = "lDLFogI";
             this.lDLFogI.Size = new System.Drawing.Size(113, 23);
             this.lDLFogI.TabIndex = 0;
@@ -2712,7 +2730,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogIStart.Location = new System.Drawing.Point(214, 50);
+            this.udDLFogIStart.Location = new System.Drawing.Point(225, 50);
             this.udDLFogIStart.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogIStart.Maximum = new decimal(new int[] {
                                     2999,
@@ -2740,7 +2758,7 @@ namespace MGEgui {
                                     0,
                                     0,
                                     65536});
-            this.udDLFogIEnd.Location = new System.Drawing.Point(274, 50);
+            this.udDLFogIEnd.Location = new System.Drawing.Point(285, 50);
             this.udDLFogIEnd.Margin = new System.Windows.Forms.Padding(0);
             this.udDLFogIEnd.Maximum = new decimal(new int[] {
                                     300,
@@ -2767,7 +2785,7 @@ namespace MGEgui {
             // 
             this.lDLFogB.AutoSize = true;
             this.lDLFogB.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lDLFogB.Location = new System.Drawing.Point(115, 25);
+            this.lDLFogB.Location = new System.Drawing.Point(126, 25);
             this.lDLFogB.Name = "lDLFogB";
             this.lDLFogB.Size = new System.Drawing.Size(96, 23);
             this.lDLFogB.TabIndex = 0;
@@ -2778,7 +2796,7 @@ namespace MGEgui {
             // 
             this.lDLFogA.AutoSize = true;
             this.lDLFogA.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lDLFogA.Location = new System.Drawing.Point(113, 0);
+            this.lDLFogA.Location = new System.Drawing.Point(124, 0);
             this.lDLFogA.Name = "lDLFogA";
             this.lDLFogA.Size = new System.Drawing.Size(98, 23);
             this.lDLFogA.TabIndex = 0;
@@ -2791,7 +2809,7 @@ namespace MGEgui {
             this.cbDLScattering.AutoSize = true;
             this.cbDLScattering.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.cbDLScattering.Enabled = false;
-            this.cbDLScattering.Location = new System.Drawing.Point(61, 143);
+            this.cbDLScattering.Location = new System.Drawing.Point(72, 143);
             this.cbDLScattering.Name = "cbDLScattering";
             this.cbDLScattering.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.cbDLScattering.Size = new System.Drawing.Size(271, 19);
@@ -2805,7 +2823,7 @@ namespace MGEgui {
             this.cbDLFogExp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.cbDLFogExp.AutoSize = true;
             this.cbDLFogExp.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.cbDLFogExp.Location = new System.Drawing.Point(128, 118);
+            this.cbDLFogExp.Location = new System.Drawing.Point(139, 118);
             this.cbDLFogExp.Name = "cbDLFogExp";
             this.cbDLFogExp.Size = new System.Drawing.Size(204, 19);
             this.cbDLFogExp.TabIndex = 6;
@@ -2818,7 +2836,7 @@ namespace MGEgui {
             // 
             this.lDLFogStart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lDLFogStart.AutoSize = true;
-            this.lDLFogStart.Location = new System.Drawing.Point(219, 13);
+            this.lDLFogStart.Location = new System.Drawing.Point(230, 13);
             this.lDLFogStart.Name = "lDLFogStart";
             this.lDLFogStart.Size = new System.Drawing.Size(31, 15);
             this.lDLFogStart.TabIndex = 0;
@@ -2828,7 +2846,7 @@ namespace MGEgui {
             // 
             this.lDLFogEnd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lDLFogEnd.AutoSize = true;
-            this.lDLFogEnd.Location = new System.Drawing.Point(279, 13);
+            this.lDLFogEnd.Location = new System.Drawing.Point(290, 13);
             this.lDLFogEnd.Margin = new System.Windows.Forms.Padding(0);
             this.lDLFogEnd.Name = "lDLFogEnd";
             this.lDLFogEnd.Size = new System.Drawing.Size(27, 15);
@@ -2843,7 +2861,7 @@ namespace MGEgui {
             this.tpConfig.Controls.Add(this.gbMainSettings);
             this.tpConfig.Location = new System.Drawing.Point(4, 24);
             this.tpConfig.Name = "tpConfig";
-            this.tpConfig.Size = new System.Drawing.Size(696, 473);
+            this.tpConfig.Size = new System.Drawing.Size(716, 473);
             this.tpConfig.TabIndex = 0;
             this.tpConfig.Text = "Config";
             this.tpConfig.ToolTipText = "Load/save all MGE settings.";
@@ -2857,7 +2875,7 @@ namespace MGEgui {
             this.gbErrorReporting.Controls.Add(this.bReportingShowLog);
             this.gbErrorReporting.Location = new System.Drawing.Point(8, 323);
             this.gbErrorReporting.Name = "gbErrorReporting";
-            this.gbErrorReporting.Size = new System.Drawing.Size(680, 60);
+            this.gbErrorReporting.Size = new System.Drawing.Size(700, 60);
             this.gbErrorReporting.TabIndex = 3;
             this.gbErrorReporting.TabStop = false;
             this.gbErrorReporting.Text = "Error reporting";
@@ -2865,7 +2883,7 @@ namespace MGEgui {
             // bReportingShowDLWizardLog
             // 
             this.bReportingShowDLWizardLog.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bReportingShowDLWizardLog.Location = new System.Drawing.Point(260, 22);
+            this.bReportingShowDLWizardLog.Location = new System.Drawing.Point(270, 22);
             this.bReportingShowDLWizardLog.Name = "bReportingShowDLWizardLog";
             this.bReportingShowDLWizardLog.Size = new System.Drawing.Size(160, 25);
             this.bReportingShowDLWizardLog.TabIndex = 1;
@@ -2893,7 +2911,7 @@ namespace MGEgui {
             this.gbMainUI.Controls.Add(this.lTipRSpdUnit);
             this.gbMainUI.Location = new System.Drawing.Point(8, 69);
             this.gbMainUI.Name = "gbMainUI";
-            this.gbMainUI.Size = new System.Drawing.Size(680, 80);
+            this.gbMainUI.Size = new System.Drawing.Size(700, 80);
             this.gbMainUI.TabIndex = 2;
             this.gbMainUI.TabStop = false;
             this.gbMainUI.Text = "User Interface";
@@ -2963,7 +2981,7 @@ namespace MGEgui {
                                     "50",
                                     "60",
                                     "70"});
-            this.cmbTipReadSpd.Location = new System.Drawing.Point(388, 44);
+            this.cmbTipReadSpd.Location = new System.Drawing.Point(408, 44);
             this.cmbTipReadSpd.Name = "cmbTipReadSpd";
             this.cmbTipReadSpd.Size = new System.Drawing.Size(48, 23);
             this.cmbTipReadSpd.TabIndex = 2;
@@ -2975,7 +2993,7 @@ namespace MGEgui {
             // 
             this.lTipReadSpd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lTipReadSpd.AutoSize = true;
-            this.lTipReadSpd.Location = new System.Drawing.Point(388, 26);
+            this.lTipReadSpd.Location = new System.Drawing.Point(408, 26);
             this.lTipReadSpd.Name = "lTipReadSpd";
             this.lTipReadSpd.Size = new System.Drawing.Size(122, 15);
             this.lTipReadSpd.TabIndex = 0;
@@ -2985,7 +3003,7 @@ namespace MGEgui {
             // 
             this.lTipRSpdUnit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lTipRSpdUnit.AutoSize = true;
-            this.lTipRSpdUnit.Location = new System.Drawing.Point(442, 47);
+            this.lTipRSpdUnit.Location = new System.Drawing.Point(462, 47);
             this.lTipRSpdUnit.Name = "lTipRSpdUnit";
             this.lTipRSpdUnit.Size = new System.Drawing.Size(60, 15);
             this.lTipRSpdUnit.TabIndex = 0;
@@ -3000,7 +3018,7 @@ namespace MGEgui {
             this.gbMainInfo.Controls.Add(this.bAbout);
             this.gbMainInfo.Location = new System.Drawing.Point(8, 3);
             this.gbMainInfo.Name = "gbMainInfo";
-            this.gbMainInfo.Size = new System.Drawing.Size(680, 60);
+            this.gbMainInfo.Size = new System.Drawing.Size(700, 60);
             this.gbMainInfo.TabIndex = 0;
             this.gbMainInfo.TabStop = false;
             this.gbMainInfo.Text = "Information";
@@ -3017,7 +3035,7 @@ namespace MGEgui {
             // bHelp
             // 
             this.bHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.bHelp.Location = new System.Drawing.Point(514, 22);
+            this.bHelp.Location = new System.Drawing.Point(534, 22);
             this.bHelp.Name = "bHelp";
             this.bHelp.Size = new System.Drawing.Size(160, 25);
             this.bHelp.TabIndex = 1;
@@ -3027,7 +3045,7 @@ namespace MGEgui {
             // bAbout
             // 
             this.bAbout.Anchor = System.Windows.Forms.AnchorStyles.Top;
-            this.bAbout.Location = new System.Drawing.Point(260, 22);
+            this.bAbout.Location = new System.Drawing.Point(270, 22);
             this.bAbout.Name = "bAbout";
             this.bAbout.Size = new System.Drawing.Size(160, 25);
             this.bAbout.TabIndex = 2;
@@ -3044,7 +3062,7 @@ namespace MGEgui {
             this.gbMainSettings.Controls.Add(this.cbClearINI);
             this.gbMainSettings.Location = new System.Drawing.Point(8, 389);
             this.gbMainSettings.Name = "gbMainSettings";
-            this.gbMainSettings.Size = new System.Drawing.Size(680, 76);
+            this.gbMainSettings.Size = new System.Drawing.Size(700, 76);
             this.gbMainSettings.TabIndex = 1;
             this.gbMainSettings.TabStop = false;
             this.gbMainSettings.Text = "Settings";
@@ -3062,7 +3080,7 @@ namespace MGEgui {
             // bImport
             // 
             this.bImport.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.bImport.Location = new System.Drawing.Point(260, 40);
+            this.bImport.Location = new System.Drawing.Point(270, 40);
             this.bImport.Name = "bImport";
             this.bImport.Size = new System.Drawing.Size(160, 25);
             this.bImport.TabIndex = 3;
@@ -3072,7 +3090,7 @@ namespace MGEgui {
             // bExport
             // 
             this.bExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.bExport.Location = new System.Drawing.Point(514, 40);
+            this.bExport.Location = new System.Drawing.Point(534, 40);
             this.bExport.Name = "bExport";
             this.bExport.Size = new System.Drawing.Size(160, 25);
             this.bExport.TabIndex = 4;
@@ -3095,7 +3113,7 @@ namespace MGEgui {
             this.tpInstructions.Controls.Add(this.lInstructions);
             this.tpInstructions.Location = new System.Drawing.Point(4, 24);
             this.tpInstructions.Name = "tpInstructions";
-            this.tpInstructions.Size = new System.Drawing.Size(696, 473);
+            this.tpInstructions.Size = new System.Drawing.Size(716, 473);
             this.tpInstructions.TabIndex = 8;
             this.tpInstructions.Text = "Instructions";
             this.tpInstructions.ToolTipText = "A guide to setting up MGE XE.";
@@ -3107,7 +3125,7 @@ namespace MGEgui {
             this.lInstructions.Location = new System.Drawing.Point(0, 0);
             this.lInstructions.Name = "lInstructions";
             this.lInstructions.Padding = new System.Windows.Forms.Padding(12);
-            this.lInstructions.Size = new System.Drawing.Size(696, 473);
+            this.lInstructions.Size = new System.Drawing.Size(716, 473);
             this.lInstructions.TabIndex = 0;
             this.lInstructions.Text = resources.GetString("lInstructions.Text");
             // 
@@ -3115,32 +3133,16 @@ namespace MGEgui {
             // 
             this.SShotFolderDialog.Description = "Select output folder for screenshots taken in game:";
             // 
-            // tableLayoutWindowAlign
-            // 
-            this.tableLayoutWindowAlign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutWindowAlign.AutoSize = true;
-            this.tableLayoutWindowAlign.ColumnCount = 1;
-            this.tableLayoutWindowAlign.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutWindowAlign.Controls.Add(this.panelWindowAlign, 0, 1);
-            this.tableLayoutWindowAlign.Controls.Add(this.lWindowAlign, 0, 0);
-            this.tableLayoutWindowAlign.Location = new System.Drawing.Point(577, 12);
-            this.tableLayoutWindowAlign.Name = "tableLayoutWindowAlign";
-            this.tableLayoutWindowAlign.RowCount = 2;
-            this.tableLayoutWindowAlign.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutWindowAlign.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutWindowAlign.Size = new System.Drawing.Size(103, 77);
-            this.tableLayoutWindowAlign.TabIndex = 11;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.ClientSize = new System.Drawing.Size(704, 501);
+            this.ClientSize = new System.Drawing.Size(724, 501);
             this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = global::MGEgui.Properties.Resources.AppIcon;
             this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(720, 540);
+            this.MinimumSize = new System.Drawing.Size(740, 540);
             this.Name = "MainForm";
             this.Text = "     ";
             this.Closing += new System.ComponentModel.CancelEventHandler(this.MainForm_FormClosing);
@@ -3181,6 +3183,8 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).EndInit();
             this.gbDisplay.ResumeLayout(false);
             this.gbDisplay.PerformLayout();
+            this.tableLayoutWindowAlign.ResumeLayout(false);
+            this.tableLayoutWindowAlign.PerformLayout();
             this.panelWindowAlign.ResumeLayout(false);
             this.tableAlignResolution.ResumeLayout(false);
             this.tableAlignResolution.PerformLayout();
@@ -3245,8 +3249,6 @@ namespace MGEgui {
             this.gbMainSettings.ResumeLayout(false);
             this.gbMainSettings.PerformLayout();
             this.tpInstructions.ResumeLayout(false);
-            this.tableLayoutWindowAlign.ResumeLayout(false);
-            this.tableLayoutWindowAlign.PerformLayout();
             this.ResumeLayout(false);
         }
         private System.Windows.Forms.TableLayoutPanel tableLayoutWindowAlign;
