@@ -105,6 +105,7 @@ struct ConfigurationStruct {
         float x, y, z;
     } Offset3rdPerson;
     float UIScale;
+    int WindowAlignX, WindowAlignY;
 
     struct {
         float zoom, zoomRate, zoomRateTarget;

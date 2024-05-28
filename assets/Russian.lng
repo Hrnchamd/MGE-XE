@@ -208,6 +208,7 @@ lTipRSpdUnit = "символов/сек."
 lUILanguage = "Язык"
 lUIScale = "масштаб интерфейса"
 lVWait = "Вертикальная синхронизация"
+lWindowAlign = "Расположение окна"
 
 ;;;;   radio buttons   ;;;;
 rbDLAutoByAFogEnd = "По конечной границе тумана"

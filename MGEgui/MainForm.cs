@@ -291,6 +291,12 @@ namespace MGEgui {
             { "Always", 0 },
             { "Interiors only", 1 }
         };
+        
+        private static Dictionary<string, double> windowAlignDict = new Dictionary<string, double> {
+            { "Left", 0 },
+            { "Center", 1 },
+            { "Right", 2 }
+        };
 
         private static Dictionary<string, double> tipSpeedDict = new Dictionary<string, double> {
             { "5cps", 0 },
@@ -341,6 +347,8 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniFOVAuto = new INIFile.INIVariableDef("FOVAuto", siniRendState, "Match FOV To Aspect Ratio", INIFile.INIBoolType.OnOff, "On");
         private static INIFile.INIVariableDef iniFOV = new INIFile.INIVariableDef("FOV", siniRendState, "Horizontal Screen FOV", INIFile.INIVariableType.Single, "75", 5, 150, 2);
         private static INIFile.INIVariableDef iniUIScale = new INIFile.INIVariableDef("UIScale", siniRendState, "UI Scaling", INIFile.INIVariableType.Single, "1", 0.5, 5, 3);
+        private static INIFile.INIVariableDef iniWindowAlignX = new INIFile.INIVariableDef("WindowAlignX", siniRendState, "Window Align X", INIFile.INIVariableType.Dictionary, "Center", windowAlignDict);
+        private static INIFile.INIVariableDef iniWindowAlignY = new INIFile.INIVariableDef("WindowAlignY", siniRendState, "Window Align Y", INIFile.INIVariableType.Dictionary, "Center", windowAlignDict);
         private static INIFile.INIVariableDef iniSSFormat = new INIFile.INIVariableDef("SSFormat", siniRendState, "Screenshot Format", INIFile.INIVariableType.Dictionary, "PNG", ssFormatDict);
         private static INIFile.INIVariableDef iniSSSuffix = new INIFile.INIVariableDef("SSSuffix", siniRendState, "Screenshot Name Suffix", INIFile.INIVariableType.Dictionary, "Timestamp", ssSuffixDict);
         private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "Morrowind");
@@ -397,8 +405,8 @@ namespace MGEgui {
             iniVersion, iniTipSpeed, iniLanguage, iniAutoLang,
             // Graphics
             iniAntiAlias, iniAnisoLvl, iniTransparencyAA, iniVWait, iniRefresh, iniBorderless,
-            iniFOVAuto, iniFOV, iniUIScale, iniFogMode,
-            iniHWShader, iniHDRTime, iniFPSCount, iniReduceTexMemUse,
+            iniFOVAuto, iniFOV, iniUIScale, iniWindowAlignX, iniWindowAlignY,
+            iniFogMode, iniHWShader, iniHDRTime, iniFPSCount, iniReduceTexMemUse,
             iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniD3D8To9Only,
@@ -453,6 +461,7 @@ namespace MGEgui {
             cbAutoFOV.Checked = (iniFile.getKeyValue("FOVAuto") == 1);
             udFOV.Value = (decimal)iniFile.getKeyValue("FOV");
             udUIScale.Value = (decimal)iniFile.getKeyValue("UIScale");
+            setWindowAlignState((int)iniFile.getKeyValue("WindowAlignX"), (int)iniFile.getKeyValue("WindowAlignY"));
             cmbFogMode.SelectedIndex = (int)iniFile.getKeyValue("FogMode");
             cmbSShotFormat.SelectedIndex = (int)iniFile.getKeyValue("SSFormat");
             cmbSShotSuffix.SelectedIndex = (int)iniFile.getKeyValue("SSSuffix");
@@ -531,6 +540,12 @@ namespace MGEgui {
             iniFile.setKey("FOVAuto", cbAutoFOV.Checked);
             iniFile.setKey("FOV", (double)udFOV.Value);
             iniFile.setKey("UIScale", (double)udUIScale.Value);
+            {
+                int alignX, alignY;
+                getWindowAlignState(out alignX, out alignY);
+                iniFile.setKey("WindowAlignX", alignX);
+                iniFile.setKey("WindowAlignY", alignY);
+            }
             iniFile.setKey("FogMode", cmbFogMode.SelectedIndex);
             iniFile.setKey("Messages", cbDisplayMessages.Checked);
             iniFile.setKey("MsgTime", (double)udMsgsTime.Value);
@@ -1690,6 +1705,32 @@ namespace MGEgui {
             }
         }
 
+        private void getWindowAlignState(out int alignX, out int alignY) {
+            // Default to center alignment.
+            alignX = alignY = 1;
+
+            // Read alignment from tag string of active control.
+            foreach (RadioButton alignButton in panelWindowAlign.Controls) {
+                if (alignButton.Checked) {
+                    String[] s = (alignButton.Tag as string).Split(',');
+                    alignX = Int32.Parse(s[0]);
+                    alignY = Int32.Parse(s[1]);
+                    return;
+                }
+            }
+        }
+        
+        private void setWindowAlignState(int alignX, int alignY) {
+            // Match alignment with tag string.
+            string t = String.Format("{0},{1}", alignX, alignY);
+
+            foreach (RadioButton alignButton in panelWindowAlign.Controls) {
+                if (t == (alignButton.Tag as string)) {
+                    alignButton.Checked = true;
+                    return;
+                }
+            }
+        }
     }
 
 }

@@ -274,6 +274,7 @@ lTipRSpdUnit = "chars/sec."
 lUILanguage = "Language"
 lUIScale = "Menu UI scaling"
 lVWait = "VSync"
+lWindowAlign = "Window location"
 
 ;;;;   radio buttons   ;;;;
 rbDLAutoByAFogEnd = "By Above Water Fo&g End"

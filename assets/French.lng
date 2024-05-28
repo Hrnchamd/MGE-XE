@@ -209,6 +209,7 @@ lTipRSpdUnit = "caractères/seconde"
 lUILanguage = "Langage"
 lUIScale = "Échelle de l'interface"
 lVWait = "VSync"
+lWindowAlign = "Emplacement de la fenêtre"
 
 ;;;;   radio buttons   ;;;;
 rbDLAutoByAFogEnd = "via la fin du &brouillard hors de l'eau"

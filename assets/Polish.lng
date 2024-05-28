@@ -211,6 +211,7 @@ lTipRSpdUnit = "znaków/sek."
 lUILanguage = "Język"
 lUIScale = "Skalowanie interfejsu"
 lVWait = "Synchronizacja \npionowa"
+lWindowAlign = "Położenie okna"
 
 ;;;;   radio buttons   ;;;;
 rbDLAutoByAFogEnd = "Według końca &mgły nad wodą"

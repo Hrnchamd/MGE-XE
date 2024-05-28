@@ -123,6 +123,13 @@ const tdictent dictentPPLFlags [] = {
 };
 const tdictionary dictPPLFlags = {countof(dictentPPLFlags), dictentPPLFlags};
 
+const tdictent dictentWindowAlign [] = {
+    {"Left", 0},
+    {"Center", 1},
+    {"Right", 2}
+};
+const tdictionary dictWindowAlign = {countof(dictentWindowAlign), dictentWindowAlign};
+
 
 
 const iniSetting iniSettings[] = {
@@ -178,6 +185,8 @@ const iniSetting iniSettings[] = {
     {&Configuration.Offset3rdPerson.z, t_float, 1, siniMisc, "Initial 3rd Person Camera Z", "0", NULL, MINMAX, -250.0, 250.0},
     {&Configuration.MGEFlags, t_bit, CROSSHAIR_AUTOHIDE_BIT, siniMisc, "Crosshair Autohide", "False", &dictBool, DICTONLY, 0, 0},
     {&Configuration.UIScale, t_float, 1, siniRendState, "UI Scaling", "1", NULL, MINMAX, 0.5, 5.0},
+    {&Configuration.WindowAlignX, t_int32, 1, siniRendState, "Window Align X", "Center", &dictWindowAlign, DICTONLY, 0, 0},
+    {&Configuration.WindowAlignY, t_int32, 1, siniRendState, "Window Align Y", "Center", &dictWindowAlign, DICTONLY, 0, 0},
 
     // Shaders, flat list
     {&Configuration.ShaderChain, t_set, sizeof(Configuration.ShaderChain), siniShaders, NULL, NULL, NULL, DONT_SAVE, 0, 0},

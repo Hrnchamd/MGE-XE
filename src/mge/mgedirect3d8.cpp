@@ -27,8 +27,8 @@ HRESULT _stdcall MGEProxyD3D::CreateDevice(UINT a, D3DDEVTYPE b, HWND c, DWORD d
     // Window positioning
     if (e->Windowed) {
         HWND hMainWnd = GetParent(c);
-        int wx = std::max(0, (GetSystemMetrics(SM_CXSCREEN) - (int)e->BackBufferWidth) / 2);
-        int wy = std::max(0, (GetSystemMetrics(SM_CYSCREEN) - (int)e->BackBufferHeight) / 2);
+        int wx = std::max(0, Configuration.WindowAlignX * (GetSystemMetrics(SM_CXSCREEN) - (int)e->BackBufferWidth) / 2);
+        int wy = std::max(0, Configuration.WindowAlignY * (GetSystemMetrics(SM_CYSCREEN) - (int)e->BackBufferHeight) / 2);
 
         if (Configuration.Borderless) {
             // Remove non-client window parts and move window flush to screen edge / centre if smaller than display

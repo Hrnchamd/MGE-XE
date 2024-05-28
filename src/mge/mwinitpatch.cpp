@@ -25,8 +25,8 @@ static void _stdcall onUIScaleInit() {
 
     // Setup borderless window, if selected
     if (!gameOptions->fullscreen && Configuration.Borderless) {
-        int wx = std::max(0, (GetSystemMetrics(SM_CXSCREEN) - gameOptions->windowWidth) / 2);
-        int wy = std::max(0, (GetSystemMetrics(SM_CYSCREEN) - gameOptions->windowHeight) / 2);
+        int wx = std::max(0, Configuration.WindowAlignX * (GetSystemMetrics(SM_CXSCREEN) - gameOptions->windowWidth) / 2);
+        int wy = std::max(0, Configuration.WindowAlignY * (GetSystemMetrics(SM_CYSCREEN) - gameOptions->windowHeight) / 2);
 
         // Remove non-client window parts and move window flush to screen edge / centre if smaller than display
         SetWindowLong(hMainWnd, GWL_STYLE, WS_VISIBLE);

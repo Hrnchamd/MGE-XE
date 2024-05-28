@@ -72,6 +72,7 @@ namespace MGEgui {
             this.bMacroEd = new System.Windows.Forms.Button();
             this.bRemapper = new System.Windows.Forms.Button();
             this.gbInputOpts = new System.Windows.Forms.GroupBox();
+            this.cbD3D8To9Only = new System.Windows.Forms.CheckBox();
             this.cbMenuCaching = new System.Windows.Forms.CheckBox();
             this.cbAutoCrosshair = new System.Windows.Forms.CheckBox();
             this.cbDisableMGE = new System.Windows.Forms.CheckBox();
@@ -109,6 +110,17 @@ namespace MGEgui {
             this.udFOV = new System.Windows.Forms.NumericUpDown();
             this.lFOV = new System.Windows.Forms.Label();
             this.gbDisplay = new System.Windows.Forms.GroupBox();
+            this.panelWindowAlign = new System.Windows.Forms.Panel();
+            this.rbWindowAlignBottomRight = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignCenterRight = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignTopRight = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignBottomCenter = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignBottomLeft = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignCenter = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignCenterLeft = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignCenterTop = new System.Windows.Forms.RadioButton();
+            this.rbWindowAlignTopLeft = new System.Windows.Forms.RadioButton();
+            this.lWindowAlign = new System.Windows.Forms.Label();
             this.tableAlignResolution = new System.Windows.Forms.TableLayoutPanel();
             this.lResolution = new System.Windows.Forms.Label();
             this.cbBorderless = new System.Windows.Forms.CheckBox();
@@ -219,7 +231,7 @@ namespace MGEgui {
             this.tpInstructions = new System.Windows.Forms.TabPage();
             this.lInstructions = new System.Windows.Forms.Label();
             this.SShotFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.cbD3D8To9Only = new System.Windows.Forms.CheckBox();
+            this.tableLayoutWindowAlign = new System.Windows.Forms.TableLayoutPanel();
             this.tpInput.SuspendLayout();
             this.gbMWLighting.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.udLightingConst)).BeginInit();
@@ -245,6 +257,7 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udFPSLimit)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).BeginInit();
             this.gbDisplay.SuspendLayout();
+            this.panelWindowAlign.SuspendLayout();
             this.tableAlignResolution.SuspendLayout();
             this.tableLayoutDisplay.SuspendLayout();
             this.tabControl.SuspendLayout();
@@ -288,6 +301,7 @@ namespace MGEgui {
             this.gbMainInfo.SuspendLayout();
             this.gbMainSettings.SuspendLayout();
             this.tpInstructions.SuspendLayout();
+            this.tableLayoutWindowAlign.SuspendLayout();
             this.SuspendLayout();
             // 
             // OpenFileDialog
@@ -842,6 +856,16 @@ namespace MGEgui {
             this.gbInputOpts.TabStop = false;
             this.gbInputOpts.Text = "Options";
             // 
+            // cbD3D8To9Only
+            // 
+            this.cbD3D8To9Only.AutoSize = true;
+            this.cbD3D8To9Only.Location = new System.Drawing.Point(11, 77);
+            this.cbD3D8To9Only.Name = "cbD3D8To9Only";
+            this.cbD3D8To9Only.Size = new System.Drawing.Size(154, 19);
+            this.cbD3D8To9Only.TabIndex = 12;
+            this.cbD3D8To9Only.Text = "Use D3D8To9 proxy only";
+            this.cbD3D8To9Only.UseVisualStyleBackColor = true;
+            // 
             // cbMenuCaching
             // 
             this.cbMenuCaching.AutoSize = true;
@@ -1084,7 +1108,7 @@ namespace MGEgui {
             this.lScreenshotHelp.Location = new System.Drawing.Point(8, 95);
             this.lScreenshotHelp.Margin = new System.Windows.Forms.Padding(8, 0, 22, 0);
             this.lScreenshotHelp.Name = "lScreenshotHelp";
-            this.lScreenshotHelp.Size = new System.Drawing.Size(660, 58);
+            this.lScreenshotHelp.Size = new System.Drawing.Size(638, 58);
             this.lScreenshotHelp.TabIndex = 6;
             this.lScreenshotHelp.Text = "Screenshots can be taken in-game with the PrintScreen key.";
             this.lScreenshotHelp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -1332,6 +1356,7 @@ namespace MGEgui {
             // 
             this.gbDisplay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
                                     | System.Windows.Forms.AnchorStyles.Right)));
+            this.gbDisplay.Controls.Add(this.tableLayoutWindowAlign);
             this.gbDisplay.Controls.Add(this.tableAlignResolution);
             this.gbDisplay.Controls.Add(this.cbBorderless);
             this.gbDisplay.Controls.Add(this.tbRefreshRate);
@@ -1348,6 +1373,163 @@ namespace MGEgui {
             this.gbDisplay.TabIndex = 0;
             this.gbDisplay.TabStop = false;
             this.gbDisplay.Text = "Display";
+            // 
+            // panelWindowAlign
+            // 
+            this.panelWindowAlign.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.panelWindowAlign.AutoSize = true;
+            this.panelWindowAlign.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignBottomRight);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignCenterRight);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignTopRight);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignBottomCenter);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignBottomLeft);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignCenter);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignCenterLeft);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignCenterTop);
+            this.panelWindowAlign.Controls.Add(this.rbWindowAlignTopLeft);
+            this.panelWindowAlign.Location = new System.Drawing.Point(23, 18);
+            this.panelWindowAlign.Name = "panelWindowAlign";
+            this.panelWindowAlign.Size = new System.Drawing.Size(56, 56);
+            this.panelWindowAlign.TabIndex = 10;
+            // 
+            // rbWindowAlignBottomRight
+            // 
+            this.rbWindowAlignBottomRight.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignBottomRight.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignBottomRight.Location = new System.Drawing.Point(36, 36);
+            this.rbWindowAlignBottomRight.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignBottomRight.Name = "rbWindowAlignBottomRight";
+            this.rbWindowAlignBottomRight.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignBottomRight.TabIndex = 8;
+            this.rbWindowAlignBottomRight.Tag = "2,2";
+            this.rbWindowAlignBottomRight.Text = "↘";
+            this.rbWindowAlignBottomRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignBottomRight.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignCenterRight
+            // 
+            this.rbWindowAlignCenterRight.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignCenterRight.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignCenterRight.Location = new System.Drawing.Point(36, 18);
+            this.rbWindowAlignCenterRight.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignCenterRight.Name = "rbWindowAlignCenterRight";
+            this.rbWindowAlignCenterRight.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignCenterRight.TabIndex = 5;
+            this.rbWindowAlignCenterRight.Tag = "1,2";
+            this.rbWindowAlignCenterRight.Text = "→";
+            this.rbWindowAlignCenterRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignCenterRight.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignTopRight
+            // 
+            this.rbWindowAlignTopRight.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignTopRight.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignTopRight.Location = new System.Drawing.Point(36, 0);
+            this.rbWindowAlignTopRight.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignTopRight.Name = "rbWindowAlignTopRight";
+            this.rbWindowAlignTopRight.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignTopRight.TabIndex = 2;
+            this.rbWindowAlignTopRight.Tag = "2,0";
+            this.rbWindowAlignTopRight.Text = "↗";
+            this.rbWindowAlignTopRight.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignTopRight.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignBottomCenter
+            // 
+            this.rbWindowAlignBottomCenter.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignBottomCenter.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignBottomCenter.Location = new System.Drawing.Point(18, 36);
+            this.rbWindowAlignBottomCenter.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignBottomCenter.Name = "rbWindowAlignBottomCenter";
+            this.rbWindowAlignBottomCenter.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignBottomCenter.TabIndex = 7;
+            this.rbWindowAlignBottomCenter.Tag = "1,2";
+            this.rbWindowAlignBottomCenter.Text = "↓";
+            this.rbWindowAlignBottomCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignBottomCenter.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignBottomLeft
+            // 
+            this.rbWindowAlignBottomLeft.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignBottomLeft.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignBottomLeft.Location = new System.Drawing.Point(0, 36);
+            this.rbWindowAlignBottomLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignBottomLeft.Name = "rbWindowAlignBottomLeft";
+            this.rbWindowAlignBottomLeft.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignBottomLeft.TabIndex = 6;
+            this.rbWindowAlignBottomLeft.Tag = "0,2";
+            this.rbWindowAlignBottomLeft.Text = "↙";
+            this.rbWindowAlignBottomLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignBottomLeft.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignCenter
+            // 
+            this.rbWindowAlignCenter.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignCenter.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignCenter.Location = new System.Drawing.Point(18, 18);
+            this.rbWindowAlignCenter.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignCenter.Name = "rbWindowAlignCenter";
+            this.rbWindowAlignCenter.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignCenter.TabIndex = 4;
+            this.rbWindowAlignCenter.Tag = "1,1";
+            this.rbWindowAlignCenter.Text = "▪";
+            this.rbWindowAlignCenter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignCenter.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignCenterLeft
+            // 
+            this.rbWindowAlignCenterLeft.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignCenterLeft.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignCenterLeft.Location = new System.Drawing.Point(0, 18);
+            this.rbWindowAlignCenterLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignCenterLeft.Name = "rbWindowAlignCenterLeft";
+            this.rbWindowAlignCenterLeft.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignCenterLeft.TabIndex = 3;
+            this.rbWindowAlignCenterLeft.Tag = "0,1";
+            this.rbWindowAlignCenterLeft.Text = "←";
+            this.rbWindowAlignCenterLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignCenterLeft.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignCenterTop
+            // 
+            this.rbWindowAlignCenterTop.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignCenterTop.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignCenterTop.Location = new System.Drawing.Point(18, 0);
+            this.rbWindowAlignCenterTop.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignCenterTop.Name = "rbWindowAlignCenterTop";
+            this.rbWindowAlignCenterTop.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignCenterTop.TabIndex = 1;
+            this.rbWindowAlignCenterTop.Tag = "1,0";
+            this.rbWindowAlignCenterTop.Text = "↑";
+            this.rbWindowAlignCenterTop.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignCenterTop.UseVisualStyleBackColor = true;
+            // 
+            // rbWindowAlignTopLeft
+            // 
+            this.rbWindowAlignTopLeft.Appearance = System.Windows.Forms.Appearance.Button;
+            this.rbWindowAlignTopLeft.Font = new System.Drawing.Font("Segoe UI", 8F);
+            this.rbWindowAlignTopLeft.Location = new System.Drawing.Point(0, 0);
+            this.rbWindowAlignTopLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.rbWindowAlignTopLeft.Name = "rbWindowAlignTopLeft";
+            this.rbWindowAlignTopLeft.Size = new System.Drawing.Size(20, 20);
+            this.rbWindowAlignTopLeft.TabIndex = 0;
+            this.rbWindowAlignTopLeft.Tag = "0,0";
+            this.rbWindowAlignTopLeft.Text = "↖";
+            this.rbWindowAlignTopLeft.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.rbWindowAlignTopLeft.UseVisualStyleBackColor = true;
+            // 
+            // lWindowAlign
+            // 
+            this.lWindowAlign.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+                                    | System.Windows.Forms.AnchorStyles.Right)));
+            this.lWindowAlign.AutoSize = true;
+            this.lWindowAlign.Location = new System.Drawing.Point(3, 0);
+            this.lWindowAlign.Name = "lWindowAlign";
+            this.lWindowAlign.Size = new System.Drawing.Size(97, 15);
+            this.lWindowAlign.TabIndex = 9;
+            this.lWindowAlign.Text = "Window location";
+            this.lWindowAlign.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // tableAlignResolution
             // 
@@ -1377,7 +1559,7 @@ namespace MGEgui {
             // 
             this.cbBorderless.AutoSize = true;
             this.cbBorderless.Enabled = false;
-            this.cbBorderless.Location = new System.Drawing.Point(440, 53);
+            this.cbBorderless.Location = new System.Drawing.Point(408, 53);
             this.cbBorderless.Name = "cbBorderless";
             this.cbBorderless.Size = new System.Drawing.Size(125, 19);
             this.cbBorderless.TabIndex = 7;
@@ -1428,7 +1610,7 @@ namespace MGEgui {
                                     "4x",
                                     "8x",
                                     "16x"});
-            this.cmbAntiAlias.Location = new System.Drawing.Point(3, 10);
+            this.cmbAntiAlias.Location = new System.Drawing.Point(3, 9);
             this.cmbAntiAlias.Name = "cmbAntiAlias";
             this.cmbAntiAlias.Size = new System.Drawing.Size(64, 23);
             this.cmbAntiAlias.TabIndex = 0;
@@ -1457,7 +1639,7 @@ namespace MGEgui {
                                     "x2",
                                     "x3",
                                     "x4"});
-            this.cmbVWait.Location = new System.Drawing.Point(447, 10);
+            this.cmbVWait.Location = new System.Drawing.Point(447, 9);
             this.cmbVWait.Name = "cmbVWait";
             this.cmbVWait.Size = new System.Drawing.Size(80, 23);
             this.cmbVWait.TabIndex = 2;
@@ -1473,7 +1655,7 @@ namespace MGEgui {
                                     "4x",
                                     "8x",
                                     "16x"});
-            this.cmbAnisoLevel.Location = new System.Drawing.Point(203, 10);
+            this.cmbAnisoLevel.Location = new System.Drawing.Point(203, 9);
             this.cmbAnisoLevel.Name = "cmbAnisoLevel";
             this.cmbAnisoLevel.Size = new System.Drawing.Size(64, 23);
             this.cmbAnisoLevel.TabIndex = 10;
@@ -1525,7 +1707,7 @@ namespace MGEgui {
             // cbWindowed
             // 
             this.cbWindowed.AutoSize = true;
-            this.cbWindowed.Location = new System.Drawing.Point(440, 25);
+            this.cbWindowed.Location = new System.Drawing.Point(408, 25);
             this.cbWindowed.Name = "cbWindowed";
             this.cbWindowed.Size = new System.Drawing.Size(117, 19);
             this.cbWindowed.TabIndex = 3;
@@ -2933,15 +3115,21 @@ namespace MGEgui {
             // 
             this.SShotFolderDialog.Description = "Select output folder for screenshots taken in game:";
             // 
-            // cbD3D8To9Only
+            // tableLayoutWindowAlign
             // 
-            this.cbD3D8To9Only.AutoSize = true;
-            this.cbD3D8To9Only.Location = new System.Drawing.Point(11, 77);
-            this.cbD3D8To9Only.Name = "cbD3D8To9Only";
-            this.cbD3D8To9Only.Size = new System.Drawing.Size(154, 19);
-            this.cbD3D8To9Only.TabIndex = 12;
-            this.cbD3D8To9Only.Text = "Use D3D8To9 proxy only";
-            this.cbD3D8To9Only.UseVisualStyleBackColor = true;
+            this.tableLayoutWindowAlign.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.tableLayoutWindowAlign.AutoSize = true;
+            this.tableLayoutWindowAlign.ColumnCount = 1;
+            this.tableLayoutWindowAlign.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutWindowAlign.Controls.Add(this.panelWindowAlign, 0, 1);
+            this.tableLayoutWindowAlign.Controls.Add(this.lWindowAlign, 0, 0);
+            this.tableLayoutWindowAlign.Location = new System.Drawing.Point(577, 12);
+            this.tableLayoutWindowAlign.Name = "tableLayoutWindowAlign";
+            this.tableLayoutWindowAlign.RowCount = 2;
+            this.tableLayoutWindowAlign.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutWindowAlign.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutWindowAlign.Size = new System.Drawing.Size(103, 77);
+            this.tableLayoutWindowAlign.TabIndex = 11;
             // 
             // MainForm
             // 
@@ -2993,6 +3181,7 @@ namespace MGEgui {
             ((System.ComponentModel.ISupportInitialize)(this.udFOV)).EndInit();
             this.gbDisplay.ResumeLayout(false);
             this.gbDisplay.PerformLayout();
+            this.panelWindowAlign.ResumeLayout(false);
             this.tableAlignResolution.ResumeLayout(false);
             this.tableAlignResolution.PerformLayout();
             this.tableLayoutDisplay.ResumeLayout(false);
@@ -3056,8 +3245,22 @@ namespace MGEgui {
             this.gbMainSettings.ResumeLayout(false);
             this.gbMainSettings.PerformLayout();
             this.tpInstructions.ResumeLayout(false);
+            this.tableLayoutWindowAlign.ResumeLayout(false);
+            this.tableLayoutWindowAlign.PerformLayout();
             this.ResumeLayout(false);
         }
+        private System.Windows.Forms.TableLayoutPanel tableLayoutWindowAlign;
+        private System.Windows.Forms.Label lWindowAlign;
+        private System.Windows.Forms.RadioButton rbWindowAlignTopLeft;
+        private System.Windows.Forms.RadioButton rbWindowAlignCenterTop;
+        private System.Windows.Forms.RadioButton rbWindowAlignCenterLeft;
+        private System.Windows.Forms.RadioButton rbWindowAlignCenter;
+        private System.Windows.Forms.RadioButton rbWindowAlignBottomLeft;
+        private System.Windows.Forms.RadioButton rbWindowAlignBottomCenter;
+        private System.Windows.Forms.RadioButton rbWindowAlignTopRight;
+        private System.Windows.Forms.RadioButton rbWindowAlignCenterRight;
+        private System.Windows.Forms.RadioButton rbWindowAlignBottomRight;
+        private System.Windows.Forms.Panel panelWindowAlign;
         private System.Windows.Forms.CheckBox cbD3D8To9Only;
         private System.Windows.Forms.ComboBox cmbDLShadowDetail;
         private System.Windows.Forms.CheckBox cbReduceTextureMemUse;
