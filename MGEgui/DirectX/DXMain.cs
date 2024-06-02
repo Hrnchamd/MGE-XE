@@ -10,9 +10,6 @@ namespace MGEgui.DirectX {
             public int MaxWindowedAA;
             public int MaxFullscreenAA;
             public int MaxAF;
-            public bool SupportsSM1;
-            public bool SupportsSM2;
-            public bool SupportsSM3;
             public int MaxTexSize;
             public int MaxPrimitives;
             public int MaxIndicies;
@@ -80,9 +77,6 @@ namespace MGEgui.DirectX {
             caps = d3d.GetDeviceCaps(adapter, DeviceType.Hardware);
 
             mCaps.MaxAF = caps.MaxAnisotropy;
-            mCaps.SupportsSM1 = (caps.VertexShaderVersion >= new Version(1, 1)) && (caps.PixelShaderVersion >= new Version(1, 4));
-            mCaps.SupportsSM2 = (caps.VertexShaderVersion.Major >= 2) && (caps.PixelShaderVersion.Major >= 2);
-            mCaps.SupportsSM3 = (caps.VertexShaderVersion.Major >= 3) && (caps.PixelShaderVersion.Major >= 3);
             mCaps.MaxTexSize = Math.Min(caps.MaxTextureHeight, caps.MaxTextureWidth);
             mCaps.MaxPrimitives = caps.MaxPrimitiveCount;
             mCaps.MaxIndicies = caps.MaxVertexIndex;

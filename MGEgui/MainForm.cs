@@ -1199,11 +1199,6 @@ namespace MGEgui {
 
         private void cbDistantLand_CheckedChanged(object sender, EventArgs e) {
             if (cbDLDistantLand.Checked) {
-                if (!DXMain.mCaps.SupportsSM3) {
-                    cbDLDistantLand.Checked = false;
-                    MessageBox.Show(strings["DLLackSM3"], Statics.strings["Error"]);
-                    return;
-                }
                 if (!File.Exists(Statics.fn_dlver) || !File.Exists(Statics.fn_world) || !File.Exists(Statics.fn_worldds) || !File.Exists(Statics.fn_worldn)) {
                     cbDLDistantLand.Checked = false;
                     MessageBox.Show(strings["NoDLOrOld"], Statics.strings["Warning"]);
@@ -1428,11 +1423,8 @@ namespace MGEgui {
         }
 
         private void bDistantLandWizard_Click(object sender, EventArgs e) {
-            if (!DXMain.mCaps.SupportsSM3) {
-                MessageBox.Show(strings["DLLackSM3"], Statics.strings["Error"]);
-                return;
-            }
             bool exists = false;
+            
             if (Directory.Exists(Statics.fn_dl)) {
                 if (!File.Exists(Statics.fn_dlver) || !File.Exists(Statics.fn_world) || !File.Exists(Statics.fn_worldds) || !File.Exists(Statics.fn_worldn)) {
                     if (MessageBox.Show(strings["DLDelOldCorrupt"], Statics.strings["Warning"], MessageBoxButtons.YesNo) != DialogResult.Yes) {
