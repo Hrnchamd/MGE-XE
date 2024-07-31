@@ -206,17 +206,28 @@ void DistantLand::renderReflectedStatics(const D3DXMATRIX* view, const D3DXMATRI
     ds_viewproj = (*view) * ds_proj;
 
     // Cull sort and draw
-    VisibleSet visReflected;
     ViewFrustum range_frustum(&ds_viewproj);
     D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, zf);
 
-    currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
-    currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
-    currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
-    visReflected.SortByState();
+    if (Configuration.UseSharedMemory) {
+        visExtraShared.RemoveAll();
+        ipcClient.getVisibleMeshes(visExtraSharedId, range_frustum, viewsphere, VIS_STATIC, VisibleSetSort::ByState);
 
-    device->SetVertexDeclaration(StaticDecl);
-    visReflected.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
+        device->SetVertexDeclaration(StaticDecl);
+
+        ipcClient.waitForCompletion();
+        visExtraShared.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
+    } else {
+        VisibleSet<StlVector> visReflected((StlVector()));
+
+        DistantLandShare::currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
+        DistantLandShare::currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
+        DistantLandShare::currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visReflected);
+        visReflected.SortByState();
+
+        device->SetVertexDeclaration(StaticDecl);
+        visReflected.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
+    }
 }
 
 void DistantLand::clearReflection() {

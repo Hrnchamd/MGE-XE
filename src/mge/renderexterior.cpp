@@ -88,6 +88,15 @@ void DistantLand::renderDistantLand(ID3DXEffect* e, const D3DXMATRIX* view, cons
     D3DXMATRIX world, viewproj = (*view) * (*proj);
     D3DXVECTOR4 viewsphere(eyePos.x, eyePos.y, eyePos.z, Configuration.DL.DrawDist * kCellSize);
 
+    // Cull and draw
+    ViewFrustum frustum(&viewproj);
+
+    if (Configuration.UseSharedMemory) {
+        // kick the operation off early so we can do some additional work while it runs
+        visLandShared.RemoveAll();
+        ipcClient.getVisibleMeshes(visLandSharedId, frustum, viewsphere, VIS_LAND);
+    }
+
     D3DXMatrixIdentity(&world);
     effect->SetMatrix(ehWorld, &world);
 
@@ -96,13 +105,18 @@ void DistantLand::renderDistantLand(ID3DXEffect* e, const D3DXMATRIX* view, cons
     effect->SetTexture(ehTex2, texWorldDetail);
     e->CommitChanges();
 
-    // Cull and draw
-    ViewFrustum frustum(&viewproj);
-    visLand.RemoveAll();
-    LandQuadTree.GetVisibleMeshes(frustum, viewsphere, visLand);
+    if (!Configuration.UseSharedMemory) {
+        visLand.RemoveAll();
+        DistantLandShare::LandQuadTree.GetVisibleMeshes(frustum, viewsphere, visLand);
+    }
 
     device->SetVertexDeclaration(LandDecl);
-    visLand.Render(device, SIZEOFLANDVERT);
+    
+    if (Configuration.UseSharedMemory) {
+        visLandShared.Render(device, SIZEOFLANDVERT, true);
+    } else {
+        visLand.Render(device, SIZEOFLANDVERT);
+    }
 }
 
 void DistantLand::renderDistantLandZ() {
@@ -114,7 +128,11 @@ void DistantLand::renderDistantLandZ() {
 
     // Draw with cached vis set
     device->SetVertexDeclaration(LandDecl);
-    visLand.Render(device, SIZEOFLANDVERT);
+    if (Configuration.UseSharedMemory) {
+        visLandShared.Render(device, SIZEOFLANDVERT);
+    } else {
+        visLand.Render(device, SIZEOFLANDVERT);
+    }
 }
 
 void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
@@ -123,7 +141,11 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* p
     float zn = nearViewRange - 768.0f, zf = zn;
     float cullDist = fogEnd;
 
-    visDistant.RemoveAll();
+    if (Configuration.UseSharedMemory) {
+        visDistantShared.RemoveAll();
+    } else {
+        visDistant.RemoveAll();
+    }
 
     zf = std::min(Configuration.DL.NearStaticEnd * kCellSize, cullDist);
     if (zn < zf) {
@@ -131,7 +153,11 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* p
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
         viewsphere.w = zf;
-        currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
+        if (Configuration.UseSharedMemory) {
+            ipcClient.getVisibleMeshes(visDistantSharedId, range_frustum, viewsphere, VIS_NEAR);
+        } else {
+            DistantLandShare::currentWorldSpace->NearStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
+        }
     }
 
     zf = std::min(Configuration.DL.FarStaticEnd * kCellSize, cullDist);
@@ -140,7 +166,11 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* p
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
         viewsphere.w = zf;
-        currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
+        if (Configuration.UseSharedMemory) {
+            ipcClient.getVisibleMeshes(visDistantSharedId, range_frustum, viewsphere, VIS_FAR);
+        } else {
+            DistantLandShare::currentWorldSpace->FarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
+        }
     }
 
     zf = std::min(Configuration.DL.VeryFarStaticEnd * kCellSize, cullDist);
@@ -149,10 +179,19 @@ void DistantLand::cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* p
         ds_viewproj = (*view) * ds_proj;
         ViewFrustum range_frustum(&ds_viewproj);
         viewsphere.w = zf;
-        currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
+        if (Configuration.UseSharedMemory) {
+            ipcClient.getVisibleMeshes(visDistantSharedId, range_frustum, viewsphere, VIS_VERY_FAR);
+        } else {
+            DistantLandShare::currentWorldSpace->VeryFarStatics->GetVisibleMeshes(range_frustum, viewsphere, visDistant);
+        }
     }
 
-    visDistant.SortByState();
+    if (Configuration.UseSharedMemory) {
+        ipcClient.sortVisibleSet(visDistantSharedId, VisibleSetSort::ByState);
+        ipcClient.waitForCompletion();
+    } else {
+        visDistant.SortByState();
+    }
 }
 
 void DistantLand::renderDistantStatics() {
@@ -166,7 +205,12 @@ void DistantLand::renderDistantStatics() {
     }
 
     device->SetVertexDeclaration(StaticDecl);
-    visDistant.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
+
+    if (Configuration.UseSharedMemory) {
+        visDistantShared.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
+    } else {
+        visDistant.Render(device, effect, effect, &ehTex0, nullptr, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
+    }
 
     device->SetRenderState(D3DRS_CLIPPLANEENABLE, 0);
 }

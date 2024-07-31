@@ -37,6 +37,12 @@
     <Filter Include="Source Files\proxydx">
       <UniqueIdentifier>{8e2516c5-a41f-49a6-9c67-16239eaee203}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\ipc">
+      <UniqueIdentifier>{5f960711-0b1d-4c3c-ac62-a75d7e7c18a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ipc">
+      <UniqueIdentifier>{8138a600-cc8b-4e30-8213-4aba7c2d5ea0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -182,6 +188,24 @@
     </ClCompile>
     <ClCompile Include="src\mge\api.cpp">
       <Filter>Source Files\mge</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc\client.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc\iter.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc\bridge.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc\view.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc\dlshare.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ipc\vecbase.cpp">
+      <Filter>Source Files\ipc</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -343,6 +367,24 @@
     </ClInclude>
     <ClInclude Include="src\mge\MGEAPI.h">
       <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc\client.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc\view.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc\iter.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc\bridge.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc\dlshare.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ipc\vecbase.h">
+      <Filter>Header Files\ipc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

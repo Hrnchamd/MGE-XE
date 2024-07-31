@@ -27,32 +27,40 @@ void DistantLand::cullGrass(const D3DXMATRIX* view, const D3DXMATRIX* proj) {
 
     // Cull and sort
     ViewFrustum range_frustum(&ds_viewproj);
-    visGrass.RemoveAll();
-    currentWorldSpace->GrassStatics->GetVisibleMeshesCoarse(range_frustum, visGrass);
-    visGrass.SortByState();
 
-    buildGrassInstanceVB();
+    if (Configuration.UseSharedMemory) {
+        visGrassShared.RemoveAll();
+        ipcClient.getVisibleMeshesCoarse(visGrassSharedId, range_frustum, VIS_GRASS, VisibleSetSort::ByState);
+        ipcClient.waitForCompletion();
+        buildGrassInstanceVB(visGrassShared);
+    } else {
+        visGrass.RemoveAll();
+        DistantLandShare::currentWorldSpace->GrassStatics->GetVisibleMeshesCoarse(range_frustum, visGrass);
+        visGrass.SortByState();
+        buildGrassInstanceVB(visGrass);
+    }
 }
 
-
-void DistantLand::buildGrassInstanceVB() {
+template<class T>
+void DistantLand::buildGrassInstanceVB(VisibleSet<T>& grassSet) {
     batchedGrass.clear();
 
-	if (visGrass.visible_set.empty()) {
+	if (grassSet.empty()) {
 		return;
 	}
 
-    if (visGrass.visible_set.size() > MaxGrassElements) {
+    if (grassSet.size() > MaxGrassElements) {
         static bool warnOnce = true;
         if (warnOnce) {
-            LOG::logline("!! Too many grass instances. (%d elements, limit %d)", visGrass.visible_set.size(), MaxGrassElements);
+            LOG::logline("!! Too many grass instances. (%d elements, limit %d)", grassSet.size(), MaxGrassElements);
             LOG::logline("!! Reduce grass density to avoid flickering grass.");
             warnOnce = false;
         }
-        visGrass.visible_set.resize(MaxGrassElements);
+        grassSet.truncate(MaxGrassElements);
     }
 
-    const QuadTreeMesh* mesh = *visGrass.visible_set.begin();
+    // in the IPC case, we allocate the vector with a window size of MaxGrassElements, so our pointers will always be valid
+    const RenderMesh* mesh = &grassSet.first();
     float* vbwrite = 0;
     int nz = 0;
 
@@ -63,16 +71,17 @@ void DistantLand::buildGrassInstanceVB() {
 
     // Write all grass transforms into one buffer
     // Record how many instances belong to each different mesh
-    const auto& visible_set_const = visGrass.visible_set;
-    for (const auto& m : visible_set_const) {
-        if (mesh->vBuffer != m->vBuffer) {
+    grassSet.reset();
+    while (!grassSet.atEnd()) {
+        const auto& m = grassSet.next();
+        if (mesh->vBuffer != m.vBuffer) {
             batchedGrass.push_back(std::make_pair(mesh, nz));
-            mesh = m;
+            mesh = &m;
             nz = 0;
         }
 
         // Pack into 4x3 transposed matrix
-        const D3DMATRIX* world = &m->transform;
+        const D3DMATRIX* world = &m.transform;
         vbwrite[0] = world->_11;
         vbwrite[1] = world->_21;
         vbwrite[2] = world->_31;
@@ -92,10 +101,18 @@ void DistantLand::buildGrassInstanceVB() {
     vbGrassInstances->Unlock();
 }
 
+bool DistantLand::hasVisibleGrass() {
+    if (Configuration.UseSharedMemory) {
+        return !visGrassShared.empty();
+    } else {
+        return !visGrass.empty();
+    }
+}
+
 
 // renderGrassInst - instanced grass with shadows
 void DistantLand::renderGrassInst() {
-    if (visGrass.visible_set.empty()) {
+    if (!hasVisibleGrass()) {
         return;
     }
 
@@ -108,7 +125,7 @@ void DistantLand::renderGrassInst() {
 
 // renderGrassInstZ - Z only pass
 void DistantLand::renderGrassInstZ() {
-    if (visGrass.visible_set.empty()) {
+    if (!hasVisibleGrass()) {
         return;
     }
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ipc/bridge.h"
+#include "dlmath.h"
 #include <vector>
 
 enum StaticType {
@@ -17,17 +19,19 @@ struct LandMesh {
     BoundingBox box;
     DWORD verts;
     DWORD faces;
-    IDirect3DVertexBuffer9* vbuffer;
-    IDirect3DIndexBuffer9* ibuffer;
+    ptr32<IDirect3DVertexBuffer9> vbuffer;
+    ptr32<IDirect3DIndexBuffer9> ibuffer;
 };
 
+#pragma pack(push, 4)
 struct DistantSubset {
+    DWORD parentStaticIndex;
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
-    IDirect3DTexture9* tex;
+    ptr32<IDirect3DTexture9> tex;
     bool hasAlpha, hasUVController;
-    IDirect3DVertexBuffer9* vbuffer;
-    IDirect3DIndexBuffer9* ibuffer;
+    ptr32<IDirect3DVertexBuffer9> vbuffer;
+    ptr32<IDirect3DIndexBuffer9> ibuffer;
     int verts;
     int faces;
 };
@@ -36,7 +40,8 @@ struct DistantStatic {
     unsigned char type;
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
-    std::vector<DistantSubset> subsets;
+    DWORD firstSubsetIndex;
+    size_t numSubsets;
 };
 
 struct UsedDistantStatic {
@@ -64,3 +69,4 @@ struct UsedDistantStatic {
         return box;
     }
 };
+#pragma pack(pop)

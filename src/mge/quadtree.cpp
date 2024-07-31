@@ -19,11 +19,11 @@ QuadTreeMesh::QuadTreeMesh(
     const D3DXMATRIX& transform,
     bool hasAlpha,
     bool animateUV,
-    IDirect3DTexture9* tex,
+    ptr32<IDirect3DTexture9> tex,
     int verts,
-    IDirect3DVertexBuffer9* vBuffer,
+    ptr32<IDirect3DVertexBuffer9> vBuffer,
     int faces,
-    IDirect3DIndexBuffer9* iBuffer
+    ptr32<IDirect3DIndexBuffer9> iBuffer
 ) {
     this->sphere = sphere;
     this->box = box;
@@ -70,12 +70,12 @@ QuadTreeMesh::QuadTreeMesh(const QuadTreeMesh& rh) {
 
 //-----------------------------------------------------------------------------
 
-bool QuadTreeMesh::CompareByState(const QuadTreeMesh* lh, const QuadTreeMesh* rh) {
-    if (lh->tex < rh->tex) {
+bool QuadTreeMesh::CompareByState(const RenderMesh& lh, const RenderMesh& rh) {
+    if (lh.tex < rh.tex) {
         return true;
     }
 
-    if (lh->tex == rh->tex && lh->vBuffer < rh->vBuffer) {
+    if (lh.tex == rh.tex && lh.vBuffer < rh.vBuffer) {
         return true;
     }
 
@@ -84,8 +84,8 @@ bool QuadTreeMesh::CompareByState(const QuadTreeMesh* lh, const QuadTreeMesh* rh
 
 //-----------------------------------------------------------------------------
 
-bool QuadTreeMesh::CompareByTexture(const QuadTreeMesh* lh, const QuadTreeMesh* rh) {
-    return (lh->tex < rh->tex);
+bool QuadTreeMesh::CompareByTexture(const RenderMesh& lh, const RenderMesh& rh) {
+    return (lh.tex < rh.tex);
 }
 
 //-----------------------------------------------------------------------------
@@ -95,219 +95,7 @@ bool QuadTreeMesh::operator==(const QuadTreeMesh& rh) {
 }
 
 //-----------------------------------------------------------------------------
-// VisibleSet class
-//-----------------------------------------------------------------------------
-
-void VisibleSet::RemoveAll() {
-    visible_set.clear();
-}
-
-//-----------------------------------------------------------------------------
-
-void VisibleSet::Render(IDirect3DDevice9* device,
-                        unsigned int vertex_size) {
-
-    IDirect3DVertexBuffer9* last_buffer = 0;
-
-    const auto& visible_set_const = visible_set;
-    for (const auto mesh : visible_set_const) {
-        // Set buffer if it has changed
-        if (last_buffer != mesh->vBuffer) {
-            device->SetIndices(mesh->iBuffer);
-            device->SetStreamSource(0, mesh->vBuffer, 0, vertex_size);
-            last_buffer = mesh->vBuffer;
-        }
-
-        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mesh->verts, 0, mesh->faces);
-    }
-}
-
-void VisibleSet::Render(IDirect3DDevice9* device,
-                        ID3DXEffect* effect,
-                        ID3DXEffect* effectPool,
-                        const D3DXHANDLE* texture_handle,
-                        const D3DXHANDLE* has_alpha_handle,
-                        const D3DXHANDLE* animate_uv_handle,
-                        const D3DXHANDLE* world_matrix_handle,
-                        unsigned int vertex_size) {
-
-    IDirect3DTexture9* last_texture = nullptr;
-    IDirect3DVertexBuffer9* last_buffer = nullptr;
-    bool last_animateUV = false;
-
-    // Reset UV animation variables
-    if (animate_uv_handle) {
-        effectPool->SetBool(*animate_uv_handle, false);
-        effect->CommitChanges();
-    }
-
-    const auto& visible_set_const = visible_set;
-    for (const auto mesh : visible_set_const) {
-        // Set texture and texture related variables if it has changed
-        if (texture_handle && last_texture != mesh->tex) {
-            effectPool->SetTexture(*texture_handle, mesh->tex);
-
-            if (has_alpha_handle) {
-                // Depth-only rendering, control if texture alpha channel reads are required in shader
-                effectPool->SetBool(*has_alpha_handle, mesh->hasAlpha);
-            } else {
-                // World rendering, alpha test state is compatible with transparency supersampling, while clip() isn't
-                device->SetRenderState(D3DRS_ALPHATESTENABLE, mesh->hasAlpha);
-            }
-            last_texture = mesh->tex;
-        }
-
-        // Set UV animation variables. Different objects may use the same texture, but animate differently
-        if (animate_uv_handle && mesh->animateUV != last_animateUV) {
-            effectPool->SetBool(*animate_uv_handle, mesh->animateUV);
-            last_animateUV = mesh->animateUV;
-        }
-
-        // Set buffer if it has changed
-        if (last_buffer != mesh->vBuffer) {
-            device->SetIndices(mesh->iBuffer);
-            device->SetStreamSource(0, mesh->vBuffer, 0, vertex_size);
-            last_buffer = mesh->vBuffer;
-        }
-
-        // Set transform matrix
-        effectPool->SetMatrix(*world_matrix_handle, &mesh->transform);
-
-        effect->CommitChanges();
-        device->DrawIndexedPrimitive(D3DPT_TRIANGLELIST, 0, 0, mesh->verts, 0, mesh->faces);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void VisibleSet::SortByState() {
-    if (visible_set.size() > 0) {
-        std::sort(visible_set.begin(), visible_set.end(), QuadTreeMesh::CompareByState);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void VisibleSet::SortByTexture() {
-    if (visible_set.size() > 0) {
-        std::sort(visible_set.begin(), visible_set.end(), QuadTreeMesh::CompareByTexture);
-    }
-}
-
-//-----------------------------------------------------------------------------
 // QuadTreeNode class
-//-----------------------------------------------------------------------------
-
-void QuadTreeNode::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& viewsphere, VisibleSet& visible_set, bool inside) {
-    // Check if this node is fully outside the frustum.
-    // If inside = true then that means it has already been determined that this entire branch is visible
-    if (inside == false) {
-        ViewFrustum::Containment result = frustum.ContainsSphere(sphere);
-
-        if (result == ViewFrustum::OUTSIDE) {
-            return;
-        }
-        if (result == ViewFrustum::INSIDE) {
-            inside = true;
-        }
-    }
-
-    // If this node has children, check them
-    if (children[0]) {
-        children[0]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-    }
-    if (children[1]) {
-        children[1]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-    }
-    if (children[2]) {
-        children[2]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-    }
-    if (children[3]) {
-        children[3]->GetVisibleMeshes(frustum, viewsphere, visible_set, inside);
-    }
-    if (meshes.empty()) {
-        return;
-    }
-
-    // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
-    D3DXVECTOR3 eyepos(viewsphere.x, viewsphere.y, viewsphere.z);
-
-    for (const QuadTreeMesh* mesh : meshes) {
-        if (!mesh->enabled) {
-            continue;
-        }
-
-        if (inside == false) {
-            ViewFrustum::Containment res = frustum.ContainsSphere(mesh->sphere);
-            if (res == ViewFrustum::OUTSIDE) {
-                continue;
-            }
-            if (res == ViewFrustum::INTERSECTS) {
-                // The sphere intersects one of the edges of the screen, so try the box test
-                if (frustum.ContainsBox(mesh->box) == ViewFrustum::OUTSIDE) {
-                    continue;
-                }
-            }
-        }
-
-        // Avoid camera rotation dependent clipping by using a spherical far clip plane
-        // Test mesh against view sphere (eyepos.xyz, radius)
-        D3DXVECTOR3 d = mesh->sphere.center - eyepos;
-        float range_squared = d.x*d.x + d.y*d.y + d.z*d.z;
-        float view_limit = viewsphere.w + mesh->sphere.radius;
-
-        if (range_squared <= view_limit*view_limit) {
-            visible_set.visible_set.push_back(mesh);
-        }
-    }
-}
-
-void QuadTreeNode::GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set, bool inside) {
-    // Check if this node is fully outside the frustum.
-    // If inside = true then that means it has already been determined that this entire branch is visible
-    if (inside == false) {
-        ViewFrustum::Containment result = frustum.ContainsSphere(sphere);
-
-        if (result == ViewFrustum::OUTSIDE) {
-            return;
-        }
-        if (result == ViewFrustum::INSIDE) {
-            inside = true;
-        }
-    }
-
-    // If this node has children, check them
-    if (children[0]) {
-        children[0]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-    }
-    if (children[1]) {
-        children[1]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-    }
-    if (children[2]) {
-        children[2]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-    }
-    if (children[3]) {
-        children[3]->GetVisibleMeshesCoarse(frustum, visible_set, inside);
-    }
-    if (meshes.empty()) {
-        return;
-    }
-
-    // If this node has any meshes, check each of their visibility and add them to the list if they're not completely outside the frustum
-    for (const QuadTreeMesh* mesh : meshes) {
-        if (!mesh->enabled) {
-            continue;
-        }
-
-        // Only test bounding sphere
-        if (inside == false && frustum.ContainsSphere(mesh->sphere) == ViewFrustum::OUTSIDE) {
-            continue;
-        }
-
-        visible_set.visible_set.push_back(mesh);
-    }
-}
-
 //-----------------------------------------------------------------------------
 
 void QuadTreeNode::AddMesh(QuadTreeMesh* new_mesh, int depth) {
@@ -539,11 +327,11 @@ QuadTreeMesh* QuadTree::AddMesh(
     const D3DXMATRIX& transform,
     bool hasAlpha,
     bool animateUV,
-    IDirect3DTexture9* tex,
+    ptr32<IDirect3DTexture9> tex,
     int verts,
-    IDirect3DVertexBuffer9* vBuffer,
+    ptr32<IDirect3DVertexBuffer9> vBuffer,
     int faces,
-    IDirect3DIndexBuffer9* iBuffer
+    ptr32<IDirect3DIndexBuffer9> iBuffer
 ) {
     QuadTreeMesh* new_mesh = CreateMesh(
                                  sphere,
@@ -580,16 +368,6 @@ void QuadTree::Clear() {
 
 //-----------------------------------------------------------------------------
 
-void QuadTree::GetVisibleMeshes(const ViewFrustum& frustum, const D3DXVECTOR4& sphere, VisibleSet& visible_set) {
-    m_root_node->GetVisibleMeshes(frustum, sphere, visible_set);
-}
-
-void QuadTree::GetVisibleMeshesCoarse(const ViewFrustum& frustum, VisibleSet& visible_set) {
-    m_root_node->GetVisibleMeshesCoarse(frustum, visible_set);
-}
-
-//-----------------------------------------------------------------------------
-
 void QuadTree::SetBox(float size, const D3DXVECTOR2& center) {
     m_root_node->box_size = size;
     m_root_node->box_center = center;
@@ -619,11 +397,11 @@ QuadTreeMesh* QuadTree::CreateMesh(
     const D3DXMATRIX& transform,
     bool hasAlpha,
     bool animateUV,
-    IDirect3DTexture9* tex,
+    ptr32<IDirect3DTexture9> tex,
     int verts,
-    IDirect3DVertexBuffer9* vBuffer,
+    ptr32<IDirect3DVertexBuffer9> vBuffer,
     int faces,
-    IDirect3DIndexBuffer9* iBuffer
+    ptr32<IDirect3DIndexBuffer9> iBuffer
 ) {
 
     QuadTreeMesh* new_obj = (QuadTreeMesh*)m_mesh_pool.Alloc();
