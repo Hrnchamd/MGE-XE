@@ -3322,7 +3322,7 @@ namespace MGEgui {
             // cbUseSharedMemory
             // 
             this.cbUseSharedMemory.AutoSize = true;
-            this.cbUseSharedMemory.Location = new System.Drawing.Point(18, 166);
+            this.cbUseSharedMemory.Location = new System.Drawing.Point(19, 166);
             this.cbUseSharedMemory.Name = "cbUseSharedMemory";
             this.cbUseSharedMemory.Size = new System.Drawing.Size(197, 29);
             this.cbUseSharedMemory.TabIndex = 25;
