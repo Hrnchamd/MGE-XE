@@ -25,7 +25,6 @@ struct LandMesh {
 
 #pragma pack(push, 4)
 struct DistantSubset {
-    DWORD parentStaticIndex;
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
     ptr32<IDirect3DTexture9> tex;
@@ -41,7 +40,7 @@ struct DistantStatic {
     BoundingSphere sphere;
     D3DXVECTOR3 aabbMin, aabbMax;       // corners of the axis-aligned bounding box
     DWORD firstSubsetIndex;
-    size_t numSubsets;
+    DWORD numSubsets;
 };
 
 struct UsedDistantStatic {

@@ -66,7 +66,7 @@ namespace IPC {
 
 		// iterator extensions
 		bool set_index(std::size_t i);
-		bool at_end() const;
+		bool at_end();
 
 		// container methods
 		T& operator[](std::size_t i);

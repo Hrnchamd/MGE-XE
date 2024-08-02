@@ -8,6 +8,7 @@
 #include "mge/quadtree.h"
 
 #include <memory>
+#include <string>
 #include <unordered_map>
 #include <vector>
 
@@ -56,16 +57,16 @@ public:
         DWORD unused;
 
         // Load statics references
-        const size_t UsedDistantStaticRecordSize = 34;
-        const size_t UsedDistantStaticChunkCount = 250000;
+        const DWORD UsedDistantStaticRecordSize = 34;
+        const DWORD UsedDistantStaticChunkCount = 250000;
         size_t worldvis_memory_use = 0;
         auto UsedDistantStaticData = std::make_unique<char[]>(UsedDistantStaticChunkCount * UsedDistantStaticRecordSize);
 
         mapWorldSpaces.clear();
-        for (size_t nWorldSpace = 0; true; ++nWorldSpace) {
+        for (DWORD nWorldSpace = 0; true; ++nWorldSpace) {
             std::vector<UsedDistantStatic> worldSpaceStatics;
             WorldSpace* currentWorldSpace;
-            size_t UsedDistantStaticCount;
+            DWORD UsedDistantStaticCount;
 
             ReadFile(h, &UsedDistantStaticCount, 4, &unused, 0);
             if (nWorldSpace != 0 && UsedDistantStaticCount == 0) {
@@ -89,13 +90,13 @@ public:
             worldSpaceStatics.reserve(UsedDistantStaticCount);
 
             while (UsedDistantStaticCount > 0) {
-                size_t staticsToRead = std::min(UsedDistantStaticChunkCount, UsedDistantStaticCount);
+                DWORD staticsToRead = std::min(UsedDistantStaticChunkCount, UsedDistantStaticCount);
                 UsedDistantStaticCount -= staticsToRead;
 
                 ReadFile(h, UsedDistantStaticData.get(), static_cast<DWORD>(staticsToRead * UsedDistantStaticRecordSize), &unused, 0);
                 membuf_reader udsReader(UsedDistantStaticData.get());
 
-                for (size_t i = 0; i < staticsToRead; ++i) {
+                for (DWORD i = 0; i < staticsToRead; ++i) {
                     UsedDistantStatic NewUsedStatic;
                     float yaw, pitch, roll, scale;
 

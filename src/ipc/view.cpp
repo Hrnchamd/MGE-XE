@@ -7,6 +7,8 @@
 #endif
 #include "support/log.h"
 
+#include <cassert>
+
 namespace IPC {
 	template<typename T>
 	VecView<T>::VecView() :
@@ -84,6 +86,7 @@ namespace IPC {
 		// all our old stuff first
 		if (m_buffer != nullptr) {
 			UnmapViewOfFile(m_buffer);
+			VirtualFree(m_buffer, m_windowBytes, MEM_RELEASE);
 			m_buffer = nullptr;
 		}
 
@@ -91,6 +94,7 @@ namespace IPC {
 			InterlockedDecrement(&m_shared->users);
 		}
 
+		m_id = other.m_id;
 		m_shared = other.m_shared;
 		m_index = other.m_index;
 		m_subIndex = other.m_subIndex;
@@ -101,6 +105,9 @@ namespace IPC {
 		m_windowSize = other.m_windowSize;
 		m_maxSize = other.m_maxSize;
 		m_reservedBytes = other.m_reservedBytes;
+		m_headerBytes = other.m_headerBytes;
+		// only one view should be writing at a time
+		m_writing = false;
 
 		InterlockedIncrement(&m_shared->users);
 
@@ -111,16 +118,18 @@ namespace IPC {
 
 	template<typename T>
 	bool VecView<T>::init() {
+		assert(m_id != InvalidVector);
+
 		// the compiler complains about converting a 32-bit value to a HANDLE on the 64-bit side, but this code is only used on the 32-bit side
 #ifndef MGE64_HOST
-		m_buffer = static_cast<T*>(VirtualAlloc2(GetCurrentProcess(), NULL, m_windowBytes, MEM_RESERVE | MEM_RESERVE_PLACEHOLDER, PAGE_READWRITE, NULL, 0));
+		m_buffer = static_cast<T*>(VirtualAlloc2(NULL, NULL, m_windowBytes, MEM_RESERVE | MEM_RESERVE_PLACEHOLDER, PAGE_NOACCESS, NULL, 0));
 		if (m_buffer == nullptr) {
-			LOG::winerror("View of vector %llu failed to reserve placeholder memory", m_id);
+			LOG::winerror("View of vector %lu failed to reserve %zu bytes of placeholder memory", m_id, m_windowBytes);
 			return false;
 		}
 
-		if (MapViewOfFile3(m_shared->sharedMem32, GetCurrentProcess(), m_buffer, m_currentWindow * m_windowBytes + m_headerBytes, m_windowBytes, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, NULL, 0) == NULL) {
-			LOG::winerror("View of vector %llu failed to map shared memory", m_id);
+		if (MapViewOfFile3(m_shared->sharedMem32, NULL, m_buffer, m_currentWindow * m_windowBytes + m_headerBytes, m_windowBytes, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, NULL, 0) == NULL) {
+			LOG::winerror("View of vector %lu failed to map shared memory", m_id);
 			VirtualFree(m_buffer, 0, MEM_RELEASE);
 			m_buffer = nullptr;
 			return false;
@@ -128,7 +137,7 @@ namespace IPC {
 
 		if (m_shared->committedBytes < m_windowBytes) {
 			if (VirtualAlloc(m_buffer, m_windowBytes, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-				LOG::winerror("View of vector %llu failed to commit from shared memory", m_id);
+				LOG::winerror("View of vector %lu failed to commit from shared memory", m_id);
 				UnmapViewOfFile(m_buffer);
 				m_buffer = nullptr;
 				return false;
@@ -148,32 +157,36 @@ namespace IPC {
 		if (i == m_currentWindow && m_shared->committedBytes > 0)
 			return true;
 
-		if (m_buffer != nullptr && !UnmapViewOfFileEx(m_buffer, MEM_PRESERVE_PLACEHOLDER)) {
-			LOG::winerror("View of vector %llu failed to unmap shared memory back to placeholder", m_id);
+		if (!UnmapViewOfFileEx(m_buffer, MEM_PRESERVE_PLACEHOLDER)) {
+			LOG::winerror("View of vector %lu failed to unmap shared memory back to placeholder", m_id);
 			return false;
 		}
 
 		auto offset = i * m_windowBytes + m_headerBytes;
-		m_buffer = static_cast<T*>(MapViewOfFile3(m_shared->sharedMem32, GetCurrentProcess(), m_buffer, static_cast<ULONG64>(offset), m_windowBytes, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, NULL, 0));
-		if (m_buffer == nullptr) {
-			LOG::winerror("View of vector %llu failed to remap shared memory at offset %zu", m_id, offset);
-			m_buffer = nullptr;
-			return false;
-		}
-
 		auto newEnd = offset + m_windowBytes;
 		// commit everything between the current end and the new end
 		while (m_shared->committedBytes < newEnd) {
+			auto nextOffset = static_cast<ULONG64>(m_shared->committedBytes + m_headerBytes);
+			if (MapViewOfFile3(m_shared->sharedMem32, NULL, m_buffer, nextOffset, m_windowBytes, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, NULL, 0) == NULL) {
+				LOG::winerror("View of vector %lu failed to map next window at offset %llu for commit (%zu bytes reserved, index %zu)", m_id, nextOffset, m_reservedBytes, i);
+				m_buffer = nullptr;
+				return false;
+			}
+
 			if (VirtualAlloc(m_buffer, m_windowBytes, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-				LOG::winerror("View of vector %llu failed to commit %zu bytes of shared memory at address %p", m_id, m_windowBytes, m_buffer);
+				LOG::winerror("View of vector %lu failed to commit %zu bytes of shared memory at address %p", m_id, m_windowBytes, m_buffer);
 				UnmapViewOfFile(m_buffer);
 				m_buffer = nullptr;
 				return false;
 			}
 			m_shared->committedBytes += m_windowBytes;
-			if (m_shared->committedBytes < newEnd) {
-				UnmapViewOfFileEx(m_buffer, MEM_PRESERVE_PLACEHOLDER);
-			}
+			UnmapViewOfFileEx(m_buffer, MEM_PRESERVE_PLACEHOLDER);
+		}
+
+		if (MapViewOfFile3(m_shared->sharedMem32, NULL, m_buffer, static_cast<ULONG64>(offset), m_windowBytes, MEM_REPLACE_PLACEHOLDER, PAGE_READWRITE, NULL, 0) == NULL) {
+			LOG::winerror("View of vector %lu failed to remap %zu bytes of shared memory at offset %zu", m_id, m_windowBytes, offset);
+			m_buffer = nullptr;
+			return false;
 		}
 
 		m_currentWindow = i;
@@ -196,6 +209,7 @@ namespace IPC {
 
 		if (m_buffer != nullptr) {
 			UnmapViewOfFile(m_buffer);
+			VirtualFree(m_buffer, 0, MEM_RELEASE);
 			m_buffer = nullptr;
 		}
 	}
@@ -275,7 +289,9 @@ namespace IPC {
 		// slight hack to point the view past the end
 		it.m_index = static_cast<std::size_t>(m_shared->size);
 		it.m_subIndex = it.m_index % m_windowSize;
-		it.slide_window(it.m_index / m_windowSize);
+		it.m_currentWindow = it.m_index / m_windowSize;
+		it.m_currentWindowIndex = it.m_index - it.m_subIndex;
+		it.m_nextWindowIndex = it.m_currentWindowIndex + m_windowSize;
 		return it;
 	}
 
@@ -304,7 +320,10 @@ namespace IPC {
 	}
 
 	template<typename T>
-	bool VecView<T>::at_end() const {
+	bool VecView<T>::at_end() {
+		if (m_index >= m_shared->size) {
+			wait_read();
+		}
 		return m_index >= m_shared->size;
 	}
 

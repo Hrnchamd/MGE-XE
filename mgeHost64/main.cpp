@@ -19,14 +19,27 @@ int main(int argc, char** argv) {
 		return 1;
 	}
 
+#ifdef _DEBUG
+	while (!IsDebuggerPresent()) {
+		Sleep(100);
+	}
+#endif
+
 	Configuration.LoadSettings();
+	if (!IPC::initImports()) {
+		LOG::logline("!! Required memory mapping APIs are not available");
+		LOG::flush();
+		return 4;
+	}
 
 	IPC::Server server(sharedMem, clientProcess, rpcStartEvent, rpcCompleteEvent);
 	if (!server.init()) {
+		LOG::logline("!! Server initialization failed");
 		LOG::flush();
 		return 2;
 	}
 	if (!server.listen()) {
+		LOG::logline("!! Server listen failed");
 		LOG::flush();
 		return 3;
 	}

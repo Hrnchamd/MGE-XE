@@ -1,4 +1,5 @@
 #include "ipc/iter.h"
+#include "support/log.h"
 
 #include <algorithm>
 
@@ -46,7 +47,7 @@ IPC::WakeReason StlVector::await() {
 	return IPC::WakeReason::Complete;
 }
 
-bool StlVector::at_end() const {
+bool StlVector::at_end() {
 	return m_it == m_end;
 }
 
@@ -144,7 +145,7 @@ IPC::WakeReason IpcClientVector::await() {
 	return m_view.await_update();
 }
 
-bool IpcClientVector::at_end() const {
+bool IpcClientVector::at_end() {
 	return m_view.at_end();
 }
 
@@ -173,20 +174,18 @@ IPC::VecView<RenderMesh> IpcClientVector::end() {
 }
 
 
-IpcServerVector::IpcServerVector(IPC::Vec<RenderMesh>& view) : m_vec(view), m_it(m_vec.begin()), m_end(m_vec.end()) {
+IpcServerVector::IpcServerVector(IPC::Vec<RenderMesh>& view) : m_vec(view), m_it(m_vec.begin()) {
 	restart();
 }
 
 IpcServerVector& IpcServerVector::operator=(const IpcServerVector& other) {
 	m_vec = other.m_vec;
 	m_it = m_vec.begin();
-	m_end = m_vec.end();
 	return *this;
 }
 
 void IpcServerVector::restart() {
 	m_it = m_vec.begin();
-	m_end = m_vec.end();
 }
 
 const RenderMesh& IpcServerVector::first() {
@@ -227,8 +226,8 @@ IPC::WakeReason IpcServerVector::await() {
 	return m_vec.await_update();
 }
 
-bool IpcServerVector::at_end() const {
-	return m_it == m_end;
+bool IpcServerVector::at_end() {
+	return m_it.at_end();
 }
 
 std::size_t IpcServerVector::size() const {

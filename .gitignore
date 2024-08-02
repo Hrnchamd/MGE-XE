@@ -23,3 +23,5 @@ MGEgui/.vs/
 /mgeXE.log
 /x64/Debug
 /mgeHost64/mgeHost64.vcxproj.user
+/mgeHost64/x64/Release
+/x64/Release

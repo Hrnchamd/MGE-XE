@@ -7,6 +7,8 @@
 #endif
 #include "support/log.h"
 
+#include <cassert>
+
 namespace IPC {
 	// Vec::iterator
 	template<typename T>
@@ -15,7 +17,7 @@ namespace IPC {
 		m_element(buffer),
 		m_windowSize(windowSize),
 		m_prevWindow(i - i % windowSize),
-		m_nextWindow((i + windowSize - 1) / windowSize),
+		m_nextWindow(m_prevWindow + windowSize),
 		m_windowPadding(windowBytes - sizeof(T) * windowSize),
 		m_index(i)
 	{ }
@@ -99,11 +101,17 @@ namespace IPC {
 
 	template<typename T>
 	bool Vec<T>::iterator::operator==(const Vec<T>::iterator& other) const {
+		if (other.m_index == m_index) {
+			assert(m_element == other.m_element);
+		}
 		return m_element == other.m_element;
 	}
 
 	template<typename T>
 	bool Vec<T>::iterator::operator!=(const Vec<T>::iterator& other) const {
+		if (other.m_index != m_index) {
+			assert(m_element != other.m_element);
+		}
 		return m_element != other.m_element;
 	}
 
@@ -115,6 +123,9 @@ namespace IPC {
 	template<typename T>
 	typename Vec<T>::iterator Vec<T>::iterator::operator+(Vec<T>::iterator::difference_type count) const {
 		std::size_t newIndex = m_index + count;
+		if (newIndex >= m_source->size()) {
+			m_source->wait_read();
+		}
 		return Vec<T>::iterator(m_source, &(*m_source)[newIndex], newIndex, m_windowSize, m_windowSize * sizeof(T) + m_windowPadding);
 	}
 
@@ -147,25 +158,24 @@ namespace IPC {
 		SYSTEM_INFO sysInfo = {};
 		GetSystemInfo(&sysInfo);
 		auto allocationGranularity = static_cast<std::size_t>(sysInfo.dwAllocationGranularity);
-		auto bytesOver = m_reservedBytes % allocationGranularity;
-		if (bytesOver > 0) {
-			m_reservedBytes += allocationGranularity - bytesOver;
-			m_maxSize = m_reservedBytes / m_elementBytes;
-		}
 
-		bytesOver = m_windowBytes % allocationGranularity;
+		auto bytesOver = m_windowBytes % allocationGranularity;
 		if (bytesOver > 0) {
 			m_windowBytes += allocationGranularity - bytesOver;
 			m_windowSize = m_windowBytes / m_elementBytes;
 		}
 
+		// round the maximum size up to the next full window
+		auto elementsOver = m_maxSize % m_windowSize;
+		if (elementsOver > 0) {
+			m_maxSize += m_windowSize - elementsOver;
+		}
+		m_reservedBytes = m_maxSize * m_windowBytes;
+
 		bytesOver = m_headerBytes % allocationGranularity;
 		if (bytesOver > 0) {
 			m_headerBytes += allocationGranularity - bytesOver;
 		}
-
-		m_shared->committedBytes = 0;
-		m_shared->size = 0;
 	}
 
 	template<typename T>
@@ -218,20 +228,21 @@ namespace IPC {
 		HANDLE updateEvent32 = INVALID_HANDLE_VALUE;
 		HANDLE completeEvent32 = INVALID_HANDLE_VALUE;
 
-		HANDLE sharedMem = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_RESERVE, static_cast<DWORD>(m_reservedBytes >> 32), static_cast<DWORD>(m_reservedBytes), NULL);
+		auto totalBytes = m_reservedBytes + m_headerBytes;
+		HANDLE sharedMem = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_RESERVE, static_cast<DWORD>(totalBytes >> 32), static_cast<DWORD>(totalBytes), NULL);
 		if (sharedMem == NULL) {
-			LOG::winerror("Failed to reserve %zu bytes of shared memory for vector %llu", m_reservedBytes, m_id);
+			LOG::winerror("Failed to reserve %zu bytes of shared memory for vector %lu", m_reservedBytes, m_id);
 			goto failedOnReserve;
 		}
 
 		m_shared = static_cast<VecShare*>(MapViewOfFile(sharedMem, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(VecShare)));
 		if (m_shared == nullptr) {
-			LOG::winerror("Failed to map shared memory for vector %llu header", m_id);
+			LOG::winerror("Failed to map shared memory for vector %lu header", m_id);
 			goto failedOnInit;
 		}
 
 		if (VirtualAlloc(m_shared, sizeof(VecShare), MEM_COMMIT, PAGE_READWRITE) == NULL) {
-			LOG::winerror("Failed to commit memory for vector %llu header", m_id);
+			LOG::winerror("Failed to commit memory for vector %lu header", m_id);
 			goto failedOnCommit;
 		}
 
@@ -246,45 +257,45 @@ namespace IPC {
 
 		m_buffer = static_cast<char*>(MapViewOfFile(sharedMem, FILE_MAP_ALL_ACCESS, 0, static_cast<DWORD>(m_headerBytes), m_reservedBytes));
 		if (m_buffer == nullptr) {
-			LOG::winerror("Failed to map shared memory for vector %llu", m_id);
+			LOG::winerror("Failed to map shared memory for vector %lu", m_id);
 			goto failedOnBufMap;
 		}
 
 		m_shared->updateEvent64 = CreateEventA(NULL, FALSE, FALSE, NULL);
 		if (m_shared->updateEvent64 == NULL) {
-			LOG::winerror("Failed to create update event for vector %llu", m_id);
+			LOG::winerror("Failed to create update event for vector %lu", m_id);
 			goto failedOnUpdateEvent;
 		}
 
 		m_shared->completeEvent64 = CreateEventA(NULL, FALSE, FALSE, NULL);
 		if (m_shared->completeEvent64 == NULL) {
-			LOG::winerror("Failed to create complete event for vector %llu", m_id);
+			LOG::winerror("Failed to create complete event for vector %lu", m_id);
 			goto failedOnCompleteEvent;
 		}
 
 		// to keep things simple, the server will own all resources allocated for each vec, so we'll duplicate handles and map the header for
 		// the client process
 		if (!DuplicateHandle(GetCurrentProcess(), sharedMem, clientProcess, &sharedMem32, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-			LOG::winerror("Failed to clone shared memory handle to client process for vector %llu", m_id);
+			LOG::winerror("Failed to clone shared memory handle to client process for vector %lu", m_id);
 			goto failedOnSharedMemClone;
 		}
 
 		if (!DuplicateHandle(GetCurrentProcess(), m_shared->updateEvent64, clientProcess, &updateEvent32, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-			LOG::winerror("Failed to clone update event handle to client process for vector %llu", m_id);
+			LOG::winerror("Failed to clone update event handle to client process for vector %lu", m_id);
 			goto failedOnUpdateClone;
 		}
 
 		if (!DuplicateHandle(GetCurrentProcess(), m_shared->completeEvent64, clientProcess, &completeEvent32, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-			LOG::winerror("Failed to clone complete event handle to client process for vector %llu", m_id);
+			LOG::winerror("Failed to clone complete event handle to client process for vector %lu", m_id);
 			goto failedOnCompleteClone;
 		}
 
 		// truncation warnings are unnecessary because these handles and pointers have been allocated for the target process and only have 32 significant bits
 #pragma warning(push)
 #pragma warning(disable: 4302 4311)
-		m_shared->header32 = reinterpret_cast<ptr32<VecBase::VecShare>>(MapViewOfFile2(sharedMem, clientProcess, 0, NULL, sizeof(VecShare), FILE_MAP_ALL_ACCESS, PAGE_READWRITE));
+		m_shared->header32 = reinterpret_cast<ptr32<VecBase::VecShare>>(MapViewOfFileNuma2(sharedMem, clientProcess, 0, NULL, sizeof(VecShare), 0, PAGE_READWRITE, NUMA_NO_PREFERRED_NODE));
 		if (m_shared->header32 == 0) {
-			LOG::winerror("Failed to map vector %llu header into client process", m_id);
+			LOG::winerror("Failed to map vector %lu header into client process", m_id);
 			goto failedOnClientMap;
 		}
 
@@ -381,7 +392,7 @@ namespace IPC {
 		auto bytesNeeded = numExtraWindows * m_windowBytes;
 		auto currentEnd = m_buffer + m_shared->committedBytes;
 		if (VirtualAlloc(currentEnd, bytesNeeded, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-			LOG::winerror("Failed to commit %zu additional bytes of shared memory for vector %llu", bytesNeeded, m_id);
+			LOG::winerror("Failed to commit %zu additional bytes of shared memory for vector %lu", bytesNeeded, m_id);
 			return false;
 		}
 		m_shared->committedBytes += bytesNeeded;
@@ -424,13 +435,13 @@ namespace IPC {
 	bool Vec<T>::extend() {
 		// commit the next window
 		if (m_shared->committedBytes + m_windowBytes > m_reservedBytes) {
-			LOG::logline("Vector %llu exceeded maximum reserved size of %zu bytes", m_id, m_reservedBytes);
+			LOG::logline("Vector %llu exceeded maximum reserved size of %zu bytes (%llu elements of %zu max)", m_id, m_reservedBytes, m_shared->size, m_maxSize);
 			return false;
 		}
 
 		auto currentEnd = m_buffer + m_shared->committedBytes;
 		if (VirtualAlloc(currentEnd, m_windowBytes, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-			LOG::winerror("Failed to commit %zu additional bytes of shared memory for vector %llu", m_windowBytes, m_id);
+			LOG::winerror("Failed to commit %zu additional bytes of shared memory for vector %lu", m_windowBytes, m_id);
 			return false;
 		}
 		m_shared->committedBytes += m_windowBytes;
@@ -448,14 +459,16 @@ namespace IPC {
 			if (!extend())
 				return false;
 		} else {
-			offset = static_cast<std::size_t>(m_shared->committedBytes - m_windowBytes);
+			auto windowIndex = oldSize / m_windowSize;
+			offset = static_cast<std::size_t>(windowIndex * m_windowBytes);
 		}
 
 		auto window = reinterpret_cast<T*>(m_buffer + offset);
-		window[oldSize] = value;
+		auto subIndex = oldSize % m_windowSize;
+		window[subIndex] = value;
 		m_shared->size = newSize;
 
-		if (m_writing && newSize % m_windowSize == 0) {
+		if (m_writing && subIndex == 0) {
 			return update();
 		}
 
@@ -473,14 +486,16 @@ namespace IPC {
 			if (!extend())
 				return false;
 		} else {
-			offset = static_cast<std::size_t>(m_shared->committedBytes - m_windowBytes);
+			auto windowIndex = oldSize / m_windowSize;
+			offset = static_cast<std::size_t>(windowIndex * m_windowBytes);
 		}
 
 		auto window = reinterpret_cast<T*>(m_buffer + offset);
-		window[oldSize] = value;
+		auto subIndex = oldSize % m_windowSize;
+		window[subIndex] = value;
 		m_shared->size = newSize;
 
-		if (m_writing && newSize % m_windowSize == 0) {
+		if (m_writing && subIndex == 0) {
 			return update();
 		}
 

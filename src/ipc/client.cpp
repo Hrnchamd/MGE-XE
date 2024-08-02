@@ -117,7 +117,7 @@ namespace IPC {
 		// don't care about thread handle
 		CloseHandle(processInfo.hThread);
 
-		LOG::logline("64-bit host process started (PID %ud)", processInfo.dwProcessId);
+		LOG::logline("64-bit host process started (PID %u)", processInfo.dwProcessId);
 
 		// wait for the server to finish bootstrapping
 		if (waitForCompletion() != WakeReason::Complete) {

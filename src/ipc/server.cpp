@@ -41,7 +41,7 @@ namespace IPC {
 			m_ipcParameters = nullptr;
 		}
 
-		m_ipcParameters = static_cast<Parameters*>(MapViewOfFile(m_sharedMem, PAGE_READWRITE, 0, 0, sizeof(Parameters)));
+		m_ipcParameters = static_cast<Parameters*>(MapViewOfFile(m_sharedMem, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(Parameters)));
 		if (m_ipcParameters == nullptr) {
 			LOG::winerror("Failed to map IPC parameters shared memory");
 			return false;
@@ -96,6 +96,9 @@ namespace IPC {
 				break;
 			case Command::GetVisibleMeshes:
 				getVisibleMeshes();
+				break;
+			case Command::SortVisibleSet:
+				sortVisibleSet();
 				break;
 			default:
 				LOG::logline("Received unknown command value %lu", m_ipcParameters->command);

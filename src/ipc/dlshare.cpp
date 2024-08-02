@@ -23,7 +23,7 @@ void DistantLandShare::loadVisGroupsServer(HANDLE h) {
     SetFilePointer(h, 4, 0, FILE_CURRENT);
 
     // Load dynamic vis groups
-    size_t dynamicVisGroupCount;
+    DWORD dynamicVisGroupCount;
     ReadFile(h, &dynamicVisGroupCount, 4, &unused, 0);
     dynamicVisGroupsServer.clear();
 
@@ -42,7 +42,7 @@ HANDLE DistantLandShare::beginReadStatics() {
     DWORD unused;
     HANDLE h;
 
-    h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    h = CreateFile("Data Files\\distantland\\version", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/version");
         LOG::flush();
@@ -57,7 +57,7 @@ HANDLE DistantLandShare::beginReadStatics() {
     }
     CloseHandle(h);
 
-    h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    h = CreateFile("Data Files\\distantland\\statics\\usage.data", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
     if (h == INVALID_HANDLE_VALUE) {
         LOG::logline("!! Required distant statics files are missing, regeneration required - distantland/statics/usage.data");
         LOG::flush();
@@ -88,8 +88,9 @@ bool DistantLandShare::initDistantStaticsServer(IPC::Vec<DistantStatic>& distant
 }
 
 bool DistantLandShare::initLandscapeServer(IPC::Vec<IPC::LandscapeBuffers>& landscapeBuffers, ptr32<IDirect3DTexture9> texWorldColour) {
-    HANDLE file = CreateFile("Data Files\\distantland\\world", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    HANDLE file = CreateFile("Data Files\\distantland\\world", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
     if (file == INVALID_HANDLE_VALUE) {
+        LOG::winerror("Server failed to open landscape data");
         return false;
     }
 
@@ -127,12 +128,12 @@ bool DistantLandShare::initLandscapeServer(IPC::Vec<IPC::LandscapeBuffers>& land
             SetFilePointer(file, bufferSize, NULL, FILE_CURRENT);
 
             auto& buffers = *it;
-            ++it;
             if (it.at_end()) {
-                LOG::logline("Client landscape buffers ended while the server still has more meshes");
+                LOG::logline("Client landscape buffers ended while the server still has more meshes (%zu buffers found, expected %lu)", landscapeBuffers.size(), mesh_count);
                 landscapeBuffers.end_read();
                 return false;
             }
+            ++it;
 
             i.vbuffer = buffers.vb;
             i.ibuffer = buffers.ib;

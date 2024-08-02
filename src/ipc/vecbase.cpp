@@ -7,8 +7,8 @@ namespace IPC {
 		m_shared(shared),
 		m_windowSize(windowElements),
 		m_maxSize(maxElements),
-		m_windowBytes(0),
-		m_reservedBytes(0),
+		m_windowBytes(windowBytes),
+		m_reservedBytes(reservedBytes),
 		m_headerBytes(headerBytes),
 		m_writing(false)
 	{ }

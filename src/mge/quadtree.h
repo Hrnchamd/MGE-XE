@@ -55,10 +55,10 @@ public:
                 bool parallelRead = false) {
         IDirect3DVertexBuffer9* last_buffer = 0;
 
-        visible_set.restart();
         if (parallelRead) {
             visible_set.start_read();
         }
+        visible_set.restart();
         while (!visible_set.at_end()) {
             const RenderMesh& mesh = visible_set.next();
             // Set buffer if it has changed
@@ -95,10 +95,10 @@ public:
             effect->CommitChanges();
         }
 
-        visible_set.restart();
         if (parallelRead) {
             visible_set.start_read();
         }
+        visible_set.restart();
         while (!visible_set.at_end()) {
             const RenderMesh& mesh = visible_set.next();
 
@@ -194,7 +194,7 @@ public:
         visible_set.push_back(mesh);
     }
 
-    bool atEnd() const {
+    bool atEnd() {
         return visible_set.at_end();
     }
 

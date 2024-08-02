@@ -262,7 +262,7 @@ bool DistantLand::init() {
 
 bool DistantLand::initIpc() {
     if (!IPC::initImports()) {
-        LOG::logline("Disabling shared memory because required memory mapping APIs are not available");
+        LOG::logline("!! Disabling shared memory because required memory mapping APIs are not available");
         Configuration.UseSharedMemory = false;
         // we'll return success so we can continue on the non-IPC path
         return true;
@@ -273,7 +273,7 @@ bool DistantLand::initIpc() {
     }
 
     // allocate shared vectors that will be reused for the duration of the program
-    auto maybeLandVec = ipcClient.allocVecBlocking<RenderMesh>(1, 100000, 1);
+    auto maybeLandVec = ipcClient.allocVecBlocking<RenderMesh>(1, 200000, 1);
     if (!maybeLandVec.has_value()) {
         return false;
     }
@@ -281,7 +281,7 @@ bool DistantLand::initIpc() {
     visLandSharedId = landVec.id();
     visLandShared.SetVector((IpcClientVector(landVec)));
 
-    auto maybeDistantVec = ipcClient.allocVecBlocking<RenderMesh>(1, 100000, 1);
+    auto maybeDistantVec = ipcClient.allocVecBlocking<RenderMesh>(1, 200000, 1);
     if (!maybeDistantVec.has_value()) {
         return false;
     }
@@ -300,13 +300,13 @@ bool DistantLand::initIpc() {
     visGrassSharedId = grassVec.id();
     visGrassShared.SetVector((IpcClientVector(grassVec)));
 
-    auto maybeExtraVec = ipcClient.allocVecBlocking<RenderMesh>(1, 100000, 1);
+    auto maybeExtraVec = ipcClient.allocVecBlocking<RenderMesh>(1, 200000, 1);
     if (!maybeExtraVec.has_value()) {
         return false;
     }
     auto& extraVec = maybeExtraVec.value();
     visExtraSharedId = extraVec.id();
-    visExtraShared.SetVector((IpcClientVector(landVec)));
+    visExtraShared.SetVector((IpcClientVector(extraVec)));
 
     return true;
 }
@@ -843,12 +843,12 @@ bool DistantLand::initDistantStaticsClient() {
         auto staticsId = IPC::InvalidVector;
         auto subsetsId = IPC::InvalidVector;
         {
-            auto maybeStatics = ipcClient.allocVecBlocking<DistantStatic>(1, 100000, 1);
+            auto maybeStatics = ipcClient.allocVecBlocking<DistantStatic>(1, 500000, 1);
             if (!maybeStatics.has_value()) {
                 return false;
             }
 
-            auto maybeSubsets = ipcClient.allocVecBlocking<DistantSubset>(1, 100000, 1);
+            auto maybeSubsets = ipcClient.allocVecBlocking<DistantSubset>(1, 500000, 1);
             if (!maybeSubsets.has_value()) {
                 return false;
             }
@@ -931,7 +931,7 @@ bool DistantLand::loadStaticMeshes(HANDLE h, T& distantStatics, U& distantSubset
 
         i.firstSubsetIndex = distantSubsets.size();
         for (size_t subsetIndex = 0; subsetIndex < i.numSubsets; subsetIndex++) {
-            DistantSubset subset = { distantStaticIndex };
+            DistantSubset subset = {};
 
             // Get bounding sphere
             reader.read(&subset.sphere.radius, 4);
@@ -1079,7 +1079,7 @@ bool DistantLand::loadDistantStaticsClient(T& distantStatics, U& distantSubsets)
 }
 
 bool DistantLand::initLandscapeClient() {
-    HANDLE file = CreateFile("Data Files\\distantland\\world", GENERIC_READ, 0, 0, OPEN_EXISTING, 0, 0);
+    HANDLE file = CreateFile("Data Files\\distantland\\world", GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
     if (file == INVALID_HANDLE_VALUE) {
         return false;
     }
@@ -1094,7 +1094,7 @@ bool DistantLand::initLandscapeClient() {
 
     auto id = IPC::InvalidVector;
     {
-        auto& maybeBuffers = ipcClient.allocVecBlocking<IPC::LandscapeBuffers>(1, 100000, mesh_count);
+        auto& maybeBuffers = ipcClient.allocVecBlocking<IPC::LandscapeBuffers>(1, 200000, mesh_count);
         if (!maybeBuffers.has_value()) {
             return false;
         }

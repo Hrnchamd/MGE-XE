@@ -53,8 +53,16 @@ namespace IPC {
 				return std::nullopt;
 			}
 
-			VecView<T> view(params.id, static_cast<VecBase::VecShare*>(params.header32), static_cast<std::size_t>(params.windowSizeInElements), static_cast<std::size_t>(params.windowBytes),
-				static_cast<std::size_t>(params.maxCapacityInElements), static_cast<std::size_t>(params.reservedBytes), static_cast<std::size_t>(params.headerBytes));
+			assert(sizeof(T) == params.elementSize);
+
+			// recalculate elements per window
+			auto windowElements = params.windowBytes / sizeof(T);
+			VecView<T> view(params.id, static_cast<VecBase::VecShare*>(params.header32), static_cast<std::size_t>(windowElements), static_cast<std::size_t>(params.windowBytes),
+				static_cast<std::size_t>((params.reservedBytes / params.windowBytes) * windowElements), static_cast<std::size_t>(params.reservedBytes), static_cast<std::size_t>(params.headerBytes));
+			if (!view.init()) {
+				return std::nullopt;
+			}
+
 			return view;
 		}
 		template<typename T>

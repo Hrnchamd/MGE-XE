@@ -36,7 +36,7 @@ public:
 
 	IPC::WakeReason await();
 
-	bool at_end() const;
+	bool at_end();
 
 	std::size_t size() const;
 
@@ -82,7 +82,7 @@ public:
 
 	IPC::WakeReason await();
 
-	bool at_end() const;
+	bool at_end();
 
 	std::size_t size() const;
 
@@ -99,7 +99,6 @@ public:
 class IpcServerVector {
 	IPC::Vec<RenderMesh>& m_vec;
 	IPC::Vec<RenderMesh>::iterator m_it;
-	IPC::Vec<RenderMesh>::iterator m_end;
 
 public:
 	IpcServerVector(IPC::Vec<RenderMesh>& view);
@@ -124,7 +123,7 @@ public:
 
 	IPC::WakeReason await();
 
-	bool at_end() const;
+	bool at_end();
 
 	std::size_t size() const;
 

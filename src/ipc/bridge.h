@@ -68,43 +68,13 @@ namespace IPC {
     }
 
     // these APIs aren't supported until Windows 8 or 10, so we load them dynamically
-    typedef PVOID(WINAPI* MapViewOfFile2_t)(
-        HANDLE FileMappingHandle,
-        HANDLE ProcessHandle,
-        ULONG64 Offset,
-        PVOID BaseAddress,
-        SIZE_T ViewSize,
-        ULONG AllocationType,
-        ULONG PageProtection
-    );
+    typedef decltype(&::MapViewOfFileNuma2) MapViewOfFileNuma2_t;
+    typedef decltype(&::MapViewOfFile3) MapViewOfFile3_t;
+    typedef decltype(&::UnmapViewOfFileEx) UnmapViewOfFileEx_t;
+    typedef decltype(&::UnmapViewOfFile2) UnmapViewOfFile2_t;
+    typedef decltype(&::VirtualAlloc2) VirtualAlloc2_t;
 
-    typedef PVOID(WINAPI* MapViewOfFile3_t)(
-        HANDLE FileMapping,
-        HANDLE Process,
-        PVOID BaseAddress,
-        ULONG64 Offset,
-        SIZE_T ViewSize,
-        ULONG AllocationType,
-        ULONG PageProtection,
-        MEM_EXTENDED_PARAMETER* ExtendedParameters,
-        ULONG ParameterCount
-    );
-
-    typedef BOOL(WINAPI* UnmapViewOfFileEx_t)(PVOID BaseAddress, ULONG UnmapFlags);
-
-    typedef BOOL(WINAPI* UnmapViewOfFile2_t)(HANDLE Process, PVOID BaseAddress, ULONG UnmapFlags);
-
-    typedef PVOID(WINAPI* VirtualAlloc2_t)(
-        HANDLE Process,
-        PVOID BaseAddress,
-        SIZE_T Size,
-        ULONG AllocationType,
-        ULONG PageProtection,
-        MEM_EXTENDED_PARAMETER* ExtendedParameters,
-        ULONG ParameterCount
-    );
-
-    extern MapViewOfFile2_t MapViewOfFile2;
+    extern MapViewOfFileNuma2_t MapViewOfFileNuma2;
     extern MapViewOfFile3_t MapViewOfFile3;
     extern UnmapViewOfFileEx_t UnmapViewOfFileEx;
     extern UnmapViewOfFile2_t UnmapViewOfFile2;
