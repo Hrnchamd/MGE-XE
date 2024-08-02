@@ -24,7 +24,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	VecView<T>::VecView(VecId id, VecShare* shared, std::size_t windowElements, std::size_t windowBytes, std::size_t maxElements, std::size_t reservedBytes, std::size_t headerBytes) :
+	VecView<T>::VecView(VecId id, VecShare* shared, std::uint32_t windowElements, std::uint32_t windowBytes, std::uint32_t maxElements, std::uint32_t reservedBytes, std::uint32_t headerBytes) :
 		VecBase(id, shared, windowElements, windowBytes, maxElements, reservedBytes, headerBytes),
 		m_nextWindowIndex(windowElements),
 		m_currentWindow(0),
@@ -151,7 +151,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	bool VecView<T>::slide_window(std::size_t i, bool isAppend) {
+	bool VecView<T>::slide_window(std::uint32_t i, bool isAppend) {
 		// the compiler complains about converting a 32-bit value to a HANDLE on the 64-bit side, but this code is only used on the 32-bit side
 #ifndef MGE64_HOST
 		if (i == m_currentWindow && m_shared->committedBytes > 0)
@@ -287,7 +287,7 @@ namespace IPC {
 	VecView<T> VecView<T>::end() const {
 		VecView it(*this);
 		// slight hack to point the view past the end
-		it.m_index = static_cast<std::size_t>(m_shared->size);
+		it.m_index = m_shared->size;
 		it.m_subIndex = it.m_index % m_windowSize;
 		it.m_currentWindow = it.m_index / m_windowSize;
 		it.m_currentWindowIndex = it.m_index - it.m_subIndex;
@@ -296,7 +296,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	void VecView<T>::truncate(std::size_t numElements) {
+	void VecView<T>::truncate(std::uint32_t numElements) {
 		if (numElements < m_shared->size) {
 			m_shared->size = numElements;
 			if (m_index >= numElements) {
@@ -307,7 +307,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	bool VecView<T>::set_index(std::size_t i) {
+	bool VecView<T>::set_index(std::uint32_t i) {
 		if (m_index == i)
 			return true;
 
@@ -328,7 +328,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	T& VecView<T>::operator[](std::size_t i) {
+	T& VecView<T>::operator[](std::uint32_t i) {
 		auto window = i / m_windowSize;
 		m_subIndex = i % m_windowSize;
 		m_index = i;
@@ -354,11 +354,11 @@ namespace IPC {
 		auto newIndex = m_shared->size;
 		auto window = newIndex / m_windowSize;
 		m_subIndex = newIndex % m_windowSize;
-		if (!slide_window(static_cast<std::size_t>(window), true))
+		if (!slide_window(window, true))
 			return false;
 
 		m_buffer[m_subIndex] = value;
-		m_index = static_cast<std::size_t>(m_shared->size++);
+		m_index = m_shared->size++;
 		return true;
 	}
 
@@ -367,11 +367,11 @@ namespace IPC {
 		auto newIndex = m_shared->size;
 		auto window = newIndex / m_windowSize;
 		m_subIndex = newIndex % m_windowSize;
-		if (!slide_window(static_cast<std::size_t>(window), true))
+		if (!slide_window(window, true))
 			return false;
 
 		m_buffer[m_subIndex] = value;
-		m_index = static_cast<std::size_t>(m_shared->size++);
+		m_index = m_shared->size++;
 		return true;
 	}
 
@@ -380,12 +380,12 @@ namespace IPC {
 		if (m_shared->size == 0)
 			return std::nullopt;
 
-		m_index = static_cast<std::size_t>(--m_shared->size);
+		m_index = --m_shared->size;
 		return (*this)[m_index];
 	}
 
 	template<typename T>
-	bool VecView<T>::reserve(std::size_t count) {
+	bool VecView<T>::reserve(std::uint32_t count) {
 		auto windowsNeeded = (count + m_windowSize - 1) / m_windowSize;
 		auto bytesNeeded = windowsNeeded * m_windowBytes;
 		if (bytesNeeded > m_shared->committedBytes) {

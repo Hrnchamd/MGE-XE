@@ -12,13 +12,13 @@
 namespace IPC {
 	// Vec::iterator
 	template<typename T>
-	Vec<T>::iterator::iterator(Vec<T>* source, T* buffer, std::size_t i, std::size_t windowSize, std::size_t windowBytes) :
+	Vec<T>::iterator::iterator(Vec<T>* source, T* buffer, std::uint32_t i, std::uint32_t windowSize, std::uint32_t windowBytes) :
 		m_source(source),
 		m_element(buffer),
 		m_windowSize(windowSize),
 		m_prevWindow(i - i % windowSize),
 		m_nextWindow(m_prevWindow + windowSize),
-		m_windowPadding(windowBytes - sizeof(T) * windowSize),
+		m_windowPadding(windowBytes - static_cast<std::uint32_t>(sizeof(T)) * windowSize),
 		m_index(i)
 	{ }
 
@@ -122,11 +122,11 @@ namespace IPC {
 
 	template<typename T>
 	typename Vec<T>::iterator Vec<T>::iterator::operator+(Vec<T>::iterator::difference_type count) const {
-		std::size_t newIndex = m_index + count;
+		std::uint32_t newIndex = static_cast<std::uint32_t>(m_index + count);
 		if (newIndex >= m_source->size()) {
 			m_source->wait_read();
 		}
-		return Vec<T>::iterator(m_source, &(*m_source)[newIndex], newIndex, m_windowSize, m_windowSize * sizeof(T) + m_windowPadding);
+		return Vec<T>::iterator(m_source, &(*m_source)[newIndex], newIndex, m_windowSize, m_windowSize * static_cast<std::uint32_t>(sizeof(T)) + m_windowPadding);
 	}
 
 	template<typename T>
@@ -149,15 +149,15 @@ namespace IPC {
 
 	// Vec
 	template<typename T>
-	Vec<T>::Vec(VecId id, VecShare* shared, std::size_t maxElements, std::size_t windowElements, std::size_t elementBytes) :
-		VecBase(id, shared, windowElements, elementBytes * windowElements, maxElements, elementBytes * maxElements, sizeof(VecShare)),
+	Vec<T>::Vec(VecId id, VecShare* shared, std::uint32_t maxElements, std::uint32_t windowElements, std::uint32_t elementBytes) :
+		VecBase(id, shared, windowElements, elementBytes * windowElements, maxElements, elementBytes * maxElements, static_cast<std::uint32_t>(sizeof(VecShare))),
 		m_elementBytes(elementBytes),
 		m_buffer(nullptr)
 	{
 		// round up to a multiple of the allocation granularity
 		SYSTEM_INFO sysInfo = {};
 		GetSystemInfo(&sysInfo);
-		auto allocationGranularity = static_cast<std::size_t>(sysInfo.dwAllocationGranularity);
+		auto allocationGranularity = sysInfo.dwAllocationGranularity;
 
 		auto bytesOver = m_windowBytes % allocationGranularity;
 		if (bytesOver > 0) {
@@ -229,7 +229,7 @@ namespace IPC {
 		HANDLE completeEvent32 = INVALID_HANDLE_VALUE;
 
 		auto totalBytes = m_reservedBytes + m_headerBytes;
-		HANDLE sharedMem = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_RESERVE, static_cast<DWORD>(totalBytes >> 32), static_cast<DWORD>(totalBytes), NULL);
+		HANDLE sharedMem = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_RESERVE, 0, totalBytes, NULL);
 		if (sharedMem == NULL) {
 			LOG::winerror("Failed to reserve %zu bytes of shared memory for vector %lu", m_reservedBytes, m_id);
 			goto failedOnReserve;
@@ -255,7 +255,7 @@ namespace IPC {
 		m_shared->reading32 = false;
 		m_shared->reading64 = false;
 
-		m_buffer = static_cast<char*>(MapViewOfFile(sharedMem, FILE_MAP_ALL_ACCESS, 0, static_cast<DWORD>(m_headerBytes), m_reservedBytes));
+		m_buffer = static_cast<char*>(MapViewOfFile(sharedMem, FILE_MAP_ALL_ACCESS, 0, m_headerBytes, m_reservedBytes));
 		if (m_buffer == nullptr) {
 			LOG::winerror("Failed to map shared memory for vector %lu", m_id);
 			goto failedOnBufMap;
@@ -306,7 +306,7 @@ namespace IPC {
 
 		params.reservedBytes = m_reservedBytes;
 		params.windowBytes = m_windowBytes;
-		params.headerBytes = static_cast<std::uint32_t>(m_headerBytes);
+		params.headerBytes = m_headerBytes;
 		params.header32 = m_shared->header32;
 		params.id = m_id;
 
@@ -379,7 +379,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	bool Vec<T>::reserve(std::size_t numElements) {
+	bool Vec<T>::reserve(std::uint32_t numElements) {
 		auto capacity = this->capacity();
 		if (capacity >= numElements)
 			return true;
@@ -406,7 +406,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	T& Vec<T>::operator[](std::size_t i) const {
+	T& Vec<T>::operator[](std::uint32_t i) const {
 		auto windowIndex = i / m_windowSize;
 		auto elementIndex = i % m_windowSize;
 		auto windowOffset = windowIndex * m_windowBytes;
@@ -425,7 +425,7 @@ namespace IPC {
 	}
 
 	template<typename T>
-	void Vec<T>::truncate(std::size_t numElements) {
+	void Vec<T>::truncate(std::uint32_t numElements) {
 		if (numElements < m_shared->size) {
 			m_shared->size = numElements;
 		}

@@ -38,13 +38,13 @@ public:
 
 	bool at_end();
 
-	std::size_t size() const;
+	std::uint32_t size() const;
 
-	bool reserve(std::size_t count);
+	bool reserve(std::uint32_t count);
 
 	void clear();
 
-	void truncate(std::size_t count);
+	void truncate(std::uint32_t count);
 
 	void sort_by_state();
 
@@ -84,13 +84,13 @@ public:
 
 	bool at_end();
 
-	std::size_t size() const;
+	std::uint32_t size() const;
 
-	bool reserve(std::size_t count);
+	bool reserve(std::uint32_t count);
 
 	void clear();
 
-	void truncate(std::size_t count);
+	void truncate(std::uint32_t count);
 
 	IPC::VecView<RenderMesh> begin();
 	IPC::VecView<RenderMesh> end();
@@ -125,13 +125,13 @@ public:
 
 	bool at_end();
 
-	std::size_t size() const;
+	std::uint32_t size() const;
 
-	bool reserve(std::size_t count);
+	bool reserve(std::uint32_t count);
 
 	void clear();
 
-	void truncate(std::size_t count);
+	void truncate(std::uint32_t count);
 
 	void sort_by_state();
 

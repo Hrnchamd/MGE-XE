@@ -113,13 +113,13 @@ namespace IPC {
     };
 
     struct alignas(8) AllocVecParameters {
-        IN std::uint64_t maxCapacityInElements;
-        IN std::uint64_t windowSizeInElements;
-        IN std::uint64_t elementSize;
-        IN std::uint64_t initialCapacity;
+        IN std::uint32_t maxCapacityInElements;
+        IN std::uint32_t windowSizeInElements;
+        IN std::uint32_t elementSize;
+        IN std::uint32_t initialCapacity;
 
-        OUT std::uint64_t reservedBytes;
-        OUT std::uint64_t windowBytes;
+        OUT std::uint32_t reservedBytes;
+        OUT std::uint32_t windowBytes;
         OUT std::uint32_t headerBytes;
         OUT ptr32<void> header32;
         OUT VecId id;

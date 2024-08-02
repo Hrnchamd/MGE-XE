@@ -2,7 +2,7 @@
 #include "support/log.h"
 
 namespace IPC {
-	VecBase::VecBase(VecId id, VecShare* shared, std::size_t windowElements, std::size_t windowBytes, std::size_t maxElements, std::size_t reservedBytes, std::size_t headerBytes) :
+	VecBase::VecBase(VecId id, VecShare* shared, std::uint32_t windowElements, std::uint32_t windowBytes, std::uint32_t maxElements, std::uint32_t reservedBytes, std::uint32_t headerBytes) :
 		m_id(id),
 		m_shared(shared),
 		m_windowSize(windowElements),
@@ -30,7 +30,6 @@ namespace IPC {
 	}
 
 	WakeReason VecBase::await_update(DWORD ms) const {
-		// clear any 
 		auto result = WaitForMultipleObjects(2, ARCH(m_shared->waitHandles), FALSE, ms);
 		switch (result) {
 		case WAIT_FAILED:
@@ -77,15 +76,15 @@ namespace IPC {
 		ARCH(m_shared->reading) = false;
 	}
 
-	std::size_t VecBase::size() const {
+	std::uint32_t VecBase::size() const {
 		return m_shared->size;
 	}
 
-	std::size_t VecBase::max_size() const noexcept {
+	std::uint32_t VecBase::max_size() const noexcept {
 		return m_maxSize;
 	}
 
-	std::size_t VecBase::capacity() const {
+	std::uint32_t VecBase::capacity() const {
 		return (m_shared->committedBytes / m_windowBytes) * m_windowSize;
 	}
 

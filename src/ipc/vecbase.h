@@ -15,8 +15,8 @@ namespace IPC {
 	protected:
 #pragma pack(push, 4)
 		struct VecShare {
-			volatile std::uint64_t size;
-			std::uint64_t committedBytes;
+			volatile std::uint32_t size;
+			std::uint32_t committedBytes;
 			HANDLE64 clientProcess;
 			HANDLE64 sharedMem64;
 			union {
@@ -41,16 +41,16 @@ namespace IPC {
 		};
 #pragma pack(pop)
 
-		std::size_t m_headerBytes;
-		std::size_t m_windowSize;
-		std::size_t m_windowBytes;
-		std::size_t m_maxSize;
-		std::size_t m_reservedBytes;
+		std::uint32_t m_headerBytes;
+		std::uint32_t m_windowSize;
+		std::uint32_t m_windowBytes;
+		std::uint32_t m_maxSize;
+		std::uint32_t m_reservedBytes;
 		VecShare* m_shared;
 		VecId m_id;
 		bool m_writing;
 
-		VecBase(VecId id, VecShare* shared, std::size_t windowElements, std::size_t windowBytes, std::size_t maxElements, std::size_t reservedBytes, std::size_t headerBytes);
+		VecBase(VecId id, VecShare* shared, std::uint32_t windowElements, std::uint32_t windowBytes, std::uint32_t maxElements, std::uint32_t reservedBytes, std::uint32_t headerBytes);
 		void wait_read(DWORD ms = MaxWait);
 
 	public:
@@ -58,9 +58,9 @@ namespace IPC {
 		VecBase(const VecBase&) = delete;
 		VecBase& operator=(const VecBase&) = delete;
 
-		std::size_t size() const;
-		std::size_t max_size() const noexcept;
-		std::size_t capacity() const;
+		std::uint32_t size() const;
+		std::uint32_t max_size() const noexcept;
+		std::uint32_t capacity() const;
 		bool empty() const;
 
 		void start_write();

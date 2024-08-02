@@ -14,15 +14,15 @@ namespace IPC {
 	template<typename T>
 	class VecView: public VecBase {
 		T* m_buffer;
-		std::size_t m_currentWindow;
-		std::size_t m_currentWindowIndex;
-		std::size_t m_nextWindowIndex;
-		std::size_t m_index;
-		std::size_t m_subIndex;
+		std::uint32_t m_currentWindow;
+		std::uint32_t m_currentWindowIndex;
+		std::uint32_t m_nextWindowIndex;
+		std::uint32_t m_index;
+		std::uint32_t m_subIndex;
 
-		VecView(VecId id, VecShare* shared, std::size_t windowElements, std::size_t windowBytes, std::size_t maxElements, std::size_t reservedBytes, std::size_t headerBytes);
+		VecView(VecId id, VecShare* shared, std::uint32_t windowElements, std::uint32_t windowBytes, std::uint32_t maxElements, std::uint32_t reservedBytes, std::uint32_t headerBytes);
 		bool init();
-		bool slide_window(std::size_t i, bool isAppend = false);
+		bool slide_window(std::uint32_t i, bool isAppend = false);
 
 		friend class Client;
 
@@ -65,20 +65,20 @@ namespace IPC {
 		VecView end() const;
 
 		// iterator extensions
-		bool set_index(std::size_t i);
+		bool set_index(std::uint32_t i);
 		bool at_end();
 
 		// container methods
-		T& operator[](std::size_t i);
+		T& operator[](std::uint32_t i);
 		T& front();
 		T& back();
-		void truncate(std::size_t numElements);
+		void truncate(std::uint32_t numElements);
 
 		bool push_back(const T& value);
 		bool push_back(T&& value);
 		std::optional<T> pop_back();
 
-		bool reserve(std::size_t count);
+		bool reserve(std::uint32_t count);
 	};
 }
 

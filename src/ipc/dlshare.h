@@ -218,7 +218,7 @@ public:
 
             // Add sub-meshes to appropriate quadtree
             auto endIndex = stat->firstSubsetIndex + stat->numSubsets;
-            for (size_t subsetIndex = stat->firstSubsetIndex; subsetIndex < endIndex; subsetIndex++) {
+            for (std::uint32_t subsetIndex = stat->firstSubsetIndex; subsetIndex < endIndex; subsetIndex++) {
                 DistantSubset& s = distantSubsets[subsetIndex];
                 BoundingSphere boundSphere;
                 BoundingBox boundBox;

@@ -12,10 +12,10 @@
 namespace IPC {
 	template<typename T>
 	class Vec: public VecBase {
-		std::size_t m_elementBytes;
+		std::uint32_t m_elementBytes;
 		char* m_buffer;
 
-		Vec(VecId id, VecShare* shared, std::size_t maxElements, std::size_t windowElements, std::size_t elementBytes = sizeof(T));
+		Vec(VecId id, VecShare* shared, std::uint32_t maxElements, std::uint32_t windowElements, std::uint32_t elementBytes = static_cast<std::uint32_t>(sizeof(T)));
 		bool init(HANDLE clientProcess, AllocVecParameters& params);
 		bool extend();
 		void release();
@@ -26,11 +26,11 @@ namespace IPC {
 		class iterator {
 			Vec<T>* m_source;
 			T* m_element;
-			std::size_t m_windowSize;
-			std::size_t m_windowPadding;
-			std::size_t m_prevWindow;
-			std::size_t m_nextWindow;
-			std::size_t m_index;
+			std::uint32_t m_windowSize;
+			std::uint32_t m_windowPadding;
+			std::uint32_t m_prevWindow;
+			std::uint32_t m_nextWindow;
+			std::uint32_t m_index;
 
 		public:
 			using iterator_category = std::bidirectional_iterator_tag;
@@ -39,7 +39,7 @@ namespace IPC {
 			using pointer = T*;
 			using reference = T&;
 
-			iterator(Vec<T>* source, T* buffer, std::size_t i, std::size_t windowSize, std::size_t windowBytes);
+			iterator(Vec<T>* source, T* buffer, std::uint32_t i, std::uint32_t windowSize, std::uint32_t windowBytes);
 			iterator(const iterator& other);
 
 			iterator& operator=(const iterator& other);
@@ -69,11 +69,11 @@ namespace IPC {
 		Vec(const Vec&);
 		Vec& operator=(const Vec&);
 
-		bool reserve(std::size_t numElements);
+		bool reserve(std::uint32_t numElements);
 		bool can_free() const;
-		void truncate(std::size_t numElements);
+		void truncate(std::uint32_t numElements);
 
-		T& operator[](std::size_t i) const;
+		T& operator[](std::uint32_t i) const;
 		T& front() const;
 		T& back() const;
 

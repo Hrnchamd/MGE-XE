@@ -51,11 +51,11 @@ bool StlVector::at_end() {
 	return m_it == m_end;
 }
 
-std::size_t StlVector::size() const {
-	return m_vector.size();
+std::uint32_t StlVector::size() const {
+	return static_cast<std::uint32_t>(m_vector.size());
 }
 
-bool StlVector::reserve(std::size_t count) {
+bool StlVector::reserve(std::uint32_t count) {
 	m_vector.reserve(count);
 	return true;
 }
@@ -64,7 +64,7 @@ void StlVector::clear() {
 	m_vector.clear();
 }
 
-void StlVector::truncate(std::size_t count) {
+void StlVector::truncate(std::uint32_t count) {
 	if (m_vector.size() > count) {
 		m_vector.resize(count);
 	}
@@ -149,11 +149,11 @@ bool IpcClientVector::at_end() {
 	return m_view.at_end();
 }
 
-std::size_t IpcClientVector::size() const {
+std::uint32_t IpcClientVector::size() const {
 	return m_view.size();
 }
 
-bool IpcClientVector::reserve(std::size_t count) {
+bool IpcClientVector::reserve(std::uint32_t count) {
 	return m_view.reserve(count);
 }
 
@@ -161,7 +161,7 @@ void IpcClientVector::clear() {
 	m_view.clear();
 }
 
-void IpcClientVector::truncate(std::size_t count) {
+void IpcClientVector::truncate(std::uint32_t count) {
 	m_view.truncate(count);
 }
 
@@ -230,11 +230,11 @@ bool IpcServerVector::at_end() {
 	return m_it.at_end();
 }
 
-std::size_t IpcServerVector::size() const {
+std::uint32_t IpcServerVector::size() const {
 	return m_vec.size();
 }
 
-bool IpcServerVector::reserve(std::size_t count) {
+bool IpcServerVector::reserve(std::uint32_t count) {
 	return m_vec.reserve(count);
 }
 
@@ -242,7 +242,7 @@ void IpcServerVector::clear() {
 	m_vec.clear();
 }
 
-void IpcServerVector::truncate(std::size_t count) {
+void IpcServerVector::truncate(std::uint32_t count) {
 	m_vec.truncate(count);
 }
 
