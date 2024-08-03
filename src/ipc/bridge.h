@@ -6,17 +6,21 @@
 #include <cstddef>
 #include <cstdint>
 
+// we could use the MS extensions __ptr32 and __ptr64 instead of this conditional definition,
+// but that makes the value appear as a pointer on both sides, which might give the
+// impression that the pointer is valid on both sides. with the condition, we can represent
+// non-shared pointers as opaque integers on the remote side, so there's no chance of confusion.
 #ifdef MGE64_HOST
 template<typename T> using ptr32 = std::uint32_t;
 template<typename T> using ptr64 = T*;
-typedef std::uint32_t HANDLE32;
-#define CONST32 
 #else
 template<typename T> using ptr32 = T*;
 template<typename T> using ptr64 = std::uint64_t;
-typedef HANDLE HANDLE32;
-#define CONST32 const
 #endif
+// handles, on the other hand, are always opaque, so we wouldn't try to dereference one. also,
+// a 32-bit handle could be valid on the 64-bit side if it's inherited. so for those reasons,
+// we will use __ptr32 here.
+typedef void* __ptr32 HANDLE32;
 
 constexpr DWORD VIS_NEAR =     0x01;
 constexpr DWORD VIS_FAR =      0x02;
