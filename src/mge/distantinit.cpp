@@ -1151,7 +1151,7 @@ bool DistantLand::initLandscapeClient() {
         // our views must be destroyed before we can free the vec
     }
 
-    ipcClient.freeVecBlocking(id);
+    ipcClient.freeVec(id);
     CloseHandle(file);
     return true;
 }
