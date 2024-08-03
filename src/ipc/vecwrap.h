@@ -34,8 +34,6 @@ public:
 
 	void end_read();
 
-	IPC::WakeReason await();
-
 	bool at_end();
 
 	std::uint32_t size() const;
@@ -80,8 +78,6 @@ public:
 
 	void end_read();
 
-	IPC::WakeReason await();
-
 	bool at_end();
 
 	std::uint32_t size() const;
@@ -120,8 +116,6 @@ public:
 	bool end_write();
 
 	void end_read();
-
-	IPC::WakeReason await();
 
 	bool at_end();
 

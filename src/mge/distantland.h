@@ -88,11 +88,13 @@ public:
     static VisibleSet<IpcClientVector> visDistantShared;
     static VisibleSet<IpcClientVector> visGrassShared;
     static VisibleSet<IpcClientVector> visExtraShared;
+    static IPC::VecView<IPC::DynVisFlag> dynVisFlagsShared;
 
     static IPC::VecId visLandSharedId;
     static IPC::VecId visDistantSharedId;
     static IPC::VecId visGrassSharedId;
     static IPC::VecId visExtraSharedId;
+    static IPC::VecId dynVisFlagsSharedId;
 
     static std::vector<RecordedState> recordMW;
     static std::vector<RecordedState> recordSky;

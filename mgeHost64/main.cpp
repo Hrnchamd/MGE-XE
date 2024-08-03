@@ -7,7 +7,7 @@
 
 int main(int argc, char** argv) {
 	LOG::open("mgeHost64.log");
-	LOG::logline("Host process");
+	LOG::logline("Host process started");
 
 	HANDLE sharedMem = INVALID_HANDLE_VALUE;
 	HANDLE clientProcess = INVALID_HANDLE_VALUE;

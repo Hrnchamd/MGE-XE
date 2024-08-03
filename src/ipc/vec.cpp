@@ -271,18 +271,18 @@ namespace IPC {
 		auto totalBytes = m_reservedBytes + m_headerBytes;
 		HANDLE sharedMem = CreateFileMappingA(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE | SEC_RESERVE, 0, totalBytes, NULL);
 		if (sharedMem == NULL) {
-			LOG::winerror("Failed to reserve %zu bytes of shared memory for vector %lu", m_reservedBytes, m_id);
+			LOG::winerror("Failed to reserve %u bytes of shared memory for vector %u", m_reservedBytes, m_id);
 			goto failedOnReserve;
 		}
 
 		m_shared = static_cast<VecShare*>(MapViewOfFile(sharedMem, FILE_MAP_ALL_ACCESS, 0, 0, sizeof(VecShare)));
 		if (m_shared == nullptr) {
-			LOG::winerror("Failed to map shared memory for vector %lu header", m_id);
+			LOG::winerror("Failed to map shared memory for vector %u header", m_id);
 			goto failedOnInit;
 		}
 
 		if (VirtualAlloc(m_shared, sizeof(VecShare), MEM_COMMIT, PAGE_READWRITE) == NULL) {
-			LOG::winerror("Failed to commit memory for vector %lu header", m_id);
+			LOG::winerror("Failed to commit memory for vector %u header", m_id);
 			goto failedOnCommit;
 		}
 
@@ -297,36 +297,36 @@ namespace IPC {
 
 		m_buffer = static_cast<char*>(MapViewOfFile(sharedMem, FILE_MAP_ALL_ACCESS, 0, m_headerBytes, m_reservedBytes));
 		if (m_buffer == nullptr) {
-			LOG::winerror("Failed to map shared memory for vector %lu", m_id);
+			LOG::winerror("Failed to map shared memory for vector %u", m_id);
 			goto failedOnBufMap;
 		}
 
 		m_shared->updateEvent64 = CreateEventA(NULL, FALSE, FALSE, NULL);
 		if (m_shared->updateEvent64 == NULL) {
-			LOG::winerror("Failed to create update event for vector %lu", m_id);
+			LOG::winerror("Failed to create update event for vector %u", m_id);
 			goto failedOnUpdateEvent;
 		}
 
 		m_shared->completeEvent64 = CreateEventA(NULL, FALSE, FALSE, NULL);
 		if (m_shared->completeEvent64 == NULL) {
-			LOG::winerror("Failed to create complete event for vector %lu", m_id);
+			LOG::winerror("Failed to create complete event for vector %u", m_id);
 			goto failedOnCompleteEvent;
 		}
 
 		// to keep things simple, the server will own all resources allocated for each vec, so we'll duplicate handles and map the header for
 		// the client process
 		if (!DuplicateHandle(GetCurrentProcess(), sharedMem, clientProcess, &sharedMem32, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-			LOG::winerror("Failed to clone shared memory handle to client process for vector %lu", m_id);
+			LOG::winerror("Failed to clone shared memory handle to client process for vector %u", m_id);
 			goto failedOnSharedMemClone;
 		}
 
 		if (!DuplicateHandle(GetCurrentProcess(), m_shared->updateEvent64, clientProcess, &updateEvent32, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-			LOG::winerror("Failed to clone update event handle to client process for vector %lu", m_id);
+			LOG::winerror("Failed to clone update event handle to client process for vector %u", m_id);
 			goto failedOnUpdateClone;
 		}
 
 		if (!DuplicateHandle(GetCurrentProcess(), m_shared->completeEvent64, clientProcess, &completeEvent32, 0, FALSE, DUPLICATE_SAME_ACCESS)) {
-			LOG::winerror("Failed to clone complete event handle to client process for vector %lu", m_id);
+			LOG::winerror("Failed to clone complete event handle to client process for vector %u", m_id);
 			goto failedOnCompleteClone;
 		}
 
@@ -335,7 +335,7 @@ namespace IPC {
 #pragma warning(disable: 4244 4302 4311)
 		m_shared->header32 = reinterpret_cast<ptr32<VecBase::VecShare>>(MapViewOfFileNuma2(sharedMem, clientProcess, 0, NULL, sizeof(VecShare), 0, PAGE_READWRITE, NUMA_NO_PREFERRED_NODE));
 		if (m_shared->header32 == 0) {
-			LOG::winerror("Failed to map vector %lu header into client process", m_id);
+			LOG::winerror("Failed to map vector %u header into client process", m_id);
 			goto failedOnClientMap;
 		}
 
@@ -432,7 +432,7 @@ namespace IPC {
 		auto bytesNeeded = numExtraWindows * m_windowBytes;
 		auto currentEnd = m_buffer + m_shared->committedBytes;
 		if (VirtualAlloc(currentEnd, bytesNeeded, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-			LOG::winerror("Failed to commit %zu additional bytes of shared memory for vector %lu", bytesNeeded, m_id);
+			LOG::winerror("Failed to commit %u additional bytes of shared memory for vector %u", bytesNeeded, m_id);
 			return false;
 		}
 		m_shared->committedBytes += bytesNeeded;
@@ -472,16 +472,21 @@ namespace IPC {
 	}
 
 	template<typename T>
+	bool Vec<T>::is_valid() const noexcept {
+		return m_shared != nullptr && m_buffer != nullptr;
+	}
+
+	template<typename T>
 	bool Vec<T>::extend() {
 		// commit the next window
 		if (m_shared->committedBytes + m_windowBytes > m_reservedBytes) {
-			LOG::logline("Vector %llu exceeded maximum reserved size of %zu bytes (%llu elements of %zu max)", m_id, m_reservedBytes, m_shared->size, m_maxSize);
+			LOG::logline("Vector %u exceeded maximum reserved size of %u bytes (%u elements of %u max)", m_id, m_reservedBytes, m_shared->size, m_maxSize);
 			return false;
 		}
 
 		auto currentEnd = m_buffer + m_shared->committedBytes;
 		if (VirtualAlloc(currentEnd, m_windowBytes, MEM_COMMIT, PAGE_READWRITE) == NULL) {
-			LOG::winerror("Failed to commit %zu additional bytes of shared memory for vector %lu", m_windowBytes, m_id);
+			LOG::winerror("Failed to commit %u additional bytes of shared memory for vector %u", m_windowBytes, m_id);
 			return false;
 		}
 		m_shared->committedBytes += m_windowBytes;
@@ -509,7 +514,7 @@ namespace IPC {
 		m_shared->size = newSize;
 
 		if (m_writing && subIndex == 0) {
-			return update();
+			return update_write();
 		}
 
 		return true;
@@ -536,7 +541,7 @@ namespace IPC {
 		m_shared->size = newSize;
 
 		if (m_writing && subIndex == 0) {
-			return update();
+			return update_write();
 		}
 
 		return true;

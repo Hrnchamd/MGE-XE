@@ -20,7 +20,7 @@ void DistantLandShare::loadVisGroupsServer(HANDLE h) {
     DWORD unused;
 
     // skip distant statics count
-    SetFilePointer(h, 4, 0, FILE_CURRENT);
+    SetFilePointer(h, 4, NULL, FILE_CURRENT);
 
     // Load dynamic vis groups
     DWORD dynamicVisGroupCount;
@@ -28,10 +28,9 @@ void DistantLandShare::loadVisGroupsServer(HANDLE h) {
     dynamicVisGroupsServer.clear();
 
     if (dynamicVisGroupCount > 0) {
-        const size_t visGroupRecordSize = 130;
-        size_t visDataSize = visGroupRecordSize * dynamicVisGroupCount;
-        auto visData = std::make_unique<char[]>(visDataSize);
-        ReadFile(h, visData.get(), static_cast<DWORD>(visDataSize), &unused, 0);
+        const DWORD visGroupRecordSize = 130;
+        DWORD visDataSize = visGroupRecordSize * dynamicVisGroupCount;
+        SetFilePointer(h, visDataSize, NULL, FILE_CURRENT);
 
         // VisGroup indexes use a 1-based index, group 0 is reserved for testing
         dynamicVisGroupsServer.resize(dynamicVisGroupCount + 1);
@@ -129,7 +128,7 @@ bool DistantLandShare::initLandscapeServer(IPC::Vec<IPC::LandscapeBuffers>& land
 
             auto& buffers = *it;
             if (it.at_end()) {
-                LOG::logline("Client landscape buffers ended while the server still has more meshes (%zu buffers found, expected %lu)", landscapeBuffers.size(), mesh_count);
+                LOG::logline("Client landscape buffers ended while the server still has more meshes (%u buffers found, expected %u)", landscapeBuffers.size(), mesh_count);
                 landscapeBuffers.end_read();
                 return false;
             }

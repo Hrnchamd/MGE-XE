@@ -116,7 +116,7 @@ namespace IPC {
         SortVisibleSet,
     };
 
-    struct alignas(8) AllocVecParameters {
+    struct AllocVecParameters {
         IN std::uint32_t maxCapacityInElements;
         IN std::uint32_t windowSizeInElements;
         IN std::uint32_t elementSize;
@@ -129,21 +129,22 @@ namespace IPC {
         OUT VecId id;
     };
 
-    struct alignas(8) FreeVecParameters {
+    struct FreeVecParameters {
         IN VecId id;
 
         OUT bool wasFreed;
     };
 
-    struct alignas(8) DynVisParameters {
-        IN std::uint16_t numUpdates;
-        IN struct {
-            std::uint16_t groupIndex;
-            bool enable;
-        } updates[100];
+    struct DynVisFlag {
+        std::uint16_t groupIndex;
+        bool enable;
     };
 
-    struct alignas(8) DistantStaticParameters {
+    struct DynVisParameters {
+        IN VecId id;
+    };
+
+    struct DistantStaticParameters {
         IN VecId distantStatics;
         IN VecId distantSubsets;
     };
@@ -153,18 +154,18 @@ namespace IPC {
         ptr32<IDirect3DIndexBuffer9> ib;
     };
 
-    struct alignas(8) InitLandscapeParameters {
+    struct InitLandscapeParameters {
         IN VecId buffers;
         IN ptr32<IDirect3DTexture9> texWorldColour;
     };
 
-    struct alignas(8) SetWorldSpaceParameters {
+    struct SetWorldSpaceParameters {
         IN char cellname[64];
 
         OUT bool cellFound;
     };
 
-    struct alignas(8) GetMeshesParameters {
+    struct GetMeshesParameters {
         IN VecId visibleSet;
         IN VisibleSetSort sort;
         IN ViewFrustum viewFrustum;

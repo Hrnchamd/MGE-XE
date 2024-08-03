@@ -5,12 +5,6 @@
 #include <cstddef>
 #include <type_traits>
 
-#ifdef MGE64_HOST
-#define ARCH(n) n##64
-#else
-#define ARCH(n) n##32
-#endif
-
 namespace IPC {
 	// the various D3DX classes aren't considered trivial because they have user-declared constructors and assignment
 	// operators, so we can't use is_trivial, even though the implementation of those operators is (or at least, is
@@ -59,7 +53,7 @@ namespace IPC {
 		bool m_writing;
 
 		VecBase(VecId id, VecShare* shared, std::uint32_t windowElements, std::uint32_t windowBytes, std::uint32_t maxElements, std::uint32_t reservedBytes, std::uint32_t headerBytes);
-		void wait_read(DWORD ms = MaxWait);
+		WakeReason await_update(DWORD ms = MaxWait);
 
 	public:
 		~VecBase();
@@ -72,12 +66,11 @@ namespace IPC {
 		bool empty() const;
 
 		void start_write();
-		bool update();
-		bool complete();
-		WakeReason await_update(DWORD ms = MaxWait) const;
+		bool update_write();
 		bool end_write();
 
 		void start_read();
+		bool wait_read(DWORD ms = MaxWait);
 		void end_read();
 
 		void clear();

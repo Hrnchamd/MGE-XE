@@ -50,11 +50,13 @@ VisibleSet<IpcClientVector> DistantLand::visLandShared;
 VisibleSet<IpcClientVector> DistantLand::visDistantShared;
 VisibleSet<IpcClientVector> DistantLand::visGrassShared;
 VisibleSet<IpcClientVector> DistantLand::visExtraShared;
+IPC::VecView<IPC::DynVisFlag> DistantLand::dynVisFlagsShared;
 
 IPC::VecId DistantLand::visLandSharedId = IPC::InvalidVector;
 IPC::VecId DistantLand::visDistantSharedId = IPC::InvalidVector;
 IPC::VecId DistantLand::visGrassSharedId = IPC::InvalidVector;
 IPC::VecId DistantLand::visExtraSharedId = IPC::InvalidVector;
+IPC::VecId DistantLand::dynVisFlagsSharedId = IPC::InvalidVector;
 
 vector<DistantLand::RecordedState> DistantLand::recordMW;
 vector<DistantLand::RecordedState> DistantLand::recordSky;
@@ -307,6 +309,14 @@ bool DistantLand::initIpc() {
     auto& extraVec = maybeExtraVec.value();
     visExtraSharedId = extraVec.id();
     visExtraShared.SetVector((IpcClientVector(extraVec)));
+
+    auto maybeDynVisVec = ipcClient.allocVecBlocking<IPC::DynVisFlag>(1, 1000, 1);
+    if (!maybeDynVisVec.has_value()) {
+        return false;
+    }
+    auto& dynVisVec = maybeDynVisVec.value();
+    dynVisFlagsSharedId = dynVisVec.id();
+    dynVisFlagsShared = dynVisVec;
 
     return true;
 }

@@ -101,7 +101,7 @@ namespace IPC {
 				sortVisibleSet();
 				break;
 			default:
-				LOG::logline("Received unknown command value %lu", m_ipcParameters->command);
+				LOG::logline("Received unknown command value %u", m_ipcParameters->command);
 				break;
 			}
 		}
@@ -137,7 +137,7 @@ namespace IPC {
 
 		m_ipcParameters->params.allocVecParams.id = id;
 
-		if (!vec->init(m_clientProcess, params)) {
+		if (!(vec->init(m_clientProcess, params) && vec->reserve(params.initialCapacity))) {
 			// mark this slot free again
 			delete vec;
 			m_vecs[id] = nullptr;
@@ -168,8 +168,8 @@ namespace IPC {
 
 	void Server::updateDynVis() {
 		auto& params = m_ipcParameters->params.dynVisParams;
-		for (std::uint16_t i = 0; i < params.numUpdates; i++) {
-			auto& update = params.updates[i];
+		auto& vec = getVec<DynVisFlag>(params.id);
+		for (auto& update : vec) {
 			for (auto mesh : DistantLandShare::dynamicVisGroupsServer[update.groupIndex]) {
 				mesh->enabled = update.enable;
 			}

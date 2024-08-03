@@ -43,10 +43,6 @@ bool StlVector::end_write() {
 
 void StlVector::end_read() {}
 
-IPC::WakeReason StlVector::await() {
-	return IPC::WakeReason::Complete;
-}
-
 bool StlVector::at_end() {
 	return m_it == m_end;
 }
@@ -145,10 +141,6 @@ void IpcClientVector::end_read() {
 	m_view.end_read();
 }
 
-IPC::WakeReason IpcClientVector::await() {
-	return m_view.await_update();
-}
-
 bool IpcClientVector::at_end() {
 	return m_view.at_end();
 }
@@ -224,10 +216,6 @@ bool IpcServerVector::end_write() {
 
 void IpcServerVector::end_read() {
 	m_vec.end_read();
-}
-
-IPC::WakeReason IpcServerVector::await() {
-	return m_vec.await_update();
 }
 
 bool IpcServerVector::at_end() {

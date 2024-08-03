@@ -120,12 +120,11 @@ namespace IPC {
 		LOG::logline("64-bit host process started (PID %u)", processInfo.dwProcessId);
 
 		// wait for the server to finish bootstrapping
-		if (waitForCompletion() != WakeReason::Complete) {
-			LOG::logline("Failed waiting for 64-bit host process to initialize");
-			return false;
+		if (waitForCompletion() == WakeReason::Complete) {
+			return true;
 		}
 
-		return true;
+		LOG::logline("Failed waiting for 64-bit host process to initialize");
 
 	failedOnCreateProcess:
 		CleanupHandle(m_rpcCompleteEvent);
@@ -200,17 +199,10 @@ namespace IPC {
 		return awaitFreeVec();
 	}
 
-	bool Client::updateDynVis(const std::vector<std::pair<std::uint16_t, bool>>& flags) {
+	bool Client::updateDynVis(VecId id) {
 		WAIT_FOR_PREVIOUS_COMMAND;
 
-		auto& params = m_ipcParameters->params.dynVisParams;
-		params.numUpdates = static_cast<std::uint16_t>(flags.size());
-		for (std::size_t i = 0; i < flags.size(); i++) {
-			const auto& flag = flags[i];
-			auto& update = params.updates[i];
-			update.groupIndex = flag.first;
-			update.enable = flag.second;
-		}
+		m_ipcParameters->params.dynVisParams.id = id;
 		return beginRpc(Command::UpdateDynVis);
 	}
 

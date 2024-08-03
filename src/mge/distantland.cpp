@@ -773,7 +773,9 @@ void DistantLand::resolveDynamicVisGroups() {
 // scanDynamicVisGroups - Scan through game data for visibility changes
 void DistantLand::scanDynamicVisGroups() {
     auto mwBridge = MWBridge::get();
-    std::vector<std::pair<std::uint16_t, bool>> visibilityFlags;
+    if (Configuration.UseSharedMemory) {
+        dynVisFlagsShared.clear();
+    }
 
     std::uint16_t i = 0;
     for (auto& vis : dynamicVisGroups) {
@@ -810,7 +812,7 @@ void DistantLand::scanDynamicVisGroups() {
         if (enable ^ vis.enabled) {
             vis.enabled = enable;
             if (Configuration.UseSharedMemory) {
-                visibilityFlags.push_back(std::make_pair(i, enable));
+                dynVisFlagsShared.push_back({ i, enable });
             } else {
                 for (auto& m : vis.references) {
                     m->enabled = enable;
@@ -821,8 +823,8 @@ void DistantLand::scanDynamicVisGroups() {
         i++;
     }
 
-    if (Configuration.UseSharedMemory) {
-        ipcClient.updateDynVis(visibilityFlags);
+    if (Configuration.UseSharedMemory && !dynVisFlagsShared.empty()) {
+        ipcClient.updateDynVis(dynVisFlagsSharedId);
     }
 }
 

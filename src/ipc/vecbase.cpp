@@ -1,6 +1,12 @@
 #include "ipc/vecbase.h"
 #include "support/log.h"
 
+#ifdef MGE64_HOST
+#define ARCH(n) n##64
+#else
+#define ARCH(n) n##32
+#endif
+
 namespace IPC {
 	VecBase::VecBase(VecId id, VecShare* shared, std::uint32_t windowElements, std::uint32_t windowBytes, std::uint32_t maxElements, std::uint32_t reservedBytes, std::uint32_t headerBytes) :
 		m_id(id),
@@ -21,19 +27,15 @@ namespace IPC {
 		m_writing = true;
 	}
 
-	bool VecBase::update() {
+	bool VecBase::update_write() {
 		return SetEvent(ARCH(m_shared->updateEvent));
 	}
 
-	bool VecBase::complete() {
-		return SetEvent(ARCH(m_shared->completeEvent));
-	}
-
-	WakeReason VecBase::await_update(DWORD ms) const {
+	WakeReason VecBase::await_update(DWORD ms) {
 		auto result = WaitForMultipleObjects(2, ARCH(m_shared->waitHandles), FALSE, ms);
 		switch (result) {
 		case WAIT_FAILED:
-			LOG::winerror("Wait for vec update failed");
+			LOG::winerror("Wait for vec %u update failed", m_id);
 			return WakeReason::Error;
 		case WAIT_TIMEOUT:
 			return WakeReason::Timeout;
@@ -51,8 +53,11 @@ namespace IPC {
 	}
 
 	bool VecBase::end_write() {
-		m_writing = false;
-		return complete();
+		if (m_writing) {
+			m_writing = false;
+			return SetEvent(ARCH(m_shared->completeEvent));
+		}
+		return false;
 	}
 
 	void VecBase::start_read() {
@@ -61,15 +66,19 @@ namespace IPC {
 		wait_read();
 	}
 
-	void VecBase::wait_read(DWORD ms) {
+	bool VecBase::wait_read(DWORD ms) {
 		// there could be old updates for elements we've already seen,
 		// so loop until we either get the completion signal or there are more elements available
 		auto oldSize = m_shared->size;
 		while (ARCH(m_shared->reading) && oldSize == m_shared->size) {
 			if (await_update(ms) == WakeReason::Complete) {
 				ARCH(m_shared->reading) = false;
+				return true;
 			}
 		}
+
+		// if we're still reading, we're not complete
+		return !ARCH(m_shared->reading);
 	}
 
 	void VecBase::end_read() {
