@@ -171,7 +171,9 @@ namespace IPC {
 
 		/**
 		* @brief Inform the server of distant landscape D3D resources.
-		* @param landscapeBuffers ID of a shared vector of LandscapeBuffers objects.
+		* @param landscapeBuffers ID of a shared vector of LandscapeBuffers objects. The server expects to process this
+		*                         vector in parallel with the client, so the client must use start_write/end_write and
+		*                         begin filling the vector after calling this method.
 		* @return Whether the RPC was issued successfully.
 		*/
 		bool initLandscape(VecId landscapeBuffers);

@@ -132,7 +132,6 @@ namespace IPC {
 		T& back() const;
 
 		bool push_back(const T& value);
-		bool push_back(T&& value);
 		std::optional<T> pop_back();
 
 		iterator begin();

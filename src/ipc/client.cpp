@@ -182,8 +182,7 @@ namespace IPC {
 	bool Client::awaitFreeVec() {
 		assert(m_ipcParameters->command == Command::FreeVec);
 
-		auto result = waitForCompletion();
-		if (result != WakeReason::Complete) {
+		if (waitForCompletion() != WakeReason::Complete) {
 			LOG::logline("Vec free RPC failed");
 			return false;
 		}
@@ -232,8 +231,9 @@ namespace IPC {
 			return false;
 		}
 
-		if (waitForCompletion() != WakeReason::Complete)
+		if (waitForCompletion() != WakeReason::Complete) {
 			return false;
+		}
 
 		return params.cellFound;
 	}

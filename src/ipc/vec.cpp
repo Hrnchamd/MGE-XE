@@ -442,7 +442,7 @@ namespace IPC {
 
 	template<typename T>
 	bool Vec<T>::can_free() const {
-		return m_shared == nullptr || m_shared->users <= 1;
+		return m_shared == nullptr || m_shared->users == 1; // there has to be at least 1 user because we exist
 	}
 
 	template<typename T>
@@ -495,33 +495,6 @@ namespace IPC {
 
 	template<typename T>
 	bool Vec<T>::push_back(const T& value) {
-		auto oldSize = m_shared->size;
-		auto newSize = oldSize + 1;
-		auto capacity = (m_shared->committedBytes / m_windowBytes) * m_windowSize;
-		std::size_t offset;
-		if (newSize > capacity) {
-			offset = static_cast<std::size_t>(m_shared->committedBytes);
-			if (!extend())
-				return false;
-		} else {
-			auto windowIndex = oldSize / m_windowSize;
-			offset = static_cast<std::size_t>(windowIndex * m_windowBytes);
-		}
-
-		auto window = reinterpret_cast<T*>(m_buffer + offset);
-		auto subIndex = oldSize % m_windowSize;
-		window[subIndex] = value;
-		m_shared->size = newSize;
-
-		if (m_writing && subIndex == 0) {
-			return update_write();
-		}
-
-		return true;
-	}
-
-	template<typename T>
-	bool Vec<T>::push_back(T&& value) {
 		auto oldSize = m_shared->size;
 		auto newSize = oldSize + 1;
 		auto capacity = (m_shared->committedBytes / m_windowBytes) * m_windowSize;

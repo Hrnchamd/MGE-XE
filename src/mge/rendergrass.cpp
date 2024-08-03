@@ -45,22 +45,22 @@ template<class T>
 void DistantLand::buildGrassInstanceVB(VisibleSet<T>& grassSet) {
     batchedGrass.clear();
 
-	if (grassSet.empty()) {
+	if (grassSet.Empty()) {
 		return;
 	}
 
-    if (grassSet.size() > MaxGrassElements) {
+    if (grassSet.Size() > MaxGrassElements) {
         static bool warnOnce = true;
         if (warnOnce) {
-            LOG::logline("!! Too many grass instances. (%d elements, limit %d)", grassSet.size(), MaxGrassElements);
+            LOG::logline("!! Too many grass instances. (%d elements, limit %d)", grassSet.Size(), MaxGrassElements);
             LOG::logline("!! Reduce grass density to avoid flickering grass.");
             warnOnce = false;
         }
-        grassSet.truncate(MaxGrassElements);
+        grassSet.Truncate(MaxGrassElements);
     }
 
     // in the IPC case, we allocate the vector with a window size of MaxGrassElements, so our pointers will always be valid
-    const RenderMesh* mesh = &grassSet.first();
+    const RenderMesh* mesh = &grassSet.First();
     float* vbwrite = 0;
     int nz = 0;
 
@@ -71,9 +71,9 @@ void DistantLand::buildGrassInstanceVB(VisibleSet<T>& grassSet) {
 
     // Write all grass transforms into one buffer
     // Record how many instances belong to each different mesh
-    grassSet.reset();
-    while (!grassSet.atEnd()) {
-        const auto& m = grassSet.next();
+    grassSet.Reset();
+    while (!grassSet.AtEnd()) {
+        const auto& m = grassSet.Next();
         if (mesh->vBuffer != m.vBuffer) {
             batchedGrass.push_back(std::make_pair(mesh, nz));
             mesh = &m;
@@ -103,9 +103,9 @@ void DistantLand::buildGrassInstanceVB(VisibleSet<T>& grassSet) {
 
 bool DistantLand::hasVisibleGrass() {
     if (Configuration.UseSharedMemory) {
-        return !visGrassShared.empty();
+        return !visGrassShared.Empty();
     } else {
-        return !visGrass.empty();
+        return !visGrass.Empty();
     }
 }
 

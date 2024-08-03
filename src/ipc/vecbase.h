@@ -7,9 +7,9 @@
 
 namespace IPC {
 	// the various D3DX classes aren't considered trivial because they have user-declared constructors and assignment
-	// operators, so we can't use is_trivial, even though the implementation of those operators is (or at least, is
-	// able to be) trivial in practice. so, we'll go with this abridged version that only checks the triviality of
-	// the destructor.
+	// operators, so we can't use is_trivial, even though the implementation of those operators is (or at least,
+	// could be) trivial in practice. so, we'll go with this abridged version that only checks the triviality of the
+	// destructor.
 	template<typename T>
 	constexpr bool is_vec_safe_v = std::is_trivially_destructible_v<T> && std::is_standard_layout_v<T>;
 
@@ -18,7 +18,7 @@ namespace IPC {
 #pragma pack(push, 4)
 		struct VecShare {
 			volatile std::uint32_t size;
-			std::uint32_t committedBytes;
+			std::uint32_t committedBytes; // does not include header
 			HANDLE64 clientProcess;
 			HANDLE64 sharedMem64;
 			union {
@@ -38,6 +38,8 @@ namespace IPC {
 				HANDLE32 waitHandles32[2];
 			};
 			ptr32<VecShare> header32;
+			// reading flags are shared and writing flags aren't because we support multiple readers but not multiple writers
+			// we have separate reading flags for the two sides because we don't want the writer to get confused and think it's reading
 			bool reading32;
 			bool reading64;
 		};
@@ -75,6 +77,6 @@ namespace IPC {
 
 		void clear();
 
-		VecId id() const;
+		VecId id() const noexcept;
 	};
 }

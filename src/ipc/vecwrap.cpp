@@ -3,6 +3,9 @@
 
 #include <algorithm>
 
+// ----------------------
+// StlVector
+// ----------------------
 StlVector::StlVector() : m_vector(), m_it(m_vector.begin()), m_end(m_vector.end()) {}
 StlVector::StlVector(std::vector<const RenderMesh*>&& vector) : m_vector(vector), m_it(m_vector.begin()), m_end(m_vector.end()) {}
 
@@ -90,6 +93,10 @@ std::vector<const RenderMesh*>::iterator StlVector::end() {
 	return m_vector.end();
 }
 
+
+// ----------------------
+// IpcClientVector
+// ----------------------
 IpcClientVector::IpcClientVector() : m_view() {}
 IpcClientVector::IpcClientVector(const IPC::VecView<RenderMesh>& view) : m_view(view) {
 	restart();
@@ -129,10 +136,6 @@ bool IpcClientVector::push_back(const RenderMesh& value) {
 	return m_view.push_back(value);
 }
 
-bool IpcClientVector::push_back(RenderMesh&& value) {
-	return m_view.push_back(std::move(value));
-}
-
 bool IpcClientVector::end_write() {
 	return m_view.end_write();
 }
@@ -170,6 +173,9 @@ IPC::VecView<RenderMesh> IpcClientVector::end() {
 }
 
 
+// ----------------------
+// IpcServerVector
+// ----------------------
 IpcServerVector::IpcServerVector(IPC::Vec<RenderMesh>& view) : m_vec(view), m_it(m_vec.begin()) {
 	restart();
 }
@@ -204,10 +210,6 @@ void IpcServerVector::start_read() {
 
 bool IpcServerVector::push_back(const RenderMesh& value) {
 	return m_vec.push_back(value);
-}
-
-bool IpcServerVector::push_back(RenderMesh&& value) {
-	return m_vec.push_back(std::move(value));
 }
 
 bool IpcServerVector::end_write() {

@@ -48,7 +48,7 @@ void DistantLand::renderWaterReflection(const D3DXMATRIX* view, const D3DXMATRIX
     D3DXMatrixTranspose(&clipMat, &clipMat);
     D3DXPlaneTransform(&plane, &plane, &clipMat);
 
-    if (visDistant.size() == 0) {
+    if (visDistant.Empty()) {
         // Workaround for a Direct3D bug with clipping planes, where SetClipPlane
         // has no effect on the shader pipeline if the last rendered draw call was using
         // the fixed function pipeline. This is usually covered by distant statics, but

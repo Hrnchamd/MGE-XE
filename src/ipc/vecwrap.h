@@ -72,8 +72,6 @@ public:
 
 	bool push_back(const RenderMesh& value);
 
-	bool push_back(RenderMesh&& value);
-
 	bool end_write();
 
 	void end_read();
@@ -110,8 +108,6 @@ public:
 	void start_read();
 
 	bool push_back(const RenderMesh& value);
-
-	bool push_back(RenderMesh&& value);
 
 	bool end_write();
 

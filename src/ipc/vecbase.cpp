@@ -105,7 +105,7 @@ namespace IPC {
 		m_shared->size = 0;
 	}
 
-	VecId VecBase::id() const {
+	VecId VecBase::id() const noexcept {
 		return m_id;
 	}
 }

@@ -138,9 +138,9 @@ namespace IPC {
 		m_ipcParameters->params.allocVecParams.id = id;
 
 		if (!(vec->init(m_clientProcess, params) && vec->reserve(params.initialCapacity))) {
-			// mark this slot free again
 			delete vec;
 			m_vecs[id] = nullptr;
+			// mark this slot free again
 			m_freeVecs.push(id);
 			return false;
 		}

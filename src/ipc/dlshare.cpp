@@ -180,7 +180,7 @@ void DistantLandShare::getVisibleMeshesCoarse(IPC::Vec<RenderMesh>& output, cons
 
     // if we're not sorting, we can do parallel reads and writes where the client processes elements as we add them
     if (sort == VisibleSetSort::None) {
-        visibleSet.startWrite();
+        visibleSet.StartWrite();
     }
 
     if (setFlags & VIS_NEAR) {
@@ -207,7 +207,7 @@ void DistantLandShare::getVisibleMeshesCoarse(IPC::Vec<RenderMesh>& output, cons
         visibleSet.SortByTexture();
         break;
     case VisibleSetSort::None:
-        visibleSet.endWrite();
+        visibleSet.EndWrite();
         break;
     }
 }
@@ -217,7 +217,7 @@ void DistantLandShare::getVisibleMeshes(IPC::Vec<RenderMesh>& output, const View
 
     // if we're not sorting, we can do parallel reads and writes where the client processes elements as we add them
     if (sort == VisibleSetSort::None) {
-        visibleSet.startWrite();
+        visibleSet.StartWrite();
     }
 
     if (setFlags & VIS_NEAR) {
@@ -244,7 +244,7 @@ void DistantLandShare::getVisibleMeshes(IPC::Vec<RenderMesh>& output, const View
         visibleSet.SortByTexture();
         break;
     case VisibleSetSort::None:
-        visibleSet.endWrite();
+        visibleSet.EndWrite();
         break;
     }
 }

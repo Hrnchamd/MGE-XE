@@ -13,7 +13,12 @@ bool IPC::initImports() {
     auto kernel32 = LoadLibraryA("Kernel32.dll");
     auto kernelbase = LoadLibraryA("Kernelbase.dll");
 
-    if (kernel32 == NULL || kernelbase == NULL) {
+    if (kernel32 == NULL) {
+        return false;
+    }
+
+    if (kernelbase == NULL) {
+        FreeLibrary(kernel32);
         return false;
     }
 

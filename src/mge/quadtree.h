@@ -152,43 +152,43 @@ public:
         visible_set = vector;
     }
 
-    size_t size() const {
+    size_t Size() const {
         return visible_set.size();
     }
 
-    bool empty() const {
+    bool Empty() const {
         return visible_set.size() == 0;
     }
 
-    void truncate(std::size_t count) {
+    void Truncate(std::size_t count) {
         visible_set.truncate(count);
     }
 
-    void startWrite() {
+    void StartWrite() {
         visible_set.start_write();
     }
 
-    void endWrite() {
+    void EndWrite() {
         visible_set.end_write();
     }
 
-    void reset() {
+    void Reset() {
         visible_set.restart();
     }
 
-    const RenderMesh& first() {
+    const RenderMesh& First() {
         return visible_set.first();
     }
 
-    const RenderMesh& next() {
+    const RenderMesh& Next() {
         return visible_set.next();
     }
 
-    void pushBack(const RenderMesh& mesh) {
+    void PushBack(const RenderMesh& mesh) {
         visible_set.push_back(mesh);
     }
 
-    bool atEnd() {
+    bool AtEnd() {
         return visible_set.at_end();
     }
 
@@ -270,7 +270,7 @@ struct QuadTreeNode {
             float view_limit = viewsphere.w + mesh->sphere.radius;
 
             if (range_squared <= view_limit * view_limit) {
-                visible_set.pushBack(*mesh);
+                visible_set.PushBack(*mesh);
             }
         }
     }
@@ -318,7 +318,7 @@ struct QuadTreeNode {
                 continue;
             }
 
-            visible_set.pushBack(*mesh);
+            visible_set.PushBack(*mesh);
         }
     }
 

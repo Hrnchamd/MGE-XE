@@ -68,8 +68,9 @@ namespace IPC {
 	template<typename T>
 	VecView<T>& VecView<T>::operator=(const VecView<T>& other) {
 		// if we're being assigned to ourselves, do nothing
-		if (this == &other)
+		if (this == &other) {
 			return *this;
+		}
 
 		// if we're being assigned a different view of the same
 		// vec, take the fast path
@@ -86,7 +87,7 @@ namespace IPC {
 		// all our old stuff first
 		if (m_buffer != nullptr) {
 			UnmapViewOfFile(m_buffer);
-			VirtualFree(m_buffer, m_windowBytes, MEM_RELEASE);
+			VirtualFree(m_buffer, 0, MEM_RELEASE);
 			m_buffer = nullptr;
 		}
 
@@ -205,6 +206,7 @@ namespace IPC {
 	VecView<T>::~VecView() {
 		if (m_shared != nullptr) {
 			InterlockedDecrement(&m_shared->users);
+			m_shared = nullptr;
 		}
 
 		if (m_buffer != nullptr) {
@@ -300,8 +302,7 @@ namespace IPC {
 		if (numElements < m_shared->size) {
 			m_shared->size = numElements;
 			if (m_index >= numElements) {
-				m_index = numElements - 1;
-				m_subIndex = m_index % m_windowSize;
+				set_index(numElements - 1);
 			}
 		}
 	}
@@ -334,18 +335,13 @@ namespace IPC {
 
 	template<typename T>
 	T& VecView<T>::operator[](std::uint32_t i) {
-		auto window = i / m_windowSize;
-		m_subIndex = i % m_windowSize;
-		m_index = i;
-		slide_window(window);
+		set_index(i);
 		return m_buffer[m_subIndex];
 	}
 
 	template<typename T>
 	T& VecView<T>::front() {
-		m_index = 0;
-		m_subIndex = 0;
-		slide_window(0);
+		set_index(0);
 		return *m_buffer;
 	}
 
@@ -356,19 +352,6 @@ namespace IPC {
 
 	template<typename T>
 	bool VecView<T>::push_back(const T& value) {
-		auto newIndex = m_shared->size;
-		auto window = newIndex / m_windowSize;
-		m_subIndex = newIndex % m_windowSize;
-		if (!slide_window(window, true))
-			return false;
-
-		m_buffer[m_subIndex] = value;
-		m_index = m_shared->size++;
-		return true;
-	}
-
-	template<typename T>
-	bool VecView<T>::push_back(T&& value) {
 		auto newIndex = m_shared->size;
 		auto window = newIndex / m_windowSize;
 		m_subIndex = newIndex % m_windowSize;

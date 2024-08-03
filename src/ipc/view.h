@@ -129,7 +129,6 @@ namespace IPC {
 		void truncate(std::uint32_t numElements);
 
 		bool push_back(const T& value);
-		bool push_back(T&& value);
 		std::optional<T> pop_back();
 
 		bool reserve(std::uint32_t count);

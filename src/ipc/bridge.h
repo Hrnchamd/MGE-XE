@@ -89,11 +89,6 @@ namespace IPC {
     class Client;
     class Server;
 
-    union SharedHandle {
-        HANDLE h;
-        std::uint64_t u;
-    };
-
     enum WakeReason {
         Update,
         Complete,
