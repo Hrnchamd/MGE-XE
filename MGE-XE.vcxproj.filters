@@ -192,7 +192,7 @@
     <ClCompile Include="src\ipc\client.cpp">
       <Filter>Source Files\ipc</Filter>
     </ClCompile>
-    <ClCompile Include="src\ipc\iter.cpp">
+    <ClCompile Include="src\ipc\vecwrap.cpp">
       <Filter>Source Files\ipc</Filter>
     </ClCompile>
     <ClCompile Include="src\ipc\bridge.cpp">
@@ -374,7 +374,7 @@
     <ClInclude Include="src\ipc\view.h">
       <Filter>Header Files\ipc</Filter>
     </ClInclude>
-    <ClInclude Include="src\ipc\iter.h">
+    <ClInclude Include="src\ipc\vecwrap.h">
       <Filter>Header Files\ipc</Filter>
     </ClInclude>
     <ClInclude Include="src\ipc\bridge.h">

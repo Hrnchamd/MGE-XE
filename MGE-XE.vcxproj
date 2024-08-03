@@ -111,7 +111,7 @@
     <ClCompile Include="src\ipc\bridge.cpp" />
     <ClCompile Include="src\ipc\client.cpp" />
     <ClCompile Include="src\ipc\dlshare.cpp" />
-    <ClCompile Include="src\ipc\iter.cpp" />
+    <ClCompile Include="src\ipc\vecwrap.cpp" />
     <ClCompile Include="src\ipc\vecbase.cpp" />
     <ClCompile Include="src\ipc\view.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -168,7 +168,7 @@
     <ClInclude Include="src\ipc\bridge.h" />
     <ClInclude Include="src\ipc\client.h" />
     <ClInclude Include="src\ipc\dlshare.h" />
-    <ClInclude Include="src\ipc\iter.h" />
+    <ClInclude Include="src\ipc\vecwrap.h" />
     <ClInclude Include="src\ipc\vecbase.h" />
     <ClInclude Include="src\ipc\view.h" />
     <ClInclude Include="src\mge\api.h" />

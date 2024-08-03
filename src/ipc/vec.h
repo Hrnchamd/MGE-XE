@@ -12,6 +12,8 @@
 namespace IPC {
 	template<typename T>
 	class Vec: public VecBase {
+		static_assert(is_vec_safe_v<T>, "Vec does not call constructors or destructors and is not safe for complex types");
+
 		std::uint32_t m_elementBytes;
 		char* m_buffer;
 
@@ -33,7 +35,7 @@ namespace IPC {
 			std::uint32_t m_index;
 
 		public:
-			using iterator_category = std::bidirectional_iterator_tag;
+			using iterator_category = std::random_access_iterator_tag;
 			using difference_type = std::ptrdiff_t;
 			using value_type = T;
 			using pointer = T*;
@@ -55,11 +57,18 @@ namespace IPC {
 
 			bool operator==(const iterator& other) const;
 			bool operator!=(const iterator& other) const;
+
 			bool operator<(const iterator& other) const;
+			bool operator>(const iterator& other) const;
+			bool operator<=(const iterator& other) const;
+			bool operator>=(const iterator& other) const;
 
 			iterator operator+(difference_type count) const;
 			difference_type operator-(const iterator& other) const;
 			iterator operator-(difference_type count) const;
+
+			iterator& operator+=(difference_type count);
+			iterator& operator-=(difference_type count);
 
 			bool at_end();
 		};

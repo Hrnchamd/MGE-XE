@@ -42,6 +42,7 @@ struct DistantStatic {
     DWORD firstSubsetIndex;
     DWORD numSubsets;
 };
+#pragma pack(pop)
 
 struct UsedDistantStatic {
     DWORD staticRef;
@@ -68,4 +69,3 @@ struct UsedDistantStatic {
         return box;
     }
 };
-#pragma pack(pop)

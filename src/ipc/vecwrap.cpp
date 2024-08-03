@@ -1,4 +1,4 @@
-#include "ipc/iter.h"
+#include "ipc/vecwrap.h"
 #include "support/log.h"
 
 #include <algorithm>
@@ -72,13 +72,17 @@ void StlVector::truncate(std::uint32_t count) {
 
 void StlVector::sort_by_state() {
 	if (m_vector.size() > 0) {
-		std::sort(m_vector.begin(), m_vector.end(), QuadTreeMesh::CompareByStatePtr);
+		std::sort(m_vector.begin(), m_vector.end(), [](const RenderMesh* lhs, const RenderMesh* rhs) {
+			return QuadTreeMesh::CompareByState(*lhs, *rhs);
+		});
 	}
 }
 
 void StlVector::sort_by_texture() {
 	if (m_vector.size() > 0) {
-		std::sort(m_vector.begin(), m_vector.end(), QuadTreeMesh::CompareByTexturePtr);
+		std::sort(m_vector.begin(), m_vector.end(), [](const RenderMesh* lhs, const RenderMesh* rhs) {
+			return QuadTreeMesh::CompareByTexture(*lhs, *rhs);
+		});
 	}
 }
 

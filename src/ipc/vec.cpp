@@ -10,7 +10,9 @@
 #include <cassert>
 
 namespace IPC {
+	// -------------
 	// Vec::iterator
+	// -------------
 	template<typename T>
 	Vec<T>::iterator::iterator(Vec<T>* source, T* buffer, std::uint32_t i, std::uint32_t windowSize, std::uint32_t windowBytes) :
 		m_source(source),
@@ -121,12 +123,48 @@ namespace IPC {
 	}
 
 	template<typename T>
+	bool Vec<T>::iterator::operator>(const Vec<T>::iterator& other) const {
+		return m_element > other.m_element;
+	}
+
+	template<typename T>
+	bool Vec<T>::iterator::operator<=(const Vec<T>::iterator& other) const {
+		return m_element <= other.m_element;
+	}
+
+	template<typename T>
+	bool Vec<T>::iterator::operator>=(const Vec<T>::iterator& other) const {
+		return m_element >= other.m_element;
+	}
+
+	template<typename T>
 	typename Vec<T>::iterator Vec<T>::iterator::operator+(Vec<T>::iterator::difference_type count) const {
 		std::uint32_t newIndex = static_cast<std::uint32_t>(m_index + count);
 		if (newIndex >= m_source->size()) {
 			m_source->wait_read();
 		}
 		return Vec<T>::iterator(m_source, &(*m_source)[newIndex], newIndex, m_windowSize, m_windowSize * static_cast<std::uint32_t>(sizeof(T)) + m_windowPadding);
+	}
+
+	template<typename T>
+	typename Vec<T>::iterator& Vec<T>::iterator::operator+=(Vec<T>::iterator::difference_type count) {
+		m_index += count;
+		if (m_index >= m_source->size()) {
+			m_source->wait_read();
+		}
+
+		auto subIndex = m_index % m_windowSize;
+		auto window = m_index / m_windowSize;
+		m_element = reinterpret_cast<T*>(reinterpret_cast<char*>(m_element) + m_windowBytes * window) + subIndex;
+		m_prevWindow = window * m_windowSize;
+		m_nextWindow = m_prevWindow + m_windowSize;
+
+		return *this;
+	}
+
+	template<typename T>
+	typename Vec<T>::iterator& Vec<T>::iterator::operator-=(Vec<T>::iterator::difference_type count) {
+		return *this += -count;
 	}
 
 	template<typename T>
@@ -147,7 +185,9 @@ namespace IPC {
 		return m_index >= m_source->size();
 	}
 
+	// -------------
 	// Vec
+	// -------------
 	template<typename T>
 	Vec<T>::Vec(VecId id, VecShare* shared, std::uint32_t maxElements, std::uint32_t windowElements, std::uint32_t elementBytes) :
 		VecBase(id, shared, windowElements, elementBytes * windowElements, maxElements, elementBytes * maxElements, static_cast<std::uint32_t>(sizeof(VecShare))),

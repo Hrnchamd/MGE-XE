@@ -13,6 +13,8 @@
 namespace IPC {
 	template<typename T>
 	class VecView: public VecBase {
+		static_assert(is_vec_safe_v<T>, "VecView does not call constructors or destructors and is not safe for complex types");
+
 		T* m_buffer;
 		std::uint32_t m_currentWindow;
 		std::uint32_t m_currentWindowIndex;

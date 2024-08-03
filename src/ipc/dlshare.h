@@ -1,8 +1,8 @@
 #pragma once
 
 #include "support/winheader.h"
-#include "ipc/iter.h"
 #include "ipc/vec.h"
+#include "ipc/vecwrap.h"
 #include "mge/configuration.h"
 #include "mge/dlformat.h"
 #include "mge/quadtree.h"

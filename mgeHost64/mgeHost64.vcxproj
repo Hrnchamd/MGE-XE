@@ -141,10 +141,10 @@
   <ItemGroup>
     <ClCompile Include="..\src\ipc\bridge.cpp" />
     <ClCompile Include="..\src\ipc\dlshare.cpp" />
-    <ClCompile Include="..\src\ipc\iter.cpp" />
     <ClCompile Include="..\src\ipc\server.cpp" />
     <ClCompile Include="..\src\ipc\vec.cpp" />
     <ClCompile Include="..\src\ipc\vecbase.cpp" />
+    <ClCompile Include="..\src\ipc\vecwrap.cpp" />
     <ClCompile Include="..\src\mge\configuration.cpp" />
     <ClCompile Include="..\src\mge\dlmath.cpp" />
     <ClCompile Include="..\src\mge\memorypool.cpp" />
@@ -155,10 +155,10 @@
   <ItemGroup>
     <ClInclude Include="..\src\ipc\bridge.h" />
     <ClInclude Include="..\src\ipc\dlshare.h" />
-    <ClInclude Include="..\src\ipc\iter.h" />
     <ClInclude Include="..\src\ipc\server.h" />
     <ClInclude Include="..\src\ipc\vec.h" />
     <ClInclude Include="..\src\ipc\vecbase.h" />
+    <ClInclude Include="..\src\ipc\vecwrap.h" />
     <ClInclude Include="..\src\mge\configinternal.h" />
     <ClInclude Include="..\src\mge\configuration.h" />
     <ClInclude Include="..\src\mge\dlformat.h" />

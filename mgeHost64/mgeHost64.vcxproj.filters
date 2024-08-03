@@ -51,9 +51,6 @@
     <ClCompile Include="..\src\ipc\vecbase.cpp">
       <Filter>Source Files\ipc</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ipc\iter.cpp">
-      <Filter>Source Files\ipc</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ipc\vec.cpp">
       <Filter>Source Files\ipc</Filter>
     </ClCompile>
@@ -69,15 +66,15 @@
     <ClCompile Include="..\src\mge\memorypool.cpp">
       <Filter>Source Files\mge</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ipc\vecwrap.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\ipc\bridge.h">
       <Filter>Header Files\ipc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ipc\dlshare.h">
-      <Filter>Header Files\ipc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\ipc\iter.h">
       <Filter>Header Files\ipc</Filter>
     </ClInclude>
     <ClInclude Include="..\src\ipc\server.h">
@@ -115,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="..\src\mge\memorypool.h">
       <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipc\vecwrap.h">
+      <Filter>Header Files\ipc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

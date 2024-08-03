@@ -3,6 +3,7 @@
 #include "ipc/bridge.h"
 
 #include <cstddef>
+#include <type_traits>
 
 #ifdef MGE64_HOST
 #define ARCH(n) n##64
@@ -11,6 +12,13 @@
 #endif
 
 namespace IPC {
+	// the various D3DX classes aren't considered trivial because they have user-declared constructors and assignment
+	// operators, so we can't use is_trivial, even though the implementation of those operators is (or at least, is
+	// able to be) trivial in practice. so, we'll go with this abridged version that only checks the triviality of
+	// the destructor.
+	template<typename T>
+	constexpr bool is_vec_safe_v = std::is_trivially_destructible_v<T> && std::is_standard_layout_v<T>;
+
 	class VecBase {
 	protected:
 #pragma pack(push, 4)

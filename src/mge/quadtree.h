@@ -33,13 +33,7 @@ struct QuadTreeMesh: public RenderMesh {
     bool operator==(const QuadTreeMesh& rh);
 
     static bool CompareByState(const RenderMesh& lh, const RenderMesh& rh);
-    static bool CompareByStatePtr(const RenderMesh* lh, const RenderMesh* rh) {
-        return CompareByState(*lh, *rh);
-    }
     static bool CompareByTexture(const RenderMesh& lh, const RenderMesh& rh);
-    static bool CompareByTexturePtr(const RenderMesh* lh, const RenderMesh* rh) {
-        return CompareByTexture(*lh, *rh);
-    }
 };
 
 //-----------------------------------------------------------------------------
