@@ -780,6 +780,7 @@ void DistantLand::scanDynamicVisGroups() {
     std::uint16_t i = 0;
     for (auto& vis : dynamicVisGroups) {
         int value;
+        auto groupIndex = i++;
 
         // Ignore unresolved objects
         if (!vis.gameObject) {
@@ -812,15 +813,13 @@ void DistantLand::scanDynamicVisGroups() {
         if (enable ^ vis.enabled) {
             vis.enabled = enable;
             if (Configuration.UseSharedMemory) {
-                dynVisFlagsShared.push_back({ i, enable });
+                dynVisFlagsShared.push_back({ groupIndex, enable });
             } else {
                 for (auto& m : vis.references) {
                     m->enabled = enable;
                 }
             }
         }
-
-        i++;
     }
 
     if (Configuration.UseSharedMemory && !dynVisFlagsShared.empty()) {
