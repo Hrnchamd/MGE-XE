@@ -341,9 +341,21 @@ namespace MGEgui {
                 return;
             }
 
+            // DirectX init
+            try {
+                if (!DXMain.CheckAdapter()) {
+                    System.Windows.Forms.MessageBox.Show(strings["MWAdapterNotPresent"], "Warning");
+                    DXMain.ResetAdapter();
+                }
+                DXMain.GetDeviceCaps();
+            } catch (Exception ex) {
+                // Display full error to help diagnose issues
+                MessageBox.Show(ex.ToString(), strings["Error"]);
+            }
+            
+            // Initialize members
             runDir = System.Windows.Forms.Application.StartupPath;
 
-            // Create some structures
             for (int i = 0; i < MACROS; i++) {
                 Macros[i] = new Macro();
             }
@@ -351,12 +363,6 @@ namespace MGEgui {
                 Triggers[i] = new Trigger();
             }
             
-            if (!DXMain.CheckAdapter()) {
-                System.Windows.Forms.MessageBox.Show(strings["MWAdapterNotPresent"], "Warning");
-                DXMain.ResetAdapter();
-            }
-            DXMain.GetDeviceCaps();
-
             mf = new MainForm(autoLanguage);
             Application.Run(mf);
         }
