@@ -709,20 +709,29 @@ bool DistantLand::selectDistantCell() {
             cellname = mwBridge->getInteriorName();
         }
 
-        const auto iWS = mapWorldSpaces.find(cellname);
-        if (iWS != mapWorldSpaces.end()) {
-            currentWorldSpace = &iWS->second;
-            return true;
+        if (Configuration.UseSharedMemory) {
+            DistantLandShare::hasCurrentWorldSpace = ipcClient.setWorldSpaceBlocking(cellname);
+            if (DistantLandShare::hasCurrentWorldSpace) {
+                return true;
+            }
+        } else {
+            const auto iWS = DistantLandShare::mapWorldSpaces.find(cellname);
+            if (iWS != DistantLandShare::mapWorldSpaces.end()) {
+                DistantLandShare::currentWorldSpace = &iWS->second;
+                DistantLandShare::hasCurrentWorldSpace = true;
+                return true;
+            }
         }
     }
 
-    currentWorldSpace = nullptr;
+    DistantLandShare::currentWorldSpace = nullptr;
+    DistantLandShare::hasCurrentWorldSpace = false;
     return false;
 }
 
 // isDistantCell - Check if there is distant land selected for this cell
 bool DistantLand::isDistantCell() {
-    return currentWorldSpace != nullptr;
+    return DistantLandShare::hasCurrentWorldSpace;
 }
 
 // resolveDynamicVisGroups - Resolve pointers to game objects on load/reload
@@ -764,9 +773,14 @@ void DistantLand::resolveDynamicVisGroups() {
 // scanDynamicVisGroups - Scan through game data for visibility changes
 void DistantLand::scanDynamicVisGroups() {
     auto mwBridge = MWBridge::get();
+    if (Configuration.UseSharedMemory) {
+        dynVisFlagsShared.clear();
+    }
 
+    std::uint16_t i = 0;
     for (auto& vis : dynamicVisGroups) {
         int value;
+        auto groupIndex = i++;
 
         // Ignore unresolved objects
         if (!vis.gameObject) {
@@ -798,10 +812,18 @@ void DistantLand::scanDynamicVisGroups() {
         // If enable state has changed, propagate to distant land mesh instances
         if (enable ^ vis.enabled) {
             vis.enabled = enable;
-            for (auto& m : vis.references) {
-                m->enabled = enable;
+            if (Configuration.UseSharedMemory) {
+                dynVisFlagsShared.push_back({ groupIndex, enable });
+            } else {
+                for (auto& m : vis.references) {
+                    m->enabled = enable;
+                }
             }
         }
+    }
+
+    if (Configuration.UseSharedMemory && !dynVisFlagsShared.empty()) {
+        ipcClient.updateDynVis(dynVisFlagsSharedId);
     }
 }
 

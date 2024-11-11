@@ -81,6 +81,34 @@ void DistantLand::renderShadowMap() {
     targetSoft->Release();
 }
 
+template<class T>
+void DistantLand::renderShadowLayerGeneric(MWBridge* mwBridge, int layer, const D3DXMATRIX* inverseCameraProj, D3DXMATRIX* view, D3DXMATRIX* proj, VisibleSet<T>& visible_set) {
+    // Clip to atlas region with viewport
+    const DWORD res = Configuration.DL.ShadowResolution;
+    D3DVIEWPORT9 vp = { layer * res, 0, res, res, 0.0f, 1.0f };
+    device->SetViewport(&vp);
+
+    // Render view frustum to stencil, which limits rendering to visible texels
+    effect->SetMatrix(ehWorld, inverseCameraProj);
+    effectShadow->BeginPass(PASS_SHADOWSTENCIL);
+    device->SetVertexDeclaration(WaterDecl);
+    device->SetStreamSource(0, vbClipCube, 0, 12);
+    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 12);
+    effectShadow->EndPass();
+
+    // Render land and statics
+    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
+
+    if (mwBridge->IsExterior()) {
+        renderDistantLand(effectShadow, view, proj);
+    }
+
+    device->SetVertexDeclaration(StaticDecl);
+    visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT, true);
+
+    effectShadow->EndPass();
+}
+
 // renderShadowLayer - Calculates projection for, and renders, one shadow layer
 void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* inverseCameraProj) {
     auto mwBridge = MWBridge::get();
@@ -129,36 +157,22 @@ void DistantLand::renderShadowLayer(int layer, float radius, const D3DXMATRIX* i
 
     // Cull
     ViewFrustum range_frustum(viewproj);
-    VisibleSet visible_set;
 
-    currentWorldSpace->NearStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
-    currentWorldSpace->FarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
-    currentWorldSpace->VeryFarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
+    if (Configuration.UseSharedMemory) {
+        visExtraShared.RemoveAll();
+        // because shadow meshes don't need to be sorted, we can read and write in parallel
+        ipcClient.getVisibleMeshesCoarse(visExtraSharedId, range_frustum, VIS_STATIC);
 
-    // Clip to atlas region with viewport
-    const DWORD res = Configuration.DL.ShadowResolution;
-    D3DVIEWPORT9 vp = { layer * res, 0, res, res, 0.0f, 1.0f };
-    device->SetViewport(&vp);
+        renderShadowLayerGeneric(mwBridge, layer, inverseCameraProj, view, proj, visExtraShared);
+    } else {
+        VisibleSet<StlVector> visible_set((StlVector()));
 
-    // Render view frustum to stencil, which limits rendering to visible texels
-    effect->SetMatrix(ehWorld, inverseCameraProj);
-    effectShadow->BeginPass(PASS_SHADOWSTENCIL);
-    device->SetVertexDeclaration(WaterDecl);
-    device->SetStreamSource(0, vbClipCube, 0, 12);
-    device->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 12);
-    effectShadow->EndPass();
+        DistantLandShare::currentWorldSpace->NearStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
+        DistantLandShare::currentWorldSpace->FarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
+        DistantLandShare::currentWorldSpace->VeryFarStatics->GetVisibleMeshesCoarse(range_frustum, visible_set);
 
-    // Render land and statics
-    effectShadow->BeginPass(PASS_RENDERSHADOWMAP);
-
-    if (mwBridge->IsExterior()) {
-        renderDistantLand(effectShadow, view, proj);
+        renderShadowLayerGeneric(mwBridge, layer, inverseCameraProj, view, proj, visible_set);
     }
-
-    device->SetVertexDeclaration(StaticDecl);
-    visible_set.Render(device, effectShadow, effect, &ehTex0, &ehHasAlpha, &ehHasVCol, &ehWorld, SIZEOFSTATICVERT);
-
-    effectShadow->EndPass();
 }
 
 // renderShadow - Renders shadows (using blending) over Morrowind shadow receivers

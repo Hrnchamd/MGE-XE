@@ -338,6 +338,7 @@ SShotName = "Every saved MGE screenshot will start its file name with this prefi
 SShotDir = "This is output directory where taken screenshots will be saved."
 SShotDirBrowse = "Use it for selecting output directory where you want the screenshots to be saved."
 SShotDirClear = "Changes selected output directory for screenshots to default.\nScreenshots will be saved to Morrowind installation directory."
+UseSharedMemory = "Moves some internal MGE data into a separate 64-bit process.\nThis can reduce out-of-memory issues when using lots of land mods and/or high draw distance. Only available on Windows 10+."
 
 ; Distant land tab
 DistantLandWizard = "This will launch the process that creates the files that distant land needs to work.\nYou cannot enable distant land without running it."

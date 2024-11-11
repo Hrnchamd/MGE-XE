@@ -1,11 +1,11 @@
 
+#include "winheader.h"
 #include "log.h"
 
 #include <cstdarg>
 #include <cctype>
 #include <cstring>
 #include <cstdio>
-#include "winheader.h"
 
 
 namespace LOG {
@@ -81,6 +81,32 @@ namespace LOG {
             result = 4;
             std::strcpy(buf, "LOG::log(null)\r\n");
         }
+
+        write(buf);
+
+        va_end(args);
+        return result;
+    }
+
+    std::size_t winerror(const char* fmt, ...) {
+        char buf[4096] = "\0";
+        std::size_t result = 0;
+        auto errorCode = GetLastError();
+
+        va_list args;
+        va_start(args, fmt);
+
+        if (fmt) {
+            result = std::vsnprintf(buf, sizeof(buf) - 4, fmt, args);
+        } else {
+            result = 4;
+            std::strcpy(buf, "LOG::winerror(null)");
+        }
+
+        std::strcat(buf + std::strlen(buf), ": ");
+        auto bufUsed = std::strlen(buf);
+        FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, errorCode, 0, buf + bufUsed, static_cast<DWORD>(sizeof(buf) - (bufUsed + 2)), 0);
+        std::strcat(buf + std::strlen(buf), "\r\n");
 
         write(buf);
 

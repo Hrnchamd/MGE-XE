@@ -2,7 +2,10 @@
 
 #include "quadtree.h"
 #include "ffeshader.h"
+#include "mwbridge.h"
 #include "specificrender.h"
+#include "ipc/client.h"
+#include "ipc/dlshare.h"
 
 #include <string>
 #include <vector>
@@ -16,13 +19,6 @@ struct MGEShader;
 
 class DistantLand {
 public:
-    struct WorldSpace {
-        std::unique_ptr<QuadTree> NearStatics;
-        std::unique_ptr<QuadTree> FarStatics;
-        std::unique_ptr<QuadTree> VeryFarStatics;
-        std::unique_ptr<QuadTree> GrassStatics;
-    };
-
     struct DynamicVisGroup {
         enum class DataSource : uint8_t {
             Journal = 1,
@@ -39,6 +35,10 @@ public:
         std::string id;
         std::vector<Range> ranges;
         std::vector<QuadTreeMesh*> references;
+
+        void push_back(QuadTreeMesh* mesh) {
+            references.push_back(mesh);
+        }
     };
 
     struct RecordedState : RenderedState {
@@ -75,18 +75,30 @@ public:
 
     static VendorSpecificRendering vsr;
 
-    static std::unordered_map<std::string, WorldSpace> mapWorldSpaces;
-    static const WorldSpace* currentWorldSpace;
+    static IPC::Client ipcClient;
     static std::vector<DynamicVisGroup> dynamicVisGroups;
     static void* lastDistantVisCell;
-    static QuadTree LandQuadTree;
-    static VisibleSet visLand;
-    static VisibleSet visDistant;
-    static VisibleSet visGrass;
+    static bool isDistantLandLoaded;
+
+    static VisibleSet<StlVector> visLand;
+    static VisibleSet<StlVector> visDistant;
+    static VisibleSet<StlVector> visGrass;
+
+    static VisibleSet<IpcClientVector> visLandShared;
+    static VisibleSet<IpcClientVector> visDistantShared;
+    static VisibleSet<IpcClientVector> visGrassShared;
+    static VisibleSet<IpcClientVector> visExtraShared;
+    static IPC::VecView<IPC::DynVisFlag> dynVisFlagsShared;
+
+    static IPC::VecId visLandSharedId;
+    static IPC::VecId visDistantSharedId;
+    static IPC::VecId visGrassSharedId;
+    static IPC::VecId visExtraSharedId;
+    static IPC::VecId dynVisFlagsSharedId;
 
     static std::vector<RecordedState> recordMW;
     static std::vector<RecordedState> recordSky;
-    static std::vector< std::pair<const QuadTreeMesh*, int> > batchedGrass;
+    static std::vector< std::pair<const RenderMesh*, int> > batchedGrass;
 
     static IDirect3DTexture9* texWorldColour, *texWorldNormals, *texWorldDetail;
     static IDirect3DTexture9* texDepthFrame;
@@ -147,15 +159,21 @@ public:
     static bool captureScreenWithUI;
 
     static bool init();
+    static bool initIpc();
     static bool initShader();
     static bool initDepth();
     static bool initWater();
     static bool initDynamicWaves();
+    static bool initLandscapeClient();
     static bool initLandscape();
-    static bool initDistantStatics();
+    static bool initDistantStaticsClient();
     static bool initShadow();
     static bool initGrass();
-    static bool loadDistantStatics();
+    static void loadVisGroupsClient(HANDLE h);
+    template<class T, class U>
+    static bool loadStaticMeshes(HANDLE h, T& distantStatics, U& distantSubsets);
+    template<class T, class U>
+    static bool loadDistantStaticsClient(T& distantStatics, U& distantSubsets);
     static bool reloadShaders();
     static void release();
 
@@ -188,7 +206,9 @@ public:
     static void cullDistantStatics(const D3DXMATRIX* view, const D3DXMATRIX* proj);
     static void renderDistantStatics();
     static void cullGrass(const D3DXMATRIX* view, const D3DXMATRIX* proj);
-    static void buildGrassInstanceVB();
+    template<class T>
+    static void buildGrassInstanceVB(VisibleSet<T>& grassSet);
+    static bool hasVisibleGrass();
     static void renderGrassInst();
     static void renderGrassInstZ();
     static void renderGrassCommon(ID3DXEffect* e);
@@ -205,6 +225,8 @@ public:
     static void renderDepthRecorded();
 
     static void renderShadowMap();
+    template<class T>
+    static void renderShadowLayerGeneric(MWBridge* mwBridge, int layer, const D3DXMATRIX* inverseCameraProj, D3DXMATRIX* view, D3DXMATRIX* proj, VisibleSet<T>& visible_set);
     static void renderShadowLayer(int layer, float radius, const D3DXMATRIX* inverseCameraProj);
     static void renderShadow();
     static void renderShadowDebug();
