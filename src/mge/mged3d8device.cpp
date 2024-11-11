@@ -100,6 +100,8 @@ HRESULT _stdcall MGEProxyDevice::Present(const RECT* a, const RECT* b, HWND c, c
 
         // Apply patch to load distant land before the main menu, and on renderer restart
         mwBridge->patchGameLoading(&initOnLoad);
+        // Patch world rendering (on a branch without the water) to split alphas to their own scene
+        mwBridge->patchWorldRenderingAccumulation();
         // Disable MW screenshot function to allow MGE to use the same key
         mwBridge->disableScreenshotFunc();
         // Mark water material to allow MGEProxyDevice to detect it

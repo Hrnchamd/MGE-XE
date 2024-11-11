@@ -1435,6 +1435,39 @@ void MWBridge::patchLightParticleMaterialModifier() {
 
 //-----------------------------------------------------------------------------
 
+static void __fastcall patchCameraClick(void* camera, int edx, bool dontFinishAccumulating) {
+    const auto NiCamera_Click = reinterpret_cast<void (__thiscall*)(void*, bool)>(0x6CC7B0);
+
+    if (dontFinishAccumulating) {
+        // Call original code.
+        NiCamera_Click(camera, true);
+    }
+    else {
+        auto scenePtr = *reinterpret_cast<char**>(reinterpret_cast<char*>(camera) + 0x128);
+        WORD *flagsPtr = reinterpret_cast<WORD*>(scenePtr + 0x14);
+
+        // Render, but split accumulation to a new scene.
+        NiCamera_Click(camera, true);
+
+        // Hide scene and only render accumulator contents.
+        auto previousFlags = *flagsPtr;
+        *flagsPtr = 0x9; // AppCulled + IsVisual
+        NiCamera_Click(camera, false);
+        *flagsPtr = previousFlags;
+    }
+}
+
+// patchWorldRenderingAccumulation - Alter rendering of cells without water, so that alphas are deferred to a new scene, enabling detection
+void MWBridge::patchWorldRenderingAccumulation() {
+    DWORD addr = 0x41C654;
+
+    // Patch main scene rendering function.
+    VirtualMemWriteAccessor vw((void*)addr, 4);
+    write_dword(addr + 1, reinterpret_cast<DWORD>(&patchCameraClick) - addr - 5);
+}
+
+//-----------------------------------------------------------------------------
+
 // getGMSTPointer - Gets a pointer directly to the data of a GMST (of any type)
 void* MWBridge::getGMSTPointer(DWORD id) {
     DWORD addr = read_dword(eEnviro);

@@ -124,6 +124,7 @@ public:
     void patchResolveDuringInit(void (__cdecl* newfunc)());
     void patchLoadTexture2D();
     void patchLightParticleMaterialModifier();
+    void patchWorldRenderingAccumulation();
 
     void* getGMSTPointer(DWORD id);
     DWORD getKeybindCode(DWORD action);
