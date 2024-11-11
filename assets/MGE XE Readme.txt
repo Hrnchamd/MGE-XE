@@ -1,7 +1,7 @@
 
-MGE XE 0.17.0
+MGE XE 0.18.0
 -------------
-Released 2023-12-09
+Released 2024-11-11
 
 Source available at https://github.com/Hrnchamd/MGE-XE
 Licensed under GPL v2 https://github.com/Hrnchamd/MGE-XE/blob/master/license.txt
@@ -123,6 +123,13 @@ Thanks to the Morrowind community for all the inspiration and feedback.
 
 Changelog (newest first)
 ---------
+
+0.18.0
+- Borderless window mode positioning is selectable.
+- Fixed incorrect rendering and compositing of alpha blended objects in certain cell conditions. In distant interiors without water, alphas were not appearing where the alpha object was drawn over distant objects.
+- The distant land generator will ignore Mod Organizer 2's auto-generated invalidation BSA.
+- MGEXEgui should report errors in DirectX initialization instead of silently exiting.
+
 0.17.0
 - Fixed thin unshadowed line between shadow cascades, which was only visible at certain times on vertical surfaces.
 - Patched an engine bug that caused dull and transparent flames from torches, and from other emissive particles spawned on lights. The bug affected per-pixel lighting much more than the standard renderer.
@@ -132,7 +139,6 @@ Changelog (newest first)
 - Added more materials to fixed function shader pre-caching.
 - Fixed 'final' shader priority tag to be after all shaders, including shaders without a priority tag.
 - The Lua API can now set bool, int, and vec4 arrays. It can also alter the main engine's near rendering distance, to allow reducing it via script in busy areas.
-
 
 0.16.3
 - Remove FOV change introduced in 0.16.2. It was causing incorrect rendering of hands when not using per-pixel lighting mode.
