@@ -33,14 +33,3 @@ struct BoundingBox {
     void Set(const D3DXVECTOR3& min, const D3DXVECTOR3& max);
     void Transform(const D3DXMATRIX& m);
 };
-
-
-struct ViewFrustum {
-    D3DXPLANE frustum[6];
-    enum Containment { INSIDE, OUTSIDE, INTERSECTS };
-
-    ViewFrustum(const D3DXMATRIX* viewProj);
-
-    Containment ContainsSphere(const BoundingSphere& sphere) const;
-    Containment ContainsBox(const BoundingBox& box) const;
-};

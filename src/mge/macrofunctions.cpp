@@ -225,7 +225,7 @@ void MacroFunctions::ToggleShaders() {
 
 void MacroFunctions::ToggleDistantLand() {
     // Ignore if distant land is not loaded
-    if (DistantLand::mapWorldSpaces.empty()) {
+    if (!DistantLand::isDistantLandLoaded) {
         return;
     }
 

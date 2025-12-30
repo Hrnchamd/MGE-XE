@@ -74,8 +74,8 @@ const char* dictValueToString(double value, const iniSetting& set) {
 void utf8cpyToA_s(char* _Dst, size_t _SizeInBytes, const char* _Src) {
     size_t size = MultiByteToWideChar(CP_UTF8, 0, _Src, -1, NULL, 0);
     WCHAR* buffer = new WCHAR[size];
-    MultiByteToWideChar(CP_UTF8, 0, _Src, -1, buffer, size);
-    WideCharToMultiByte(CP_ACP, 0, buffer, -1, _Dst, _SizeInBytes, NULL, NULL);
+    MultiByteToWideChar(CP_UTF8, 0, _Src, -1, buffer, static_cast<int>(size));
+    WideCharToMultiByte(CP_ACP, 0, buffer, -1, _Dst, static_cast<int>(_SizeInBytes), NULL, NULL);
     delete [] buffer;
 }
 
@@ -106,7 +106,7 @@ bool ConfigurationStruct::LoadSettings() {
             utf8cpyToA_s((char*)set.variable, set.bit_size, buffer);
         } else if (set.type == t_set) {
             size_t sz = std::min(set.bit_size, countof(buffer));
-            GetPrivateProfileSection(set.section, buffer, sz, mgeini);
+            GetPrivateProfileSection(set.section, buffer, static_cast<int>(sz), mgeini);
             memcpy(set.variable, buffer, sz);
         } else {
             double value = getSettingValue(buffer, set);

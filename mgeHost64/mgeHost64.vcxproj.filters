@@ -1,0 +1,120 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\support">
+      <UniqueIdentifier>{8684216a-8548-499a-9cfd-6e8f156728ad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ipc">
+      <UniqueIdentifier>{43e6a966-98ad-4e8b-946f-d2ca622c1346}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ipc">
+      <UniqueIdentifier>{3c8ceea9-4fd5-48fd-9c17-5a86e041b91d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\support">
+      <UniqueIdentifier>{cfed2c42-c878-44cd-a9c0-8a149afec933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\mge">
+      <UniqueIdentifier>{9985b63d-ef32-4f49-b15e-1f84ca50307c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\mge">
+      <UniqueIdentifier>{9273b2be-47f6-467e-8a91-f899272cf73a}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\support\log.cpp">
+      <Filter>Source Files\support</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipc\bridge.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipc\dlshare.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipc\server.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipc\vecbase.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipc\vec.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mge\configuration.cpp">
+      <Filter>Source Files\mge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mge\quadtree.cpp">
+      <Filter>Source Files\mge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mge\dlmath.cpp">
+      <Filter>Source Files\mge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\mge\memorypool.cpp">
+      <Filter>Source Files\mge</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ipc\vecwrap.cpp">
+      <Filter>Source Files\ipc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\ipc\bridge.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipc\dlshare.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipc\server.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipc\vec.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipc\vecbase.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\support\log.h">
+      <Filter>Header Files\support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\support\winheader.h">
+      <Filter>Header Files\support</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\configuration.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\configinternal.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\inidata.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\quadtree.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\dlformat.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\dlmath.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\mge\memorypool.h">
+      <Filter>Header Files\mge</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\ipc\vecwrap.h">
+      <Filter>Header Files\ipc</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

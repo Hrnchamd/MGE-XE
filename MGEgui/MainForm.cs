@@ -9,10 +9,20 @@ using System.IO;
 using MGEgui.DirectX;
 using MGEgui.INI;
 using MGEgui.Localization;
+using System.Runtime.InteropServices;
 
 namespace MGEgui {
 
     public partial class MainForm : Form {
+        // imports to check for shared memory feature support
+        [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Ansi)]
+        private static extern IntPtr LoadLibraryA(string dllToLoad);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern IntPtr GetProcAddress(IntPtr hModule, string procedureName);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool FreeLibrary(IntPtr hModule);
 
         private bool Save = true;
         private bool loading = true;
@@ -97,6 +107,7 @@ namespace MGEgui {
             { "SShotDir", new string [] { "lSShotDir", "tbSShotDir" } },
             { "SShotDirBrowse", new string [] { "bSShotDirBrowse" } },
             { "SShotDirClear", new string [] { "bSShotDirClear" } },
+            { "UseSharedMemory", new string [] { "cbUseSharedMemory" } },
 
             /* Distant Land */
             { "DistantLandWizard", new string [] { "bDistantLandWizard" } },
@@ -353,6 +364,7 @@ namespace MGEgui {
         private static INIFile.INIVariableDef iniSSSuffix = new INIFile.INIVariableDef("SSSuffix", siniRendState, "Screenshot Name Suffix", INIFile.INIVariableType.Dictionary, "Timestamp", ssSuffixDict);
         private static INIFile.INIVariableDef iniSSName = new INIFile.INIVariableDef("SSName", siniRendState, "Screenshot Name Prefix", INIFile.INIVariableType.String, "Morrowind");
         private static INIFile.INIVariableDef iniSSDir = new INIFile.INIVariableDef("SSDir", siniRendState, "Screenshot Output Directory", INIFile.INIVariableType.String, "");
+        private static INIFile.INIVariableDef iniUseSharedMemory = new INIFile.INIVariableDef("UseSharedMemory", siniMisc, "Use Shared Memory", INIFile.INIBoolType.Text, "False");
         // In-game
         private static INIFile.INIVariableDef iniDisableMGE = new INIFile.INIVariableDef("DisableMGE", siniMisc, "MGE Disabled", INIFile.INIBoolType.Text, "False");
         private static INIFile.INIVariableDef iniDisableMWSE = new INIFile.INIVariableDef("DisableMWSE", siniMisc, "Internal MWSE Disabled", INIFile.INIBoolType.Text, "False");
@@ -407,7 +419,7 @@ namespace MGEgui {
             iniAntiAlias, iniAnisoLvl, iniTransparencyAA, iniVWait, iniRefresh, iniBorderless,
             iniFOVAuto, iniFOV, iniUIScale, iniWindowAlignX, iniWindowAlignY,
             iniFogMode, iniHWShader, iniHDRTime, iniFPSCount, iniReduceTexMemUse,
-            iniSSFormat, iniSSSuffix, iniSSName, iniSSDir,
+            iniSSFormat, iniSSSuffix, iniSSName, iniSSDir, iniUseSharedMemory,
             // In-game
             iniDisableMGE, iniDisableMWSE, iniD3D8To9Only,
             iniSkipIntro, iniAltCombat,
@@ -434,6 +446,17 @@ namespace MGEgui {
             LoadGraphicsSettings(reset, false);
         }
 
+        private bool IsSharedMemoryFeatureSupported() {
+            var hModule = LoadLibraryA("kernelbase.dll");
+            if (hModule == IntPtr.Zero) {
+                return false;
+            }
+
+            var addr = GetProcAddress(hModule, "MapViewOfFile3");
+            FreeLibrary(hModule);
+            return addr != IntPtr.Zero;
+        }
+
         private void LoadGraphicsSettings(bool reset, bool save) {
             var iniFile = new INIFile(reset ? Statics.fn_nul : Statics.fn_inifile, iniSettings, true);
             if (reset) {
@@ -443,6 +466,9 @@ namespace MGEgui {
                 iniFile.initialize();
                 iniFile.save();
             }
+
+            var canUseSharedMemory = IsSharedMemoryFeatureSupported();
+
             loading = true;
             // Config
             cmbTipReadSpd.SelectedIndex = (int)iniFile.getKeyValue("TipSpeed");
@@ -472,6 +498,10 @@ namespace MGEgui {
             tbSShotName.Text = iniFile.getKeyString("SSName");
             cbDisplayMessages.Checked = (iniFile.getKeyValue("Messages") == 1);
             udMsgsTime.Value = (decimal)iniFile.getKeyValue("MsgTime");
+            cbUseSharedMemory.Checked = (iniFile.getKeyValue("UseSharedMemory") == 1 && canUseSharedMemory);
+            if (!canUseSharedMemory) {
+                cbUseSharedMemory.Enabled = false;
+            }
             // In-game
             cbDisableMGE.Checked = (iniFile.getKeyValue("DisableMGE") == 1);
             cbDisableMWSE.Checked = (iniFile.getKeyValue("DisableMWSE") == 1);
@@ -557,6 +587,7 @@ namespace MGEgui {
                 iniFile.setKey("SSDir", "");
             }
             iniFile.setKey("SSName", tbSShotName.Text.TrimEnd());
+            iniFile.setKey("UseSharedMemory", cbUseSharedMemory.Checked && cbUseSharedMemory.Enabled);
             // In-game
             iniFile.setKey("DisableMGE", cbDisableMGE.Checked);
             iniFile.setKey("DisableMWSE", cbDisableMWSE.Checked);
